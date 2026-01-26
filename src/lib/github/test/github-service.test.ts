@@ -81,7 +81,7 @@ describe("GitHubService", () => {
     );
 
     // Set mock fetch
-    globalThis.fetch = mockFetch;
+      globalThis.fetch = mockFetch as any;
   });
 
   afterEach(() => {

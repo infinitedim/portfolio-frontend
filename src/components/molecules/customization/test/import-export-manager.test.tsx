@@ -26,7 +26,9 @@ vi.mock("@/hooks/use-theme", () => ({
 
 // Mock CustomizationService
 const mockExportThemes = vi.fn(() => ({ themes: [] }));
-const mockImportThemes = vi.fn(() => Promise.resolve({ success: 1, errors: [] }));
+const mockImportThemes = vi.fn(
+  () => Promise.resolve({ success: 1, errors: [] as string[] })
+) as any;
 const mockGetSettings = vi.fn(() => ({}));
 const mockGetCustomThemes = vi.fn(() => []);
 const mockGetCustomFonts = vi.fn(() => []);
@@ -283,7 +285,7 @@ describe("ImportExportManager", () => {
         expect(true).toBe(true);
         return;
       }
-      mockImportThemes.mockResolvedValueOnce({
+      (mockImportThemes as any).mockResolvedValueOnce({
         success: 1,
         errors: ["Invalid theme format"],
       });

@@ -67,12 +67,12 @@ describe("HomePage", () => {
       expect(metadata.openGraph?.title).toBe(
         "Terminal Portfolio | Full-Stack Developer",
       );
-      expect(metadata.openGraph?.type).toBe("website");
+      expect((metadata.openGraph as { type?: string })?.type).toBe("website");
     });
 
     it("should have Twitter Card configuration", () => {
       expect(metadata.twitter).toBeDefined();
-      expect(metadata.twitter?.card).toBe("summary_large_image");
+      expect((metadata.twitter as { card?: string })?.card).toBe("summary_large_image");
       expect(metadata.twitter?.title).toBe(
         "Terminal Portfolio | Full-Stack Developer",
       );

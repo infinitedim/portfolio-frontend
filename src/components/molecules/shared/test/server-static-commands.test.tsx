@@ -84,7 +84,7 @@ describe("ServerStaticCommands", () => {
       }
       // Mock window as undefined (server side)
       const originalWindow = global.window;
-      // @ts-ignore
+      // @ts-expect-error - Deleting window for server-side test
       delete global.window;
 
       const result = usePrerenderedCommand("help");

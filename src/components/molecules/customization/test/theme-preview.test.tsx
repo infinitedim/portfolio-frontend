@@ -39,7 +39,7 @@ describe("ThemePreview", () => {
       accent: "#0080ff",
       border: "#333333",
     },
-    source: "custom",
+        source: "custom" as const,
     createdAt: new Date("2024-01-01"),
     modifiedAt: new Date("2024-01-02"),
   };
@@ -141,7 +141,7 @@ describe("ThemePreview", () => {
         expect(true).toBe(true);
         return;
       }
-      const builtInTheme = { ...mockTheme, source: "built-in" };
+      const builtInTheme = { ...mockTheme, source: "built-in" as const };
 
       render(
         <ThemePreview

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent, act } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import {
   AccessibilityProvider,
@@ -246,7 +246,7 @@ describe("AccessibilityProvider", () => {
         removeListener: vi.fn(),
         addEventListener: vi.fn((event, handler) => {
           if (event === "change") {
-            changeHandler = handler;
+            changeHandler = handler as (e: MediaQueryListEvent) => void;
           }
         }),
         removeEventListener: vi.fn(),
@@ -279,7 +279,9 @@ describe("AccessibilityProvider", () => {
 
       // Simulate media query change
       if (changeHandler) {
-        changeHandler({ matches: true } as MediaQueryListEvent);
+        act(() => {
+          (changeHandler as (e: MediaQueryListEvent) => void)({ matches: true } as MediaQueryListEvent);
+        });
       }
 
       await waitFor(() => {

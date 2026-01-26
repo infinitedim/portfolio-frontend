@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
+import { useAuth } from "@/lib/auth/auth-context";
 
 // Mock Next.js navigation
 const mockPush = vi.fn();
@@ -40,19 +41,23 @@ vi.mock("@/hooks/use-theme", () => ({
 
 // Mock auth context
 const mockLogout = vi.fn();
+const mockLogin = vi.fn();
+const mockRefresh = vi.fn();
 const mockUser = {
   userId: "test-user-id",
   email: "admin@example.com",
-  role: "admin",
+  role: "admin" as const,
 };
 
 vi.mock("@/lib/auth/auth-context", () => ({
-  useAuth: () => ({
+  useAuth: vi.fn(() => ({
     isAuthenticated: false,
     isLoading: false,
     user: null,
     logout: mockLogout,
-  }),
+    login: mockLogin,
+    refresh: mockRefresh,
+  })),
 }));
 
 // Mock components
@@ -163,9 +168,6 @@ describe("AdminLoginPage", () => {
       }
 
       const { container } = render(<AdminLoginPage />);
-      const terminalPrompt = container.querySelector(
-        'span:contains("admin@portfolio:~$ login")',
-      );
       // Check for terminal prompt text
       expect(container.textContent).toContain("admin@portfolio:~$ login");
     });
@@ -219,13 +221,13 @@ describe("AdminLoginPage", () => {
       }
 
       // Mock authenticated state
-      vi.mocked(
-        require("@/lib/auth/auth-context").useAuth,
-      ).mockReturnValueOnce({
+      vi.mocked(useAuth).mockReturnValueOnce({
         isAuthenticated: true,
         isLoading: false,
         user: mockUser,
         logout: mockLogout,
+        login: mockLogin,
+        refresh: mockRefresh,
       });
 
       render(<AdminLoginPage />);
@@ -240,13 +242,13 @@ describe("AdminLoginPage", () => {
       }
 
       // Mock authenticated state
-      vi.mocked(
-        require("@/lib/auth/auth-context").useAuth,
-      ).mockReturnValueOnce({
+      vi.mocked(useAuth).mockReturnValueOnce({
         isAuthenticated: true,
         isLoading: false,
         user: mockUser,
         logout: mockLogout,
+        login: mockLogin,
+        refresh: mockRefresh,
       });
 
       const { container } = render(<AdminLoginPage />);
@@ -308,13 +310,13 @@ describe("AdminLoginPage", () => {
       }
 
       // Mock loading state
-      vi.mocked(
-        require("@/lib/auth/auth-context").useAuth,
-      ).mockReturnValueOnce({
+      vi.mocked(useAuth).mockReturnValueOnce({
         isAuthenticated: false,
         isLoading: true,
         user: null,
         logout: mockLogout,
+        login: mockLogin,
+        refresh: mockRefresh,
       });
 
       render(<AdminLoginPage />);

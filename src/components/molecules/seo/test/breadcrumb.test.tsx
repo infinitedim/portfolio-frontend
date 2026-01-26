@@ -24,8 +24,8 @@ describe("Breadcrumb", () => {
         return;
       }
       const items = [
-        { label: "Home", href: "/" },
-        { label: "Projects", href: "/projects", current: true },
+        { label: "Home", href: "/" as any as any, current: false },
+        { label: "Projects", href: "/projects" as any as any, current: true },
       ];
 
       render(<Breadcrumb items={items} />);
@@ -39,9 +39,9 @@ describe("Breadcrumb", () => {
         return;
       }
       const items = [
-        { label: "Home", href: "/" },
-        { label: "Projects", href: "/projects" },
-        { label: "Project 1", href: "/projects/1", current: true },
+        { label: "Home", href: "/" as any, current: false },
+        { label: "Projects", href: "/projects" as any },
+        { label: "Project 1", href: "/projects/1" as any, current: true },
       ];
 
       render(<Breadcrumb items={items} />);
@@ -57,8 +57,8 @@ describe("Breadcrumb", () => {
         return;
       }
       const items = [
-        { label: "Home", href: "/" },
-        { label: "Projects", href: "/projects", current: true },
+        { label: "Home", href: "/" as any as any, current: false },
+        { label: "Projects", href: "/projects" as any as any, current: true },
       ];
 
       render(<Breadcrumb items={items} />);
@@ -73,8 +73,8 @@ describe("Breadcrumb", () => {
         return;
       }
       const items = [
-        { label: "Home", href: "/" },
-        { label: "Projects", href: "/projects", current: true },
+        { label: "Home", href: "/" as any as any, current: false },
+        { label: "Projects", href: "/projects" as any as any, current: true },
       ];
 
       render(<Breadcrumb items={items} />);
@@ -89,9 +89,9 @@ describe("Breadcrumb", () => {
         return;
       }
       const items = [
-        { label: "Home", href: "/" },
-        { label: "Projects", href: "/projects" },
-        { label: "Project 1", href: "/projects/1", current: true },
+        { label: "Home", href: "/" as any, current: false },
+        { label: "Projects", href: "/projects" as any },
+        { label: "Project 1", href: "/projects/1" as any, current: true },
       ];
 
       const { container } = render(<Breadcrumb items={items} />);
@@ -106,8 +106,8 @@ describe("Breadcrumb", () => {
         return;
       }
       const items = [
-        { label: "Home", href: "/" },
-        { label: "Projects", href: "/projects", current: true },
+        { label: "Home", href: "/" as any as any, current: false },
+        { label: "Projects", href: "/projects" as any as any, current: true },
       ];
 
       const { container } = render(<Breadcrumb items={items} />);

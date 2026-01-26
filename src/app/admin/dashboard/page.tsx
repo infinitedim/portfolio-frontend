@@ -39,12 +39,18 @@ export default function AdminDashboard(): JSX.Element {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("adminToken");
-      if (!token) {
+      try {
+        const token = localStorage.getItem("adminToken");
+        if (!token) {
+          router.push("/admin/login");
+          return;
+        }
+        setIsAuthenticated(true);
+      } catch (error) {
+        // Handle localStorage errors gracefully
+        console.error("Failed to access localStorage:", error);
         router.push("/admin/login");
-        return;
       }
-      setIsAuthenticated(true);
     }
     setIsLoading(false);
   }, [router]);

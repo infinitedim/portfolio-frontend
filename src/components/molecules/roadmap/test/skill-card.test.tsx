@@ -39,6 +39,8 @@ describe("SkillCard", () => {
     priority: "high",
     projects: ["Project 1", "Project 2"],
     dateCompleted: undefined,
+    id: "skill-1",
+    category: "frontend",
   };
 
   beforeEach(() => {

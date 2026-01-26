@@ -487,8 +487,9 @@ describe("TechBadge", () => {
         const { container } = render(<TechBadge technology={tech} />);
         const badge = container.querySelector("span");
         // Should have some color classes applied
-        expect(badge?.className).toMatch(/bg-\w+-\d+\/20/);
-        expect(badge?.className).toMatch(/text-\w+-\d+/);
+        // Match bg-color/20 or bg-color/opacity pattern (including black which has no number)
+        expect(badge?.className).toMatch(/bg-[\w-]+\/\d+|bg-black\/\d+/);
+        expect(badge?.className).toMatch(/text-[\w-]+-\d+|text-gray-\d+/);
       });
     });
   });

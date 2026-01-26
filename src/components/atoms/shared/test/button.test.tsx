@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
+import { useTheme } from "@/hooks/use-theme";
+import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 
 // Mock theme hook
 const mockThemeConfig = {
@@ -18,19 +20,19 @@ const mockThemeConfig = {
 };
 
 vi.mock("@/hooks/use-theme", () => ({
-  useTheme: () => ({
+  useTheme: vi.fn(() => ({
     themeConfig: mockThemeConfig,
     theme: "dark",
-  }),
+  })),
 }));
 
 // Mock accessibility hook
 vi.mock(
   "@/components/organisms/accessibility/accessibility-provider",
   () => ({
-    useAccessibility: () => ({
+    useAccessibility: vi.fn(() => ({
       isReducedMotion: false,
-    }),
+    })),
   }),
 );
 
@@ -389,10 +391,10 @@ describe("AnimatedButton", () => {
       const { rerender } = render(<AnimatedButton>Theme</AnimatedButton>);
 
       // Mock theme change
-      vi.mocked(require("@/hooks/use-theme").useTheme).mockReturnValueOnce({
+      vi.mocked(useTheme).mockReturnValueOnce({
         themeConfig: mockThemeConfig,
-        theme: "light",
-      });
+        theme: "default",
+      } as ReturnType<typeof useTheme>);
 
       rerender(<AnimatedButton>Theme</AnimatedButton>);
 
@@ -408,12 +410,9 @@ describe("AnimatedButton", () => {
         return;
       }
 
-      vi.mocked(
-        require("@/components/organisms/accessibility/accessibility-provider")
-          .useAccessibility,
-      ).mockReturnValueOnce({
+      vi.mocked(useAccessibility).mockReturnValueOnce({
         isReducedMotion: true,
-      });
+      } as ReturnType<typeof useAccessibility>);
 
       const { container } = render(
         <AnimatedButton>No Motion</AnimatedButton>,

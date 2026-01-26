@@ -55,7 +55,7 @@ describe("ParameterInput", () => {
     },
   ];
 
-  const mockValues: Record<string, any> = {
+  const _mockValues: Record<string, any> = {
     id: "123",
     email: "test@example.com",
     age: 25,
@@ -142,6 +142,13 @@ describe("ParameterInput", () => {
           themeConfig={mockThemeConfig}
         />,
       );
+
+      // Expand parameters first to see descriptions
+      const idButton = screen.getByText("id").closest("button");
+      const emailButton = screen.getByText("email").closest("button");
+      
+      if (idButton) fireEvent.click(idButton);
+      if (emailButton) fireEvent.click(emailButton);
 
       expect(screen.getByText("User ID")).toBeInTheDocument();
       expect(screen.getByText("User email")).toBeInTheDocument();

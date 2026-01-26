@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ThemeManager } from "../theme-manager";
 import type { CustomTheme } from "@/types/customization";
@@ -19,7 +19,7 @@ const mockThemeConfig = {
 };
 
 const mockChangeTheme = vi.fn(() => true);
-const mockIsThemeActive = vi.fn(() => false);
+const mockIsThemeActive = vi.fn(() => false) as any;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -32,7 +32,7 @@ vi.mock("@/hooks/use-theme", () => ({
 // Mock CustomizationService
 const mockGetCustomThemes = vi.fn(() => []);
 const mockDeleteCustomTheme = vi.fn(() => true);
-const mockDuplicateTheme = vi.fn(() => null);
+const mockDuplicateTheme = vi.fn(() => null) as any;
 
 vi.mock("@/lib/services/customization-service", () => ({
   CustomizationService: {
@@ -413,7 +413,7 @@ describe("ThemeManager", () => {
           themes={mockThemes}
           onUpdate={mockOnUpdate}
           onApplyTheme={mockOnApplyTheme}
-          currentTheme="theme-1"
+          currentTheme={"default" as any}
         />,
       );
 

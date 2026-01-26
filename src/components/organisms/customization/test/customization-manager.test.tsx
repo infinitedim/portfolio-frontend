@@ -82,8 +82,8 @@ describe("CustomizationManager", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
     vi.useFakeTimers();
-    mockGetAllThemes.mockReturnValue([]);
-    mockGetAllFonts.mockReturnValue([]);
+    (mockGetAllThemes as any).mockReturnValue([]);
+    (mockGetAllFonts as any).mockReturnValue([]);
     mockChangeTheme.mockReturnValue(true);
   });
 
@@ -209,7 +209,7 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      mockGetAllThemes.mockImplementation(
+      (mockGetAllThemes as any).mockImplementation(
         () => new Promise((resolve) => setTimeout(() => resolve([]), 100)),
       );
 
@@ -225,8 +225,8 @@ describe("CustomizationManager", () => {
       }
       const themes = [{ id: "t1", name: "Theme 1", source: "custom" }];
       const fonts = [{ id: "f1", name: "Font 1", source: "custom" }];
-      mockGetAllThemes.mockReturnValue(themes);
-      mockGetAllFonts.mockReturnValue(fonts);
+      (mockGetAllThemes as any).mockReturnValue(themes);
+      (mockGetAllFonts as any).mockReturnValue(fonts);
 
       render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
 
@@ -361,7 +361,7 @@ describe("CustomizationManager", () => {
         { id: "t1", name: "Theme 1", source: "custom" },
         { id: "t2", name: "Theme 2", source: "custom" },
       ];
-      mockGetAllThemes.mockReturnValue(themes);
+      (mockGetAllThemes as any).mockReturnValue(themes);
 
       render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
 
@@ -377,7 +377,7 @@ describe("CustomizationManager", () => {
         { id: "f1", name: "Font 1", source: "custom" },
         { id: "f2", name: "Font 2", source: "custom" },
       ];
-      mockGetAllFonts.mockReturnValue(fonts);
+      (mockGetAllFonts as any).mockReturnValue(fonts);
 
       render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
 

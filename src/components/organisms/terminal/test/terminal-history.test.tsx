@@ -37,16 +37,18 @@ const mockHistory = [
   {
     input: "help",
     output: {
-      type: "info",
+      type: "info" as const,
       content: "Available commands",
     },
+    timestamp: new Date(),
   },
   {
     input: "about",
     output: {
-      type: "success",
+      type: "success" as const,
       content: "About me",
     },
+    timestamp: new Date(),
   },
 ];
 

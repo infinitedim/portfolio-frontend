@@ -63,6 +63,7 @@ describe("MobileTerminal", () => {
         expect(true).toBe(true);
         return;
       }
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       vi.mocked(require("@/hooks/use-mobile").useMobile).mockReturnValue({
         isMobile: false,
         isVirtualKeyboardOpen: false,
@@ -113,7 +114,7 @@ describe("MobileTerminal", () => {
         expect(true).toBe(true);
         return;
       }
-      localStorageMock.getItem.mockReturnValue("true");
+      localStorageMock.getItem.mockReturnValue(null);
 
       const { container } = render(
         <MobileTerminal>

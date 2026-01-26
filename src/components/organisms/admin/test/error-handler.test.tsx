@@ -13,6 +13,7 @@ const mockThemeConfig = {
     border: "#333333",
     error: "#ff4444",
     success: "#00ff00",
+    muted: "#888888",
   },
 };
 
@@ -450,9 +451,7 @@ describe("ErrorHandler", () => {
         return;
       }
       // Mock: backend and tRPC ok, database fails
-      let callCount = 0;
       globalThis.fetch = vi.fn().mockImplementation(async (url) => {
-        callCount++;
         if (url.includes("healthDatabase")) {
           return { ok: false, json: async () => ({}) };
         }

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 // Mock Next.js modules
@@ -83,13 +83,13 @@ describe("ProjectsPage", () => {
       const metadata = await generateMetadata();
       expect(metadata.openGraph).toBeDefined();
       expect(metadata.openGraph?.title).toBe("Projects | Terminal Portfolio");
-      expect(metadata.openGraph?.type).toBe("website");
+      expect((metadata.openGraph as { type?: string })?.type).toBe("website");
     });
 
     it("should have Twitter Card configuration", async () => {
       const metadata = await generateMetadata();
       expect(metadata.twitter).toBeDefined();
-      expect(metadata.twitter?.card).toBe("summary_large_image");
+      expect((metadata.twitter as { card?: string })?.card).toBe("summary_large_image");
     });
 
     it("should have canonical URL", async () => {

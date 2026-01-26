@@ -344,7 +344,7 @@ describe("AdminLayout", () => {
       mockPathname.mockReturnValue("/admin");
       mockVerifyAuthentication.mockImplementation(
         () =>
-          new Promise((_, reject) =>
+          new Promise((_resolve, reject) =>
             setTimeout(() => reject(new Error("Timeout")), 100),
           ),
       );

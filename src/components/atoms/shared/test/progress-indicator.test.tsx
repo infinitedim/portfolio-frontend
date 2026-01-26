@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
+import { useTheme } from "@/hooks/use-theme";
 
 // Mock theme hook
 const mockThemeConfig = {
@@ -18,10 +19,10 @@ const mockThemeConfig = {
 };
 
 vi.mock("@/hooks/use-theme", () => ({
-  useTheme: () => ({
+  useTheme: vi.fn(() => ({
     themeConfig: mockThemeConfig,
     theme: "dark",
-  }),
+  })),
 }));
 
 // Import after mocks
@@ -430,10 +431,10 @@ describe("ProgressIndicator", () => {
       const { rerender } = render(<ProgressIndicator progress={50} />);
 
       // Mock theme change
-      vi.mocked(require("@/hooks/use-theme").useTheme).mockReturnValueOnce({
+      vi.mocked(useTheme).mockReturnValueOnce({
         themeConfig: mockThemeConfig,
-        theme: "light",
-      });
+        theme: "default",
+      } as ReturnType<typeof useTheme>);
 
       rerender(<ProgressIndicator progress={50} />);
 

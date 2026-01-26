@@ -28,6 +28,7 @@ describe("ProjectCard", () => {
     demoUrl: "https://example.com/demo",
     githubUrl: "https://github.com/example/project",
     imageUrl: "https://example.com/image.jpg",
+    featured: false,
   };
 
   beforeEach(() => {

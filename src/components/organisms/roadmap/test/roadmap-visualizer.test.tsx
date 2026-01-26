@@ -35,14 +35,23 @@ vi.mock("@/hooks/use-theme", () => ({
 }));
 
 const mockRoadmapData = {
+  userId: "test-user",
+  username: "test",
+  totalProgress: 50,
+  lastUpdated: new Date(),
+  completedSkills: 1,
+  totalSkills: 3,
   categories: [
     {
       id: "cat1",
       name: "Category 1",
+      description: "Test category",
+      progress: 50,
+      color: "#00ff00",
       skills: [
-        { name: "Skill 1", status: "completed", progress: 100 },
-        { name: "Skill 2", status: "in-progress", progress: 50 },
-        { name: "Skill 3", status: "not-started", progress: 0 },
+        { id: "s1", name: "Skill 1", category: "cat1", description: "Test", status: "completed" as const, progress: 100, priority: "high" as const },
+        { id: "s2", name: "Skill 2", category: "cat1", description: "Test", status: "in-progress" as const, progress: 50, priority: "high" as const },
+        { id: "s3", name: "Skill 3", category: "cat1", description: "Test", status: "not-started" as const, progress: 0, priority: "high" as const },
       ],
     },
   ],
@@ -151,7 +160,15 @@ describe("RoadmapVisualizer", () => {
         expect(true).toBe(true);
         return;
       }
-      const emptyData = { categories: [] };
+      const emptyData = {
+        userId: "test-user",
+        username: "test",
+        totalProgress: 0,
+        lastUpdated: new Date(),
+        completedSkills: 0,
+        totalSkills: 0,
+        categories: [],
+      };
       render(<RoadmapVisualizer roadmapData={emptyData} />);
 
       expect(screen.getByText(/No skills found/i)).toBeInTheDocument();

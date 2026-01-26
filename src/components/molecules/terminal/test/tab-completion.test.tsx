@@ -268,7 +268,7 @@ describe("TabCompletion", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
+      render(
         <TabCompletion
           input=""
           availableCommands={["help", "hello"]}

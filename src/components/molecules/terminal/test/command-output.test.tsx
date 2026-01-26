@@ -104,14 +104,14 @@ describe("CommandOutput", () => {
       expect(screen.getByText("ℹ️")).toBeInTheDocument();
     });
 
-    it("should render array content", () => {
+    it("should render multiline content", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
       const output: CommandOutputType = {
         type: "success",
-        content: ["Line 1", "Line 2", "Line 3"],
+        content: "Line 1\nLine 2\nLine 3",
       };
 
       render(<CommandOutput output={output} />);

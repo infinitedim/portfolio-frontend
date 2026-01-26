@@ -22,15 +22,14 @@ vi.mock("@/hooks/use-theme", () => ({
 
 // Mock CommandOutput
 vi.mock("@/components/molecules/terminal/command-output", () => ({
-  CommandOutput: ({ output }: { output: TerminalHistory }) => (
-    <div data-testid="command-output">{output.command}</div>
+  CommandOutput: ({ output }: { output: { type: string; content: string } }) => (
+    <div data-testid="command-output">{output.content}</div>
   ),
 }));
 
 const mockHistory: TerminalHistory[] = [
   {
-    id: "1",
-    command: "help",
+    input: "help",
     output: {
       type: "success",
       content: "Help content",
@@ -38,8 +37,7 @@ const mockHistory: TerminalHistory[] = [
     timestamp: new Date(),
   },
   {
-    id: "2",
-    command: "about",
+    input: "about",
     output: {
       type: "info",
       content: "About content",
@@ -126,8 +124,7 @@ describe("VirtualizedTerminalHistory", () => {
         return;
       }
       const largeHistory = Array.from({ length: 1000 }, (_, i) => ({
-        id: `${i}`,
-        command: `command-${i}`,
+        input: `command-${i}`,
         output: { type: "success" as const, content: `Output ${i}` },
         timestamp: new Date(),
       }));

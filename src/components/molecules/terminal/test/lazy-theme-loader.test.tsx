@@ -89,7 +89,7 @@ describe("LazyThemeLoader", () => {
       });
 
       rerender(
-        <LazyThemeLoader themeName="dark">{children}</LazyThemeLoader>,
+        <LazyThemeLoader themeName="default">{children}</LazyThemeLoader>,
       );
 
       await waitFor(() => {

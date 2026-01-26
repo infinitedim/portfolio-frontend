@@ -169,7 +169,7 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
       }
 
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = "development";
+      (process.env as any).NODE_ENV = "development";
 
       render(
         <ErrorBoundary>
@@ -184,7 +184,7 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
 
       expect(screen.getByText(/Test error/i)).toBeInTheDocument();
 
-      process.env.NODE_ENV = originalEnv;
+      (process.env as any).NODE_ENV = originalEnv;
     });
   });
 

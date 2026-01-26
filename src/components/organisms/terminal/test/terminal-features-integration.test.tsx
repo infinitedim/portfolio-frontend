@@ -68,12 +68,12 @@ vi.mock("@/hooks/use-terminal-shortcuts", () => ({
 }));
 
 vi.mock("@/components/molecules/terminal/history-search-panel", () => ({
-  HistorySearchPanel: ({ isOpen, onClose }: any) =>
+  HistorySearchPanel: ({ isOpen }: any) =>
     isOpen ? <div data-testid="history-panel">History Panel</div> : null,
 }));
 
 vi.mock("@/components/molecules/terminal/keyboard-shortcuts", () => ({
-  KeyboardShortcut: ({ isOpen, onClose }: any) =>
+  KeyboardShortcut: ({ isOpen }: any) =>
     isOpen ? <div data-testid="shortcuts-panel">Shortcuts Panel</div> : null,
 }));
 

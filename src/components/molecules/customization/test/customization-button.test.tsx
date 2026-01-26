@@ -24,7 +24,7 @@ vi.mock("@/hooks/use-theme", () => ({
 
 // Mock CustomizationManager
 vi.mock("@/components/organisms/customization/customization-manager", () => ({
-  CustomizationManager: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => (
+  CustomizationManager: ({ isOpen, onClose: _onClose }: { isOpen: boolean; onClose: () => void }) => (
     isOpen ? <div data-testid="customization-manager">Customization Manager</div> : null
   ),
 }));

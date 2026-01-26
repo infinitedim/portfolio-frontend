@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { GuidedTour } from "../guided-tour";
 import type { TourStep } from "../tour-steps";
@@ -32,12 +32,7 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+// ResizeObserver is already mocked in setup.ts, no need to redefine
 
 // Mock window.confirm
 const mockConfirm = vi.fn(() => true);
@@ -53,6 +48,9 @@ const mockGetBoundingClientRect = vi.fn(() => ({
   height: 50,
   bottom: 150,
   right: 300,
+  x: 100,
+  y: 100,
+  toJSON: () => "",
 }));
 
 describe("GuidedTour", () => {
@@ -76,6 +74,7 @@ describe("GuidedTour", () => {
       const testElement = document.createElement("div");
       testElement.id = "test-target";
       testElement.getBoundingClientRect = mockGetBoundingClientRect;
+      testElement.scrollIntoView = vi.fn();
       document.body.appendChild(testElement);
     }
   });
@@ -371,7 +370,7 @@ describe("GuidedTour", () => {
 
       fireEvent.keyDown(document, { key: "Escape" });
 
-      if (window.confirm) {
+      if (window.confirm()) {
         expect(mockConfirm).toHaveBeenCalled();
       }
       expect(onSkip).toHaveBeenCalled();
@@ -542,7 +541,7 @@ describe("GuidedTour", () => {
       const skipButton = screen.getByText("Skip");
       fireEvent.click(skipButton);
 
-      if (window.confirm) {
+      if (window.confirm()) {
         expect(mockConfirm).toHaveBeenCalled();
       }
       expect(onSkip).toHaveBeenCalled();

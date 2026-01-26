@@ -5,7 +5,7 @@ import { LetterGlitch } from "../letter-glitch";
 
 // Mock dynamic import
 vi.mock("next/dynamic", () => ({
-  default: (loader: () => Promise<any>) => {
+  default: (_loader: () => Promise<any>) => {
     const MockComponent = () => (
       <canvas
         className="fixed inset-0 w-full h-full pointer-events-none opacity-20"

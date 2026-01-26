@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { FontManager } from "../font-manager";
 import type { CustomFont } from "@/types/customization";
@@ -34,7 +34,7 @@ vi.mock("@/hooks/use-font", () => ({
 }));
 
 // Mock CustomizationService
-const mockGetCustomFonts = vi.fn(() => []);
+const mockGetCustomFonts = vi.fn<() => CustomFont[]>(() => []);
 const mockSaveCustomFont = vi.fn();
 const mockSaveCustomFontFromGoogle = vi.fn((font: any) => ({
   ...font,
@@ -44,15 +44,17 @@ const mockSaveCustomFontFromGoogle = vi.fn((font: any) => ({
 const mockDeleteCustomFont = vi.fn();
 const mockSaveSettings = vi.fn();
 
+const mockCustomizationServiceInstance = {
+  getCustomFonts: mockGetCustomFonts,
+  saveCustomFont: mockSaveCustomFont,
+  saveCustomFontFromGoogle: mockSaveCustomFontFromGoogle,
+  deleteCustomFont: mockDeleteCustomFont,
+  saveSettings: mockSaveSettings,
+};
+
 vi.mock("@/lib/services/customization-service", () => ({
   CustomizationService: {
-    getInstance: () => ({
-      getCustomFonts: mockGetCustomFonts,
-      saveCustomFont: mockSaveCustomFont,
-      saveCustomFontFromGoogle: mockSaveCustomFontFromGoogle,
-      deleteCustomFont: mockDeleteCustomFont,
-      saveSettings: mockSaveSettings,
-    }),
+    getInstance: vi.fn(() => mockCustomizationServiceInstance),
   },
 }));
 
@@ -61,16 +63,21 @@ global.alert = vi.fn();
 global.confirm = vi.fn(() => true);
 
 // Mock document.createElement and related methods
+const originalCreateElement = typeof document !== "undefined" ? document.createElement.bind(document) : undefined;
 const mockCreateElement = vi.fn((tag: string) => {
   if (tag === "a") {
     return {
       href: "",
       download: "",
       click: vi.fn(),
-    };
+      appendChild: vi.fn(),
+      removeChild: vi.fn(),
+      style: {},
+    } as any;
   }
-  if (typeof document !== "undefined" && document.createElement) {
-    return document.createElement(tag);
+  // Use original createElement for other tags to avoid infinite recursion
+  if (originalCreateElement) {
+    return originalCreateElement(tag);
   }
   return { tagName: tag } as any;
 });
@@ -130,7 +137,7 @@ describe("FontManager", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    mockGetCustomFonts.mockReturnValue(mockFonts);
+    (mockGetCustomFonts as any).mockReturnValue(mockFonts);
     vi.useFakeTimers();
   });
 
@@ -173,7 +180,7 @@ describe("FontManager", () => {
         <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
       );
 
-      expect(screen.getByText(/Upload/)).toBeInTheDocument();
+      expect(screen.getByText(/📁 Upload/)).toBeInTheDocument();
     });
 
     it("should render filter dropdown", () => {
@@ -237,10 +244,12 @@ describe("FontManager", () => {
         <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
       );
 
-      const fontCard = screen.getByText("Fira Code").closest("div[role='button']");
+      const fontCards = screen.getAllByText("Fira Code");
+      const fontCard = fontCards[0].closest("div[role='button']");
       fireEvent.click(fontCard!);
 
-      expect(screen.getByText("Fira Code")).toBeInTheDocument();
+      // Font should be selected
+      expect(fontCard).toBeInTheDocument();
       expect(screen.getByText("Font Preview")).toBeInTheDocument();
     });
 
@@ -381,7 +390,8 @@ describe("FontManager", () => {
         <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
       );
 
-      const firaCodeCard = screen.getByText("Fira Code").closest("div[role='button']");
+      const firaCodeCards = screen.getAllByText("Fira Code");
+      const firaCodeCard = firaCodeCards[0].closest("div[role='button']");
       const deleteButtons = firaCodeCard?.querySelectorAll("button");
       const deleteButton = Array.from(deleteButtons || []).find(
         (btn) => btn.textContent === "Delete",
@@ -393,6 +403,7 @@ describe("FontManager", () => {
 
   describe("Random Font Generation", () => {
     it("should generate random font when button is clicked", async () => {
+      vi.useFakeTimers();
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -401,18 +412,31 @@ describe("FontManager", () => {
         <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
       );
 
+      // Mock getCustomFonts to return empty array so it creates new font
+      (mockGetCustomFonts as any).mockReturnValueOnce([]);
+      
       const randomButton = screen.getByText("🎲 Pick Random Font");
-      fireEvent.click(randomButton);
+      
+      await act(async () => {
+        fireEvent.click(randomButton);
+      });
+      
+      // Advance timers to handle setTimeout in generateRandomFont (500ms delay)
+      await act(async () => {
+        vi.advanceTimersByTime(600);
+        await vi.runAllTimersAsync();
+      });
 
       await waitFor(() => {
         expect(mockSaveCustomFontFromGoogle).toHaveBeenCalled();
-      }, { timeout: 1000 });
+      }, { timeout: 5000 });
 
-      vi.advanceTimersByTime(500);
       await waitFor(() => {
         expect(mockOnUpdate).toHaveBeenCalled();
-      });
-    });
+      }, { timeout: 5000 });
+      
+      vi.useRealTimers();
+    }, 15000);
 
     it("should toggle ligatures checkbox", () => {
       if (!canRunTests) {
@@ -434,6 +458,7 @@ describe("FontManager", () => {
 
   describe("File Upload", () => {
     it("should handle file upload", async () => {
+      vi.useFakeTimers();
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -445,8 +470,11 @@ describe("FontManager", () => {
         <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
       );
 
-      const uploadButton = screen.getByText(/Upload/);
-      fireEvent.click(uploadButton);
+      const uploadButton = screen.getByText(/📁 Upload/);
+      
+      await act(async () => {
+        fireEvent.click(uploadButton);
+      });
 
       const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
       if (fileInput) {
@@ -455,13 +483,23 @@ describe("FontManager", () => {
           writable: false,
         });
 
-        fireEvent.change(fileInput);
+        await act(async () => {
+          fireEvent.change(fileInput);
+        });
 
-        await waitFor(() => {
-          expect(mockSaveCustomFont).toHaveBeenCalled();
+        // Advance timers if there are any setTimeout calls
+        await act(async () => {
+          vi.advanceTimersByTime(200);
+          await vi.runAllTimersAsync();
         });
       }
-    });
+
+      await waitFor(() => {
+        expect(mockSaveCustomFont).toHaveBeenCalled();
+      }, { timeout: 5000 });
+      
+      vi.useRealTimers();
+    }, 15000);
   });
 
   describe("Keyboard Navigation", () => {

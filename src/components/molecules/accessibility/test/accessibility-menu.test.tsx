@@ -216,7 +216,6 @@ describe("AccessibilityMenu", () => {
       const focusButton = screen.getByLabelText(
         /(Enable|Disable) focus mode for better keyboard navigation/,
       );
-      const initialText = focusButton.textContent;
       
       fireEvent.click(focusButton);
 

@@ -15,6 +15,7 @@ const mockThemeConfig = {
     warning: "#ffaa00",
     info: "#00aaff",
     success: "#00ff00",
+    muted: "#888888",
   },
 };
 
@@ -133,8 +134,6 @@ describe("PerformanceMonitor", () => {
       }
       render(<PerformanceMonitor themeConfig={mockThemeConfig} />);
 
-      const initialCpu = screen.getByText(/CPU Usage/i).parentElement?.textContent;
-
       vi.advanceTimersByTime(1000);
 
       await waitFor(() => {
@@ -177,8 +176,6 @@ describe("PerformanceMonitor", () => {
 
       const resumeButton = screen.getByText(/Resume/i);
       fireEvent.click(resumeButton);
-
-      const metricsBefore = screen.getByText(/CPU Usage/i).parentElement?.textContent;
 
       vi.advanceTimersByTime(1000);
 

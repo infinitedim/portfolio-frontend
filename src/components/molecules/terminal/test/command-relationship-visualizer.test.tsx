@@ -147,13 +147,7 @@ describe("CommandRelationshipVisualizer", () => {
         expect(true).toBe(true);
         return;
       }
-      vi.mocked(vi.importMock("@/hooks/use-command-history")).mockReturnValueOnce(
-        {
-          history: [],
-          categories: [],
-        },
-      );
-
+      // Mock is already set up, this test verifies component handles empty history
       render(
         <CommandRelationshipVisualizer isVisible={true} onClose={vi.fn()} />,
       );

@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import robots from "../robots";
+import type { MetadataRoute } from "next";
+
+// Helper function to safely access rules array
+function getRulesArray(result: MetadataRoute.Robots) {
+  return Array.isArray(result.rules) ? result.rules : [result.rules];
+}
 
 describe("robots.ts", () => {
   beforeEach(() => {
@@ -34,13 +40,15 @@ describe("robots.ts", () => {
   describe("Universal Rules (*)", () => {
     it("should have universal rule for all user agents", () => {
       const result = robots();
-      const universalRule = result.rules.find((rule) => rule.userAgent === "*");
+      const rulesArray = Array.isArray(result.rules) ? result.rules : [result.rules];
+      const universalRule = rulesArray.find((rule) => rule.userAgent === "*");
       expect(universalRule).toBeDefined();
     });
 
     it("should allow public routes", () => {
       const result = robots();
-      const universalRule = result.rules.find((rule) => rule.userAgent === "*");
+      const rulesArray = Array.isArray(result.rules) ? result.rules : [result.rules];
+      const universalRule = rulesArray.find((rule) => rule.userAgent === "*");
       expect(universalRule?.allow).toContain("/");
       expect(universalRule?.allow).toContain("/projects");
       expect(universalRule?.allow).toContain("/skills");
@@ -50,7 +58,8 @@ describe("robots.ts", () => {
 
     it("should disallow private routes", () => {
       const result = robots();
-      const universalRule = result.rules.find((rule) => rule.userAgent === "*");
+      const rulesArray = getRulesArray(result);
+      const universalRule = rulesArray.find((rule) => rule.userAgent === "*");
       expect(universalRule?.disallow).toContain("/api/");
       expect(universalRule?.disallow).toContain("/admin/");
       expect(universalRule?.disallow).toContain("/private/");
@@ -59,7 +68,8 @@ describe("robots.ts", () => {
 
     it("should have crawl delay for universal rule", () => {
       const result = robots();
-      const universalRule = result.rules.find((rule) => rule.userAgent === "*");
+      const rulesArray = getRulesArray(result);
+      const universalRule = rulesArray.find((rule) => rule.userAgent === "*");
       expect(universalRule?.crawlDelay).toBe(1);
     });
   });
@@ -67,7 +77,8 @@ describe("robots.ts", () => {
   describe("Googlebot Rules", () => {
     it("should have specific rule for Googlebot", () => {
       const result = robots();
-      const googlebotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const googlebotRule = rulesArray.find(
         (rule) => rule.userAgent === "Googlebot",
       );
       expect(googlebotRule).toBeDefined();
@@ -75,7 +86,8 @@ describe("robots.ts", () => {
 
     it("should allow public routes for Googlebot", () => {
       const result = robots();
-      const googlebotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const googlebotRule = rulesArray.find(
         (rule) => rule.userAgent === "Googlebot",
       );
       expect(googlebotRule?.allow).toContain("/");
@@ -84,7 +96,8 @@ describe("robots.ts", () => {
 
     it("should disallow private routes for Googlebot", () => {
       const result = robots();
-      const googlebotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const googlebotRule = rulesArray.find(
         (rule) => rule.userAgent === "Googlebot",
       );
       expect(googlebotRule?.disallow).toContain("/api/");
@@ -93,7 +106,8 @@ describe("robots.ts", () => {
 
     it("should have crawl delay for Googlebot", () => {
       const result = robots();
-      const googlebotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const googlebotRule = rulesArray.find(
         (rule) => rule.userAgent === "Googlebot",
       );
       expect(googlebotRule?.crawlDelay).toBe(1);
@@ -103,7 +117,8 @@ describe("robots.ts", () => {
   describe("Googlebot-Image Rules", () => {
     it("should have specific rule for Googlebot-Image", () => {
       const result = robots();
-      const googlebotImageRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const googlebotImageRule = rulesArray.find(
         (rule) => rule.userAgent === "Googlebot-Image",
       );
       expect(googlebotImageRule).toBeDefined();
@@ -111,7 +126,8 @@ describe("robots.ts", () => {
 
     it("should allow image routes for Googlebot-Image", () => {
       const result = robots();
-      const googlebotImageRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const googlebotImageRule = rulesArray.find(
         (rule) => rule.userAgent === "Googlebot-Image",
       );
       expect(googlebotImageRule?.allow).toContain("/images/");
@@ -123,7 +139,8 @@ describe("robots.ts", () => {
   describe("Googlebot-Mobile Rules", () => {
     it("should have specific rule for Googlebot-Mobile", () => {
       const result = robots();
-      const googlebotMobileRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const googlebotMobileRule = rulesArray.find(
         (rule) => rule.userAgent === "Googlebot-Mobile",
       );
       expect(googlebotMobileRule).toBeDefined();
@@ -131,7 +148,8 @@ describe("robots.ts", () => {
 
     it("should allow public routes for Googlebot-Mobile", () => {
       const result = robots();
-      const googlebotMobileRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const googlebotMobileRule = rulesArray.find(
         (rule) => rule.userAgent === "Googlebot-Mobile",
       );
       expect(googlebotMobileRule?.allow).toContain("/");
@@ -142,7 +160,8 @@ describe("robots.ts", () => {
   describe("Bingbot Rules", () => {
     it("should have specific rule for Bingbot", () => {
       const result = robots();
-      const bingbotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const bingbotRule = rulesArray.find(
         (rule) => rule.userAgent === "Bingbot",
       );
       expect(bingbotRule).toBeDefined();
@@ -150,7 +169,8 @@ describe("robots.ts", () => {
 
     it("should allow public routes for Bingbot", () => {
       const result = robots();
-      const bingbotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const bingbotRule = rulesArray.find(
         (rule) => rule.userAgent === "Bingbot",
       );
       expect(bingbotRule?.allow).toContain("/");
@@ -159,7 +179,8 @@ describe("robots.ts", () => {
 
     it("should have crawl delay for Bingbot", () => {
       const result = robots();
-      const bingbotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const bingbotRule = rulesArray.find(
         (rule) => rule.userAgent === "Bingbot",
       );
       expect(bingbotRule?.crawlDelay).toBe(1);
@@ -169,13 +190,15 @@ describe("robots.ts", () => {
   describe("Other Search Engine Bots", () => {
     it("should have rule for Slurp (Yahoo)", () => {
       const result = robots();
-      const slurpRule = result.rules.find((rule) => rule.userAgent === "Slurp");
+      const rulesArray = getRulesArray(result);
+      const slurpRule = rulesArray.find((rule) => rule.userAgent === "Slurp");
       expect(slurpRule).toBeDefined();
     });
 
     it("should have rule for DuckDuckBot", () => {
       const result = robots();
-      const duckDuckBotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const duckDuckBotRule = rulesArray.find(
         (rule) => rule.userAgent === "DuckDuckBot",
       );
       expect(duckDuckBotRule).toBeDefined();
@@ -183,14 +206,16 @@ describe("robots.ts", () => {
 
     it("should have rule for CCBot (Common Crawl)", () => {
       const result = robots();
-      const ccBotRule = result.rules.find((rule) => rule.userAgent === "CCBot");
+      const rulesArray = getRulesArray(result);
+      const ccBotRule = rulesArray.find((rule) => rule.userAgent === "CCBot");
       expect(ccBotRule).toBeDefined();
       expect(ccBotRule?.crawlDelay).toBe(10);
     });
 
     it("should have rule for AhrefsBot", () => {
       const result = robots();
-      const ahrefsBotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const ahrefsBotRule = rulesArray.find(
         (rule) => rule.userAgent === "AhrefsBot",
       );
       expect(ahrefsBotRule).toBeDefined();
@@ -199,7 +224,8 @@ describe("robots.ts", () => {
 
     it("should have rule for SemrushBot", () => {
       const result = robots();
-      const semrushBotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const semrushBotRule = rulesArray.find(
         (rule) => rule.userAgent === "SemrushBot",
       );
       expect(semrushBotRule).toBeDefined();
@@ -208,7 +234,8 @@ describe("robots.ts", () => {
 
     it("should have rule for MJ12bot", () => {
       const result = robots();
-      const mj12botRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const mj12botRule = rulesArray.find(
         (rule) => rule.userAgent === "MJ12bot",
       );
       expect(mj12botRule).toBeDefined();
@@ -219,7 +246,8 @@ describe("robots.ts", () => {
   describe("GPTBot Blocking", () => {
     it("should have rule for GPTBot", () => {
       const result = robots();
-      const gptBotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const gptBotRule = rulesArray.find(
         (rule) => rule.userAgent === "GPTBot",
       );
       expect(gptBotRule).toBeDefined();
@@ -227,7 +255,8 @@ describe("robots.ts", () => {
 
     it("should disallow all routes for GPTBot", () => {
       const result = robots();
-      const gptBotRule = result.rules.find(
+      const rulesArray = getRulesArray(result);
+      const gptBotRule = rulesArray.find(
         (rule) => rule.userAgent === "GPTBot",
       );
       expect(gptBotRule?.disallow).toContain("/");

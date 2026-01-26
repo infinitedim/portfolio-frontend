@@ -136,8 +136,7 @@ describe("TerminalHeader", () => {
       }
       render(<TerminalHeader />);
 
-      const timeElement = screen.getByText(/Time:/);
-      const initialTime = timeElement.textContent;
+      screen.getByText(/Time:/);
 
       vi.advanceTimersByTime(1000);
 
