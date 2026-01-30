@@ -1,4 +1,4 @@
-import {NextRequest, NextResponse} from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 /** Extended browser info with version */
 interface BrowserInfo {
@@ -46,18 +46,19 @@ function getSecurityHeaders(nonce: string, _isDev: boolean) {
  */
 function getCORSHeaders(origin: string, allowed: string[]) {
   return allowed.includes(origin)
-    ? {"Access-Control-Allow-Origin": origin}
+    ? { "Access-Control-Allow-Origin": origin }
     : {};
 }
 
 /**
- * Simple logger object for middleware logging
+ * Import server logger for structured logging
  */
-const logger = {
-  warn: (...args: unknown[]) => console.warn(...args),
-  info: (...args: unknown[]) => console.info(...args),
-  error: (...args: unknown[]) => console.error(...args),
-};
+import { createServerLogger } from "./lib/logger/server-logger";
+
+/**
+ * Create logger instance for middleware
+ */
+const logger = createServerLogger("middleware");
 
 /**
  * Enhanced Next.js middleware for security, performance, and analytics
@@ -79,11 +80,21 @@ const logger = {
  * @returns Modified NextResponse with security and performance headers
  */
 export function middleware(request: NextRequest) {
+  const isDevelopment = process.env.NODE_ENV === "development";
+
+  // Skip heavy middleware processing in development for faster startup
+  if (isDevelopment) {
+    const response = NextResponse.next();
+    // Only set minimal required headers in dev
+    response.headers.set("X-Request-ID", crypto.randomUUID());
+    return response;
+  }
+
   const startTime = Date.now();
 
   const userAgentHeader = request.headers.get("user-agent") || "";
-  const device = {type: "desktop"};
-  const browser = {name: "unknown"};
+  const device = { type: "desktop" };
+  const browser = { name: "unknown" };
 
   if (/mobile/i.test(userAgentHeader)) {
     device.type = "mobile";
@@ -109,7 +120,6 @@ export function middleware(request: NextRequest) {
   const nonce = generateNonce();
   response.headers.set("x-nonce", nonce);
 
-  const isDevelopment = process.env.NODE_ENV === "development";
   const securityHeaders = getSecurityHeaders(nonce, isDevelopment);
 
   Object.entries(securityHeaders).forEach(([key, value]) => {
@@ -152,10 +162,14 @@ export function middleware(request: NextRequest) {
     )
   ) {
     logger.warn("Suspicious request detected", {
+      requestId: crypto.randomUUID(),
+      url: url,
+    }, {
       ip: request.headers.get("x-forwarded-for") || "Unknown",
-      url,
       userAgent,
-      headers: Object.fromEntries(request.headers.entries()),
+      suspiciousPatterns: suspiciousPatterns
+        .filter((pattern) => pattern.test(url) || pattern.test(userAgent))
+        .map((p) => p.toString()),
     });
   }
 
@@ -191,7 +205,7 @@ export function middleware(request: NextRequest) {
     response.headers.set("X-Compression-Support", "gzip");
   }
 
-  const {pathname} = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api/")) {
     response.headers.set("Cache-Control", "public, max-age=300, s-maxage=600");
@@ -245,11 +259,29 @@ export function middleware(request: NextRequest) {
   const responseTime = Date.now() - startTime;
   response.headers.set("X-Response-Time", `${responseTime}ms`);
 
+  // Log the HTTP request/response
+  logger.logHttp(
+    request.method,
+    request.nextUrl.pathname,
+    response.status,
+    responseTime,
+    { requestId },
+    {
+      userAgent: request.headers.get("user-agent"),
+      referer: request.headers.get("referer"),
+      deviceType: response.headers.get("X-Device-Type"),
+    }
+  );
+
+  // Log slow requests as warning
   if (responseTime > 1000) {
     logger.warn("Slow request detected", {
+      requestId,
       url: request.url,
+    }, {
       method: request.method,
       responseTime,
+      threshold: 1000,
       userAgent: request.headers.get("user-agent"),
     });
   }

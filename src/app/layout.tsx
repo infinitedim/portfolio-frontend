@@ -5,6 +5,7 @@ import PWARegistration from "../components/organisms/pwa/pwa-registration";
 import { AuthProvider } from "../lib/auth";
 import { AccessibilityProvider } from "../components/organisms/accessibility/accessibility-provider";
 import { ScreenReaderAnnouncer } from "../components/molecules/accessibility/screen-reader-announcer";
+import { WebVitalsMonitor } from "../components/monitoring/web-vitals-monitor";
 
 /**
  * Viewport configuration for the application
@@ -234,6 +235,7 @@ export default function RootLayout({
       </head>
       <body className={"antialiased"}>
         <PWARegistration />
+        <WebVitalsMonitor />
         <AuthProvider>
           <AccessibilityProvider>
             <ScreenReaderAnnouncer message="Terminal Portfolio" />

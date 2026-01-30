@@ -1,6 +1,7 @@
 "use client";
 
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import clientLogger from "@/lib/logger/client-logger";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -38,9 +39,34 @@ export class ErrorBoundary extends Component<
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ errorInfo });
 
+    // Log error to structured logger
+    const errorId = crypto.randomUUID();
+    clientLogger.logError(error, {
+      component: "error-boundary-root",
+      action: "error-caught",
+      requestId: errorId,
+    });
+
     if (process.env.NODE_ENV === "development") {
       console.error("ErrorBoundary caught an error:", error);
       console.error("Component stack:", errorInfo.componentStack);
+    }
+
+    // Store error ID for potential troubleshooting
+    try {
+      const errorStore = JSON.parse(localStorage.getItem("error-logs") || "[]");
+      errorStore.push({
+        id: errorId,
+        message: error.message,
+        timestamp: new Date().toISOString(),
+      });
+      // Keep only last 10 errors
+      if (errorStore.length > 10) {
+        errorStore.splice(0, errorStore.length - 10);
+      }
+      localStorage.setItem("error-logs", JSON.stringify(errorStore));
+    } catch (_storageError) {
+      // Ignore storage errors
     }
 
     this.props.onError?.(error, errorInfo);
