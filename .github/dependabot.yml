@@ -1,11 +1,10 @@
 # ============================================================================
-# Dependabot Configuration for Automated Dependency Updates
+# Dependabot Configuration - Frontend (portfolio-frontend)
 # ============================================================================
 
 version: 2
 
 updates:
-  # Root package.json (monorepo)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -28,33 +27,15 @@ updates:
           - "eslint*"
           - "prettier*"
           - "vitest*"
-          - "playwright*"
       dev-dependencies:
         patterns:
           - "@types/*"
           - "eslint*"
           - "prettier*"
           - "vitest*"
-          - "playwright*"
         update-types:
           - "minor"
           - "patch"
-
-  # Frontend package
-  - package-ecosystem: "npm"
-    directory: "/packages/frontend"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Asia/Jakarta"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "frontend"
-    commit-message:
-      prefix: "chore(frontend)"
-    groups:
       next-ecosystem:
         patterns:
           - "next*"
@@ -69,41 +50,6 @@ updates:
           - "clsx"
           - "tailwind-merge"
 
-  # Backend package
-  - package-ecosystem: "npm"
-    directory: "/packages/backend"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Asia/Jakarta"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "backend"
-    commit-message:
-      prefix: "chore(backend)"
-    groups:
-      nestjs:
-        patterns:
-          - "@nestjs/*"
-
-  # UI package
-  - package-ecosystem: "npm"
-    directory: "/packages/ui"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Asia/Jakarta"
-    open-pull-requests-limit: 3
-    labels:
-      - "dependencies"
-      - "ui"
-    commit-message:
-      prefix: "chore(ui)"
-
-  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -117,17 +63,3 @@ updates:
       - "ci-cd"
     commit-message:
       prefix: "chore(ci)"
-
-  # Docker base images
-  - package-ecosystem: "docker"
-    directory: "/docker"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Asia/Jakarta"
-    labels:
-      - "dependencies"
-      - "docker"
-    commit-message:
-      prefix: "chore(docker)"
