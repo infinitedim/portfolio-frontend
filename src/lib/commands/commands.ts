@@ -77,7 +77,7 @@ Examples:
       "",
       "🛠️ TECHNICAL SKILLS",
       "   Frontend: React, Next.js, TypeScript, Tailwind CSS",
-      "   Backend:  Node.js, NestJS, PostgreSQL, Redis, Prisma",
+      "   Backend:  Node.js, NestJS, PostgreSQL, Redis",
       "   DevOps:   Docker, AWS, Vercel, CI/CD",
       "   Tools:    Git, Webpack, Vite, ESLint, Prettier",
       "",

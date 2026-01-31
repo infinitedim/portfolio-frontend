@@ -87,10 +87,6 @@ updates:
       nestjs:
         patterns:
           - "@nestjs/*"
-      prisma:
-        patterns:
-          - "prisma"
-          - "@prisma/*"
 
   # UI package
   - package-ecosystem: "npm"

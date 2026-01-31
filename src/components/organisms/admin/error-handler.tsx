@@ -234,7 +234,7 @@ export function ErrorHandler({
           )}
           {serviceStatus.database === "disconnected" && (
             <div>
-              • Database connection failed. Verify DATABASE_URL and Prisma
+              • Database connection failed. Verify DATABASE_URL and database
               configuration.
             </div>
           )}

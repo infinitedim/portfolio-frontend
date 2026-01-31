@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: !isDev,
   reactCompiler: !isDev,
   typedRoutes: true,
-  serverExternalPackages: ["@prisma/client", "bcryptjs"],
+  serverExternalPackages: ["bcryptjs"],
 
   experimental: {
     serverActions: { bodySizeLimit: "2mb" },

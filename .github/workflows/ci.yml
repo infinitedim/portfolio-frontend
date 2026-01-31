@@ -42,12 +42,6 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Generate Prisma Client
-        run: bun prisma:generate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
       - name: Run ESLint
         run: bun lint
 
@@ -106,18 +100,6 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Generate Prisma Client
-        run: bun prisma:generate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
-      - name: Run database migrations
-        run: bun prisma:migrate:deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
       - name: Run unit tests
         run: bun test
         env:
@@ -165,13 +147,6 @@ jobs:
 
       - name: Install dependencies
         run: bun install
-
-      - name: Generate Prisma Client (Backend only)
-        if: matrix.package == 'backend'
-        run: bun prisma:generate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
       - name: Build ${{ matrix.package }}
         working-directory: packages/${{ matrix.package }}
@@ -242,18 +217,6 @@ jobs:
 
       - name: Install Playwright browsers
         run: bun x playwright install --with-deps chromium
-
-      - name: Generate Prisma Client
-        run: bun prisma:generate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
-      - name: Run database migrations
-        run: bun prisma:migrate:deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
       - name: Build applications
         run: bun build

@@ -156,11 +156,6 @@ jobs:
             chmod +x health-check.sh && \
             ./health-check.sh"
 
-      - name: Run database migrations
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd ~/portfolio && \
-            docker compose -f docker-compose.prod.yml exec -T backend bunx prisma migrate deploy"
-
       - name: Cleanup old images
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "docker image prune -af --filter 'until=168h'"
