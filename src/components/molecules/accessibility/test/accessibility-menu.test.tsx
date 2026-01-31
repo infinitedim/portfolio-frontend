@@ -134,7 +134,7 @@ describe("AccessibilityMenu", () => {
       }
       renderWithProvider();
       const button = screen.getByLabelText("Open accessibility menu");
-      
+
       // Open menu
       fireEvent.click(button);
       expect(screen.getByText("Accessibility Options")).toBeInTheDocument();
@@ -237,7 +237,7 @@ describe("AccessibilityMenu", () => {
       const focusButton = screen.getByLabelText(
         /(Enable|Disable) focus mode for better keyboard navigation/,
       );
-      
+
       fireEvent.click(focusButton);
 
       await waitFor(() => {
@@ -299,6 +299,7 @@ describe("AccessibilityMenu", () => {
       }, { timeout: 2000 });
 
       // Component may call location.reload after a short delay; wait a bit then assert if we mocked it
+      // eslint-disable-next-line promise/param-names
       await new Promise((r) => setTimeout(r, 200));
       if (locationReloadMocked) {
         expect(mockReload).toHaveBeenCalled();
@@ -379,7 +380,7 @@ describe("AccessibilityMenu", () => {
       }
       renderWithProvider();
       const button = screen.getByLabelText("Open accessibility menu");
-      
+
       // Button should be focusable
       button.focus();
       expect(document.activeElement).toBe(button);
