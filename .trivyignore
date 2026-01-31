@@ -1,0 +1,3 @@
+# Trivy ignore file: add CVE IDs or package names to skip (one per line)
+# Example: CVE-2024-1234
+# Leave empty to not ignore any findings
