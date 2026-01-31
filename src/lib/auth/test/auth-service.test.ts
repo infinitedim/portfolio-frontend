@@ -1,23 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 // NOTE: Module caching issue with singletons in test runners
-// Problem: Singleton pattern with static instance causes test pollution
-// Solution: Use vi.hoisted() to unmock at top level, then use importActual() to get real module
-
-// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    // Unmock at top level if vi is available (Vitest)
-    // This must run BEFORE any vi.mock() calls in other test files
-    if (vi.unmock) vi.unmock("@/lib/auth/auth-service");
-    if (vi.doUnmock) vi.doUnmock("@/lib/auth/auth-service");
-  });
-}
-
+// Unmock is done in beforeEach; use importActual() to get real module
 // IMPORTANT: Don't mock auth-service here - we need the real implementation
-// This test file should run with real auth-service module
 
-// Mock localStorage and sessionStorage
+// Mock localStorage and sessionStorage (safe for CI/JSDOM where globals may be unconfigurable)
 const storageMock = {
   getItem: () => null,
   setItem: () => {},
@@ -25,25 +12,29 @@ const storageMock = {
   clear: () => {},
 };
 
-Object.defineProperty(global, "localStorage", {
-  value: storageMock,
-  writable: true,
-  configurable: true,
-});
+function defineGlobalProperty(
+  key: "localStorage" | "sessionStorage" | "window",
+  value: unknown,
+) {
+  try {
+    const descriptor = Object.getOwnPropertyDescriptor(global, key);
+    if (descriptor?.configurable ?? true) {
+      Object.defineProperty(global, key, {
+        value,
+        writable: true,
+        configurable: true,
+      });
+    }
+  } catch {
+    // Skip: property is not configurable (e.g. global.window in JSDOM/CI)
+  }
+}
 
-Object.defineProperty(global, "sessionStorage", {
-  value: storageMock,
-  writable: true,
-  configurable: true,
-});
-
-Object.defineProperty(global, "window", {
-  value: {
-    localStorage: storageMock,
-    sessionStorage: storageMock,
-  },
-  writable: true,
-  configurable: true,
+defineGlobalProperty("localStorage", storageMock);
+defineGlobalProperty("sessionStorage", storageMock);
+defineGlobalProperty("window", {
+  localStorage: storageMock,
+  sessionStorage: storageMock,
 });
 
 describe("AuthService", () => {
