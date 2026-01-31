@@ -1,8 +1,11 @@
- 
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
 import type { ThemeConfig } from "@/types/theme";
+
+// API URL from environment, fallback to localhost:3001 (Rust backend)
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 interface ErrorHandlerProps {
   themeConfig: ThemeConfig;
@@ -12,7 +15,6 @@ interface ErrorHandlerProps {
 
 interface ServiceStatus {
   backend: "connected" | "disconnected" | "checking";
-  tRPC: "connected" | "disconnected" | "checking";
   database: "connected" | "disconnected" | "checking";
   redis: "connected" | "disconnected" | "checking";
 }
@@ -31,7 +33,6 @@ export function ErrorHandler({
 }: ErrorHandlerProps) {
   const [serviceStatus, setServiceStatus] = useState<ServiceStatus>({
     backend: "checking",
-    tRPC: "checking",
     database: "checking",
     redis: "checking",
   });
@@ -43,57 +44,52 @@ export function ErrorHandler({
     setLastError(null);
 
     try {
-      const backendResponse = await fetch("http://localhost:4000/health", {
+      // Check backend health (REST endpoint)
+      const backendResponse = await fetch(`${API_URL}/health`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: { Accept: "application/json" },
       });
       setServiceStatus((prev) => ({
         ...prev,
         backend: backendResponse.ok ? "connected" : "disconnected",
       }));
 
-      const trpcResponse = await fetch(
-        "http://localhost:4000/trpc/health.health",
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-      setServiceStatus((prev) => ({
-        ...prev,
-        tRPC: trpcResponse.ok ? "connected" : "disconnected",
-      }));
-
-      const dbResponse = await fetch(
-        "http://localhost:4000/trpc/health.healthDatabase",
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+      // Check database health (REST endpoint)
+      const dbResponse = await fetch(`${API_URL}/health/database`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      });
       if (dbResponse.ok) {
-        const dbData = await dbResponse.json();
-        setServiceStatus((prev) => ({
-          ...prev,
-          database: dbData.status === "healthy" ? "connected" : "disconnected",
-        }));
+        try {
+          const dbData = await dbResponse.json();
+          setServiceStatus((prev) => ({
+            ...prev,
+            database: dbData.status === "healthy" ? "connected" : "disconnected",
+          }));
+        } catch {
+          // Response not JSON, treat as disconnected
+          setServiceStatus((prev) => ({ ...prev, database: "disconnected" }));
+        }
       } else {
         setServiceStatus((prev) => ({ ...prev, database: "disconnected" }));
       }
 
-      const redisResponse = await fetch(
-        "http://localhost:4000/trpc/health.healthRedis",
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+      // Check Redis health (REST endpoint)
+      const redisResponse = await fetch(`${API_URL}/health/redis`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      });
       if (redisResponse.ok) {
-        const redisData = await redisResponse.json();
-        setServiceStatus((prev) => ({
-          ...prev,
-          redis: redisData.status === "healthy" ? "connected" : "disconnected",
-        }));
+        try {
+          const redisData = await redisResponse.json();
+          setServiceStatus((prev) => ({
+            ...prev,
+            redis: redisData.status === "healthy" ? "connected" : "disconnected",
+          }));
+        } catch {
+          // Response not JSON, treat as disconnected
+          setServiceStatus((prev) => ({ ...prev, redis: "disconnected" }));
+        }
       } else {
         setServiceStatus((prev) => ({ ...prev, redis: "disconnected" }));
       }
@@ -209,7 +205,7 @@ export function ErrorHandler({
         </div>
       )}
 
-      {}
+      {/* Troubleshooting Guide */}
       <div className="space-y-2">
         <h4
           className="text-sm font-semibold"
@@ -222,26 +218,21 @@ export function ErrorHandler({
             <div>
               • Backend server is not running. Start with:{" "}
               <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">
-                bun run dev
-              </code>
-            </div>
-          )}
-          {serviceStatus.tRPC === "disconnected" && (
-            <div>
-              • tRPC endpoint is not accessible. Check backend configuration and
-              CORS settings.
+                cargo run
+              </code>{" "}
+              in the portfolio-backend directory.
             </div>
           )}
           {serviceStatus.database === "disconnected" && (
             <div>
-              • Database connection failed. Verify DATABASE_URL and database
-              configuration.
+              • Database connection failed. Verify DATABASE_URL environment
+              variable and database configuration.
             </div>
           )}
           {serviceStatus.redis === "disconnected" && (
             <div>
-              • Redis connection failed. Check UPSTASH_REDIS_REST_URL and
-              UPSTASH_REDIS_REST_TOKEN.
+              • Redis connection failed. Check REDIS_URL environment variable
+              (optional for MVP).
             </div>
           )}
           <div>
@@ -255,10 +246,10 @@ export function ErrorHandler({
         </div>
       </div>
 
-      {}
+      {/* Quick Action Buttons */}
       <div className="mt-4 flex flex-wrap gap-2">
         <button
-          onClick={() => window.open("http://localhost:4000/health", "_blank")}
+          onClick={() => window.open(`${API_URL}/health`, "_blank")}
           className="px-3 py-1 rounded text-xs font-mono border transition-all duration-200 hover:scale-105"
           style={{
             borderColor: themeConfig.colors.border,
@@ -268,12 +259,7 @@ export function ErrorHandler({
           📊 Health Dashboard
         </button>
         <button
-          onClick={() =>
-            window.open(
-              "http://localhost:4000/trpc/health.healthDetailed",
-              "_blank",
-            )
-          }
+          onClick={() => window.open(`${API_URL}/health/detailed`, "_blank")}
           className="px-3 py-1 rounded text-xs font-mono border transition-all duration-200 hover:scale-105"
           style={{
             borderColor: themeConfig.colors.border,
@@ -283,12 +269,7 @@ export function ErrorHandler({
           🔍 Detailed Health
         </button>
         <button
-          onClick={() =>
-            window.open(
-              "http://localhost:4000/trpc/health.healthReady",
-              "_blank",
-            )
-          }
+          onClick={() => window.open(`${API_URL}/health/ready`, "_blank")}
           className="px-3 py-1 rounded text-xs font-mono border transition-all duration-200 hover:scale-105"
           style={{
             borderColor: themeConfig.colors.border,

@@ -100,7 +100,6 @@ describe("ErrorHandler", () => {
 
       await waitFor(() => {
         expect(screen.getByText(/backend/i)).toBeInTheDocument();
-        expect(screen.getByText(/tRPC/i)).toBeInTheDocument();
         expect(screen.getByText(/database/i)).toBeInTheDocument();
         expect(screen.getByText(/redis/i)).toBeInTheDocument();
       });
@@ -150,34 +149,7 @@ describe("ErrorHandler", () => {
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
-          "http://localhost:4000/health",
-          expect.any(Object),
-        );
-      });
-    });
-
-    it("should check tRPC health", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const mockFetch = vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({}),
-      });
-      globalThis.fetch = mockFetch;
-
-      render(
-        <ErrorHandler
-          themeConfig={mockThemeConfig}
-          onError={vi.fn()}
-          onRecovery={vi.fn()}
-        />,
-      );
-
-      await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
-          "http://localhost:4000/trpc/health.health",
+          "http://localhost:3001/health",
           expect.any(Object),
         );
       });
@@ -204,7 +176,7 @@ describe("ErrorHandler", () => {
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
-          "http://localhost:4000/trpc/health.healthDatabase",
+          "http://localhost:3001/health/database",
           expect.any(Object),
         );
       });
@@ -231,7 +203,7 @@ describe("ErrorHandler", () => {
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
-          "http://localhost:4000/trpc/health.healthRedis",
+          "http://localhost:3001/health/redis",
           expect.any(Object),
         );
       });
@@ -450,9 +422,9 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      // Mock: backend and tRPC ok, database fails
+      // Mock: backend ok, database fails
       globalThis.fetch = vi.fn().mockImplementation(async (url) => {
-        if (url.includes("healthDatabase")) {
+        if (url.includes("/health/database")) {
           return { ok: false, json: async () => ({}) };
         }
         return { ok: true, json: async () => ({ status: "healthy" }) };
@@ -506,7 +478,7 @@ describe("ErrorHandler", () => {
       fireEvent.click(dashboardButton);
 
       expect(mockOpen).toHaveBeenCalledWith(
-        "http://localhost:4000/health",
+        "http://localhost:3001/health",
         "_blank",
       );
     });

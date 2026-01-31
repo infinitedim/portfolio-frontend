@@ -1,6 +1,23 @@
 import { cache } from "react";
 
 /**
+ * Get the backend URL for SSR data fetching
+ * Uses BACKEND_URL for server-side (not exposed to client), falls back to NEXT_PUBLIC_API_URL
+ */
+function getBackendUrl(): string {
+  if (typeof window === "undefined") {
+    // Server-side: prefer BACKEND_URL (server-only), fallback to public URL
+    return (
+      process.env.BACKEND_URL ??
+      process.env.NEXT_PUBLIC_API_URL ??
+      "http://localhost:3001"
+    );
+  }
+  // Client-side: use public URL
+  return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+}
+
+/**
  * Represents a GitHub repository with key metrics
  * @property name - Repository name
  * @property description - Repository description text
@@ -217,62 +234,152 @@ async function fetchWithCache<T>(
 }
 
 export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
-  console.log("Build mode detected - using static portfolio data");
-  return getFallbackPortfolioData();
+  const backendUrl = getBackendUrl();
+
+  try {
+    // Fetch all sections in parallel
+    const [skillsRes, projectsRes, experienceRes, aboutRes] = await Promise.allSettled([
+      fetch(`${backendUrl}/api/portfolio?section=skills`, {
+        next: { revalidate: CACHE_DURATIONS.SKILLS / 1000 },
+      }),
+      fetch(`${backendUrl}/api/portfolio?section=projects`, {
+        next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
+      }),
+      fetch(`${backendUrl}/api/portfolio?section=experience`, {
+        next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000 },
+      }),
+      fetch(`${backendUrl}/api/portfolio?section=about`, {
+        next: { revalidate: CACHE_DURATIONS.ABOUT / 1000 },
+      }),
+    ]);
+
+    const skills =
+      skillsRes.status === "fulfilled" && skillsRes.value.ok
+        ? (await skillsRes.value.json()).data ?? []
+        : [];
+
+    const projects =
+      projectsRes.status === "fulfilled" && projectsRes.value.ok
+        ? (await projectsRes.value.json()).data ?? STATIC_PROJECTS
+        : STATIC_PROJECTS;
+
+    const experience =
+      experienceRes.status === "fulfilled" && experienceRes.value.ok
+        ? (await experienceRes.value.json()).data ?? []
+        : [];
+
+    const about =
+      aboutRes.status === "fulfilled" && aboutRes.value.ok
+        ? (await aboutRes.value.json()).data ?? getFallbackAboutData()
+        : getFallbackAboutData();
+
+    return {
+      skills,
+      projects,
+      experience,
+      about,
+      lastUpdated: new Date().toISOString(),
+    };
+  } catch (error) {
+    console.error("Failed to fetch portfolio data from backend", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return getFallbackPortfolioData();
+  }
 });
 
 export const getSkillsData = cache(async (): Promise<SkillCategory[]> => {
-  console.log("Build mode detected - returning empty skills array");
+  const backendUrl = getBackendUrl();
+
+  try {
+    const response = await fetch(`${backendUrl}/api/portfolio?section=skills`, {
+      next: { revalidate: CACHE_DURATIONS.SKILLS / 1000 },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data ?? [];
+    }
+  } catch (error) {
+    console.error("Failed to fetch skills data from backend", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
   return [];
 });
 
 export const getProjectsData = cache(
   async (limit?: number): Promise<Project[]> => {
-    console.log("Build mode detected - using static project data");
+    const backendUrl = getBackendUrl();
+
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/portfolio?section=projects`,
+        {
+          next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const projects = data.data ?? STATIC_PROJECTS;
+        return limit ? projects.slice(0, limit) : projects;
+      }
+    } catch (error) {
+      console.error("Failed to fetch projects data from backend", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+
+    // Fallback to static data
     return limit ? STATIC_PROJECTS.slice(0, limit) : STATIC_PROJECTS;
-  },
+  }
 );
 
 export const getExperienceData = cache(async (): Promise<Experience[]> => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://127.0.0.1:3000";
+  const backendUrl = getBackendUrl();
 
   try {
-    const response = await fetchWithCache<{ data: Experience[] }>(
-      `${baseUrl}/api/portfolio?section=experience`,
-      { cacheTime: CACHE_DURATIONS.EXPERIENCE },
+    const response = await fetch(
+      `${backendUrl}/api/portfolio?section=experience`,
+      {
+        next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000 },
+      }
     );
 
-    return response.data;
+    if (response.ok) {
+      const data = await response.json();
+      return data.data ?? [];
+    }
   } catch (error) {
-    console.error("Failed to fetch experience data", {
+    console.error("Failed to fetch experience data from backend", {
       error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      component: "SSRDataFetching",
-      operation: "getExperienceData",
     });
-    return [];
   }
+
+  return [];
 });
 
 export const getAboutData = cache(async (): Promise<AboutInfo> => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://127.0.0.1:3000";
+  const backendUrl = getBackendUrl();
 
   try {
-    const response = await fetchWithCache<{ data: AboutInfo }>(
-      `${baseUrl}/api/portfolio?section=about`,
-      { cacheTime: CACHE_DURATIONS.ABOUT },
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch about data", {
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      component: "SSRDataFetching",
-      operation: "getAboutData",
+    const response = await fetch(`${backendUrl}/api/portfolio?section=about`, {
+      next: { revalidate: CACHE_DURATIONS.ABOUT / 1000 },
     });
-    return getFallbackAboutData();
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data ?? getFallbackAboutData();
+    }
+  } catch (error) {
+    console.error("Failed to fetch about data from backend", {
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
+
+  return getFallbackAboutData();
 });
 
 export const getFeaturedProjects = cache(async (): Promise<Project[]> => {
@@ -409,11 +516,11 @@ export async function checkDataHealth(): Promise<{
   github: boolean;
   lastCheck: string;
 }> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://127.0.0.1:3000";
+  const backendUrl = getBackendUrl();
 
   try {
     const [apiCheck, githubCheck] = await Promise.allSettled([
-      fetch(`${baseUrl}/api/portfolio?section=about`),
+      fetch(`${backendUrl}/api/portfolio?section=about`),
       getGitHubData(),
     ]);
 

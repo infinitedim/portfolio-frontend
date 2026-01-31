@@ -27,6 +27,7 @@ export default function robots(): MetadataRoute.Robots {
           "/skills",
           "/about",
           "/contact",
+          "/blog",
           "/sitemap.xml",
           "/robots.txt",
         ],
@@ -47,7 +48,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Googlebot",
-        allow: ["/", "/projects", "/skills", "/about", "/contact"],
+        allow: ["/", "/projects", "/skills", "/about", "/contact", "/blog"],
         disallow: [
           "/api/",
           "/admin/",
@@ -66,7 +67,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Googlebot-Mobile",
-        allow: ["/", "/projects", "/skills", "/about", "/contact"],
+        allow: ["/", "/projects", "/skills", "/about", "/contact", "/blog"],
         disallow: [
           "/api/",
           "/admin/",
@@ -79,7 +80,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Bingbot",
-        allow: ["/", "/projects", "/skills", "/about", "/contact"],
+        allow: ["/", "/projects", "/skills", "/about", "/contact", "/blog"],
         disallow: [
           "/api/",
           "/admin/",
@@ -92,7 +93,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Slurp",
-        allow: ["/", "/projects", "/skills", "/about", "/contact"],
+        allow: ["/", "/projects", "/skills", "/about", "/contact", "/blog"],
         disallow: [
           "/api/",
           "/admin/",
@@ -105,7 +106,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "DuckDuckBot",
-        allow: ["/", "/projects", "/skills", "/about", "/contact"],
+        allow: ["/", "/projects", "/skills", "/about", "/contact", "/blog"],
         disallow: [
           "/api/",
           "/admin/",
@@ -122,7 +123,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "CCBot",
-        allow: ["/", "/projects", "/skills", "/about", "/contact"],
+        allow: ["/", "/projects", "/skills", "/about", "/contact", "/blog"],
         disallow: [
           "/api/",
           "/admin/",
@@ -135,7 +136,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "AhrefsBot",
-        allow: ["/", "/projects", "/skills", "/about", "/contact"],
+        allow: ["/", "/projects", "/skills", "/about", "/contact", "/blog"],
         disallow: [
           "/api/",
           "/admin/",
@@ -148,7 +149,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "SemrushBot",
-        allow: ["/", "/projects", "/skills", "/about", "/contact"],
+        allow: ["/", "/projects", "/skills", "/about", "/contact", "/blog"],
         disallow: [
           "/api/",
           "/admin/",
@@ -161,7 +162,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "MJ12bot",
-        allow: ["/", "/projects", "/skills", "/about", "/contact"],
+        allow: ["/", "/projects", "/skills", "/about", "/contact", "/blog"],
         disallow: [
           "/api/",
           "/admin/",

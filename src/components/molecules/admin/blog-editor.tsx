@@ -1,32 +1,37 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { ThemeConfig } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
+import { authService } from "@/lib/auth/auth-service";
 
 /**
- * Represents a blog post with all its metadata
- * @interface BlogPost
- * @property {string} id - Unique identifier for the post
- * @property {string} title - Title of the blog post
- * @property {string} slug - URL-friendly slug
- * @property {string} content - Markdown content of the post
- * @property {string} summary - Brief summary of the post
- * @property {string[]} tags - Tags associated with the post
- * @property {boolean} published - Publication status
- * @property {string} createdAt - ISO timestamp of creation
- * @property {string} updatedAt - ISO timestamp of last update
+ * Get the API URL for blog requests
+ */
+function getApiUrl(): string {
+  return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+}
+
+/**
+ * Represents a blog post with all its metadata (matches backend response)
  */
 interface BlogPost {
   id: string;
   title: string;
   slug: string;
-  content: string;
-  summary: string;
-  tags: string[];
+  contentMd: string | null;
+  contentHtml: string | null;
+  summary: string | null;
   published: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+/**
+ * Local state for editing (with tags support)
+ */
+interface LocalBlogPost extends BlogPost {
+  tags: string[];
 }
 
 /**
@@ -39,127 +44,262 @@ interface BlogEditorProps {
 }
 
 /**
- * Blog editor component with markdown support, live preview, and auto-save
+ * Blog editor component with markdown support, live preview, and API integration
  * Provides a comprehensive interface for creating and editing blog posts with markdown syntax
  * @param {BlogEditorProps} props - Component props
  * @param {ThemeConfig} props.themeConfig - Theme configuration for styling
  * @returns {JSX.Element} The blog editor component
- * @example
- * ```tsx
- * <BlogEditor themeConfig={themeConfig} />
- * ```
  */
 export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const { t } = useI18n();
-  const [currentPost, setCurrentPost] = useState<BlogPost | null>(null);
+  const [currentPost, setCurrentPost] = useState<LocalBlogPost | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [summary, setSummary] = useState("");
+  const [slug, setSlug] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [isPreview, setIsPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [drafts, setDrafts] = useState<BlogPost[]>([]);
+  const [posts, setPosts] = useState<LocalBlogPost[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isNewPost, setIsNewPost] = useState(false);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout>(null);
 
-  useEffect(() => {
-    const sampleDraft: BlogPost = {
-      id: "draft-1",
-      title: t("blogNewPost"),
-      slug: "new-blog-post",
-      content:
-        "# Welcome to the Blog Editor\n\nStart writing your content here...\n\n## Features\n\n- **Markdown Support**: Write in Markdown\n- **Live Preview**: See changes in real-time\n- **Auto-save**: Your work is automatically saved\n- **Terminal Theme**: Consistent with the admin interface\n\n## Code Example\n\n```javascript\nconsole.log('Hello, World!');\n```",
-      summary: "",
-      tags: ["blog", "markdown"],
-      published: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+  // Helper to convert API response to local post format
+  const toLocalPost = (post: BlogPost): LocalBlogPost => ({
+    ...post,
+    tags: [], // Tags stored in summary or separate field in future
+  });
 
-    setDrafts([sampleDraft]);
-    setCurrentPost(sampleDraft);
-    setTitle(sampleDraft.title);
-    setContent(sampleDraft.content);
-    setSummary(sampleDraft.summary);
-    setTags(sampleDraft.tags);
+  // Load posts from backend
+  const loadPosts = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${getApiUrl()}/api/blog?pageSize=50`, {
+        headers: { Accept: "application/json" },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const loadedPosts = (data.items || []).map(toLocalPost);
+        setPosts(loadedPosts);
+        
+        // If we have posts and no current post, select the first one
+        if (loadedPosts.length > 0 && !currentPost) {
+          loadDraft(loadedPosts[0]);
+        }
+      } else {
+        const errData = await response.json();
+        setError(errData.error || "Failed to load posts");
+      }
+    } catch (err) {
+      console.error("Failed to load posts:", err);
+      setError("Network error - is the backend running?");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPost]);
+
+  // Load posts on mount
+  useEffect(() => {
+    loadPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Auto-save effect (disabled for now - explicit save only)
   useEffect(() => {
     if (autoSaveTimeoutRef.current) {
       clearTimeout(autoSaveTimeoutRef.current);
     }
-
-    autoSaveTimeoutRef.current = setTimeout(() => {
-      if (
-        currentPost &&
-        (title !== currentPost.title || content !== currentPost.content)
-      ) {
-        saveDraft();
-      }
-    }, 2000);
-
     return () => {
       if (autoSaveTimeoutRef.current) {
         clearTimeout(autoSaveTimeoutRef.current);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, content, currentPost]);
 
-  const saveDraft = async () => {
-    if (!currentPost) return;
-
-    setIsSaving(true);
-
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const updatedPost: BlogPost = {
-      ...currentPost,
-      title,
-      content,
-      summary,
-      tags,
-      updatedAt: new Date().toISOString(),
-    };
-
-    setCurrentPost(updatedPost);
-    setDrafts((prev) =>
-      prev.map((draft) => (draft.id === updatedPost.id ? updatedPost : draft)),
-    );
-    setLastSaved(new Date());
-    setIsSaving(false);
+  // Generate slug from title
+  const generateSlug = (titleText: string): string => {
+    return titleText
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .substring(0, 50);
   };
 
+  // Save/update post to backend
+  const saveDraft = async () => {
+    if (!title.trim()) {
+      setError("Title is required");
+      return;
+    }
+    
+    const postSlug = slug.trim() || generateSlug(title);
+    if (!postSlug) {
+      setError("Slug is required");
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+    
+    const token = authService.getAccessToken();
+    if (!token) {
+      setError("Please log in to save posts");
+      setIsSaving(false);
+      return;
+    }
+
+    try {
+      const apiUrl = getApiUrl();
+      const isUpdate = currentPost && !isNewPost;
+      
+      const body = {
+        title: title.trim(),
+        slug: postSlug,
+        summary: summary.trim() || null,
+        contentMd: content,
+        contentHtml: renderMarkdownToHtml(content),
+        published: currentPost?.published ?? false,
+      };
+
+      const response = await fetch(
+        isUpdate ? `${apiUrl}/api/blog/${currentPost.slug}` : `${apiUrl}/api/blog`,
+        {
+          method: isUpdate ? "PATCH" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      if (response.ok) {
+        const savedPost = await response.json();
+        const localPost = toLocalPost(savedPost);
+        localPost.tags = tags;
+        
+        if (isUpdate) {
+          setPosts((prev) =>
+            prev.map((p) => (p.slug === currentPost.slug ? localPost : p))
+          );
+        } else {
+          setPosts((prev) => [localPost, ...prev]);
+        }
+        
+        setCurrentPost(localPost);
+        setSlug(localPost.slug);
+        setIsNewPost(false);
+        setLastSaved(new Date());
+      } else {
+        const errData = await response.json();
+        setError(errData.error || "Failed to save post");
+      }
+    } catch (err) {
+      console.error("Save error:", err);
+      setError("Network error while saving");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Create new draft (local only until saved)
   const createNewDraft = () => {
-    const newDraft: BlogPost = {
-      id: `draft-${Date.now()}`,
+    const newDraft: LocalBlogPost = {
+      id: `new-${Date.now()}`,
       title: t("blogUntitled"),
-      slug: "untitled-post",
-      content: "# New Blog Post\n\nStart writing here...",
-      summary: "",
+      slug: "",
+      contentMd: "# New Blog Post\n\nStart writing here...",
+      contentHtml: null,
+      summary: null,
       tags: [],
       published: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
-    setDrafts((prev) => [newDraft, ...prev]);
     setCurrentPost(newDraft);
     setTitle(newDraft.title);
-    setContent(newDraft.content);
-    setSummary(newDraft.summary);
-    setTags(newDraft.tags);
+    setContent(newDraft.contentMd || "");
+    setSummary("");
+    setSlug("");
+    setTags([]);
+    setIsNewPost(true);
+    setError(null);
   };
 
-  const loadDraft = (draft: BlogPost) => {
+  // Load existing draft
+  const loadDraft = (draft: LocalBlogPost) => {
     setCurrentPost(draft);
     setTitle(draft.title);
-    setContent(draft.content);
-    setSummary(draft.summary);
+    setContent(draft.contentMd || "");
+    setSummary(draft.summary || "");
+    setSlug(draft.slug);
     setTags(draft.tags);
+    setIsNewPost(false);
+    setError(null);
+  };
+
+  // Delete post
+  const deletePost = async () => {
+    if (!currentPost || isNewPost) return;
+    
+    if (!confirm(`Delete "${currentPost.title}"? This cannot be undone.`)) {
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+    
+    const token = authService.getAccessToken();
+    if (!token) {
+      setError("Please log in to delete posts");
+      setIsSaving(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${getApiUrl()}/api/blog/${currentPost.slug}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        setPosts((prev) => prev.filter((p) => p.slug !== currentPost.slug));
+        
+        // Select another post or create new
+        const remaining = posts.filter((p) => p.slug !== currentPost.slug);
+        if (remaining.length > 0) {
+          loadDraft(remaining[0]);
+        } else {
+          createNewDraft();
+        }
+      } else {
+        const errData = await response.json();
+        setError(errData.error || "Failed to delete post");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      setError("Network error while deleting");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const addTag = () => {
@@ -173,62 +313,135 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
   };
 
-  const publishPost = async () => {
+  // Publish/unpublish post
+  const togglePublish = async () => {
     if (!currentPost) return;
+    
+    const token = authService.getAccessToken();
+    if (!token) {
+      setError("Please log in to publish posts");
+      return;
+    }
 
     setIsSaving(true);
+    setError(null);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // For new posts, save with published: true directly
+    if (isNewPost) {
+      if (!title.trim()) {
+        setError("Title is required");
+        setIsSaving(false);
+        return;
+      }
+      
+      const postSlug = slug.trim() || generateSlug(title);
+      if (!postSlug) {
+        setError("Slug is required");
+        setIsSaving(false);
+        return;
+      }
 
-    const publishedPost: BlogPost = {
-      ...currentPost,
-      title,
-      content,
-      summary,
-      tags,
-      published: true,
-      updatedAt: new Date().toISOString(),
-    };
+      try {
+        const apiUrl = getApiUrl();
+        const body = {
+          title: title.trim(),
+          slug: postSlug,
+          summary: summary.trim() || null,
+          contentMd: content,
+          contentHtml: renderMarkdownToHtml(content),
+          published: true, // Publish immediately
+        };
 
-    setCurrentPost(publishedPost);
-    setDrafts((prev) =>
-      prev.map((draft) =>
-        draft.id === publishedPost.id ? publishedPost : draft,
-      ),
-    );
-    setIsSaving(false);
+        const response = await fetch(`${apiUrl}/api/blog`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (response.ok) {
+          const savedPost = await response.json();
+          const localPost = toLocalPost(savedPost);
+          localPost.tags = tags;
+          
+          setPosts((prev) => [localPost, ...prev]);
+          setCurrentPost(localPost);
+          setSlug(localPost.slug);
+          setIsNewPost(false);
+          setLastSaved(new Date());
+        } else {
+          const errData = await response.json();
+          setError(errData.error || "Failed to publish post");
+        }
+      } catch (err) {
+        console.error("Publish error:", err);
+        setError("Network error while publishing");
+      } finally {
+        setIsSaving(false);
+      }
+      return;
+    }
+
+    // For existing posts, toggle the published status
+    try {
+      const response = await fetch(
+        `${getApiUrl()}/api/blog/${currentPost.slug}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ published: !currentPost.published }),
+        }
+      );
+
+      if (response.ok) {
+        const updatedPost = await response.json();
+        const localPost = toLocalPost(updatedPost);
+        localPost.tags = tags;
+        
+        setPosts((prev) =>
+          prev.map((p) => (p.slug === currentPost.slug ? localPost : p))
+        );
+        setCurrentPost(localPost);
+      } else {
+        const errData = await response.json();
+        setError(errData.error || "Failed to update publish status");
+      }
+    } catch (err) {
+      console.error("Publish error:", err);
+      setError("Network error while updating");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Simple markdown to HTML conversion for preview
+  const renderMarkdownToHtml = (markdown: string): string => {
+    return markdown
+      .replace(/^### (.*$)/gim, "<h3>$1</h3>")
+      .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+      .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+      .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/gim, "<em>$1</em>")
+      .replace(/```(\w+)?\n([\s\S]*?)```/gim, "<pre><code>$2</code></pre>")
+      .replace(/`([^`]+)`/gim, "<code>$1</code>")
+      .replace(/\n/gim, "<br>");
   };
 
   /**
    * Sanitizes HTML content to prevent XSS attacks
    * Removes dangerous tags and attributes while preserving safe formatting
-   * @param {string} html - The HTML content to sanitize
-   * @returns {string} The sanitized HTML
-   * @example
-   * ```typescript
-   * const safe = sanitizeHtml('<script>alert("xss")</script><p>Safe text</p>');
-   * // Returns: '<p>Safe text</p>'
-   * ```
    */
   const sanitizeHtml = (html: string): string => {
     const allowedTags = [
-      "h1",
-      "h2",
-      "h3",
-      "h4",
-      "h5",
-      "h6",
-      "p",
-      "br",
-      "strong",
-      "em",
-      "code",
-      "pre",
-      "ul",
-      "ol",
-      "li",
-      "blockquote",
-      "a",
+      "h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "strong",
+      "em", "code", "pre", "ul", "ol", "li", "blockquote", "a",
     ];
     const allowedAttributes: Record<string, string[]> = {
       a: ["href", "title"],
@@ -255,8 +468,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           const attrName = attr.name.toLowerCase();
           if (
             attrName.startsWith("on") ||
-            (attrName === "href" &&
-              attr.value.toLowerCase().includes("javascript:"))
+            (attrName === "href" && attr.value.toLowerCase().includes("javascript:"))
           ) {
             element.removeAttribute(attr.name);
           } else if (!allowedAttributes[tagName]?.includes(attrName)) {
@@ -273,22 +485,36 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   };
 
   const renderMarkdownPreview = (markdown: string) => {
-    const html = markdown
-      .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-      .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-      .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-      .replace(/\*\*(.*)\*\*/gim, "<strong>$1</strong>")
-      .replace(/\*(.*)\*/gim, "<em>$1</em>")
-      .replace(/```(\w+)?\n([\s\S]*?)```/gim, "<pre><code>$2</code></pre>")
-      .replace(/`([^`]+)`/gim, "<code>$1</code>")
-      .replace(/\n/gim, "<br>");
-
-    return sanitizeHtml(html);
+    return sanitizeHtml(renderMarkdownToHtml(markdown));
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <span style={{ color: themeConfig.colors.accent }}>Loading posts...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      { }
+      {/* Error display */}
+      {error && (
+        <div
+          className="p-3 border rounded border-red-500 bg-red-50 dark:bg-red-900/20"
+        >
+          <span className="text-sm text-red-700 dark:text-red-300">{error}</span>
+          <button 
+            onClick={() => setError(null)} 
+            className="ml-2 text-red-500 hover:text-red-700"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {/* Header */}
       <div
         className="p-4 border rounded"
         style={{
@@ -333,7 +559,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               {isSaving ? `💾 ${t("blogSaving")}` : `💾 ${t("blogSaveDraft")}`}
             </button>
             <button
-              onClick={publishPost}
+              onClick={togglePublish}
               disabled={isSaving}
               className="px-3 py-1 text-xs border rounded transition-colors"
               style={{
@@ -345,23 +571,41 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   : themeConfig.colors.accent,
               }}
             >
-              🚀 {t("blogPublish")}
+              {currentPost?.published ? "📤 Unpublish" : `🚀 ${t("blogPublish")}`}
             </button>
+            {currentPost && !isNewPost && (
+              <button
+                onClick={deletePost}
+                disabled={isSaving}
+                className="px-3 py-1 text-xs border rounded transition-colors"
+                style={{
+                  borderColor: themeConfig.colors.error,
+                  color: themeConfig.colors.error,
+                }}
+              >
+                🗑️ Delete
+              </button>
+            )}
           </div>
         </div>
 
-        { }
+        {/* Stats */}
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center space-x-4">
             <span>
-              {t("blogDrafts")}: {drafts.length}
+              {t("blogDrafts")}: {posts.filter((p) => !p.published).length}
             </span>
             <span>
-              {t("blogPublished")}: {drafts.filter((d) => d.published).length}
+              {t("blogPublished")}: {posts.filter((p) => p.published).length}
             </span>
             {lastSaved && (
               <span>
                 {t("blogLastSaved")}: {lastSaved.toLocaleTimeString()}
+              </span>
+            )}
+            {isNewPost && (
+              <span style={{ color: themeConfig.colors.accent }}>
+                (New - not saved yet)
               </span>
             )}
           </div>
@@ -383,7 +627,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        { }
+        {/* Posts sidebar */}
         <div className="lg:col-span-1">
           <div
             className="p-4 border rounded"
@@ -392,49 +636,67 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               backgroundColor: themeConfig.colors.bg,
             }}
           >
-            <div
-              className="text-sm font-bold mb-3"
-              style={{ color: themeConfig.colors.accent }}
-            >
-              {t("blogDrafts")}
+            <div className="flex items-center justify-between mb-3">
+              <div
+                className="text-sm font-bold"
+                style={{ color: themeConfig.colors.accent }}
+              >
+                Posts
+              </div>
+              <button
+                onClick={loadPosts}
+                className="text-xs opacity-70 hover:opacity-100"
+                title="Refresh posts"
+              >
+                🔄
+              </button>
             </div>
-            <div className="space-y-2">
-              {drafts.map((draft) => {
-                const conditionedClassName = `${currentPost?.id === draft.id ? "scale-105" : "hover:scale-102"}`;
-                const className = `w-full p - 3 text - left border rounded transition - all duration - 200 ${conditionedClassName}`;
-                return (
-                  <button
-                    key={draft.id}
-                    onClick={() => loadDraft(draft)}
-                    className={className}
-                    style={{
-                      borderColor:
-                        currentPost?.id === draft.id
+            <div className="space-y-2 max-h-96 overflow-y-auto">
+              {posts.length === 0 ? (
+                <div className="text-xs opacity-50 text-center py-4">
+                  No posts yet. Create your first post!
+                </div>
+              ) : (
+                posts.map((post) => {
+                  const isSelected = currentPost?.slug === post.slug && !isNewPost;
+                  return (
+                    <button
+                      key={post.id}
+                      onClick={() => loadDraft(post)}
+                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${
+                        isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
+                      }`}
+                      style={{
+                        borderColor: isSelected
                           ? themeConfig.colors.accent
                           : themeConfig.colors.border,
-                      backgroundColor:
-                        currentPost?.id === draft.id
-                          ? `${themeConfig.colors.accent} 20`
+                        backgroundColor: isSelected
+                          ? `${themeConfig.colors.accent}20`
                           : themeConfig.colors.bg,
-                    }}
-                  >
-                    <div className="text-xs font-mono truncate">
-                      {draft.title}
-                    </div>
-                    <div className="text-xs opacity-50 mt-1">
-                      {new Date(draft.updatedAt).toLocaleDateString()}
-                    </div>
-                    {draft.published && (
-                      <div
-                        className="text-xs mt-1"
-                        style={{ color: themeConfig.colors.success }}
-                      >
-                        ✅ {t("blogPublished")}
+                      }}
+                    >
+                      <div className="text-xs font-mono truncate">
+                        {post.title}
                       </div>
-                    )}
-                  </button>
-                );
-              })}
+                      <div className="text-xs opacity-50 mt-1">
+                        {new Date(post.updatedAt).toLocaleDateString()}
+                      </div>
+                      {post.published ? (
+                        <div
+                          className="text-xs mt-1"
+                          style={{ color: themeConfig.colors.success }}
+                        >
+                          ✅ {t("blogPublished")}
+                        </div>
+                      ) : (
+                        <div className="text-xs mt-1 opacity-50">
+                          Draft
+                        </div>
+                      )}
+                    </button>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
@@ -448,13 +710,19 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               backgroundColor: themeConfig.colors.bg,
             }}
           >
-            { }
+            {/* Title */}
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">{t("blogTitle")}</div>
               <input
                 type="text"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  // Auto-generate slug if empty or new post
+                  if (isNewPost || !slug) {
+                    setSlug(generateSlug(e.target.value));
+                  }
+                }}
                 className="w-full px-3 py-2 text-sm border rounded bg-transparent font-mono"
                 style={{
                   borderColor: themeConfig.colors.border,
@@ -462,6 +730,28 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 }}
                 placeholder={`${t("blogTitle")}...`}
               />
+            </div>
+
+            {/* Slug */}
+            <div className="mb-4">
+              <div className="text-xs opacity-70 mb-2">Slug (URL path)</div>
+              <input
+                type="text"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
+                className="w-full px-3 py-2 text-sm border rounded bg-transparent font-mono"
+                style={{
+                  borderColor: themeConfig.colors.border,
+                  color: themeConfig.colors.text,
+                }}
+                placeholder="my-blog-post-slug"
+                disabled={!isNewPost && !!currentPost} // Can't change slug after creation
+              />
+              {!isNewPost && currentPost && (
+                <div className="text-xs opacity-50 mt-1">
+                  Slug cannot be changed after creation
+                </div>
+              )}
             </div>
 
             { }

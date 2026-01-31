@@ -1,6 +1,25 @@
 import { MetadataRoute } from "next";
 
 /**
+ * Get the backend URL for data fetching
+ */
+function getBackendUrl(): string {
+  return (
+    process.env.BACKEND_URL ??
+    process.env.NEXT_PUBLIC_API_URL ??
+    "http://localhost:3001"
+  );
+}
+
+/**
+ * Blog post item from API
+ */
+interface BlogPostItem {
+  slug: string;
+  updatedAt?: string;
+}
+
+/**
  * Generates dynamic sitemap for the application
  * @returns Sitemap configuration for search engine indexing
  * @remarks
@@ -9,11 +28,11 @@ import { MetadataRoute } from "next";
  * - Dynamic project routes with individual priorities
  * - Technology-specific pages
  * - Service offering pages
- * - Blog post routes
+ * - Blog post routes (fetched dynamically from backend)
  * - Legal pages (privacy, terms)
  * - Proper change frequencies and priorities for each route type
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.site";
   const currentDate = new Date();
@@ -180,32 +199,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  const blogRoutes: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/blog/web-development-tips`,
-      lastModified: new Date("2024-01-20"),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/blog/react-best-practices`,
-      lastModified: new Date("2024-01-18"),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/blog/nextjs-optimization`,
-      lastModified: new Date("2024-01-15"),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/blog/typescript-tips`,
-      lastModified: new Date("2024-01-12"),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-  ];
+  // Fetch blog posts from backend for dynamic blog routes
+  let blogRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const backendUrl = getBackendUrl();
+    const response = await fetch(
+      `${backendUrl}/api/blog?pageSize=500&published=true`,
+      { next: { revalidate: 3600 } }
+    );
+    
+    if (response.ok) {
+      const data = await response.json();
+      blogRoutes = (data.items || []).map((post: BlogPostItem) => ({
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: post.updatedAt ? new Date(post.updatedAt) : currentDate,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      }));
+    }
+  } catch (error) {
+    console.error("Failed to fetch blog posts for sitemap:", error);
+    // Fallback to empty - sitemap will just not include blog posts
+  }
 
   const legalRoutes: MetadataRoute.Sitemap = [
     {

@@ -1,6 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 
 /**
+ * Get the API URL for authentication requests
+ * Uses NEXT_PUBLIC_API_URL environment variable, falling back to localhost
+ */
+function getApiUrl(): string {
+  return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+}
+
+/**
  * Configuration options for secure cookie management
  * @property secure - Whether to require HTTPS for cookie transmission
  * @property sameSite - Cookie same-site policy for CSRF protection
@@ -118,6 +126,7 @@ export class SecureAuth {
   /**
    * Verifies user authentication by making a request to the server
    * Works with httpOnly cookies automatically sent by the browser
+   * @param accessToken - Optional access token to verify (from auth-service)
    * @returns Promise resolving to an object with isValid boolean and optional user data
    * @example
    * ```ts
@@ -127,22 +136,31 @@ export class SecureAuth {
    * }
    * ```
    */
-  static async verifyAuthentication(): Promise<{
+  static async verifyAuthentication(accessToken?: string): Promise<{
     isValid: boolean;
     user?: Record<string, unknown>;
   }> {
     try {
-      const response = await fetch("/api/auth/verify", {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      };
+      
+      if (accessToken) {
+        headers.Authorization = `Bearer ${accessToken}`;
+      }
+      
+      const response = await fetch(`${getApiUrl()}/api/auth/verify`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         credentials: "include",
       });
 
       if (response.ok) {
         const data = await response.json();
-        return { isValid: true, user: data.user };
+        // Map response: backend returns success/isValid and user
+        const isValid = data.success || data.isValid;
+        return { isValid, user: data.user };
       } else {
         return { isValid: false };
       }
@@ -157,7 +175,7 @@ export class SecureAuth {
    * Server sets httpOnly cookies on successful login
    * @param email - User's email address
    * @param password - User's password
-   * @returns Promise resolving to success status and optional error message
+   * @returns Promise resolving to success status, tokens, and optional error message
    * @example
    * ```ts
    * const result = await SecureAuth.login('user@example.com', 'password');
@@ -171,12 +189,19 @@ export class SecureAuth {
   static async login(
     email: string,
     password: string,
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ 
+    success: boolean; 
+    error?: string; 
+    accessToken?: string;
+    refreshToken?: string;
+    user?: Record<string, unknown>;
+  }> {
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(`${getApiUrl()}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
         credentials: "include",
         body: JSON.stringify({ email, password }),
@@ -184,8 +209,13 @@ export class SecureAuth {
 
       const data = await response.json();
 
-      if (response.ok) {
-        return { success: true };
+      if (response.ok && data.success) {
+        return { 
+          success: true,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+          user: data.user,
+        };
       } else {
         return { success: false, error: data.error || "Login failed" };
       }
@@ -197,6 +227,8 @@ export class SecureAuth {
 
   /**
    * Logs out the current user by clearing server-side httpOnly cookies
+   * @param accessToken - Optional access token to invalidate
+   * @param refreshToken - Optional refresh token to invalidate
    * @returns Promise that resolves when logout is complete
    * @example
    * ```ts
@@ -204,11 +236,25 @@ export class SecureAuth {
    * console.log('User logged out');
    * ```
    */
-  static async logout(): Promise<void> {
+  static async logout(accessToken?: string, refreshToken?: string): Promise<void> {
     try {
-      await fetch("/api/auth/logout", {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      };
+      
+      if (accessToken) {
+        headers.Authorization = `Bearer ${accessToken}`;
+      }
+      
+      await fetch(`${getApiUrl()}/api/auth/logout`, {
         method: "POST",
+        headers,
         credentials: "include",
+        body: JSON.stringify({
+          accessToken,
+          refreshToken,
+        }),
       });
     } catch (error) {
       console.error("Logout error:", error);

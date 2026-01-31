@@ -1,4 +1,12 @@
-// Dummy authentication service - no backend required
+// Authentication service - connects to Rust backend API
+
+/**
+ * Get the API URL for authentication requests
+ * Uses NEXT_PUBLIC_API_URL environment variable, falling back to localhost
+ */
+function getApiUrl(): string {
+  return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+}
 
 /**
  * Represents an authenticated user in the system
@@ -147,45 +155,49 @@ class AuthService {
         };
       }
 
-      // Dummy authentication - for demo purposes only
-      // In production, this would call a real backend
-      const dummyAdminEmail = "admin@example.com";
-      const dummyAdminPassword = "admin123";
+      const response = await fetch(`${getApiUrl()}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (email === dummyAdminEmail && password === dummyAdminPassword) {
-        const accessToken = `dummy_token_${Date.now()}`;
-        const refreshToken = `dummy_refresh_${Date.now()}`;
+      const data = await response.json();
+
+      if (response.ok && data.success) {
         const user: AuthUser = {
-          userId: "admin-1",
-          email: email,
-          role: "admin",
+          userId: data.user.userId,
+          email: data.user.email,
+          role: data.user.role as "admin",
         };
 
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
+        this.accessToken = data.accessToken;
+        this.refreshToken = data.refreshToken;
         this.user = user;
 
-        if (typeof window !== "undefined" && typeof sessionStorage !== "undefined") {
-          sessionStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
+        if (typeof sessionStorage !== "undefined") {
+          sessionStorage.setItem(this.REFRESH_TOKEN_KEY, data.refreshToken);
           sessionStorage.setItem(this.USER_KEY, JSON.stringify(user));
         }
 
         return {
           success: true,
           user,
-          accessToken,
-          refreshToken,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
         };
       } else {
         return {
           success: false,
-          error: "Invalid credentials",
+          error: data.error ?? "Invalid credentials",
         };
       }
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Login failed",
+        error: error instanceof Error ? error.message : "Network error",
       };
     }
   }
@@ -219,27 +231,42 @@ class AuthService {
     }
 
     try {
-      // Dummy token refresh - for demo purposes only
-      const accessToken = `dummy_token_${Date.now()}`;
-      const refreshToken = `dummy_refresh_${Date.now()}`;
+      const response = await fetch(`${getApiUrl()}/api/auth/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ refreshToken: this.refreshToken }),
+      });
 
-      this.accessToken = accessToken;
-      this.refreshToken = refreshToken;
+      const data = await response.json();
 
-      if (typeof window !== "undefined" && typeof sessionStorage !== "undefined") {
-        sessionStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
+      if (response.ok && data.success) {
+        this.accessToken = data.accessToken;
+        this.refreshToken = data.refreshToken;
+
+        if (typeof sessionStorage !== "undefined") {
+          sessionStorage.setItem(this.REFRESH_TOKEN_KEY, data.refreshToken);
+        }
+
+        return {
+          success: true,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        };
+      } else {
+        this.clearTokens();
+        return {
+          success: false,
+          error: data.error ?? "Token refresh failed",
+        };
       }
-
-      return {
-        success: true,
-        accessToken,
-        refreshToken,
-      };
     } catch (error) {
       this.clearTokens();
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Token refresh failed",
+        error: error instanceof Error ? error.message : "Network error",
       };
     }
   }
@@ -255,7 +282,25 @@ class AuthService {
    * ```
    */
   async logout(): Promise<boolean> {
-    // Dummy logout - just clear tokens
+    try {
+      if (typeof window !== "undefined" && (this.accessToken || this.refreshToken)) {
+        await fetch(`${getApiUrl()}/api/auth/logout`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...(this.accessToken && { Authorization: `Bearer ${this.accessToken}` }),
+          },
+          body: JSON.stringify({
+            accessToken: this.accessToken,
+            refreshToken: this.refreshToken,
+          }),
+        });
+      }
+    } catch {
+      // Ignore errors - logout should always clear local tokens
+    }
+    
     this.clearTokens();
     return true;
   }
@@ -273,11 +318,22 @@ class AuthService {
    * ```
    */
   async validate(): Promise<ValidateResponse> {
-    if (!this.accessToken || !this.user) {
-      return {
-        success: false,
-        error: "No access token or user available",
-      };
+    if (!this.accessToken) {
+      // Try to refresh if we have a refresh token
+      if (this.refreshToken) {
+        const refreshResult = await this.refresh();
+        if (!refreshResult.success) {
+          return {
+            success: false,
+            error: "No valid token available",
+          };
+        }
+      } else {
+        return {
+          success: false,
+          error: "No access token available",
+        };
+      }
     }
 
     if (typeof window === "undefined") {
@@ -287,19 +343,56 @@ class AuthService {
       };
     }
 
-    // Dummy validation - just check if we have a user
-    if (this.user) {
+    try {
+      const response = await fetch(`${getApiUrl()}/api/auth/verify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && (data.success || data.isValid)) {
+        const user: AuthUser = {
+          userId: data.user.userId,
+          email: data.user.email,
+          role: data.user.role as "admin",
+        };
+        
+        this.user = user;
+        
+        if (typeof sessionStorage !== "undefined") {
+          sessionStorage.setItem(this.USER_KEY, JSON.stringify(user));
+        }
+
+        return {
+          success: true,
+          user,
+        };
+      } else {
+        // Try to refresh token
+        const refreshResult = await this.refresh();
+        if (refreshResult.success) {
+          // Retry validation with new token
+          return this.validate();
+        }
+        
+        this.clearTokens();
+        return {
+          success: false,
+          error: data.error ?? "Token validation failed",
+        };
+      }
+    } catch (error) {
+      this.clearTokens();
       return {
-        success: true,
-        user: this.user,
+        success: false,
+        error: error instanceof Error ? error.message : "Network error",
       };
     }
-
-    this.clearTokens();
-    return {
-      success: false,
-      error: "Token validation failed",
-    };
   }
 
   /**
