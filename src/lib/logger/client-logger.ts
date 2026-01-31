@@ -91,18 +91,26 @@ class ClientLogger {
       retryCount: 0,
     };
 
-    // Flush logs before page unload
-    if (typeof window !== "undefined") {
+    // Flush logs before page unload (guard for test envs where addEventListener may be missing)
+    if (
+      typeof window !== "undefined" &&
+      typeof window.addEventListener === "function"
+    ) {
       window.addEventListener("beforeunload", () => {
         this.flush();
       });
 
       // Also flush on visibility change (when tab is hidden)
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-          this.flush();
-        }
-      });
+      if (
+        typeof document !== "undefined" &&
+        typeof document.addEventListener === "function"
+      ) {
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            this.flush();
+          }
+        });
+      }
     }
   }
 
@@ -225,7 +233,7 @@ class ClientLogger {
    * Log a trace message
    */
   trace(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
-    if (!this.enabled || !this.shouldSample("trace")) return;
+    if (!this.enabled || !this.shouldSample("trace" as LogLevel)) return;
 
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
@@ -243,7 +251,7 @@ class ClientLogger {
    * Log a debug message
    */
   debug(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
-    if (!this.enabled || !this.shouldSample("debug")) return;
+    if (!this.enabled || !this.shouldSample("debug" as LogLevel)) return;
 
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),

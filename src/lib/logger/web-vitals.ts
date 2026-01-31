@@ -5,7 +5,7 @@
 
 "use client";
 
-import { onCLS, onFCP, onFID, onINP, onLCP, onTTFB, type Metric } from "web-vitals";
+import { onCLS, onFCP, onINP, onLCP, onTTFB, type Metric } from "web-vitals";
 import clientLogger from "./client-logger";
 
 /**
@@ -75,14 +75,6 @@ function getRating(
 function reportMetric(metric: Metric): void {
   const { name, value, rating, id, navigationType } = metric;
 
-  // Determine log level based on rating
-  const logLevel =
-    rating === "poor"
-      ? "warn"
-      : rating === "needs-improvement"
-        ? "info"
-        : "debug";
-
   // Get our own rating (in case web-vitals doesn't provide it)
   const ourRating = getRating(name, value);
 
@@ -132,10 +124,7 @@ export function initWebVitals(): void {
     // Track First Contentful Paint
     onFCP(reportMetric);
 
-    // Track First Input Delay (deprecated but still useful)
-    onFID(reportMetric);
-
-    // Track Interaction to Next Paint
+    // Track Interaction to Next Paint (replaces deprecated FID)
     onINP(reportMetric);
 
     // Track Largest Contentful Paint
@@ -170,7 +159,6 @@ export function reportWebVitals(onPerfEntry?: (metric: Metric) => void): void {
   try {
     onCLS(onPerfEntry);
     onFCP(onPerfEntry);
-    onFID(onPerfEntry);
     onINP(onPerfEntry);
     onLCP(onPerfEntry);
     onTTFB(onPerfEntry);

@@ -4,10 +4,30 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { GuidedTour } from "../guided-tour";
 import type { TourStep } from "../tour-steps";
 
+// NOTE: Module caching issue with hooks
+// Problem: When tests run together, mocks from other test files can interfere
+// Solution: Use vi.hoisted() to unmock at top level, then use factory function to preserve other exports
+
+// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
+if (typeof vi !== "undefined" && vi.hoisted) {
+  vi.hoisted(() => {
+    // Unmock at top level if vi is available (Vitest)
+    if (vi.unmock) {
+      vi.unmock("@/components/organisms/accessibility/accessibility-provider");
+      vi.unmock("@/hooks/use-theme");
+    }
+    if (vi.doUnmock) {
+      vi.doUnmock("@/components/organisms/accessibility/accessibility-provider");
+      vi.doUnmock("@/hooks/use-theme");
+    }
+  });
+}
+
 // Mock dependencies
 const mockAnnounceMessage = vi.fn();
 const mockIsReducedMotion = false;
 
+// Mock accessibility provider - only for this test file
 vi.mock("@/components/organisms/accessibility/accessibility-provider", () => ({
   useAccessibility: () => ({
     announceMessage: mockAnnounceMessage,
@@ -26,32 +46,30 @@ const mockThemeConfig = {
   },
 };
 
+// Mock use-theme - only for this test file
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
     themeConfig: mockThemeConfig,
   }),
 }));
 
-// ResizeObserver is already mocked in setup.ts, no need to redefine
-
-// Mock window.confirm
-const mockConfirm = vi.fn(() => true);
-if (typeof window !== "undefined") {
-  window.confirm = mockConfirm;
-}
-
-// Mock getBoundingClientRect
-const mockGetBoundingClientRect = vi.fn(() => ({
-  top: 100,
-  left: 100,
-  width: 200,
-  height: 50,
-  bottom: 150,
-  right: 300,
-  x: 100,
-  y: 100,
-  toJSON: () => "",
+// Mock ResizeObserver
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
 }));
+
+// Mock window.confirm - use a function that can be reset
+let mockConfirmReturnValue = true;
+const mockConfirm = vi.fn(() => mockConfirmReturnValue);
+if (typeof window !== "undefined") {
+  Object.defineProperty(window, "confirm", {
+    value: mockConfirm,
+    writable: true,
+    configurable: true,
+  });
+}
 
 describe("GuidedTour", () => {
   const mockStep: TourStep = {
@@ -67,26 +85,62 @@ describe("GuidedTour", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    vi.useFakeTimers();
 
-    // Setup DOM element
+    // Only use fake timers if needed - avoid conflicts with other tests
+    // vi.useFakeTimers();
+
+    // Reset mock confirm
+    mockConfirmReturnValue = true;
+    mockConfirm.mockClear();
+    mockConfirm.mockImplementation(() => mockConfirmReturnValue);
+    mockAnnounceMessage.mockClear();
+
+    // Clean up any existing test element first
     if (typeof document !== "undefined") {
+      const existingElement = document.getElementById("test-target");
+      if (existingElement && existingElement.parentNode) {
+        existingElement.parentNode.removeChild(existingElement);
+      }
+
+      // Setup DOM element
       const testElement = document.createElement("div");
       testElement.id = "test-target";
-      testElement.getBoundingClientRect = mockGetBoundingClientRect;
-      testElement.scrollIntoView = vi.fn();
+      // Patch getBoundingClientRect as a DOMRect
+      testElement.getBoundingClientRect = () =>
+      ({
+        top: 100,
+        left: 100,
+        width: 200,
+        height: 50,
+        bottom: 150,
+        right: 300,
+        x: 100,
+        y: 100,
+        toJSON: () => ({}),
+      } as DOMRect);
       document.body.appendChild(testElement);
     }
   });
 
   afterEach(() => {
-    vi.useRealTimers();
-    if (typeof document !== "undefined") {
-      const testElement = document.getElementById("test-target");
-      if (testElement && testElement.parentNode) {
-        testElement.parentNode.removeChild(testElement);
+    // Only restore real timers if we used fake timers
+    // vi.useRealTimers();
+
+    // Clean up DOM element - ensure document and getElementById are available
+    if (typeof document !== "undefined" && typeof document.getElementById === "function") {
+      try {
+        const testElement = document.getElementById("test-target");
+        if (testElement && testElement.parentNode) {
+          testElement.parentNode.removeChild(testElement);
+        }
+      } catch (e) {
+        console.error(e);
+        // Ignore cleanup errors - might be due to test interference
       }
     }
+
+    // Clear all mocks
+    vi.clearAllMocks();
   });
 
   describe("Rendering", () => {
@@ -356,6 +410,11 @@ describe("GuidedTour", () => {
         return;
       }
       const onSkip = vi.fn();
+      // Reset mock confirm for this test
+      mockConfirmReturnValue = true;
+      mockConfirm.mockReset();
+      mockConfirm.mockImplementation(() => true);
+
       render(
         <GuidedTour
           step={mockStep}
@@ -524,7 +583,10 @@ describe("GuidedTour", () => {
         return;
       }
       const onSkip = vi.fn();
-      mockConfirm.mockReturnValue(true);
+      // Ensure mock returns true for this test - reset before each test
+      mockConfirmReturnValue = true;
+      mockConfirm.mockReset();
+      mockConfirm.mockImplementation(() => true);
 
       render(
         <GuidedTour
@@ -541,10 +603,10 @@ describe("GuidedTour", () => {
       const skipButton = screen.getByText("Skip");
       fireEvent.click(skipButton);
 
-      if (window.confirm()) {
-        expect(mockConfirm).toHaveBeenCalled();
-      }
-      expect(onSkip).toHaveBeenCalled();
+      // Confirm should be called with the correct message
+      expect(mockConfirm).toHaveBeenCalledWith("Are you sure you want to skip the tour?");
+      // onSkip should be called after confirm returns true
+      expect(onSkip).toHaveBeenCalledTimes(1);
     });
   });
 });

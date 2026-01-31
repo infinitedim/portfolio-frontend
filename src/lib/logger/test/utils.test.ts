@@ -145,7 +145,9 @@ describe('Logger Utils', () => {
       // Mock crypto.randomUUID to return different values
       let callCount = 0;
       const originalRandomUUID = global.crypto.randomUUID;
-      global.crypto.randomUUID = vi.fn(() => `test-uuid-${++callCount}`);
+      global.crypto.randomUUID = vi.fn(
+        () => `test-uuid-${++callCount}`,
+      ) as typeof global.crypto.randomUUID;
       
       const id1 = generateCorrelationId();
       const id2 = generateCorrelationId();

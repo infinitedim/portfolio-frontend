@@ -207,7 +207,7 @@ describe("AdminDashboard", () => {
         null,
       );
 
-      const { container } = render(<AdminDashboard />);
+      render(<AdminDashboard />);
 
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalled();

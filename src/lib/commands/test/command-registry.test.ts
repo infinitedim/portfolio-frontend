@@ -1,18 +1,53 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import {
-  createHelpCommand,
-  aboutCommand,
-  projectsCommand,
-  contactCommand,
-  clearCommand,
-  themeCommand,
-  fontCommand,
-  statusCommand,
-  pwaCommand,
-  aliasCommand,
-} from "@/lib/commands/command-registry";
+
+if (typeof vi !== "undefined" && vi.hoisted) {
+  vi.hoisted(() => {
+    if (vi.unmock) vi.unmock("@/lib/utils/arg-parser");
+    if (vi.doUnmock) vi.doUnmock("@/lib/utils/arg-parser");
+  });
+}
 
 describe("commandRegistry", () => {
+  let commandRegistry: typeof import("@/lib/commands/command-registry");
+  let createHelpCommand: any;
+  let aboutCommand: any;
+  let projectsCommand: any;
+  let contactCommand: any;
+  let clearCommand: any;
+  let themeCommand: any;
+  let fontCommand: any;
+  let statusCommand: any;
+  let pwaCommand: any;
+  let aliasCommand: any;
+
+  beforeEach(async () => {
+    if (typeof vi !== "undefined" && vi.unmock) {
+      vi.unmock("@/lib/utils/arg-parser");
+    }
+    if (typeof vi !== "undefined" && vi.doUnmock) {
+      vi.doUnmock("@/lib/utils/arg-parser");
+    }
+
+    if (typeof vi !== "undefined" && vi.importActual) {
+      commandRegistry = await vi.importActual<
+        typeof import("@/lib/commands/command-registry")
+      >("@/lib/commands/command-registry");
+    } else {
+      commandRegistry = await import("@/lib/commands/command-registry");
+    }
+
+    // Extract commands from the module
+    createHelpCommand = commandRegistry.createHelpCommand;
+    aboutCommand = commandRegistry.aboutCommand;
+    projectsCommand = commandRegistry.projectsCommand;
+    contactCommand = commandRegistry.contactCommand;
+    clearCommand = commandRegistry.clearCommand;
+    themeCommand = commandRegistry.themeCommand;
+    fontCommand = commandRegistry.fontCommand;
+    statusCommand = commandRegistry.statusCommand;
+    pwaCommand = commandRegistry.pwaCommand;
+    aliasCommand = commandRegistry.aliasCommand;
+  });
   describe("createHelpCommand", () => {
     it("returns success and mentions Featured Commands", async () => {
       const help = createHelpCommand(() => [aboutCommand, projectsCommand]);

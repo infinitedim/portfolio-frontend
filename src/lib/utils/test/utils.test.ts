@@ -1,9 +1,62 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { cn, generateId, formatTimestamp } from "../utils";
+
+// NOTE: Module caching issue with utils
+// Problem: When tests run together, mocks from other test files can interfere
+// Solution: Use vi.hoisted() to unmock at top level, then use importActual() to get real module
+
+// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
+if (typeof vi !== "undefined" && vi.hoisted) {
+  vi.hoisted(() => {
+    // Unmock at top level if vi is available (Vitest)
+    // This must run BEFORE any vi.mock() calls in other test files
+    if (vi.unmock) vi.unmock("@/lib/utils/utils");
+    if (vi.doUnmock) vi.doUnmock("@/lib/utils/utils");
+  });
+}
+
+// IMPORTANT: Don't mock utils here - we need the real implementation
+// This test file should run with real utils module
 
 describe("utils", () => {
-  beforeEach(() => {
+  let utils: typeof import("../utils");
+  let cn: any;
+  let generateId: any;
+  let formatTimestamp: any;
+
+  beforeEach(async () => {
+    // Aggressively unmock to ensure we get real module
+    if (typeof vi !== "undefined") {
+      if (vi.unmock) vi.unmock("@/lib/utils/utils");
+      if (vi.doUnmock) vi.doUnmock("@/lib/utils/utils");
+      if (vi.resetModules) vi.resetModules();
+    }
+
+    // Clear any existing mocks
     vi.clearAllMocks();
+
+    // Use importActual to get the real module (bypasses mocks)
+    // Fallback to regular import if importActual is not available (Bun)
+    if (typeof vi !== "undefined" && vi.importActual) {
+      // Vitest: use importActual to bypass mocks
+      utils = await vi.importActual<typeof import("../utils")>("../utils");
+    } else {
+      // Bun test runner: regular import
+      // For Bun, we need to clear the module cache if possible
+      if (typeof require !== "undefined" && require.cache) {
+        try {
+          const modulePath = require.resolve("../utils");
+          delete require.cache[modulePath];
+        } catch (e) {
+          console.error(e);
+          // Ignore if module path not found
+        }
+      }
+      utils = await import("../utils");
+    }
+
+    cn = utils.cn;
+    generateId = utils.generateId;
+    formatTimestamp = utils.formatTimestamp;
   });
 
   afterEach(() => {
