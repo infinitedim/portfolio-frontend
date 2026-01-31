@@ -114,12 +114,13 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
   // Auto-save effect (disabled for now - explicit save only)
   useEffect(() => {
-    if (autoSaveTimeoutRef.current) {
-      clearTimeout(autoSaveTimeoutRef.current);
+    const timeoutId = autoSaveTimeoutRef.current;
+    if (timeoutId) {
+      clearTimeout(timeoutId);
     }
     return () => {
-      if (autoSaveTimeoutRef.current) {
-        clearTimeout(autoSaveTimeoutRef.current);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
     };
   }, [title, content, currentPost]);
