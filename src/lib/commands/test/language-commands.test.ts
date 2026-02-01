@@ -1,4 +1,4 @@
-import {describe, it, expect, vi, beforeEach, afterEach} from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 /** Locale configuration interface for test mocks */
 interface LocaleConfig {
@@ -13,7 +13,7 @@ interface LocaleConfig {
 let mockCurrentLocale = "en_US";
 let mockSetLocaleResult = true;
 
-vi.mock("@/lib/i18n/i18nService", () => ({
+vi.mock("@/lib/i18n/i18n-service", () => ({
   i18n: {
     getCurrentLocale: () => mockCurrentLocale,
     getCurrentLocaleConfig: () => {
@@ -43,11 +43,11 @@ vi.mock("@/lib/i18n/i18nService", () => ({
       return locales[mockCurrentLocale] || locales.en_US;
     },
     getSupportedLocales: () => [
-      {code: "en_US", name: "English (US)", flag: "🇺🇸"},
-      {code: "id_ID", name: "Indonesian", flag: "🇮🇩"},
-      {code: "es_ES", name: "Spanish", flag: "🇪🇸"},
-      {code: "fr_FR", name: "French", flag: "🇫🇷"},
-      {code: "ar_SA", name: "Arabic", flag: "🇸🇦"},
+      { code: "en_US", name: "English (US)", flag: "🇺🇸" },
+      { code: "id_ID", name: "Indonesian", flag: "🇮🇩" },
+      { code: "es_ES", name: "Spanish", flag: "🇪🇸" },
+      { code: "fr_FR", name: "French", flag: "🇫🇷" },
+      { code: "ar_SA", name: "Arabic", flag: "🇸🇦" },
     ],
     setLocale: (code: string) => {
       if (mockSetLocaleResult) {
@@ -215,14 +215,14 @@ describe("languageCommands", () => {
 
       it("should show current language information", async () => {
         const result = await languageCommand.execute([]);
-        expect(result.content).toContain("Current language");
+        expect(result.content).toContain("Current Language");
         expect(result.content).toContain("🇺🇸");
         expect(result.content).toContain("English");
       });
 
       it("should show available languages list", async () => {
         const result = await languageCommand.execute([]);
-        expect(result.content).toContain("Available languages");
+        expect(result.content).toContain("Available Languages");
       });
 
       it("should include usage examples", async () => {
@@ -435,7 +435,8 @@ describe("languageCommands", () => {
         // Check that content contains English (US) and some indicator of current language
         expect(content).toContain("English (US)");
         // Should have either checkmark or (Current) marker somewhere in the output
-        const hasIndicator = content.includes("✅") || content.includes("(Current)");
+        const hasIndicator =
+          content.includes("✅") || content.includes("(Current)");
         expect(hasIndicator).toBe(true);
       });
     });

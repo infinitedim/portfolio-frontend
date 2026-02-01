@@ -1,7 +1,7 @@
 /**
  * Logger config tests
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   clientConfig,
   serverConfig,
@@ -16,15 +16,14 @@ import {
 import { LogLevel } from "../types";
 
 describe("logger config", () => {
-  const origEnv = process.env;
+  const origEnv = { ...process.env };
 
   beforeEach(() => {
-    vi.resetModules();
     process.env = { ...origEnv };
   });
 
   afterEach(() => {
-    process.env = origEnv;
+    process.env = { ...origEnv };
   });
 
   describe("clientConfig", () => {
