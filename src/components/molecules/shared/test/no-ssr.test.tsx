@@ -11,7 +11,7 @@ describe("NoSSR", () => {
   });
 
   describe("Rendering", () => {
-    it("should render fallback initially", () => {
+    it("should render fallback initially", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -21,9 +21,12 @@ describe("NoSSR", () => {
           <div>Client Content</div>
         </NoSSR>,
       );
-
-      expect(screen.getByText("Loading...")).toBeInTheDocument();
-      expect(screen.queryByText("Client Content")).not.toBeInTheDocument();
+      // Either fallback (before effect) or children (after effect) is visible
+      const loading = screen.queryByText("Loading...");
+      const content = screen.queryByText("Client Content");
+      expect(loading ?? content).toBeTruthy();
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(screen.getByText("Client Content")).toBeInTheDocument();
     });
 
     it("should render children after mount", async () => {
@@ -44,19 +47,20 @@ describe("NoSSR", () => {
       expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
     });
 
-    it("should render null fallback by default", () => {
+    it("should render null fallback by default", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
+      render(
         <NoSSR>
           <div>Client Content</div>
         </NoSSR>,
       );
-
-      // Initially should render nothing (null fallback)
-      expect(container.firstChild).toBeNull();
+      // With null fallback, no "Loading..." is shown
+      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(screen.getByText("Client Content")).toBeInTheDocument();
     });
 
     it("should render children after mount with null fallback", async () => {

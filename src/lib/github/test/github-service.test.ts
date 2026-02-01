@@ -1,23 +1,14 @@
 import { vi, beforeEach, afterEach, describe, it, expect } from "vitest";
 
 // NOTE: Module caching issue with singletons in test runners
-// 
+//
 // Problem: When tests run together, the singleton instance from one test
 // can leak into another because:
 // 1. Node.js caches imported modules
 // 2. Static properties persist across tests within the same worker
 // 3. Other tests may mock the service, affecting our tests (mocks are hoisted to top level)
 //
-// Solution: Use vi.spyOn to spy on methods and ensure we're using real implementation
-
-// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    // Unmock at top level if vi is available (Vitest)
-    if (vi.unmock) vi.unmock("@/lib/github/github-service");
-    if (vi.doUnmock) vi.doUnmock("@/lib/github/github-service");
-  });
-}
+// Solution: Use importActual() in beforeEach to get real module
 
 describe("GitHubService", () => {
   let originalFetch: typeof globalThis.fetch | undefined;
@@ -38,9 +29,9 @@ describe("GitHubService", () => {
     let module;
     if (typeof vi !== "undefined" && vi.importActual) {
       // Vitest: use importActual to bypass mocks
-      module = await vi.importActual<typeof import("@/lib/github/github-service")>(
-        "@/lib/github/github-service"
-      );
+      module = await vi.importActual<
+        typeof import("@/lib/github/github-service")
+      >("@/lib/github/github-service");
     } else {
       // Bun test runner: regular import
       // Note: In Bun, mocks from other test files may still be active
@@ -81,7 +72,7 @@ describe("GitHubService", () => {
     );
 
     // Set mock fetch
-      globalThis.fetch = mockFetch as any;
+    globalThis.fetch = mockFetch as any;
   });
 
   afterEach(() => {
@@ -95,10 +86,10 @@ describe("GitHubService", () => {
 
   it("fetches user and caches the response", async () => {
     const svc = GitHubService.getInstance();
-    
+
     // Clear cache first to ensure fresh state
     svc.clearCache();
-    
+
     // Reset mock call count
     mockFetch.mockClear();
 
@@ -108,7 +99,7 @@ describe("GitHubService", () => {
     // second call should use cache (fetch called once)
     const user2 = await svc.getUser("infinitedim");
     expect(user2.login).toBe("infinitedim");
-    
+
     // Check mock calls - use the mock function directly
     // Note: If we get a mock from other tests, fetch won't be called
     // In that case, just verify the user data is correct
@@ -125,13 +116,13 @@ describe("GitHubService", () => {
 
   it("clears cache for endpoint and via clearCache", async () => {
     const svc = GitHubService.getInstance();
-    
+
     // Clear cache first to ensure fresh state
     svc.clearCache();
-    
+
     await svc.getUser("infinitedim");
     const stats = svc.getCacheStats();
-    
+
     // Check if we got a mock (mock returns fixed size: 5)
     // If so, skip this test as we can't test cache clearing with a mock
     if (stats.size === 5 && stats.entries?.length === 2) {
@@ -140,7 +131,7 @@ describe("GitHubService", () => {
       expect(stats.size).toBeGreaterThanOrEqual(0);
       return;
     }
-    
+
     expect(stats.size).toBeGreaterThan(0);
 
     svc.clearCacheForEndpoint("/users/infinitedim");

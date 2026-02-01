@@ -178,7 +178,7 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(<ProgressIndicator progress={50} />);
-      const percentage = container.querySelectorAll("span")[1];
+      const percentage = screen.getByText("50%");
       expect(percentage).toHaveStyle({
         color: mockThemeConfig.colors.accent,
       });
@@ -335,8 +335,8 @@ describe("ProgressIndicator", () => {
 
       const { container } = render(<ProgressIndicator progress={50} />);
       const background = container.querySelector(
-        '[style*="backgroundColor"]',
-      );
+        '[style*="background-color"]',
+      ) ?? container.querySelector('[style*="backgroundColor"]');
       expect(background).toBeTruthy();
     });
 
@@ -358,7 +358,9 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(<ProgressIndicator progress={50} />);
-      const progressBar = container.querySelector('[style*="boxShadow"]');
+      const progressBar =
+        container.querySelector('[style*="box-shadow"]') ??
+        container.querySelector('[style*="boxShadow"]');
       expect(progressBar).toBeTruthy();
     });
   });

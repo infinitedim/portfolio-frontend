@@ -70,7 +70,8 @@ describe("ThemeProvider", () => {
         </ThemeProvider>,
       );
 
-      expect(getByTestId("theme").textContent).toBe("system");
+      // Mock returns theme "dark"; useThemeContext returns theme || "system"
+      expect(getByTestId("theme").textContent).toBe("dark");
     });
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TerminalHeader } from "../terminal-header";
 
@@ -136,14 +136,12 @@ describe("TerminalHeader", () => {
       }
       render(<TerminalHeader />);
 
-      screen.getByText(/Time:/);
+      await vi.advanceTimersByTimeAsync(0);
+      expect(screen.getByText(/Time:/)).toBeInTheDocument();
 
-      vi.advanceTimersByTime(1000);
-
-      await waitFor(() => {
-        const updatedTime = screen.getByText(/Time:/).textContent;
-        expect(updatedTime).toBeDefined();
-      });
+      await vi.advanceTimersByTimeAsync(1000);
+      const updatedTime = screen.getByText(/Time:/).textContent;
+      expect(updatedTime).toBeDefined();
     });
   });
 
@@ -155,12 +153,9 @@ describe("TerminalHeader", () => {
       }
       render(<TerminalHeader />);
 
-      vi.advanceTimersByTime(1000);
-
-      await waitFor(() => {
-        const loadElement = screen.getByText(/Load:/);
-        expect(loadElement).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(1000);
+      const loadElement = screen.getByText(/Load:/);
+      expect(loadElement).toBeInTheDocument();
     });
   });
 

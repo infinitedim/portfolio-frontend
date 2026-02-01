@@ -5,15 +5,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 // NOTE: Don't mock error-types globally - it interferes with other tests
 // Instead, we'll use the real error-types module
 
-// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    // Unmock at top level if vi is available (Vitest)
-    if (vi.unmock) vi.unmock("../error-types");
-    if (vi.doUnmock) vi.doUnmock("../error-types");
-  });
-}
-
 describe("EnhancedErrorBoundary (error-boundary.tsx)", () => {
   let errorBoundary: typeof import("../error-boundary");
   let EnhancedErrorBoundary: any;

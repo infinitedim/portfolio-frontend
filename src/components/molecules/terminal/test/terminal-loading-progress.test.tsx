@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TerminalLoadingProgress } from "../terminal-loading-progress";
 
@@ -32,6 +32,7 @@ describe("TerminalLoadingProgress", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
     vi.useFakeTimers();
+    Element.prototype.scrollIntoView = vi.fn();
   });
 
   afterEach(() => {
@@ -110,12 +111,10 @@ describe("TerminalLoadingProgress", () => {
         />,
       );
 
-      vi.advanceTimersByTime(400);
+      await vi.advanceTimersByTimeAsync(400);
 
-      await waitFor(() => {
-        const fileElements = screen.queryAllByText(/file/);
-        expect(fileElements.length).toBeGreaterThan(0);
-      });
+      const fileElements = screen.queryAllByText(/file/);
+      expect(fileElements.length).toBeGreaterThan(0);
     });
 
     it("should show completion message when done", async () => {
@@ -133,12 +132,10 @@ describe("TerminalLoadingProgress", () => {
         />,
       );
 
-      vi.advanceTimersByTime(1100);
+      await vi.runAllTimersAsync();
 
-      await waitFor(() => {
-        expect(screen.getByText("Done!")).toBeInTheDocument();
-        expect(mockOnComplete).toHaveBeenCalled();
-      });
+      expect(screen.getByText(/Done!/)).toBeInTheDocument();
+      expect(mockOnComplete).toHaveBeenCalled();
     });
   });
 
@@ -158,12 +155,10 @@ describe("TerminalLoadingProgress", () => {
         />,
       );
 
-      vi.advanceTimersByTime(400);
+      await vi.advanceTimersByTimeAsync(400);
 
-      await waitFor(() => {
-        const progressText = screen.getByText(/\d+%/);
-        expect(progressText).toBeInTheDocument();
-      });
+      const progressText = screen.getByText(/\d+%/);
+      expect(progressText).toBeInTheDocument();
     });
   });
 });

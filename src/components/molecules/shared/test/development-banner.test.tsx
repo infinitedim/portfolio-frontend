@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { act } from "react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { DevelopmentBanner } from "../development-banner";
 
@@ -107,11 +108,12 @@ describe("DevelopmentBanner", () => {
       render(<DevelopmentBanner />);
 
       const closeButton = screen.getByLabelText("Close development banner");
-      fireEvent.click(closeButton);
-
-      await waitFor(() => {
-        expect(screen.queryByText("DEV MODE")).not.toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(closeButton);
+        vi.advanceTimersByTime(0);
       });
+
+      expect(screen.queryByText("DEV MODE")).not.toBeInTheDocument();
     });
   });
 

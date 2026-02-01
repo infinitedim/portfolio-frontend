@@ -6,16 +6,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 // because the module cache preserves the singleton across tests.
 // Also, other tests may mock the service, affecting our tests (mocks are hoisted to top level).
 //
-// Solution: Use vi.hoisted() to unmock at top level, then use importActual() to get real module
-
-// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    // Unmock at top level if vi is available (Vitest)
-    if (vi.unmock) vi.unmock("@/lib/services/roadmap-service");
-    if (vi.doUnmock) vi.doUnmock("@/lib/services/roadmap-service");
-  });
-}
+// Solution: Use importActual() in beforeEach to get real module
 
 // Mock fetch to return a valid roadmap response
 const validApiResponse = {

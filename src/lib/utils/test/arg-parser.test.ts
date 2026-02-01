@@ -3,16 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // NOTE: Module caching issue with ArgumentParser
 // Problem: When tests run together, mocks from other test files can interfere
-// Solution: Use vi.hoisted() to unmock at top level, then use importActual() to get real module
-
-// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    // Unmock at top level if vi is available (Vitest)
-    if (vi.unmock) vi.unmock("@/lib/utils/arg-parser");
-    if (vi.doUnmock) vi.doUnmock("@/lib/utils/arg-parser");
-  });
-}
+// Solution: Use importActual() in beforeEach to get real module
 
 describe("argParser", () => {
   let ArgumentParser: typeof import("@/lib/utils/arg-parser").ArgumentParser;

@@ -88,7 +88,9 @@ describe("TerminalHistory", () => {
       }
       render(<TerminalHistory history={mockHistory} />);
 
-      expect(screen.getByTestId("command-output")).toBeInTheDocument();
+      const outputs = screen.getAllByTestId("command-output");
+      expect(outputs.length).toBe(mockHistory.length);
+      expect(outputs[0]).toBeInTheDocument();
     });
 
     it("should have proper ARIA attributes", () => {

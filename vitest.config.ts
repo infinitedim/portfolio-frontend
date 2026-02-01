@@ -9,7 +9,15 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    exclude: ["node_modules", "dist", ".next", ".idea", ".git", ".cache"],
+    exclude: [
+      "node_modules",
+      "dist",
+      ".next",
+      ".idea",
+      ".git",
+      ".cache",
+      "e2e",
+    ],
     isolate: true,
     pool: "forks",
 
@@ -20,7 +28,7 @@ export default defineConfig({
     },
     coverage: {
       provider: "v8",
-      reporter: ["text", "json", "html"],
+      reporter: ["text", "json", "html", "lcov"],
       exclude: [
         "node_modules/",
         "src/test/",
@@ -30,6 +38,12 @@ export default defineConfig({
         "**/*.test.{ts,tsx}",
         "**/*.spec.{ts,tsx}",
       ],
+      thresholds: {
+        lines: 88,
+        functions: 88,
+        branches: 88,
+        statements: 88,
+      },
     },
   },
   resolve: {

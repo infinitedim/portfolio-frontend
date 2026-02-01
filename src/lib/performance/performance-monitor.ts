@@ -16,7 +16,7 @@ interface PerformanceReport {
     totalCommands: number;
     averageCommandTime: number;
     averageRenderTime: number;
-    slowestCommand: {name: string; time: number};
+    slowestCommand: { name: string; time: number };
     memoryUsage?: number;
     historySize: number;
   };
@@ -207,9 +207,9 @@ export class PerformanceMonitor {
     const slowestCommand = commandMetrics.reduce(
       (slowest, current) =>
         current.value > slowest.time
-          ? {name: current.name, time: current.value}
+          ? { name: current.name, time: current.value }
           : slowest,
-      {name: "none", time: 0},
+      { name: "none", time: 0 },
     );
 
     const recommendations = this.generateRecommendations();
@@ -279,7 +279,7 @@ export class PerformanceMonitor {
         });
       });
 
-      observer.observe({entryTypes: ["measure", "navigation"]});
+      observer.observe({ entryTypes: ["measure", "navigation"] });
     } catch (error) {
       console.warn("Failed to setup PerformanceObserver:", error);
     }
@@ -337,7 +337,7 @@ export class PerformanceMonitor {
       "memory" in performance
     ) {
       const memory = (
-        performance as Performance & {memory?: {usedJSHeapSize: number}}
+        performance as Performance & { memory?: { usedJSHeapSize: number } }
       ).memory;
       return memory?.usedJSHeapSize;
     }
@@ -372,36 +372,53 @@ export class PerformanceMonitor {
    */
   private generateRecommendations(): string[] {
     const recommendations: string[] = [];
-    const report = this.getReport();
+    const commandMetrics = this.getMetricsByCategory("command");
+    const renderMetrics = this.getMetricsByCategory("render");
+    const totalCommands = commandMetrics.length;
+    const averageCommandTime =
+      totalCommands > 0
+        ? commandMetrics.reduce((sum, m) => sum + m.value, 0) / totalCommands
+        : 0;
+    const averageRenderTime =
+      renderMetrics.length > 0
+        ? renderMetrics.reduce((sum, m) => sum + m.value, 0) /
+          renderMetrics.length
+        : 0;
+    const slowestCommand = commandMetrics.reduce(
+      (slowest, current) =>
+        current.value > slowest.time
+          ? { name: current.name, time: current.value }
+          : slowest,
+      { name: "none", time: 0 },
+    );
+    const memoryUsage = this.getMemoryUsage();
+    const historySize = this.getHistorySize();
 
-    if (report.summary.averageCommandTime > 200) {
+    if (averageCommandTime > 200) {
       recommendations.push(
         "Consider optimizing slow commands - average execution time is high",
       );
     }
 
-    if (report.summary.slowestCommand.time > 1000) {
+    if (slowestCommand.time > 1000) {
       recommendations.push(
-        `Command '${report.summary.slowestCommand.name}' is very slow (${report.summary.slowestCommand.time.toFixed(2)}ms)`,
+        `Command '${slowestCommand.name}' is very slow (${slowestCommand.time.toFixed(2)}ms)`,
       );
     }
 
-    if (report.summary.averageRenderTime > 50) {
+    if (averageRenderTime > 50) {
       recommendations.push(
         "Consider using React.memo or useMemo for expensive renders",
       );
     }
 
-    if (
-      report.summary.memoryUsage &&
-      report.summary.memoryUsage > 50 * 1024 * 1024
-    ) {
+    if (memoryUsage && memoryUsage > 50 * 1024 * 1024) {
       recommendations.push(
         "High memory usage detected - consider clearing old history",
       );
     }
 
-    if (report.summary.historySize > 1000) {
+    if (historySize > 1000) {
       recommendations.push(
         "Large history detected - consider using virtual scrolling",
       );
@@ -410,7 +427,6 @@ export class PerformanceMonitor {
       );
     }
 
-    const commandMetrics = this.getMetricsByCategory("command");
     const commandCounts = commandMetrics.reduce(
       (counts, metric) => {
         const command = metric.name.replace("command-", "");
@@ -422,8 +438,8 @@ export class PerformanceMonitor {
 
     const mostUsedCommand = Object.entries(commandCounts).reduce(
       (most, [cmd, count]) =>
-        count > most.count ? {command: cmd, count} : most,
-      {command: "", count: 0},
+        count > most.count ? { command: cmd, count } : most,
+      { command: "", count: 0 },
     );
 
     if (mostUsedCommand.count > 10 && mostUsedCommand.command) {

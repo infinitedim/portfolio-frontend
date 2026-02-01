@@ -2,23 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { skillsCommand, skillsStatCommand } from "../skills-commands";
 
-// NOTE: Module caching issue - use vi.hoisted() to unmock at top level
-// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    // Unmock at top level if vi is available (Vitest)
-    // This ensures real modules are used in other test files
-    if (vi.unmock) {
-      vi.unmock("@/lib/services/roadmap-service");
-      vi.unmock("@/lib/utils/utils");
-    }
-    if (vi.doUnmock) {
-      vi.doUnmock("@/lib/services/roadmap-service");
-      vi.doUnmock("@/lib/utils/utils");
-    }
-  });
-}
-
 // Mock RoadmapService - only for this test file
 const mockGetUserProgress = vi.fn();
 const mockGetCategoryProgress = vi.fn();

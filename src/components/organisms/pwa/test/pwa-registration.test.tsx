@@ -73,12 +73,19 @@ describe("PWARegistration", () => {
         expect(true).toBe(true);
         return;
       }
+      const wasSecure = window.isSecureContext;
+      (window as unknown as { isSecureContext: boolean }).isSecureContext =
+        true;
       render(<PWARegistration />);
 
-      await waitFor(() => {
-        // Service worker registration is attempted
-        expect(mockRegister).toHaveBeenCalled();
-      });
+      await waitFor(
+        () => {
+          expect(mockRegister).toHaveBeenCalled();
+        },
+        { timeout: 2000 },
+      );
+      (window as unknown as { isSecureContext: boolean }).isSecureContext =
+        wasSecure;
     });
 
     it("should handle service worker registration errors gracefully", async () => {
@@ -90,14 +97,21 @@ describe("PWARegistration", () => {
         expect(true).toBe(true);
         return;
       }
+      const wasSecure = window.isSecureContext;
+      (window as unknown as { isSecureContext: boolean }).isSecureContext =
+        true;
       mockRegister.mockRejectedValue(new Error("404"));
 
       render(<PWARegistration />);
 
-      await waitFor(() => {
-        // Should handle error gracefully
-        expect(mockRegister).toHaveBeenCalled();
-      });
+      await waitFor(
+        () => {
+          expect(mockRegister).toHaveBeenCalled();
+        },
+        { timeout: 2000 },
+      );
+      (window as unknown as { isSecureContext: boolean }).isSecureContext =
+        wasSecure;
     });
   });
 

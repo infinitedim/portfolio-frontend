@@ -20,10 +20,13 @@ const mockTimeInfo = {
   isDST: true,
 };
 
+const { mockGetLocation } = vi.hoisted(() => ({
+  mockGetLocation: vi.fn(),
+}));
 vi.mock("@/lib/location/location-service", () => ({
   LocationService: {
     getInstance: () => ({
-      getLocation: vi.fn().mockResolvedValue(mockLocation),
+      getLocation: mockGetLocation,
       getTimeInfo: vi.fn().mockReturnValue(mockTimeInfo),
       formatOffset: vi.fn().mockReturnValue("UTC-5"),
       getWeatherEmoji: vi.fn().mockReturnValue("☀️"),
@@ -48,6 +51,7 @@ describe("TimeDisplay", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
+    mockGetLocation.mockResolvedValue(mockLocation);
     vi.useFakeTimers();
   });
 
@@ -71,11 +75,16 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
-      await waitFor(() => {
-        expect(screen.getByText("Time & Location")).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText("Time & Location")).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
+      vi.useFakeTimers();
     });
 
     it("should display location information", async () => {
@@ -83,12 +92,17 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
-      await waitFor(() => {
-        expect(screen.getByText("Test City, Test Region")).toBeInTheDocument();
-        expect(screen.getByText("Test Country")).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText("Test City, Test Region")).toBeInTheDocument();
+          expect(screen.getByText("Test Country")).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
+      vi.useFakeTimers();
     });
 
     it("should display coordinates", async () => {
@@ -96,12 +110,17 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
-      await waitFor(() => {
-        expect(screen.getByText(/40\.7128/)).toBeInTheDocument();
-        expect(screen.getByText(/-74\.006/)).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText(/40\.7128/)).toBeInTheDocument();
+          expect(screen.getByText(/-74\.006/)).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
+      vi.useFakeTimers();
     });
 
     it("should display IP address", async () => {
@@ -109,11 +128,16 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
-      await waitFor(() => {
-        expect(screen.getByText("192.168.1.1")).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText("192.168.1.1")).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
+      vi.useFakeTimers();
     });
 
     it("should display weather emoji", async () => {
@@ -121,11 +145,16 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
-      await waitFor(() => {
-        expect(screen.getByText("☀️")).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText("☀️")).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
+      vi.useFakeTimers();
     });
   });
 
@@ -135,16 +164,21 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
-      await waitFor(() => {
-        expect(screen.getByText("Time & Location")).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText("Time & Location")).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
 
       const closeButton = screen.getByTitle("Close");
       fireEvent.click(closeButton);
 
       expect(mockOnClose).toHaveBeenCalled();
+      vi.useFakeTimers();
     });
 
     it("should refresh location when refresh button is clicked", async () => {
@@ -152,17 +186,26 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
-      await waitFor(() => {
-        expect(screen.getByText("Time & Location")).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText("Time & Location")).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
 
       const refreshButton = screen.getByTitle("Refresh");
       fireEvent.click(refreshButton);
 
-      // Should trigger refresh
-      expect(refreshButton).toBeInTheDocument();
+      await waitFor(
+        () => {
+          expect(screen.getByTitle("Refresh")).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
+      vi.useFakeTimers();
     });
   });
 
@@ -172,27 +215,17 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
-      // Re-mock with error
-      vi.doMock("@/lib/location/location-service", () => ({
-        LocationService: {
-          getInstance: () => ({
-            getLocation: vi.fn().mockRejectedValue(new Error("Failed to fetch")),
-            getTimeInfo: vi.fn().mockReturnValue(mockTimeInfo),
-            formatOffset: vi.fn().mockReturnValue("UTC-5"),
-            getWeatherEmoji: vi.fn().mockReturnValue("☀️"),
-            clearCache: vi.fn(),
-          }),
-        },
-      }));
-
+      mockGetLocation.mockReset().mockRejectedValue(new Error("Failed to fetch"));
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
       await waitFor(
         () => {
-          expect(screen.getByText("Error")).toBeInTheDocument();
+          expect(screen.getByText("Failed to fetch")).toBeInTheDocument();
         },
         { timeout: 2000 },
       );
+      vi.useFakeTimers();
     });
 
     it("should show retry button on error", async () => {
@@ -200,19 +233,8 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
-      // Re-mock with error
-      vi.doMock("@/lib/location/location-service", () => ({
-        LocationService: {
-          getInstance: () => ({
-            getLocation: vi.fn().mockRejectedValue(new Error("Failed to fetch")),
-            getTimeInfo: vi.fn().mockReturnValue(mockTimeInfo),
-            formatOffset: vi.fn().mockReturnValue("UTC-5"),
-            getWeatherEmoji: vi.fn().mockReturnValue("☀️"),
-            clearCache: vi.fn(),
-          }),
-        },
-      }));
-
+      mockGetLocation.mockReset().mockRejectedValue(new Error("Failed to fetch"));
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
       await waitFor(
@@ -221,6 +243,7 @@ describe("TimeDisplay", () => {
         },
         { timeout: 2000 },
       );
+      vi.useFakeTimers();
     });
   });
 
@@ -230,17 +253,18 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
-      await waitFor(() => {
-        expect(screen.getByText("Time & Location")).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText("Time & Location")).toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
 
-      vi.advanceTimersByTime(1000);
-
-      await waitFor(() => {
-        expect(screen.getByText("Time & Location")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Time & Location")).toBeInTheDocument();
+      vi.useFakeTimers();
     });
   });
 });

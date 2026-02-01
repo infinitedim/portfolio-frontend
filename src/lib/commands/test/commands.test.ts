@@ -4,15 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 // NOTE: Don't mock ArgumentParser globally - it interferes with other tests
 // Instead, we'll use the real ArgumentParser and mock only when needed in specific tests
 
-// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    // Unmock at top level if vi is available (Vitest)
-    if (vi.unmock) vi.unmock("@/lib/utils/arg-parser");
-    if (vi.doUnmock) vi.doUnmock("@/lib/utils/arg-parser");
-  });
-}
-
 describe("commands.ts", () => {
   let commands: typeof import("../commands");
   let resumeCommand: any;

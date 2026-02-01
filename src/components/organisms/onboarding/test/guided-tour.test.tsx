@@ -6,23 +6,6 @@ import type { TourStep } from "../tour-steps";
 
 // NOTE: Module caching issue with hooks
 // Problem: When tests run together, mocks from other test files can interfere
-// Solution: Use vi.hoisted() to unmock at top level, then use factory function to preserve other exports
-
-// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    // Unmock at top level if vi is available (Vitest)
-    if (vi.unmock) {
-      vi.unmock("@/components/organisms/accessibility/accessibility-provider");
-      vi.unmock("@/hooks/use-theme");
-    }
-    if (vi.doUnmock) {
-      vi.doUnmock("@/components/organisms/accessibility/accessibility-provider");
-      vi.doUnmock("@/hooks/use-theme");
-    }
-  });
-}
-
 // Mock dependencies
 const mockAnnounceMessage = vi.fn();
 const mockIsReducedMotion = false;
@@ -53,12 +36,13 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+// Mock ResizeObserver - must be a constructor for `new ResizeObserver(callback)`
+global.ResizeObserver = class MockResizeObserver {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+  constructor(_callback: ResizeObserverCallback) { }
+} as unknown as typeof ResizeObserver;
 
 // Mock window.confirm - use a function that can be reset
 let mockConfirmReturnValue = true;
@@ -118,6 +102,7 @@ describe("GuidedTour", () => {
         y: 100,
         toJSON: () => ({}),
       } as DOMRect);
+      testElement.scrollIntoView = vi.fn();
       document.body.appendChild(testElement);
     }
   });

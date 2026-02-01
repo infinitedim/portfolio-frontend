@@ -83,10 +83,11 @@ describe("ThemeSwitcher", () => {
       }
       render(<ThemeSwitcher />);
 
-      const lightButton = screen.getByText("light");
-      fireEvent.click(lightButton);
+      // Use "terminal" - it's a valid ThemeName; "light"/"dark" are not in ThemeName so changeTheme wouldn't be called
+      const terminalButton = screen.getByText("terminal");
+      fireEvent.click(terminalButton);
 
-      expect(mockChangeTheme).toHaveBeenCalledWith("light");
+      expect(mockChangeTheme).toHaveBeenCalledWith("terminal");
     });
   });
 });

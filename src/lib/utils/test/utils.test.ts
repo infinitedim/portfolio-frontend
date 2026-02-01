@@ -2,17 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // NOTE: Module caching issue with utils
 // Problem: When tests run together, mocks from other test files can interfere
-// Solution: Use vi.hoisted() to unmock at top level, then use importActual() to get real module
-
-// Hoist unmock to top level to ensure it runs before other mocks (Vitest only)
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    // Unmock at top level if vi is available (Vitest)
-    // This must run BEFORE any vi.mock() calls in other test files
-    if (vi.unmock) vi.unmock("@/lib/utils/utils");
-    if (vi.doUnmock) vi.doUnmock("@/lib/utils/utils");
-  });
-}
+// Solution: Use importActual() in beforeEach to get real module
 
 // IMPORTANT: Don't mock utils here - we need the real implementation
 // This test file should run with real utils module

@@ -1,12 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-if (typeof vi !== "undefined" && vi.hoisted) {
-  vi.hoisted(() => {
-    if (vi.unmock) vi.unmock("@/lib/utils/arg-parser");
-    if (vi.doUnmock) vi.doUnmock("@/lib/utils/arg-parser");
-  });
-}
-
 describe("commandRegistry", () => {
   let commandRegistry: typeof import("@/lib/commands/command-registry");
   let createHelpCommand: any;

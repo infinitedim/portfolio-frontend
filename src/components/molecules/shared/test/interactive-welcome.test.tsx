@@ -122,16 +122,13 @@ describe("InteractiveWelcome", () => {
       );
 
       const helpButton = screen.getByText("help").closest("button");
-      if (helpButton) {
-        fireEvent.click(helpButton);
-      }
+      expect(helpButton).toBeTruthy();
+      fireEvent.click(helpButton!);
 
-      vi.advanceTimersByTime(200);
+      await vi.advanceTimersByTimeAsync(200);
 
-      await waitFor(() => {
-        expect(mockOnCommandSelect).toHaveBeenCalledWith("help");
-        expect(mockOnDismiss).toHaveBeenCalled();
-      });
+      expect(mockOnCommandSelect).toHaveBeenCalledWith("help");
+      expect(mockOnDismiss).toHaveBeenCalled();
     });
 
     it("should call onStartTour when tour command is clicked", async () => {
@@ -148,16 +145,13 @@ describe("InteractiveWelcome", () => {
       );
 
       const tourButton = screen.getByText("tour").closest("button");
-      if (tourButton) {
-        fireEvent.click(tourButton);
-      }
+      expect(tourButton).toBeTruthy();
+      fireEvent.click(tourButton!);
 
-      vi.advanceTimersByTime(200);
+      await vi.advanceTimersByTimeAsync(200);
 
-      await waitFor(() => {
-        expect(mockOnStartTour).toHaveBeenCalled();
-        expect(mockOnDismiss).toHaveBeenCalled();
-      });
+      expect(mockOnStartTour).toHaveBeenCalled();
+      expect(mockOnDismiss).toHaveBeenCalled();
     });
 
     it("should call onDismiss when skip button is clicked", () => {

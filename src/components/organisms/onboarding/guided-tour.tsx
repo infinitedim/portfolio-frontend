@@ -605,8 +605,10 @@ export const GuidedTour = memo(function GuidedTour({
         </div>
       )}
 
-      {/* Global highlight styles */}
-      <style jsx global>{`
+      {/* Global highlight styles - use dangerouslySetInnerHTML to avoid jsx/global DOM attributes in test env */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         .tour-highlight-active {
           position: relative;
           z-index: 9999 !important;
@@ -626,7 +628,9 @@ export const GuidedTour = memo(function GuidedTour({
               0 0 120px ${themeConfig.colors.accent}40;
           }
         }
-      `}</style>
+      `,
+        }}
+      />
     </>
   );
 });

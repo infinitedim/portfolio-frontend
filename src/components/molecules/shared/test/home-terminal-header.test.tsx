@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { HomeTerminalHeader } from "../home-terminal-header";
 
@@ -72,9 +72,8 @@ describe("HomeTerminalHeader", () => {
       }
       render(<HomeTerminalHeader />);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Terminal Ready/)).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(0);
+      expect(screen.getByText(/Terminal Ready/)).toBeInTheDocument();
     });
 
     it("should display projects count", async () => {
@@ -84,9 +83,8 @@ describe("HomeTerminalHeader", () => {
       }
       render(<HomeTerminalHeader />);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Projects:/)).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(0);
+      expect(screen.getByText(/Projects:/)).toBeInTheDocument();
     });
 
     it("should display skills count", async () => {
@@ -96,9 +94,8 @@ describe("HomeTerminalHeader", () => {
       }
       render(<HomeTerminalHeader />);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Skills:/)).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(0);
+      expect(screen.getByText(/Skills:/)).toBeInTheDocument();
     });
 
     it("should display experience", async () => {
@@ -108,9 +105,8 @@ describe("HomeTerminalHeader", () => {
       }
       render(<HomeTerminalHeader />);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Exp:/)).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(0);
+      expect(screen.getByText(/Exp:/)).toBeInTheDocument();
     });
 
     it("should display commits count", async () => {
@@ -120,9 +116,8 @@ describe("HomeTerminalHeader", () => {
       }
       render(<HomeTerminalHeader />);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Commits:/)).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(0);
+      expect(screen.getByText(/Commits:/)).toBeInTheDocument();
     });
 
     it("should display version", () => {
@@ -154,15 +149,11 @@ describe("HomeTerminalHeader", () => {
       }
       render(<HomeTerminalHeader />);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Time:/)).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(0);
+      expect(screen.getByText(/Time:/)).toBeInTheDocument();
 
-      vi.advanceTimersByTime(1000);
-
-      await waitFor(() => {
-        expect(screen.getByText(/Time:/)).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(screen.getByText(/Time:/)).toBeInTheDocument();
     });
   });
 
@@ -174,15 +165,11 @@ describe("HomeTerminalHeader", () => {
       }
       render(<HomeTerminalHeader />);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Updated:/)).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(0);
+      expect(screen.getByText(/Updated:/)).toBeInTheDocument();
 
-      vi.advanceTimersByTime(2000);
-
-      await waitFor(() => {
-        expect(screen.getByText(/Updated:/)).toBeInTheDocument();
-      });
+      await vi.advanceTimersByTimeAsync(2000);
+      expect(screen.getByText(/Updated:/)).toBeInTheDocument();
     });
   });
 });

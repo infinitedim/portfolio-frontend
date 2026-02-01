@@ -1,5 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Testing
+
+**Gunakan `bun run test` (bukan `bun test`)** untuk menjalankan unit dan integration test. Proyek ini memakai **Vitest**; perintah `bun test` menjalankan test runner bawaan Bun yang tidak kompatibel dengan mock Vitest (`vi`).
+
+```bash
+bun run test          # Vitest: unit + integration
+bun run test:coverage # Vitest dengan coverage
+bun run test:e2e      # Playwright E2E (perlu: npx playwright install)
+```
+
 ## Getting Started
 
 First, run the development server:
