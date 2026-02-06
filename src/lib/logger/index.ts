@@ -14,6 +14,7 @@ export { initWebVitals, reportWebVitals, getWebVitalsSummary } from "./web-vital
 
 // Types
 export type {
+  LogLevel,
   LogContext,
   LogEntry,
   ErrorLog,

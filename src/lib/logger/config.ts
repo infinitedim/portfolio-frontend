@@ -9,7 +9,7 @@ import { LogLevel, type LoggerConfig, type BatchConfig } from "./types";
  * Get the current environment
  */
 function getEnvironment(): "development" | "staging" | "production" {
-  const env = process.env.NODE_ENV as string | undefined;
+  const env = process.env.NODE_ENV;
   if (env === "production") return "production";
   if (env === "staging") return "staging";
   return "development";

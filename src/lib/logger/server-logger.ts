@@ -5,18 +5,10 @@
 
 import pino from "pino";
 import type { Logger as PinoLogger } from "pino";
-import {
-  writeFileSync,
-  appendFileSync,
-  existsSync,
-  mkdirSync,
-  statSync,
-  renameSync,
-  unlinkSync,
-} from "fs";
-import { dirname } from "path";
+import { writeFileSync, appendFileSync, existsSync, mkdirSync, statSync, renameSync } from "fs";
+import { join, dirname } from "path";
 import { serverConfig, LOG_PATHS, ROTATION_CONFIG } from "./config";
-import { formatError, sanitizeHeaders, isServer } from "./utils";
+import { maskPII, formatError, sanitizeHeaders, isServer } from "./utils";
 import type { LogLevel, LogEntry, LogContext, HttpLog } from "./types";
 
 /**
@@ -98,7 +90,7 @@ class FileTransport {
         if (i === this.maxFiles - 1) {
           // Delete oldest file
           try {
-            unlinkSync(oldFile);
+            require("fs").unlinkSync(oldFile);
           } catch (error) {
             console.error("Failed to delete old log file:", error);
           }

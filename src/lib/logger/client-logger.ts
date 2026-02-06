@@ -16,7 +16,9 @@ import {
   maskPII,
   formatError,
   getRequestContext,
+  generateCorrelationId,
   isClient,
+  getObjectSize,
 } from "./utils";
 import type {
   LogLevel,
@@ -91,26 +93,18 @@ class ClientLogger {
       retryCount: 0,
     };
 
-    // Flush logs before page unload (guard for test envs where addEventListener may be missing)
-    if (
-      typeof window !== "undefined" &&
-      typeof window.addEventListener === "function"
-    ) {
+    // Flush logs before page unload
+    if (typeof window !== "undefined") {
       window.addEventListener("beforeunload", () => {
         this.flush();
       });
 
       // Also flush on visibility change (when tab is hidden)
-      if (
-        typeof document !== "undefined" &&
-        typeof document.addEventListener === "function"
-      ) {
-        document.addEventListener("visibilitychange", () => {
-          if (document.hidden) {
-            this.flush();
-          }
-        });
-      }
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          this.flush();
+        }
+      });
     }
   }
 
@@ -233,7 +227,7 @@ class ClientLogger {
    * Log a trace message
    */
   trace(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
-    if (!this.enabled || !this.shouldSample("trace" as LogLevel)) return;
+    if (!this.enabled || !this.shouldSample("trace")) return;
 
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
@@ -251,7 +245,7 @@ class ClientLogger {
    * Log a debug message
    */
   debug(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
-    if (!this.enabled || !this.shouldSample("debug" as LogLevel)) return;
+    if (!this.enabled || !this.shouldSample("debug")) return;
 
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),

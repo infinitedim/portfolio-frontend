@@ -3,7 +3,7 @@
  * Unit tests for logging utility functions
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
   maskPII,
   maskPIIString,
@@ -112,9 +112,8 @@ describe('Logger Utils', () => {
         'Content-Type': 'application/json',
       });
       const result = sanitizeHeaders(headers);
-      // Headers API normalizes keys to lowercase
-      expect(result.authorization).toBe('[REDACTED]');
-      expect(result['content-type']).toBe('application/json');
+      expect(result.Authorization).toBe('[REDACTED]');
+      expect(result['Content-Type']).toBe('application/json');
     });
   });
 
@@ -142,20 +141,10 @@ describe('Logger Utils', () => {
 
   describe('generateCorrelationId', () => {
     it('should generate unique IDs', () => {
-      // Mock crypto.randomUUID to return different values
-      let callCount = 0;
-      const originalRandomUUID = global.crypto.randomUUID;
-      global.crypto.randomUUID = vi.fn(
-        () => `test-uuid-${++callCount}`,
-      ) as typeof global.crypto.randomUUID;
-      
       const id1 = generateCorrelationId();
       const id2 = generateCorrelationId();
       expect(id1).not.toBe(id2);
       expect(id1).toMatch(/^[a-z0-9-]+$/i);
-      
-      // Restore original
-      global.crypto.randomUUID = originalRandomUUID;
     });
   });
 

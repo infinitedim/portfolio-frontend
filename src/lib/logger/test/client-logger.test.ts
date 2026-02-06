@@ -23,24 +23,21 @@ describe('ClientLogger', () => {
 
   describe('Basic Logging', () => {
     it('should log info messages', () => {
-      // Just verify the method exists and doesn't throw
-      expect(() => {
-        logger.info('Test message', { component: 'test' });
-      }).not.toThrow();
+      const spy = vi.spyOn(console, 'info').mockImplementation(() => { });
+      logger.info('Test message', { component: 'test' });
+      expect(spy).toHaveBeenCalled();
     });
 
     it('should log error messages', () => {
-      // Just verify the method exists and doesn't throw
-      expect(() => {
-        logger.error('Error message', new Error('Test error'));
-      }).not.toThrow();
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => { });
+      logger.error('Error message', new Error('Test error'));
+      expect(spy).toHaveBeenCalled();
     });
 
     it('should log warnings', () => {
-      // Just verify the method exists and doesn't throw
-      expect(() => {
-        logger.warn('Warning message');
-      }).not.toThrow();
+      const spy = vi.spyOn(console, 'warn').mockImplementation(() => { });
+      logger.warn('Warning message');
+      expect(spy).toHaveBeenCalled();
     });
   });
 
@@ -54,10 +51,9 @@ describe('ClientLogger', () => {
 
   describe('User Actions', () => {
     it('should log user actions', () => {
-      // Just verify the method exists and doesn't throw
-      expect(() => {
-        logger.logUserAction('click', { buttonId: 'submit' });
-      }).not.toThrow();
+      const spy = vi.spyOn(console, 'info').mockImplementation(() => { });
+      logger.logUserAction('click', { buttonId: 'submit' });
+      expect(spy).toHaveBeenCalled();
     });
   });
 
@@ -68,10 +64,9 @@ describe('ClientLogger', () => {
     });
 
     it('should warn on slow performance', () => {
-      // Just verify the method exists and doesn't throw
-      expect(() => {
-        logger.logPerformance('api_call', 2000, { endpoint: '/api/slow' });
-      }).not.toThrow();
+      const spy = vi.spyOn(console, 'warn').mockImplementation(() => { });
+      logger.logPerformance('api_call', 2000, { endpoint: '/api/slow' });
+      expect(spy).toHaveBeenCalled();
     });
   });
 
@@ -83,14 +78,12 @@ describe('ClientLogger', () => {
       // Security event should be logged
     });
 
-    it('should flush immediately for critical security events', () => {
-      // When logger is enabled (browser), critical events trigger flush.
-      // In test env logger may be disabled; just verify the call doesn't throw.
-      expect(() => {
-        logger.logSecurityEvent('account_takeover', 'critical', {
-          userId: '123',
-        });
-      }).not.toThrow();
+    it('should flush immediately for critical security events', async () => {
+      const flushSpy = vi.spyOn(logger, 'flush');
+      logger.logSecurityEvent('account_takeover', 'critical', {
+        userId: '123',
+      });
+      expect(flushSpy).toHaveBeenCalled();
     });
   });
 
@@ -101,17 +94,15 @@ describe('ClientLogger', () => {
     });
 
     it('should warn on client errors', () => {
-      // Just verify the method exists and doesn't throw
-      expect(() => {
-        logger.logApiCall('POST', '/api/users', 400, 100);
-      }).not.toThrow();
+      const spy = vi.spyOn(console, 'warn').mockImplementation(() => { });
+      logger.logApiCall('POST', '/api/users', 400, 100);
+      expect(spy).toHaveBeenCalled();
     });
 
     it('should error on server errors', () => {
-      // Just verify the method exists and doesn't throw
-      expect(() => {
-        logger.logApiCall('GET', '/api/users', 500, 200);
-      }).not.toThrow();
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => { });
+      logger.logApiCall('GET', '/api/users', 500, 200);
+      expect(spy).toHaveBeenCalled();
     });
   });
 });

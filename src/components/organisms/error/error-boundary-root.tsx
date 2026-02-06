@@ -65,7 +65,7 @@ export class ErrorBoundary extends Component<
         errorStore.splice(0, errorStore.length - 10);
       }
       localStorage.setItem("error-logs", JSON.stringify(errorStore));
-    } catch (_storageError) {
+    } catch (storageError) {
       // Ignore storage errors
     }
 

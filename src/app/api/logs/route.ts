@@ -24,6 +24,11 @@ const RATE_LIMIT = {
 };
 
 /**
+ * Maximum payload size (1MB)
+ */
+const MAX_PAYLOAD_SIZE = 1024 * 1024; // 1MB
+
+/**
  * Maximum batch size (logs per request)
  */
 const MAX_BATCH_SIZE = 100;

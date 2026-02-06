@@ -53,7 +53,7 @@ function getCORSHeaders(origin: string, allowed: string[]) {
 /**
  * Import server logger for structured logging
  */
-import { createServerLogger } from "../lib/logger/server-logger";
+import { createServerLogger } from "./lib/logger/server-logger";
 
 /**
  * Create logger instance for middleware
@@ -120,6 +120,7 @@ export function middleware(request: NextRequest) {
   const nonce = generateNonce();
   response.headers.set("x-nonce", nonce);
 
+  const isDevelopment = process.env.NODE_ENV === "development";
   const securityHeaders = getSecurityHeaders(nonce, isDevelopment);
 
   Object.entries(securityHeaders).forEach(([key, value]) => {

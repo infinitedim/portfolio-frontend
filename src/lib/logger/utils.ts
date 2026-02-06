@@ -216,11 +216,8 @@ export function getRequestContext(): {
   // Try to get session ID from cookie
   const sessionId = getCookie("session-id");
 
-  // Try to get user ID from cookie or localStorage (guard for test env)
-  let userId = getCookie("user-id");
-  if (userId === undefined && typeof localStorage !== "undefined" && localStorage?.getItem) {
-    userId = localStorage.getItem("userId") ?? undefined;
-  }
+  // Try to get user ID from cookie or localStorage
+  const userId = getCookie("user-id") || localStorage.getItem("userId") || undefined;
 
   // Get device type
   const deviceType = getDeviceType();
@@ -229,8 +226,8 @@ export function getRequestContext(): {
     requestId,
     sessionId,
     userId,
-    url: window.location?.href,
-    userAgent: navigator?.userAgent,
+    url: window.location.href,
+    userAgent: navigator.userAgent,
     deviceType,
   };
 }
@@ -251,7 +248,7 @@ export function generateCorrelationId(): string {
  * Get cookie value by name
  */
 function getCookie(name: string): string | undefined {
-  if (typeof document === "undefined" || typeof document.cookie !== "string") {
+  if (typeof document === "undefined") {
     return undefined;
   }
 
@@ -270,7 +267,7 @@ function getCookie(name: string): string | undefined {
  * Detect device type
  */
 function getDeviceType(): string {
-  if (typeof window === "undefined" || typeof navigator?.userAgent !== "string") {
+  if (typeof window === "undefined") {
     return "unknown";
   }
 
