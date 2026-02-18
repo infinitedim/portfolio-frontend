@@ -37,6 +37,18 @@ export interface LoginResponse {
 }
 
 /**
+ * Response object returned from registration attempts
+ * @property success - Whether the registration was successful
+ * @property user - User information if registration succeeded
+ * @property error - Error message if registration failed
+ */
+export interface RegisterResponse {
+  success: boolean;
+  user?: AuthUser;
+  error?: string;
+}
+
+/**
  * Response object returned from token refresh attempts
  * @property success - Whether the refresh was successful
  * @property accessToken - New JWT access token
@@ -101,7 +113,10 @@ class AuthService {
   private readonly USER_KEY = `${this.STORAGE_PREFIX}user`;
 
   constructor() {
-    if (typeof window !== "undefined" && typeof sessionStorage !== "undefined") {
+    if (
+      typeof window !== "undefined" &&
+      typeof sessionStorage !== "undefined"
+    ) {
       this.refreshToken = sessionStorage.getItem(this.REFRESH_TOKEN_KEY);
       const userStr = sessionStorage.getItem(this.USER_KEY);
       if (userStr) {
@@ -122,7 +137,8 @@ class AuthService {
    * Clears old insecure storage
    */
   private migrateFromLocalStorage(): void {
-    if (typeof window === "undefined" || typeof localStorage === "undefined") return;
+    if (typeof window === "undefined" || typeof localStorage === "undefined")
+      return;
 
     const oldKeys = ["accessToken", "refreshToken", "user"];
     oldKeys.forEach((key) => {
@@ -271,8 +287,71 @@ class AuthService {
     }
   }
 
-  /**
-   * Logs out the current user and clears all authentication data
+  /**   * Registers a new admin user (only works if no admin exists)
+   * @param email - User's email address
+   * @param password - User's password
+   * @param firstName - User's first name (optional)
+   * @param lastName - User's last name (optional)
+   * @returns Promise resolving to RegisterResponse with user data
+   * @example
+   * ```ts
+   * const response = await authService.register('admin@example.com', 'secure-password', 'John', 'Doe');
+   * if (response.success) {
+   *   console.log('Account created successfully!');
+   * }
+   * ```
+   */
+  async register(
+    email: string,
+    password: string,
+    firstName?: string,
+    lastName?: string,
+  ): Promise<RegisterResponse> {
+    try {
+      if (typeof window === "undefined") {
+        return {
+          success: false,
+          error: "Registration is only available on the client side",
+        };
+      }
+
+      const response = await fetch(`${getApiUrl()}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email, password, firstName, lastName }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        const user: AuthUser = {
+          userId: data.user.userId,
+          email: data.user.email,
+          role: data.user.role as "admin",
+        };
+
+        return {
+          success: true,
+          user,
+        };
+      } else {
+        return {
+          success: false,
+          error: data.error ?? "Registration failed",
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Network error",
+      };
+    }
+  }
+
+  /**   * Logs out the current user and clears all authentication data
    * Notifies the server of logout if an access token is available
    * @returns Promise resolving to true when logout is complete
    * @example
@@ -283,13 +362,18 @@ class AuthService {
    */
   async logout(): Promise<boolean> {
     try {
-      if (typeof window !== "undefined" && (this.accessToken || this.refreshToken)) {
+      if (
+        typeof window !== "undefined" &&
+        (this.accessToken || this.refreshToken)
+      ) {
         await fetch(`${getApiUrl()}/api/auth/logout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            ...(this.accessToken && { Authorization: `Bearer ${this.accessToken}` }),
+            ...(this.accessToken && {
+              Authorization: `Bearer ${this.accessToken}`,
+            }),
           },
           body: JSON.stringify({
             accessToken: this.accessToken,
@@ -300,7 +384,7 @@ class AuthService {
     } catch {
       // Ignore errors - logout should always clear local tokens
     }
-    
+
     this.clearTokens();
     return true;
   }
@@ -361,9 +445,9 @@ class AuthService {
           email: data.user.email,
           role: data.user.role as "admin",
         };
-        
+
         this.user = user;
-        
+
         if (typeof sessionStorage !== "undefined") {
           sessionStorage.setItem(this.USER_KEY, JSON.stringify(user));
         }
@@ -379,7 +463,7 @@ class AuthService {
           // Retry validation with new token
           return this.validate();
         }
-        
+
         this.clearTokens();
         return {
           success: false,

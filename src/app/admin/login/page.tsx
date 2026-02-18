@@ -150,8 +150,17 @@ export default function AdminLoginPage() {
             <span style={{ color: themeConfig.colors.muted }}>
               Press ← Back to return to home • Use Tab to navigate • Enter to
               submit
-            </span>
-          </div>
+            </span>            <br />
+            <span style={{ color: themeConfig.colors.muted }}>
+              Don't have an account?{" "}
+              <button
+                onClick={() => router.push("/admin/register")}
+                className="underline hover:no-underline"
+                style={{ color: themeConfig.colors.accent }}
+              >
+                Register here
+              </button>
+            </span>          </div>
         </div>
       </div>
     </div>
