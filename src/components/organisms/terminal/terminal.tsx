@@ -136,13 +136,37 @@ export function Terminal({
   const handleTourDemoCommand = (command: string) => {
     // Set the command in input
     setCurrentInput(command);
-    // Execute the command
+    // Execute the command so user can see the output
     executeCommand(command);
-    // Don't skip tour - let it continue!
-    // Focus the input after a short delay so user can see the result
+    // Focus the input after command executes
     setTimeout(() => {
       commandInputRef.current?.focus();
     }, 100);
+  };
+
+  // Wrapper for nextStep that clears history at specific steps
+  const handleTourNext = () => {
+    // Clear history only after history step (step 3, index 3) when moving to next
+    // This allows users to test history navigation before clearing
+    if (currentStepIndex === 3 && history.length > 0) {
+      // Clear the history after history demo step
+      clearHistory();
+    }
+    // Move to next step
+    nextStep();
+  };
+
+  // Wrapper for skipTour that clears history and shows welcome card
+  const handleTourSkip = () => {
+    // Clear history when skipping tour so terminal is clean
+    if (history.length > 0) {
+      clearHistory();
+    }
+    // Show welcome card again
+    setShowWelcome(true);
+    // Clear any input
+    setCurrentInput("");
+    skipTour();
   };
 
   const customizationService = CustomizationService.getInstance();
@@ -772,9 +796,9 @@ export function Terminal({
             stepIndex={currentStepIndex}
             totalSteps={totalSteps}
             progress={tourProgress}
-            onNext={nextStep}
+            onNext={handleTourNext}
             onPrev={prevStep}
-            onSkip={skipTour}
+            onSkip={handleTourSkip}
             onDemoCommand={handleTourDemoCommand}
           />
         )}

@@ -26,6 +26,7 @@ const RATE_LIMIT = {
 /**
  * Maximum payload size (1MB)
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MAX_PAYLOAD_SIZE = 1024 * 1024; // 1MB
 
 /**
@@ -120,14 +121,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Check rate limit
     const rateLimit = checkRateLimit(clientIp);
     if (!rateLimit.allowed) {
-      logger.warn("Rate limit exceeded for client logs", {
-        requestId,
-        component: "api/logs",
-      }, {
-        ip: clientIp,
-        limit: RATE_LIMIT.maxRequests,
-        window: RATE_LIMIT.windowMs,
-      });
+      logger.warn(
+        "Rate limit exceeded for client logs",
+        {
+          requestId,
+          component: "api/logs",
+        },
+        {
+          ip: clientIp,
+          limit: RATE_LIMIT.maxRequests,
+          window: RATE_LIMIT.windowMs,
+        },
+      );
 
       return NextResponse.json(
         {
@@ -142,7 +147,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             "X-RateLimit-Remaining": String(rateLimit.remaining),
             "X-Request-ID": requestId,
           },
-        }
+        },
       );
     }
 
@@ -154,7 +159,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         {
           status: 400,
           headers: { "X-Request-ID": requestId },
-        }
+        },
       );
     }
 
@@ -173,7 +178,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         {
           status: 400,
           headers: { "X-Request-ID": requestId },
-        }
+        },
       );
     }
 
@@ -184,7 +189,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         {
           status: 400,
           headers: { "X-Request-ID": requestId },
-        }
+        },
       );
     }
 
@@ -197,20 +202,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         {
           status: 400,
           headers: { "X-Request-ID": requestId },
-        }
+        },
       );
     }
 
     // Check batch size
     if (logs.length > MAX_BATCH_SIZE) {
-      logger.warn("Batch size exceeded", {
-        requestId,
-        component: "api/logs",
-      }, {
-        batchSize: logs.length,
-        maxBatchSize: MAX_BATCH_SIZE,
-        ip: clientIp,
-      });
+      logger.warn(
+        "Batch size exceeded",
+        {
+          requestId,
+          component: "api/logs",
+        },
+        {
+          batchSize: logs.length,
+          maxBatchSize: MAX_BATCH_SIZE,
+          ip: clientIp,
+        },
+      );
 
       return NextResponse.json(
         {
@@ -221,7 +230,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         {
           status: 413,
           headers: { "X-Request-ID": requestId },
-        }
+        },
       );
     }
 
@@ -247,14 +256,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       logger.logClientLogs(validLogs, clientInfo);
 
-      logger.info("Client logs received", {
-        requestId,
-        component: "api/logs",
-      }, {
-        count: validLogs.length,
-        invalidCount: invalidLogs.length,
-        ip: clientIp,
-      });
+      logger.info(
+        "Client logs received",
+        {
+          requestId,
+          component: "api/logs",
+        },
+        {
+          count: validLogs.length,
+          invalidCount: invalidLogs.length,
+          ip: clientIp,
+        },
+      );
     }
 
     // Return response
@@ -275,7 +288,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           "X-Response-Time": `${responseTime}ms`,
           "X-RateLimit-Remaining": String(rateLimit.remaining),
         },
-      }
+      },
     );
   } catch (error) {
     logger.error("Failed to process client logs", error, {
@@ -291,7 +304,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       {
         status: 500,
         headers: { "X-Request-ID": requestId },
-      }
+      },
     );
   }
 }

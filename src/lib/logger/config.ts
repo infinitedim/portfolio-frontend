@@ -11,7 +11,7 @@ import { LogLevel, type LoggerConfig, type BatchConfig } from "./types";
 function getEnvironment(): "development" | "staging" | "production" {
   const env = process.env.NODE_ENV;
   if (env === "production") return "production";
-  if (env === "staging") return "staging";
+  if (env === "test") return "staging";
   return "development";
 }
 
@@ -33,7 +33,10 @@ function getLogLevel(): LogLevel {
 
   // Allow override via environment variable
   const envLogLevel = process.env.NEXT_PUBLIC_LOG_LEVEL?.toLowerCase();
-  if (envLogLevel && Object.values(LogLevel).includes(envLogLevel as LogLevel)) {
+  if (
+    envLogLevel &&
+    Object.values(LogLevel).includes(envLogLevel as LogLevel)
+  ) {
     return envLogLevel as LogLevel;
   }
 
@@ -102,7 +105,8 @@ export const serverConfig: LoggerConfig = {
  */
 export const PII_PATTERNS = {
   email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
-  phone: /\b(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b/g,
+  phone:
+    /\b(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b/g,
   creditCard: /\b(?:\d{4}[-\s]?){3}\d{4}\b/g,
   ssn: /\b\d{3}-\d{2}-\d{4}\b/g,
   ipv4: /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g,

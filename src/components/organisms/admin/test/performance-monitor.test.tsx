@@ -38,7 +38,6 @@ describe("PerformanceMonitor", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
-    vi.useFakeTimers();
     vi.clearAllMocks();
 
     // Mock canvas getContext
@@ -46,7 +45,7 @@ describe("PerformanceMonitor", () => {
   });
 
   afterEach(() => {
-    vi.useRealTimers();
+    vi.clearAllTimers();
   });
 
   describe("Rendering", () => {

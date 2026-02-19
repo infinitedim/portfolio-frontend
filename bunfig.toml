@@ -1,2 +1,11 @@
-[test]
+# [test]
 preload = ["./src/test/bun-setup.ts"]
+timeout = 10000
+
+# Exclude only files that absolutely cannot work with Bun
+# Most vi.mock() calls are now handled by the compatibility layer
+# [test.exclude]
+paths = [
+  # These files have complex vi.mock usage that can't be shimmed
+  "src/lib/logger/test/client-logger.test.ts",
+]

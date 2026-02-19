@@ -122,12 +122,14 @@ function ensureDOMReady() {
         document.appendChild(html);
       }
     } catch (error) {
-      if(error instanceof Error) {
-        throw Error("Failed to append documentElement to document: " + error.message);
+      if (error instanceof Error) {
+        throw new Error(
+          "Failed to append documentElement to document: " + error.message,
+          { cause: error },
+        );
       }
     }
   }
-
 
   if (!document.body && document.documentElement) {
     const body = document.createElement("body");
@@ -257,6 +259,19 @@ Object.defineProperty(URL, "revokeObjectURL", {
   value: vi.fn(),
   writable: true,
 });
+
+// Mock Element.prototype.scrollIntoView
+Element.prototype.scrollIntoView = vi.fn();
+
+// Mock HTMLElement.prototype.scrollTo
+if (typeof HTMLElement !== "undefined") {
+  HTMLElement.prototype.scrollTo = vi.fn();
+}
+
+// Mock window.scrollTo
+if (typeof window !== "undefined") {
+  window.scrollTo = vi.fn();
+}
 
 // Additional check in beforeAll to ensure document.body exists
 // This is a fallback in case the first beforeAll didn't work

@@ -54,14 +54,14 @@ export const TOUR_STEPS: TourStep[] = [
     id: "history",
     title: "Command History 📜",
     content:
-      "Use ↑ and ↓ arrow keys to navigate through your previous commands. No need to retype!",
+      "Navigate through your previous commands using arrow keys. After executing a few commands, try pressing the up arrow to recall them!",
     target: "#command-input",
     position: "top",
-    icon: "📜",
+    icon: "📏",
     tips: [
-      "↑ = Previous command",
-      "↓ = Next command",
-      "Ctrl+R = Search history",
+      "Execute commands first to build history",
+      "Then use ↑ ↓ arrow keys to navigate",
+      "Press Enter to re-run a command",
     ],
   },
   {
@@ -81,15 +81,16 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "keyboard-shortcuts",
     title: "Power User Shortcuts ⚡",
-    content: "Master these shortcuts to navigate like a pro!",
+    content:
+      "Master these shortcuts to navigate like a pro! Use these to speed up your workflow.",
     position: "center",
     icon: "⚡",
     tips: [
-      "Ctrl+L — Clear screen",
-      "Ctrl+C — Cancel input",
-      "Ctrl+A — Jump to start",
-      "Ctrl+E — Jump to end",
-      "Tab — Auto-complete",
+      "Type 'clear' — Clear the screen",
+      "ESC — Cancel/close popups",
+      "Tab — Auto-complete commands",
+      "↑ ↓ arrows — Navigate history",
+      "Type 'shortcuts' for full list",
     ],
   },
   {

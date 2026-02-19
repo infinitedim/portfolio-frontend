@@ -66,6 +66,10 @@ export class ErrorBoundary extends Component<
       }
       localStorage.setItem("error-logs", JSON.stringify(errorStore));
     } catch (storageError) {
+      throw new Error(
+        `Failed to store error log: ${storageError instanceof Error ? storageError.message : String(storageError)}`,
+        { cause: storageError }
+      );
       // Ignore storage errors
     }
 
@@ -94,7 +98,7 @@ export class ErrorBoundary extends Component<
         <DefaultErrorFallback
           error={this.state.error}
           errorInfo={this.state.errorInfo}
-          reset={this.handleReset}
+          resetAction={this.handleReset}
         />
       );
     }
@@ -106,7 +110,7 @@ export class ErrorBoundary extends Component<
 interface DefaultErrorFallbackProps {
   error: Error;
   errorInfo: ErrorInfo | null;
-  reset: () => void;
+  resetAction: () => void;
 }
 
 /**
@@ -115,12 +119,12 @@ interface DefaultErrorFallbackProps {
 function DefaultErrorFallback({
   error,
   errorInfo,
-  reset,
+  resetAction,
 }: DefaultErrorFallbackProps): ReactNode {
   const isDev = process.env.NODE_ENV === "development";
 
   return (
-    <div className="flex min-h-[400px] flex-col items-center justify-center p-8">
+    <div className="flex min-h-100 flex-col items-center justify-center p-8">
       <div className="w-full max-w-md rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-950">
         <div className="mb-4 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900">
@@ -163,7 +167,7 @@ function DefaultErrorFallback({
         )}
 
         <button
-          onClick={reset}
+          onClick={resetAction}
           className="w-full rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-red-700 dark:hover:bg-red-600"
         >
           Try again
@@ -178,10 +182,10 @@ function DefaultErrorFallback({
  */
 export function CompactErrorFallback({
   error,
-  reset,
+  resetAction,
 }: {
   error: Error;
-  reset: () => void;
+  resetAction: () => void;
 }): ReactNode {
   return (
     <div className="rounded-md border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950">
@@ -189,7 +193,7 @@ export function CompactErrorFallback({
         {error.message || "Something went wrong"}
       </p>
       <button
-        onClick={reset}
+        onClick={resetAction}
         className="text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400"
       >
         Try again
@@ -243,7 +247,7 @@ export function AsyncBoundary({
 
 function DefaultLoadingFallback(): ReactNode {
   return (
-    <div className="flex min-h-[200px] items-center justify-center">
+    <div className="flex min-h-50 items-center justify-center">
       <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
     </div>
   );

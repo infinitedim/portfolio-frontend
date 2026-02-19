@@ -61,23 +61,8 @@ export default [
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
       "react/jsx-no-bind": "off",
-      "react/jsx-filename-extension": [
-        "warn",
-        { extensions: [".js", ".jsx", ".ts", ".tsx"] },
-      ],
       "react/require-default-props": "off",
       "react/jsx-props-no-spreading": "off",
-      "react/function-component-definition": [
-        "error",
-        {
-          namedComponents: [
-            "function-declaration",
-            "function-expression",
-            "arrow-function",
-          ],
-          unnamedComponents: ["function-expression", "arrow-function"],
-        },
-      ],
     },
     settings: {
       react: { version: "detect" },

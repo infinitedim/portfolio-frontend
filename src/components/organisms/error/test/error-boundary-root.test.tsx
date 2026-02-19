@@ -25,7 +25,7 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
     // Suppress console.error for error boundary tests
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => { });
   });
 
   describe("ErrorBoundary Component", () => {
@@ -196,9 +196,9 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
       }
 
       const error = new Error("Test error");
-      const reset = vi.fn();
+      const resetAction = vi.fn();
 
-      render(<CompactErrorFallback error={error} reset={reset} />);
+      render(<CompactErrorFallback error={error} resetAction={resetAction} />);
 
       expect(screen.getByText("Test error")).toBeInTheDocument();
     });
@@ -210,14 +210,14 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
       }
 
       const error = new Error("Test error");
-      const reset = vi.fn();
+      const resetAction = vi.fn();
 
-      render(<CompactErrorFallback error={error} reset={reset} />);
+      render(<CompactErrorFallback error={error} resetAction={resetAction} />);
 
       const tryAgainButton = screen.getByText("Try again");
       fireEvent.click(tryAgainButton);
 
-      expect(reset).toHaveBeenCalled();
+      expect(resetAction).toHaveBeenCalled();
     });
   });
 

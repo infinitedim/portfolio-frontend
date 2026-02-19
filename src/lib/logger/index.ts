@@ -7,14 +7,22 @@
 export { default as clientLogger, ClientLogger } from "./client-logger";
 
 // Server logger
-export { default as serverLogger, createServerLogger, ServerLogger } from "./server-logger";
+export {
+  default as serverLogger,
+  createServerLogger,
+  ServerLogger,
+} from "./server-logger";
 
 // Web Vitals
-export { initWebVitals, reportWebVitals, getWebVitalsSummary } from "./web-vitals";
+export {
+  initWebVitals,
+  reportWebVitals,
+  getWebVitalsSummary,
+} from "./web-vitals";
 
 // Types
 export type {
-  LogLevel,
+  // LogLevel,
   LogContext,
   LogEntry,
   ErrorLog,
@@ -30,7 +38,13 @@ export type {
 export { LogLevel } from "./types";
 
 // Configuration
-export { clientConfig, serverConfig, PII_PATTERNS, SENSITIVE_HEADERS, SENSITIVE_FIELDS } from "./config";
+export {
+  clientConfig,
+  serverConfig,
+  PII_PATTERNS,
+  SENSITIVE_HEADERS,
+  SENSITIVE_FIELDS,
+} from "./config";
 
 // Utilities
 export {

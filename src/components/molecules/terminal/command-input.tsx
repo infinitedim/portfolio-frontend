@@ -234,6 +234,7 @@ export function CommandInput({
 
       case "ArrowUp":
         e.preventDefault();
+        e.stopPropagation();
         if (showTabCompletion) {
           const completions = getTabCompletions(value);
           setTabCompletionIndex((prev) =>
@@ -252,6 +253,7 @@ export function CommandInput({
 
       case "ArrowDown":
         e.preventDefault();
+        e.stopPropagation();
         if (showTabCompletion) {
           const completions = getTabCompletions(value);
           setTabCompletionIndex((prev) =>
@@ -300,15 +302,9 @@ export function CommandInput({
         onClearError?.();
         break;
 
-      case "l":
-        if (e.ctrlKey) {
-          e.preventDefault();
-          onClearError?.();
-          onSubmit("clear");
-        }
-        break;
-
-      case "r":
+      case "i":
+      case "I":
+        // Ctrl+I for search history (show suggestions)
         if (e.ctrlKey) {
           e.preventDefault();
           setShowSuggestions(true);

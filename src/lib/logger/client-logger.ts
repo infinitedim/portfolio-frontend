@@ -12,15 +12,8 @@ import {
   PERFORMANCE_THRESHOLDS,
   SAMPLING_CONFIG,
 } from "./config";
+import { maskPII, formatError, getRequestContext, isClient } from "./utils";
 import {
-  maskPII,
-  formatError,
-  getRequestContext,
-  generateCorrelationId,
-  isClient,
-  getObjectSize,
-} from "./utils";
-import type {
   LogLevel,
   LogEntry,
   LogContext,
@@ -55,7 +48,12 @@ class ClientLogger {
       this.enabled = false;
       this.pino = {} as PinoLogger;
       this.buffer = { logs: [], timer: null, retryCount: 0 };
-      this.config = { maxBatchSize: 10, maxBatchWait: 5000, maxRetries: 3, retryDelay: 1000 };
+      this.config = {
+        maxBatchSize: 10,
+        maxBatchWait: 5000,
+        maxRetries: 3,
+        retryDelay: 1000,
+      };
       return;
     }
 
@@ -146,7 +144,10 @@ class ClientLogger {
 
     // Mask PII before adding to buffer
     const maskedEntry = clientConfig.maskPII
-      ? { ...entry, metadata: maskPII(entry.metadata) as Record<string, unknown> }
+      ? {
+          ...entry,
+          metadata: maskPII(entry.metadata) as Record<string, unknown>,
+        }
       : entry;
 
     this.buffer.logs.push(maskedEntry);
@@ -205,7 +206,8 @@ class ClientLogger {
       this.buffer.retryCount++;
 
       if (this.buffer.retryCount <= this.config.maxRetries) {
-        const delay = this.config.retryDelay * Math.pow(2, this.buffer.retryCount - 1);
+        const delay =
+          this.config.retryDelay * Math.pow(2, this.buffer.retryCount - 1);
 
         console.warn(`Failed to send logs, retrying in ${delay}ms...`, error);
 
@@ -226,12 +228,16 @@ class ClientLogger {
   /**
    * Log a trace message
    */
-  trace(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
-    if (!this.enabled || !this.shouldSample("trace")) return;
+  trace(
+    message: string,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
+    if (!this.enabled || !this.shouldSample(LogLevel.TRACE)) return;
 
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
-      level: "trace" as LogLevel,
+      level: LogLevel.TRACE,
       message,
       context: this.enrichContext(context),
       metadata,
@@ -244,12 +250,16 @@ class ClientLogger {
   /**
    * Log a debug message
    */
-  debug(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
-    if (!this.enabled || !this.shouldSample("debug")) return;
+  debug(
+    message: string,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
+    if (!this.enabled || !this.shouldSample(LogLevel.DEBUG)) return;
 
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
-      level: "debug" as LogLevel,
+      level: LogLevel.DEBUG,
       message,
       context: this.enrichContext(context),
       metadata,
@@ -262,7 +272,11 @@ class ClientLogger {
   /**
    * Log an info message
    */
-  info(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
+  info(
+    message: string,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const entry: LogEntry = {
@@ -280,7 +294,11 @@ class ClientLogger {
   /**
    * Log a warning message
    */
-  warn(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
+  warn(
+    message: string,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const entry: LogEntry = {
@@ -298,7 +316,12 @@ class ClientLogger {
   /**
    * Log an error
    */
-  error(message: string, error?: unknown, context?: LogContext, metadata?: Record<string, unknown>): void {
+  error(
+    message: string,
+    error?: unknown,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const errorDetails = error ? formatError(error) : undefined;
@@ -324,7 +347,12 @@ class ClientLogger {
   /**
    * Log a fatal error
    */
-  fatal(message: string, error?: unknown, context?: LogContext, metadata?: Record<string, unknown>): void {
+  fatal(
+    message: string,
+    error?: unknown,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const errorDetails = error ? formatError(error) : undefined;
@@ -365,7 +393,7 @@ class ClientLogger {
       },
       {
         errorType: errorDetails.name,
-      }
+      },
     );
   }
 
@@ -375,7 +403,7 @@ class ClientLogger {
   logUserAction(
     actionType: string,
     metadata?: Record<string, unknown>,
-    context?: LogContext
+    context?: LogContext,
   ): void {
     if (!this.enabled) return;
 
@@ -399,7 +427,7 @@ class ClientLogger {
     metricName: string,
     value: number,
     metadata?: Record<string, unknown>,
-    context?: LogContext
+    context?: LogContext,
   ): void {
     if (!this.enabled) return;
 
@@ -437,7 +465,7 @@ class ClientLogger {
     eventType: string,
     threatLevel: "low" | "medium" | "high" | "critical",
     metadata?: Record<string, unknown>,
-    context?: LogContext
+    context?: LogContext,
   ): void {
     if (!this.enabled) return;
 
@@ -479,11 +507,16 @@ class ClientLogger {
     statusCode: number,
     duration: number,
     metadata?: Record<string, unknown>,
-    context?: LogContext
+    context?: LogContext,
   ): void {
     if (!this.enabled) return;
 
-    const level = statusCode >= 500 ? ("error" as LogLevel) : statusCode >= 400 ? ("warn" as LogLevel) : ("debug" as LogLevel);
+    const level =
+      statusCode >= 500
+        ? ("error" as LogLevel)
+        : statusCode >= 400
+          ? ("warn" as LogLevel)
+          : ("debug" as LogLevel);
 
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),

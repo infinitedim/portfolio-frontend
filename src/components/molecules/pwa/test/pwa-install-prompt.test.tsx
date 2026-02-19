@@ -325,7 +325,6 @@ describe("PWAInstallPrompt", () => {
       const closeButton = screen.getByLabelText("Close");
       expect(closeButton).toBeInTheDocument();
 
-      const closeBtn = screen.getByLabelText("Close");
       fireEvent.click(closeButton);
 
       vi.advanceTimersByTime(300);
@@ -351,146 +350,141 @@ describe("PWAInstallPrompt", () => {
       await vi.advanceTimersByTimeAsync(1);
 
       expect(screen.getByText("Later")).toBeInTheDocument();
+
+      const laterButton = screen.getByText("Later");
+      fireEvent.click(laterButton);
+
+      vi.advanceTimersByTime(300);
+
+      await waitFor(() => {
+        expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
+      });
     });
 
-    const laterButton = screen.getByText("Later");
-    fireEvent.click(laterButton);
+    it("should save dismissal to localStorage when persistDismissal is true", async () => {
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      render(
+        <PWAInstallPrompt
+          onInstall={mockOnInstall}
+          onDismiss={mockOnDismiss}
+          delay={0}
+          persistDismissal={true}
+        />,
+      );
 
-    vi.advanceTimersByTime(300);
+      await vi.advanceTimersByTimeAsync(1);
 
-    await waitFor(() => {
+      expect(screen.getByText("Later")).toBeInTheDocument();
+
+      const laterButton = screen.getByText("Later");
+      fireEvent.click(laterButton);
+
+      vi.advanceTimersByTime(300);
+
+      await waitFor(() => {
+        expect(localStorageMock.getItem("pwa-prompt-dismissed")).toBe("true");
+      });
+    });
+
+    it("should not save dismissal to localStorage when persistDismissal is false", async () => {
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      render(
+        <PWAInstallPrompt
+          onInstall={mockOnInstall}
+          onDismiss={mockOnDismiss}
+          delay={0}
+          persistDismissal={false}
+        />,
+      );
+
+      await vi.advanceTimersByTimeAsync(1);
+
+      expect(screen.getByText("Later")).toBeInTheDocument();
+
+      const laterButton = screen.getByText("Later");
+      fireEvent.click(laterButton);
+
+      vi.advanceTimersByTime(300);
+
+      expect(localStorageMock.getItem("pwa-prompt-dismissed")).toBeNull();
+    });
+  });
+
+  describe("Keyboard Navigation", () => {
+    it("should dismiss on Escape key", async () => {
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      render(
+        <PWAInstallPrompt
+          onInstall={mockOnInstall}
+          onDismiss={mockOnDismiss}
+          delay={0}
+        />,
+      );
+
+      await vi.advanceTimersByTimeAsync(1);
+
+      expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
+
+      fireEvent.keyDown(document, { key: "Escape" });
+
+      vi.advanceTimersByTime(300);
+
+      await waitFor(() => {
+        expect(mockOnDismiss).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("Dismissal Persistence", () => {
+    it("should not show prompt if previously dismissed", () => {
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      localStorageMock.setItem("pwa-prompt-dismissed", "true");
+
+      render(
+        <PWAInstallPrompt
+          onInstall={mockOnInstall}
+          onDismiss={mockOnDismiss}
+          delay={0}
+          persistDismissal={true}
+        />,
+      );
+
+      vi.advanceTimersByTime(1000);
+
       expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
     });
-  });
 
-  it("should save dismissal to localStorage when persistDismissal is true", async () => {
-    if (!canRunTests) {
-      expect(true).toBe(true);
-      return;
-    }
-    render(
-      <PWAInstallPrompt
-        onInstall={mockOnInstall}
-        onDismiss={mockOnDismiss}
-        delay={0}
-        persistDismissal={true}
-      />,
-    );
+    it("should show prompt if not previously dismissed", async () => {
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      localStorageMock.removeItem("pwa-prompt-dismissed");
 
-    await vi.advanceTimersByTimeAsync(1);
+      render(
+        <PWAInstallPrompt
+          onInstall={mockOnInstall}
+          onDismiss={mockOnDismiss}
+          delay={0}
+          persistDismissal={true}
+        />,
+      );
 
-    expect(screen.getByText("Later")).toBeInTheDocument();
-  });
+      await vi.advanceTimersByTimeAsync(1);
 
-  const laterButton = screen.getByText("Later");
-  fireEvent.click(laterButton);
-
-  vi.advanceTimersByTime(300);
-
-  await waitFor(() => {
-    expect(localStorageMock.getItem("pwa-prompt-dismissed")).toBe("true");
-  });
-});
-
-it("should not save dismissal to localStorage when persistDismissal is false", async () => {
-  if (!canRunTests) {
-    expect(true).toBe(true);
-    return;
-  }
-  render(
-    <PWAInstallPrompt
-      onInstall={mockOnInstall}
-      onDismiss={mockOnDismiss}
-      delay={0}
-      persistDismissal={false}
-    />,
-  );
-
-  await vi.advanceTimersByTimeAsync(1);
-
-  expect(screen.getByText("Later")).toBeInTheDocument();
-});
-
-const laterButton = screen.getByText("Later");
-fireEvent.click(laterButton);
-
-vi.advanceTimersByTime(300);
-
-expect(localStorageMock.getItem("pwa-prompt-dismissed")).toBeNull();
+      expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
     });
-  });
-
-describe("Keyboard Navigation", () => {
-  it("should dismiss on Escape key", async () => {
-    if (!canRunTests) {
-      expect(true).toBe(true);
-      return;
-    }
-    render(
-      <PWAInstallPrompt
-        onInstall={mockOnInstall}
-        onDismiss={mockOnDismiss}
-        delay={0}
-      />,
-    );
-
-    await vi.advanceTimersByTimeAsync(1);
-
-    expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
-  });
-
-  fireEvent.keyDown(document, { key: "Escape" });
-
-  vi.advanceTimersByTime(300);
-
-  await waitFor(() => {
-    expect(mockOnDismiss).toHaveBeenCalled();
-  });
-});
-  });
-
-describe("Dismissal Persistence", () => {
-  it("should not show prompt if previously dismissed", () => {
-    if (!canRunTests) {
-      expect(true).toBe(true);
-      return;
-    }
-    localStorageMock.setItem("pwa-prompt-dismissed", "true");
-
-    render(
-      <PWAInstallPrompt
-        onInstall={mockOnInstall}
-        onDismiss={mockOnDismiss}
-        delay={0}
-        persistDismissal={true}
-      />,
-    );
-
-    vi.advanceTimersByTime(1000);
-
-    expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
-  });
-
-  it("should show prompt if not previously dismissed", async () => {
-    if (!canRunTests) {
-      expect(true).toBe(true);
-      return;
-    }
-    localStorageMock.removeItem("pwa-prompt-dismissed");
-
-    render(
-      <PWAInstallPrompt
-        onInstall={mockOnInstall}
-        onDismiss={mockOnDismiss}
-        delay={0}
-        persistDismissal={true}
-      />,
-    );
-
-    await vi.advanceTimersByTimeAsync(1);
-
-    expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
-  });
-});
   });
 });

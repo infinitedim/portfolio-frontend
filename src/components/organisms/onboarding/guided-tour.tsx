@@ -91,15 +91,9 @@ export const GuidedTour = memo(function GuidedTour({
         (activeElement instanceof HTMLElement && activeElement.isContentEditable)
       );
 
-      // Only handle tour navigation if input is not focused
-      // Exception: ESC should always work to skip tour
-      if (isInputFocused && e.key !== "Escape") {
-        return;
-      }
-
       switch (e.key) {
         case "Escape":
-          // Don't allow ESC to skip easily - show confirmation
+          // ESC should always work to skip tour, even if input is focused
           if (window.confirm("Are you sure you want to skip the tour?")) {
             e.preventDefault();
             e.stopPropagation();
@@ -108,23 +102,19 @@ export const GuidedTour = memo(function GuidedTour({
           break;
         case "ArrowRight":
           // Only handle if not in input and not with modifier keys
-          if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+          if (!isInputFocused && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
             e.preventDefault();
             e.stopPropagation();
             onNext();
           }
           break;
         case "Enter":
-          // Only handle Enter if not in input
-          if (!isInputFocused) {
-            e.preventDefault();
-            e.stopPropagation();
-            onNext();
-          }
+          // NEVER handle Enter - let it always go to command input
+          // Users need Enter to execute commands
           break;
         case "ArrowLeft":
           // Only handle if not in input and not with modifier keys
-          if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+          if (!isInputFocused && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
             e.preventDefault();
             e.stopPropagation();
             if (stepIndex > 0) onPrev();
@@ -207,6 +197,8 @@ export const GuidedTour = memo(function GuidedTour({
 
   const isFirstStep = stepIndex === 0;
   const isLastStep = stepIndex === totalSteps - 1;
+  // For demo command steps, use lighter overlay so output is visible
+  const overlayOpacity = step.demoCommand ? 0.15 : 0.5;
 
   // Calculate tooltip position based on step configuration
   const getTooltipPosition = (): React.CSSProperties => {
@@ -320,8 +312,8 @@ export const GuidedTour = memo(function GuidedTour({
             style={{
               top: 0,
               height: `${highlightRect.top}px`,
-              backgroundColor: "rgba(0, 0, 0, 0.9)",
-              backdropFilter: "blur(4px)",
+              backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})`,
+              backdropFilter: step.demoCommand ? "blur(0px)" : "blur(2px)",
               zIndex: 9998,
             }}
           />
@@ -334,8 +326,8 @@ export const GuidedTour = memo(function GuidedTour({
             style={{
               top: `${highlightRect.top + highlightRect.height}px`,
               bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.9)",
-              backdropFilter: "blur(4px)",
+              backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})`,
+              backdropFilter: step.demoCommand ? "blur(0px)" : "blur(1px)",
               zIndex: 9998,
             }}
           />
@@ -350,8 +342,8 @@ export const GuidedTour = memo(function GuidedTour({
               left: 0,
               width: `${highlightRect.left}px`,
               height: `${highlightRect.height}px`,
-              backgroundColor: "rgba(0, 0, 0, 0.9)",
-              backdropFilter: "blur(4px)",
+              backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})`,
+              backdropFilter: step.demoCommand ? "blur(0px)" : "blur(1px)",
               zIndex: 9998,
             }}
           />
@@ -366,8 +358,8 @@ export const GuidedTour = memo(function GuidedTour({
               left: `${highlightRect.left + highlightRect.width}px`,
               right: 0,
               height: `${highlightRect.height}px`,
-              backgroundColor: "rgba(0, 0, 0, 0.9)",
-              backdropFilter: "blur(4px)",
+              backgroundColor: `rgba(0, 0, 0, ${overlayOpacity})`,
+              backdropFilter: step.demoCommand ? "blur(0px)" : "blur(1px)",
               zIndex: 9998,
             }}
           />
@@ -534,7 +526,6 @@ export const GuidedTour = memo(function GuidedTour({
                 <span>⚡</span>
                 <span>Try it:</span>
                 <code className="font-bold bg-black/20 px-2 py-1 rounded">{step.demoCommand}</code>
-                <span className="text-xs opacity-70">(Tour continues)</span>
               </button>
             )}
           </div>
@@ -599,7 +590,6 @@ export const GuidedTour = memo(function GuidedTour({
             style={{ color: themeConfig.colors.muted }}
           >
             <span>← → Navigate</span>
-            <span>Enter Next</span>
             <span>ESC Skip</span>
           </div>
         </div>

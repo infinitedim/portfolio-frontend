@@ -5,10 +5,17 @@
 
 import pino from "pino";
 import type { Logger as PinoLogger } from "pino";
-import { writeFileSync, appendFileSync, existsSync, mkdirSync, statSync, renameSync } from "fs";
-import { join, dirname } from "path";
+import {
+  writeFileSync,
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  statSync,
+  renameSync,
+} from "fs";
+import { dirname } from "path";
 import { serverConfig, LOG_PATHS, ROTATION_CONFIG } from "./config";
-import { maskPII, formatError, sanitizeHeaders, isServer } from "./utils";
+import { formatError, sanitizeHeaders, isServer } from "./utils";
 import type { LogLevel, LogEntry, LogContext, HttpLog } from "./types";
 
 /**
@@ -90,6 +97,7 @@ class FileTransport {
         if (i === this.maxFiles - 1) {
           // Delete oldest file
           try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             require("fs").unlinkSync(oldFile);
           } catch (error) {
             console.error("Failed to delete old log file:", error);
@@ -164,7 +172,10 @@ class ServerLogger {
     // Initialize file transports if file logging is enabled
     if (serverConfig.file) {
       try {
-        this.fileTransports.set("combined", new FileTransport(LOG_PATHS.combined));
+        this.fileTransports.set(
+          "combined",
+          new FileTransport(LOG_PATHS.combined),
+        );
         this.fileTransports.set("error", new FileTransport(LOG_PATHS.error));
         this.fileTransports.set("access", new FileTransport(LOG_PATHS.access));
       } catch (error) {
@@ -254,7 +265,11 @@ class ServerLogger {
   /**
    * Log a trace message
    */
-  trace(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
+  trace(
+    message: string,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const entry: LogEntry = {
@@ -272,7 +287,11 @@ class ServerLogger {
   /**
    * Log a debug message
    */
-  debug(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
+  debug(
+    message: string,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const entry: LogEntry = {
@@ -290,7 +309,11 @@ class ServerLogger {
   /**
    * Log an info message
    */
-  info(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
+  info(
+    message: string,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const entry: LogEntry = {
@@ -308,7 +331,11 @@ class ServerLogger {
   /**
    * Log a warning message
    */
-  warn(message: string, context?: LogContext, metadata?: Record<string, unknown>): void {
+  warn(
+    message: string,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const entry: LogEntry = {
@@ -326,7 +353,12 @@ class ServerLogger {
   /**
    * Log an error
    */
-  error(message: string, error?: unknown, context?: LogContext, metadata?: Record<string, unknown>): void {
+  error(
+    message: string,
+    error?: unknown,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const errorDetails = error ? formatError(error) : undefined;
@@ -349,7 +381,12 @@ class ServerLogger {
   /**
    * Log a fatal error
    */
-  fatal(message: string, error?: unknown, context?: LogContext, metadata?: Record<string, unknown>): void {
+  fatal(
+    message: string,
+    error?: unknown,
+    context?: LogContext,
+    metadata?: Record<string, unknown>,
+  ): void {
     if (!this.enabled) return;
 
     const errorDetails = error ? formatError(error) : undefined;
@@ -378,11 +415,16 @@ class ServerLogger {
     statusCode: number,
     responseTime: number,
     context?: LogContext,
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, unknown>,
   ): void {
     if (!this.enabled) return;
 
-    const level = statusCode >= 500 ? ("error" as LogLevel) : statusCode >= 400 ? ("warn" as LogLevel) : ("info" as LogLevel);
+    const level =
+      statusCode >= 500
+        ? ("error" as LogLevel)
+        : statusCode >= 400
+          ? ("warn" as LogLevel)
+          : ("info" as LogLevel);
 
     const entry: HttpLog = {
       timestamp: new Date().toISOString(),
@@ -409,7 +451,7 @@ class ServerLogger {
     url: string,
     headers: Record<string, string>,
     context?: LogContext,
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, unknown>,
   ): void {
     if (!this.enabled) return;
 
@@ -432,7 +474,7 @@ class ServerLogger {
     statusCode: number,
     responseTime: number,
     context?: LogContext,
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, unknown>,
   ): void {
     this.logHttp(method, url, statusCode, responseTime, context, metadata);
   }

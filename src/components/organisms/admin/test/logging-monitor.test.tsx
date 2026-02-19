@@ -27,12 +27,11 @@ describe("LoggingMonitor", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
-    vi.useFakeTimers();
     vi.clearAllMocks();
   });
 
   afterEach(() => {
-    vi.useRealTimers();
+    vi.clearAllTimers();
   });
 
   describe("Rendering", () => {

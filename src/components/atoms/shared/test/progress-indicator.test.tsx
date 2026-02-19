@@ -177,6 +177,7 @@ describe("ProgressIndicator", () => {
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { container } = render(<ProgressIndicator progress={50} />);
       const percentage = screen.getByText("50%");
       expect(percentage).toHaveStyle({
@@ -307,8 +308,8 @@ describe("ProgressIndicator", () => {
         return;
       }
 
-      const { container } = render(<ProgressIndicator progress={50} />);
-      const progressBar = container.querySelector(".transition-all");
+      const { container: transitionContainer } = render(<ProgressIndicator progress={50} />);
+      const progressBar = transitionContainer.querySelector(".transition-all");
       expect(progressBar).toBeTruthy();
     });
   });
@@ -441,8 +442,8 @@ describe("ProgressIndicator", () => {
       rerender(<ProgressIndicator progress={50} />);
 
       // Component should re-render
-      const { container } = render(<ProgressIndicator progress={50} />);
-      expect(container).toBeTruthy();
+      const { container: rerenderedContainer } = render(<ProgressIndicator progress={50} />);
+      expect(rerenderedContainer).toBeTruthy();
     });
   });
 });

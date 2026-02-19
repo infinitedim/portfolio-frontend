@@ -18,14 +18,18 @@ export default defineConfig({
       ".cache",
       "e2e",
     ],
-    isolate: true,
-    pool: "forks",
-
-    maxConcurrency: 1,
-    cache: false,
-    sequence: {
-      shuffle: false,
-    },
+    pool: "threads",
+    // poolOptions: {
+    //   threads: {
+    //     singleThread: false,
+    //     isolate: false,
+    //   },
+    // },
+    testTimeout: 5000,
+    hookTimeout: 5000,
+    maxConcurrency: 10,
+    // minThreads: 1,
+    // maxThreads: 4,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
