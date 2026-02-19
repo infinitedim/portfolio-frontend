@@ -2,28 +2,28 @@
 
 > _"Why have a boring portfolio when you can have a TERMINAL portfolio?"_ 🤖
 
-Welcome to the most epic way to showcase your skills! This isn't just another portfolio website - it's a full-blown terminal experience with enterprise-grade security that'll make visitors go "Whoa, this is actually pretty cool!" 😎
+Welcome to the most epic way to showcase your skills! This isn't just another portfolio website - it's a full-blown terminal experience with enterprise-grade logging and monitoring that'll make visitors go "Whoa, this is actually pretty cool!" 😎
 
 [![Next.js Badge](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![NestJS Badge](https://img.shields.io/badge/NestJS-11-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![Rust Badge](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![TypeScript Badge](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS Badge](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Prisma Badge](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://prisma.io/)
-[![tRPC Badge](https://img.shields.io/badge/tRPC-2596BE?style=for-the-badge&logo=trpc&logoColor=white)](https://trpc.io/)
+[![Bun Badge](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)](https://bun.sh/)
+[![Grafana Badge](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.com/)
 [![Vercel Badge](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
 ## 🆕 What's New in v2.0 (Major Update!)
 
-This release brings **enterprise-grade security**, **full-stack architecture**, and **monorepo structure**. Here's what changed:
+This release brings **blazing-fast performance**, **enterprise-grade logging**, and **modern architecture**. Here's what changed:
 
-- 🏗️ **Monorepo Architecture** - Organized with Turborepo for blazing-fast builds
-- 🔐 **Enterprise Security** - JWT auth, CSRF protection, rate limiting, XSS sanitization
-- 🗄️ **Database Integration** - PostgreSQL with Prisma ORM
-- ⚡ **Redis Caching** - Upstash Redis for sessions & rate limiting
-- 🔄 **tRPC API** - End-to-end type-safe API layer
-- 🛡️ **Admin Panel** - Secure admin dashboard with IP allowlisting
-- 📝 **Blog System** - Built-in blog with markdown support
+- 🦀 **Rust Backend** - High-performance backend with Axum web framework
+- ⚡ **Bun Runtime** - Lightning-fast JavaScript runtime and package manager
+- 📊 **Comprehensive Logging** - Loki + Grafana for log aggregation & monitoring
+- 📈 **Real-time Dashboards** - Application, errors, performance, and security metrics
+- 🎨 **Modern UI** - Built with Next.js 15 App Router and Tailwind CSS
+- 🔔 **Smart Alerting** - Automated alerts for errors, performance, and security
 - 🎵 **Spotify Integration** - Show what you're listening to
+- 📁 **File-based Logging** - Structured logging with rotation and retention
 
 ## 🎭 What's This All About?
 
@@ -102,22 +102,13 @@ Your terminal works everywhere:
 - 📈 **Progress Tracking**: Show off that growth mindset
 - 🏆 **Achievement Unlocked**: Highlight your wins
 - 🔄 **Real-time API Integration**: Live data from roadmap.sh API
-- 💾 **Smart Caching**: Fast performance with Redis caching
-- 🔄 **Automatic Fallback**: Graceful degradation if API is unavailable
+- � **Automatic Fallback**: Graceful degradation if API is unavailable
 
 ### 🎵 Spotify Integration
 
 - 🎧 **Now Playing**: Show what you're jamming to
 - 🔄 **Real-time Updates**: Auto-refresh currently playing
 - 🎨 **Album Art**: Beautiful display of current track
-
-### 📢 Slack Notifications (Ready for Integration)
-
-- 📬 **Contact Alerts**: Get notified of new contact form submissions
-- 🔐 **Security Monitoring**: Real-time alerts for security events
-- 📊 **Admin Notifications**: System events and updates
-- 🎨 **Rich Formatting**: Beautiful messages with colors and emojis
-- 🔧 **Easy Setup**: Simple webhook configuration (see [SLACK_SETUP.md](./SLACK_SETUP.md))
 
 ## 🛠️ Tech Stack Hall of Fame
 
@@ -135,64 +126,79 @@ We only use the good stuff around here:
 
 ### ⚙️ Backend
 
-| Technology    | Why It's Awesome                    | Version |
-| ------------- | ----------------------------------- | ------- |
-| 🏰 **NestJS** | Enterprise Node.js framework        | 11+     |
-| 🔄 **tRPC**   | End-to-end typesafe APIs            | 11+     |
-| 🗄️ **Prisma** | Next-generation ORM that just works | 7+      |
-| 🔴 **Redis**  | Lightning-fast caching with Upstash | Latest  |
-| 🔐 **JWT**    | Secure authentication tokens        | Latest  |
-| 🛡️ **Helmet** | Security headers done right         | 8+      |
+| Technology      | Why It's Awesome                       | Version |
+| --------------- | -------------------------------------- | ------- |
+| 🦀 **Rust**     | Blazing-fast, memory-safe backend      | 1.75+   |
+| 🚀 **Axum**     | Ergonomic and modular web framework    | Latest  |
+| 📝 **Tracing**  | Powerful structured logging            | Latest  |
+| 📊 **Loki**     | Scalable log aggregation system        | Latest  |
+| 🔍 **Promtail** | Log collection agent                   | Latest  |
+| 📈 **Grafana**  | Beautiful dashboards and visualization | Latest  |
 
 ### 🏗️ Infrastructure
 
-| Technology        | Why It's Awesome                          | Version |
-| ----------------- | ----------------------------------------- | ------- |
-| ⚡ **Bun**        | The fast runtime that makes npm look slow | 1.3+    |
-| 🔧 **Turborepo**  | Monorepo that actually works              | 2.6+    |
-| 🚀 **Vercel**     | Deploy faster than you can say "git push" | -       |
-| 🐘 **PostgreSQL** | The database that can do anything         | 15+     |
+| Technology    | Why It's Awesome                          | Version |
+| ------------- | ----------------------------------------- | ------- |
+| ⚡ **Bun**    | The fast runtime that makes npm look slow | 1.2+    |
+| 🚀 **Vercel** | Deploy faster than you can say "git push" | -       |
+| 🐳 **Docker** | Containerization for logging stack        | Latest  |
+| 📦 **Cargo**  | Rust package manager and build tool       | Latest  |
 
 ## 🏗️ Architecture Overview
 
 ```text
-terminal-portfolio/                    # 🏠 Monorepo Root
-├── 📦 packages/
-│   ├── 🎨 frontend/                   # Next.js 15 App
-│   │   ├── src/
-│   │   │   ├── app/                   # App Router pages
-│   │   │   ├── components/            # React components
-│   │   │   │   ├── terminal/          # Terminal magic ✨
-│   │   │   │   ├── admin/             # Admin dashboard
-│   │   │   │   └── ...
-│   │   │   ├── lib/
-│   │   │   │   ├── auth/              # Auth services
-│   │   │   │   ├── trpc/              # tRPC client
-│   │   │   │   └── ...
-│   │   │   └── middleware/            # Security middleware
-│   │   └── e2e/                       # Playwright tests
-│   │
-│   ├── ⚙️ backend/                    # NestJS API
-│   │   ├── src/
+portfolio/
+├── 📁 portfolio-frontend/             # 🎨 Next.js Frontend
+│   ├── src/
+│   │   ├── app/                       # App Router pages
+│   │   ├── components/                # React components
+│   │   │   ├── atoms/                 # Atomic components
+│   │   │   ├── molecules/             # Molecule components
+│   │   │   ├── organisms/             # Complex components
+│   │   │   │   └── terminal/          # Terminal magic ✨
+│   │   │   └── monitoring/            # Monitoring components
+│   │   ├── lib/
+│   │   │   ├── commands/              # Terminal commands
+│   │   │   ├── logger/                # Client & server logging
 │   │   │   ├── auth/                  # Authentication
-│   │   │   ├── security/              # Security services
-│   │   │   │   ├── security.service   # JWT, rate limiting
-│   │   │   │   ├── csrf.service       # CSRF protection
-│   │   │   │   └── audit-log.service  # Security logging
-│   │   │   ├── trpc/                  # tRPC routers
-│   │   │   ├── prisma/                # Database service
-│   │   │   └── redis/                 # Cache service
-│   │   └── prisma/
-│   │       └── schema.prisma          # Database schema
-│   │
-│   └── 🎭 ui/                         # Shared UI components
-│       └── src/                       # shadcn/ui components
+│   │   │   └── ...
+│   │   ├── hooks/                     # React hooks
+│   │   ├── middleware/                # Next.js middleware
+│   │   └── test/                      # Test setup
+│   ├── e2e/                           # Playwright E2E tests
+│   ├── public/                        # Static assets
+│   ├── logs/                          # Frontend log files
+│   └── docs/                          # Documentation
 │
-├── 🔧 tools/
-│   ├── logger/                        # Shared logging
-│   └── trpc/                          # Shared tRPC config
+├── 📁 portfolio-backend/              # 🦀 Rust Backend
+│   ├── src/
+│   │   ├── main.rs                    # Entry point
+│   │   ├── lib.rs                     # Library exports
+│   │   ├── routes/                    # API routes
+│   │   │   ├── health.rs              # Health check
+│   │   │   ├── logs.rs                # Log ingestion
+│   │   │   ├── auth.rs                # Authentication
+│   │   │   ├── blog.rs                # Blog API
+│   │   │   └── portfolio.rs           # Portfolio data
+│   │   ├── logging/                   # Logging configuration
+│   │   │   ├── config.rs              # Log config
+│   │   │   └── middleware.rs          # HTTP logging
+│   │   └── db/                        # Database (future)
+│   ├── config/                        # Loki, Promtail, Grafana
+│   │   ├── loki-config.yml
+│   │   ├── promtail-config.yml
+│   │   └── grafana/
+│   │       ├── dashboards/            # Pre-built dashboards
+│   │       ├── datasources/           # Loki datasource
+│   │       └── alerts/                # Alert rules
+│   ├── logs/                          # Backend log files
+│   ├── data/                          # Persistent data
+│   └── docker-compose.logging.yml     # Logging stack
 │
-└── 📄 Config files                    # Turbo, ESLint, etc.
+└── 🔧 Shared/
+    ├── VSCode settings
+    ├── .github/workflows/             # CI/CD pipelines
+    └── Environment configs
 ```
 
 ## 🚀 Let's Get This Party Started
@@ -201,11 +207,11 @@ terminal-portfolio/                    # 🏠 Monorepo Root
 
 Before we dive in, make sure you have:
 
-- 📦 **Bun 1.3+** (recommended) or Node.js 18+
-- 🐙 **Git** (obviously)
-- 🗄️ **PostgreSQL** (local or cloud-hosted)
-- 🔴 **Redis** (or use Upstash - free tier available!)
-- ☕ **Coffee** (not required but highly recommended)
+- 📦 **Bun 1.2+** - Fast JavaScript runtime and package manager
+- 🦀 **Rust 1.75+** - For backend development
+- 🐙 **Git** - Obviously!
+- 🐳 **Docker & Docker Compose** - For logging stack (Loki, Grafana)
+- ☕ **Coffee** - Not required but highly recommended
 
 ### 🎯 Installation Speedrun
 
@@ -216,49 +222,57 @@ git clone https://github.com/infinitedim/portfolio.git
 cd portfolio
 ```
 
-**Step 2**: Install the magic! ✨
+**Step 2**: Install frontend dependencies! ✨
 
 ```bash
-# Using Bun (recommended - it's FAST)
+cd portfolio-frontend
 bun install
-
-# Or npm if you're old school
-npm install
 ```
 
-**Step 3**: Set up your environment! 🔐
+**Step 3**: Set up the backend! 🦀
 
 ```bash
-# Copy the example env file
+cd ../portfolio-backend
+
+# Build the Rust backend
+cargo build --release
+
+# Start the logging stack (Loki + Grafana)
+docker-compose -f docker-compose.logging.yml up -d
+```
+
+**Step 4**: Configure environment! 🔐
+
+```bash
+# Frontend (.env.local in portfolio-frontend/)
+cd ../portfolio-frontend
 cp .env.example .env.local
+# Edit with your values
 
-# Edit with your values (see Environment Variables section)
-```
-
-**Step 4**: Set up the database! 🗄️
-
-```bash
-# Generate Prisma client
-bun run prisma:generate
-
-# Run migrations
-bun run prisma:migrate
+# Backend (optional .env in portfolio-backend/)
+cd ../portfolio-backend
+# Set ENVIRONMENT=development, LOG_LEVEL=debug if needed
 ```
 
 **Step 5**: Fire it up! 🔥
 
 ```bash
-# Start everything in dev mode
-bun run dev
+# Terminal 1: Start the backend
+cd portfolio-backend
+cargo run
 
-# Or start specific packages
-bun run dev:frontend  # Just frontend
-bun run dev:backend   # Just backend
+# Terminal 2: Start the frontend
+cd portfolio-frontend
+bun run dev
 ```
 
-**Step 4**: Open your browser and navigate to `http://127.0.0.1:3000` 🌐
+**Step 6**: Open your browser and navigate to:
 
-**Step 5**: Type `help` and prepare to be amazed! 🤯
+- 🌐 Frontend: `http://localhost:3000`
+- 📊 Grafana: `http://localhost:3001` (admin/admin)
+- 🔍 Loki API: `http://localhost:3100`
+
+**Step 7**: Type `help` and prepare to be amazed! 🤯
 
 ## 🎮 How to Play... I Mean, Use
 
@@ -301,128 +315,120 @@ theme retro      # Vintage vibes
 
 ## ⚙️ Environment Variables
 
-Create a `.env.local` file in the root:
+### Frontend (`portfolio-frontend/.env.local`)
 
 ```env
-# 🗄️ Database (Required)
-DATABASE_URL="postgresql://user:password@localhost:5432/portfolio"
-
-# 🔴 Redis (Required)
-UPSTASH_REDIS_REST_URL="https://your-redis.upstash.io"
-UPSTASH_REDIS_REST_TOKEN="your-token"
-
-# 🔐 Security (Required - generate strong secrets!)
-JWT_SECRET="your-super-secret-jwt-key-at-least-64-chars-long-with-special-chars!"
-REFRESH_TOKEN="another-super-secret-key-different-from-jwt-secret-64-chars!"
-JWT_EXPIRES_IN="15m"
-REFRESH_TOKEN_EXPIRES_IN="7d"
-JWT_ISSUER="portfolio-app"
-JWT_AUDIENCE="portfolio-users"
-
-# 👤 Admin (Required)
-ADMIN_EMAIL="admin@yourdomain.com"
-ADMIN_PASSWORD="dev-password"          # For development
-ADMIN_PASSWORD_HASH="$2b$..."          # For production (bcrypt hash)
-
 # 🌐 App Config
 NODE_ENV="development"
-FRONTEND_ORIGIN="http://127.0.0.1:3000"
-PORT=4000
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
-# 🎵 Spotify (Optional)
+# 📝 Logging
+NEXT_PUBLIC_LOG_LEVEL="info"           # trace|debug|info|warn|error
+NEXT_PUBLIC_LOG_API_URL="/api/logs"    # Log ingestion endpoint
+
+# 🎵 Spotify Integration (Optional)
 SPOTIFY_CLIENT_ID="your-spotify-client-id"
 SPOTIFY_CLIENT_SECRET="your-spotify-client-secret"
-SPOTIFY_REDIRECT_URI="http://127.0.0.1:3000/api/spotify/callback"
+SPOTIFY_REDIRECT_URI="http://localhost:3000/api/spotify/callback"
 
-# 🛣️ Roadmap.sh (Optional)
-ROADMAP_AUTH_TOKEN="your-roadmap-token"
-ROADMAP_USER_ID="your-user-id"
-
-# 📢 Slack Notifications (Optional)
-SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
-ENABLE_SLACK_NOTIFICATIONS=true
-ENABLE_SLACK_CONTACT_ALERTS=true
-ENABLE_SLACK_SECURITY_ALERTS=true
+# 🛣️ Roadmap.sh Integration (Optional)
+NEXT_PUBLIC_ROADMAP_AUTH_TOKEN="your-roadmap-token"
+NEXT_PUBLIC_ROADMAP_USER_ID="your-user-id"
 
 # 📊 Analytics (Optional)
 NEXT_PUBLIC_GA_ID="G-XXXXXXXXXX"
+NEXT_PUBLIC_ANALYTICS_ENABLED="true"
+
+# 🔐 Monitoring (Optional)
+SENTRY_DSN="your-sentry-dsn"
+SENTRY_ENVIRONMENT="development"
 ```
 
-### 📢 Slack Integration Setup
+### Backend (`portfolio-backend/.env` - Optional)
 
-Want to receive portfolio notifications in Slack? Set up webhook integration in minutes!
+```env
+# 🦀 Backend Config
+ENVIRONMENT="development"              # production|staging|development
+LOG_LEVEL="debug"                      # trace|debug|info|warn|error
+RUST_LOG="info"                        # Rust logging level
 
-**Quick Setup:**
-
-1. Go to your Slack workspace
-2. Create an Incoming Webhook
-3. Copy the webhook URL
-4. Add it to your `.env` file
-
-**📖 [Complete Slack Setup Guide](./SLACK_SETUP.md)** - Detailed step-by-step instructions with:
-
-- How to find/create your webhook URL
-- Configuration options
-- Testing your integration
-- Message format examples
-- Security best practices
-- Troubleshooting tips
-
-**Notification Types:**
-
-- 📧 Contact form submissions
-- 🔐 Security alerts (failed logins, suspicious activity)
-- 📊 Admin notifications
-- 🐛 Error alerts (optional)
-
-```bash
-# Test your webhook (replace <YOUR_WEBHOOK_URL> with your actual URL)
-curl -X POST -H 'Content-Type: application/json' \
-  -d '{"text": "🎉 Slack integration is working!"}' \
-  "<YOUR_WEBHOOK_URL>"
+# 🌐 Server
+HOST="0.0.0.0"
+PORT="8080"
 ```
 
-## 🔐 Security Features Deep Dive
+## 📊 Monitoring & Logging
 
-### Authentication Flow
+### Logging Architecture
 
 ```text
-┌─────────┐     ┌─────────┐     ┌─────────┐
-│  User   │────▶│ Login   │────▶│  JWT    │
-└─────────┘     └─────────┘     └─────────┘
-                     │               │
-                     ▼               ▼
-              ┌─────────────┐ ┌───────────┐
-              │ Rate Limit  │ │ Blacklist │
-              │   Check     │ │   Check   │
-              └─────────────┘ └───────────┘
+┌──────────────┐
+│  Frontend    │
+│  (Next.js)   │  Client logs
+│              ├──────────┐
+└──────┬───────┘          │
+       │ Server logs      │
+       │                  │
+       ▼                  ▼
+┌──────────────┐    ┌─────────┐
+│  Backend     │    │ Log API │
+│  (Rust)      │◄───┤ /api/   │
+└──────┬───────┘    └─────────┘
+       │
+       │ Write JSON logs
+       ▼
+┌──────────────┐    ┌───────────┐    ┌─────────┐
+│  Log Files   │───▶│ Promtail  │───▶│  Loki   │
+│  - app.log   │    │(Collector)│    │(Storage)│
+│  - error.log │    └───────────┘    └────┬────┘
+└──────────────┘                          │
+                                          ▼
+                                    ┌─────────────┐
+                                    │   Grafana   │
+                                    │ (Dashboards)│
+                                    └─────────────┘
 ```
 
-### Security Layers
+### Available Dashboards
 
-1. **Rate Limiting** - Redis-backed with in-memory fallback (fail-closed)
-2. **JWT Validation** - HS512 algorithm with issuer/audience checks
-3. **CSRF Protection** - Token-based for state-changing requests on API/tRPC routes
-4. **Input Sanitization** - XSS prevention on all user inputs
-5. **Audit Logging** - Every security event recorded
-6. **IP Allowlisting** - Restrict admin access by IP
+1. **Application Overview** - Requests, errors, response times, Web Vitals
+2. **Errors Dashboard** - Error tracking, distribution, and recent critical errors
+3. **Performance** - Response time percentiles, slow requests, heatmaps
+4. **Security** - Suspicious patterns, rate limits, failed auth
+
+### Alerting
+
+- 🚨 High error rate (>5 errors/second)
+- 📉 Service down (no logs for 5 minutes)
+- 🐌 Slow response time (P95 >2s)
+- 🔐 Security events (failed logins, rate limit abuse)
 
 ## 🧪 Testing
 
-```bash
-# Run all tests
-bun run test
+### Frontend Tests
 
-# Run specific package tests
-bun run test:frontend
-bun run test:backend
-bun run test:ui
+```bash
+# Fast tests with Bun (recommended for development)
+bun test                    # ~14 seconds for full suite! ⚡
+bun test --watch            # Watch mode
+
+# Comprehensive tests with Vitest (for CI/CD)
+bun run test:vitest         # ~700 seconds but 100% compatibility
+bun run test:coverage       # With coverage reports
 
 # E2E tests with Playwright
-bun run test:e2e
+bun run test:e2e            # Full E2E test suite
+bun run test:e2e:ui         # Interactive UI mode
+```
 
-# With coverage
-bun run test:coverage
+**⚡ Performance Note**: We use **Bun test** for local development (50x faster!) and **Vitest** for comprehensive CI/CD testing. Some advanced mocking features (vi.mock) are currently disabled in Bun but work in Vitest.
+
+### Backend Tests
+
+```bash
+cd portfolio-backend
+cargo test                  # Run Rust tests
+cargo test -- --nocapture   # With output
 ```
 
 ## 🤝 Join the Revolution
@@ -459,7 +465,7 @@ Don't panic! Just:
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Vercel (Recommended for Frontend)
 
 ```bash
 # Install Vercel CLI
@@ -469,15 +475,83 @@ bun add -g vercel
 vercel
 ```
 
-### Environment Setup for Production
+### Backend Deployment
 
-1. Set all environment variables in Vercel dashboard
-2. Use `ADMIN_PASSWORD_HASH` instead of plain password
-3. Enable preview deployments for PRs
-4. Set up PostgreSQL database
-5. Set up Redis (Upstash recommended - free tier!)
+The Rust backend can be deployed to:
+
+1. **VPS/Cloud VM** (DigitalOcean, AWS EC2, etc.)
+
+   ```bash
+   # Build release binary
+   cargo build --release
+
+   # Copy binary and config to server
+   scp target/release/portfolio-backend user@server:/opt/portfolio/
+   scp -r config user@server:/opt/portfolio/
+
+   # Run with systemd or supervisor
+   ```
+
+2. **Docker Container**
+
+   ```bash
+   # Build Docker image
+   docker build -t portfolio-backend .
+
+   # Run container
+   docker run -p 8080:8080 \
+     -v ./logs:/app/logs \
+     -v ./config:/app/config \
+     portfolio-backend
+   ```
+
+3. **Logging Stack**
+   ```bash
+   # Deploy Loki + Grafana stack
+   docker-compose -f docker-compose.logging.yml up -d
+   ```
+
+### Production Checklist
+
+- [ ] Set `NODE_ENV=production` for frontend
+- [ ] Set `ENVIRONMENT=production` for backend
+- [ ] Configure Grafana admin password
+- [ ] Set up HTTPS/TLS certificates
+- [ ] Configure CORS origins
+- [ ] Set up log retention policies
+- [ ] Configure firewall rules
+- [ ] Set up automated backups
+- [ ] Configure monitoring alerts
 
 ## 🎨 API Reference for Developers
+
+### Backend API Endpoints
+
+```bash
+# Health Check
+GET /health
+
+# Log Ingestion
+POST /api/logs
+Content-Type: application/json
+{
+  "logs": [
+    {
+      "timestamp": "2024-01-01T12:00:00Z",
+      "level": "info",
+      "message": "User action",
+      "context": {...}
+    }
+  ]
+}
+
+# Blog API (if implemented)
+GET /api/blog
+GET /api/blog/:slug
+
+# Portfolio Data
+GET /api/portfolio
+```
 
 ### 🔧 Command System
 
@@ -514,6 +588,29 @@ const myEpicTheme: Theme = {
 };
 ```
 
+### 📝 Logging in Your Code
+
+```typescript
+import { clientLogger } from "@/lib/logger";
+
+// Log user actions
+clientLogger.logUserAction("button_click", {
+  buttonId: "submit",
+  page: "/contact",
+});
+
+// Log errors
+try {
+  const data = await fetchData();
+  clientLogger.info("Data fetched", { component: "DataFetcher" });
+} catch (error) {
+  clientLogger.logError(error, {
+    component: "DataFetcher",
+    action: "fetch-data",
+  });
+}
+```
+
 ## 📸 Screenshots & Demo
 
 ### 🖥️ Desktop Experience
@@ -545,10 +642,10 @@ See the [LICENSE](LICENSE) file for the boring legal details.
 Massive thanks to these amazing projects:
 
 - 🎨 **shadcn/ui** - For components so beautiful they make designers weep
-- 🏰 **NestJS** - For making backend development a joy
-- 🔄 **tRPC** - For end-to-end type safety magic
-- 🗄️ **Prisma** - For database that just works
-- 🔴 **Upstash** - For serverless Redis awesomeness
+- 🦀 **Rust Community** - For the amazing language and ecosystem
+- 📊 **Grafana Labs** - For open-source monitoring perfection
+- 🔍 **Loki** - For making log aggregation simple and powerful
+- ⚡ **Bun Team** - For the runtime that makes everything faster
 - 🌊 **Tailwind CSS** - For making CSS fun again
 - ⚛️ **Next.js Team** - For the framework that just works
 - 🚀 **Vercel** - For deployment that's faster than light
@@ -560,15 +657,17 @@ Massive thanks to these amazing projects:
 What's coming next? Glad you asked!
 
 - [ ] 🎮 **Game Mode**: Turn your portfolio into an actual game
-- [ ] 🤖 **AI Assistant**: Chat with an AI version of yourself (SDK ready, needs implementation)
+- [ ] 🤖 **AI Assistant**: Chat with an AI version of yourself
 - [ ] 🎵 **Sound Effects**: Because everything's better with sound
 - [ ] 📁 **File System**: Simulate a real file system
 - [ ] 🔌 **Plugin System**: Let others extend your terminal
+- [ ] 📊 **Enhanced Analytics**: More detailed visitor insights
+- [ ] 🔐 **Authentication**: Optional user accounts and personalization
 - [x] 🌍 **i18n Support**: 17+ languages with RTL support ✅
 - [x] 📱 **PWA**: Service worker, offline mode, installable ✅
-- [x] 🔐 **Enterprise Security**: JWT, CSRF, Rate Limiting ✅
-- [x] 🗄️ **Database Integration**: PostgreSQL + Prisma ✅
-- [x] 🏗️ **Monorepo Architecture**: Turborepo ✅
+- [x] 📊 **Logging System**: Loki + Grafana monitoring ✅
+- [x] 🦀 **Rust Backend**: High-performance backend ✅
+- [x] ⚡ **Bun Runtime**: Fast JavaScript runtime ✅
 
 ## 🆘 Need Help?
 
