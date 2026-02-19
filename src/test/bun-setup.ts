@@ -6,48 +6,51 @@
 // Create a minimal vi compatibility layer for Bun
 // @ts-expect-error - Adding vi global for compatibility
 globalThis.vi = {
-  fn: (implementation?: any) => {
-    const mockFn = implementation || (() => {});
-    mockFn.mockReturnValue = (value: any) => {
+  fn: (implementation?: (() => unknown) | undefined) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockFn: any = implementation || (() => {});
+
+    mockFn.mockReturnValue = (_value: unknown) => {
       mockFn.mockReturnValueOnce = () => mockFn;
       return mockFn;
     };
-    mockFn.mockImplementation = (impl: any) => {
+    mockFn.mockImplementation = (impl: (() => unknown) | undefined) => {
       return impl;
     };
-    mockFn.mockResolvedValue = (value: any) => {
+    mockFn.mockResolvedValue = (_value: unknown) => {
       mockFn.mockResolvedValueOnce = () => mockFn;
       return mockFn;
     };
     return mockFn;
   },
-  spyOn: (object: any, method: string) => {
+  spyOn: (object: Record<string, unknown>, method: string) => {
     const original = object[method];
-    const spy = (...args: any[]) => original?.apply(object, args);
-    spy.mockImplementation = (impl: any) => {
+    const spy = (...args: unknown[]) =>
+      typeof original === "function" ? original.apply(object, args) : undefined;
+    spy.mockImplementation = (impl: (() => unknown) | undefined) => {
       object[method] = impl;
       return spy;
     };
-    spy.mockReturnValue = (value: any) => {
+    spy.mockReturnValue = (value: unknown) => {
       object[method] = () => value;
       return spy;
     };
     return spy;
   },
-  mock: (modulePath: string, factory?: () => any) => {
+  mock: (_modulePath: string, _factory?: () => unknown) => {
     // vi.mock is called at the top level and hoisted in Vitest
     // Bun doesn't support this properly, but we can return a no-op function
     // to prevent "vi.mock is not a function" errors
     // Tests using vi.mock should use conditional skipping for Bun
     return undefined;
   },
-  hoisted: (factory: () => any) => {
+  hoisted: (factory: () => unknown) => {
     // vi.hoisted is used with vi.mock to hoist values
     // Since we can't properly support vi.mock in Bun, just call the factory
     return factory();
   },
-  stubGlobal: (name: string, value: any) => {
-    (globalThis as any)[name] = value;
+  stubGlobal: (name: string, value: unknown) => {
+    (globalThis as Record<string, unknown>)[name] = value;
   },
   restoreAllMocks: () => {},
   clearAllMocks: () => {},
@@ -55,7 +58,7 @@ globalThis.vi = {
   clearAllTimers: () => {
     // Bun doesn't need manual timer clearing
   },
-  advanceTimersByTime: (ms: number) => {
+  advanceTimersByTime: (_ms: number) => {
     // Bun timer API stub
   },
   runAllTimers: () => {

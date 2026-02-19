@@ -8,6 +8,7 @@ import { ClientLogger } from "../client-logger";
 
 // Skip this file in Bun - it uses advanced Vitest APIs (vi.spyOn)
 // Run with: bun run test:vitest
+declare const Bun: unknown;
 const isBun = typeof Bun !== "undefined";
 if (isBun) {
   describe.skip("ClientLogger", () => {
