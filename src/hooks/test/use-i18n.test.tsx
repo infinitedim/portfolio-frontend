@@ -4,7 +4,6 @@ import { useI18n } from "../useI18n";
 import { i18n } from "@/lib/i18n/i18n-service";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock localStorage
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
@@ -21,7 +20,6 @@ const localStorageMock = (() => {
   };
 })();
 
-// Only define localStorage if window is available
 if (canRunTests && typeof window !== "undefined") {
   try {
     Object.defineProperty(window, "localStorage", {
@@ -30,7 +28,7 @@ if (canRunTests && typeof window !== "undefined") {
       configurable: true,
     });
   } catch {
-    // localStorage might already be defined, skip
+    
   }
 }
 
@@ -43,7 +41,7 @@ describe("useI18n", () => {
     ensureDocumentBody();
     localStorageMock.clear();
     vi.clearAllMocks();
-    // Reset i18n singleton to default locale
+    
     i18n.setLocale("en_US");
   });
 
@@ -128,7 +126,7 @@ describe("useI18n", () => {
       }
 
       const { result } = renderHook(() => useI18n());
-      // @ts-expect-error - testing invalid key
+      
       expect(result.current.t("nonExistentKey")).toBe("nonExistentKey");
     });
 
@@ -139,7 +137,7 @@ describe("useI18n", () => {
       }
 
       const { result } = renderHook(() => useI18n());
-      // @ts-expect-error - testing invalid key with fallback
+      
       expect(result.current.tWithFallback("nonExistentKey", "Fallback")).toBe(
         "Fallback",
       );
@@ -193,7 +191,7 @@ describe("useI18n", () => {
         expect(success).toBe(true);
       });
 
-      // Should fallback to en_US
+      
       expect(result.current.currentLocale).toBe("en_US");
     });
 
@@ -210,7 +208,7 @@ describe("useI18n", () => {
         expect(success).toBe(false);
       });
 
-      // Should remain on current locale
+      
       expect(result.current.currentLocale).toBe("en_US");
     });
 

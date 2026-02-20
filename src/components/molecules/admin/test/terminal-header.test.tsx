@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TerminalHeader } from "../terminal-header";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -24,7 +23,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock i18n hook
 const mockT = vi.fn((key: string) => {
   const translations: Record<string, string> = {
     adminSystem: "System",

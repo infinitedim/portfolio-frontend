@@ -29,48 +29,17 @@ const ChevronUpIcon = () => (
   </svg>
 );
 
-/**
- * Represents a single FAQ item with question and answer
- * @interface FAQItem
- * @property {string} question - The question text
- * @property {string} answer - The answer text
- */
 interface FAQItem {
   question: string;
   answer: string;
 }
 
-/**
- * Props for the FAQ component
- * @interface FAQProps
- * @property {FAQItem[]} items - Array of FAQ items to display
- * @property {string} [title] - Optional title for the FAQ section
- * @property {string} [className] - Additional CSS classes
- */
 interface FAQProps {
   items: FAQItem[];
   title?: string;
   className?: string;
 }
 
-/**
- * FAQ component with collapsible items and structured data for SEO
- * Implements schema.org FAQPage markup for enhanced search engine visibility
- * @param {FAQProps} props - Component props
- * @param {FAQItem[]} props.items - Array of FAQ items to display
- * @param {string} [props.title] - Optional title for the FAQ section (default: "Frequently Asked Questions")
- * @param {string} [props.className] - Additional CSS classes
- * @returns {JSX.Element} The FAQ component with expandable items
- * @example
- * ```tsx
- * <FAQ
- *   title="Common Questions"
- *   items={[
- *     { question: "What is this?", answer: "This is an FAQ." }
- *   ]}
- * />
- * ```
- */
 export function FAQ({
   items,
   title = "Frequently Asked Questions",
@@ -152,9 +121,6 @@ export function FAQ({
   );
 }
 
-/**
- * Predefined FAQ items for common developer portfolio questions
- */
 export const CommonFAQItems: FAQItem[] = [
   {
     question: "What technologies do you specialize in?",
@@ -198,10 +164,6 @@ export const CommonFAQItems: FAQItem[] = [
   },
 ];
 
-/**
- * FAQ component specifically for developer services
- * @returns {JSX.Element} The FAQ component
- */
 export function DeveloperFAQ(): JSX.Element {
   return (
     <FAQ

@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { RoadmapOverview } from "../roadmap-overview";
 
-// Mock dependencies
 vi.mock("@/components/molecules/roadmap/progress-bar", () => ({
   ProgressBar: ({ progress }: any) => (
     <div data-testid="progress-bar">Progress: {progress}%</div>
@@ -76,7 +75,7 @@ describe("RoadmapOverview", () => {
       }
       render(<RoadmapOverview roadmapData={mockRoadmapData} />);
 
-      // 1 completed out of 3 total = 33%
+      
       expect(screen.getByText(/33%/i)).toBeInTheDocument();
     });
 
@@ -115,9 +114,9 @@ describe("RoadmapOverview", () => {
       }
       render(<RoadmapOverview roadmapData={mockRoadmapData} />);
 
-      expect(screen.getByText("3")).toBeInTheDocument(); // Total
-      expect(screen.getByText("1")).toBeInTheDocument(); // Completed
-      expect(screen.getByText("1")).toBeInTheDocument(); // In Progress
+      expect(screen.getByText("3")).toBeInTheDocument(); 
+      expect(screen.getByText("1")).toBeInTheDocument(); 
+      expect(screen.getByText("1")).toBeInTheDocument(); 
     });
 
     it("should handle empty roadmap data", () => {

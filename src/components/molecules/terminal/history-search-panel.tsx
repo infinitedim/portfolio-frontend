@@ -22,9 +22,6 @@ interface HistorySearchPanelProps {
   className?: string;
 }
 
-/**
- * Enhanced command history search panel with  filtering, favorites, and analytics
- */
 export function HistorySearchPanel({
   isOpen,
   onClose,
@@ -434,7 +431,7 @@ export function HistorySearchPanel({
   );
 
   return (
-    /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+    
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${className}`}
       style={{ backgroundColor: `${themeConfig.colors.bg}e6` }}

@@ -1,6 +1,4 @@
-/**
- * Performance monitoring and metrics collection system
- */
+
 
 interface PerformanceMetric {
   name: string;
@@ -45,23 +43,18 @@ export class PerformanceMonitor {
     return PerformanceMonitor.instance;
   }
 
-  /**
-   * Enable or disable performance monitoring
-   * @param {boolean} enabled - Whether to enable or disable performance monitoring
-   */
+  
+
   setEnabled(enabled: boolean): void {
     this.isEnabled = enabled;
     console.log(`Performance monitoring ${enabled ? "enabled" : "disabled"}`);
   }
 
-  /**
-   * Start timing an operation
-   * @param {string} name - The name of the operation
-   * @param {PerformanceMetric["category"]} category - The category of the operation
-   */
+  
+
   startTiming(
     name: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    
     category: PerformanceMetric["category"] = "system",
   ): void {
     if (!this.isEnabled) return;
@@ -69,13 +62,8 @@ export class PerformanceMonitor {
     this.startTimes.set(name, performance.now());
   }
 
-  /**
-   * End timing an operation and record the metric
-   * @param {string} name - The name of the operation
-   * @param {PerformanceMetric["category"]} category - The category of the operation
-   * @param {Record<string, unknown>} [metadata] - The metadata for the operation
-   * @returns {number} The duration of the operation
-   */
+  
+
   endTiming(
     name: string,
     category: PerformanceMetric["category"] = "system",
@@ -85,8 +73,8 @@ export class PerformanceMonitor {
 
     const startTime = this.startTimes.get(name);
     if (!startTime) {
-      // Silently return 0 instead of warning for missing start times
-      // This can happen in edge cases where timing was cleared or never started
+      
+      
       return 0;
     }
 
@@ -97,13 +85,8 @@ export class PerformanceMonitor {
     return duration;
   }
 
-  /**
-   * Record a metric directly
-   * @param {string} name - The name of the metric
-   * @param {number} value - The value of the metric
-   * @param {PerformanceMetric["category"]} category - The category of the metric
-   * @param {Record<string, unknown>} metadata - The metadata for the metric
-   */
+  
+
   recordMetric(
     name: string,
     value: number,
@@ -134,13 +117,8 @@ export class PerformanceMonitor {
     }
   }
 
-  /**
-   * Measure command execution performance
-   * @param {string} commandName - The name of the command
-   * @param {() => Promise<T>} commandFn - The function to measure
-   * @param {Record<string, unknown>} metadata - The metadata for the command
-   * @returns {Promise<T>} The result of the command
-   */
+  
+
   measureCommand<T>(
     commandName: string,
     commandFn: () => Promise<T>,
@@ -168,11 +146,8 @@ export class PerformanceMonitor {
       });
   }
 
-  /**
-   * Measure React component render time
-   * @param {string} componentName - The name of the component
-   * @param {() => void} renderFn - The function to measure
-   */
+  
+
   measureRender(componentName: string, renderFn: () => void): void {
     if (!this.isEnabled) {
       renderFn();
@@ -184,10 +159,8 @@ export class PerformanceMonitor {
     this.endTiming(`render-${componentName}`, "render");
   }
 
-  /**
-   * Get performance report
-   * @returns {PerformanceReport} The performance report
-   */
+  
+
   getReport(): PerformanceReport {
     const commandMetrics = this.metrics.filter((m) => m.category === "command");
     const renderMetrics = this.metrics.filter((m) => m.category === "render");
@@ -229,40 +202,31 @@ export class PerformanceMonitor {
     };
   }
 
-  /**
-   * Get metrics by category
-   * @param {PerformanceMetric["category"]} category - The category of the metrics
-   * @returns {PerformanceMetric[]} The metrics by category
-   */
+  
+
   getMetricsByCategory(
     category: PerformanceMetric["category"],
   ): PerformanceMetric[] {
     return this.metrics.filter((m) => m.category === category);
   }
 
-  /**
-   * Clear all metrics
-   * @returns {void}
-   */
+  
+
   clearMetrics(): void {
     this.metrics = [];
     this.startTimes.clear();
     console.log("Performance metrics cleared");
   }
 
-  /**
-   * Export metrics to JSON
-   * @returns {string} The metrics in JSON format
-   */
+  
+
   exportMetrics(): string {
     const report = this.getReport();
     return JSON.stringify(report, null, 2);
   }
 
-  /**
-   * Setup Performance Observer for browser metrics
-   * @returns {void}
-   */
+  
+
   private setupPerformanceObserver(): void {
     if (typeof window === "undefined" || !("PerformanceObserver" in window)) {
       return;
@@ -285,10 +249,8 @@ export class PerformanceMonitor {
     }
   }
 
-  /**
-   * Start monitoring system-level metrics
-   * @returns {void}
-   */
+  
+
   private startSystemMonitoring(): void {
     if (typeof window === "undefined") return;
 
@@ -308,10 +270,8 @@ export class PerformanceMonitor {
     this.intervals.set("history-monitoring", historyInterval);
   }
 
-  /**
-   * Stop all monitoring and cleanup resources
-   * @returns {void}
-   */
+  
+
   stopMonitoring(): void {
     this.intervals.forEach((interval) => {
       clearInterval(interval);
@@ -326,10 +286,8 @@ export class PerformanceMonitor {
     this.metrics.length = 0;
   }
 
-  /**
-   * Get current memory usage
-   * @returns {number | undefined} The current memory usage
-   */
+  
+
   private getMemoryUsage(): number | undefined {
     if (
       typeof window !== "undefined" &&
@@ -344,10 +302,8 @@ export class PerformanceMonitor {
     return undefined;
   }
 
-  /**
-   * Get terminal history size
-   * @returns {number} The terminal history size
-   */
+  
+
   private getHistorySize(): number {
     try {
       const historyData = localStorage.getItem("terminal-history");
@@ -366,10 +322,8 @@ export class PerformanceMonitor {
     }
   }
 
-  /**
-   * Generate performance recommendations
-   * @returns {string[]} The performance recommendations
-   */
+  
+
   private generateRecommendations(): string[] {
     const recommendations: string[] = [];
     const commandMetrics = this.getMetricsByCategory("command");
@@ -458,10 +412,6 @@ export class PerformanceMonitor {
   }
 }
 
-/**
- * Hook for React components
- * @returns {object} The performance monitor
- */
 export function usePerformanceMonitor() {
   const monitor = PerformanceMonitor.getInstance();
 

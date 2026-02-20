@@ -16,9 +16,6 @@ interface ErrorBoundaryProps {
   onReset?: () => void;
 }
 
-/**
- * Error Boundary component for catching and handling React errors
- */
 export class ErrorBoundary extends Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
@@ -39,7 +36,7 @@ export class ErrorBoundary extends Component<
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ errorInfo });
 
-    // Log error to structured logger
+    
     const errorId = crypto.randomUUID();
     clientLogger.logError(error, {
       component: "error-boundary-root",
@@ -52,7 +49,7 @@ export class ErrorBoundary extends Component<
       console.error("Component stack:", errorInfo.componentStack);
     }
 
-    // Store error ID for potential troubleshooting
+    
     try {
       const errorStore = JSON.parse(localStorage.getItem("error-logs") || "[]");
       errorStore.push({
@@ -60,7 +57,7 @@ export class ErrorBoundary extends Component<
         message: error.message,
         timestamp: new Date().toISOString(),
       });
-      // Keep only last 10 errors
+      
       if (errorStore.length > 10) {
         errorStore.splice(0, errorStore.length - 10);
       }
@@ -70,7 +67,7 @@ export class ErrorBoundary extends Component<
         `Failed to store error log: ${storageError instanceof Error ? storageError.message : String(storageError)}`,
         { cause: storageError }
       );
-      // Ignore storage errors
+      
     }
 
     this.props.onError?.(error, errorInfo);
@@ -113,9 +110,6 @@ interface DefaultErrorFallbackProps {
   resetAction: () => void;
 }
 
-/**
- * Default error fallback UI component
- */
 function DefaultErrorFallback({
   error,
   errorInfo,
@@ -177,9 +171,6 @@ function DefaultErrorFallback({
   );
 }
 
-/**
- * Simple error fallback for smaller components
- */
 export function CompactErrorFallback({
   error,
   resetAction,
@@ -202,9 +193,6 @@ export function CompactErrorFallback({
   );
 }
 
-/**
- * Hook-based error boundary wrapper for functional components
- */
 export function withErrorBoundary<P extends object>(
   WrappedComponent: React.ComponentType<P>,
   options?: Omit<ErrorBoundaryProps, "children">,
@@ -223,10 +211,6 @@ export function withErrorBoundary<P extends object>(
   return ComponentWithErrorBoundary;
 }
 
-/**
- * Async error boundary for handling async component errors
- * Use with Suspense for loading states
- */
 interface AsyncErrorBoundaryProps extends ErrorBoundaryProps {
   loadingFallback?: ReactNode;
 }

@@ -1,10 +1,5 @@
 import { JSX } from "react";
 
-/**
- * Server-side static command outputs for better SSR performance
- * These are pre-rendered versions of static commands
- * @returns {JSX.Element} The ServerStaticCommands component
- */
 export async function ServerStaticCommands(): Promise<JSX.Element> {
   const helpOutput = await generateHelpOutput();
   const aboutOutput = await generateAboutOutput();
@@ -32,10 +27,6 @@ export async function ServerStaticCommands(): Promise<JSX.Element> {
   );
 }
 
-/**
- * Generate the help output
- * @returns {Promise<string>} The help output
- */
 async function generateHelpOutput(): Promise<string> {
   return `
     <div class="font-mono text-sm whitespace-pre-wrap">
@@ -66,10 +57,6 @@ async function generateHelpOutput(): Promise<string> {
   `;
 }
 
-/**
- * Generate the about output
- * @returns {Promise<string>} The about output
- */
 async function generateAboutOutput(): Promise<string> {
   return `
     <div class="font-mono text-sm whitespace-pre-wrap">
@@ -94,10 +81,6 @@ Type "projects" to see my work or "contact" to get in touch!
   `;
 }
 
-/**
- * Generate the projects output
- * @returns {Promise<string>} The projects output
- */
 async function generateProjectsOutput(): Promise<string> {
   return `
     <div class="font-mono text-sm whitespace-pre-wrap">
@@ -136,11 +119,6 @@ Visit my GitHub for more projects and source code!
   `;
 }
 
-/**
- * Client-side utility to use pre-rendered content
- * @param {string} command - The command to use
- * @returns {string | null} The pre-rendered command output
- */
 export function usePrerenderedCommand(command: string): string | null {
   if (typeof window === "undefined") return null;
 

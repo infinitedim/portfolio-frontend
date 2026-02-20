@@ -10,15 +10,6 @@ interface PWAInstallPromptProps {
   persistDismissal?: boolean;
 }
 
-/**
- * PWA Install Prompt component that shows a terminal-style install notification
- * with enhanced error handling and smooth animations
- *
- * @param onInstall - Callback when install button is clicked
- * @param onDismiss - Callback when dismiss button is clicked
- * @param delay - Delay before showing prompt in ms (default: 3000)
- * @param persistDismissal - Remember dismissal in localStorage (default: true)
- */
 export function PWAInstallPrompt({
   onInstall,
   onDismiss,

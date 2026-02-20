@@ -1,28 +1,21 @@
-/**
- * Logger Module Exports
- * Centralized exports for the logging system
- */
 
-// Client logger
+
 export { default as clientLogger, ClientLogger } from "./client-logger";
 
-// Server logger
 export {
   default as serverLogger,
   createServerLogger,
   ServerLogger,
 } from "./server-logger";
 
-// Web Vitals
 export {
   initWebVitals,
   reportWebVitals,
   getWebVitalsSummary,
 } from "./web-vitals";
 
-// Types
 export type {
-  // LogLevel,
+  
   LogContext,
   LogEntry,
   ErrorLog,
@@ -37,7 +30,6 @@ export type {
 
 export { LogLevel } from "./types";
 
-// Configuration
 export {
   clientConfig,
   serverConfig,
@@ -46,7 +38,6 @@ export {
   SENSITIVE_FIELDS,
 } from "./config";
 
-// Utilities
 export {
   maskPII,
   maskPIIString,

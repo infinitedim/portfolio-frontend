@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { CustomizationManager } from "../customization-manager";
 
-// Mock dependencies
 const mockGetAllThemes = vi.fn(() => []);
 const mockGetAllFonts = vi.fn(() => []);
 
@@ -67,7 +66,6 @@ vi.mock("@/components/molecules/terminal/terminal-loading-progress", () => ({
   TerminalLoadingProgress: () => <div data-testid="loading-progress">Loading...</div>,
 }));
 
-// Mock window.location.reload
 const mockReload = vi.fn();
 if (typeof window !== "undefined") {
   Object.defineProperty(window, "location", {

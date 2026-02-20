@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { AccessibilityMenu } from "../accessibility-menu";
 import { AccessibilityProvider } from "@/components/organisms/accessibility/accessibility-provider";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -31,7 +30,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock window.location.reload (safe for CI/JSDOM where location may be unconfigurable)
 const mockReload = vi.fn();
 let locationReloadMocked = false;
 
@@ -47,16 +45,16 @@ function tryMockLocationReload() {
       });
       locationReloadMocked = true;
     } else {
-      // JSDOM/CI: location not configurable; try to spy on reload only
+      
       try {
         vi.spyOn(window.location, "reload").mockImplementation(mockReload);
         locationReloadMocked = true;
       } catch {
-        // reload may also be non-configurable
+        
       }
     }
   } catch {
-    // Cannot mock location in this environment (e.g. CI/JSDOM)
+    
   }
 }
 
@@ -135,11 +133,11 @@ describe("AccessibilityMenu", () => {
       renderWithProvider();
       const button = screen.getByLabelText("Open accessibility menu");
 
-      // Open menu
+      
       fireEvent.click(button);
       expect(screen.getByText("Accessibility Options")).toBeInTheDocument();
 
-      // Close menu
+      
       fireEvent.click(button);
       expect(screen.queryByText("Accessibility Options")).not.toBeInTheDocument();
     });
@@ -188,7 +186,7 @@ describe("AccessibilityMenu", () => {
       expect(smallButton).toBeInTheDocument();
       fireEvent.click(smallButton);
 
-      // Font size should change - verify button is still accessible
+      
       await waitFor(() => {
         const updatedButton = screen.getByLabelText("Set font size to small");
         expect(updatedButton).toBeInTheDocument();
@@ -244,7 +242,7 @@ describe("AccessibilityMenu", () => {
         const updatedButton = screen.getByLabelText(
           /(Enable|Disable) focus mode for better keyboard navigation/,
         );
-        // Text should change (either Enable or Disable)
+        
         expect(updatedButton).toBeInTheDocument();
       }, { timeout: 1000 });
     });
@@ -298,8 +296,8 @@ describe("AccessibilityMenu", () => {
         expect(mockChangeTheme).toHaveBeenCalled();
       }, { timeout: 2000 });
 
-      // Component may call location.reload after a short delay; wait a bit then assert if we mocked it
-      // eslint-disable-next-line promise/param-names
+      
+      
       await new Promise((r) => setTimeout(r, 200));
       if (locationReloadMocked) {
         expect(mockReload).toHaveBeenCalled();
@@ -381,7 +379,7 @@ describe("AccessibilityMenu", () => {
       renderWithProvider();
       const button = screen.getByLabelText("Open accessibility menu");
 
-      // Button should be focusable
+      
       button.focus();
       expect(document.activeElement).toBe(button);
     });

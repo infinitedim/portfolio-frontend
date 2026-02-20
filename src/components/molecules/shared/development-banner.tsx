@@ -3,16 +3,6 @@
 import { useTheme } from "@/hooks/use-theme";
 import { useState, useEffect, useMemo, type JSX } from "react";
 
-/**
- * Enhanced development banner with comprehensive development metrics
- * Displays development progress, test coverage, build status, and performance metrics
- * Includes animated progress indicators and real-time statistics
- * @returns {JSX.Element | null} The development banner or null if dismissed
- * @example
- * ```tsx
- * <DevelopmentBanner />
- * ```
- */
 export function DevelopmentBanner(): JSX.Element | null {
   const { themeConfig } = useTheme();
   const [isVisible, setIsVisible] = useState(true);
@@ -28,28 +18,28 @@ export function DevelopmentBanner(): JSX.Element | null {
     openIssues: 2,
   });
 
-  // Calculate test coverage dynamically based on actual project files
+  
   const testCoverage = useMemo(() => {
-    // Actual counts from project:
-    // - 165 source files (excluding test files)
-    // - 44 test files
-    // - ~871 test cases (describe/it/test calls)
+    
+    
+    
+    
     const totalSourceFiles = 165;
     const totalTestFiles = 44;
     const totalTestCases = 871;
     
-    // File coverage: percentage of source files that have corresponding test files
-    // Not all files need tests (e.g., types, configs), so we estimate 80% should have tests
+    
+    
     const filesThatShouldHaveTests = Math.round(totalSourceFiles * 0.8);
     const fileCoverage = Math.min(100, Math.round((totalTestFiles / filesThatShouldHaveTests) * 100));
     
-    // Scenario coverage: based on test cases
-    // Estimate: average 10-15 test cases per file is good coverage
-    // Using 12 as average for calculation
+    
+    
+    
     const estimatedTestCasesNeeded = filesThatShouldHaveTests * 12;
     const scenarioCoverage = Math.min(100, Math.round((totalTestCases / estimatedTestCasesNeeded) * 100));
     
-    // Combined coverage (weighted: 40% file coverage, 60% scenario coverage)
+    
     const totalCoverage = Math.round((fileCoverage * 0.4) + (scenarioCoverage * 0.6));
     
     return {
@@ -59,15 +49,15 @@ export function DevelopmentBanner(): JSX.Element | null {
     };
   }, []);
 
-  // Calculate development progress based on project completion
+  
   const developmentProgress = useMemo(() => {
-    // Estimate based on:
-    // - Core features implemented
-    // - Test coverage
-    // - Documentation
-    // - Bug fixes
-    const baseProgress = 50; // Base completion
-    const progressFromTests = Math.round(testCoverage.totalCoverage * 0.3); // Tests contribute 30% to progress
+    
+    
+    
+    
+    
+    const baseProgress = 50; 
+    const progressFromTests = Math.round(testCoverage.totalCoverage * 0.3); 
     const totalProgress = Math.min(100, baseProgress + progressFromTests);
     return totalProgress;
   }, [testCoverage]);
@@ -90,7 +80,7 @@ export function DevelopmentBanner(): JSX.Element | null {
 
   if (!isVisible) return null;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  
   const getLoadingDots = () => {
     return ".".repeat(animationPhase).padEnd(3, " ");
   };

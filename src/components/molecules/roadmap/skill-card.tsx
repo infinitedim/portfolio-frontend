@@ -12,14 +12,6 @@ interface SkillCardProps {
   showProjects?: boolean;
 }
 
-/**
- * A card component to display details of a single roadmap skill.
- * @param {SkillCardProps} props - The properties for the SkillCard component.
- * @param {RoadmapSkill} props.skill - The skill data to display.
- * @param {boolean} [props.compact] - Whether to render a compact version of the card.
- * @param {boolean} [props.showProjects] - Whether to show related projects for the skill.
- * @returns {JSX.Element} - A skill card component.
- */
 export function SkillCard({
   skill,
   compact = false,

@@ -12,7 +12,7 @@ describe("PerformanceMonitor (performance-index.tsx)", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    // Reset singleton instance
+    
     (PerformanceMonitor as any).instance = undefined;
   });
 
@@ -72,7 +72,7 @@ describe("PerformanceMonitor (performance-index.tsx)", () => {
       const monitor = PerformanceMonitor.getInstance();
       const measure = monitor.startMeasure("test-op");
 
-      // Simulate some work
+      
       const duration = measure.end();
 
       expect(duration).toBeGreaterThanOrEqual(0);
@@ -123,8 +123,8 @@ describe("PerformanceMonitor (performance-index.tsx)", () => {
         </PerformanceProfiler>,
       );
 
-      // onRender is called by React Profiler
-      // We can't easily test this without triggering a render
+      
+      
       expect(onRender).toBeDefined();
     });
   });
@@ -135,8 +135,8 @@ describe("PerformanceMonitor (performance-index.tsx)", () => {
         expect(true).toBe(true);
         return;
       }
-      // This is a hook, so we'd need to test it in a component
-      // For now, just verify it exists
+      
+      
       expect(typeof usePerfMeasure).toBe("function");
     });
   });

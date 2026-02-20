@@ -2,9 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// NOTE: Don't mock error-types globally - it interferes with other tests
-// Instead, we'll use the real error-types module
-
 describe("EnhancedErrorBoundary (error-boundary.tsx)", () => {
   let errorBoundary: typeof import("../error-boundary");
   let EnhancedErrorBoundary: any;
@@ -12,7 +9,7 @@ describe("EnhancedErrorBoundary (error-boundary.tsx)", () => {
   let useErrorBoundary: any;
 
   beforeEach(async () => {
-    // Try to unmock if available (Vitest), otherwise use importActual
+    
     if (typeof vi !== "undefined" && vi.unmock) {
       vi.unmock("../error-types");
     }
@@ -20,15 +17,15 @@ describe("EnhancedErrorBoundary (error-boundary.tsx)", () => {
       vi.doUnmock("../error-types");
     }
 
-    // Use importActual to get the real module (bypasses mocks)
-    // Fallback to regular import if importActual is not available (Bun)
+    
+    
     if (typeof vi !== "undefined" && vi.importActual) {
-      // Vitest: use importActual to bypass mocks
+      
       errorBoundary = await vi.importActual<typeof import("../error-boundary")>(
         "../error-boundary"
       );
     } else {
-      // Bun test runner: regular import
+      
       errorBoundary = await import("../error-boundary");
     }
 
@@ -37,7 +34,7 @@ describe("EnhancedErrorBoundary (error-boundary.tsx)", () => {
     useErrorBoundary = errorBoundary.useErrorBoundary;
   });
 
-  // Component that throws an error
+  
   const ThrowError = ({ shouldThrow }: { shouldThrow: boolean }) => {
     if (shouldThrow) {
       throw new Error("Test error");

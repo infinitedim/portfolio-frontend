@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { LetterGlitch } from "../letter-glitch";
 
-// Mock dynamic import
 vi.mock("next/dynamic", () => ({
   default: (_loader: () => Promise<any>) => {
     const MockComponent = () => (
@@ -82,7 +81,7 @@ describe("LetterGlitch", () => {
       }
       const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
 
-      // Force an error by mocking dynamic import to throw
+      
       vi.mock("next/dynamic", () => ({
         default: () => {
           throw new Error("Test error");
@@ -91,7 +90,7 @@ describe("LetterGlitch", () => {
 
       const { container } = render(<LetterGlitch />);
 
-      // Should render fallback div
+      
       const fallback = container.querySelector("div[aria-hidden='true']");
       expect(fallback).toBeInTheDocument();
 

@@ -3,7 +3,6 @@ import { renderHook, act } from "@testing-library/react";
 import { useSecurity, useSecurityMonitoring } from "@/hooks/use-security";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock tRPC
 vi.mock("@/lib/trpc", () => ({
   trpc: null,
 }));
@@ -248,7 +247,7 @@ describe("useSecurity hook", () => {
       }
       const { result } = renderHook(() => useSecurity());
 
-      // Even with edge cases, should return a valid response
+      
       let validation;
       await act(async () => {
         validation = await result.current.validateInput("");
@@ -325,7 +324,7 @@ describe("useSecurity hook", () => {
       const metrics1 = result.current.getSecurityMetrics();
       const metrics2 = result.current.getSecurityMetrics();
 
-      // Should return cached result
+      
       expect(metrics1).toEqual(metrics2);
     });
   });
@@ -364,7 +363,7 @@ describe("useSecurity hook", () => {
       }
       const { result } = renderHook(() => useSecurity());
 
-      // Initially not rate limited
+      
       expect(result.current.securityState.isRateLimited).toBe(false);
 
       act(() => {
@@ -461,7 +460,7 @@ describe("useSecurityMonitoring hook", () => {
       expect(true).toBe(true);
       return;
     }
-    // Store original NODE_ENV
+    
     const _originalEnv = process.env.NODE_ENV;
     vi.stubEnv("NODE_ENV", "development");
 
@@ -469,7 +468,7 @@ describe("useSecurityMonitoring hook", () => {
 
     expect(result.current.isSecure).toBe(true);
 
-    // Clean up
+    
     unmount();
     vi.unstubAllEnvs();
   });

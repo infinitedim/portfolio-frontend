@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import robots from "../robots";
 import type { MetadataRoute } from "next";
 
-// Helper function to safely access rules array
 function getRulesArray(result: MetadataRoute.Robots) {
   return Array.isArray(result.rules) ? result.rules : [result.rules];
 }
@@ -10,7 +9,7 @@ function getRulesArray(result: MetadataRoute.Robots) {
 describe("robots.ts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Reset environment variable
+    
     delete process.env.NEXT_PUBLIC_BASE_URL;
   });
 

@@ -5,16 +5,10 @@ import type { ThemeConfig } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { authService } from "@/lib/auth/auth-service";
 
-/**
- * Get the API URL for blog requests
- */
 function getApiUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 }
 
-/**
- * Represents a blog post with all its metadata (matches backend response)
- */
 interface BlogPost {
   id: string;
   title: string;
@@ -27,29 +21,14 @@ interface BlogPost {
   updatedAt: string;
 }
 
-/**
- * Local state for editing (with tags support)
- */
 interface LocalBlogPost extends BlogPost {
   tags: string[];
 }
 
-/**
- * Props for the BlogEditor component
- * @interface BlogEditorProps
- * @property {ThemeConfig} themeConfig - Theme configuration for styling
- */
 interface BlogEditorProps {
   themeConfig: ThemeConfig;
 }
 
-/**
- * Blog editor component with markdown support, live preview, and API integration
- * Provides a comprehensive interface for creating and editing blog posts with markdown syntax
- * @param {BlogEditorProps} props - Component props
- * @param {ThemeConfig} props.themeConfig - Theme configuration for styling
- * @returns {JSX.Element} The blog editor component
- */
 export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const { t } = useI18n();
   const [currentPost, setCurrentPost] = useState<LocalBlogPost | null>(null);
@@ -69,13 +48,13 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout>(null);
 
-  // Helper to convert API response to local post format
+  
   const toLocalPost = (post: BlogPost): LocalBlogPost => ({
     ...post,
-    tags: [], // Tags stored in summary or separate field in future
+    tags: [], 
   });
 
-  // Load posts from backend
+  
   const loadPosts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -90,7 +69,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         const loadedPosts = (data.items || []).map(toLocalPost);
         setPosts(loadedPosts);
         
-        // If we have posts and no current post, select the first one
+        
         if (loadedPosts.length > 0 && !currentPost) {
           loadDraft(loadedPosts[0]);
         }
@@ -106,13 +85,13 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   }, [currentPost]);
 
-  // Load posts on mount
+  
   useEffect(() => {
     loadPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, []);
 
-  // Auto-save effect (disabled for now - explicit save only)
+  
   useEffect(() => {
     const timeoutId = autoSaveTimeoutRef.current;
     if (timeoutId) {
@@ -125,7 +104,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     };
   }, [title, content, currentPost]);
 
-  // Generate slug from title
+  
   const generateSlug = (titleText: string): string => {
     return titleText
       .toLowerCase()
@@ -136,7 +115,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       .substring(0, 50);
   };
 
-  // Save/update post to backend
+  
   const saveDraft = async () => {
     if (!title.trim()) {
       setError("Title is required");
@@ -214,7 +193,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
-  // Create new draft (local only until saved)
+  
   const createNewDraft = () => {
     const newDraft: LocalBlogPost = {
       id: `new-${Date.now()}`,
@@ -239,7 +218,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setError(null);
   };
 
-  // Load existing draft
+  
   const loadDraft = (draft: LocalBlogPost) => {
     setCurrentPost(draft);
     setTitle(draft.title);
@@ -251,7 +230,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setError(null);
   };
 
-  // Delete post
+  
   const deletePost = async () => {
     if (!currentPost || isNewPost) return;
     
@@ -284,7 +263,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       if (response.ok) {
         setPosts((prev) => prev.filter((p) => p.slug !== currentPost.slug));
         
-        // Select another post or create new
+        
         const remaining = posts.filter((p) => p.slug !== currentPost.slug);
         if (remaining.length > 0) {
           loadDraft(remaining[0]);
@@ -314,7 +293,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
   };
 
-  // Publish/unpublish post
+  
   const togglePublish = async () => {
     if (!currentPost) return;
     
@@ -327,7 +306,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setIsSaving(true);
     setError(null);
 
-    // For new posts, save with published: true directly
+    
     if (isNewPost) {
       if (!title.trim()) {
         setError("Title is required");
@@ -350,7 +329,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           summary: summary.trim() || null,
           contentMd: content,
           contentHtml: renderMarkdownToHtml(content),
-          published: true, // Publish immediately
+          published: true, 
         };
 
         const response = await fetch(`${apiUrl}/api/blog`, {
@@ -386,7 +365,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       return;
     }
 
-    // For existing posts, toggle the published status
+    
     try {
       const response = await fetch(
         `${getApiUrl()}/api/blog/${currentPost.slug}`,
@@ -422,7 +401,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
-  // Simple markdown to HTML conversion for preview
+  
   const renderMarkdownToHtml = (markdown: string): string => {
     return markdown
       .replace(/^### (.*$)/gim, "<h3>$1</h3>")

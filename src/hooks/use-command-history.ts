@@ -42,65 +42,6 @@ export interface HistoryAnalytics {
   errorCommands: Array<{ command: string; count: number }>;
 }
 
-/**
- * Advanced command history management hook with search, analytics, and smart categorization
- *
- * Provides comprehensive command history tracking with features like:
- * - Automatic command categorization
- * - Search and filtering capabilities
- * - Usage analytics and statistics
- * - Favorites management
- * - Import/export functionality
- * - Intelligent command suggestions
- *
- * @param {UseCommandHistoryOptions} options - Configuration options
- * @param {number} [options.maxHistorySize=500] - Maximum number of history entries to keep
- * @param {string} [options.persistKey="-terminal-history"] - Key for localStorage persistence
- * @param {boolean} [options.enableAnalytics=true] - Whether to enable analytics generation
- * @param {boolean} [options.autoCategories=true] - Whether to auto-categorize commands
- *
- * @returns {object} Command history state and actions
- * @property {CommandHistoryEntry[]} history - Filtered history entries based on search/filters
- * @property {CommandHistoryEntry[]} allHistory - Complete unfiltered history
- * @property {string[]} categories - Available command categories
- * @property {CommandHistoryEntry[]} favorites - Favorite commands
- * @property {HistoryAnalytics} analytics - Usage statistics and analytics
- * @property {HistorySearchOptions} searchOptions - Current search/filter options
- * @property {Function} setSearchOptions - Update search/filter options
- * @property {Function} updateSearchQuery - Update search query
- * @property {Function} addCommand - Add a command to history
- * @property {Function} toggleFavorite - Toggle favorite status of a command
- * @property {Function} removeCommand - Remove a specific command from history
- * @property {Function} clearHistory - Clear all history
- * @property {Function} exportHistory - Export history as JSON
- * @property {Function} importHistory - Import history from JSON file
- * @property {Function} getSuggestions - Get command suggestions based on partial input
- * @property {number} totalCommands - Total number of commands in history
- * @property {number} uniqueCommands - Number of unique commands
- *
- * @example
- * ```tsx
- * const {
- *   history,
- *   addCommand,
- *   getSuggestions,
- *   analytics,
- *   exportHistory
- * } = useCommandHistory({
- *   maxHistorySize: 500,
- *   enableAnalytics: true
- * });
- *
- * // Add a command
- * addCommand("help", true, 45);
- *
- * // Get suggestions
- * const suggestions = getSuggestions("hel", 5);
- *
- * // Export history
- * exportHistory();
- * ```
- */
 export function useCommandHistory({
   maxHistorySize = 500,
   persistKey = "-terminal-history",

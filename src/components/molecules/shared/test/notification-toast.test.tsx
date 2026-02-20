@@ -3,7 +3,6 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { NotificationToast } from "../notification-toast";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {

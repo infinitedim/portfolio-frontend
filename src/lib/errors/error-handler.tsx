@@ -20,9 +20,6 @@ interface ErrorBoundaryProps {
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
-/**
- * Enhanced error boundary with recovery suggestions and actions
- */
 export class EnhancedErrorBoundary extends Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
@@ -185,19 +182,6 @@ interface DefaultErrorFallbackProps {
   onReset: () => void;
 }
 
-/**
- * Default error fallback component
- * @param {DefaultErrorFallbackProps} props - The props for the DefaultErrorFallback component
- * @param {Error} props.error - The error object
- * @param {ErrorInfo | null} props.errorInfo - The error info object
- * @param {string} props.errorId - The error ID
- * @param {number} props.retryCount - The retry count
- * @param {number} props.maxRetries - The maximum number of retries
- * @param {string[]} props.suggestions - The suggestions for the error
- * @param {() => void} props.onRetry - The function to retry the error
- * @param {() => void} props.onReset - The function to reset the error
- * @returns {JSX.Element} The DefaultErrorFallback component
- */
 function DefaultErrorFallback({
   error,
   errorInfo,
@@ -425,9 +409,6 @@ function DefaultErrorFallback({
   return handleCopyError();
 }
 
-/**
- * Error recovery service for manual error handling
- */
 export class ErrorRecoveryService {
   private static instance: ErrorRecoveryService;
 
@@ -438,12 +419,8 @@ export class ErrorRecoveryService {
     return ErrorRecoveryService.instance;
   }
 
-  /**
-   * Handle command errors with suggestions
-   * @param {string} command - The command that caused the error
-   * @param {string} error - The error message
-   * @returns {object} The error suggestions and quick fixes
-   */
+  
+
   handleCommandError(
     command: string,
     error: string,
@@ -493,10 +470,8 @@ export class ErrorRecoveryService {
     };
   }
 
-  /**
-   * Get stored error reports
-   * @returns {unknown[]} The error reports
-   */
+  
+
   getErrorReports(): [] {
     try {
       const historyData = localStorage.getItem("terminal-errors");
@@ -515,9 +490,8 @@ export class ErrorRecoveryService {
     }
   }
 
-  /**
-   * Clear error reports
-   */
+  
+
   clearErrorReports(): void {
     localStorage.removeItem("terminal-errors");
   }

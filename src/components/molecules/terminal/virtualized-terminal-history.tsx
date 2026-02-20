@@ -12,16 +12,6 @@ interface VirtualizedTerminalHistoryProps {
   overscan?: number;
 }
 
-/**
- * Virtualized terminal history component for optimal performance with large histories
- * Only renders visible items plus a small buffer
- * @param {VirtualizedTerminalHistoryProps} props - The props for the VirtualizedTerminalHistory component
- * @param {TerminalHistory[]} props.history - The history of the terminal
- * @param {number} props.itemHeight - The height of each item
- * @param {number} props.containerHeight - The height of the container
- * @param {number} props.overscan - The number of items to overscan
- * @returns {JSX.Element} The VirtualizedTerminalHistory component
- */
 export function VirtualizedTerminalHistory({
   history,
   itemHeight = 120,

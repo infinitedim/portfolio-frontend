@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { RealTimePerformanceMonitor } from "../real-time-performance-monitor";
 
-// Mock theme hook
 const mockThemeConfig = {
   colors: {
     bg: "#000000",
@@ -200,7 +199,7 @@ describe("RealTimePerformanceMonitor", () => {
         />,
       );
 
-      // History should be tracked
+      
       expect(screen.getByText(/performance/i)).toBeInTheDocument();
     });
   });

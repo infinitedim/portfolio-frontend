@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { useTheme } from "@/hooks/use-theme";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "dark",
   colors: {
@@ -25,7 +24,6 @@ vi.mock("@/hooks/use-theme", () => ({
   })),
 }));
 
-// Import after mocks
 import { LoadingSpinner } from "../loading-spinner";
 
 describe("LoadingSpinner", () => {
@@ -301,7 +299,7 @@ describe("LoadingSpinner", () => {
 
       const { rerender } = render(<LoadingSpinner />);
 
-      // Mock theme change
+      
       vi.mocked(useTheme).mockReturnValueOnce({
         themeConfig: mockThemeConfig,
         theme: "default",
@@ -309,7 +307,7 @@ describe("LoadingSpinner", () => {
 
       rerender(<LoadingSpinner />);
 
-      // Component should re-render
+      
       const { container } = render(<LoadingSpinner />);
       expect(container).toBeTruthy();
     });

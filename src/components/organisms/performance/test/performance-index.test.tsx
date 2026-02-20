@@ -13,7 +13,7 @@ describe("performance-index.tsx", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    // Reset singleton instance
+    
     (PerformanceMonitor as any).instance = undefined;
   });
 

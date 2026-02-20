@@ -1,9 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-/**
- * Get the backend URL for SSR data fetching
- */
 function getBackendUrl(): string {
   return (
     process.env.BACKEND_URL ??
@@ -12,9 +9,6 @@ function getBackendUrl(): string {
   );
 }
 
-/**
- * Blog post item from API
- */
 interface BlogPostItem {
   id: string;
   title: string;
@@ -25,9 +19,6 @@ interface BlogPostItem {
   updatedAt: string;
 }
 
-/**
- * Blog list response from API
- */
 interface BlogListResponse {
   items: BlogPostItem[];
   page: number;
@@ -35,9 +26,6 @@ interface BlogListResponse {
   total: number;
 }
 
-/**
- * Generate metadata for the blog page
- */
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Blog | Portfolio",
@@ -50,16 +38,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-/**
- * Fetch blog posts from backend
- */
 async function getBlogPosts(page = 1, pageSize = 10): Promise<BlogListResponse> {
   try {
     const backendUrl = getBackendUrl();
     const response = await fetch(
       `${backendUrl}/api/blog?page=${page}&pageSize=${pageSize}&published=true`,
       {
-        next: { revalidate: 3600 }, // Revalidate every hour
+        next: { revalidate: 3600 }, 
       }
     );
 
@@ -78,9 +63,6 @@ async function getBlogPosts(page = 1, pageSize = 10): Promise<BlogListResponse> 
   };
 }
 
-/**
- * Blog list page - Server Component
- */
 export default async function BlogPage({
   searchParams,
 }: {
@@ -96,7 +78,7 @@ export default async function BlogPage({
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
+        
         <header className="mb-12">
           <h1 className="text-4xl font-bold text-green-400 mb-4">Blog</h1>
           <p className="text-gray-400">
@@ -104,7 +86,7 @@ export default async function BlogPage({
           </p>
         </header>
 
-        {/* Blog post list */}
+        
         {posts.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
             <p>No blog posts yet. Check back soon!</p>
@@ -144,7 +126,7 @@ export default async function BlogPage({
           </div>
         )}
 
-        {/* Pagination */}
+        
         {totalPages > 1 && (
           <nav className="mt-12 flex justify-center gap-2">
             {page > 1 && (
@@ -173,5 +155,4 @@ export default async function BlogPage({
   );
 }
 
-// Enable ISR
-export const revalidate = 3600; // Revalidate every hour
+export const revalidate = 3600; 

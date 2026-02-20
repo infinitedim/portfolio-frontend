@@ -1,7 +1,4 @@
-/**
- * Logging Utility Functions
- * Helper functions for PII masking, sanitization, and formatting
- */
+
 
 import {
   PII_PATTERNS,
@@ -9,10 +6,6 @@ import {
   SENSITIVE_FIELDS,
 } from "./config";
 
-/**
- * Mask email addresses
- * Example: user@example.com -> u***@***.com
- */
 function maskEmail(email: string): string {
   const [local, domain] = email.split("@");
   if (!local || !domain) return "***@***.***";
@@ -23,10 +16,6 @@ function maskEmail(email: string): string {
   return `${maskedLocal}@${maskedDomain}`;
 }
 
-/**
- * Mask phone numbers
- * Example: 555-123-4567 -> ***-***-4567
- */
 function maskPhone(phone: string): string {
   const cleaned = phone.replace(/\D/g, "");
   if (cleaned.length < 4) return "***";
@@ -35,10 +24,6 @@ function maskPhone(phone: string): string {
   return `***-***-${lastFour}`;
 }
 
-/**
- * Mask credit card numbers
- * Example: 1234-5678-9012-3456 -> ****-****-****-3456
- */
 function maskCreditCard(card: string): string {
   const cleaned = card.replace(/\D/g, "");
   if (cleaned.length < 4) return "****";
@@ -47,10 +32,6 @@ function maskCreditCard(card: string): string {
   return `****-****-****-${lastFour}`;
 }
 
-/**
- * Mask IP addresses
- * Example: 192.168.1.1 -> ***.***.***.1
- */
 function maskIpAddress(ip: string): string {
   const parts = ip.split(".");
   if (parts.length !== 4) return "***.***.***.***.***";
@@ -58,33 +39,27 @@ function maskIpAddress(ip: string): string {
   return `***.***.***.${parts[3]}`;
 }
 
-/**
- * Mask PII in a string
- */
 export function maskPIIString(text: string): string {
   let masked = text;
 
-  // Mask emails
+  
   masked = masked.replace(PII_PATTERNS.email, (match) => maskEmail(match));
 
-  // Mask phone numbers
+  
   masked = masked.replace(PII_PATTERNS.phone, (match) => maskPhone(match));
 
-  // Mask credit cards
+  
   masked = masked.replace(PII_PATTERNS.creditCard, (match) => maskCreditCard(match));
 
-  // Mask SSN
+  
   masked = masked.replace(PII_PATTERNS.ssn, () => "***-**-****");
 
-  // Mask IP addresses
+  
   masked = masked.replace(PII_PATTERNS.ipv4, (match) => maskIpAddress(match));
 
   return masked;
 }
 
-/**
- * Mask PII in an object recursively
- */
 export function maskPII(data: unknown): unknown {
   if (data === null || data === undefined) {
     return data;
@@ -106,7 +81,7 @@ export function maskPII(data: unknown): unknown {
     const masked: Record<string, unknown> = {};
 
     for (const [key, value] of Object.entries(data)) {
-      // Check if field name is sensitive
+      
       const isSensitive = SENSITIVE_FIELDS.some(
         (field) => key.toLowerCase().includes(field.toLowerCase())
       );
@@ -126,9 +101,6 @@ export function maskPII(data: unknown): unknown {
   return data;
 }
 
-/**
- * Sanitize HTTP headers by removing sensitive ones
- */
 export function sanitizeHeaders(
   headers: Record<string, string> | Headers
 ): Record<string, string> {
@@ -141,7 +113,7 @@ export function sanitizeHeaders(
   for (const [key, value] of entries) {
     const lowerKey = key.toLowerCase();
 
-    // Skip sensitive headers
+    
     if (SENSITIVE_HEADERS.some((h) => lowerKey.includes(h))) {
       sanitized[key] = "[REDACTED]";
       continue;
@@ -153,9 +125,6 @@ export function sanitizeHeaders(
   return sanitized;
 }
 
-/**
- * Format error for logging
- */
 export function formatError(error: unknown): {
   name: string;
   message: string;
@@ -195,9 +164,6 @@ export function formatError(error: unknown): {
   };
 }
 
-/**
- * Get request context from browser environment
- */
 export function getRequestContext(): {
   requestId?: string;
   sessionId?: string;
@@ -210,16 +176,16 @@ export function getRequestContext(): {
     return {};
   }
 
-  // Try to get request ID from cookie or generate new one
+  
   const requestId = getCookie("x-request-id") || generateCorrelationId();
 
-  // Try to get session ID from cookie
+  
   const sessionId = getCookie("session-id");
 
-  // Try to get user ID from cookie or localStorage
+  
   const userId = getCookie("user-id") || localStorage.getItem("userId") || undefined;
 
-  // Get device type
+  
   const deviceType = getDeviceType();
 
   return {
@@ -232,21 +198,15 @@ export function getRequestContext(): {
   };
 }
 
-/**
- * Generate a unique correlation ID
- */
 export function generateCorrelationId(): string {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
     return crypto.randomUUID();
   }
 
-  // Fallback for older browsers
+  
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
-/**
- * Get cookie value by name
- */
 function getCookie(name: string): string | undefined {
   if (typeof document === "undefined") {
     return undefined;
@@ -263,9 +223,6 @@ function getCookie(name: string): string | undefined {
   return undefined;
 }
 
-/**
- * Detect device type
- */
 function getDeviceType(): string {
   if (typeof window === "undefined") {
     return "unknown";
@@ -284,23 +241,14 @@ function getDeviceType(): string {
   return "desktop";
 }
 
-/**
- * Check if code is running on client side
- */
 export function isClient(): boolean {
   return typeof window !== "undefined";
 }
 
-/**
- * Check if code is running on server side
- */
 export function isServer(): boolean {
   return typeof window === "undefined";
 }
 
-/**
- * Safely stringify an object for logging
- */
 export function safeStringify(obj: unknown, maxDepth = 5): string {
   const seen = new WeakSet();
 
@@ -370,9 +318,6 @@ export function safeStringify(obj: unknown, maxDepth = 5): string {
   }
 }
 
-/**
- * Truncate string to maximum length
- */
 export function truncate(str: string, maxLength: number): string {
   if (str.length <= maxLength) {
     return str;
@@ -381,9 +326,6 @@ export function truncate(str: string, maxLength: number): string {
   return str.substring(0, maxLength - 3) + "...";
 }
 
-/**
- * Calculate size of object in bytes (approximate)
- */
 export function getObjectSize(obj: unknown): number {
   const str = JSON.stringify(obj);
   return new Blob([str]).size;

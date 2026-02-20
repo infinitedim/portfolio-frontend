@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { FontManager } from "../font-manager";
 import type { CustomFont } from "@/types/customization";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -25,7 +24,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock useFont hook
 const mockChangeFont = vi.fn();
 vi.mock("@/hooks/use-font", () => ({
   useFont: () => ({
@@ -33,7 +31,6 @@ vi.mock("@/hooks/use-font", () => ({
   }),
 }));
 
-// Mock CustomizationService
 const mockGetCustomFonts = vi.fn<() => CustomFont[]>(() => []);
 const mockSaveCustomFont = vi.fn();
 const mockSaveCustomFontFromGoogle = vi.fn((font: any) => ({
@@ -58,11 +55,9 @@ vi.mock("@/lib/services/customization-service", () => ({
   },
 }));
 
-// Mock window.alert and window.confirm
 global.alert = vi.fn();
 global.confirm = vi.fn(() => true);
 
-// Mock document.createElement and related methods
 const originalCreateElement = typeof document !== "undefined" ? document.createElement.bind(document) : undefined;
 const mockCreateElement = vi.fn((tag: string) => {
   if (tag === "a") {
@@ -75,7 +70,7 @@ const mockCreateElement = vi.fn((tag: string) => {
       style: {},
     } as any;
   }
-  // Use original createElement for other tags to avoid infinite recursion
+  
   if (originalCreateElement) {
     return originalCreateElement(tag);
   }
@@ -90,7 +85,6 @@ if (typeof document !== "undefined") {
   });
 }
 
-// Mock URL.createObjectURL and revokeObjectURL
 global.URL.createObjectURL = vi.fn(() => "blob:mock-url");
 global.URL.revokeObjectURL = vi.fn();
 
@@ -248,7 +242,7 @@ describe("FontManager", () => {
       const fontCard = fontCards[0].closest("div[role='button']");
       fireEvent.click(fontCard!);
 
-      // Font should be selected
+      
       expect(fontCard).toBeInTheDocument();
       expect(screen.getByText("Font Preview")).toBeInTheDocument();
     });
@@ -359,7 +353,7 @@ describe("FontManager", () => {
       fireEvent.click(saveButton);
 
       expect(mockSaveSettings).toHaveBeenCalled();
-      expect(mockOnClose).not.toHaveBeenCalled(); // Should not close
+      expect(mockOnClose).not.toHaveBeenCalled(); 
     });
   });
 
@@ -412,7 +406,7 @@ describe("FontManager", () => {
         <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
       );
 
-      // Mock getCustomFonts to return empty array so it creates new font
+      
       (mockGetCustomFonts as any).mockReturnValueOnce([]);
       
       const randomButton = screen.getByText("🎲 Pick Random Font");
@@ -421,7 +415,7 @@ describe("FontManager", () => {
         fireEvent.click(randomButton);
       });
       
-      // Advance timers to handle setTimeout in generateRandomFont (500ms delay)
+      
       await act(async () => {
         vi.advanceTimersByTime(600);
         await vi.runAllTimersAsync();
@@ -487,7 +481,7 @@ describe("FontManager", () => {
           fireEvent.change(fileInput);
         });
 
-        // Advance timers if there are any setTimeout calls
+        
         await act(async () => {
           vi.advanceTimersByTime(200);
           await vi.runAllTimersAsync();

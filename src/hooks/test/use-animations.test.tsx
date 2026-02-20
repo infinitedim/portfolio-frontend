@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock accessibility provider used by the hook (path must match use-animations.ts)
 vi.mock("@/components/organisms/accessibility/accessibility-provider", () => ({
   useAccessibility: () => ({ isReducedMotion: false }),
 }));

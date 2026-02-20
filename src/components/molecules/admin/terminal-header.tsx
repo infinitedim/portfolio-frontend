@@ -5,29 +5,11 @@ import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
 import type { ThemeConfig } from "@/types/theme";
 
-/**
- * Props for the TerminalHeader component
- * @typedef {Object} TerminalHeaderProps
- * @property {() => void} [onLogout] - Callback function when user logs out
- * @property {ThemeConfig} [themeConfig] - Optional theme configuration override
- */
 type TerminalHeaderProps = {
   onLogout?: () => void;
   themeConfig?: ThemeConfig;
 };
 
-/**
- * Terminal-style header for admin dashboard
- * Displays system metrics, uptime, and status information in a terminal-themed UI
- * @param {TerminalHeaderProps} props - Component props
- * @param {() => void} [props.onLogout] - Callback function when user logs out
- * @param {ThemeConfig} [props.themeConfig] - Optional theme configuration override
- * @returns {JSX.Element} The terminal header component
- * @example
- * ```tsx
- * <TerminalHeader onLogout={handleLogout} themeConfig={customTheme} />
- * ```
- */
 export function TerminalHeader({
   onLogout: _onLogout,
   themeConfig: themeProp,

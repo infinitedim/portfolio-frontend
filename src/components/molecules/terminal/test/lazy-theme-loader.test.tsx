@@ -3,7 +3,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { LazyThemeLoader } from "../lazy-theme-loader";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -23,7 +22,6 @@ vi.mock("@/lib/themes/theme-config", () => ({
   themes: mockThemes,
 }));
 
-// Mock TerminalLoadingProgress
 vi.mock("@/components/molecules/terminal/terminal-loading-progress", () => ({
   TerminalLoadingProgress: ({ completionText }: { completionText: string }) => (
     <div data-testid="loading-progress">{completionText}</div>
@@ -102,7 +100,7 @@ describe("LazyThemeLoader", () => {
         expect(true).toBe(true);
         return;
       }
-      // Mock import to fail
+      
       vi.doMock("@/lib/themes/theme-config", () => {
         throw new Error("Failed to load");
       });
@@ -113,7 +111,7 @@ describe("LazyThemeLoader", () => {
 
       render(<LazyThemeLoader themeName="default">{children}</LazyThemeLoader>);
 
-      // Should not render children on error
+      
       await waitFor(() => {
         expect(screen.queryByTestId("loaded-content")).not.toBeInTheDocument();
       });
@@ -152,7 +150,7 @@ describe("LazyThemeLoader", () => {
 
       unmount();
 
-      // Should not throw errors
+      
       expect(true).toBe(true);
     });
   });

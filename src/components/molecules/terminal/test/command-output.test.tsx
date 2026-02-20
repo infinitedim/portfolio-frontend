@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { CommandOutput } from "../command-output";
 import type { CommandOutput as CommandOutputType } from "@/types/terminal";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -25,7 +24,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock useAccessibility
 vi.mock("@/components/organisms/accessibility/accessibility-provider", () => ({
   useAccessibility: () => ({
     isReducedMotion: false,

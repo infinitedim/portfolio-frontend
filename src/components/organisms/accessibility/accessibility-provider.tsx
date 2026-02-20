@@ -23,15 +23,6 @@ const AccessibilityContext = createContext<AccessibilityContextType | null>(
   null,
 );
 
-/**
- * Provides an accessibility context to its children.
- * It manages and provides accessibility-related state and functions,
- * such as screen reader announcements, high contrast and reduced motion detection,
- * font size adjustments, and focus mode.
- * @param {{ children: ReactNode }} props - The properties for the AccessibilityProvider component.
- * @param {ReactNode} props.children - The child components that will have access to the context.
- * @returns {JSX.Element} - The provider component for accessibility features.
- */
 export function AccessibilityProvider({
   children,
 }: {
@@ -150,12 +141,6 @@ export function AccessibilityProvider({
   );
 }
 
-/**
- * A custom hook to access the accessibility context.
- * Must be used within an `AccessibilityProvider`.
- * @throws {Error} If used outside of an AccessibilityProvider.
- * @returns {AccessibilityContextType} The accessibility context, including state and functions.
- */
 export function useAccessibility(): AccessibilityContextType {
   const context = useContext(AccessibilityContext);
   if (!context) {

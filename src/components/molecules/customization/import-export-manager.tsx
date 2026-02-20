@@ -10,12 +10,6 @@ interface ImportExportManagerProps {
   onUpdate: () => void;
 }
 
-/**
- * Manages the import and export of terminal customizations, including themes, fonts, and settings.
- * @param {ImportExportManagerProps} props - The properties for the ImportExportManager component.
- * @param {() => void} props.onUpdate - Callback function to be called when data is updated after an import.
- * @returns {JSX.Element} - The import/export management interface.
- */
 export function ImportExportManager({
   onUpdate,
 }: ImportExportManagerProps): JSX.Element {

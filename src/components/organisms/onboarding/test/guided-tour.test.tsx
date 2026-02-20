@@ -4,13 +4,9 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { GuidedTour } from "../guided-tour";
 import type { TourStep } from "../tour-steps";
 
-// NOTE: Module caching issue with hooks
-// Problem: When tests run together, mocks from other test files can interfere
-// Mock dependencies
 const mockAnnounceMessage = vi.fn();
 const mockIsReducedMotion = false;
 
-// Mock accessibility provider - only for this test file
 vi.mock("@/components/organisms/accessibility/accessibility-provider", () => ({
   useAccessibility: () => ({
     announceMessage: mockAnnounceMessage,
@@ -29,14 +25,12 @@ const mockThemeConfig = {
   },
 };
 
-// Mock use-theme - only for this test file
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
     themeConfig: mockThemeConfig,
   }),
 }));
 
-// Mock ResizeObserver - must be a constructor for `new ResizeObserver(callback)`
 global.ResizeObserver = class MockResizeObserver {
   observe = vi.fn();
   unobserve = vi.fn();
@@ -44,7 +38,6 @@ global.ResizeObserver = class MockResizeObserver {
   constructor(_callback: ResizeObserverCallback) { }
 } as unknown as typeof ResizeObserver;
 
-// Mock window.confirm - use a function that can be reset
 let mockConfirmReturnValue = true;
 const mockConfirm = vi.fn(() => mockConfirmReturnValue);
 if (typeof window !== "undefined") {
@@ -70,26 +63,26 @@ describe("GuidedTour", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
 
-    // Only use fake timers if needed - avoid conflicts with other tests
-    // vi.useFakeTimers();
+    
+    
 
-    // Reset mock confirm
+    
     mockConfirmReturnValue = true;
     mockConfirm.mockClear();
     mockConfirm.mockImplementation(() => mockConfirmReturnValue);
     mockAnnounceMessage.mockClear();
 
-    // Clean up any existing test element first
+    
     if (typeof document !== "undefined") {
       const existingElement = document.getElementById("test-target");
       if (existingElement && existingElement.parentNode) {
         existingElement.parentNode.removeChild(existingElement);
       }
 
-      // Setup DOM element
+      
       const testElement = document.createElement("div");
       testElement.id = "test-target";
-      // Patch getBoundingClientRect as a DOMRect
+      
       testElement.getBoundingClientRect = () =>
       ({
         top: 100,
@@ -108,10 +101,10 @@ describe("GuidedTour", () => {
   });
 
   afterEach(() => {
-    // Only restore real timers if we used fake timers
-    // vi.useRealTimers();
+    
+    
 
-    // Clean up DOM element - ensure document and getElementById are available
+    
     if (typeof document !== "undefined" && typeof document.getElementById === "function") {
       try {
         const testElement = document.getElementById("test-target");
@@ -120,11 +113,11 @@ describe("GuidedTour", () => {
         }
       } catch (e) {
         console.error(e);
-        // Ignore cleanup errors - might be due to test interference
+        
       }
     }
 
-    // Clear all mocks
+    
     vi.clearAllMocks();
   });
 
@@ -395,7 +388,7 @@ describe("GuidedTour", () => {
         return;
       }
       const onSkip = vi.fn();
-      // Reset mock confirm for this test
+      
       mockConfirmReturnValue = true;
       mockConfirm.mockReset();
       mockConfirm.mockImplementation(() => true);
@@ -568,7 +561,7 @@ describe("GuidedTour", () => {
         return;
       }
       const onSkip = vi.fn();
-      // Ensure mock returns true for this test - reset before each test
+      
       mockConfirmReturnValue = true;
       mockConfirm.mockReset();
       mockConfirm.mockImplementation(() => true);
@@ -588,9 +581,9 @@ describe("GuidedTour", () => {
       const skipButton = screen.getByText("Skip");
       fireEvent.click(skipButton);
 
-      // Confirm should be called with the correct message
+      
       expect(mockConfirm).toHaveBeenCalledWith("Are you sure you want to skip the tour?");
-      // onSkip should be called after confirm returns true
+      
       expect(onSkip).toHaveBeenCalledTimes(1);
     });
   });

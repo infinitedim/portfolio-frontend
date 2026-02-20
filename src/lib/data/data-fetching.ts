@@ -1,31 +1,18 @@
 import { cache } from "react";
 
-/**
- * Get the backend URL for SSR data fetching
- * Uses BACKEND_URL for server-side (not exposed to client), falls back to NEXT_PUBLIC_API_URL
- */
 function getBackendUrl(): string {
   if (typeof window === "undefined") {
-    // Server-side: prefer BACKEND_URL (server-only), fallback to public URL
+    
     return (
       process.env.BACKEND_URL ??
       process.env.NEXT_PUBLIC_API_URL ??
       "http://localhost:3001"
     );
   }
-  // Client-side: use public URL
+  
   return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 }
 
-/**
- * Represents a GitHub repository with key metrics
- * @property name - Repository name
- * @property description - Repository description text
- * @property stargazers_count - Number of stars
- * @property forks_count - Number of forks
- * @property language - Primary programming language
- * @property updated_at - Last update timestamp
- */
 interface GitHubRepository {
   name: string;
   description: string | null;
@@ -35,26 +22,12 @@ interface GitHubRepository {
   updated_at: string;
 }
 
-/**
- * Represents a GitHub user's profile statistics
- * @property followers - Number of followers
- * @property following - Number of accounts following
- * @property public_repos - Number of public repositories
- */
 interface GitHubUser {
   followers: number;
   following: number;
   public_repos: number;
 }
 
-/**
- * Complete portfolio data structure
- * @property skills - Categorized skills with progress tracking
- * @property projects - List of portfolio projects
- * @property experience - Professional experience entries
- * @property about - Personal information and contact details
- * @property lastUpdated - Timestamp of last data update
- */
 export interface PortfolioData {
   skills: SkillCategory[];
   projects: Project[];
@@ -63,25 +36,12 @@ export interface PortfolioData {
   lastUpdated: string;
 }
 
-/**
- * A category of related skills with progress tracking
- * @property name - Category name (e.g., "Frontend", "Backend")
- * @property skills - Array of skills in this category
- * @property progress - Overall progress percentage (0-100)
- */
 export interface SkillCategory {
   name: string;
   skills: Skill[];
   progress: number;
 }
 
-/**
- * Individual skill with proficiency and experience details
- * @property name - Skill name (e.g., "React", "TypeScript")
- * @property level - Proficiency level
- * @property yearsOfExperience - Years of experience with this skill
- * @property projects - Project names using this skill
- */
 export interface Skill {
   name: string;
   level: "beginner" | "intermediate" | "advanced" | "expert";
@@ -89,18 +49,6 @@ export interface Skill {
   projects: string[];
 }
 
-/**
- * Portfolio project details
- * @property id - Unique project identifier
- * @property name - Project name
- * @property description - Project description
- * @property technologies - Array of technologies used
- * @property demoUrl - Optional live demo URL
- * @property githubUrl - Optional GitHub repository URL
- * @property imageUrl - Optional project image URL
- * @property status - Project completion status
- * @property featured - Whether project is featured on homepage
- */
 export interface Project {
   id: string;
   name: string;
@@ -113,14 +61,6 @@ export interface Project {
   featured: boolean;
 }
 
-/**
- * Professional experience entry
- * @property company - Company name
- * @property position - Job title/position
- * @property duration - Employment duration (e.g., "2020-2022")
- * @property description - Array of responsibility/achievement descriptions
- * @property technologies - Technologies used in this role
- */
 export interface Experience {
   company: string;
   position: string;
@@ -129,14 +69,6 @@ export interface Experience {
   technologies: string[];
 }
 
-/**
- * Personal information and contact details
- * @property name - Full name
- * @property title - Professional title
- * @property bio - Biography text
- * @property location - Geographic location
- * @property contact - Contact information and social links
- */
 export interface AboutInfo {
   name: string;
   title: string;
@@ -204,8 +136,8 @@ async function fetchWithCache<T>(
   url: string,
   options: RequestInit & { cacheTime?: number } = {},
 ): Promise<T> {
-  // Destructure out the custom `cacheTime` key so it is never forwarded to
-  // the native `fetch` API (which does not accept it).
+  
+  
   const { cacheTime: _cacheTime, ...fetchOptions } = options;
 
   try {
@@ -239,7 +171,7 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   const backendUrl = getBackendUrl();
 
   try {
-    // Fetch all sections in parallel
+    
     const [skillsRes, projectsRes, experienceRes, aboutRes] = await Promise.allSettled([
       fetch(`${backendUrl}/api/portfolio?section=skills`, {
         next: { revalidate: CACHE_DURATIONS.SKILLS / 1000 },
@@ -334,7 +266,7 @@ export const getProjectsData = cache(
       });
     }
 
-    // Fallback to static data
+    
     return limit ? STATIC_PROJECTS.slice(0, limit) : STATIC_PROJECTS;
   }
 );
@@ -510,17 +442,17 @@ function getFallbackAboutData(): AboutInfo {
 }
 
 export async function invalidateCache(section?: string): Promise<void> {
-  // NOTE: server-side cache invalidation requires `revalidatePath` or
-  // `revalidateTag` inside a Next.js Server Action or Route Handler.
-  // This client-callable stub intentionally throws in production to surface
-  // call sites that rely on it working, so they can be migrated properly.
+  
+  
+  
+  
   if (process.env.NODE_ENV === "production") {
     throw new Error(
       `invalidateCache('${section ?? "all"}') is not implemented. ` +
         "Use revalidatePath / revalidateTag in a Server Action instead.",
     );
   }
-  // In development: log a warning so developers notice it needs wiring.
+  
   console.warn(
     `[invalidateCache] Called with section='${
       section ?? "all"

@@ -3,18 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
-/**
- * Performance metrics data structure
- * @interface PerformanceMetrics
- * @property {number} responseTime - Response time in milliseconds
- * @property {number} cacheHitRate - Cache hit rate percentage
- * @property {number} suggestionAccuracy - Suggestion accuracy percentage
- * @property {number} typingSpeed - Typing speed in characters per second
- * @property {number} queriesPerSecond - Queries processed per second
- * @property {number} memoryUsage - Memory usage in MB
- * @property {number} renderTime - Render time in milliseconds
- * @property {number} streamingLatency - Streaming latency in milliseconds
- */
 interface PerformanceMetrics {
   responseTime: number;
   cacheHitRate: number;
@@ -26,14 +14,6 @@ interface PerformanceMetrics {
   streamingLatency: number;
 }
 
-/**
- * Props for the RealTimePerformanceMonitor component
- * @interface PerformanceMonitorProps
- * @property {PerformanceMetrics} metrics - Current performance metrics
- * @property {boolean} isActive - Whether monitor is active
- * @property {(active: boolean) => void} [onToggle] - Toggle callback
- * @property {string} [className] - Additional CSS classes
- */
 interface PerformanceMonitorProps {
   metrics: PerformanceMetrics;
   isActive: boolean;
@@ -41,24 +21,6 @@ interface PerformanceMonitorProps {
   className?: string;
 }
 
-/**
- * Real-time performance monitoring component
- * Displays live performance metrics with history tracking and grading
- * @param {PerformanceMonitorProps} props - Component props
- * @param {PerformanceMetrics} props.metrics - Current metrics
- * @param {boolean} props.isActive - Active state
- * @param {(active: boolean) => void} [props.onToggle] - Toggle callback
- * @param {string} [props.className] - Additional classes
- * @returns {JSX.Element} The performance monitor component
- * @example
- * ```tsx
- * <RealTimePerformanceMonitor
- *   metrics={currentMetrics}
- *   isActive={true}
- *   onToggle={handleToggle}
- * />
- * ```
- */
 export function RealTimePerformanceMonitor({
   metrics,
   isActive,

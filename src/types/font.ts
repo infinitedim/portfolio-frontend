@@ -13,7 +13,6 @@ export type FontName =
   | "ubuntu-mono"
   | "roboto-mono";
 
-/** List of valid font names for runtime validation */
 export const FONT_NAMES: readonly FontName[] = [
   "jetbrains-mono",
   "fira-code",
@@ -23,7 +22,6 @@ export const FONT_NAMES: readonly FontName[] = [
   "roboto-mono",
 ] as const;
 
-/** Type guard to check if a string is a valid FontName */
 export function isFontName(value: string): value is FontName {
   return FONT_NAMES.includes(value as FontName);
 }

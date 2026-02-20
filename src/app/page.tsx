@@ -5,12 +5,6 @@ import { TerminalLoadingProgress } from "../components/molecules/terminal/termin
 import { HomeTerminalHeader } from "../components/molecules/shared/home-terminal-header";
 import { TerminalClient } from "../components/layout/terminal-client";
 
-/**
- * Metadata for the home page
- * Includes SEO optimization with keywords, Open Graph, and Twitter Card data
- * @remarks
- * Canonical URL set to root for SEO best practices
- */
 export const metadata: Metadata = {
   title: "Terminal Portfolio | Full-Stack Developer",
   description:
@@ -56,16 +50,6 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * Home page component displaying the terminal portfolio interface
- * @returns The home page with terminal component and SSR optimizations
- * @remarks
- * This is the main landing page using Next.js App Router with:
- * - Server-side rendering for initial content
- * - Suspense boundaries for progressive enhancement
- * - Screen reader accessibility with semantic HTML
- * - Structured data for SEO
- */
 export default function HomePage(): JSX.Element {
   return (
     <>

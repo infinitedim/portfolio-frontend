@@ -3,7 +3,6 @@ import { renderHook, act } from "@testing-library/react";
 import { useTheme } from "@/hooks/use-theme";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock localStorage
 const mockLocalStorage = (() => {
   let store: Record<string, string> = {};
   return {
@@ -32,10 +31,10 @@ describe("useTheme", () => {
     mockLocalStorage.clear();
     vi.clearAllMocks();
 
-    // Mock localStorage - only if window is available and localStorage is configurable
+    
     if (typeof window !== "undefined") {
       try {
-        // Try to delete existing property first if configurable
+        
         const descriptor = Object.getOwnPropertyDescriptor(window, "localStorage");
         if (descriptor?.configurable) {
           delete (window as { localStorage?: unknown }).localStorage;
@@ -46,12 +45,12 @@ describe("useTheme", () => {
           configurable: true,
         });
       } catch {
-        // If localStorage is already defined and not configurable, use the existing one
-        // This happens when setup.ts already defines it
+        
+        
       }
     }
 
-    // Ensure document.body exists
+    
     if (!document.body) {
       const body = document.createElement("body");
       if (document.documentElement) {
@@ -351,7 +350,7 @@ describe("useTheme", () => {
 
       const { result } = renderHook(() => useTheme());
 
-      // Should eventually be mounted
+      
       expect(typeof result.current.mounted).toBe("boolean");
     });
   });

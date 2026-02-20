@@ -7,18 +7,6 @@ import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/lib/auth/auth-context";
 
-/**
- * Admin login page component
- * @returns Login page with terminal-themed authentication form
- * @remarks
- * Handles admin authentication with:
- * - Automatic redirect if already authenticated
- * - Terminal-styled login form
- * - Back button to return to home page
- * - Theme configuration support
- * - Loading state management
- * - Success callback for post-login navigation
- */
 export default function AdminLoginPage() {
   const { themeConfig } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
@@ -30,17 +18,14 @@ export default function AdminLoginPage() {
     return null;
   }
 
-  /**
-   * Navigates back to the home page
-   */
+  
+
   const handleBack = () => {
     router.push("/");
   };
 
-  /**
-   * Handles successful login
-   * Redirects to admin dashboard after authentication
-   */
+  
+
   const handleLoginSuccess = () => {
     router.push("/admin");
   };

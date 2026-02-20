@@ -27,64 +27,6 @@ interface SerializedHistoryItem {
   executionTime?: number;
 }
 
-/**
- * Command history management hook with search, favorites, and categorization
- *
- * Provides a simpler alternative to useCommandHistory with essential features:
- * - Command history storage with localStorage persistence
- * - Search and filtering capabilities
- * - Favorite commands management
- * - Automatic command categorization
- * - Sort by recent, frequency, or alphabetical
- * - Import/export functionality
- *
- * @param {UseHistoryOptions} [options] - Configuration options
- * @param {number} [options.maxHistorySize=200] - Maximum number of history items to store
- * @param {string} [options.persistKey="-terminal-history"] - localStorage key for persistence
- * @param {boolean} [options.categorizeCommands=true] - Whether to auto-categorize commands
- *
- * @returns {object} History state and management functions
- * @property {HistoryItem[]} history - Filtered and sorted history items
- * @property {HistoryItem[]} favorites - Favorite commands (max 10)
- * @property {Array<{command: string, count: number}>} frequentCommands - Top 10 most frequent commands
- * @property {string[]} categories - Available categories including 'all'
- * @property {Record<string, number>} commandFrequency - Map of command to usage count
- * @property {string} searchQuery - Current search query
- * @property {Function} setSearchQuery - Update search query
- * @property {string} selectedCategory - Currently selected category filter
- * @property {Function} setSelectedCategory - Update category filter
- * @property {"recent" | "frequency" | "alphabetical"} sortBy - Current sort mode
- * @property {Function} setSortBy - Update sort mode
- * @property {Function} addToHistory - Add a command to history
- * @property {Function} toggleFavorite - Toggle favorite status
- * @property {Function} clearHistory - Clear all history
- * @property {Function} exportHistory - Export as JSON file
- * @property {Function} importHistory - Import from JSON file
- * @property {Function} getSuggestions - Get command suggestions
- * @property {number} totalCommands - Total commands in history
- * @property {number} successRate - Percentage of successful commands
- *
- * @example
- * ```tsx
- * const {
- *   history,
- *   addToHistory,
- *   favorites,
- *   toggleFavorite,
- *   searchQuery,
- *   setSearchQuery
- * } = useHistory({ maxHistorySize: 200 });
- *
- * // Add a command
- * addToHistory("help", true, 45);
- *
- * // Search history
- * setSearchQuery("theme");
- *
- * // Toggle favorite
- * toggleFavorite("help");
- * ```
- */
 export function useHistory({
   maxHistorySize = 200,
   persistKey = "-terminal-history",

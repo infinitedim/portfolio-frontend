@@ -5,16 +5,6 @@ import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { LanguageSwitcher } from "./language-switcher";
 
-/**
- * Terminal header component displaying time and portfolio metrics
- * Shows real-time statistics including projects, skills, experience, commits, and more
- * Includes language switcher integration
- * @returns {JSX.Element} The home terminal header component
- * @example
- * ```tsx
- * <HomeTerminalHeader />
- * ```
- */
 export function HomeTerminalHeader(): JSX.Element {
   const { themeConfig } = useTheme();
   const { t } = useI18n();

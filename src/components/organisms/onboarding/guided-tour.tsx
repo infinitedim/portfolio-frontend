@@ -6,21 +6,21 @@ import { useAccessibility } from "@/components/organisms/accessibility/accessibi
 import type { TourStep } from "@/components/organisms/onboarding/tour-steps";
 
 interface GuidedTourProps {
-  /** Current tour step to display */
+  
   step: TourStep;
-  /** Current step index (0-based) */
+  
   stepIndex: number;
-  /** Total number of steps */
+  
   totalSteps: number;
-  /** Progress percentage (0-100) */
+  
   progress: number;
-  /** Callback to go to next step */
+  
   onNext: () => void;
-  /** Callback to go to previous step */
+  
   onPrev: () => void;
-  /** Callback to skip/close the tour */
+  
   onSkip: () => void;
-  /** Optional callback when a demo command should be executed */
+  
   onDemoCommand?: (command: string) => void;
 }
 
@@ -31,11 +31,6 @@ interface HighlightRect {
   height: number;
 }
 
-/**
- * Guided tour overlay component with spotlight effect
- * Displays step-by-step walkthrough with highlighting and tooltips
- * Improved UX: tour continues even after demo commands
- */
 export const GuidedTour = memo(function GuidedTour({
   step,
   stepIndex,
@@ -53,12 +48,12 @@ export const GuidedTour = memo(function GuidedTour({
   const [tooltipHeight, setTooltipHeight] = useState(400);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
-  // Announce step change to screen readers
+  
   useEffect(() => {
     announceMessage(`Tour step ${stepIndex + 1} of ${totalSteps}: ${step.title}`, "polite");
   }, [stepIndex, totalSteps, step.title, announceMessage]);
 
-  // Update tooltip height when it changes
+  
   useEffect(() => {
     if (!tooltipRef.current) return;
 
@@ -68,10 +63,10 @@ export const GuidedTour = memo(function GuidedTour({
       }
     };
 
-    // Initial measurement
+    
     updateHeight();
 
-    // Use ResizeObserver for accurate height tracking
+    
     const resizeObserver = new ResizeObserver(updateHeight);
     resizeObserver.observe(tooltipRef.current);
 
@@ -80,10 +75,10 @@ export const GuidedTour = memo(function GuidedTour({
     };
   }, [stepIndex, showTooltip]);
 
-  // Handle keyboard navigation - only when tour is active and input is not focused
+  
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't intercept if user is typing in an input/textarea
+      
       const activeElement = document.activeElement;
       const isInputFocused = activeElement && (
         activeElement.tagName === "INPUT" ||
@@ -93,7 +88,7 @@ export const GuidedTour = memo(function GuidedTour({
 
       switch (e.key) {
         case "Escape":
-          // ESC should always work to skip tour, even if input is focused
+          
           if (window.confirm("Are you sure you want to skip the tour?")) {
             e.preventDefault();
             e.stopPropagation();
@@ -101,7 +96,7 @@ export const GuidedTour = memo(function GuidedTour({
           }
           break;
         case "ArrowRight":
-          // Only handle if not in input and not with modifier keys
+          
           if (!isInputFocused && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
             e.preventDefault();
             e.stopPropagation();
@@ -109,11 +104,11 @@ export const GuidedTour = memo(function GuidedTour({
           }
           break;
         case "Enter":
-          // NEVER handle Enter - let it always go to command input
-          // Users need Enter to execute commands
+          
+          
           break;
         case "ArrowLeft":
-          // Only handle if not in input and not with modifier keys
+          
           if (!isInputFocused && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
             e.preventDefault();
             e.stopPropagation();
@@ -123,24 +118,24 @@ export const GuidedTour = memo(function GuidedTour({
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown, true); // Use capture phase
+    document.addEventListener("keydown", handleKeyDown, true); 
     return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [onNext, onPrev, onSkip, stepIndex]);
 
-  // Calculate highlight position for target element
+  
   useEffect(() => {
     if (!step.target) {
       setHighlightRect(null);
       return;
     }
 
-    let hasScrolled = false; // Track if we've already scrolled for this step
+    let hasScrolled = false; 
 
     const updateHighlight = (shouldScroll = false) => {
       const targetElement = document.querySelector(step.target!);
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
-        const padding = 8; // Padding around highlighted element
+        const padding = 8; 
 
         setHighlightRect({
           top: rect.top - padding,
@@ -149,23 +144,23 @@ export const GuidedTour = memo(function GuidedTour({
           height: rect.height + padding * 2,
         });
 
-        // Only scroll into view once when step changes, not on every update
+        
         if (shouldScroll && !hasScrolled) {
           targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
           hasScrolled = true;
         }
 
-        // Add highlight class
+        
         targetElement.classList.add("tour-highlight-active");
       } else {
         setHighlightRect(null);
       }
     };
 
-    // Initial update with scroll
+    
     updateHighlight(true);
 
-    // Update on resize/scroll without scrolling
+    
     const handleResize = () => updateHighlight(false);
     const handleScroll = () => updateHighlight(false);
 
@@ -179,15 +174,15 @@ export const GuidedTour = memo(function GuidedTour({
       if (targetElement) {
         targetElement.classList.remove("tour-highlight-active");
       }
-      hasScrolled = false; // Reset for next step
+      hasScrolled = false; 
     };
   }, [step.target]);
 
   const handleTryCommand = useCallback(() => {
     if (step.demoCommand && onDemoCommand) {
-      // Execute command but DON'T close the tour
+      
       onDemoCommand(step.demoCommand);
-      // Show feedback that command was executed
+      
       setShowTooltip(false);
       setTimeout(() => {
         setShowTooltip(true);
@@ -197,36 +192,36 @@ export const GuidedTour = memo(function GuidedTour({
 
   const isFirstStep = stepIndex === 0;
   const isLastStep = stepIndex === totalSteps - 1;
-  // For demo command steps, use lighter overlay so output is visible
+  
   const overlayOpacity = step.demoCommand ? 0.15 : 0.5;
 
-  // Calculate tooltip position based on step configuration
+  
   const getTooltipPosition = (): React.CSSProperties => {
     if (!highlightRect) {
-      // Center position for steps without target - ensure it's above overlay
+      
       return {
         position: "fixed",
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        zIndex: 10001, // Higher than overlay
+        zIndex: 10001, 
         maxWidth: "500px",
       };
     }
 
     const padding = 20;
     const tooltipWidth = 380;
-    // Use state-based tooltipHeight for accurate positioning
+    
     const viewportHeight = window.innerHeight;
     const viewportWidth = window.innerWidth;
 
     switch (step.position) {
       case "top": {
-        // Position above the target
+        
         const spaceAbove = highlightRect.top;
         const spaceBelow = viewportHeight - highlightRect.top - highlightRect.height;
 
-        // If not enough space above, position below instead
+        
         if (spaceAbove < tooltipHeight + padding && spaceBelow > tooltipHeight + padding) {
           return {
             position: "fixed",
@@ -238,8 +233,8 @@ export const GuidedTour = memo(function GuidedTour({
           };
         }
 
-        // Position above, but ensure it doesn't go off-screen
-        // If space is limited, use available space and make it scrollable
+        
+        
         const availableSpace = Math.max(padding * 2, highlightRect.top - padding);
         const topPosition = Math.max(padding, highlightRect.top - Math.min(tooltipHeight, availableSpace) - padding);
         return {
@@ -295,17 +290,17 @@ export const GuidedTour = memo(function GuidedTour({
 
   return (
     <>
-      {/* Spotlight overlay with hole for highlighted element */}
+      
       <div
         className="fixed inset-0 z-9998 pointer-events-auto"
         onClick={(e) => {
-          // Prevent backdrop click from closing tour
+          
           e.stopPropagation();
         }}
         aria-hidden="true"
         style={{ pointerEvents: "auto" }}
       >
-        {/* Dark overlay - top section */}
+        
         {highlightRect && highlightRect.top > 0 && (
           <div
             className="fixed left-0 right-0 pointer-events-none"
@@ -319,7 +314,7 @@ export const GuidedTour = memo(function GuidedTour({
           />
         )}
 
-        {/* Dark overlay - bottom section */}
+        
         {highlightRect && (
           <div
             className="fixed left-0 right-0 pointer-events-none"
@@ -333,7 +328,7 @@ export const GuidedTour = memo(function GuidedTour({
           />
         )}
 
-        {/* Dark overlay - left section */}
+        
         {highlightRect && (
           <div
             className="fixed pointer-events-none"
@@ -349,7 +344,7 @@ export const GuidedTour = memo(function GuidedTour({
           />
         )}
 
-        {/* Dark overlay - right section */}
+        
         {highlightRect && (
           <div
             className="fixed pointer-events-none"
@@ -365,7 +360,7 @@ export const GuidedTour = memo(function GuidedTour({
           />
         )}
 
-        {/* Full overlay for steps without target - lighter for center steps */}
+        
         {!highlightRect && (
           <div
             className="fixed inset-0 pointer-events-none"
@@ -378,10 +373,10 @@ export const GuidedTour = memo(function GuidedTour({
         )}
       </div>
 
-      {/* Highlight border around target element */}
+      
       {highlightRect && (
         <>
-          {/* Outer glow ring */}
+          
           <div
             className="fixed pointer-events-none z-9999"
             style={{
@@ -394,7 +389,7 @@ export const GuidedTour = memo(function GuidedTour({
               animation: isReducedMotion ? "none" : "tour-pulse-outer 2s ease-in-out infinite",
             }}
           />
-          {/* Inner border */}
+          
           <div
             className="fixed pointer-events-none z-9999"
             style={{
@@ -410,7 +405,7 @@ export const GuidedTour = memo(function GuidedTour({
         </>
       )}
 
-      {/* Tour tooltip card */}
+      
       {showTooltip && (
         <div
           ref={tooltipRef}
@@ -428,7 +423,7 @@ export const GuidedTour = memo(function GuidedTour({
             boxShadow: `0 0 0 2px ${themeConfig.colors.accent}60, 0 25px 80px rgba(0, 0, 0, 0.9), 0 0 60px ${themeConfig.colors.accent}40`,
           }}
         >
-          {/* Progress bar */}
+          
           <div
             className="h-1.5 rounded-t-xl transition-all duration-500"
             style={{ backgroundColor: `${themeConfig.colors.muted}20` }}
@@ -443,7 +438,7 @@ export const GuidedTour = memo(function GuidedTour({
             />
           </div>
 
-          {/* Header */}
+          
           <div className="p-5 border-b" style={{ borderColor: themeConfig.colors.border }}>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">
@@ -467,7 +462,7 @@ export const GuidedTour = memo(function GuidedTour({
             </div>
           </div>
 
-          {/* Content - scrollable if needed */}
+          
           <div
             className="p-5 overflow-y-auto"
             id="tour-content"
@@ -482,7 +477,7 @@ export const GuidedTour = memo(function GuidedTour({
               {step.content}
             </p>
 
-            {/* Tips section */}
+            
             {step.tips && step.tips.length > 0 && (
               <div
                 className="rounded-lg p-3 mb-4"
@@ -512,7 +507,7 @@ export const GuidedTour = memo(function GuidedTour({
               </div>
             )}
 
-            {/* Demo command button */}
+            
             {step.demoCommand && onDemoCommand && (
               <button
                 onClick={handleTryCommand}
@@ -530,7 +525,7 @@ export const GuidedTour = memo(function GuidedTour({
             )}
           </div>
 
-          {/* Footer navigation */}
+          
           <div
             className="p-5 border-t flex items-center justify-between gap-3"
             style={{ borderColor: themeConfig.colors.border }}
@@ -584,7 +579,7 @@ export const GuidedTour = memo(function GuidedTour({
             </div>
           </div>
 
-          {/* Keyboard hints */}
+          
           <div
             className="px-5 pb-4 flex items-center justify-center gap-4 text-[10px] flex-wrap"
             style={{ color: themeConfig.colors.muted }}
@@ -595,7 +590,7 @@ export const GuidedTour = memo(function GuidedTour({
         </div>
       )}
 
-      {/* Global highlight styles - use dangerouslySetInnerHTML to avoid jsx/global DOM attributes in test env */}
+      
       <style
         dangerouslySetInnerHTML={{
           __html: `

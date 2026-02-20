@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ThemePreview } from "../theme-preview";
 import type { CustomTheme } from "@/types/customization";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {

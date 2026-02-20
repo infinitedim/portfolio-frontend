@@ -4,7 +4,6 @@ import React from "react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ImageErrorBoundary } from "../image-error-boundary";
 
-// Component that throws an error
 const ThrowError = ({ shouldThrow }: { shouldThrow: boolean }) => {
   if (shouldThrow) {
     throw new Error("Image load error");
@@ -17,7 +16,7 @@ describe("ImageErrorBoundary", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    // Suppress console.error for error boundary tests
+    
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -142,14 +141,14 @@ describe("ImageErrorBoundary", () => {
 
       expect(screen.getByText(/Failed to load image/i)).toBeInTheDocument();
 
-      // Re-render with no error
+      
       rerender(
         <ImageErrorBoundary>
           <ThrowError shouldThrow={false} />
         </ImageErrorBoundary>,
       );
 
-      // Should render children again
+      
       expect(screen.getByAltText("Test")).toBeInTheDocument();
     });
   });

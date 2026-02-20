@@ -3,13 +3,6 @@
 import { useState, useEffect, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
-/**
- * Props for the CommandLoadingIndicator component
- * @interface CommandLoadingIndicatorProps
- * @property {string} [command] - The command being processed
- * @property {boolean} [visible] - Whether indicator is visible
- * @property {string[]} [messages] - Custom loading messages
- */
 interface CommandLoadingIndicatorProps {
   command?: string;
   visible?: boolean;
@@ -24,23 +17,6 @@ const DEFAULT_MESSAGES = [
   "Almost done...",
 ];
 
-/**
- * Loading indicator for command processing
- * Shows animated spinner and cycling messages while commands execute
- * @param {CommandLoadingIndicatorProps} props - Component props
- * @param {string} [props.command] - Command being processed
- * @param {boolean} [props.visible=false] - Visibility state
- * @param {string[]} [props.messages] - Custom messages (defaults to DEFAULT_MESSAGES)
- * @returns {JSX.Element | null} The loading indicator or null
- * @example
- * ```tsx
- * <CommandLoadingIndicator
- *   command="help"
- *   visible={isLoading}
- *   messages={['Processing...', 'Almost done...']}
- * />
- * ```
- */
 export function CommandLoadingIndicator({
   command,
   visible = false,

@@ -112,7 +112,7 @@ describe("useTimerManager", () => {
         vi.advanceTimersByTime(100);
       });
 
-      // Should not throw and should track error
+      
       expect(result.current.hasErrors).toBe(true);
       expect(result.current.getErrors().length).toBeGreaterThan(0);
     });
@@ -173,7 +173,7 @@ describe("useTimerManager", () => {
         vi.advanceTimersByTime(1000);
       });
 
-      // Should still be 2 calls after clearing
+      
       expect(callback).toHaveBeenCalledTimes(2);
     });
 
@@ -333,7 +333,7 @@ describe("useTimerManager", () => {
         vi.advanceTimersByTime(100);
       });
 
-      // Error should be cleared after successful execution
+      
       expect(result.current.hasErrors).toBe(false);
     });
   });
@@ -388,7 +388,7 @@ describe("useAnimationFrame", () => {
   });
 
   afterEach(() => {
-    // Cleanup is handled by configurable: true
+    
   });
 
   it("requests animation frame", () => {
@@ -475,14 +475,14 @@ describe("useDebounce", () => {
       result.current();
     });
 
-    // Should not have been called yet
+    
     expect(callback).not.toHaveBeenCalled();
 
     act(() => {
       vi.advanceTimersByTime(300);
     });
 
-    // Should be called once after delay
+    
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
@@ -503,14 +503,14 @@ describe("useDebounce", () => {
     });
 
     act(() => {
-      result.current(); // Reset the timer
+      result.current(); 
     });
 
     act(() => {
       vi.advanceTimersByTime(200);
     });
 
-    // Should not be called yet because timer was reset
+    
     expect(callback).not.toHaveBeenCalled();
 
     act(() => {
@@ -581,9 +581,9 @@ describe("useThrottle", () => {
     const { result } = renderHook(() => useThrottle(callback, 300));
 
     act(() => {
-      result.current(); // Immediate call
-      result.current(); // Throttled
-      result.current(); // Throttled
+      result.current(); 
+      result.current(); 
+      result.current(); 
     });
 
     expect(callback).toHaveBeenCalledTimes(1);
@@ -598,8 +598,8 @@ describe("useThrottle", () => {
     const { result } = renderHook(() => useThrottle(callback, 300));
 
     act(() => {
-      result.current(); // Immediate call
-      result.current(); // Scheduled
+      result.current(); 
+      result.current(); 
     });
 
     expect(callback).toHaveBeenCalledTimes(1);
@@ -608,7 +608,7 @@ describe("useThrottle", () => {
       vi.advanceTimersByTime(300);
     });
 
-    // Should have the scheduled trailing call
+    
     expect(callback).toHaveBeenCalledTimes(2);
   });
 

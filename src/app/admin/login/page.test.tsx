@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { useAuth } from "@/lib/auth/auth-context";
 
-// Mock Next.js navigation
 const mockPush = vi.fn();
 const mockRouter = {
   push: mockPush,
@@ -18,7 +17,6 @@ vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
 }));
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "dark",
   colors: {
@@ -39,7 +37,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock auth context
 const mockLogout = vi.fn();
 const mockLogin = vi.fn();
 const mockRefresh = vi.fn();
@@ -60,7 +57,6 @@ vi.mock("@/lib/auth/auth-context", () => ({
   })),
 }));
 
-// Mock components
 vi.mock("@/components/molecules/admin/terminal-header", () => ({
   TerminalHeader: () => <div data-testid="terminal-header">Terminal Header</div>,
 }));
@@ -85,7 +81,6 @@ vi.mock("@/components/molecules/admin/terminal-login-form", () => ({
   ),
 }));
 
-// Import after mocks
 import AdminLoginPage from "./page";
 
 describe("AdminLoginPage", () => {
@@ -168,7 +163,7 @@ describe("AdminLoginPage", () => {
       }
 
       const { container } = render(<AdminLoginPage />);
-      // Check for terminal prompt text
+      
       expect(container.textContent).toContain("admin@portfolio:~$ login");
     });
 
@@ -220,7 +215,7 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      // Mock authenticated state
+      
       vi.mocked(useAuth).mockReturnValueOnce({
         isAuthenticated: true,
         isLoading: false,
@@ -241,7 +236,7 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      // Mock authenticated state
+      
       vi.mocked(useAuth).mockReturnValueOnce({
         isAuthenticated: true,
         isLoading: false,
@@ -253,7 +248,7 @@ describe("AdminLoginPage", () => {
 
       const { container } = render(<AdminLoginPage />);
 
-      // Should return null when authenticated
+      
       expect(container.children.length).toBe(0);
     });
   });
@@ -293,11 +288,11 @@ describe("AdminLoginPage", () => {
       const backButton = screen.getByText(/← Back/i);
 
       fireEvent.mouseEnter(backButton);
-      // Button should have hover styles applied
+      
       expect(backButton).toBeInTheDocument();
 
       fireEvent.mouseLeave(backButton);
-      // Button should return to normal state
+      
       expect(backButton).toBeInTheDocument();
     });
   });
@@ -309,7 +304,7 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      // Mock loading state
+      
       vi.mocked(useAuth).mockReturnValueOnce({
         isAuthenticated: false,
         isLoading: true,
@@ -321,7 +316,7 @@ describe("AdminLoginPage", () => {
 
       render(<AdminLoginPage />);
 
-      // Should not redirect while loading
+      
       expect(mockPush).not.toHaveBeenCalled();
     });
 

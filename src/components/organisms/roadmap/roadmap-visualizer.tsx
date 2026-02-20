@@ -10,12 +10,6 @@ interface RoadmapVisualizerProps {
   roadmapData: RoadmapData;
 }
 
-/**
- * A visual component for displaying the roadmap data in different views.
- * @param {RoadmapVisualizerProps} props - The properties for the RoadmapVisualizer component.
- * @param {RoadmapData} props.roadmapData - The roadmap data to visualize.
- * @returns {JSX.Element} - A roadmap visualizer component.
- */
 export function RoadmapVisualizer({
   roadmapData,
 }: RoadmapVisualizerProps): JSX.Element {

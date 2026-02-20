@@ -1,6 +1,5 @@
-/**
- * useI18n hook tests
- */
+
+
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { useI18n } from "@/hooks/useI18n";

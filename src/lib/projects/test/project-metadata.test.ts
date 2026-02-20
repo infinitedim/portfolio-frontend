@@ -3,7 +3,7 @@ import { ProjectMetadataService, SAMPLE_PROJECTS } from "@/lib/projects/project-
 
 describe("ProjectMetadataService", () => {
   beforeEach(() => {
-    // Reset singleton by accessing instance and replacing projects for isolation
+    
     const svc = ProjectMetadataService.getInstance();
     svc["projects"] = [...SAMPLE_PROJECTS];
   });

@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TimeDisplay } from "../time-display";
 
-// Mock LocationService
 const mockLocation = {
   city: "Test City",
   region: "Test Region",
@@ -35,7 +34,6 @@ vi.mock("@/lib/location/location-service", () => ({
   },
 }));
 
-// Mock lucide-react icons
 vi.mock("lucide-react", () => ({
   Clock: () => <div data-testid="clock-icon">Clock</div>,
   MapPin: () => <div data-testid="mappin-icon">MapPin</div>,

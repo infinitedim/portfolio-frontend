@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ImportExportManager } from "../import-export-manager";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -24,7 +23,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock CustomizationService
 const mockExportThemes = vi.fn(() => ({ themes: [] }));
 const mockImportThemes = vi.fn(
   () => Promise.resolve({ success: 1, errors: [] as string[] })
@@ -47,11 +45,9 @@ vi.mock("@/lib/services/customization-service", () => ({
   },
 }));
 
-// Mock URL.createObjectURL and revokeObjectURL
 global.URL.createObjectURL = vi.fn(() => "blob:mock-url");
 global.URL.revokeObjectURL = vi.fn();
 
-// Mock document.createElement for anchor element
 const mockCreateElement = vi.fn((tag: string) => {
   if (tag === "a") {
     return {
@@ -85,12 +81,10 @@ if (typeof document !== "undefined") {
   });
 }
 
-// Mock Blob
 global.Blob = class Blob {
   constructor(public parts: any[], public options: any) {}
 } as any;
 
-// Mock global.confirm
 global.confirm = vi.fn(() => true);
 
 describe("ImportExportManager", () => {

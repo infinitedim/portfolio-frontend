@@ -1,7 +1,4 @@
-/**
- * Client-Side Logger
- * Browser logging with Pino, batching, and backend forwarding
- */
+
 
 "use client";
 
@@ -24,18 +21,12 @@ import {
   BatchConfig,
 } from "./types";
 
-/**
- * Log buffer for batching
- */
 interface LogBuffer {
   logs: LogEntry[];
   timer: NodeJS.Timeout | null;
   retryCount: number;
 }
 
-/**
- * Client Logger Class
- */
 class ClientLogger {
   private pino: PinoLogger;
   private buffer: LogBuffer;
@@ -43,7 +34,7 @@ class ClientLogger {
   private enabled: boolean;
 
   constructor() {
-    // Check if running on client side
+    
     if (!isClient()) {
       this.enabled = false;
       this.pino = {} as PinoLogger;
@@ -65,7 +56,7 @@ class ClientLogger {
       retryDelay: 1000,
     };
 
-    // Initialize Pino with browser configuration
+    
     this.pino = pino({
       level: clientConfig.level,
       browser: {
@@ -84,14 +75,14 @@ class ClientLogger {
       }),
     });
 
-    // Initialize buffer
+    
     this.buffer = {
       logs: [],
       timer: null,
       retryCount: 0,
     };
 
-    // Flush logs before page unload
+    
     if (
       typeof window !== "undefined" &&
       typeof window.addEventListener === "function"
@@ -100,7 +91,7 @@ class ClientLogger {
         this.flush();
       });
 
-      // Also flush on visibility change (when tab is hidden)
+      
       if (
         typeof document !== "undefined" &&
         typeof document.addEventListener === "function"
@@ -114,29 +105,23 @@ class ClientLogger {
     }
   }
 
-  /**
-   * Create a child logger with additional context.
-   * Reuses the parent's buffer and event listeners instead of constructing a
-   * brand-new ClientLogger (which would attach duplicate `beforeunload` /
-   * `visibilitychange` listeners on every call).
-   */
+  
+
   child(context: LogContext): ClientLogger {
     const childLogger = Object.create(this) as ClientLogger;
     childLogger.pino = this.pino.child(context);
     return childLogger;
   }
 
-  /**
-   * Check if log should be sampled
-   */
+  
+
   private shouldSample(level: LogLevel): boolean {
     const rate = SAMPLING_CONFIG[level as keyof typeof SAMPLING_CONFIG] || 1.0;
     return Math.random() < rate;
   }
 
-  /**
-   * Enrich log entry with context
-   */
+  
+
   private enrichContext(context?: LogContext): LogContext {
     const requestContext = getRequestContext();
     return {
@@ -145,15 +130,14 @@ class ClientLogger {
     };
   }
 
-  /**
-   * Add log to buffer
-   */
+  
+
   private addToBuffer(entry: LogEntry): void {
     if (!clientConfig.remote || !this.enabled) {
       return;
     }
 
-    // Mask PII before adding to buffer
+    
     const maskedEntry = clientConfig.maskPII
       ? {
           ...entry,
@@ -163,13 +147,13 @@ class ClientLogger {
 
     this.buffer.logs.push(maskedEntry);
 
-    // Send immediately if buffer is full
+    
     if (this.buffer.logs.length >= this.config.maxBatchSize) {
       this.flush();
       return;
     }
 
-    // Set timer to send after max wait time
+    
     if (!this.buffer.timer) {
       this.buffer.timer = setTimeout(() => {
         this.flush();
@@ -177,21 +161,20 @@ class ClientLogger {
     }
   }
 
-  /**
-   * Flush buffered logs to backend
-   */
+  
+
   async flush(): Promise<void> {
     if (!this.enabled || this.buffer.logs.length === 0) {
       return;
     }
 
-    // Clear timer
+    
     if (this.buffer.timer) {
       clearTimeout(this.buffer.timer);
       this.buffer.timer = null;
     }
 
-    // Get logs to send
+    
     const logsToSend = [...this.buffer.logs];
     this.buffer.logs = [];
 
@@ -202,7 +185,7 @@ class ClientLogger {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ logs: logsToSend }),
-        // Use sendBeacon fallback for beforeunload
+        
         keepalive: true,
       });
 
@@ -210,10 +193,10 @@ class ClientLogger {
         throw new Error(`Failed to send logs: ${response.status}`);
       }
 
-      // Reset retry count on success
+      
       this.buffer.retryCount = 0;
     } catch (error) {
-      // Retry with exponential backoff
+      
       this.buffer.retryCount++;
 
       if (this.buffer.retryCount <= this.config.maxRetries) {
@@ -222,10 +205,10 @@ class ClientLogger {
 
         console.warn(`Failed to send logs, retrying in ${delay}ms...`, error);
 
-        // Add logs back to buffer
+        
         this.buffer.logs.unshift(...logsToSend);
 
-        // Retry after delay
+        
         setTimeout(() => {
           this.flush();
         }, delay);
@@ -236,9 +219,8 @@ class ClientLogger {
     }
   }
 
-  /**
-   * Log a trace message
-   */
+  
+
   trace(
     message: string,
     context?: LogContext,
@@ -258,9 +240,8 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  /**
-   * Log a debug message
-   */
+  
+
   debug(
     message: string,
     context?: LogContext,
@@ -280,9 +261,8 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  /**
-   * Log an info message
-   */
+  
+
   info(
     message: string,
     context?: LogContext,
@@ -302,9 +282,8 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  /**
-   * Log a warning message
-   */
+  
+
   warn(
     message: string,
     context?: LogContext,
@@ -324,9 +303,8 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  /**
-   * Log an error
-   */
+  
+
   error(
     message: string,
     error?: unknown,
@@ -355,9 +333,8 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  /**
-   * Log a fatal error
-   */
+  
+
   fatal(
     message: string,
     error?: unknown,
@@ -385,13 +362,12 @@ class ClientLogger {
     this.pino.fatal(entry);
     this.addToBuffer(entry);
 
-    // Flush immediately for fatal errors
+    
     this.flush();
   }
 
-  /**
-   * Log an error with enhanced error tracking
-   */
+  
+
   logError(error: unknown, context?: LogContext): void {
     const errorDetails = formatError(error);
 
@@ -408,9 +384,8 @@ class ClientLogger {
     );
   }
 
-  /**
-   * Log a user action
-   */
+  
+
   logUserAction(
     actionType: string,
     metadata?: Record<string, unknown>,
@@ -431,9 +406,8 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  /**
-   * Log a performance metric
-   */
+  
+
   logPerformance(
     metricName: string,
     value: number,
@@ -442,7 +416,7 @@ class ClientLogger {
   ): void {
     if (!this.enabled) return;
 
-    // Determine log level based on performance thresholds
+    
     let level: LogLevel = "debug" as LogLevel;
     let message = `Performance: ${metricName} = ${value}ms`;
 
@@ -469,9 +443,8 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  /**
-   * Log a security event
-   */
+  
+
   logSecurityEvent(
     eventType: string,
     threatLevel: "low" | "medium" | "high" | "critical",
@@ -480,7 +453,7 @@ class ClientLogger {
   ): void {
     if (!this.enabled) return;
 
-    // Map threat level to log level
+    
     const levelMap = {
       low: "info" as LogLevel,
       medium: "warn" as LogLevel,
@@ -503,15 +476,14 @@ class ClientLogger {
     this.pino[level](entry);
     this.addToBuffer(entry);
 
-    // Flush immediately for high/critical security events
+    
     if (threatLevel === "high" || threatLevel === "critical") {
       this.flush();
     }
   }
 
-  /**
-   * Log an API request/response
-   */
+  
+
   logApiCall(
     method: string,
     url: string,
@@ -548,7 +520,6 @@ class ClientLogger {
   }
 }
 
-// Export singleton instance
 const clientLogger = new ClientLogger();
 
 export default clientLogger;

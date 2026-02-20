@@ -55,12 +55,12 @@ describe("useCommandSuggestions", () => {
         useCommandSuggestions("", mockCommands, { showOnEmpty: true }),
       );
 
-      // After debounce, should show popular/recent commands
+      
       act(() => {
         vi.advanceTimersByTime(100);
       });
 
-      // May have suggestions based on popular commands
+      
       expect(Array.isArray(result.current.suggestions)).toBe(true);
     });
 
@@ -100,7 +100,7 @@ describe("useCommandSuggestions", () => {
       if (result.current.suggestions.length > 0) {
         expect(helpSuggestion).toBeDefined();
       } else {
-        expect(true).toBe(true); // Suggestions may not populate immediately
+        expect(true).toBe(true); 
       }
     });
 
@@ -138,13 +138,13 @@ describe("useCommandSuggestions", () => {
         { initialProps: { input: "" } },
       );
 
-      rerender({ input: "prj" }); // fuzzy match for "projects"
+      rerender({ input: "prj" }); 
 
       act(() => {
         vi.advanceTimersByTime(100);
       });
 
-      // Should have some suggestions or be empty
+      
       expect(Array.isArray(result.current.suggestions)).toBe(true);
     });
   });
@@ -190,7 +190,7 @@ describe("useCommandSuggestions", () => {
         vi.advanceTimersByTime(100);
       });
 
-      // Should not show suggestions for single character when minQueryLength is 2
+      
       expect(result.current.suggestions.length).toBe(0);
     });
   });
@@ -249,8 +249,8 @@ describe("useCommandSuggestions", () => {
         result.current.updateCommandUsage("help");
       });
 
-      // Command should be recorded (affects future suggestions)
-      expect(true).toBe(true); // Just verify no error thrown
+      
+      expect(true).toBe(true); 
     });
   });
 
@@ -280,7 +280,7 @@ describe("useCommandSuggestions", () => {
         result.current.clearCache();
       });
 
-      // Should not throw
+      
       expect(true).toBe(true);
     });
   });
@@ -341,13 +341,13 @@ describe("useCommandSuggestions", () => {
         { initialProps: { input: "" } },
       );
 
-      // Rapid input changes
+      
       rerender({ input: "h" });
       rerender({ input: "he" });
       rerender({ input: "hel" });
       rerender({ input: "help" });
 
-      // Before debounce timeout, suggestions should still be processing
+      
       expect(Array.isArray(result.current.suggestions)).toBe(true);
     });
   });

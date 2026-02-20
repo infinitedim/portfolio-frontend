@@ -2,9 +2,6 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-/**
- * Get the backend URL for SSR data fetching
- */
 function getBackendUrl(): string {
   return (
     process.env.BACKEND_URL ??
@@ -13,9 +10,6 @@ function getBackendUrl(): string {
   );
 }
 
-/**
- * Blog post from API
- */
 interface BlogPost {
   id: string;
   title: string;
@@ -28,21 +22,15 @@ interface BlogPost {
   updatedAt: string;
 }
 
-/**
- * Page props
- */
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
 
-/**
- * Fetch single blog post from backend
- */
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
     const backendUrl = getBackendUrl();
     const response = await fetch(`${backendUrl}/api/blog/${slug}`, {
-      next: { revalidate: 3600 }, // Revalidate every hour
+      next: { revalidate: 3600 }, 
     });
 
     if (response.ok) {
@@ -55,9 +43,6 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
   return null;
 }
 
-/**
- * Generate metadata for the blog post page
- */
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
@@ -89,9 +74,6 @@ export async function generateMetadata({
   };
 }
 
-/**
- * Generate static params for pre-rendering
- */
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const backendUrl = getBackendUrl();
@@ -113,9 +95,6 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return [];
 }
 
-/**
- * Blog post detail page - Server Component
- */
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = await getBlogPost(slug);
@@ -124,7 +103,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  // Only show published posts publicly
+  
   if (!post.published) {
     notFound();
   }
@@ -132,7 +111,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Back link */}
+        
         <nav className="mb-8">
           <Link
             href="/blog"
@@ -142,9 +121,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </Link>
         </nav>
 
-        {/* Article */}
+        
         <article className="prose prose-invert prose-green max-w-none">
-          {/* Header */}
+          
           <header className="mb-8 not-prose">
             <h1 className="text-4xl font-bold text-green-400 mb-4">
               {post.title}
@@ -174,7 +153,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           </header>
 
-          {/* Content */}
+          
           <div className="border-t border-gray-800 pt-8">
             {post.contentHtml ? (
               <div
@@ -201,7 +180,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </article>
 
-        {/* Footer */}
+        
         <footer className="mt-12 pt-8 border-t border-gray-800">
           <Link
             href="/blog"
@@ -215,5 +194,4 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 }
 
-// Enable ISR
-export const revalidate = 3600; // Revalidate every hour
+export const revalidate = 3600; 

@@ -11,7 +11,6 @@ import {
   safeDOMManipulation,
 } from "../utils/hooks-utils";
 
-// Type interfaces for hook return values
 interface LocalStorageResult<T> {
   getValue: () => T;
   setValue: (value: T) => boolean;
@@ -30,7 +29,6 @@ interface IntervalManagerResult {
   clearAllIntervals: () => void;
 }
 
-// Mock localStorage
 const mockLocalStorage = (() => {
   let store: Record<string, string> = {};
   return {
@@ -88,7 +86,7 @@ describe("hookUtils", () => {
         expect(true).toBe(true);
         return;
       }
-      // In test environment with jsdom, window is defined
+      
       expect(isClientSide()).toBe(true);
     });
   });
@@ -373,7 +371,7 @@ describe("hookUtils", () => {
 
       expect(() => {
         safeDOMManipulation(() => {
-          // Simulate DOM operation
+          
           const div = document.createElement("div");
           div.textContent = "test";
         });

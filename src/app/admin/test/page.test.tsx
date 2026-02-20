@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock Next.js navigation
 const mockPush = vi.fn();
 const mockRouter = {
   push: mockPush,
@@ -17,7 +16,6 @@ vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
 }));
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "dark",
   colors: {
@@ -38,7 +36,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock auth context
 const mockLogout = vi.fn();
 const mockUser = {
   userId: "test-user-id",
@@ -59,7 +56,6 @@ vi.mock("@/lib/auth/auth-context", () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-// Mock components
 vi.mock("@/components/molecules/admin/protected-route", () => ({
   ProtectedRoute: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="protected-route">{children}</div>
@@ -70,7 +66,6 @@ vi.mock("@/components/molecules/admin/terminal-header", () => ({
   TerminalHeader: () => <div data-testid="terminal-header">Terminal Header</div>,
 }));
 
-// Import after mocks
 import AdminDashboardPage from "../page";
 
 describe("AdminDashboardPage", () => {
@@ -275,11 +270,11 @@ describe("AdminDashboardPage", () => {
       const logoutButton = screen.getByText(/🚪 Logout/i);
 
       fireEvent.mouseEnter(logoutButton);
-      // Button should have hover styles applied
+      
       expect(logoutButton).toBeInTheDocument();
 
       fireEvent.mouseLeave(logoutButton);
-      // Button should return to normal state
+      
       expect(logoutButton).toBeInTheDocument();
     });
   });
@@ -315,7 +310,7 @@ describe("AdminDashboardPage", () => {
         return;
       }
 
-      // Mock no user - user can be null
+      
       mockUseAuth.mockReturnValueOnce({
         user: null,
         logout: mockLogout,
@@ -326,7 +321,7 @@ describe("AdminDashboardPage", () => {
       } as unknown as ReturnType<typeof mockUseAuth>);
 
       render(<AdminDashboardPage />);
-      // Should still render without crashing
+      
       expect(screen.getByText(/Admin Dashboard/i)).toBeInTheDocument();
     });
 
@@ -362,7 +357,7 @@ describe("AdminDashboardPage", () => {
       }
 
       render(<AdminDashboardPage />);
-      // Verify buttons exist and are accessible
+      
       const managePostsButton = screen.getByText(/Manage Posts/i).closest("button");
       const settingsButton = screen.getByText(/Settings/i).closest("button");
       const analyticsButton = screen.getByText(/Analytics/i).closest("button");

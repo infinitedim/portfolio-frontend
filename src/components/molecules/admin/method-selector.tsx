@@ -21,14 +21,6 @@ interface MethodSelectorProps {
   themeConfig: ThemeConfig;
 }
 
-/**
- *
- * @param root0
- * @param root0.methods
- * @param root0.selectedMethod
- * @param root0.onMethodSelect
- * @param root0.themeConfig
- */
 export function MethodSelector({
   methods,
   selectedMethod,

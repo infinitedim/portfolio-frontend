@@ -1,10 +1,5 @@
 import { type Command } from "@/types/terminal";
 
-/**
- * Default command aliases for common shortcuts
- * Maps short forms to full command names
- * @example 'h' → 'help', 'cls' → 'clear'
- */
 const DEFAULT_ALIASES: Record<string, string> = {
   h: "help",
   "?": "help",
@@ -35,17 +30,6 @@ const DEFAULT_ALIASES: Record<string, string> = {
   config: "customize",
 };
 
-/**
- * Manager for command aliases with persistence
- * Allows users to create custom shortcuts for commands
- * Stores aliases in localStorage for persistence across sessions
- * @example
- * ```ts
- * const manager = AliasManager.getInstance();
- * manager.addAlias('g', 'git');
- * const resolved = manager.resolve('g status'); // 'git status'
- * ```
- */
 export class AliasManager {
   private static instance: AliasManager;
   private aliases: Record<string, string>;
@@ -62,9 +46,8 @@ export class AliasManager {
     return AliasManager.instance;
   }
 
-  /**
-   * Load aliases from localStorage
-   */
+  
+
   private loadAliases(): void {
     try {
       const saved = localStorage.getItem("terminal-aliases");
@@ -86,9 +69,8 @@ export class AliasManager {
     }
   }
 
-  /**
-   * Save aliases to localStorage
-   */
+  
+
   private saveAliases(): void {
     try {
       const customAliases = Object.fromEntries(
@@ -102,11 +84,8 @@ export class AliasManager {
     }
   }
 
-  /**
-   * Resolve alias to actual command
-   * @param {string} command - The command to resolve
-   * @returns {string} The resolved command
-   */
+  
+
   resolve(command: string): string {
     const parts = command.trim().split(" ");
     const alias = parts[0].toLowerCase();
@@ -119,12 +98,8 @@ export class AliasManager {
     return command;
   }
 
-  /**
-   * Add or update an alias
-   * @param {string} alias - The alias to add or update
-   * @param {string} command - The command to add or update
-   * @returns {boolean} True if the alias was added or updated, false otherwise
-   */
+  
+
   addAlias(alias: string, command: string): boolean {
     if (!alias || !command) return false;
 
@@ -139,11 +114,8 @@ export class AliasManager {
     return true;
   }
 
-  /**
-   * Remove an alias
-   * @param {string} alias - The alias to remove
-   * @returns {boolean} True if the alias was removed, false otherwise
-   */
+  
+
   removeAlias(alias: string): boolean {
     const normalizedAlias = alias.toLowerCase().trim();
 
@@ -160,45 +132,34 @@ export class AliasManager {
     return false;
   }
 
-  /**
-   * Get all aliases
-   * @returns {Record<string, string>} The all aliases
-   */
+  
+
   getAllAliases(): Record<string, string> {
     return { ...this.aliases };
   }
 
-  /**
-   * Get custom aliases only
-   * @returns {Record<string, string>} The custom aliases
-   */
+  
+
   getCustomAliases(): Record<string, string> {
     return Object.fromEntries(
       Object.entries(this.aliases).filter(([key]) => !(key in DEFAULT_ALIASES)),
     );
   }
 
-  /**
-   * Check if alias exists
-   * @param {string} alias - The alias to check
-   * @returns {boolean} True if the alias exists, false otherwise
-   */
+  
+
   hasAlias(alias: string): boolean {
     return alias.toLowerCase() in this.aliases;
   }
 
-  /**
-   * Reset to defaults
-   */
+  
+
   resetToDefaults(): void {
     this.aliases = { ...DEFAULT_ALIASES };
     localStorage.removeItem("terminal-aliases");
   }
 }
 
-/**
- * Alias command implementation
- */
 export const aliasCommand: Command = {
   name: "alias",
   description: "Manage command aliases for faster typing",

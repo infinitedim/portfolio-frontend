@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ServiceSelector, type Service } from "../service-selector";
 import type { ServiceMethod } from "../method-selector";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {

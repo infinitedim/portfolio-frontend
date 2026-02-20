@@ -4,47 +4,19 @@ import { useState, useRef, useEffect, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
 
-/**
- * Props for the LanguageSwitcher component
- * @interface LanguageSwitcherProps
- * @property {"dropdown" | "list"} [variant] - Display style (dropdown or full list)
- * @property {string} [className] - Additional CSS classes
- * @property {boolean} [showNative] - Whether to show native language names
- * @property {boolean} [showFlags] - Whether to show flag emojis
- * @property {(locale: string) => void} [onLanguageChange] - Callback when language changes
- */
 interface LanguageSwitcherProps {
-  /** Whether to show as compact dropdown or full list */
+  
   variant?: "dropdown" | "list";
-  /** Custom class name */
+  
   className?: string;
-  /** Show native language names */
+  
   showNative?: boolean;
-  /** Show flag emojis */
+  
   showFlags?: boolean;
-  /** Callback when language changes */
+  
   onLanguageChange?: (locale: string) => void;
 }
 
-/**
- * Language switcher component for changing application locale
- * Provides dropdown or list view with flags and native language names
- * @param {LanguageSwitcherProps} props - Component props
- * @param {"dropdown" | "list"} [props.variant="dropdown"] - Display style
- * @param {string} [props.className] - Additional classes
- * @param {boolean} [props.showNative=true] - Show native names
- * @param {boolean} [props.showFlags=true] - Show flags
- * @param {(locale: string) => void} [props.onLanguageChange] - Change callback
- * @returns {JSX.Element} The language switcher component
- * @example
- * ```tsx
- * <LanguageSwitcher
- *   variant="dropdown"
- *   showFlags={true}
- *   onLanguageChange={(locale) => console.log(locale)}
- * />
- * ```
- */
 export function LanguageSwitcher({
   variant = "dropdown",
   className = "",

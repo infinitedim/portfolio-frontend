@@ -3,7 +3,6 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { OptimizedImage } from "../optimized-image";
 
-// Mock Next.js Image
 vi.mock("next/image", () => ({
   default: ({
     src,
@@ -16,7 +15,7 @@ vi.mock("next/image", () => ({
     onLoadingComplete?: () => void;
     onError?: () => void;
   }) => {
-    // Simulate loading
+    
     setTimeout(() => {
       if (onLoadingComplete) onLoadingComplete();
     }, 100);

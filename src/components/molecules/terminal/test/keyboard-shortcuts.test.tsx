@@ -6,7 +6,6 @@ import {
   type KeyboardShortcut as KeyboardShortcutType,
 } from "../keyboard-shortcuts";
 
-// Mock theme hook
 const mockThemeConfig = {
   colors: {
     bg: "#000000",
@@ -124,7 +123,7 @@ describe("KeyboardShortcut", () => {
         />,
       );
 
-      // Should show category tabs
+      
       expect(screen.getByText(/navigation/i)).toBeInTheDocument();
       expect(screen.getByText(/terminal/i)).toBeInTheDocument();
     });
@@ -258,7 +257,7 @@ describe("KeyboardShortcut", () => {
         />,
       );
 
-      // Customizable shortcuts should have edit option
+      
       const helpShortcut = screen.getByText("Show help").closest("div");
       expect(helpShortcut).toBeInTheDocument();
     });

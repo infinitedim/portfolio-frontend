@@ -35,7 +35,7 @@ describe("auth/index.ts", () => {
         expect(true).toBe(true);
         return;
       }
-      // Types are compile-time only, but we can verify the module exports exist
+      
       expect(authModule).toBeDefined();
     });
   });

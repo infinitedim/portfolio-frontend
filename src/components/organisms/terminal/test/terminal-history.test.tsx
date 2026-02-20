@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TerminalHistory } from "../terminal-history";
 
-// Mock dependencies
 const mockThemeConfig = {
   name: "default",
   colors: {

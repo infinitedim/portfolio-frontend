@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { MobileTerminal } from "../mobile-terminal";
 
-// Mock dependencies
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -34,7 +33,6 @@ vi.mock("@/hooks/use-mobile", () => ({
   }),
 }));
 
-// Mock localStorage
 const localStorageMock = {
   getItem: vi.fn(() => null),
   setItem: vi.fn(),
@@ -63,7 +61,7 @@ describe("MobileTerminal", () => {
         expect(true).toBe(true);
         return;
       }
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      
       vi.mocked(require("@/hooks/use-mobile").useMobile).mockReturnValue({
         isMobile: false,
         isVirtualKeyboardOpen: false,

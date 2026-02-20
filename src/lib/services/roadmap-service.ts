@@ -36,9 +36,6 @@ interface RoadmapApiResponse {
   projects?: unknown[];
 }
 
-/**
- * Service for managing roadmap data and progress tracking
- */
 export class RoadmapService {
   private static instance: RoadmapService;
   private progress: RoadmapData | null = null;
@@ -49,10 +46,8 @@ export class RoadmapService {
 
   private constructor() {}
 
-  /**
-   * Get the singleton instance of RoadmapService
-   * @returns {RoadmapService} The singleton instance
-   */
+  
+
   public static getInstance(): RoadmapService {
     if (!RoadmapService.instance) {
       RoadmapService.instance = new RoadmapService();
@@ -60,10 +55,8 @@ export class RoadmapService {
     return RoadmapService.instance;
   }
 
-  /**
-   * Get environment variables for roadmap.sh API
-   * @returns {object} The API configuration
-   */
+  
+
   private getApiConfig() {
     if (typeof window === "undefined") {
       return { authToken: null, userId: "infinitedim" };
@@ -95,19 +88,15 @@ export class RoadmapService {
     return { authToken, userId };
   }
 
-  /**
-   * Load data from dummy data (no API calls)
-   */
+  
+
   private async loadApiData(): Promise<void> {
-    // Using dummy data instead of API calls
+    
     this.loadFallbackData();
   }
 
-  /**
-   * Validate API response structure
-   * @param {unknown} data - The data to validate
-   * @returns {boolean} Whether the data is a valid API response
-   */
+  
+
   private isValidApiResponse(data: unknown): data is RoadmapApiResponse {
     if (typeof data !== "object" || data === null) return false;
 
@@ -128,17 +117,15 @@ export class RoadmapService {
     );
   }
 
-  /**
-   * Load data from static stat.json file (fallback) - Not used, kept for compatibility
-   */
+  
+
   private async loadStaticData(): Promise<void> {
-    // Not used - using dummy data instead
+    
     this.loadFallbackData();
   }
 
-  /**
-   * Parse roadmap data from API/stat.json format
-   */
+  
+
   private parseRoadmapData(): void {
     if (!this.roadmapData) {
       this.loadFallbackData();
@@ -206,11 +193,8 @@ export class RoadmapService {
     };
   }
 
-  /**
-   * Get color for category based on ID
-   * @param {string} categoryId - The category ID
-   * @returns {string} The color
-   */
+  
+
   private getCategoryColor(categoryId: string): string {
     const colorMap: Record<string, string> = {
       react: "#61dafb",
@@ -231,10 +215,8 @@ export class RoadmapService {
     return colorMap[categoryId] || "#6366f1";
   }
 
-  /**
-   * Initialize the service and load data
-   * MODIFICATION: Made synchronous and SSR-safe
-   */
+  
+
   public async initialize(): Promise<void> {
     if (this.loaded) return;
 
@@ -247,19 +229,16 @@ export class RoadmapService {
     this.loaded = true;
   }
 
-  /**
-   * Force refresh data from API
-   */
+  
+
   public async refreshData(): Promise<void> {
     this.loaded = false;
     this.lastFetchTime = 0;
     await this.initialize();
   }
 
-  /**
-   * Get user progress data
-   * @returns {Promise<RoadmapData>} The user progress data
-   */
+  
+
   public async getUserProgress(): Promise<RoadmapData> {
     if (!this.loaded) {
       await this.initialize();
@@ -267,11 +246,8 @@ export class RoadmapService {
     return this.progress!;
   }
 
-  /**
-   * Get progress by category
-   * @param {string} categoryId - The category ID
-   * @returns {Promise<RoadmapCategory | null>} The category progress
-   */
+  
+
   public async getCategoryProgress(
     categoryId: string,
   ): Promise<RoadmapCategory | null> {
@@ -279,10 +255,8 @@ export class RoadmapService {
     return progress.categories.find((cat) => cat.id === categoryId) || null;
   }
 
-  /**
-   * Get overall statistics
-   * @returns {Promise<{totalSkills: number, completedSkills: number, inProgressSkills: number, categories: number}>} The statistics
-   */
+  
+
   public async getStatistics(): Promise<{
     totalSkills: number;
     completedSkills: number;
@@ -305,12 +279,8 @@ export class RoadmapService {
     };
   }
 
-  /**
-   * Update skill progress
-   * @param {string} skillId - The skill ID
-   * @param {ProgressUpdate} update - The progress update
-   * @returns {Promise<boolean>} Whether the update was successful
-   */
+  
+
   public async updateSkillProgress(
     skillId: string,
     update: ProgressUpdate,
@@ -345,11 +315,8 @@ export class RoadmapService {
     }
   }
 
-  /**
-   * Get skill by ID
-   * @param {string} skillId - The skill ID
-   * @returns {Promise<RoadmapSkill | null>} The skill or null
-   */
+  
+
   public async getSkill(skillId: string): Promise<RoadmapSkill | null> {
     const progress = await this.getUserProgress();
 
@@ -361,11 +328,8 @@ export class RoadmapService {
     return null;
   }
 
-  /**
-   * Get skills by status
-   * @param {"completed" | "in-progress" | "not-started"} status - The status to filter by
-   * @returns {Promise<RoadmapSkill[]>} The filtered skills
-   */
+  
+
   public async getSkillsByStatus(
     status: "completed" | "in-progress" | "not-started",
   ): Promise<RoadmapSkill[]> {
@@ -381,11 +345,8 @@ export class RoadmapService {
     return skills;
   }
 
-  /**
-   * Calculate overall progress percentage
-   * @param {RoadmapCategory[]} categories - The categories to calculate progress for
-   * @returns {number} The overall progress percentage
-   */
+  
+
   private calculateProgressPercentage(categories: RoadmapCategory[]): number {
     if (categories.length === 0) return 0;
 
@@ -396,9 +357,8 @@ export class RoadmapService {
     return Math.round(totalProgress / categories.length);
   }
 
-  /**
-   * Load fallback data if API fails
-   */
+  
+
   private loadFallbackData(): void {
     const { userId } = this.getApiConfig();
 

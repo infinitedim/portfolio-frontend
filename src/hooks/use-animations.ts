@@ -6,14 +6,6 @@ import {
   withErrorHandling,
 } from "./utils/hooks-utils";
 
-/**
- * Configuration options for Web Animations API
- * @interface AnimationConfig
- * @property {number} duration - Animation duration in milliseconds
- * @property {string} easing - CSS easing function (e.g., 'ease-in-out', 'cubic-bezier(0.4, 0, 0.2, 1)')
- * @property {number} [delay] - Delay before animation starts in milliseconds
- * @property {"none" | "forwards" | "backwards" | "both"} [fillMode] - How the animation applies styles before/after execution
- */
 export interface AnimationConfig {
   duration: number;
   easing: string;
@@ -21,14 +13,6 @@ export interface AnimationConfig {
   fillMode?: "none" | "forwards" | "backwards" | "both";
 }
 
-/**
- * Configuration options for typewriter effect animation
- * @interface TypewriterConfig
- * @property {number} speed - Typing speed in milliseconds per character
- * @property {boolean} cursor - Whether to show a blinking cursor during typing
- * @property {string} cursorChar - Character to use for the cursor (e.g., '▋', '|', '_')
- * @property {number} [deleteSpeed] - Speed for deleting text in milliseconds per character
- */
 export interface TypewriterConfig {
   speed: number;
   cursor: boolean;
@@ -50,36 +34,6 @@ const DEFAULT_TYPEWRITER_CONFIG: TypewriterConfig = {
   deleteSpeed: 30,
 };
 
-/**
- * Custom hook for creating and managing Web Animations with automatic cleanup
- *
- * Provides a comprehensive set of animation utilities including typewriter effects,
- * glitch animations, matrix rain, and various transitions. Automatically respects
- * reduced motion preferences and handles memory cleanup.
- *
- * @returns {object} Animation functions and state
- * @property {Function} createTypewriterEffect - Create a typewriter effect on an element
- * @property {Function} createGlitchEffect - Create a glitch/distortion effect
- * @property {Function} createMatrixRain - Create a Matrix-style digital rain effect
- * @property {Function} createPulseAnimation - Create a pulsing scale animation
- * @property {Function} createSlideIn - Create a slide-in transition from any direction
- * @property {Function} createBounceAnimation - Create a bounce effect
- * @property {Function} createLoadingDots - Create animated loading dots
- * @property {Function} stopAllAnimations - Stop and cleanup all active animations
- * @property {Function} stopAnimation - Stop a specific animation by ID
- * @property {boolean} isReducedMotion - Whether user prefers reduced motion
- *
- * @example
- * ```tsx
- * const { createTypewriterEffect, createGlitchEffect, isReducedMotion } = useAnimations();
- *
- * // Typewriter effect
- * await createTypewriterEffect(element, "Hello, World!", { speed: 50 });
- *
- * // Glitch effect
- * createGlitchEffect(element, 200);
- * ```
- */
 export function useAnimations() {
   const { isReducedMotion } = useAccessibility();
   const isMountedRef = useMountRef();
@@ -119,13 +73,8 @@ export function useAnimations() {
     };
   }, []);
 
-  /**
-   * Create typewriter effect for text
-   * @param {HTMLElement} element - The element to animate
-   * @param {string} text - The text to animate
-   * @param {Partial<TypewriterConfig>} config - The configuration for the typewriter effect
-   * @returns {Promise<void>} - A promise that resolves when the animation is complete
-   */
+  
+
   const createTypewriterEffect = useCallback(
     async (
       element: HTMLElement,
@@ -169,7 +118,7 @@ export function useAnimations() {
           }
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        
         timerId = setTimeout(typeNextChar, fullConfig.speed);
       });
     },
@@ -468,27 +417,6 @@ export function useAnimations() {
   };
 }
 
-/**
- * Specialized hook for terminal-specific animations
- *
- * Extends useAnimations with terminal-optimized presets for command output,
- * errors, and theme transitions.
- *
- * @returns {object} Terminal animation functions and state
- * @property {Function} animateCommandOutput - Animate command output with typewriter effect
- * @property {Function} animateCommandError - Animate error messages with glitch effect
- * @property {Function} animateThemeChange - Animate theme transitions with slide and bounce
- * @property {boolean} isTyping - Whether typewriter animation is currently active
- * @property {...} - All functions from "@/hooks/use-animations"
- *
- * @example
- * ```tsx
- * const { animateCommandOutput, isTyping } = useTerminalAnimations();
- *
- * // Animate command output
- * await animateCommandOutput(outputElement, "Command executed successfully");
- * ```
- */
 export function useTerminalAnimations() {
   const animations = useAnimations();
   const [isTyping, setIsTyping] = useState(false);

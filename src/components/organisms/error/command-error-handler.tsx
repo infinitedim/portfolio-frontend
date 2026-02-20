@@ -9,16 +9,6 @@ interface CommandErrorHandlerProps {
   onReport: () => void;
 }
 
-/**
- * A component to display an error message when a command fails.
- * It provides options to retry the command or report the issue.
- * @param {CommandErrorHandlerProps} props - The properties for the CommandErrorHandler component.
- * @param {Error} props.error - The error object that was thrown.
- * @param {string} props.command - The command that caused the error.
- * @param {() => void} props.onRetry - A callback function to execute when the retry button is clicked.
- * @param {() => void} props.onReport - A callback function to execute when the report issue button is clicked.
- * @returns {JSX.Element} - A component that displays the command error.
- */
 export function CommandErrorHandler({
   error,
   command,

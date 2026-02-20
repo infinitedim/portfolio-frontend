@@ -1,9 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// NOTE: Don't mock ArgumentParser globally - it interferes with other tests
-// Instead, we'll use the real ArgumentParser and mock only when needed in specific tests
-
 describe("commands.ts", () => {
   let commands: typeof import("../commands");
   let resumeCommand: any;
@@ -14,7 +11,7 @@ describe("commands.ts", () => {
   let enhancedCommands: any;
 
   beforeEach(async () => {
-    // Try to unmock if available (Vitest), otherwise use importActual
+    
     if (typeof vi !== "undefined" && vi.unmock) {
       vi.unmock("@/lib/utils/arg-parser");
     }
@@ -22,14 +19,14 @@ describe("commands.ts", () => {
       vi.doUnmock("@/lib/utils/arg-parser");
     }
 
-    // Use importActual to get the real module (bypasses mocks)
-    // Fallback to regular import if importActual is not available (Bun)
+    
+    
     if (typeof vi !== "undefined" && vi.importActual) {
-      // Vitest: use importActual to bypass mocks
+      
       commands =
         await vi.importActual<typeof import("../commands")>("../commands");
     } else {
-      // Bun test runner: regular import
+      
       commands = await import("../commands");
     }
 
@@ -41,7 +38,7 @@ describe("commands.ts", () => {
     enhancedCommands = commands.enhancedCommands;
   });
 
-  // Mock window and document
+  
   const mockClick = vi.fn();
   const mockOpen = vi.fn();
   const mockCreateElement = vi.fn(() => ({

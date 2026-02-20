@@ -19,33 +19,6 @@ const BREAKPOINTS = {
 const KEYBOARD_THRESHOLD = 0.75;
 const RESIZE_DEBOUNCE_MS = 100;
 
-/**
- * A custom React hook to detect mobile device properties and state.
- *
- * Optimized for performance with:
- * - Lazy device detection (cached after first call)
- * - Debounced resize handling to prevent excessive updates
- * - RequestAnimationFrame throttling for smooth performance
- * - Consolidated state updates to reduce re-renders
- * - Proper cleanup of all event listeners
- *
- * @returns {MobileState} An object containing the current mobile device state.
- * @property {boolean} isMobile - True if screen width is less than or equal to 768px.
- * @property {boolean} isTablet - True if screen width is between 768px and 1024px.
- * @property {"portrait" | "landscape"} orientation - Current screen orientation.
- * @property {boolean} isVirtualKeyboardOpen - True if the virtual keyboard is likely open.
- * @property {boolean} isIOS - True if the device is iOS.
- * @property {boolean} isAndroid - True if the device is Android.
- *
- * @example
- * ```tsx
- * const { isMobile, isTablet, orientation, isVirtualKeyboardOpen } = useMobile();
- *
- * if (isMobile) {
- *   return <MobileLayout />;
- * }
- * ```
- */
 export function useMobile(): MobileState {
   const isMountedRef = useRef(true);
   const rafIdRef = useRef<number | null>(null);

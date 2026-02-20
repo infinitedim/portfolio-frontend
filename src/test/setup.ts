@@ -1,7 +1,6 @@
 import { vi, afterEach, beforeAll, beforeEach } from "vitest";
 import "@testing-library/jest-dom/vitest";
 
-// Mock Next.js modules
 vi.mock("next/server", () => ({
   NextRequest: class MockNextRequest {
     url: string;
@@ -63,7 +62,6 @@ vi.mock("next/server", () => ({
   },
 }));
 
-// Mock crypto for nonce generation
 Object.defineProperty(global, "crypto", {
   value: {
     randomUUID: vi.fn(() => "test-uuid-12345"),
@@ -74,7 +72,6 @@ Object.defineProperty(global, "crypto", {
   writable: true,
 });
 
-// Mock centralized logger (local mock since we don't import from backend)
 vi.mock("@/lib/logger", () => ({
   logger: {
     warn: vi.fn(),
@@ -88,9 +85,6 @@ vi.mock("@/lib/logger", () => ({
   logAPICall: vi.fn(),
 }));
 
-// Mock trpc - removed since we don't use it anymore
-
-// Mock security functions (local mock)
 vi.mock("@/lib/security/csp", () => ({
   generateNonce: vi.fn(() => "test-nonce"),
   getSecurityHeaders: vi.fn(() => ({
@@ -103,13 +97,9 @@ vi.mock("@/lib/security/csp", () => ({
   })),
 }));
 
-// Mock environment variables
 process.env.ALLOWED_ORIGINS =
   process.env.ALLOWED_ORIGINS || "http://127.0.0.1:3000,https://example.com";
 
-// Ensure document and window are properly set up for jsdom
-// This must run synchronously when the file is loaded, not in a hook
-// Use a function to ensure DOM is ready
 function ensureDOMReady() {
   if (typeof document === "undefined") {
     return;
@@ -146,42 +136,33 @@ function ensureDOMReady() {
       try {
         document.body = document.createElement("body");
       } catch {
-        // Last resort - ignore
+        
       }
     }
   }
 }
 
-// Call immediately
 ensureDOMReady();
 
-// Use beforeAll as a fallback to ensure this runs after jsdom is initialized
 beforeAll(() => {
   ensureDOMReady();
 });
 
-// NOTE: Date.now and Math.random are NOT mocked globally to avoid issues
-// with tests that depend on unique IDs or timestamps.
-// Mock them locally in individual tests if needed.
-
-// Global test utilities
 global.ResizeObserver = class MockResizeObserver {
   observe = vi.fn();
   unobserve = vi.fn();
   disconnect = vi.fn();
   constructor(_callback: ResizeObserverCallback) {
-    // Store callback if needed for testing
+    
   }
 } as unknown as typeof ResizeObserver;
 
-// Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
 
-// Mock matchMedia
 if (typeof window !== "undefined") {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
@@ -189,15 +170,15 @@ if (typeof window !== "undefined") {
       matches: false,
       media: query,
       onchange: null,
-      addListener: vi.fn(), // deprecated
-      removeListener: vi.fn(), // deprecated
+      addListener: vi.fn(), 
+      removeListener: vi.fn(), 
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
     })),
   });
 
-  // Mock window.location
+  
   Object.defineProperty(window, "location", {
     writable: true,
     value: {
@@ -217,7 +198,6 @@ if (typeof window !== "undefined") {
   });
 }
 
-// Mock localStorage
 const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
@@ -233,7 +213,6 @@ if (typeof window !== "undefined") {
   });
 }
 
-// Mock sessionStorage
 const sessionStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
@@ -245,46 +224,36 @@ Object.defineProperty(window, "sessionStorage", {
   writable: true,
 });
 
-// Mock fetch
 global.fetch = vi.fn();
 
-// Mock URL.createObjectURL
 Object.defineProperty(URL, "createObjectURL", {
   value: vi.fn(() => "mock-blob-url"),
   writable: true,
 });
 
-// Mock URL.revokeObjectURL
 Object.defineProperty(URL, "revokeObjectURL", {
   value: vi.fn(),
   writable: true,
 });
 
-// Mock Element.prototype.scrollIntoView
 Element.prototype.scrollIntoView = vi.fn();
 
-// Mock HTMLElement.prototype.scrollTo
 if (typeof HTMLElement !== "undefined") {
   HTMLElement.prototype.scrollTo = vi.fn();
 }
 
-// Mock window.scrollTo
 if (typeof window !== "undefined") {
   window.scrollTo = vi.fn();
 }
 
-// Additional check in beforeAll to ensure document.body exists
-// This is a fallback in case the first beforeAll didn't work
 beforeAll(() => {
   ensureDOMReady();
 });
 
-// Ensure DOM is ready before each test
 beforeEach(() => {
   ensureDOMReady();
 });
 
-// Clean up after each test
 afterEach(() => {
   vi.clearAllMocks();
   localStorageMock.clear();

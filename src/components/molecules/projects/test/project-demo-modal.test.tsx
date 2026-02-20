@@ -4,13 +4,11 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ProjectDemoModal } from "../project-demo-modal";
 import { ProjectMetadataService } from "@/lib/projects/project-metadata";
 
-// Mock ProjectMetadataService
 const mockGetProjectById = vi.fn();
 const mockProjectService = {
   getProjectById: mockGetProjectById,
 } as unknown as ProjectMetadataService;
 
-// Mock window.open
 const mockWindowOpen = vi.fn();
 if (typeof window !== "undefined") {
   Object.defineProperty(window, "open", {
@@ -257,7 +255,7 @@ describe("ProjectDemoModal", () => {
 
       vi.advanceTimersByTime(10);
 
-      // Iframe src should be reset and restored
+      
       expect(iframe.src).toBe(initialSrc);
       vi.useRealTimers();
     });

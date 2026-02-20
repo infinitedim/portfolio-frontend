@@ -10,14 +10,6 @@ interface RequestResponsePanelProps {
   themeConfig: ThemeConfig;
 }
 
-/**
- *
- * @param root0
- * @param root0.requestLog
- * @param root0.responseLog
- * @param root0.isLoading
- * @param root0.themeConfig
- */
 export function RequestResponsePanel({
   requestLog,
   responseLog,

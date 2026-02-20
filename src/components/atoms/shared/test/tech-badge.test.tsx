@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Import component
 import { TechBadge } from "../tech-badge";
 
 describe("TechBadge", () => {
@@ -379,7 +378,7 @@ describe("TechBadge", () => {
       const badge = container.querySelector("span");
 
       fireEvent.mouseEnter(badge!);
-      // Hover state should be applied
+      
       expect(badge).toBeInTheDocument();
     });
 
@@ -396,7 +395,7 @@ describe("TechBadge", () => {
 
       fireEvent.mouseEnter(badge!);
       fireEvent.mouseLeave(badge!);
-      // Should return to normal state
+      
       expect(badge).toBeInTheDocument();
     });
   });
@@ -486,8 +485,8 @@ describe("TechBadge", () => {
 
         const { container } = render(<TechBadge technology={tech} />);
         const badge = container.querySelector("span");
-        // Should have some color classes applied
-        // Match bg-color/20 or bg-color/opacity pattern (including black which has no number)
+        
+        
         expect(badge?.className).toMatch(/bg-[\w-]+\/\d+|bg-black\/\d+/);
         expect(badge?.className).toMatch(/text-[\w-]+-\d+|text-gray-\d+/);
       });

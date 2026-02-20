@@ -3,7 +3,6 @@ import { renderHook, act } from "@testing-library/react";
 import { useGestures, useTerminalGestures } from "@/hooks/use-gestures";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Helper function to create mock touch events
 function createTouchEvent(
   type: string,
   touches: Array<{ clientX: number; clientY: number }>,
@@ -23,7 +22,7 @@ function createTouchEvent(
     force: 1,
   })) as unknown as TouchList;
 
-  // For touchend, touches array is empty but changedTouches has the lifted fingers
+  
   const activeTouches =
     type === "touchend" ? ([] as unknown as TouchList) : touchList;
 
@@ -37,11 +36,10 @@ function createTouchEvent(
   } as unknown as React.TouchEvent;
 }
 
-// Helper to call onTouchEnd which takes no arguments
 function callTouchEnd(
   handlers: ReturnType<ReturnType<typeof useGestures>["getGestureHandlers"]>,
 ) {
-  // onTouchEnd doesn't take any arguments per the hook implementation
+  
   (handlers.onTouchEnd as () => void)();
 }
 
@@ -100,21 +98,21 @@ describe("useGestures", () => {
     const { result } = renderHook(() => useGestures({ onSwipeRight }));
     const handlers = result.current.getGestureHandlers();
 
-    // Start touch
+    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [{ clientX: 0, clientY: 100 }]),
       );
     });
 
-    // Move right (more than threshold of 50)
+    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [{ clientX: 100, clientY: 100 }]),
       );
     });
 
-    // End touch quickly (less than 300ms)
+    
     act(() => {
       callTouchEnd(handlers);
     });
@@ -157,7 +155,6 @@ describe("useGestures", () => {
       return;
     }
 
-
     const onSwipeUp = vi.fn();
     const { result } = renderHook(() => useGestures({ onSwipeUp }));
     const handlers = result.current.getGestureHandlers();
@@ -186,7 +183,6 @@ describe("useGestures", () => {
       expect(true).toBe(true);
       return;
     }
-
 
     const onSwipeDown = vi.fn();
     const { result } = renderHook(() => useGestures({ onSwipeDown }));
@@ -217,7 +213,6 @@ describe("useGestures", () => {
       return;
     }
 
-
     const onLongPress = vi.fn();
     const { result } = renderHook(() => useGestures({ onLongPress }));
     const handlers = result.current.getGestureHandlers();
@@ -228,7 +223,7 @@ describe("useGestures", () => {
       );
     });
 
-    // Advance time past long press delay (500ms default)
+    
     act(() => {
       vi.advanceTimersByTime(600);
     });
@@ -242,7 +237,6 @@ describe("useGestures", () => {
       return;
     }
 
-
     const onLongPress = vi.fn();
     const { result } = renderHook(() => useGestures({ onLongPress }));
     const handlers = result.current.getGestureHandlers();
@@ -253,7 +247,7 @@ describe("useGestures", () => {
       );
     });
 
-    // Move more than 10px
+    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [{ clientX: 150, clientY: 100 }]),
@@ -273,12 +267,11 @@ describe("useGestures", () => {
       return;
     }
 
-
     const onDoubleTap = vi.fn();
     const { result } = renderHook(() => useGestures({ onDoubleTap }));
     const handlers = result.current.getGestureHandlers();
 
-    // First tap
+    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]),
@@ -286,7 +279,7 @@ describe("useGestures", () => {
       callTouchEnd(handlers);
     });
 
-    // Second tap within doubleTapDelay (300ms)
+    
     act(() => {
       vi.advanceTimersByTime(100);
     });
@@ -307,12 +300,11 @@ describe("useGestures", () => {
       return;
     }
 
-
     const onPinchOut = vi.fn();
     const { result } = renderHook(() => useGestures({ onPinchOut }));
     const handlers = result.current.getGestureHandlers();
 
-    // Start with two fingers close together
+    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [
@@ -322,7 +314,7 @@ describe("useGestures", () => {
       );
     });
 
-    // Move fingers apart (pinch out)
+    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [
@@ -341,12 +333,11 @@ describe("useGestures", () => {
       return;
     }
 
-
     const onPinchIn = vi.fn();
     const { result } = renderHook(() => useGestures({ onPinchIn }));
     const handlers = result.current.getGestureHandlers();
 
-    // Start with two fingers far apart
+    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [
@@ -356,7 +347,7 @@ describe("useGestures", () => {
       );
     });
 
-    // Move fingers closer together (pinch in)
+    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [
@@ -375,26 +366,25 @@ describe("useGestures", () => {
       return;
     }
 
-
     const onPullToRefresh = vi.fn();
     const { result } = renderHook(() => useGestures({ onPullToRefresh }));
     const handlers = result.current.getGestureHandlers();
 
-    // Start near top of screen
+    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [{ clientX: 100, clientY: 50 }]),
       );
     });
 
-    // Pull down more than 80px
+    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [{ clientX: 100, clientY: 150 }]),
       );
     });
 
-    // Check that pull refreshing state is set
+    
     expect(result.current.isPullRefreshing).toBe(true);
     expect(result.current.pullDistance).toBeGreaterThan(0);
   });
@@ -404,7 +394,6 @@ describe("useGestures", () => {
       expect(true).toBe(true);
       return;
     }
-
 
     const { result } = renderHook(() => useGestures());
     const handlers = result.current.getGestureHandlers();
@@ -419,7 +408,7 @@ describe("useGestures", () => {
       callTouchEnd(handlers);
     });
 
-    // Pull distance should be reset or resetting
+    
     expect(result.current.pullDistance).toBeLessThanOrEqual(100);
   });
 
@@ -429,7 +418,6 @@ describe("useGestures", () => {
       return;
     }
 
-
     const onSwipeRight = vi.fn();
     const customConfig = { swipeThreshold: 100 };
     const { result } = renderHook(() =>
@@ -437,14 +425,14 @@ describe("useGestures", () => {
     );
     const handlers = result.current.getGestureHandlers();
 
-    // Start touch
+    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [{ clientX: 0, clientY: 100 }]),
       );
     });
 
-    // Move right but less than custom threshold (100)
+    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [{ clientX: 80, clientY: 100 }]),
@@ -455,7 +443,7 @@ describe("useGestures", () => {
       callTouchEnd(handlers);
     });
 
-    // Should not trigger because we didn't exceed custom threshold
+    
     expect(onSwipeRight).not.toHaveBeenCalled();
   });
 
@@ -464,7 +452,6 @@ describe("useGestures", () => {
       expect(true).toBe(true);
       return;
     }
-
 
     const { result } = renderHook(() => useGestures());
     const handlers = result.current.getGestureHandlers();
@@ -482,7 +469,6 @@ describe("useGestures", () => {
       expect(true).toBe(true);
       return;
     }
-
 
     const { result } = renderHook(() => useGestures());
     const handlers = result.current.getGestureHandlers();
@@ -503,7 +489,6 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-
     const commands: string[] = [];
     const { result } = renderHook(() =>
       useTerminalGestures((c: string) => commands.push(c)),
@@ -518,7 +503,6 @@ describe("useTerminalGestures", () => {
       expect(true).toBe(true);
       return;
     }
-
 
     const executeCommand = vi.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
@@ -538,7 +522,6 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-
     const executeCommand = vi.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
 
@@ -552,7 +535,6 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-
     const executeCommand = vi.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
 
@@ -564,8 +546,8 @@ describe("useTerminalGestures", () => {
       result.current.addToHistory("command1");
     });
 
-    // With the stale closure, duplicate may still be added on same batch
-    // but separate act() blocks should work correctly
+    
+    
     expect(
       result.current.commandHistory.filter((c) => c === "command1"),
     ).toHaveLength(1);
@@ -576,7 +558,6 @@ describe("useTerminalGestures", () => {
       expect(true).toBe(true);
       return;
     }
-
 
     const executeCommand = vi.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
@@ -596,7 +577,6 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-
     const executeCommand = vi.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
 
@@ -612,7 +592,6 @@ describe("useTerminalGestures", () => {
       expect(true).toBe(true);
       return;
     }
-
 
     const executeCommand = vi.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));

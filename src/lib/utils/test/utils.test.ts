@@ -1,12 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-// NOTE: Module caching issue with utils
-// Problem: When tests run together, mocks from other test files can interfere
-// Solution: Use importActual() in beforeEach to get real module
-
-// IMPORTANT: Don't mock utils here - we need the real implementation
-// This test file should run with real utils module
-
 describe("utils", () => {
   let utils: typeof import("../utils");
   let cn: any;
@@ -14,31 +7,31 @@ describe("utils", () => {
   let formatTimestamp: any;
 
   beforeEach(async () => {
-    // Aggressively unmock to ensure we get real module
+    
     if (typeof vi !== "undefined") {
       if (vi.unmock) vi.unmock("@/lib/utils/utils");
       if (vi.doUnmock) vi.doUnmock("@/lib/utils/utils");
       if (vi.resetModules) vi.resetModules();
     }
 
-    // Clear any existing mocks
+    
     vi.clearAllMocks();
 
-    // Use importActual to get the real module (bypasses mocks)
-    // Fallback to regular import if importActual is not available (Bun)
+    
+    
     if (typeof vi !== "undefined" && vi.importActual) {
-      // Vitest: use importActual to bypass mocks
+      
       utils = await vi.importActual<typeof import("../utils")>("../utils");
     } else {
-      // Bun test runner: regular import
-      // For Bun, we need to clear the module cache if possible
+      
+      
       if (typeof require !== "undefined" && require.cache) {
         try {
           const modulePath = require.resolve("../utils");
           delete require.cache[modulePath];
         } catch (e) {
           console.error(e);
-          // Ignore if module path not found
+          
         }
       }
       utils = await import("../utils");
@@ -65,7 +58,7 @@ describe("utils", () => {
     });
 
     it("should handle conditional classes", () => {
-      // eslint-disable-next-line no-constant-binary-expression
+      
       const result = cn("base", true && "conditional", false && "not-included");
       expect(result).toBe("base conditional");
     });
@@ -105,7 +98,7 @@ describe("utils", () => {
         "base-class",
         ["array-class1", "array-class2"],
         { "object-class": true, "hidden-class": false },
-        // eslint-disable-next-line no-constant-binary-expression
+        
         true && "conditional-class",
       );
       expect(result).toContain("base-class");
@@ -131,7 +124,7 @@ describe("utils", () => {
 
     it("should generate unique IDs", async () => {
       const id1 = generateId();
-      // Add small delay to ensure different timestamp
+      
       await new Promise((resolve) => setTimeout(resolve, 1));
       const id2 = generateId();
       expect(id1).not.toBe(id2);
@@ -154,7 +147,7 @@ describe("utils", () => {
       const ids: string[] = [];
       for (let i = 0; i < 5; i++) {
         ids.push(generateId());
-        // Small delay to ensure different timestamps (except for last iteration)
+        
         if (i < 4) {
           await new Promise((resolve) => setTimeout(resolve, 1));
         }
@@ -166,7 +159,7 @@ describe("utils", () => {
     it("should use base36 encoding", () => {
       const id = generateId();
       const parts = id.split("_");
-      // Base36 characters are 0-9 and a-z
+      
       const base36Regex = /^[0-9a-z]+$/;
       expect(base36Regex.test(parts[0])).toBe(true);
       expect(base36Regex.test(parts[1])).toBe(true);
@@ -201,7 +194,7 @@ describe("utils", () => {
       const date = new Date("2024-01-05T09:08:07.000Z");
       const result = formatTimestamp(date);
       expect(result).toContain("01-05");
-      // Check that time portion contains padded values (timezone-agnostic)
+      
       expect(result).toMatch(/\d{2}:\d{2}:\d{2}$/);
     });
 
@@ -233,7 +226,7 @@ describe("utils", () => {
       edgeCases.forEach((date) => {
         const result = formatTimestamp(date);
         expect(result).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
-        expect(result.length).toBe(19); // "YYYY-MM-DD HH:MM:SS" format
+        expect(result.length).toBe(19); 
       });
     });
 

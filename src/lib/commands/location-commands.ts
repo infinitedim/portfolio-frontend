@@ -1,10 +1,6 @@
 import { LocationService } from "@/lib/location/location-service";
 import type { Command, CommandOutput } from "@/types/terminal";
 
-/**
- * Create a location command
- * @returns {Command} The location command
- */
 export function createLocationCommand(): Command {
   return {
     name: "location",
@@ -37,10 +33,6 @@ export function createLocationCommand(): Command {
   };
 }
 
-/**
- * Get location information
- * @returns {Promise<CommandOutput>} The command output
- */
 async function getLocationInfo(): Promise<CommandOutput> {
   try {
     const locationService = LocationService.getInstance();
@@ -76,11 +68,6 @@ async function getLocationInfo(): Promise<CommandOutput> {
   }
 }
 
-/**
- * Get time information
- * @param {string} timezone - The timezone to get information for
- * @returns {Promise<CommandOutput>} The command output
- */
 async function getTimeInfo(timezone?: string): Promise<CommandOutput> {
   try {
     const locationService = LocationService.getInstance();
@@ -106,11 +93,6 @@ async function getTimeInfo(timezone?: string): Promise<CommandOutput> {
   }
 }
 
-/**
- * Get timezone information
- * @param {string} timezone - The timezone to get information for
- * @returns {Promise<CommandOutput>} The command output
- */
 async function getTimezoneInfo(timezone?: string): Promise<CommandOutput> {
   try {
     const locationService = LocationService.getInstance();
@@ -155,10 +137,6 @@ async function getTimezoneInfo(timezone?: string): Promise<CommandOutput> {
   }
 }
 
-/**
- * Get weather information
- * @returns {Promise<CommandOutput>} The command output
- */
 async function getWeatherInfo(): Promise<CommandOutput> {
   try {
     const locationService = LocationService.getInstance();
@@ -195,10 +173,6 @@ async function getWeatherInfo(): Promise<CommandOutput> {
   }
 }
 
-/**
- * Show location help
- * @returns {CommandOutput} The command output
- */
 function showLocationHelp(): CommandOutput {
   return {
     type: "info",

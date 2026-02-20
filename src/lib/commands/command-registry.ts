@@ -5,16 +5,6 @@ import { ThemeDisplay } from "@/lib/utils/theme-display";
 import { themes, getSortedThemeNames } from "@/lib/themes/theme-config";
 import type { ThemeName } from "@/types/theme";
 
-/**
- * Creates a help command that displays all available commands and their descriptions
- * @param getCommands - Function that returns the current list of registered commands
- * @returns Command object for the help command
- * @example
- * ```ts
- * const helpCmd = createHelpCommand(() => parser.getCommands());
- * parser.register(helpCmd);
- * ```
- */
 export const createHelpCommand = (getCommands: () => Command[]): Command => ({
   name: "help",
   description: "Show available commands",
@@ -95,15 +85,6 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
   },
 });
 
-/**
- * Command that displays information about the developer/portfolio owner
- * Shows bio, skills, experience, and contact information
- * @example
- * ```ts
- * parser.register(aboutCommand);
- * // User types: about
- * ```
- */
 export const aboutCommand: Command = {
   name: "about",
   description: "Learn more about me",

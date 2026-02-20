@@ -18,17 +18,6 @@ declare global {
   }
 }
 
-/**
- * PWA Registration component that handles service worker registration
- * and provides install prompt functionality with comprehensive error handling
- *
- * Features:
- * - Service worker registration with update handling
- * - Install prompt management
- * - Cross-browser compatibility
- * - Comprehensive error handling
- * - Memory leak prevention
- */
 export function PWARegistration() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
@@ -426,11 +415,11 @@ export function PWARegistration() {
 
   useEffect(() => {
     if (error) {
-      // Only log non-critical errors (404s are expected if service worker is optional)
+      
       if (!error.includes("404") && !error.includes("bad HTTP response code")) {
         console.error("PWA Component Error:", error);
       } else {
-        // Silently ignore 404 errors for service worker - it's optional
+        
         console.debug("PWA: Service worker not available (expected in some environments)");
       }
     }

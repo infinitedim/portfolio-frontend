@@ -3,15 +3,6 @@
 import { type JSX, useEffect, useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
-/**
- * Props for the NotificationToast component
- * @interface NotificationToastProps
- * @property {string} message - The message to display
- * @property {"info" | "success" | "warning" | "error"} type - Notification type
- * @property {number} [duration] - Auto-dismiss duration in milliseconds
- * @property {() => void} onClose - Callback when toast closes
- * @property {boolean} [visible] - Whether toast is visible
- */
 interface NotificationToastProps {
   message: string;
   type: "info" | "success" | "warning" | "error";
@@ -20,26 +11,6 @@ interface NotificationToastProps {
   visible?: boolean;
 }
 
-/**
- * Toast notification component for temporary feedback messages
- * Displays floating messages with auto-dismiss and type-based styling
- * @param {NotificationToastProps} props - Component props
- * @param {string} props.message - Message to display
- * @param {"info" | "success" | "warning" | "error"} props.type - Notification type
- * @param {boolean} [props.visible=true] - Visibility state
- * @param {() => void} props.onClose - Close callback
- * @param {number} [props.duration=4000] - Auto-dismiss duration in ms
- * @returns {JSX.Element | null} The toast notification or null
- * @example
- * ```tsx
- * <NotificationToast
- *   message="Operation successful"
- *   type="success"
- *   onClose={() => setShowToast(false)}
- *   duration={3000}
- * />
- * ```
- */
 export function NotificationToast({
   message,
   type,

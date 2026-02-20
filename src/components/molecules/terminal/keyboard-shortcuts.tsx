@@ -9,17 +9,6 @@ import {
 } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
-/**
- * Represents a single keyboard shortcut
- * @interface KeyboardShortcut
- * @property {string} id - Unique identifier for the shortcut
- * @property {string[]} keys - Array of keys that trigger the shortcut
- * @property {string} description - Human-readable description
- * @property {string} category - Category for grouping shortcuts
- * @property {() => void} action - Function to execute when triggered
- * @property {boolean} enabled - Whether the shortcut is currently enabled
- * @property {boolean} customizable - Whether users can customize this shortcut
- */
 export interface KeyboardShortcut {
   id: string;
   keys: string[];
@@ -30,15 +19,6 @@ export interface KeyboardShortcut {
   customizable: boolean;
 }
 
-/**
- * Props for the KeyboardShortcut component
- * @interface KeyboardShortcutProps
- * @property {boolean} isOpen - Whether the shortcuts panel is open
- * @property {() => void} onClose - Callback when panel is closed
- * @property {KeyboardShortcut[]} shortcuts - List of available shortcuts
- * @property {(shortcutId: string, newKeys: string[]) => void} [onShortcutChange] - Callback when shortcut is customized
- * @property {string} [className] - Additional CSS classes
- */
 interface KeyboardShortcutProps {
   isOpen: boolean;
   onClose: () => void;
@@ -53,26 +33,6 @@ interface ShortcutCategory {
   shortcuts: KeyboardShortcut[];
 }
 
-/**
- * Enhanced keyboard shortcuts panel with customization and visual guide
- * Displays all available keyboard shortcuts with search, categorization, and customization
- * @param {KeyboardShortcutProps} props - Component props
- * @param {boolean} props.isOpen - Panel open state
- * @param {() => void} props.onClose - Close callback
- * @param {KeyboardShortcut[]} props.shortcuts - Available shortcuts
- * @param {(shortcutId: string, newKeys: string[]) => void} [props.onShortcutChange] - Customization callback
- * @param {string} [props.className] - Additional classes
- * @returns {JSX.Element | null} The shortcuts panel or null if closed
- * @example
- * ```tsx
- * <KeyboardShortcut
- *   isOpen={isOpen}
- *   onClose={handleClose}
- *   shortcuts={shortcuts}
- *   onShortcutChange={handleShortcutChange}
- * />
- * ```
- */
 export function KeyboardShortcut({
   isOpen,
   onClose,
@@ -343,7 +303,7 @@ export function KeyboardShortcut({
   if (!isOpen) return null;
 
   return (
-    /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+    
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${className}`}
       style={{ backgroundColor: `${themeConfig.colors.bg}e6` }}

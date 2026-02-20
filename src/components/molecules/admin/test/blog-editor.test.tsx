@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { BlogEditor } from "../blog-editor";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -16,7 +15,6 @@ const mockThemeConfig = {
   },
 };
 
-// Mock i18n hook
 const mockT = vi.fn((key: string) => {
   const translations: Record<string, string> = {
     blogNewPost: "New Post",
@@ -123,7 +121,7 @@ describe("BlogEditor", () => {
       }
       render(<BlogEditor themeConfig={mockThemeConfig} />);
 
-      // Wait for initial draft to load
+      
       waitFor(() => {
         const draftButtons = screen.getAllByText(/New Post|Welcome to the Blog Editor/);
         if (draftButtons.length > 0) {
@@ -227,13 +225,13 @@ describe("BlogEditor", () => {
       }
       render(<BlogEditor themeConfig={mockThemeConfig} />);
 
-      // First add a tag
+      
       const tagInput = screen.getByPlaceholderText(/Add Tag/);
       const addTagButton = screen.getByText(/Add Tag/);
       fireEvent.change(tagInput, { target: { value: "test" } });
       fireEvent.click(addTagButton);
 
-      // Then remove it
+      
       const removeButton = screen.getByText("test").parentElement?.querySelector("button");
       if (removeButton) {
         fireEvent.click(removeButton);
@@ -290,7 +288,7 @@ describe("BlogEditor", () => {
       const previewButton = screen.getByText(/Preview/);
       fireEvent.click(previewButton);
 
-      // Should show rendered HTML
+      
       expect(screen.getByText(/Heading|Bold text/)).toBeInTheDocument();
     });
   });
@@ -341,7 +339,7 @@ describe("BlogEditor", () => {
       fireEvent.click(publishButton);
 
       await waitFor(() => {
-        // Should show published status
+        
         expect(screen.getByText(/Published/)).toBeInTheDocument();
       });
     });
@@ -363,7 +361,7 @@ describe("BlogEditor", () => {
       const previewButton = screen.getByText(/Preview/);
       fireEvent.click(previewButton);
 
-      // Should render headings
+      
       expect(screen.getByText(/Heading 1|Heading 2/)).toBeInTheDocument();
     });
 
@@ -382,7 +380,7 @@ describe("BlogEditor", () => {
       const previewButton = screen.getByText(/Preview/);
       fireEvent.click(previewButton);
 
-      // Should render bold
+      
       expect(screen.getByText(/Bold text/)).toBeInTheDocument();
     });
   });

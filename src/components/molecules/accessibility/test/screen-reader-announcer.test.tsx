@@ -62,10 +62,10 @@ describe("ScreenReaderAnnouncer", () => {
       render(<ScreenReaderAnnouncer message="Test message" />);
       const announcer = screen.getByRole("status", { hidden: true });
 
-      // Initially empty
+      
       expect(announcer.textContent).toBe("");
 
-      // Advance timer to trigger setTimeout
+      
       vi.advanceTimersByTime(100);
 
       await waitFor(() => {
@@ -89,13 +89,13 @@ describe("ScreenReaderAnnouncer", () => {
         expect(announcer.textContent).toBe("First message");
       }, { timeout: 1000 });
 
-      // Change message
+      
       rerender(<ScreenReaderAnnouncer message="Second message" />);
 
-      // Should clear first
+      
       expect(announcer.textContent).toBe("");
 
-      // Then set new message
+      
       vi.advanceTimersByTime(100);
       await waitFor(() => {
         expect(announcer.textContent).toBe("Second message");

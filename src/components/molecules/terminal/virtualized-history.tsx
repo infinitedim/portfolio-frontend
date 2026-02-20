@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 
 import { useEffect, useRef, useState, useMemo, JSX } from "react";
@@ -6,36 +6,12 @@ import type { TerminalHistory } from "@/types/terminal";
 import { CommandOutput } from "@/components/molecules/terminal/command-output";
 import { useTheme } from "@/hooks/use-theme";
 
-/**
- * Props for the VirtualizedHistory component
- * @interface VirtualizedHistoryProps
- * @property {TerminalHistory[]} history - Array of history entries
- * @property {string} [prompt] - Command prompt string
- * @property {number} [maxVisibleItems] - Maximum items to render
- */
 interface VirtualizedHistoryProps {
   history: TerminalHistory[];
   prompt?: string;
   maxVisibleItems?: number;
 }
 
-/**
- * Virtualized terminal history component for performance optimization
- * Renders only visible history items to handle large command histories efficiently
- * @param {VirtualizedHistoryProps} props - Component props
- * @param {TerminalHistory[]} props.history - History entries
- * @param {string} [props.prompt="$"] - Command prompt
- * @param {number} [props.maxVisibleItems=50] - Max visible items
- * @returns {JSX.Element} The virtualized history display
- * @example
- * ```tsx
- * <VirtualizedHistory
- *   history={commandHistory}
- *   prompt=">"
- *   maxVisibleItems={100}
- * />
- * ```
- */
 export function VirtualizedHistory({
   history,
   prompt = "$",

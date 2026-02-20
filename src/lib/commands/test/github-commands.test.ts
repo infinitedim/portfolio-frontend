@@ -90,7 +90,6 @@ vi.mock("@/lib/github/github-service", () => {
   return { GitHubService: mock };
 });
 
-// Import after mock to ensure mock is used
 import { githubCommand } from "../github-commands";
 
 describe("githubCommand", () => {

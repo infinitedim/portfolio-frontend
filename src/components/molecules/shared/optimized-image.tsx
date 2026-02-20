@@ -4,18 +4,6 @@ import { JSX, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils/utils";
 
-/**
- * Props for the OptimizedImage component
- * @interface OptimizedImageProps
- * @property {string} src - Image source URL
- * @property {string} alt - Alternative text for accessibility
- * @property {number} [width] - Image width in pixels
- * @property {number} [height] - Image height in pixels
- * @property {boolean} [fill] - Whether image should fill container
- * @property {boolean} [priority] - Priority loading flag
- * @property {string} [className] - Additional CSS classes
- * @property {string} [sizes] - Responsive sizes attribute
- */
 interface OptimizedImageProps {
   src: string;
   alt: string;
@@ -46,30 +34,6 @@ const toBase64 = (str: string) =>
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
 
-/**
- * Optimized Next.js Image component with shimmer placeholder and error handling
- * Provides automatic loading states and graceful fallback for failed images
- * @param {OptimizedImageProps} props - Component props
- * @param {string} props.src - Image source URL
- * @param {string} props.alt - Alt text
- * @param {number} [props.width=400] - Width in pixels
- * @param {number} [props.height=300] - Height in pixels
- * @param {boolean} [props.fill=false] - Fill container
- * @param {boolean} [props.priority=false] - Priority loading
- * @param {string} [props.className] - Additional classes
- * @param {string} [props.sizes] - Responsive sizes
- * @returns {JSX.Element} The optimized image component
- * @example
- * ```tsx
- * <OptimizedImage
- *   src="/images/hero.jpg"
- *   alt="Hero image"
- *   width={800}
- *   height={600}
- *   priority
- * />
- * ```
- */
 export function OptimizedImage({
   src,
   alt,

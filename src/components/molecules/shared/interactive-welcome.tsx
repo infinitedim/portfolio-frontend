@@ -3,33 +3,12 @@
 import { useState, memo, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
-/**
- * Props for the InteractiveWelcome component
- * @interface InteractiveWelcomeProps
- * @property {(command: string) => void} onCommandSelect - Callback when a command is selected
- * @property {() => void} onDismiss - Callback when welcome screen is dismissed
- */
 interface InteractiveWelcomeProps {
   onCommandSelect: (command: string) => void;
   onDismiss: () => void;
   onStartTour?: () => void;
 }
 
-/**
- * Interactive welcome screen with quick command buttons
- * Displays an introduction to the terminal with clickable command shortcuts
- * @param {InteractiveWelcomeProps} props - Component props
- * @param {(command: string) => void} props.onCommandSelect - Command selection callback
- * @param {() => void} props.onDismiss - Dismiss callback
- * @returns {JSX.Element} The interactive welcome component
- * @example
- * ```tsx
- * <InteractiveWelcome
- *   onCommandSelect={handleCommand}
- *   onDismiss={handleDismiss}
- * />
- * ```
- */
 export const InteractiveWelcome = memo(function InteractiveWelcome({
   onCommandSelect,
   onDismiss,
@@ -50,7 +29,7 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
   const handleCommandClick = (command: string) => {
     setSelectedCommand(command);
 
-    // Special handling for tour command
+    
     if (command === "tour" && onStartTour) {
       setTimeout(() => {
         onStartTour();
@@ -109,7 +88,7 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
                     ? `${themeConfig.colors.accent}20`
                     : `${themeConfig.colors.bg}20`,
                 color: themeConfig.colors.text,
-                // Use CSS custom property for ring color (Tailwind will pick it up)
+                
                 "--tw-ring-color": isHighlighted ? themeConfig.colors.accent : undefined,
               } as React.CSSProperties}
             >

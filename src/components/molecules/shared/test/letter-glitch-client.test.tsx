@@ -3,7 +3,6 @@ import { render, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import LetterGlitchClient from "../letter-glitch-client";
 
-// Mock canvas context
 const mockContext = {
   clearRect: vi.fn(),
   fillText: vi.fn(),
@@ -13,7 +12,6 @@ const mockContext = {
   setTransform: vi.fn(),
 };
 
-// Mock canvas methods
 const mockCanvas = {
   getContext: vi.fn(() => mockContext),
   getBoundingClientRect: vi.fn(() => ({
@@ -42,7 +40,6 @@ const mockCanvas = {
   },
 };
 
-// Mock requestAnimationFrame
 let rafCallbacks: Array<() => void> = [];
 const mockRequestAnimationFrame = vi.fn((callback: () => void) => {
   rafCallbacks.push(callback);
@@ -51,7 +48,6 @@ const mockRequestAnimationFrame = vi.fn((callback: () => void) => {
 
 const mockCancelAnimationFrame = vi.fn();
 
-// Mock window properties
 if (typeof window !== "undefined") {
   Object.defineProperty(window, "devicePixelRatio", {
     writable: true,
@@ -72,7 +68,6 @@ if (typeof window !== "undefined") {
   });
 }
 
-// Mock Date.now for animation timing
 const mockNow = vi.fn(() => 1000);
 global.Date.now = mockNow;
 
@@ -83,12 +78,12 @@ describe("LetterGlitchClient", () => {
     vi.clearAllMocks();
     rafCallbacks = [];
 
-    // Reset canvas mock
+    
     mockCanvas.getContext.mockReturnValue(mockContext);
     mockCanvas.width = 0;
     mockCanvas.height = 0;
 
-    // Mock HTMLCanvasElement
+    
     if (typeof HTMLCanvasElement !== "undefined") {
       vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(
         mockContext as any,
@@ -106,7 +101,7 @@ describe("LetterGlitchClient", () => {
       } as DOMRect);
     }
 
-    // Mock parent element
+    
     Object.defineProperty(HTMLElement.prototype, "parentElement", {
       writable: true,
       configurable: true,
@@ -252,7 +247,7 @@ describe("LetterGlitchClient", () => {
       const customColors = ["#ff0000", "#00ff00", "#0000ff"];
       render(<LetterGlitchClient glitchColors={customColors} />);
 
-      // Component should render with custom colors
+      
       expect(true).toBe(true);
     });
 
@@ -263,7 +258,7 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient glitchSpeed={100} />);
 
-      // Component should render with custom speed
+      
       expect(true).toBe(true);
     });
 
@@ -274,7 +269,7 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient characters="ABC123" />);
 
-      // Component should render with custom characters
+      
       expect(true).toBe(true);
     });
 
@@ -285,7 +280,7 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient smooth={true} />);
 
-      // Component should render with smooth animation
+      
       expect(true).toBe(true);
     });
 
@@ -296,7 +291,7 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient smooth={false} />);
 
-      // Component should render without smooth animation
+      
       expect(true).toBe(true);
     });
   });
@@ -310,7 +305,7 @@ describe("LetterGlitchClient", () => {
       render(<LetterGlitchClient />);
 
       await waitFor(() => {
-        // Animation should be started via requestAnimationFrame
+        
         expect(mockRequestAnimationFrame).toHaveBeenCalled();
       }, { timeout: 1000 });
     });
@@ -324,7 +319,7 @@ describe("LetterGlitchClient", () => {
 
       await waitFor(() => {
         if (rafCallbacks.length > 0) {
-          // Execute a callback to test animation logic
+          
           rafCallbacks[0]();
           expect(true).toBe(true);
         }
@@ -345,7 +340,7 @@ describe("LetterGlitchClient", () => {
       render(<LetterGlitchClient />);
 
       await waitFor(() => {
-        // Trigger resize event
+        
         window.dispatchEvent(new Event("resize"));
         expect(true).toBe(true);
       }, { timeout: 1000 });
@@ -364,7 +359,7 @@ describe("LetterGlitchClient", () => {
       render(<LetterGlitchClient />);
 
       await waitFor(() => {
-        // Trigger multiple resize events
+        
         window.dispatchEvent(new Event("resize"));
         window.dispatchEvent(new Event("resize"));
         window.dispatchEvent(new Event("resize"));
@@ -392,7 +387,7 @@ describe("LetterGlitchClient", () => {
 
       unmount();
 
-      // Cleanup should cancel animation frame
+      
       expect(mockCancelAnimationFrame).toHaveBeenCalled();
     });
 
@@ -468,7 +463,7 @@ describe("LetterGlitchClient", () => {
         expect(true).toBe(true);
         return;
       }
-      // Component should handle missing canvas ref
+      
       render(<LetterGlitchClient />);
       expect(true).toBe(true);
     });
@@ -478,7 +473,7 @@ describe("LetterGlitchClient", () => {
         expect(true).toBe(true);
         return;
       }
-      // Component should handle missing parent element
+      
       render(<LetterGlitchClient />);
       expect(true).toBe(true);
     });

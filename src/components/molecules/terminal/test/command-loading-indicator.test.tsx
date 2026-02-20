@@ -3,7 +3,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { CommandLoadingIndicator } from "../command-loading-indicator";
 
-// Mock theme hook
 const mockThemeConfig = {
   colors: {
     bg: "#000000",
@@ -102,13 +101,13 @@ describe("CommandLoadingIndicator", () => {
         expect(true).toBe(true);
         return;
       }
-      // Test that component handles missing themeConfig gracefully
-      // Since themeConfig is mocked, this test verifies the component structure
+      
+      
       const { container } = render(
         <CommandLoadingIndicator visible={true} />,
       );
 
-      // Component should still render with default themeConfig from mock
+      
       expect(container.firstChild).toBeInTheDocument();
     });
   });
@@ -126,7 +125,7 @@ describe("CommandLoadingIndicator", () => {
 
       expect(screen.getByText("Message 1")).toBeInTheDocument();
 
-      // Advance timer to trigger message change
+      
       vi.advanceTimersByTime(1500);
 
       await waitFor(() => {
@@ -156,7 +155,7 @@ describe("CommandLoadingIndicator", () => {
         expect(screen.getByText("Message 2")).toBeInTheDocument();
       });
 
-      // Hide and show again
+      
       rerender(
         <CommandLoadingIndicator visible={false} messages={messages} />,
       );
@@ -164,7 +163,7 @@ describe("CommandLoadingIndicator", () => {
         <CommandLoadingIndicator visible={true} messages={messages} />,
       );
 
-      // Should reset to first message
+      
       expect(screen.getByText("Message 1")).toBeInTheDocument();
     });
 
@@ -175,15 +174,15 @@ describe("CommandLoadingIndicator", () => {
       }
       render(<CommandLoadingIndicator visible={true} />);
 
-      // Dots should start empty
+      
       const dotsElement = screen.getByText(/Processing command/i).parentElement;
       expect(dotsElement).toBeInTheDocument();
 
-      // Advance timer to trigger dot animation
+      
       vi.advanceTimersByTime(400);
 
       await waitFor(() => {
-        // Dots should be animating
+        
         expect(dotsElement).toBeInTheDocument();
       });
     });
@@ -197,13 +196,13 @@ describe("CommandLoadingIndicator", () => {
         <CommandLoadingIndicator visible={true} />,
       );
 
-      vi.advanceTimersByTime(1200); // Enough time for dots to animate
+      vi.advanceTimersByTime(1200); 
 
-      // Hide and show again
+      
       rerender(<CommandLoadingIndicator visible={false} />);
       rerender(<CommandLoadingIndicator visible={true} />);
 
-      // Dots should reset
+      
       const dotsElement = screen.getByText(/Processing command/i).parentElement;
       expect(dotsElement).toBeInTheDocument();
     });

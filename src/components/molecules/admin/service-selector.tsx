@@ -17,14 +17,6 @@ interface ServiceSelectorProps {
   themeConfig: ThemeConfig;
 }
 
-/**
- *
- * @param root0
- * @param root0.services
- * @param root0.selectedService
- * @param root0.onServiceSelect
- * @param root0.themeConfig
- */
 export function ServiceSelector({
   services,
   selectedService,

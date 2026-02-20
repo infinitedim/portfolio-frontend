@@ -10,7 +10,6 @@ import {
   HistorySearchPanel,
 } from "../lazy-components";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -28,7 +27,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock lazy components
 vi.mock("@/components/organisms/customization/customization-manager", () => ({
   CustomizationManager: () => <div>CustomizationManager</div>,
 }));
@@ -55,7 +53,6 @@ describe("LazyComponents", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
   });
-
 
   describe("withLazyLoading", () => {
     it("should wrap component with Suspense", async () => {
@@ -86,7 +83,7 @@ describe("LazyComponents", () => {
 
       render(<WrappedComponent />);
 
-      // Should show loading initially
+      
       expect(screen.getByText("Loading component...")).toBeInTheDocument();
     });
   });

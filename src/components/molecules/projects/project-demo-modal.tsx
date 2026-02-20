@@ -11,15 +11,6 @@ interface ProjectDemoModalProps {
   projectService: ProjectMetadataService;
 }
 
-/**
- * ProjectDemoModal component
- * @param {ProjectDemoModalProps} props - The props for the ProjectDemoModal component
- * @param {boolean} props.isOpen - Whether the modal is open
- * @param {Function} props.onClose - The function to call when the modal is closed
- * @param {string} props.projectId - The id of the project
- * @param {ProjectMetadataService} props.projectService - The project metadata service
- * @returns {JSX.Element} The ProjectDemoModal component
- */
 export function ProjectDemoModal({
   isOpen,
   onClose,

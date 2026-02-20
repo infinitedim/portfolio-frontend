@@ -1,24 +1,16 @@
-/**
- * Test utilities and helpers for frontend tests
- */
+
+
 import { vi, type Mock } from "vitest";
 import React, { type ReactElement, type ReactNode } from "react";
 
-// Re-export common testing library functions for convenience
 export { vi } from "vitest";
 
-/**
- * Type-safe mock function creator
- */
 export function createMock<T extends (...args: unknown[]) => unknown>(
   implementation?: T,
 ): Mock<T> {
   return vi.fn(implementation) as Mock<T>;
 }
 
-/**
- * Mock fetch responses
- */
 export function mockFetch(
   responses: Array<{
     url?: string | RegExp;
@@ -60,16 +52,10 @@ export function mockFetch(
   global.fetch = fetchMock;
 }
 
-/**
- * Reset fetch mock
- */
 export function resetFetchMock(): void {
   global.fetch = vi.fn();
 }
 
-/**
- * Create a mock tRPC client for testing
- */
 export function createMockTRPCClient<T extends Record<string, unknown>>(
   overrides?: Partial<T>,
 ): T {
@@ -78,7 +64,7 @@ export function createMockTRPCClient<T extends Record<string, unknown>>(
       if (overrides && prop in overrides) {
         return overrides[prop as keyof T];
       }
-      // Return a proxy that handles nested access and method calls
+      
       return new Proxy(
         {},
         {
@@ -107,9 +93,6 @@ export function createMockTRPCClient<T extends Record<string, unknown>>(
   return new Proxy({}, handler) as T;
 }
 
-/**
- * Mock localStorage with typed values
- */
 export function createMockLocalStorage(
   initialData: Record<string, string> = {},
 ): {
@@ -136,25 +119,16 @@ export function createMockLocalStorage(
   };
 }
 
-/**
- * Mock session storage
- */
 export function createMockSessionStorage(
   initialData: Record<string, string> = {},
 ): ReturnType<typeof createMockLocalStorage> {
   return createMockLocalStorage(initialData);
 }
 
-/**
- * Wait for promises to resolve
- */
 export function flushPromises(): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, 0));
 }
 
-/**
- * Wait for a specific condition
- */
 export async function waitFor(
   condition: () => boolean | Promise<boolean>,
   timeout = 5000,
@@ -170,9 +144,6 @@ export async function waitFor(
   throw new Error("Condition not met within timeout");
 }
 
-/**
- * Mock date for testing
- */
 export function mockDate(date: Date | string | number): {
   restore: () => void;
 } {
@@ -202,9 +173,6 @@ export function mockDate(date: Date | string | number): {
   };
 }
 
-/**
- * Mock timers with auto-cleanup
- */
 export function useFakeTimers(): {
   advanceTimersByTime: (ms: number) => void;
   runAllTimers: () => void;
@@ -219,9 +187,6 @@ export function useFakeTimers(): {
   };
 }
 
-/**
- * Create a mock event
- */
 export function createMockEvent<T extends Event>(
   type: string,
   props?: Partial<T>,
@@ -237,9 +202,6 @@ export function createMockEvent<T extends Event>(
   return event;
 }
 
-/**
- * Mock IntersectionObserver entries
- */
 export function createIntersectionObserverEntry(
   overrides?: Partial<IntersectionObserverEntry>,
 ): IntersectionObserverEntry {
@@ -266,9 +228,6 @@ export function createIntersectionObserverEntry(
   };
 }
 
-/**
- * Mock ResizeObserver entry
- */
 export function createResizeObserverEntry(
   target: Element,
   overrides?: Partial<ResizeObserverEntry>,
@@ -294,9 +253,6 @@ export function createResizeObserverEntry(
   };
 }
 
-/**
- * Mock router for Next.js App Router
- */
 export function createMockRouter(overrides?: {
   pathname?: string;
   searchParams?: Record<string, string>;
@@ -324,9 +280,6 @@ export function createMockRouter(overrides?: {
   };
 }
 
-/**
- * Create typed mock props
- */
 export function createMockProps<T extends Record<string, unknown>>(
   defaults: T,
   overrides?: Partial<T>,
@@ -334,9 +287,6 @@ export function createMockProps<T extends Record<string, unknown>>(
   return { ...defaults, ...overrides };
 }
 
-/**
- * Wrapper to add providers for testing
- */
 export interface TestProviderProps {
   children: ReactNode;
 }
@@ -352,9 +302,6 @@ export function createTestProvider(
   };
 }
 
-/**
- * Mock console methods
- */
 export function mockConsole(): {
   log: Mock;
   warn: Mock;
@@ -390,9 +337,6 @@ export function mockConsole(): {
   };
 }
 
-/**
- * Assert that an async function throws
- */
 export async function expectToThrow(
   fn: () => Promise<unknown>,
   errorType?: new (...args: unknown[]) => Error,
@@ -438,9 +382,6 @@ export async function expectToThrow(
   }
 }
 
-/**
- * Create a deferred promise for testing async flows
- */
 export function createDeferred<T>(): {
   promise: Promise<T>;
   resolve: (value: T) => void;

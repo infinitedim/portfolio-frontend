@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ASCIIBanner } from "../ascii-banner";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {

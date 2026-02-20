@@ -8,26 +8,10 @@ import {
 } from "@/lib/location/location-service";
 import { Clock, MapPin, Globe, Wifi, RefreshCw } from "lucide-react";
 
-/**
- * Props for the TimeDisplay component
- * @interface TimeDisplayProps
- * @property {() => void} onClose - Callback function to close the component
- */
 interface TimeDisplayProps {
   onClose: () => void;
 }
 
-/**
- * Time display component showing current time and location information
- * Fetches and displays user's location, timezone, and local time with weather emoji
- * @param {TimeDisplayProps} props - Component props
- * @param {() => void} props.onClose - Function to close the modal
- * @returns {JSX.Element} The time display modal
- * @example
- * ```tsx
- * <TimeDisplay onClose={handleClose} />
- * ```
- */
 export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
   const [location, setLocation] = useState<LocationInfo | null>(null);
   const [timeInfo, setTimeInfo] = useState<TimeInfo | null>(null);
@@ -37,7 +21,7 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
 
   const locationService = LocationService.getInstance();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   const fetchLocation = async () => {
     try {
       setIsLoading(true);

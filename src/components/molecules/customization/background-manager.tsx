@@ -10,12 +10,6 @@ interface BackgroundManagerProps {
   onClose?: () => void;
 }
 
-/**
- * Background customization manager
- * Allows users to customize background effects like Letter Glitch
- * @param {BackgroundManagerProps} props - Component props
- * @returns {JSX.Element} The background manager component
- */
 export function BackgroundManager({
   onUpdate,
   onClose,
@@ -53,7 +47,7 @@ export function BackgroundManager({
     customizationService.saveBackgroundSettings(settings);
     onUpdate?.();
 
-    // Trigger a custom event to notify Terminal component
+    
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent("background-settings-updated", { detail: settings }),

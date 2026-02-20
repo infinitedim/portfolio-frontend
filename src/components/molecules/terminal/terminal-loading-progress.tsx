@@ -3,18 +3,6 @@
 import { useState, useEffect, useRef, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
-/**
- * Props for the TerminalLoadingProgress component
- * @interface TerminalLoadingProgressProps
- * @property {number} [duration] - Total animation duration in milliseconds
- * @property {Array<string | {path: string, size?: string}>} [files] - Files to simulate loading
- * @property {string} [completionText] - Text to display on completion
- * @property {() => void} [onComplete] - Completion callback
- * @property {boolean} [autoStart] - Whether to start automatically
- * @property {boolean} [showSystemInfo] - Show system information
- * @property {boolean} [showProgressBar] - Show progress bar
- * @property {boolean} [enableTypewriter] - Enable typewriter effect
- */
 interface TerminalLoadingProgressProps {
   duration?: number;
   files?: Array<string | { path: string; size?: string }>;
@@ -63,27 +51,6 @@ const DEFAULT_FILES = [
   { path: "tsconfig.json", size: "1.2 KB" },
 ];
 
-/**
- * Terminal-style loading animation with file loading simulation
- * Mimics npm install or system update style loading sequences
- * @param {TerminalLoadingProgressProps} props - Component props
- * @param {number} [props.duration=3000] - Animation duration in ms
- * @param {Array<string | {path: string, size?: string}>} [props.files] - Files to load
- * @param {string} [props.completionText] - Completion message
- * @param {() => void} [props.onComplete] - Completion callback
- * @param {boolean} [props.autoStart=true] - Auto-start animation
- * @param {boolean} [props.showSystemInfo=true] - Show system info
- * @returns {JSX.Element} The terminal loading progress component
- * @example
- * ```tsx
- * <TerminalLoadingProgress
- *   duration={3000}
- *   completionText="Build complete!"
- *   onComplete={() => console.log('Done')}
- *   files={['package.json', 'index.tsx']}
- * />
- * ```
- */
 export function TerminalLoadingProgress({
   duration = 3000,
   files = DEFAULT_FILES,

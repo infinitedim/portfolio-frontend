@@ -1,9 +1,5 @@
 import { JSX } from "react";
 
-/**
- * Optimized loading skeleton for projects page
- * @returns {JSX.Element} The ProjectsLoading component
- */
 export function ProjectsLoading(): JSX.Element {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -14,10 +10,6 @@ export function ProjectsLoading(): JSX.Element {
   );
 }
 
-/**
- * Project card skeleton
- * @returns {JSX.Element} The ProjectCardSkeleton component
- */
 function ProjectCardSkeleton(): JSX.Element {
   return (
     <div className="bg-terminal-bg border border-terminal-border rounded-lg overflow-hidden animate-pulse">

@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TerminalLoadingProgress } from "../terminal-loading-progress";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {

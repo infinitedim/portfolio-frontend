@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { PerformanceMonitor } from "../performance-monitor";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -19,7 +18,6 @@ const mockThemeConfig = {
   },
 };
 
-// Mock canvas context
 const mockCanvasContext = {
   fillStyle: "",
   strokeStyle: "",
@@ -40,7 +38,7 @@ describe("PerformanceMonitor", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
 
-    // Mock canvas getContext
+    
     HTMLCanvasElement.prototype.getContext = vi.fn(() => mockCanvasContext as any);
   });
 

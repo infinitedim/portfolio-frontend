@@ -1,11 +1,5 @@
-/**
- * Custom Error Classes for consistent error handling
- * Provides a hierarchy of error types for different scenarios
- */
 
-/**
- * Base error class for all application errors
- */
+
 export abstract class AppError extends Error {
   abstract readonly code: string;
   abstract readonly statusCode: number;
@@ -23,9 +17,8 @@ export abstract class AppError extends Error {
     }
   }
 
-  /**
-   * Convert error to JSON for logging/API responses
-   */
+  
+
   toJSON(): Record<string, unknown> {
     return {
       name: this.name,
@@ -38,9 +31,8 @@ export abstract class AppError extends Error {
     };
   }
 
-  /**
-   * Create a sanitized version safe for client responses
-   */
+  
+
   toClientError(): { code: string; message: string; statusCode: number } {
     return {
       code: this.code,
@@ -50,9 +42,6 @@ export abstract class AppError extends Error {
   }
 }
 
-/**
- * Validation errors - invalid input data
- */
 export class ValidationError extends AppError {
   readonly code = "VALIDATION_ERROR";
   readonly statusCode = 400;
@@ -82,9 +71,6 @@ export class ValidationError extends AppError {
   }
 }
 
-/**
- * Authentication errors - user not authenticated
- */
 export class AuthenticationError extends AppError {
   readonly code = "AUTHENTICATION_ERROR";
   readonly statusCode = 401;
@@ -113,9 +99,6 @@ export class AuthenticationError extends AppError {
   }
 }
 
-/**
- * Authorization errors - user not permitted
- */
 export class AuthorizationError extends AppError {
   readonly code = "AUTHORIZATION_ERROR";
   readonly statusCode = 403;
@@ -142,9 +125,6 @@ export class AuthorizationError extends AppError {
   }
 }
 
-/**
- * Not found errors - resource doesn't exist
- */
 export class NotFoundError extends AppError {
   readonly code = "NOT_FOUND";
   readonly statusCode = 404;
@@ -172,9 +152,6 @@ export class NotFoundError extends AppError {
   }
 }
 
-/**
- * Conflict errors - resource state conflict
- */
 export class ConflictError extends AppError {
   readonly code = "CONFLICT";
   readonly statusCode = 409;
@@ -194,9 +171,6 @@ export class ConflictError extends AppError {
   }
 }
 
-/**
- * Rate limit errors
- */
 export class RateLimitError extends AppError {
   readonly code = "RATE_LIMIT_EXCEEDED";
   readonly statusCode = 429;
@@ -219,9 +193,6 @@ export class RateLimitError extends AppError {
   }
 }
 
-/**
- * Network/External service errors
- */
 export class NetworkError extends AppError {
   readonly code = "NETWORK_ERROR";
   readonly statusCode = 502;
@@ -256,9 +227,6 @@ export class NetworkError extends AppError {
   }
 }
 
-/**
- * Database errors
- */
 export class DatabaseError extends AppError {
   readonly code = "DATABASE_ERROR";
   readonly statusCode = 500;
@@ -282,9 +250,6 @@ export class DatabaseError extends AppError {
   }
 }
 
-/**
- * Internal server errors - unexpected errors
- */
 export class InternalError extends AppError {
   readonly code = "INTERNAL_ERROR";
   readonly statusCode = 500;
@@ -307,16 +272,10 @@ export class InternalError extends AppError {
   }
 }
 
-/**
- * Type guard to check if error is an AppError
- */
 export function isAppError(error: unknown): error is AppError {
   return error instanceof AppError;
 }
 
-/**
- * Convert any error to AppError
- */
 export function toAppError(error: unknown): AppError {
   if (isAppError(error)) {
     return error;
@@ -324,9 +283,6 @@ export function toAppError(error: unknown): AppError {
   return InternalError.fromError(error);
 }
 
-/**
- * Error codes enum for type safety
- */
 export const ErrorCodes = {
   VALIDATION_ERROR: "VALIDATION_ERROR",
   AUTHENTICATION_ERROR: "AUTHENTICATION_ERROR",

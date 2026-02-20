@@ -3,10 +3,6 @@
 import type { ThemeConfig } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
 
-/**
- * Available views in the admin dashboard
- * @typedef {"overview" | "performance" | "logs" | "blog" | "settings" | "testing"} DashboardView
- */
 type DashboardView =
   | "overview"
   | "performance"
@@ -14,13 +10,6 @@ type DashboardView =
   | "blog"
   | "settings";
 
-/**
- * Props for the TerminalSidebar component
- * @interface TerminalSidebarProps
- * @property {DashboardView} currentView - The currently active view
- * @property {(view: DashboardView) => void} onViewChange - Callback when view changes
- * @property {ThemeConfig} themeConfig - Theme configuration for styling
- */
 interface TerminalSidebarProps {
   currentView: DashboardView;
   onViewChange: (view: DashboardView) => void;
@@ -63,23 +52,6 @@ const navigationItems: {
     },
   ];
 
-/**
- * Terminal-themed navigation sidebar for admin dashboard
- * Provides command-line style navigation with animated transitions and system status
- * @param {TerminalSidebarProps} props - Component props
- * @param {DashboardView} props.currentView - The currently active view
- * @param {(view: DashboardView) => void} props.onViewChange - Callback when view changes
- * @param {ThemeConfig} props.themeConfig - Theme configuration for styling
- * @returns {JSX.Element} The terminal sidebar component
- * @example
- * ```tsx
- * <TerminalSidebar
- *   currentView="overview"
- *   onViewChange={handleViewChange}
- *   themeConfig={themeConfig}
- * />
- * ```
- */
 export function TerminalSidebar({
   currentView,
   onViewChange,

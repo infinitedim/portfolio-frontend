@@ -1,7 +1,4 @@
-/**
- * Async Error Handling Utilities
- * Provides comprehensive async/await error handling with retry logic and recovery strategies
- */
+
 
 import {
   EnhancedError,
@@ -11,15 +8,6 @@ import {
   ErrorUtils,
 } from "./error-types";
 
-/**
- * Configuration for retry behavior in async operations
- * @property maxRetries - Maximum number of retry attempts
- * @property baseDelay - Initial delay between retries in milliseconds
- * @property maxDelay - Maximum delay between retries in milliseconds
- * @property backoffFactor - Multiplier for exponential backoff (delay *= backoffFactor)
- * @property retryCondition - Optional function to determine if error should be retried
- * @property onRetry - Optional callback invoked on each retry attempt
- */
 export interface RetryConfig {
   maxRetries: number;
   baseDelay: number;
@@ -29,14 +17,6 @@ export interface RetryConfig {
   onRetry?: (error: Error, attempt: number) => void;
 }
 
-/**
- * Configuration for async error handler
- * @property timeout - Optional timeout in milliseconds for the operation
- * @property retryConfig - Optional retry configuration
- * @property fallbackValue - Optional fallback value to return on failure
- * @property onError - Optional callback invoked when error occurs
- * @property onSuccess - Optional callback invoked on successful execution
- */
 export interface AsyncErrorHandlerConfig {
   timeout?: number;
   retryConfig?: RetryConfig;
@@ -45,14 +25,6 @@ export interface AsyncErrorHandlerConfig {
   onSuccess?: (result: unknown) => void;
 }
 
-/**
- * Result of an async operation with error handling
- * @property success - Whether the operation succeeded
- * @property data - Result data if successful
- * @property error - Enhanced error if operation failed
- * @property retryCount - Number of retry attempts made
- * @property duration - Total duration of operation in milliseconds
- */
 export interface AsyncResult<T> {
   success: boolean;
   data?: T;
@@ -61,9 +33,6 @@ export interface AsyncResult<T> {
   duration: number;
 }
 
-/**
- * Default retry configuration
- */
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
   maxRetries: 3,
   baseDelay: 1000,
@@ -72,25 +41,11 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
   retryCondition: (error: Error) => ErrorUtils.isRetryable(error),
 };
 
-/**
- * Enhanced async error handler with retry logic and comprehensive error management
- * Implements singleton pattern for consistent error handling across the application
- * @example
- * ```ts
- * const handler = AsyncErrorHandler.getInstance();
- * const result = await handler.execute(() => fetchData(), {
- *   retryConfig: { maxRetries: 3 },
- *   timeout: 5000
- * });
- * ```
- */
 export class AsyncErrorHandler {
   private static instance: AsyncErrorHandler;
 
-  /**
-   * Gets the singleton instance of AsyncErrorHandler
-   * @returns The singleton handler instance
-   */
+  
+
   static getInstance(): AsyncErrorHandler {
     if (!AsyncErrorHandler.instance) {
       AsyncErrorHandler.instance = new AsyncErrorHandler();
@@ -98,9 +53,8 @@ export class AsyncErrorHandler {
     return AsyncErrorHandler.instance;
   }
 
-  /**
-   * Execute an async function with comprehensive error handling
-   */
+  
+
   async execute<T>(
     fn: () => Promise<T>,
     config: AsyncErrorHandlerConfig = {},
@@ -166,9 +120,8 @@ export class AsyncErrorHandler {
     };
   }
 
-  /**
-   * Execute multiple async functions with error handling
-   */
+  
+
   async executeAll<T>(
     functions: Array<() => Promise<T>>,
     config: AsyncErrorHandlerConfig & { failFast?: boolean } = {},
@@ -218,9 +171,8 @@ export class AsyncErrorHandler {
     };
   }
 
-  /**
-   * Execute with timeout
-   */
+  
+
   private async withTimeout<T>(
     promise: Promise<T>,
     timeout: number,
@@ -243,16 +195,14 @@ export class AsyncErrorHandler {
     return Promise.race([promise, timeoutPromise]);
   }
 
-  /**
-   * Delay utility for retry logic
-   */
+  
+
   private async delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  /**
-   * Combine multiple errors into a single error
-   */
+  
+
   private combineErrors(errors: EnhancedError[]): EnhancedError {
     const messages = errors.map((e) => e.message).join("; ");
     const categories = [...new Set(errors.map((e) => e.category))];
@@ -281,13 +231,9 @@ export class AsyncErrorHandler {
   }
 }
 
-/**
- * Utility functions for common async error handling patterns
- */
 export class AsyncUtils {
-  /**
-   * Safe async wrapper that never throws
-   */
+  
+
   static async safe<T>(
     fn: () => Promise<T>,
     fallbackValue?: T,
@@ -303,9 +249,8 @@ export class AsyncUtils {
     }
   }
 
-  /**
-   * Retry a function with exponential backoff
-   */
+  
+
   static async retry<T>(
     fn: () => Promise<T>,
     config: Partial<RetryConfig> = {},
@@ -321,9 +266,8 @@ export class AsyncUtils {
     throw result.error || new Error("Retry failed");
   }
 
-  /**
-   * Execute with a circuit breaker pattern
-   */
+  
+
   static createCircuitBreaker<T>(
     fn: () => Promise<T>,
     config: {
@@ -384,9 +328,8 @@ export class AsyncUtils {
     };
   }
 
-  /**
-   * Batch process with error handling
-   */
+  
+
   static async processBatch<T, R>(
     items: T[],
     processor: (item: T) => Promise<R>,
@@ -466,9 +409,6 @@ export class AsyncUtils {
   }
 }
 
-/**
- * Decorator for automatic error handling
- */
 export function handleAsync(config?: AsyncErrorHandlerConfig) {
   return function (
     _target: unknown,
@@ -495,9 +435,6 @@ export function handleAsync(config?: AsyncErrorHandlerConfig) {
   };
 }
 
-/**
- * Hook wrapper for async operations
- */
 export function useAsyncErrorHandler() {
   const handler = AsyncErrorHandler.getInstance();
 

@@ -1,5 +1,5 @@
  
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -7,32 +7,11 @@ import type { ThemeConfig } from "@/types/theme";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
 
-/**
- * Props for the TerminalLoginForm component
- * @interface TerminalLoginFormProps
- * @property {() => void} [onLoginSuccess] - Callback function when login succeeds
- * @property {ThemeConfig} themeConfig - Theme configuration for styling
- */
 interface TerminalLoginFormProps {
   onLoginSuccess?: () => void;
   themeConfig: ThemeConfig;
 }
 
-/**
- * Terminal-styled login form with animated cursor and field transitions
- * Provides email and password authentication with visual feedback
- * @param {TerminalLoginFormProps} props - Component props
- * @param {() => void} [props.onLoginSuccess] - Callback function when login succeeds
- * @param {ThemeConfig} props.themeConfig - Theme configuration for styling
- * @returns {JSX.Element} The terminal login form component
- * @example
- * ```tsx
- * <TerminalLoginForm
- *   onLoginSuccess={() => router.push('/admin/dashboard')}
- *   themeConfig={themeConfig}
- * />
- * ```
- */
 export function TerminalLoginForm({
   onLoginSuccess,
   themeConfig,

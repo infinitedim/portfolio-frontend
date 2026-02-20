@@ -21,7 +21,6 @@ export type ThemeName =
   | "ocean"
   | "forest";
 
-/** List of valid theme names for runtime validation */
 export const THEME_NAMES: readonly ThemeName[] = [
   "default",
   "matrix",
@@ -46,7 +45,6 @@ export const THEME_NAMES: readonly ThemeName[] = [
   "forest",
 ] as const;
 
-/** Type guard to check if a string is a valid ThemeName */
 export function isThemeName(value: string): value is ThemeName {
   return THEME_NAMES.includes(value as ThemeName);
 }

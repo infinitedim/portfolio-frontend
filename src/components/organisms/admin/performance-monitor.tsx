@@ -10,15 +10,6 @@ import React, {
 } from "react";
 import type { ThemeConfig } from "@/types/theme";
 
-/**
- * Represents performance metrics at a specific point in time
- * @interface PerformanceData
- * @property {number} timestamp - Unix timestamp when metrics were captured
- * @property {number} cpu - CPU usage percentage (0-100)
- * @property {number} memory - Memory usage percentage (0-100)
- * @property {number} network - Network throughput in MB/s
- * @property {number} disk - Disk I/O usage percentage (0-100)
- */
 interface PerformanceData {
   timestamp: number;
   cpu: number;
@@ -27,27 +18,10 @@ interface PerformanceData {
   disk: number;
 }
 
-/**
- * Props for the PerformanceMonitor component
- * @interface PerformanceMonitorProps
- * @property {ThemeConfig} themeConfig - Theme configuration for styling
- */
 interface PerformanceMonitorProps {
   themeConfig: ThemeConfig;
 }
 
-/**
- * Real-time performance monitoring component with visual graphs
- * Displays CPU, memory, network, and disk metrics with live updating canvas visualization
- * Optimized with memoization and efficient rendering for smooth performance
- * @param {PerformanceMonitorProps} props - Component props
- * @param {ThemeConfig} props.themeConfig - Theme configuration for styling
- * @returns {JSX.Element} The performance monitor component
- * @example
- * ```tsx
- * <PerformanceMonitor themeConfig={themeConfig} />
- * ```
- */
 function PerformanceMonitorComponent({ themeConfig }: PerformanceMonitorProps) {
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
   const [isPaused, setIsPaused] = useState(false);

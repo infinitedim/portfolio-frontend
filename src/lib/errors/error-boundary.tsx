@@ -1,8 +1,4 @@
-/**
- * Enhanced Error Boundary System
- * Provides comprehensive error boundaries with recovery strategies,
- * contextual error handling, and integration with our error types
- */
+
 
 import React, { Component, type ErrorInfo, type ReactNode } from "react";
 import {
@@ -38,9 +34,6 @@ export interface ErrorBoundaryConfig {
   reportErrors?: boolean;
 }
 
-/**
- * Enhanced Error Boundary with comprehensive error handling
- */
 export class EnhancedErrorBoundary extends Component<
   ErrorBoundaryConfig & { children: ReactNode },
   ErrorBoundaryState
@@ -101,7 +94,7 @@ export class EnhancedErrorBoundary extends Component<
 
   private reportError = (error: EnhancedError, errorInfo: ErrorInfo) => {
     try {
-      // Log to structured logger
+      
       clientLogger.logError(error, {
         component: "error-boundary",
         action: "error-caught",
@@ -230,9 +223,6 @@ export class EnhancedErrorBoundary extends Component<
   }
 }
 
-/**
- * Default Error Fallback Component
- */
 interface DefaultErrorFallbackProps {
   error: EnhancedError;
   errorInfo: ErrorInfo | null;
@@ -401,9 +391,6 @@ function DefaultErrorFallback({
   );
 }
 
-/**
- * HOC for wrapping components with error boundaries
- */
 export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   config: ErrorBoundaryConfig = {},
@@ -419,9 +406,6 @@ export function withErrorBoundary<P extends object>(
   return WrappedComponent;
 }
 
-/**
- * Hook for error boundary context
- */
 export function useErrorBoundary() {
   const [error, setError] = React.useState<Error | null>(null);
 

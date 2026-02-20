@@ -1,13 +1,5 @@
-/**
- * SEO configuration for the portfolio site
- * Contains metadata, social links, keywords, and page-specific settings
- * Used for generating meta tags, Open Graph data, and structured data
- * @example
- * ```ts
- * import { SEO_CONFIG } from '@/lib/seo/config';
- * const title = SEO_CONFIG.site.title;
- * ```
- */
+
+
 export const SEO_CONFIG = {
   site: {
     name: "Terminal Portfolio",

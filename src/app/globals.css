@@ -111,7 +111,6 @@ body {
 }
 
 @keyframes loadingDot {
-
   0%,
   80%,
   100% {
@@ -126,7 +125,6 @@ body {
 }
 
 @keyframes typingCursor {
-
   0%,
   50% {
     opacity: 1;
@@ -199,7 +197,6 @@ body {
 }
 
 @keyframes bounce {
-
   0%,
   20%,
   53%,
@@ -226,7 +223,6 @@ body {
 }
 
 @keyframes pulse {
-
   0%,
   100% {
     opacity: 1;
@@ -238,7 +234,6 @@ body {
 }
 
 @keyframes shake {
-
   0%,
   100% {
     transform: translateX(0);
@@ -266,7 +261,9 @@ body {
   }
 
   100% {
-    box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+    box-shadow:
+      0 0 20px currentColor,
+      0 0 30px currentColor;
   }
 }
 
@@ -515,7 +512,6 @@ body {
 
 /* Global Mobile Optimizations */
 @media (max-width: 768px) {
-
   /* Ensure proper mobile viewport */
   html,
   body {
@@ -536,12 +532,12 @@ body {
   }
 
   /* Mobile content spacing */
-  .terminal-container .space-y-4>*+* {
+  .terminal-container .space-y-4 > * + * {
     margin-top: 1rem;
   }
 
   /* Ensure full width usage on mobile */
-  .terminal-container>div {
+  .terminal-container > div {
     max-width: 100% !important;
     padding-left: 0;
     padding-right: 0;
@@ -687,10 +683,12 @@ body {
 
 /* Loading States */
 .loading-shimmer {
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.1),
-      transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -752,13 +750,26 @@ textarea.terminal-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.85));
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.6),
+    rgba(0, 0, 0, 0.85)
+  );
   overflow: hidden;
 }
 
 .letter-glitch-bg .glitch {
   position: relative;
-  font-family: var(--font-jetbrains-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace);
+  font-family: var(
+    --font-jetbrains-mono,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    "Roboto Mono",
+    "Courier New",
+    monospace
+  );
   font-weight: 700;
   font-size: clamp(48px, 8vw, 160px);
   color: rgba(255, 255, 255, 0.06);
@@ -914,7 +925,10 @@ textarea.terminal-input {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 1px
+  );
   background-size: 3px 3px;
   mix-blend-mode: overlay;
   opacity: 0.35;

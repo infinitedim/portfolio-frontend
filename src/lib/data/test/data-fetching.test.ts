@@ -13,11 +13,9 @@ import {
   checkDataHealth,
 } from "../data-fetching";
 
-// Mock fetch
 const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
 
-// Mock Blob
 global.Blob = class Blob {
   size: number;
   constructor(parts: any[]) {
@@ -235,7 +233,7 @@ describe("data-fetching.ts", () => {
       }
       await invalidateCache("test-section");
 
-      // Function should complete without error
+      
       expect(true).toBe(true);
     });
   });

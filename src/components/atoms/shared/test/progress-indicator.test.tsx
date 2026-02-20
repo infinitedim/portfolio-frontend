@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { useTheme } from "@/hooks/use-theme";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "dark",
   colors: {
@@ -25,7 +24,6 @@ vi.mock("@/hooks/use-theme", () => ({
   })),
 }));
 
-// Import after mocks
 import { ProgressIndicator } from "../progress-indicator";
 
 describe("ProgressIndicator", () => {
@@ -177,7 +175,7 @@ describe("ProgressIndicator", () => {
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      
       const { container } = render(<ProgressIndicator progress={50} />);
       const percentage = screen.getByText("50%");
       expect(percentage).toHaveStyle({
@@ -433,7 +431,7 @@ describe("ProgressIndicator", () => {
 
       const { rerender } = render(<ProgressIndicator progress={50} />);
 
-      // Mock theme change
+      
       vi.mocked(useTheme).mockReturnValueOnce({
         themeConfig: mockThemeConfig,
         theme: "default",
@@ -441,7 +439,7 @@ describe("ProgressIndicator", () => {
 
       rerender(<ProgressIndicator progress={50} />);
 
-      // Component should re-render
+      
       const { container: rerenderedContainer } = render(<ProgressIndicator progress={50} />);
       expect(rerenderedContainer).toBeTruthy();
     });

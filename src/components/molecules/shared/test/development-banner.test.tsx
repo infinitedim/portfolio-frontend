@@ -4,7 +4,6 @@ import { act } from "react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { DevelopmentBanner } from "../development-banner";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -127,7 +126,7 @@ describe("DevelopmentBanner", () => {
 
       vi.advanceTimersByTime(500);
 
-      // Animation phase should have updated
+      
       expect(screen.getByText("DEV MODE")).toBeInTheDocument();
     });
   });

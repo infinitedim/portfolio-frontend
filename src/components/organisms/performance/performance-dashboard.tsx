@@ -9,13 +9,6 @@ interface PerformanceDashboardProps {
   onClose: () => void;
 }
 
-/**
- * Performance dashboard component
- * @param {PerformanceDashboardProps} props - The props for the PerformanceDashboard component
- * @param {boolean} props.isOpen - Whether the dashboard is open
- * @param {() => void} props.onClose - The function to close the dashboard
- * @returns {JSX.Element | null} The PerformanceDashboard component
- */
 export function PerformanceDashboard({
   isOpen,
   onClose,

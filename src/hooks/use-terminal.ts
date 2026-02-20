@@ -46,8 +46,6 @@ const getRoadmapCommands = async () => {
   }
 };
 
-// Lazy-load the remaining heavy command modules so they are not bundled into
-// the initial terminal chunk.  Each import() returns a separate async chunk.
 const getCustomizationCommands = async () => {
   try {
     return await import("@/lib/commands/customization-commands");
@@ -143,68 +141,6 @@ const ALL_COMMANDS = [
   "tour",
 ] as const;
 
-/**
- * Comprehensive terminal management hook with command execution and history
- *
- * This hook encapsulates the entire terminal functionality including:
- * - Command parsing and execution
- * - History management (display and navigation)
- * - Command suggestions and autocompletion
- * - Performance metrics and analytics
- * - Error handling and recovery
- * - localStorage persistence
- * - Special command handling (clear, theme, font)
- *
- * @param {Function} [onOpenDemo] - Callback to open project demos
- * @param {Function} [onOpenAuth] - Callback to open authentication (deprecated)
- * @param {object} [themePerformance] - Theme performance metrics object
- * @param {Function} [themePerformance.getPerformanceReport] - Get theme performance report
- * @param {object} [themePerformance.themeMetrics] - Theme metrics data
- * @param {Function} [themePerformance.resetMetrics] - Reset performance metrics
- *
- * @returns {object} Terminal state and functions
- * @property {TerminalHistory[]} history - Array of command inputs and outputs
- * @property {string} currentInput - Current value in the input field
- * @property {Function} setCurrentInput - Update the current input value
- * @property {boolean} isProcessing - Whether a command is currently executing
- * @property {Function} executeCommand - Execute a command string
- * @property {Function} addToHistory - Add an entry to the visible history
- * @property {Function} navigateHistory - Navigate through command history (up/down)
- * @property {Function} clearHistory - Clear all terminal history
- * @property {string[]} commandHistory - Array of previously executed commands
- * @property {string | null} lastError - Last error message or null
- * @property {Function} clearError - Clear the last error
- * @property {Function} getCommandSuggestions - Get command suggestions for input
- * @property {Function} getFrequentCommands - Get most frequently used commands
- * @property {HistoryAnalytics} commandAnalytics - Usage analytics and statistics
- * @property {CommandHistoryEntry[]} favoriteCommands - User's favorite commands
- * @property {CommandHistoryEntry[]} enhancedHistory - Full enhanced history entries
- *
- * @example
- * ```tsx
- * const {
- *   history,
- *   currentInput,
- *   setCurrentInput,
- *   executeCommand,
- *   navigateHistory,
- *   getCommandSuggestions
- * } = useTerminal(
- *   (id) => openDemo(id),
- *   () => openAuth()
- * );
- *
- * // Execute a command
- * const output = await executeCommand("help");
- *
- * // Navigate history
- * const previousCmd = navigateHistory("up");
- * setCurrentInput(previousCmd);
- *
- * // Get suggestions
- * const suggestions = getCommandSuggestions("hel");
- * ```
- */
 export function useTerminal(
   onOpenDemo?: (projectId: string) => void,
   onOpenAuth?: () => void,
@@ -245,17 +181,17 @@ export function useTerminal(
     autoCategories: true,
   });
 
-  // ----------------------------------------------------------------
-  // Stable refs — allow parser closures to always read the latest
-  // values without adding them to the initializeParser useEffect
-  // dependencies (which would re-create the whole parser on every cmd).
-  // ----------------------------------------------------------------
+  
+  
+  
+  
+  
   const clearAdvancedHistoryRef = useRef(clearAdvancedHistory);
   const analyticsRef = useRef(analytics);
   const advancedHistoryRef = useRef(advancedHistory);
   const onOpenDemoRef = useRef(onOpenDemo);
   const themePerformanceRef = useRef(themePerformance);
-  // Always keep refs pointing at the latest values (assigned during render).
+  
   clearAdvancedHistoryRef.current = clearAdvancedHistory;
   analyticsRef.current = analytics;
   advancedHistoryRef.current = advancedHistory;
@@ -294,7 +230,7 @@ export function useTerminal(
       parser.register(aliasCommand);
       parser.register(pwaCommand);
 
-      // Lazy-load heavy command modules to keep the initial parser chunk small.
+      
       const [
         miscCmds,
         customCmds,
@@ -431,7 +367,7 @@ export function useTerminal(
       if (roadmapCommand) parser.register(roadmapCommand);
       if (progressCommand) parser.register(progressCommand);
 
-      // customization commands are already registered above from the lazy loaders
+      
 
       parser.register(languageCommand);
       parser.register(languageListCommand);
@@ -582,7 +518,7 @@ export function useTerminal(
         },
       });
 
-      // setDemoCallback handled via demo module below
+      
 
       const demo = demoCmds.status === "fulfilled" ? demoCmds.value : null;
       if (demo) {
@@ -619,7 +555,7 @@ export function useTerminal(
     };
      
   }, []);
-  // ^ Intentionally empty: refs keep closures fresh without re-creating the parser.
+  
 
   useEffect(() => {
     if (!isClient || !isMountedRef.current) return;
@@ -641,8 +577,8 @@ export function useTerminal(
   useEffect(() => {
     if (!isClient || !isMountedRef.current) return;
 
-    // Throttle writes to localStorage — debounce by 300 ms so rapid
-    // command execution does not block the main thread on every keystroke.
+    
+    
     const timer = setTimeout(() => {
       try {
         localStorage.setItem(
@@ -657,9 +593,9 @@ export function useTerminal(
     return () => clearTimeout(timer);
   }, [commandHistory, isClient]);
 
-  // Keep a ref so executeCommand can check for deduplication without
-  // needing commandHistory in its dep array (which would cause a new
-  // function reference — and therefore child re-renders — on every command).
+  
+  
+  
   const commandHistoryRef = useRef(commandHistory);
   commandHistoryRef.current = commandHistory;
 
@@ -759,7 +695,7 @@ export function useTerminal(
         }
       }
     },
-    [addToAdvancedHistory], // commandHistory read via commandHistoryRef — not a dep
+    [addToAdvancedHistory], 
   );
 
   const addToHistory = useCallback(

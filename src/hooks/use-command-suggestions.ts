@@ -3,19 +3,6 @@
 import {useState, useEffect, useMemo, useRef, useCallback} from "react";
 import {useDebouncedValue} from "@/hooks/use-debounced-value";
 
-/**
- * Represents a single command suggestion with scoring and metadata
- * @interface SuggestionItem
- * @property {string} command - The suggested command
- * @property {number} score - Relevance score (0-100+)
- * @property {"exact" | "prefix" | "fuzzy" | "contextual" | "recent" | "popular"} type - Type of match
- * @property {string} [description] - Command description
- * @property {string} [usage] - Usage syntax
- * @property {string} [category] - Command category
- * @property {number} [frequency] - Usage frequency count
- * @property {Date} [lastUsed] - Last usage timestamp
- * @property {"start" | "middle" | "end" | "any"} [matchType] - Where the match occurred
- */
 export interface SuggestionItem {
   command: string;
   score: number;
@@ -295,50 +282,6 @@ class SuggestionCache {
   }
 }
 
-/**
- * Enhanced command suggestions hook with fuzzy matching, caching, and user context awareness
- *
- * Provides intelligent command suggestions based on:
- * - Fuzzy string matching with scoring
- * - User command history and frequency
- * - Recent command usage
- * - Contextual command sequences
- * - Performance-optimized caching
- *
- * @param {string} input - Current user input to generate suggestions for
- * @param {string[]} availableCommands - List of all available commands
- * @param {object} options - Configuration options
- * @param {number} [options.maxSuggestions=8] - Maximum number of suggestions to return
- * @param {number} [options.debounceMs=50] - Debounce delay for input processing
- * @param {boolean} [options.showOnEmpty=true] - Show suggestions when input is empty
- * @param {boolean} [options.enableCache=true] - Enable suggestion caching
- * @param {boolean} [options.enableLearning=true] - Enable learning from user behavior
- * @param {number} [options.minQueryLength=1] - Minimum query length to show suggestions
- *
- * @returns {object} Suggestion state and methods
- * @property {SuggestionItem[]} suggestions - Array of suggestion items with scores
- * @property {boolean} isLoading - Whether suggestions are being generated
- * @property {Function} updateCommandUsage - Record a command usage for learning
- * @property {Function} clearCache - Clear the suggestion cache
- * @property {Function} getUserContext - Get current user context data
- * @property {Function} setUserContext - Update user context data
- *
- * @example
- * ```tsx
- * const {
- *   suggestions,
- *   isLoading,
- *   updateCommandUsage
- * } = useCommandSuggestions(
- *   input,
- *   ["help", "about", "skills", "projects"],
- *   { maxSuggestions: 5, enableLearning: true }
- * );
- *
- * // When user executes a command
- * updateCommandUsage("help");
- * ```
- */
 export function useCommandSuggestions(
   input: string,
   availableCommands: string[],

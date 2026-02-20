@@ -1,6 +1,5 @@
-/**
- * WebVitalsMonitor component tests
- */
+
+
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { WebVitalsMonitor } from "@/components/monitoring/web-vitals-monitor";

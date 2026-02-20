@@ -1,88 +1,64 @@
-/**
- * Enhanced Error Types and Utilities
- * Provides comprehensive error categorization, recovery strategies, and utilities
- */
 
-/**
- * Error severity levels for prioritization and handling
- * @enum
- */
+
 export enum ErrorSeverity {
-  /** Low severity - informational errors */
+  
   LOW = "LOW",
-  /** Medium severity - minor issues that don't block functionality */
+  
   MEDIUM = "MEDIUM",
-  /** High severity - significant issues affecting functionality */
+  
   HIGH = "HIGH",
-  /** Critical severity - system-breaking errors requiring immediate attention */
+  
   CRITICAL = "CRITICAL",
 }
 
-/**
- * Error categories for classification and handling
- * @enum
- */
 export enum ErrorCategory {
-  /** Network-related errors (fetch, connection) */
+  
   NETWORK = "NETWORK",
-  /** Input validation errors */
+  
   VALIDATION = "VALIDATION",
-  /** Authentication errors (login, session) */
+  
   AUTHENTICATION = "AUTHENTICATION",
-  /** Authorization errors (permissions) */
+  
   AUTHORIZATION = "AUTHORIZATION",
-  /** Database operation errors */
+  
   DATABASE = "DATABASE",
-  /** API request/response errors */
+  
   API = "API",
-  /** User interface errors */
+  
   UI = "UI",
-  /** Performance-related errors */
+  
   PERFORMANCE = "PERFORMANCE",
-  /** Security-related errors */
+  
   SECURITY = "SECURITY",
-  /** Business logic errors */
+  
   BUSINESS_LOGIC = "BUSINESS_LOGIC",
-  /** External service integration errors */
+  
   EXTERNAL_SERVICE = "EXTERNAL_SERVICE",
-  /** Configuration errors */
+  
   CONFIGURATION = "CONFIGURATION",
-  /** Unknown or uncategorized errors */
+  
   UNKNOWN = "UNKNOWN",
 }
 
-/**
- * Strategies for recovering from errors
- * @enum
- */
 export enum ErrorRecoveryStrategy {
-  /** Retry the operation automatically */
+  
   RETRY = "RETRY",
-  /** Use a fallback value or behavior */
+  
   FALLBACK = "FALLBACK",
-  /** Ignore the error and continue */
+  
   IGNORE = "IGNORE",
-  /** Require user action to resolve */
+  
   USER_ACTION = "USER_ACTION",
-  /** Redirect to another page */
+  
   REDIRECT = "REDIRECT",
-  /** Refresh the page or component */
+  
   REFRESH = "REFRESH",
-  /** Log out the user */
+  
   LOGOUT = "LOGOUT",
-  /** Escalate to higher-level error handler */
+  
   ESCALATE = "ESCALATE",
 }
 
-/**
- * Contextual information about where and when an error occurred
- * @property userId - Optional user identifier
- * @property sessionId - Optional session identifier
- * @property url - URL where error occurred
- * @property userAgent - Browser user agent string
- * @property timestamp - When the error occurred
- * @property additionalData - Additional custom context data
- */
 export interface ErrorContext {
   userId?: string;
   sessionId?: string;
@@ -92,18 +68,6 @@ export interface ErrorContext {
   additionalData?: Record<string, unknown>;
 }
 
-/**
- * Metadata for error handling and recovery
- * @property id - Unique error identifier
- * @property category - Error category for classification
- * @property severity - Error severity level
- * @property isRetryable - Whether the operation can be retried
- * @property maxRetries - Maximum number of retry attempts
- * @property retryDelay - Delay between retries in milliseconds
- * @property recoveryStrategy - Recommended recovery approach
- * @property context - Contextual information about the error
- * @property suggestions - User-friendly suggestions for resolution
- */
 export interface ErrorMetadata {
   id: string;
   category: ErrorCategory;
@@ -116,9 +80,6 @@ export interface ErrorMetadata {
   suggestions: string[];
 }
 
-/**
- * Base enhanced error class with rich metadata
- */
 export class EnhancedError extends Error {
   public readonly id: string;
   public readonly category: ErrorCategory;
@@ -174,9 +135,8 @@ export class EnhancedError extends Error {
     }
   }
 
-  /**
-   * Convert error to plain object for logging/serialization
-   */
+  
+
   toJSON(): Record<string, unknown> {
     return {
       id: this.id,
@@ -205,9 +165,6 @@ export class EnhancedError extends Error {
   }
 }
 
-/**
- * Network-related errors
- */
 export class NetworkError extends EnhancedError {
   constructor(
     message: string,
@@ -230,9 +187,6 @@ export class NetworkError extends EnhancedError {
   }
 }
 
-/**
- * API-related errors
- */
 export class APIError extends EnhancedError {
   public readonly statusCode?: number;
   public readonly endpoint?: string;
@@ -267,9 +221,6 @@ export class APIError extends EnhancedError {
   }
 }
 
-/**
- * Validation errors
- */
 export class ValidationError extends EnhancedError {
   public readonly field?: string;
   public readonly value?: unknown;
@@ -298,9 +249,6 @@ export class ValidationError extends EnhancedError {
   }
 }
 
-/**
- * Authentication errors
- */
 export class AuthenticationError extends EnhancedError {
   constructor(
     message: string,
@@ -321,9 +269,6 @@ export class AuthenticationError extends EnhancedError {
   }
 }
 
-/**
- * Performance-related errors
- */
 export class PerformanceError extends EnhancedError {
   public readonly metric?: string;
   public readonly threshold?: number;
@@ -356,9 +301,6 @@ export class PerformanceError extends EnhancedError {
   }
 }
 
-/**
- * UI/Component errors
- */
 export class UIError extends EnhancedError {
   public readonly componentName?: string;
   public readonly props?: Record<string, unknown>;
@@ -388,9 +330,6 @@ export class UIError extends EnhancedError {
   }
 }
 
-/**
- * Business logic errors
- */
 export class BusinessLogicError extends EnhancedError {
   public readonly rule?: string;
   public readonly businessContext?: Record<string, unknown>;
@@ -419,13 +358,9 @@ export class BusinessLogicError extends EnhancedError {
   }
 }
 
-/**
- * Utility functions for error handling
- */
 export class ErrorUtils {
-  /**
-   * Wrap a standard Error into an EnhancedError
-   */
+  
+
   static enhance(
     error: Error,
     options: Partial<ErrorMetadata> = {},
@@ -440,9 +375,8 @@ export class ErrorUtils {
     });
   }
 
-  /**
-   * Determine if an error is retryable
-   */
+  
+
   static isRetryable(error: Error): boolean {
     if (error instanceof EnhancedError) {
       return error.isRetryable && error.retryCount < error.maxRetries;
@@ -462,9 +396,8 @@ export class ErrorUtils {
     return retryablePatterns.some((pattern) => pattern.test(error.message));
   }
 
-  /**
-   * Get error severity
-   */
+  
+
   static getSeverity(error: Error): ErrorSeverity {
     if (error instanceof EnhancedError) {
       return error.severity;
@@ -480,9 +413,8 @@ export class ErrorUtils {
     return ErrorSeverity.MEDIUM;
   }
 
-  /**
-   * Get error category
-   */
+  
+
   static getCategory(error: Error): ErrorCategory {
     if (error instanceof EnhancedError) {
       return error.category;
@@ -506,9 +438,8 @@ export class ErrorUtils {
     return ErrorCategory.UNKNOWN;
   }
 
-  /**
-   * Get appropriate suggestions for an error
-   */
+  
+
   static getSuggestions(error: Error): string[] {
     if (error instanceof EnhancedError) {
       return error.suggestions;

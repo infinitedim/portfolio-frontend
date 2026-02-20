@@ -9,7 +9,7 @@ describe("SEOHead", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
 
-    // Clear existing meta tags
+    
     if (typeof document !== "undefined" && document.head) {
       const existingTags = document.querySelectorAll("meta, link, script[type='application/ld+json']");
       existingTags.forEach((tag) => tag.remove());
@@ -23,7 +23,7 @@ describe("SEOHead", () => {
     if (!canRunTests) return;
     if (typeof document === "undefined") return;
     
-    // Cleanup
+    
     const dynamicTags = document.querySelectorAll("meta, link, script[type='application/ld+json']");
     dynamicTags.forEach((tag) => tag.remove());
     document.title = "";
@@ -42,7 +42,7 @@ describe("SEOHead", () => {
 
       render(<SEOHead title="Test Title" />);
 
-      // Wait for useEffect to run
+      
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       await waitFor(

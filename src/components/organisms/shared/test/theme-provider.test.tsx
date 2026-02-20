@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ThemeProvider, useThemeContext } from "../theme-provider";
 
-// Mock next-themes
 const mockSetTheme = vi.fn();
 const mockUseTheme = vi.fn(() => ({
   theme: "dark",
@@ -70,7 +69,7 @@ describe("ThemeProvider", () => {
         </ThemeProvider>,
       );
 
-      // Mock returns theme "dark"; useThemeContext returns theme || "system"
+      
       expect(getByTestId("theme").textContent).toBe("dark");
     });
   });

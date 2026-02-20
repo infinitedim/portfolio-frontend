@@ -4,14 +4,12 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ProjectCard } from "../project-card";
 import type { Project } from "@/lib/data/data-fetching";
 
-// Mock OptimizedImage
 vi.mock("@/components/molecules/shared/optimized-image", () => ({
   OptimizedImage: ({ alt }: { alt: string }) => (
     <div data-testid="optimized-image">{alt}</div>
   ),
 }));
 
-// Mock ImageErrorBoundary
 vi.mock("@/components/organisms/error/image-error-boundary", () => ({
   ImageErrorBoundary: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="image-error-boundary">{children}</div>

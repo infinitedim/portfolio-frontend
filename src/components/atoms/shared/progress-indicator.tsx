@@ -3,15 +3,6 @@
 import { useTheme } from "@/hooks/use-theme";
 import type { JSX } from "react";
 
-/**
- * Props for the ProgressIndicator component
- * @interface ProgressIndicatorProps
- * @property {number} progress - Progress value from 0 to 100
- * @property {string} [label] - Optional label text
- * @property {boolean} [showPercentage] - Whether to show percentage
- * @property {"sm" | "md" | "lg"} [size] - Size of the progress bar
- * @property {boolean} [animated] - Whether to animate the bar
- */
 interface ProgressIndicatorProps {
   progress: number;
   label?: string;
@@ -20,25 +11,6 @@ interface ProgressIndicatorProps {
   animated?: boolean;
 }
 
-/**
- * Progress bar component showing completion percentage
- * Displays a themed progress bar with optional label and percentage display
- * @param {ProgressIndicatorProps} props - Component props
- * @param {number} props.progress - Progress value (0-100)
- * @param {string} [props.label] - Optional label
- * @param {boolean} [props.showPercentage=true] - Show percentage
- * @param {"sm" | "md" | "lg"} [props.size="md"] - Bar size
- * @param {boolean} [props.animated=true] - Enable animation
- * @returns {JSX.Element} The progress indicator component
- * @example
- * ```tsx
- * <ProgressIndicator
- *   progress={75}
- *   label="Loading..."
- *   size="lg"
- * />
- * ```
- */
 export function ProgressIndicator({
   progress,
   label,

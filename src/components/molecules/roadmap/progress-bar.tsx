@@ -11,16 +11,6 @@ interface ProgressBarProps {
   animated?: boolean;
 }
 
-/**
- * A simple progress bar component for visualizing completion percentage.
- * @param {ProgressBarProps} props - The properties for the ProgressBar component.
- * @param {number} props.progress - The progress value (0-100).
- * @param {string} [props.height] - The height of the progress bar (Tailwind class).
- * @param {string} [props.className] - Additional CSS classes to apply.
- * @param {boolean} [props.showPercentage] - Whether to display the percentage text.
- * @param {boolean} [props.animated] - Whether to animate the progress bar.
- * @returns {JSX.Element} - A progress bar component.
- */
 export function ProgressBar({
   progress,
   height = "h-2",

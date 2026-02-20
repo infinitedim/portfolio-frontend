@@ -3,16 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import type { ThemeConfig } from "@/types/theme";
 
-/**
- * Represents a single log entry in the system
- * @interface LogEntry
- * @property {string} id - Unique identifier for the log entry
- * @property {string} timestamp - ISO timestamp when the log was created
- * @property {"INFO" | "WARN" | "ERROR" | "DEBUG"} level - Log severity level
- * @property {string} message - The log message content
- * @property {string} source - Source system that generated the log
- * @property {string} [details] - Optional additional details
- */
 interface LogEntry {
   id: string;
   timestamp: string;
@@ -22,11 +12,6 @@ interface LogEntry {
   details?: string;
 }
 
-/**
- * Props for the LoggingMonitor component
- * @interface LoggingMonitorProps
- * @property {ThemeConfig} themeConfig - Theme configuration for styling
- */
 interface LoggingMonitorProps {
   themeConfig: ThemeConfig;
 }
@@ -34,17 +19,6 @@ interface LoggingMonitorProps {
 const logLevels = ["INFO", "WARN", "ERROR", "DEBUG"] as const;
 const logSources = ["system", "auth", "database", "api", "frontend"] as const;
 
-/**
- * Real-time logging monitor component for system logs
- * Displays logs with filtering, search, and export capabilities
- * @param {LoggingMonitorProps} props - Component props
- * @param {ThemeConfig} props.themeConfig - Theme configuration for styling
- * @returns {JSX.Element} The logging monitor component
- * @example
- * ```tsx
- * <LoggingMonitor themeConfig={themeConfig} />
- * ```
- */
 export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [isPaused, setIsPaused] = useState(false);
@@ -193,7 +167,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
 
   return (
     <div className="space-y-6">
-      {/* Controls */}
+      
       <div
         className="p-4 border rounded"
         style={{
@@ -209,49 +183,11 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
             >
               logs@portfolio:~$
             </span>
-            <span className="text-sm opacity-70">./tail -f logs/*.log</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setIsPaused(!isPaused)}
-              className="px-3 py-1 text-xs border rounded transition-colors"
-              style={{
-                borderColor: isPaused
-                  ? themeConfig.colors.success
-                  : themeConfig.colors.border,
-                color: isPaused
-                  ? themeConfig.colors.success
-                  : themeConfig.colors.text,
-              }}
-            >
-              {isPaused ? "▶ Resume" : "⏸ Pause"}
-            </button>
-            <button
-              onClick={clearLogs}
-              className="px-3 py-1 text-xs border rounded transition-colors"
-              style={{
-                borderColor: themeConfig.colors.error || "#ff4444",
-                color: themeConfig.colors.error || "#ff4444",
-              }}
-            >
-              🗑️ Clear
-            </button>
-            <button
-              onClick={exportLogs}
-              className="px-3 py-1 text-xs border rounded transition-colors"
-              style={{
-                borderColor: themeConfig.colors.accent,
-                color: themeConfig.colors.accent,
-              }}
-            >
-              📥 Export
-            </button>
-          </div>
-        </div>
+            <span className="text-sm opacity-70">./tail -f logs
 
-        {/* Search and Filters */}
+}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Search */}
+          
           <div>
             <div className="text-xs opacity-70 mb-2">Search</div>
             <input
@@ -268,7 +204,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
             />
           </div>
 
-          {/* Level Filters */}
+          
           <div>
             <div className="text-xs opacity-70 mb-2">Log Levels</div>
             <div className="flex flex-wrap gap-1">
@@ -291,7 +227,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
             </div>
           </div>
 
-          {/* Source Filters */}
+          
           <div>
             <div className="text-xs opacity-70 mb-2">Sources</div>
             <div className="flex flex-wrap gap-1">
@@ -312,7 +248,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
           </div>
         </div>
 
-        {/* Stats */}
+        
         <div
           className="mt-4 pt-4 border-t"
           style={{ borderColor: themeConfig.colors.border }}
@@ -341,7 +277,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
         </div>
       </div>
 
-      {/* Log Display */}
+      
       <div
         className="border rounded"
         style={{

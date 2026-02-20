@@ -1,27 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import { EnhancedError, ErrorUtils } from "../lib/errors/error-types";
 
-/**
- * Enhanced timer management utility with automatic cleanup and error handling
- *
- * Prevents memory leaks by tracking and cleaning up all timers.
- * Provides comprehensive error handling for timer operations.
- */
-
-/**
- * Timer manager interface with timeout/interval management and error tracking
- * @interface TimerManager
- * @property {Function} setTimeout - Create a timeout with automatic cleanup
- * @property {Function} setInterval - Create an interval with automatic cleanup
- * @property {Function} clearTimeout - Clear a specific timeout by ID
- * @property {Function} clearInterval - Clear a specific interval by ID
- * @property {Function} clearAll - Clear all timers and errors
- * @property {Function} clearAllTimeouts - Clear only timeouts
- * @property {Function} clearAllIntervals - Clear only intervals
- * @property {Function} getErrors - Get array of captured errors
- * @property {Function} clearErrors - Clear all captured errors
- * @property {boolean} hasErrors - Whether any errors exist
- */
 export interface TimerManager {
   setTimeout: (callback: () => void, delay: number, id?: string) => string;
   setInterval: (callback: () => void, delay: number, id?: string) => string;
@@ -35,44 +14,6 @@ export interface TimerManager {
   hasErrors: boolean;
 }
 
-/**
- * Enhanced timer manager hook with comprehensive error handling and cleanup
- *
- * Provides safe timer management with:
- * - Automatic cleanup on unmount
- * - Error capture and reporting for callbacks
- * - Critical error auto-stop for intervals
- * - ID-based timer management
- * - Visibility change and beforeunload cleanup
- *
- * @returns {TimerManager} Timer management functions and error state
- *
- * @example
- * ```tsx
- * const timerManager = useTimerManager();
- *
- * // Create a timeout
- * const id = timerManager.setTimeout(() => {
- *   console.log('Executed after 1s');
- * }, 1000);
- *
- * // Create an interval
- * const intervalId = timerManager.setInterval(() => {
- *   console.log('Every second');
- * }, 1000);
- *
- * // Clear specific timer
- * timerManager.clearTimeout(id);
- *
- * // Clear all timers
- * timerManager.clearAll();
- *
- * // Check for errors
- * if (timerManager.hasErrors) {
- *   console.log('Errors:', timerManager.getErrors());
- * }
- * ```
- */
 export function useTimerManager(): TimerManager {
   const timeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
   const intervalsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
@@ -254,28 +195,6 @@ export function useTimerManager(): TimerManager {
   };
 }
 
-/**
- * Enhanced debounce hook with automatic cleanup and timer management
- *
- * Delays function execution until after the specified delay has passed
- * without the function being called again.
- *
- * @template T - Function type to debounce
- * @param {T} func - Function to debounce
- * @param {number} delay - Delay in milliseconds
- *
- * @returns {T} Debounced version of the function
- *
- * @example
- * ```tsx
- * const debouncedSearch = useDebounce((query: string) => {
- *   performSearch(query);
- * }, 300);
- *
- * // Will only execute once after user stops typing for 300ms
- * debouncedSearch('react');
- * ```
- */
 export function useDebounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number,
@@ -305,28 +224,6 @@ export function useDebounce<T extends (...args: unknown[]) => unknown>(
   return debouncedFunction;
 }
 
-/**
- * Enhanced throttle hook with automatic cleanup and timer management
- *
- * Ensures function is called at most once per specified delay period.
- * Useful for rate-limiting expensive operations like scroll or resize handlers.
- *
- * @template T - Function type to throttle
- * @param {T} func - Function to throttle
- * @param {number} delay - Minimum delay between executions in milliseconds
- *
- * @returns {T} Throttled version of the function
- *
- * @example
- * ```tsx
- * const throttledScroll = useThrottle((e: Event) => {
- *   updateScrollPosition();
- * }, 100);
- *
- * // Will execute at most once every 100ms
- * window.addEventListener('scroll', throttledScroll);
- * ```
- */
 export function useThrottle<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number,
@@ -367,35 +264,6 @@ export function useThrottle<T extends (...args: unknown[]) => unknown>(
   return throttledFunction;
 }
 
-/**
- * Animation frame management hook with automatic cleanup
- *
- * Provides safe requestAnimationFrame usage with automatic cancellation
- * on unmount. Useful for smooth animations and frequent updates.
- *
- * @returns {object} Animation frame management functions
- * @property {Function} requestFrame - Request an animation frame
- * @property {Function} cancelFrame - Cancel the current animation frame
- *
- * @example
- * ```tsx
- * const { requestFrame, cancelFrame } = useAnimationFrame();
- *
- * const animate = () => {
- *   // Animation logic
- *   updatePosition();
- *
- *   // Continue animation
- *   requestFrame(animate);
- * };
- *
- * // Start animation
- * requestFrame(animate);
- *
- * // Stop animation (or happens automatically on unmount)
- * cancelFrame();
- * ```
- */
 export function useAnimationFrame() {
   const frameIdRef = useRef<number | null>(null);
 

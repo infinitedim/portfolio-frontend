@@ -13,57 +13,6 @@ interface UseTerminalShortcutsOptions {
   onCommandExecute?: (command: string) => void;
 }
 
-/**
- * Enhanced terminal shortcuts management hook with customization and persistence
- *
- * Provides comprehensive keyboard shortcut functionality:
- * - Pre-defined terminal shortcuts (clear, help, history, etc.)
- * - Customizable shortcut keys
- * - Import/export shortcut configurations
- * - Search and suggestion features
- * - localStorage persistence
- * - Global keyboard event handling
- *
- * @param {UseTerminalShortcutsOptions} [options] - Configuration callbacks
- * @param {Function} [options.onClear] - Callback for clear shortcut
- * @param {Function} [options.onHelp] - Callback for help shortcut
- * @param {Function} [options.onThemeToggle] - Callback for theme toggle
- * @param {Function} [options.onHistoryOpen] - Callback for history panel
- * @param {Function} [options.onShortcutsOpen] - Callback for shortcuts panel
- * @param {Function} [options.onCommandExecute] - Callback to execute commands
- *
- * @returns {object} Shortcuts state and management functions
- * @property {KeyboardShortcut[]} shortcuts - Array of all shortcut definitions
- * @property {Function} updateShortcutKeys - Update keys for a specific shortcut
- * @property {Function} getShortcutSuggestions - Search shortcuts by query
- * @property {Function} resetToDefaults - Reset all shortcuts to defaults
- * @property {Function} exportShortcuts - Export config as JSON file
- * @property {Function} importShortcuts - Import config from JSON file
- * @property {Record<string, string[]>} customShortcuts - Current custom key mappings
- *
- * @example
- * ```tsx
- * const {
- *   shortcuts,
- *   updateShortcutKeys,
- *   exportShortcuts,
- *   resetToDefaults
- * } = useTerminalShortcuts({
- *   onClear: () => terminal.clear(),
- *   onHelp: () => terminal.execute('help'),
- *   onCommandExecute: (cmd) => terminal.execute(cmd)
- * });
- *
- * // Customize a shortcut
- * updateShortcutKeys('clear-terminal', ['Ctrl', 'K']);
- *
- * // Export configuration
- * exportShortcuts();
- *
- * // Reset to defaults
- * resetToDefaults();
- * ```
- */
 export function useTerminalShortcuts({
   onClear,
   onHelp,

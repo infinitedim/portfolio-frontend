@@ -1,14 +1,6 @@
 import { useRef, useCallback, useState, useMemo } from "react";
 import { useTimerManager, useMountRef } from "./utils/hooks-utils";
 
-/**
- * Configuration thresholds and delays for gesture recognition
- * @interface GestureConfig
- * @property {number} swipeThreshold - Minimum pixel distance to register a swipe
- * @property {number} longPressDelay - Duration in ms to register a long press
- * @property {number} doubleTapDelay - Maximum time between taps for double tap
- * @property {number} pinchThreshold - Minimum scale change to register pinch gesture
- */
 export interface GestureConfig {
   swipeThreshold: number;
   longPressDelay: number;
@@ -16,19 +8,6 @@ export interface GestureConfig {
   pinchThreshold: number;
 }
 
-/**
- * Callback functions for various gesture events
- * @interface GestureCallbacks
- * @property {Function} [onSwipeLeft] - Called when user swipes left
- * @property {Function} [onSwipeRight] - Called when user swipes right
- * @property {Function} [onSwipeUp] - Called when user swipes up
- * @property {Function} [onSwipeDown] - Called when user swipes down
- * @property {Function} [onLongPress] - Called on long press
- * @property {Function} [onDoubleTap] - Called on double tap
- * @property {Function} [onPinchIn] - Called on pinch in with scale factor
- * @property {Function} [onPinchOut] - Called on pinch out with scale factor
- * @property {Function} [onPullToRefresh] - Called on pull-to-refresh gesture
- */
 export interface GestureCallbacks {
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
@@ -61,39 +40,6 @@ const DEFAULT_CONFIG: GestureConfig = {
   pinchThreshold: 0.1,
 };
 
-/**
- * Custom hook for handling touch gestures with automatic memory cleanup
- *
- * Provides comprehensive touch gesture recognition including:
- * - Swipe detection (left, right, up, down)
- * - Long press
- * - Double tap
- * - Pinch zoom (in/out)
- * - Pull-to-refresh
- *
- * @param {GestureCallbacks} [callbacks={}] - Callback functions for gesture events
- * @param {Partial<GestureConfig>} [config={}] - Configuration for gesture thresholds
- *
- * @returns {object} Gesture handlers and state
- * @property {Function} getGestureHandlers - Returns touch event handlers for an element
- * @property {boolean} isPullRefreshing - Whether pull-to-refresh is active
- * @property {number} pullDistance - Current pull distance in pixels
- * @property {object} touchState - Current touch state data
- *
- * @example
- * ```tsx
- * const { getGestureHandlers, isPullRefreshing } = useGestures(
- *   {
- *     onSwipeLeft: () => console.log('Swiped left'),
- *     onLongPress: () => console.log('Long pressed'),
- *     onPullToRefresh: () => refreshData()
- *   },
- *   { swipeThreshold: 50, longPressDelay: 500 }
- * );
- *
- * return <div {...getGestureHandlers()}>Swipe me!</div>;
- * ```
- */
 export function useGestures(
   callbacks: GestureCallbacks = {},
   config: Partial<GestureConfig> = {},
@@ -319,38 +265,6 @@ export function useGestures(
   };
 }
 
-/**
- * Specialized hook for terminal-specific gesture handling
- *
- * Provides terminal-optimized gestures for:
- * - Quick command menu (swipe left/right)
- * - Command history navigation (swipe up/down)
- * - Help command (double tap)
- * - Clear command (pull to refresh)
- *
- * @param {Function} onCommand - Callback to execute commands
- *
- * @returns {object} Terminal gesture handlers and state
- * @property {Function} getGestureHandlers - Touch event handlers
- * @property {boolean} isPullRefreshing - Pull-to-refresh state
- * @property {number} pullDistance - Pull distance
- * @property {boolean} showQuickCommands - Quick commands panel visibility
- * @property {Function} setShowQuickCommands - Toggle quick commands
- * @property {Function} addToHistory - Add command to gesture history
- * @property {string[]} commandHistory - Command history array
- *
- * @example
- * ```tsx
- * const {
- *   getGestureHandlers,
- *   showQuickCommands,
- *   addToHistory
- * } = useTerminalGestures((cmd) => executeCommand(cmd));
- *
- * // Add executed command to history
- * addToHistory("help");
- * ```
- */
 export function useTerminalGestures(onCommand: (command: string) => void) {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);

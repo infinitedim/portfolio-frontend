@@ -15,12 +15,6 @@ interface AdvancedTerminalFeaturesIntegrationProps {
   className?: string;
 }
 
-/**
- * Comprehensive integration of advanced terminal features:
- * - Enhanced command history with search and analytics
- * - Customizable keyboard shortcuts
- * - Real-time performance monitoring
- */
 export function AdvancedTerminalFeaturesIntegration({
   onCommandExecute,
   onClear,

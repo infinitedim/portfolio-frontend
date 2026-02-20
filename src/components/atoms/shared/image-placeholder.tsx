@@ -9,14 +9,6 @@ interface ImagePlaceholderProps {
   className?: string;
 }
 
-/**
- * ImagePlaceholder is a React component that renders a placeholder for an image.
- * @param {object} props - The props for the ImagePlaceholder component.
- * @param {number} [props.width] - The width of the placeholder.
- * @param {number} [props.height] - The height of the placeholder.
- * @param {string} [props.className] - Additional CSS classes for the placeholder.
- * @returns {JSX.Element} The rendered placeholder.
- */
 export function ImagePlaceholder({
   width = 400,
   height = 300,

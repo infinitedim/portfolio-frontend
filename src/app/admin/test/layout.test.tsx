@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock Next.js navigation
 const mockPush = vi.fn();
 const mockPathname = vi.fn(() => "/admin");
 
@@ -20,7 +19,6 @@ vi.mock("next/navigation", () => ({
   usePathname: () => mockPathname(),
 }));
 
-// Mock SecureAuth
 const mockVerifyAuthentication = vi.fn();
 
 vi.mock("@/lib/auth/secure-auth", () => ({
@@ -29,7 +27,6 @@ vi.mock("@/lib/auth/secure-auth", () => ({
   },
 }));
 
-// Import after mocks
 import AdminLayout from "../layout";
 
 describe("AdminLayout", () => {
@@ -93,7 +90,7 @@ describe("AdminLayout", () => {
 
       mockPathname.mockReturnValue("/admin");
       mockVerifyAuthentication.mockImplementation(
-        () => new Promise(() => { }), // Never resolves
+        () => new Promise(() => { }), 
       );
 
       render(
@@ -194,7 +191,7 @@ describe("AdminLayout", () => {
         expect(mockPush).toHaveBeenCalled();
       });
 
-      // Should render empty fragment when not authenticated
+      
       expect(container.children.length).toBe(0);
     });
   });
@@ -208,7 +205,7 @@ describe("AdminLayout", () => {
 
       mockPathname.mockReturnValue("/admin");
       mockVerifyAuthentication.mockImplementation(
-        () => new Promise(() => { }), // Never resolves
+        () => new Promise(() => { }), 
       );
 
       const { container } = render(
@@ -229,7 +226,7 @@ describe("AdminLayout", () => {
 
       mockPathname.mockReturnValue("/admin");
       mockVerifyAuthentication.mockImplementation(
-        () => new Promise(() => { }), // Never resolves
+        () => new Promise(() => { }), 
       );
 
       render(
@@ -305,7 +302,7 @@ describe("AdminLayout", () => {
         expect(mockVerifyAuthentication).toHaveBeenCalledTimes(1);
       });
 
-      // Change pathname
+      
       mockPathname.mockReturnValue("/admin/dashboard");
       mockVerifyAuthentication.mockResolvedValue({ isValid: true });
 

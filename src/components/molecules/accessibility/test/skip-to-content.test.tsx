@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { SkipToContent, SkipLinks } from "../skip-to-content";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -22,7 +21,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock document methods
 const mockScrollIntoView = vi.fn();
 const mockFocus = vi.fn();
 
@@ -31,7 +29,7 @@ describe("SkipToContent", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    // Create a mock target element
+    
     const mockElement = {
       focus: mockFocus,
       scrollIntoView: mockScrollIntoView,

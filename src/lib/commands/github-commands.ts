@@ -43,11 +43,6 @@ export const githubCommand: Command = {
   },
 };
 
-/**
- * Get user information
- * @param {string} username - The GitHub username
- * @returns {CommandOutput} The command output
- */
 async function getUserInfo(username: string): Promise<CommandOutput> {
   if (!username) {
     return {
@@ -78,11 +73,6 @@ async function getUserInfo(username: string): Promise<CommandOutput> {
   }
 }
 
-/**
- * Get user repositories
- * @param {string} username - The GitHub username
- * @returns {CommandOutput} The command output
- */
 async function getUserRepos(username: string): Promise<CommandOutput> {
   if (!username) {
     return {
@@ -137,12 +127,6 @@ async function getUserRepos(username: string): Promise<CommandOutput> {
   }
 }
 
-/**
- * Get repository information
- * @param {string} username - The GitHub username
- * @param {string} repoName - The repository name
- * @returns {CommandOutput} The command output
- */
 async function getRepoInfo(
   username: string,
   repoName: string,
@@ -177,12 +161,6 @@ async function getRepoInfo(
   }
 }
 
-/**
- * Get repository commits
- * @param {string} username - The GitHub username
- * @param {string} repoName - The repository name
- * @returns {CommandOutput} The command output
- */
 async function getRepoCommits(
   username: string,
   repoName: string,
@@ -239,12 +217,6 @@ async function getRepoCommits(
   }
 }
 
-/**
- * Get repository languages
- * @param {string} username - The GitHub username
- * @param {string} repoName - The repository name
- * @returns {CommandOutput} The command output
- */
 async function getRepoLanguages(
   username: string,
   repoName: string,
@@ -300,11 +272,6 @@ async function getRepoLanguages(
   }
 }
 
-/**
- * Search repositories
- * @param {string} query - The search query
- * @returns {CommandOutput} The command output
- */
 async function searchRepos(query: string): Promise<CommandOutput> {
   if (!query) {
     return {
@@ -358,11 +325,6 @@ async function searchRepos(query: string): Promise<CommandOutput> {
   }
 }
 
-/**
- * Get starred repositories
- * @param {string} username - The GitHub username
- * @returns {CommandOutput} The command output
- */
 async function getStarredRepos(username: string): Promise<CommandOutput> {
   if (!username) {
     return {
@@ -416,11 +378,6 @@ async function getStarredRepos(username: string): Promise<CommandOutput> {
   }
 }
 
-/**
- * Get user gists
- * @param {string} username - The GitHub username
- * @returns {CommandOutput} The command output
- */
 async function getUserGists(username: string): Promise<CommandOutput> {
   if (!username) {
     return {
@@ -483,11 +440,6 @@ async function getUserGists(username: string): Promise<CommandOutput> {
   }
 }
 
-/**
- * Manage cache
- * @param {string} action - The cache action (clear, status)
- * @returns {CommandOutput} The command output
- */
 function manageCache(action: string): CommandOutput {
   const githubService = GitHubService.getInstance();
 
@@ -520,10 +472,6 @@ function manageCache(action: string): CommandOutput {
   }
 }
 
-/**
- * Show GitHub help
- * @returns {CommandOutput} The command output
- */
 function showGitHubHelp(): CommandOutput {
   return {
     type: "info",

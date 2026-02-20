@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { SettingsManager } from "../settings-manager";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -24,7 +23,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock CustomizationService
 const mockGetSettings = vi.fn(() => ({
   autoSave: true,
   fontSize: 14,
@@ -52,12 +50,10 @@ vi.mock("@/lib/services/customization-service", () => ({
   },
 }));
 
-// Mock TerminalLoadingProgress
 vi.mock("@/components/molecules/terminal/terminal-loading-progress", () => ({
   TerminalLoadingProgress: () => <div data-testid="loading-progress">Loading...</div>,
 }));
 
-// Mock global.confirm
 global.confirm = vi.fn(() => true);
 
 describe("SettingsManager", () => {

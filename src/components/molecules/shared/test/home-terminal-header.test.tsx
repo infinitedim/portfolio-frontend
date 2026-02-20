@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { HomeTerminalHeader } from "../home-terminal-header";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -23,7 +22,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock i18n hook
 vi.mock("@/hooks/use-i18n", () => ({
   useI18n: () => ({
     t: (key: string) => {
@@ -37,7 +35,6 @@ vi.mock("@/hooks/use-i18n", () => ({
   }),
 }));
 
-// Mock LanguageSwitcher
 vi.mock("../language-switcher", () => ({
   LanguageSwitcher: () => <div data-testid="language-switcher">Language Switcher</div>,
 }));

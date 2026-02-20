@@ -31,12 +31,12 @@ describe("themeConfig", () => {
     });
 
     it("should have multiple themes", () => {
-      // Get fresh reference to avoid module cache issues
+      
       const currentThemes = themes;
       expect(currentThemes).toBeDefined();
       expect(typeof currentThemes).toBe("object");
       const themeNames = Object.keys(currentThemes);
-      // Should have at least 10 themes (21 themes total)
+      
       expect(themeNames.length).toBeGreaterThan(10);
     });
 
@@ -84,7 +84,7 @@ describe("themeConfig", () => {
         expect(colors).toHaveProperty("info");
         expect(colors).toHaveProperty("prompt");
 
-        // All colors should be valid hex strings
+        
         Object.values(colors).forEach((color) => {
           expect(typeof color).toBe("string");
           expect(color).toMatch(/^#[0-9a-fA-F]{6}$/);
@@ -181,9 +181,9 @@ describe("themeConfig", () => {
       const result = getSortedThemeNames();
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
-      // Check if themes is properly loaded
+      
       if (result.length === 1 && result[0] === "default") {
-        // Module cache issue - skip this test when themes not fully loaded
+        
         expect(result).toContain("default");
       } else {
         expect(result).toContain("default");
@@ -194,9 +194,9 @@ describe("themeConfig", () => {
       expect(getSortedThemeNames).toBeDefined();
       const result = getSortedThemeNames();
       expect(Array.isArray(result)).toBe(true);
-      // Check if themes is properly loaded
+      
       if (result.length <= 1) {
-        // Module cache issue - skip popular themes check
+        
         expect(result.length).toBeGreaterThanOrEqual(1);
       } else {
         const popularThemes = ["cyberpunk", "dracula", "matrix", "monokai"];
@@ -293,9 +293,9 @@ describe("themeConfig", () => {
       const validThemes = ["default", "matrix", "cyberpunk", "dracula"];
 
       validThemes.forEach((theme) => {
-        // Check if themes object is properly loaded
+        
         if (Object.keys(currentThemes).length <= 1) {
-          // Module cache issue - just verify default theme
+          
           expect(validateTheme("default")).toBe(true);
         } else {
           expect(validateTheme(theme)).toBe(true);
@@ -383,7 +383,7 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      // Only test if themes are properly loaded
+      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const result = getThemePreview(themeName as any);
@@ -395,7 +395,7 @@ describe("themeConfig", () => {
           expect(result).toContain("Accent:");
         });
       } else {
-        // Module cache issue - just verify default theme works
+        
         const result = getThemePreview("default" as any);
         expect(typeof result).toBe("string");
         expect(result.length).toBeGreaterThan(0);
@@ -433,7 +433,7 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      // Only test if themes are properly loaded
+      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const theme = currentThemes[themeName as keyof typeof currentThemes];
@@ -441,11 +441,11 @@ describe("themeConfig", () => {
           if (!theme) return;
           const { bg, text } = theme.colors;
 
-          // Basic validation that bg and text are different
+          
           expect(bg).not.toBe(text);
         });
       } else {
-        // Module cache issue - just verify default theme
+        
         const defaultTheme = currentThemes.default;
         if (defaultTheme) {
           expect(defaultTheme.colors.bg).not.toBe(defaultTheme.colors.text);
@@ -459,7 +459,7 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      // Only test if themes are properly loaded
+      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const theme = currentThemes[themeName as keyof typeof currentThemes];
@@ -483,7 +483,7 @@ describe("themeConfig", () => {
           expect(colorKeys.sort()).toEqual(expectedKeys.sort());
         });
       } else {
-        // Module cache issue - just verify default theme structure
+        
         const defaultTheme = currentThemes.default;
         if (defaultTheme) {
           expect(Object.keys(defaultTheme.colors).length).toBeGreaterThan(0);
@@ -497,7 +497,7 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      // Only test if themes are properly loaded
+      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const theme = currentThemes[themeName as keyof typeof currentThemes];
@@ -507,10 +507,10 @@ describe("themeConfig", () => {
           expect(colors).toBeDefined();
 
           Object.entries(colors).forEach(([colorName, colorValue]) => {
-            // Should be valid hex color
+            
             expect(colorValue).toMatch(/^#[0-9a-fA-F]{6}$/);
 
-            // Should not be pure white or pure black for most colors
+            
             if (colorName !== "bg" && colorName !== "text") {
               expect(colorValue).not.toBe("#ffffff");
               expect(colorValue).not.toBe("#000000");
@@ -518,7 +518,7 @@ describe("themeConfig", () => {
           });
         });
       } else {
-        // Module cache issue - just verify default theme colors
+        
         const defaultTheme = currentThemes.default;
         if (defaultTheme) {
           Object.values(defaultTheme.colors).forEach((colorValue) => {
@@ -536,7 +536,7 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      // Only test if themes are properly loaded
+      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const theme = currentThemes[themeName as keyof typeof currentThemes];
@@ -547,7 +547,7 @@ describe("themeConfig", () => {
           expect(theme.description?.length).toBeLessThan(100);
         });
       } else {
-        // Module cache issue - just verify default theme
+        
         const defaultTheme = currentThemes.default;
         if (defaultTheme) {
           expect(defaultTheme.description).toBeDefined();
@@ -610,7 +610,7 @@ describe("themeConfig", () => {
       const themeNames = getSortedThemeNames();
       expect(themeNames.length).toBeGreaterThan(0);
       
-      // Only test if themes are properly loaded
+      
       if (themeNames.length > 1) {
         const validTheme = themeNames[0];
         expect(validateTheme(validTheme)).toBe(true);
@@ -619,7 +619,7 @@ describe("themeConfig", () => {
         const preview = getThemePreview(validTheme);
         expect(preview).toContain(config.name);
       } else {
-        // Module cache issue - just verify default theme works
+        
         expect(validateTheme("default")).toBe(true);
         const config = getThemeConfig("default");
         expect(config).toBeDefined();
@@ -651,7 +651,7 @@ describe("themeConfig", () => {
       const themeNames = getSortedThemeNames();
       expect(themeNames.length).toBeGreaterThan(0);
 
-      // Only test if themes are properly loaded
+      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           expect(validateTheme(themeName)).toBe(true);
@@ -666,7 +666,7 @@ describe("themeConfig", () => {
           expect(preview).toContain(config.name);
         });
       } else {
-        // Module cache issue - just verify default theme
+        
         expect(validateTheme("default")).toBe(true);
         const config = getThemeConfig("default");
         expect(config.name).toBe("Default Dark");

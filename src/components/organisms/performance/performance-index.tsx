@@ -85,14 +85,6 @@ interface PerformanceProfilerProps {
   ) => void;
 }
 
-/**
- * Performance profiler component
- * @param {PerformanceProfilerProps} props - The component props.
- * @param {string} props.id - The ID of the profiler.
- * @param {ReactNode} props.children - The children of the profiler.
- * @param {ProfilerOnRenderCallback} props.onRender - The onRender callback.
- * @returns {JSX.Element} The rendered component.
- */
 export function PerformanceProfiler({
   id,
   children,
@@ -128,14 +120,6 @@ export function PerformanceProfiler({
   );
 }
 
-/**
- * Hook for measuring custom operations
- * @returns {object} An object containing:
- *   - startMeasure: Function to start a measure.
- *   - measureAsync: Function to measure an async operation.
- *   - getMetrics: Function to get the metrics.
- *   - logMetrics: Function to log the metrics.
- */
 export function usePerfMeasure() {
   const performanceMonitor = PerformanceMonitor.getInstance();
 

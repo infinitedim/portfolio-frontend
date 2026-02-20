@@ -123,59 +123,6 @@ const generateCSSVariables = (colors: ThemeColors) => ({
   "--popover-foreground": hexToHsl(colors.text),
 });
 
-/**
- * Advanced theme management hook with performance monitoring and validation
- *
- * Provides comprehensive theme functionality:
- * - Theme switching with CSS variable application
- * - localStorage persistence
- * - Performance tracking and metrics
- * - Theme validation and error handling
- * - HSL color conversion for shadcn/ui compatibility
- * - Usage analytics and popular themes tracking
- * - Safe DOM manipulation with SSR support
- *
- * @returns {UseThemeReturn} Theme state and management functions
- * @property {ThemeName} theme - Current active theme name
- * @property {ThemeConfig} themeConfig - Current theme configuration object
- * @property {string | null} error - Current error message or null
- * @property {boolean} hasError - Whether an error exists
- * @property {boolean} mounted - Whether the hook is mounted (SSR safety)
- * @property {Function} changeTheme - Switch to a different theme
- * @property {Function} clearError - Clear the current error
- * @property {ThemeName[]} availableThemes - Array of all available theme names
- * @property {Function} getThemeInfo - Get configuration for any theme
- * @property {Function} isThemeActive - Check if a theme is currently active
- * @property {Function} validateTheme - Validate a theme name
- * @property {object} themeMetrics - Performance metrics for theme operations
- * @property {Function} getPerformanceReport - Get detailed performance report
- * @property {Function} resetPerformanceMetrics - Reset all performance metrics
- *
- * @example
- * ```tsx
- * const {
- *   theme,
- *   themeConfig,
- *   changeTheme,
- *   availableThemes,
- *   themeMetrics,
- *   getPerformanceReport
- * } = useTheme();
- *
- * // Change theme
- * const success = changeTheme('dracula');
- *
- * // Get available themes
- * console.log('Available themes:', availableThemes);
- *
- * // Check performance
- * const report = getPerformanceReport();
- * console.log(`Average switch time: ${report.averageTime}ms`);
- *
- * // Get theme info
- * const draculaConfig = getThemeInfo('dracula');
- * ```
- */
 export function useTheme(): UseThemeReturn {
   const isMountedRef = useMountRef();
   const { getValue, setValue } = useLocalStorage(STORAGE_KEY, defaultTheme);
@@ -237,9 +184,9 @@ export function useTheme(): UseThemeReturn {
           themeClasses.push(`theme-${themeName}`);
           body.className = themeClasses.join(" ");
 
-          // Use setProperty to update each CSS variable individually.
-          // This surgically replaces only our variables without clobbering
-          // any other inline styles (avoids the cssText += accumulation bug).
+          
+          
+          
           const cssVars = generateCSSVariables(config.colors);
           Object.entries(cssVars).forEach(([property, value]) => {
             root.style.setProperty(property, value);
@@ -248,7 +195,7 @@ export function useTheme(): UseThemeReturn {
           appliedThemeRef.current = themeName;
         });
 
-        // End timing after a short delay to ensure DOM updates are complete
+        
         setTimeout(() => {
           const renderTime = performanceMonitor.endTiming(
             "theme-application",
@@ -272,7 +219,7 @@ export function useTheme(): UseThemeReturn {
           "theme",
           { error: String(error), theme: themeName },
         );
-        // End timing to clean up if error occurs
+        
         performanceMonitor.endTiming("theme-application", "theme");
         if (isMountedRef.current) {
           setState((prev) => ({ ...prev, error: "Failed to apply theme" }));
@@ -350,6 +297,8 @@ export function useTheme(): UseThemeReturn {
 
   useEffect(() => {
     try {
+      
+      appliedThemeRef.current = null;
       setState((prev) => ({ ...prev, mounted: true }));
 
       const savedTheme = getValue();

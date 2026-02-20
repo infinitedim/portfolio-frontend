@@ -10,14 +10,6 @@ interface ThemePreviewProps {
   onApply: () => void;
 }
 
-/**
- * Displays a preview of a selected theme, including its color palette and a sample terminal output.
- * @param {ThemePreviewProps} props - The properties for the ThemePreview component.
- * @param {CustomTheme} props.theme - The theme to preview.
- * @param {() => void} props.onEdit - Callback function to enter edit mode for the theme.
- * @param {() => void} props.onApply - Callback function to apply the theme.
- * @returns {JSX.Element} - The theme preview interface.
- */
 export function ThemePreview({
   theme,
   onEdit,

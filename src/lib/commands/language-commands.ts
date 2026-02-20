@@ -88,10 +88,6 @@ export const languageCommand: Command = {
   },
 };
 
-/**
- * Show current language information
- * @returns {CommandOutput} The command output
- */
 function showCurrentLanguage() {
   const currentLocale = i18n.getCurrentLocale();
   const currentConfig = i18n.getCurrentLocaleConfig();

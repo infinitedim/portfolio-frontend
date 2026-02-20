@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Import component
 import { ImagePlaceholder } from "../image-placeholder";
 
 describe("ImagePlaceholder", () => {

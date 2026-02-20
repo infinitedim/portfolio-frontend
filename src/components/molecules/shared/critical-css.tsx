@@ -4,13 +4,6 @@ interface CriticalCSSProps {
   theme: string;
 }
 
-/**
- * Critical CSS component that inlines essential styles for immediate rendering
- * This prevents FOUC (Flash of Unstyled Content) by providing critical styles server-side
- * @param {CriticalCSSProps} props - The props for the CriticalCSS component
- * @param {string} props.theme - The theme to use
- * @returns {JSX.Element} The CriticalCSS component
- */
 export function CriticalCSS({ theme }: CriticalCSSProps): JSX.Element {
   const criticalCSS = generateCriticalCSS(theme);
 
@@ -22,11 +15,6 @@ export function CriticalCSS({ theme }: CriticalCSSProps): JSX.Element {
   );
 }
 
-/**
- * Generate the critical CSS
- * @param {string} theme - The theme to use
- * @returns {string} The critical CSS
- */
 function generateCriticalCSS(theme: string): string {
   const themeColors = getThemeColors(theme);
 
@@ -167,11 +155,6 @@ function generateCriticalCSS(theme: string): string {
   `;
 }
 
-/**
- * Get the theme colors
- * @param {string} theme - The theme to use
- * @returns {Record<string, string>} The theme colors
- */
 function getThemeColors(theme: string): Record<string, string> {
   const themes: Record<string, Record<string, string>> = {
     default: {

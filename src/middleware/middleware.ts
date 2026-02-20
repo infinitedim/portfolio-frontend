@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-/** Extended browser info with version */
 interface BrowserInfo {
   name: string;
   version?: string;
 }
 
-/** Extended NextRequest with geo data (Vercel/Edge) */
 interface NextRequestWithGeo extends NextRequest {
   geo?: {
     country?: string;
@@ -15,20 +13,10 @@ interface NextRequestWithGeo extends NextRequest {
   };
 }
 
-/**
- * Generates a cryptographically secure nonce for CSP
- * @returns A unique nonce string using crypto.randomUUID
- */
 function generateNonce() {
   return crypto.randomUUID();
 }
 
-/**
- * Generates security headers for the response
- * @param nonce - The nonce for Content Security Policy
- * @param _isDev - Whether the app is in development mode
- * @returns Object containing security headers
- */
 function getSecurityHeaders(nonce: string, _isDev: boolean) {
   return {
     "Content-Security-Policy": `default-src 'self'; script-src 'self' 'nonce-${nonce}';`,
@@ -38,54 +26,23 @@ function getSecurityHeaders(nonce: string, _isDev: boolean) {
   } as Record<string, string>;
 }
 
-/**
- * Generates CORS headers based on allowed origins
- * @param origin - The request origin
- * @param allowed - Array of allowed origin strings
- * @returns CORS headers object if origin is allowed
- */
 function getCORSHeaders(origin: string, allowed: string[]) {
   return allowed.includes(origin)
     ? { "Access-Control-Allow-Origin": origin }
     : {};
 }
 
-/**
- * Import server logger for structured logging
- */
 import { createServerLogger } from "@/lib/logger/server-logger";
 
-/**
- * Create logger instance for middleware
- */
 const logger = createServerLogger("middleware");
 
-/**
- * Enhanced Next.js middleware for security, performance, and analytics
- *
- * Features:
- * - Security headers (CSP, X-Frame-Options, etc.)
- * - CORS handling
- * - Device detection (mobile/tablet/desktop)
- * - Browser detection and feature support
- * - Suspicious request pattern detection
- * - Resource preloading
- * - Cache control policies
- * - A/B testing experiment assignment
- * - Geo-location headers
- * - Performance monitoring
- * - Real User Monitoring (RUM) enablement
- *
- * @param request - The incoming Next.js request
- * @returns Modified NextResponse with security and performance headers
- */
 export function middleware(request: NextRequest) {
   const isDevelopment = process.env.NODE_ENV === "development";
 
-  // Skip heavy middleware processing in development for faster startup
+  
   if (isDevelopment) {
     const response = NextResponse.next();
-    // Only set minimal required headers in dev
+    
     response.headers.set("X-Request-ID", crypto.randomUUID());
     return response;
   }
@@ -102,7 +59,7 @@ export function middleware(request: NextRequest) {
     device.type = "tablet";
   }
 
-  // Parse browser name AND version so the Chrome 90+ COEP/COOP check can work.
+  
   if (/chrome/i.test(userAgentHeader) && !/edg/i.test(userAgentHeader)) {
     browser.name = "Chrome";
     const match = userAgentHeader.match(/Chrome\/(\d+)/i);
@@ -156,10 +113,10 @@ export function middleware(request: NextRequest) {
   }
 
   const suspiciousPatterns = [
-    /\.\.\//, // Path traversal
-    /<script/i, // XSS attempts
-    /union.*select/i, // SQL injection
-    /javascript:/i, // XSS via javascript protocol
+    /\.\.\
+    /<script/i, 
+    /union.*select/i, 
+    /javascript:/i, 
   ];
 
   const url = request.url;
@@ -272,7 +229,7 @@ export function middleware(request: NextRequest) {
   const responseTime = Date.now() - startTime;
   response.headers.set("X-Response-Time", `${responseTime}ms`);
 
-  // Log the HTTP request/response
+  
   logger.logHttp(
     request.method,
     request.nextUrl.pathname,
@@ -286,7 +243,7 @@ export function middleware(request: NextRequest) {
     },
   );
 
-  // Log slow requests as warning
+  
   if (responseTime > 1000) {
     logger.warn(
       "Slow request detected",
@@ -311,22 +268,6 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-/**
- * Middleware configuration for Next.js
- *
- * Defines which routes should be processed by the middleware.
- * Excludes static files, images, and other resources that don't need middleware processing.
- *
- * @remarks
- * The matcher uses negative lookahead to exclude:
- * - _next/static (Next.js static assets)
- * - _next/image (Next.js image optimization)
- * - favicon.ico (site favicon)
- * - sw.js (service worker)
- * - manifest.json (PWA manifest)
- * - robots.txt (robots file)
- * - sitemap.xml (sitemap file)
- */
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|sw.js|manifest.json|robots.txt|sitemap.xml).*)",

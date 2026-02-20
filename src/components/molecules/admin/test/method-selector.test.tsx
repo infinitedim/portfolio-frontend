@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { MethodSelector, type ServiceMethod } from "../method-selector";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -56,7 +55,6 @@ describe("MethodSelector", () => {
   ];
 
   const mockOnMethodSelect = vi.fn();
-
 
   describe("Rendering", () => {
     it("should render all methods", () => {

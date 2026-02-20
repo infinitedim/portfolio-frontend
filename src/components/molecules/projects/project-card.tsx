@@ -14,9 +14,6 @@ const ProjectImageLoader = () => (
   <div className="h-48 bg-terminal-muted/10 animate-pulse" />
 );
 
-/**
- * Optimized ProjectCard component with lazy loading and performance optimizations
- */
 export const ProjectCard = memo(function ProjectCard({
   project,
   featured = false,

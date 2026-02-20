@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { VirtualizedHistory } from "../virtualized-history";
 import type { TerminalHistory } from "@/types/terminal";
 
-// Mock theme hook
 const mockThemeConfig = {
   colors: {
     bg: "#000000",
@@ -21,7 +20,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock CommandOutput
 vi.mock("@/components/molecules/terminal/command-output", () => ({
   CommandOutput: ({ output }: { output: { type: string; content: string } }) => (
     <div data-testid="command-output">{output.content}</div>
@@ -101,7 +99,7 @@ describe("VirtualizedHistory", () => {
         <VirtualizedHistory history={largeHistory} maxVisibleItems={10} />,
       );
 
-      // Should only render visible items
+      
       const outputs = screen.getAllByTestId("command-output");
       expect(outputs.length).toBeLessThanOrEqual(10);
     });

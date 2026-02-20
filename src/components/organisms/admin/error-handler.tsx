@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import type { ThemeConfig } from "@/types/theme";
 
-// API URL from environment, fallback to localhost:3001 (Rust backend)
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -19,13 +18,6 @@ interface ServiceStatus {
   redis: "connected" | "disconnected" | "checking";
 }
 
-/**
- *
- * @param root0
- * @param root0.themeConfig
- * @param root0.onError
- * @param root0.onRecovery
- */
 export function ErrorHandler({
   themeConfig,
   onError,
@@ -44,7 +36,7 @@ export function ErrorHandler({
     setLastError(null);
 
     try {
-      // Check backend health (REST endpoint)
+      
       const backendResponse = await fetch(`${API_URL}/health`, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -54,7 +46,7 @@ export function ErrorHandler({
         backend: backendResponse.ok ? "connected" : "disconnected",
       }));
 
-      // Check database health (REST endpoint)
+      
       const dbResponse = await fetch(`${API_URL}/health/database`, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -67,14 +59,14 @@ export function ErrorHandler({
             database: dbData.status === "healthy" ? "connected" : "disconnected",
           }));
         } catch {
-          // Response not JSON, treat as disconnected
+          
           setServiceStatus((prev) => ({ ...prev, database: "disconnected" }));
         }
       } else {
         setServiceStatus((prev) => ({ ...prev, database: "disconnected" }));
       }
 
-      // Check Redis health (REST endpoint)
+      
       const redisResponse = await fetch(`${API_URL}/health/redis`, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -87,7 +79,7 @@ export function ErrorHandler({
             redis: redisData.status === "healthy" ? "connected" : "disconnected",
           }));
         } catch {
-          // Response not JSON, treat as disconnected
+          
           setServiceStatus((prev) => ({ ...prev, redis: "disconnected" }));
         }
       } else {
@@ -205,7 +197,7 @@ export function ErrorHandler({
         </div>
       )}
 
-      {/* Troubleshooting Guide */}
+      
       <div className="space-y-2">
         <h4
           className="text-sm font-semibold"
@@ -246,7 +238,7 @@ export function ErrorHandler({
         </div>
       </div>
 
-      {/* Quick Action Buttons */}
+      
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           onClick={() => window.open(`${API_URL}/health`, "_blank")}

@@ -5,11 +5,6 @@ import {
   useTimerManager,
 } from "./utils/hooks-utils";
 
-// tRPC integration was planned but never implemented; the hook uses
-// client-side validation exclusively. Keeping the conditional check below
-// allows future wiring without changing the call sites.
-// const trpcClient: Record<string, never> | null = null;
-
 interface SecurityState {
   isRateLimited: boolean;
   suspiciousActivity: number;
@@ -66,21 +61,6 @@ const withErrorHandling = <T>(fn: () => T, fallback: T): (() => T) => {
   };
 };
 
-/**
- * Client-side input validation (fallback when tRPC is unavailable)
- *
- * Performs basic security checks for dangerous patterns including:
- * - Script injection attempts
- * - XSS attack patterns
- * - Excessively long input
- *
- * @param {string} input - The input string to validate
- * @returns {ValidationResult} Validation result with sanitized input
- * @property {boolean} isValid - Whether the input passed validation
- * @property {string} sanitizedInput - Cleaned/trimmed input
- * @property {string | null} error - Error message if validation failed
- * @property {"low" | "medium" | "high"} riskLevel - Assessed risk level
- */
 function validateInputClientSide(input: string): ValidationResult {
   const sanitizedInput = input.trim();
 
@@ -123,50 +103,6 @@ function validateInputClientSide(input: string): ValidationResult {
   };
 }
 
-/**
- * Security monitoring and input validation hook with tRPC integration
- *
- * Provides comprehensive security features:
- * - Input validation and sanitization (tRPC or client-side)
- * - Rate limiting detection
- * - Suspicious activity monitoring
- * - Threat alerts management
- * - Security metrics and recommendations
- * - Automatic cleanup and memory management
- *
- * @returns {object} Security state and methods
- * @property {SecurityState} securityState - Current security status
- * @property {ThreatAlert[]} threatAlerts - Array of threat alerts
- * @property {Function} validateInput - Async validation (prefers tRPC)
- * @property {Function} validateInputSync - Synchronous client-side validation
- * @property {Function} resetRateLimit - Reset rate limit flag
- * @property {Function} getSecurityMetrics - Get current security metrics
- * @property {Function} getSecurityRecommendations - Get security recommendations
- * @property {Function} clearOldAlerts - Clean up old threat alerts
- * @property {boolean} isSecure - Whether system is in secure state
- * @property {"low" | "medium" | "high"} riskLevel - Current overall risk level
- *
- * @example
- * ```tsx
- * const {
- *   validateInput,
- *   securityState,
- *   threatAlerts,
- *   isSecure,
- *   getSecurityMetrics
- * } = useSecurity();
- *
- * // Validate user input
- * const result = await validateInput(userInput);
- * if (result.shouldProceed) {
- *   // Process input
- * }
- *
- * // Check security metrics
- * const metrics = getSecurityMetrics();
- * console.log(`Blocked requests: ${metrics.blockedRequests}`);
- * ```
- */
 export function useSecurity() {
   const isMountedRef = useMountRef();
   const { setTimer, clearTimer } = useTimerManager();
@@ -191,9 +127,8 @@ export function useSecurity() {
   } | null>(null);
   const CACHE_DURATION = 5000;
 
-  /**
-   * Validate and sanitize user input using backend SecurityService or fallback to client-side validation
-   */
+  
+
   const validateInput = useCallback(
     async (
       input: string,
@@ -208,9 +143,9 @@ export function useSecurity() {
         let shouldProceed = false;
         let alert: ThreatAlert | undefined;
 
-        // trpcClient is always null (tRPC not wired up yet) so we use
-        // client-side validation exclusively. The null check is kept here
-        // as a seam for future backend integration without touching call sites.
+        
+        
+        
         shouldProceed = validation.isValid;
 
         if (isClientSide() && isMountedRef.current) {
@@ -291,9 +226,8 @@ export function useSecurity() {
     [isMountedRef],
   );
 
-  /**
-   * Synchronous validation for cases where async is not suitable
-   */
+  
+
   const validateInputSync = useCallback(
     (
       input: string,
@@ -384,9 +318,8 @@ export function useSecurity() {
     [isMountedRef],
   );
 
-  /**
-   * Reset rate limiting (for testing or admin override)
-   */
+  
+
   const resetRateLimit = useCallback(() => {
     if (!isMountedRef.current) return;
 
@@ -396,9 +329,8 @@ export function useSecurity() {
     }));
   }, [isMountedRef]);
 
-  /**
-   * Get current security metrics with improved caching
-   */
+  
+
   const getSecurityMetrics = useCallback((): SecurityMetrics => {
     if (!isClientSide()) {
       return {
@@ -471,9 +403,8 @@ export function useSecurity() {
     )();
   }, [threatAlerts]);
 
-  /**
-   * Clear old threat alerts with improved performance
-   */
+  
+
   const clearOldAlerts = useCallback(() => {
     if (!isClientSide() || !isMountedRef.current) return;
 
@@ -492,9 +423,8 @@ export function useSecurity() {
     }, undefined)();
   }, [isMountedRef]);
 
-  /**
-   * Get security recommendations based on current state
-   */
+  
+
   const getSecurityRecommendations = useCallback((): string[] => {
     return withErrorHandling(() => {
       const recommendations: string[] = [];
@@ -598,16 +528,6 @@ export function useSecurity() {
   };
 }
 
-/**
- * Create a threat alert with SSR-safe ID generation
- *
- * @param {ThreatAlert["type"]} type - Type of threat detected
- * @param {string} message - Human-readable threat description
- * @param {ThreatAlert["riskLevel"]} riskLevel - Severity level of the threat
- * @param {Record<string, unknown>} [metadata={}] - Additional threat data
- *
- * @returns {ThreatAlert} Formatted threat alert object
- */
 function createThreatAlert(
   type: ThreatAlert["type"],
   message: string,
@@ -631,20 +551,6 @@ function createThreatAlert(
   };
 }
 
-/**
- * Detect suspicious activity patterns in recent inputs
- *
- * Analyzes recent input history for:
- * - Excessive repetition of the same input
- * - Rapid input patterns indicating automation
- *
- * @param {string[]} recentInputs - Array of recent inputs to analyze
- *
- * @returns {object} Analysis result
- * @property {boolean} isSuspicious - Whether suspicious activity detected
- * @property {string} reason - Description of suspicious pattern
- * @property {"low" | "medium" | "high"} riskLevel - Assessed risk level
- */
 function detectSuspiciousActivity(recentInputs: string[]): {
   isSuspicious: boolean;
   reason: string;
@@ -681,21 +587,6 @@ function detectSuspiciousActivity(recentInputs: string[]): {
   return { isSuspicious: false, reason: "", riskLevel: "low" };
 }
 
-/**
- * Development-mode security monitoring hook with console logging
- *
- * Extends useSecurity with periodic logging of security metrics in development.
- * Logs threats and recommendations every 30 seconds when issues are detected.
- *
- * @returns {object} Same return value as useSecurity
- *
- * @example
- * ```tsx
- * // Use in development for debugging
- * const security = useSecurityMonitoring();
- * // Console will show security reports automatically
- * ```
- */
 export function useSecurityMonitoring() {
   const security = useSecurity();
 

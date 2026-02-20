@@ -10,15 +10,6 @@ interface ThemeEditorProps {
   onCancel: () => void;
 }
 
-/**
- * A component for creating and editing terminal themes.
- * Provides a UI for changing colors and metadata of a theme.
- * @param {ThemeEditorProps} props - The properties for the ThemeEditor component.
- * @param {CustomTheme} props.theme - The theme object to be edited.
- * @param {(theme: CustomTheme) => void} props.onSave - Callback function when the save button is clicked.
- * @param {() => void} props.onCancel - Callback function to cancel the editing.
- * @returns {JSX.Element} - The theme editor interface.
- */
 export function ThemeEditor({
   theme,
   onSave,
@@ -36,7 +27,7 @@ export function ThemeEditor({
     setEditedTheme(theme);
   }, [theme]);
 
-  // Close dropdown on Escape key
+  
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isColorRuleOpen) {
@@ -86,7 +77,7 @@ export function ThemeEditor({
     setPreviewMode(!previewMode);
   };
 
-  // Update preview in real-time when colors change
+  
   useEffect(() => {
     if (previewMode) {
       const root = document.documentElement;
@@ -309,7 +300,7 @@ export function ThemeEditor({
                         }}
                         aria-label="Close dropdown"
                       />
-                      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                      
                       <div
                         className="absolute z-50 w-full mt-1 rounded border shadow-lg overflow-hidden"
                         style={{
@@ -422,7 +413,7 @@ export function ThemeEditor({
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-3">
-          {/* Live Preview Panel */}
+          
           <div className="mb-3">
             <h4
               className="font-medium mb-2"

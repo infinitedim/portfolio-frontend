@@ -9,14 +9,6 @@ interface MobileTerminalProps {
   children: React.ReactNode;
 }
 
-/**
- * A wrapper component that provides a mobile-optimized terminal experience.
- * It handles mobile-specific UI adjustments, such as showing hints,
- * a dedicated header, and a quick command bar.
- * @param {MobileTerminalProps} props - The properties for the MobileTerminal component.
- * @param {React.ReactNode} props.children - The content to be rendered within the mobile terminal layout.
- * @returns {JSX.Element} - A mobile-optimized terminal layout or the original children if not on a mobile device.
- */
 export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
   const { themeConfig, theme } = useTheme();
   const { isMobile, isVirtualKeyboardOpen, orientation } = useMobile();
@@ -64,13 +56,15 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
         paddingBottom: isVirtualKeyboardOpen
           ? "0"
           : "env(safe-area-inset-bottom)",
+        backgroundColor: themeConfig.colors.bg,
+        transition: "background-color 300ms ease",
         touchAction: "manipulation",
         WebkitTouchCallout: "none",
         WebkitUserSelect: "none",
         userSelect: "none",
       }}
     >
-      {}
+      { }
       {showMobileHint && (
         <div
           className="fixed top-0 left-0 right-0 z-50 p-4 text-sm animate-in slide-in-from-top duration-300"
@@ -102,7 +96,7 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
         </div>
       )}
 
-      {}
+      { }
       <div
         className="sticky top-0 z-40 px-3 py-2 border-b backdrop-blur-sm"
         style={{
@@ -161,7 +155,7 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
 
       {children}
 
-      {}
+      { }
       <div
         className="fixed bottom-0 left-0 right-0 p-4 border-t backdrop-blur-sm"
         style={{
@@ -184,7 +178,7 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
               (cmd) => (
                 <button
                   key={cmd}
-                  className="px-4 py-3 text-sm rounded-lg border whitespace-nowrap transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 hover:scale-105 active:scale-95 min-h-[48px] font-mono"
+                  className="px-4 py-3 text-sm rounded-lg border whitespace-nowrap transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 hover:scale-105 active:scale-95 min-h-12 font-mono"
                   style={{
                     borderColor: themeConfig.colors.border,
                     color: themeConfig.colors.text,
@@ -200,7 +194,7 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
           </div>
         </div>
 
-        {}
+        { }
         <div className="flex flex-col items-center gap-1">
           <div
             className="w-12 h-1 rounded-full"

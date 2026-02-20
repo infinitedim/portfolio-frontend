@@ -1,8 +1,5 @@
 import { MetadataRoute } from "next";
 
-/**
- * Get the backend URL for data fetching
- */
 function getBackendUrl(): string {
   return (
     process.env.BACKEND_URL ??
@@ -11,27 +8,11 @@ function getBackendUrl(): string {
   );
 }
 
-/**
- * Blog post item from API
- */
 interface BlogPostItem {
   slug: string;
   updatedAt?: string;
 }
 
-/**
- * Generates dynamic sitemap for the application
- * @returns Sitemap configuration for search engine indexing
- * @remarks
- * Optimized for Google indexing and SEO with:
- * - Static routes (home, projects, skills, about, contact, etc.)
- * - Dynamic project routes with individual priorities
- * - Technology-specific pages
- * - Service offering pages
- * - Blog post routes (fetched dynamically from backend)
- * - Legal pages (privacy, terms)
- * - Proper change frequencies and priorities for each route type
- */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.site";
@@ -199,7 +180,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Fetch blog posts from backend for dynamic blog routes
+  
   let blogRoutes: MetadataRoute.Sitemap = [];
   try {
     const backendUrl = getBackendUrl();
@@ -219,7 +200,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch (error) {
     console.error("Failed to fetch blog posts for sitemap:", error);
-    // Fallback to empty - sitemap will just not include blog posts
+    
   }
 
   const legalRoutes: MetadataRoute.Sitemap = [

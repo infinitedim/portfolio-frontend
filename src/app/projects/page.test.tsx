@@ -2,12 +2,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock Next.js modules
 vi.mock("next", () => ({
   Metadata: {},
 }));
 
-// Mock data fetching
 const mockProjects = [
   {
     id: "1",
@@ -27,7 +25,6 @@ vi.mock("@/lib/data/data-fetching", () => ({
   getFeaturedProjects: vi.fn(() => Promise.resolve(mockFeaturedProjects)),
 }));
 
-// Mock components
 vi.mock("@/components/molecules/projects/project-card", () => ({
   ProjectCard: ({
     project,
@@ -46,10 +43,6 @@ vi.mock("@/components/organisms/projects/projects-loading", () => ({
   ProjectsLoading: () => <div data-testid="projects-loading">Loading...</div>,
 }));
 
-// Mock Suspense - don't mock react, just test without Suspense mocking
-// Suspense will work normally in tests
-
-// Import after mocks
 import ProjectsPage, { generateMetadata } from "./page";
 
 describe("ProjectsPage", () => {
@@ -180,7 +173,7 @@ describe("ProjectsPage", () => {
       }
 
       const { container } = render(await ProjectsPage());
-      // Suspense should render children normally
+      
       expect(container).toBeTruthy();
     });
 

@@ -33,19 +33,19 @@ interface ExecutionPattern {
 }
 
 interface InteractiveCommandHistoryProps {
-  /** Whether the history panel is visible */
+  
   isVisible: boolean;
-  /** Callback when user selects a command */
+  
   onCommandSelect: (command: string) => void;
-  /** Callback when panel is closed */
+  
   onClose: () => void;
-  /** Maximum height of the component */
+  
   maxHeight?: string;
-  /** Enable real-time updates */
+  
   enableRealTime?: boolean;
-  /** Show command patterns analysis */
+  
   showPatterns?: boolean;
-  /** Enable command replay functionality */
+  
   enableReplay?: boolean;
 }
 
@@ -222,7 +222,7 @@ export function InteractiveCommandHistory({
   const patterns = commandPatterns();
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    
     <div
       ref={containerRef}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"

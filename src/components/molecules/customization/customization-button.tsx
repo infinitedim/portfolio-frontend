@@ -4,10 +4,6 @@ import { type JSX, useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { CustomizationManager } from "@/components/organisms/customization/customization-manager";
 
-/**
- * A floating button that opens the customization manager.
- * @returns {JSX.Element} - The customization button component.
- */
 export function CustomizationButton(): JSX.Element {
   const { themeConfig, theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);

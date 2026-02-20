@@ -4,9 +4,9 @@ import { ProjectMetadataService } from "@/lib/projects/project-metadata";
 
 describe("demoCommand", () => {
   beforeEach(() => {
-    // reset project service singleton data
+    
     const svc = ProjectMetadataService.getInstance();
-    // ensure a predictable return
+    
     (svc as any).projects = [
       {
         id: "p1",

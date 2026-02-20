@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ErrorHandler } from "../error-handler";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -52,7 +51,7 @@ describe("ErrorHandler", () => {
       );
 
       await waitFor(() => {
-        // Should not render when all services are healthy
+        
         expect(container.firstChild).toBeNull();
       });
     });
@@ -229,7 +228,7 @@ describe("ErrorHandler", () => {
         />,
       );
 
-      // Component should not render when all connected
+      
       await waitFor(() => {
         expect(screen.queryByText(/Service Status Monitor/i)).not.toBeInTheDocument();
       });
@@ -278,7 +277,7 @@ describe("ErrorHandler", () => {
         />,
       );
 
-      // Initially should show checking status
+      
       await waitFor(() => {
         expect(screen.getByText(/checking/i)).toBeInTheDocument();
       });
@@ -422,7 +421,7 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      // Mock: backend ok, database fails
+      
       globalThis.fetch = vi.fn().mockImplementation(async (url) => {
         if (url.includes("/health/database")) {
           return { ok: false, json: async () => ({}) };

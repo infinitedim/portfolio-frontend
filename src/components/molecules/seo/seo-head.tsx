@@ -2,19 +2,6 @@
 
 import { useEffect, type JSX } from "react";
 
-/**
- * Props for the SEOHead component
- * @interface SEOHeadProps
- * @property {string} [title] - Page title
- * @property {string} [description] - Page description for meta tags
- * @property {string[]} [keywords] - SEO keywords
- * @property {string} [image] - Open Graph image URL
- * @property {string} [url] - Page URL for canonical and OG tags
- * @property {"website" | "article" | "profile"} [type] - Open Graph type
- * @property {Record<string, unknown>} [structuredData] - Additional structured data
- * @property {boolean} [noindex] - Whether to prevent indexing
- * @property {string} [canonical] - Canonical URL override
- */
 interface SEOHeadProps {
   title?: string;
   description?: string;
@@ -27,29 +14,6 @@ interface SEOHeadProps {
   canonical?: string;
 }
 
-/**
- * SEO Head component for dynamic meta tags and structured data
- * Handles client-side updates of meta tags, Open Graph, Twitter Cards, and JSON-LD
- * @param {SEOHeadProps} props - Component props
- * @param {string} [props.title] - Page title
- * @param {string} [props.description] - Page description
- * @param {string[]} [props.keywords] - SEO keywords
- * @param {string} [props.image] - OG image (default: "/og-image.png")
- * @param {string} [props.url] - Page URL
- * @param {"website" | "article" | "profile"} [props.type] - OG type (default: "website")
- * @param {Record<string, unknown>} [props.structuredData] - JSON-LD data
- * @param {boolean} [props.noindex] - Prevent indexing (default: false)
- * @param {string} [props.canonical] - Canonical URL
- * @returns {null} This component doesn't render anything visible
- * @example
- * ```tsx
- * <SEOHead
- *   title="My Portfolio"
- *   description="Welcome to my portfolio"
- *   keywords={['developer', 'portfolio']}
- * />
- * ```
- */
 export function SEOHead({
   title,
   description,
@@ -189,16 +153,6 @@ export function SEOHead({
   return null;
 }
 
-/**
- * SEO Head component for project pages
- * @param {object} props - Project SEO properties
- * @param {string} props.projectName - Name of the project
- * @param {string} props.description - Project description
- * @param {string[]} props.technologies - Technologies used
- * @param {string} props.image - Project image
- * @param {string} props.url - Project URL
- * @returns {null} This component doesn't render anything
- */
 export function ProjectSEO({
   projectName,
   description,
@@ -252,14 +206,6 @@ export function ProjectSEO({
   );
 }
 
-/**
- * SEO Head component for skill pages
- * @param {object} props - Skill SEO properties
- * @param {string} props.skillName - Name of the skill
- * @param {string} props.description - Skill description
- * @param {string[]} props.relatedSkills - Related skills
- * @returns {null} This component doesn't render anything
- */
 export function SkillSEO({
   skillName,
   description,

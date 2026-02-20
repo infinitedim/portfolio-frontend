@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { skillsCommand, skillsStatCommand } from "../skills-commands";
 
-// Mock RoadmapService - only for this test file
 const mockGetUserProgress = vi.fn();
 const mockGetCategoryProgress = vi.fn();
 const mockUpdateSkillProgress = vi.fn();
@@ -11,15 +10,11 @@ const mockRefreshData = vi.fn();
 
 let roadmapServiceInstance: any = null;
 
-// Mock RoadmapService - only for this test file
 vi.mock("@/lib/services/roadmap-service", () => ({
   RoadmapService: {
     getInstance: () => roadmapServiceInstance,
   },
 }));
-
-// Don't mock utils - use real generateId to avoid interfering with utils.test.ts
-// The generateId function doesn't need to be mocked for these tests
 
 const mockUserProgress = {
   username: "testuser",

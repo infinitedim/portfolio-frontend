@@ -15,14 +15,6 @@ interface FontManagerProps {
   onClose?: () => void;
 }
 
-/**
- * Manages custom and system fonts for the terminal.
- * Allows users to upload, preview, apply, and delete fonts.
- * @param {FontManagerProps} props - The properties for the FontManager component.
- * @param {CustomFont[]} props.fonts - The list of available fonts.
- * @param {() => void} props.onUpdate - Callback function to be called when font data is updated.
- * @returns {JSX.Element} - The font management interface.
- */
 export function FontManager({
   fonts,
   onUpdate,
@@ -56,7 +48,7 @@ export function FontManager({
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  // List of popular Google Fonts for coding/monospace
+  
   const googleFonts = [
     "Fira Code",
     "JetBrains Mono",
@@ -81,8 +73,8 @@ export function FontManager({
     "Press Start 2P",
   ];
 
-  // Fonts that support ligatures (must be in googleFonts list above)
-  // These fonts have programming ligatures support available via Google Fonts
+  
+  
   const fontsWithLigatures = [
     "Fira Code",
     "JetBrains Mono",
@@ -93,7 +85,7 @@ export function FontManager({
   const generateRandomFont = async () => {
     setIsGeneratingRandom(true);
     try {
-      // Filter fonts based on ligatures checkbox
+      
       const availableFonts = randomFontLigatures
         ? googleFonts.filter((font) => fontsWithLigatures.includes(font))
         : googleFonts;
@@ -104,7 +96,7 @@ export function FontManager({
         return;
       }
 
-      // Debug: log available fonts
+      
       if (randomFontLigatures) {
         console.log("Available fonts with ligatures:", availableFonts);
       }
@@ -117,7 +109,7 @@ export function FontManager({
       console.log("Picked random font:", randomFontName, "from", availableFonts.length, "available fonts");
       console.log("All available fonts with ligatures:", availableFonts);
 
-      // Check if font already exists in saved fonts
+      
       const existingFonts = customizationService.getCustomFonts();
       const existingFont = existingFonts.find(
         (f) => f.name === randomFontName && f.source === "google"
@@ -126,11 +118,11 @@ export function FontManager({
       let savedFont: CustomFont;
 
       if (existingFont) {
-        // Use existing font
+        
         console.log("Using existing font:", existingFont.name);
         savedFont = existingFont;
       } else {
-        // Create custom font object
+        
         const newFont: Omit<CustomFont, "id" | "createdAt"> = {
           name: randomFontName,
           family: `"${randomFontName}", monospace`,
@@ -144,11 +136,11 @@ export function FontManager({
         savedFont = customizationService.saveCustomFontFromGoogle(newFont);
       }
       
-      // Wait a bit for font to load
+      
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       onUpdate();
-      // Only set selected font for preview, don't apply immediately
+      
       setSelectedFont(savedFont);
     } catch (error) {
       console.error("Failed to generate random font:", error);
@@ -306,7 +298,7 @@ export function FontManager({
               <option value="custom">Custom</option>
             </select>
 
-            {/* Random Font Generator */}
+            
             <div
               className="p-3 rounded border"
               style={{

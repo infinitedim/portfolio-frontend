@@ -6,34 +6,6 @@ import {fonts, defaultFont} from "@/lib/fonts/font-config";
 
 const STORAGE_KEY = "terminal-font" as const;
 
-/**
- * A custom React hook for managing the terminal's font.
- *
- * Optimized for performance with:
- * - Lazy initialization from localStorage
- * - Memoized available fonts array
- * - Stable callback references
- * - Batched DOM updates
- * - SSR-safe operations
- *
- * @returns {object} An object containing the current font state and management functions.
- * @property {FontName} font - The name of the currently active font.
- * @property {import("@/types/theme").FontConfig} fontConfig - The configuration object for the active font.
- * @property {(newFont: FontName) => void} changeFont - A function to set a new font.
- * @property {FontName[]} availableFonts - An array of all available font names.
- * @property {boolean} mounted - Whether the component is mounted (SSR safety).
- *
- * @example
- * ```tsx
- * const { font, fontConfig, changeFont, availableFonts } = useFont();
- *
- * // Change font
- * changeFont('fira-code');
- *
- * // Get current font family
- * console.log(fontConfig.family);
- * ```
- */
 export function useFont() {
   const [font, setFont] = useState<FontName>(() => {
     if (typeof window === "undefined") return defaultFont;

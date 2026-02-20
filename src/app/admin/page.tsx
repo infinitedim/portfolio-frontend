@@ -8,35 +8,21 @@ import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/lib/auth/auth-context";
 
-/**
- * Admin dashboard page component
- * @returns Admin dashboard with user information and system status
- * @remarks
- * Protected route displaying:
- * - User profile information (ID, email, role)
- * - System status and session details
- * - Quick action buttons for common tasks
- * - Navigation to home and logout functionality
- * - Terminal-themed UI with theme configuration support
- */
 export default function AdminDashboardPage(): JSX.Element {
   const { themeConfig } = useTheme();
   const { user, logout } = useAuth();
   const router = useRouter();
   const [isLogoutHovered, setIsLogoutHovered] = useState(false);
 
-  /**
-   * Handles user logout
-   * Clears authentication state and redirects to login page
-   */
+  
+
   const handleLogout = async () => {
     await logout();
     router.push("/admin/login");
   };
 
-  /**
-   * Navigates back to the home page
-   */
+  
+
   const handleBackToHome = () => {
     router.push("/");
   };

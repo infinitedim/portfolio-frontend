@@ -5,18 +5,6 @@ import { JSX, useEffect, useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 
-/**
- * Props for the AnimatedButton component
- * @interface AnimatedButtonProps
- * @property {React.ReactNode} children - Button content
- * @property {() => void} [onClick] - Click handler function
- * @property {"primary" | "secondary" | "success" | "error" | "warning"} [variant] - Style variant
- * @property {"sm" | "md" | "lg"} [size] - Button size
- * @property {boolean} [disabled] - Whether button is disabled
- * @property {boolean} [loading] - Whether button is in loading state
- * @property {string} [className] - Additional CSS classes
- * @property {string} [ariaLabel] - Accessibility label
- */
 interface AnimatedButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
@@ -28,30 +16,6 @@ interface AnimatedButtonProps {
   ariaLabel?: string;
 }
 
-/**
- * Animated button component with variant styles and theme-aware colors
- * Provides visual feedback with hover effects, loading states, and accessibility support
- * @param {AnimatedButtonProps} props - Component props
- * @param {React.ReactNode} props.children - Button content
- * @param {() => void} [props.onClick] - Click handler
- * @param {"primary" | "secondary" | "success" | "error" | "warning"} [props.variant="primary"] - Style variant
- * @param {"sm" | "md" | "lg"} [props.size="md"] - Button size
- * @param {boolean} [props.disabled=false] - Disabled state
- * @param {boolean} [props.loading=false] - Loading state
- * @param {string} [props.className] - Additional classes
- * @param {string} [props.ariaLabel] - Accessibility label
- * @returns {JSX.Element} The rendered animated button
- * @example
- * ```tsx
- * <AnimatedButton
- *   variant="primary"
- *   size="md"
- *   onClick={handleClick}
- * >
- *   Click me
- * </AnimatedButton>
- * ```
- */
 export function AnimatedButton({
   children,
   onClick,

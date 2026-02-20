@@ -1,12 +1,10 @@
-/**
- * Tour step configuration for the guided onboarding experience
- */
+
 
 export interface TourStep {
   id: string;
   title: string;
   content: string;
-  target?: string; // CSS selector for element to highlight
+  target?: string; 
   position: "top" | "bottom" | "left" | "right" | "center";
   action?: "type" | "click" | "highlight";
   demoCommand?: string;

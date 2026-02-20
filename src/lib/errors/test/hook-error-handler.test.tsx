@@ -1,6 +1,4 @@
-/**
- * Test Suite for Hook Error Handler
- */
+
 
 import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";

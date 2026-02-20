@@ -14,14 +14,6 @@ interface ThemeManagerProps {
   onApplyTheme?: (themeId: string) => void;
 }
 
-/**
- * Manages the themes for the terminal.
- * Allows users to view, select, create, edit, duplicate, and delete themes.
- * @param {ThemeManagerProps} props - The properties for the ThemeManager component.
- * @param {CustomTheme[]} props.themes - The list of available themes.
- * @param {() => void} props.onUpdate - Callback function to be called when theme data is updated.
- * @returns {JSX.Element} - The theme management interface.
- */
 export function ThemeManager({
   themes,
   onUpdate,
@@ -68,13 +60,13 @@ export function ThemeManager({
     console.log(`🎨 ThemeManager: Applying theme ${themeId}`);
 
     try {
-      // Check if it's a custom theme
+      
       const customTheme = customizationService.getCustomThemes().find(
         (t) => t.id === themeId,
       );
 
       if (customTheme) {
-        // Apply custom theme directly
+        
         const root = document.documentElement;
         const body = document.body;
 
@@ -83,7 +75,7 @@ export function ThemeManager({
           return;
         }
 
-        // Convert CustomTheme colors to ThemeConfig format
+        
         const themeConfig = {
           name: customTheme.name,
           colors: {
@@ -100,7 +92,7 @@ export function ThemeManager({
           },
         };
 
-        // Generate CSS variables
+        
         const hexToHsl = (hex: string): string => {
           if (!hex?.match(/^#[0-9A-Fa-f]{6}$/)) return "0 0% 0%";
           const r = parseInt(hex.slice(1, 3), 16) / 255;
@@ -157,19 +149,19 @@ export function ThemeManager({
           "--popover-foreground": hexToHsl(themeConfig.colors.text),
         };
 
-        // Apply CSS variables
+        
         Object.entries(cssVars).forEach(([property, value]) => {
           root.style.setProperty(property, value);
         });
 
-        // Update body class
+        
         const themeClasses = body.className
           .split(" ")
           .filter((cls) => !cls.startsWith("theme-"));
         themeClasses.push(`theme-custom-${customTheme.id}`);
         body.className = themeClasses.join(" ");
 
-        // Save to localStorage
+        
         if (typeof window !== "undefined" && window.localStorage) {
           window.localStorage.setItem("terminal-theme", themeId);
         }
@@ -180,7 +172,7 @@ export function ThemeManager({
           onApplyTheme(themeId);
         }
       } else {
-        // Try as built-in theme
+        
         const success = changeTheme(themeId as ThemeName);
 
         if (success) {

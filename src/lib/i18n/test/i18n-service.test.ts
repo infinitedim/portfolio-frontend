@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { I18nService, i18n, t, tWithFallback } from "../i18n-service";
 
-// Mock locales
 vi.mock("../locales", () => ({
   getLocaleConfig: vi.fn((code: string) => ({
     code,
@@ -18,7 +17,6 @@ vi.mock("../locales", () => ({
   DEFAULT_LOCALE: "en_US",
 }));
 
-// Mock localStorage
 const localStorageMock = {
   getItem: vi.fn(() => null),
   setItem: vi.fn(),
@@ -39,7 +37,7 @@ describe("I18nService", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
     localStorageMock.getItem.mockReturnValue(null);
-    // Reset singleton instance
+    
     (I18nService as any).instance = undefined;
   });
 

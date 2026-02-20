@@ -3,16 +3,6 @@
 import { memo, useMemo, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
-/**
- * ASCII banner component for the terminal portfolio
- * Displays a stylized terminal portfolio logo in ASCII art with responsive sizing
- * Features both desktop and mobile-optimized versions
- * @returns {JSX.Element} The ASCII banner component
- * @example
- * ```tsx
- * <ASCIIBanner />
- * ```
- */
 export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
   const { themeConfig, theme } = useTheme();
 

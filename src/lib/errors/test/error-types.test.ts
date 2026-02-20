@@ -1,6 +1,4 @@
-/**
- * Test Suite for Enhanced Error Types
- */
+
 
 import { describe, it, expect } from "vitest";
 import {

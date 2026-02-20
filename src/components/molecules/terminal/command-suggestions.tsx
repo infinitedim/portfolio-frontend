@@ -7,22 +7,6 @@ import {
   type SuggestionItem,
 } from "@/hooks/use-command-suggestions";
 
-/**
- * Props for the CommandSuggestions component
- * @interface CommandSuggestionsProps
- * @property {string} input - Current input value for matching suggestions
- * @property {string[]} availableCommands - List of available commands
- * @property {boolean} visible - Whether suggestions should be visible
- * @property {(suggestion: string) => void} onSelect - Callback when suggestion is selected
- * @property {(command: string) => void} [onCommandUsed] - Callback when command is used
- * @property {number} [maxSuggestions] - Maximum number of suggestions to show
- * @property {boolean} [showOnEmpty] - Show suggestions when input is empty
- * @property {boolean} [showDescriptions] - Show command descriptions
- * @property {boolean} [enableLearning] - Enable learning from user behavior
- * @property {boolean} [enableCache] - Enable suggestion caching
- * @property {number} [minQueryLength] - Minimum query length to show suggestions
- * @property {number} [debounceMs] - Debounce delay in milliseconds
- */
 interface CommandSuggestionsProps {
   input: string;
   availableCommands: string[];
@@ -38,40 +22,6 @@ interface CommandSuggestionsProps {
   debounceMs?: number;
 }
 
-/**
- * Advanced command suggestions component with fuzzy matching and learning
- * Provides intelligent command suggestions with caching, personalization, and keyboard navigation
- *
- * Features:
- * - Advanced fuzzy matching with contextual scoring
- * - Real-time suggestions with optimized debouncing
- * - User behavior learning and personalization
- * - Intelligent caching for performance
- * - Keyboard navigation with smooth scrolling
- * - Visual feedback and loading states
- * - Accessibility support
- *
- * @param {CommandSuggestionsProps} props - Component props
- * @param {string} props.input - Current input for matching
- * @param {string[]} props.availableCommands - Available commands
- * @param {boolean} props.visible - Visibility state
- * @param {(suggestion: string) => void} props.onSelect - Selection callback
- * @param {number} [props.maxSuggestions=8] - Max suggestions to display
- * @param {boolean} [props.showOnEmpty=true] - Show when input is empty
- * @param {boolean} [props.enableCache=true] - Enable caching
- * @param {boolean} [props.enableLearning=true] - Enable learning
- * @returns {JSX.Element | null} The suggestions component or null
- * @example
- * ```tsx
- * <CommandSuggestions
- *   input={input}
- *   availableCommands={commands}
- *   visible={true}
- *   onSelect={handleSelect}
- *   maxSuggestions={5}
- * />
- * ```
- */
 export function CommandSuggestions({
   input,
   availableCommands,

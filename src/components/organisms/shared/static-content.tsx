@@ -1,10 +1,5 @@
 import { JSX } from "react";
 
-/**
- * Static content that can be fully server-rendered for better SSR performance
- * This includes ASCII banner, SEO content, and other static elements
- * @returns {JSX.Element} The StaticContent component
- */
 export function StaticContent(): JSX.Element {
   return (
     <div className="static-content">

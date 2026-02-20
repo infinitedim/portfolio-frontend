@@ -16,33 +16,33 @@ interface TourState {
 }
 
 interface UseTourReturn {
-  /** Whether the tour is currently active */
+  
   isActive: boolean;
-  /** Current step being displayed */
+  
   currentStep: TourStep | null;
-  /** Current step index (0-based) */
+  
   currentStepIndex: number;
-  /** Total number of steps */
+  
   totalSteps: number;
-  /** Progress percentage (0-100) */
+  
   progress: number;
-  /** Whether user has completed the tour before */
+  
   hasCompletedTour: boolean;
-  /** Whether this is user's first visit */
+  
   isFirstVisit: boolean;
-  /** Start the tour */
+  
   startTour: () => void;
-  /** Go to next step */
+  
   nextStep: () => void;
-  /** Go to previous step */
+  
   prevStep: () => void;
-  /** Skip/end the tour */
+  
   skipTour: () => void;
-  /** Complete the tour */
+  
   completeTour: () => void;
-  /** Go to a specific step */
+  
   goToStep: (index: number) => void;
-  /** Reset tour state (for testing or replay) */
+  
   resetTour: () => void;
 }
 
@@ -52,10 +52,6 @@ interface StoredTourData {
   completedAt?: string;
 }
 
-/**
- * Hook to manage the guided tour state
- * Handles persistence, step navigation, and first-visit detection
- */
 export function useTour(): UseTourReturn {
   const [state, setState] = useState<TourState>({
     isActive: false,
@@ -64,7 +60,7 @@ export function useTour(): UseTourReturn {
     isFirstVisit: true,
   });
 
-  // Check localStorage on mount
+  
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -72,7 +68,7 @@ export function useTour(): UseTourReturn {
       const stored = localStorage.getItem(TOUR_STORAGE_KEY);
       if (stored) {
         const data: StoredTourData = JSON.parse(stored);
-        // Check if tour version matches (reset if new version)
+        
         if (data.version === TOUR_VERSION && data.completed) {
           setState((prev) => ({
             ...prev,
@@ -80,7 +76,7 @@ export function useTour(): UseTourReturn {
             isFirstVisit: false,
           }));
         } else {
-          // New version, reset completion status
+          
           setState((prev) => ({
             ...prev,
             hasCompletedTour: false,
@@ -120,7 +116,7 @@ export function useTour(): UseTourReturn {
     setState((prev) => {
       const nextIndex = prev.currentStepIndex + 1;
       if (nextIndex >= TOUR_STEPS.length) {
-        // Tour complete
+        
         saveTourState(true);
         return {
           ...prev,

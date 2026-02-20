@@ -16,20 +16,6 @@ type DashboardView =
   | "blog"
   | "settings";
 
-/**
- * Full-featured admin dashboard page component
- * @returns Complete admin dashboard with multiple view modes
- * @remarks
- * Comprehensive admin interface featuring:
- * - Overview dashboard with system metrics and quick actions
- * - Performance monitoring view
- * - Logging and error monitoring
- * - Blog post editor
- * - System settings configuration
- * - Protected route requiring admin authentication
- * - Sidebar navigation for view switching
- * - Terminal-themed UI throughout
- */
 export default function AdminDashboard(): JSX.Element {
   const router = useRouter();
   const { themeConfig } = useTheme();
@@ -47,7 +33,7 @@ export default function AdminDashboard(): JSX.Element {
         }
         setIsAuthenticated(true);
       } catch (error) {
-        // Handle localStorage errors gracefully
+        
         console.error("Failed to access localStorage:", error);
         router.push("/admin/login");
       }
@@ -55,10 +41,8 @@ export default function AdminDashboard(): JSX.Element {
     setIsLoading(false);
   }, [router]);
 
-  /**
-   * Handles user logout
-   * Clears authentication token and redirects to login page
-   */
+  
+
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
     router.push("/admin/login");
@@ -79,10 +63,8 @@ export default function AdminDashboard(): JSX.Element {
     return <></>;
   }
 
-  /**
-   * Renders the appropriate view based on current selection
-   * @returns JSX for the selected dashboard view
-   */
+  
+
   const renderCurrentView = () => {
     switch (currentView) {
       case "overview":
@@ -189,7 +171,6 @@ export default function AdminDashboard(): JSX.Element {
 
       case "blog":
         return <BlogEditor themeConfig={themeConfig} />;
-
 
       case "settings":
         return (

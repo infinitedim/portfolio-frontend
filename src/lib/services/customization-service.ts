@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 
 import type {
   CustomFont,
@@ -270,7 +270,7 @@ export class CustomizationService {
       createdAt: new Date(),
     };
 
-    // Load Google Font CSS
+    
     if (fontData.url && typeof document !== "undefined") {
       const existingLink = document.querySelector(
         `link[href="${fontData.url}"]`,

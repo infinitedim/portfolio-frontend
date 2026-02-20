@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ThemeEditor } from "../theme-editor";
 import type { CustomTheme } from "@/types/customization";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -52,7 +51,7 @@ describe("ThemeEditor", () => {
     vi.clearAllMocks();
     vi.useFakeTimers();
     
-    // Mock document.documentElement.style
+    
     if (typeof document !== "undefined") {
       const mockStyle = {
         setProperty: vi.fn(),
@@ -274,7 +273,7 @@ describe("ThemeEditor", () => {
       const generateButton = screen.getByText("Generate Random Theme");
       fireEvent.click(generateButton);
 
-      // Theme name should change
+      
       const nameInput = screen.getByPlaceholderText("Enter theme name");
       expect((nameInput as HTMLInputElement).value).not.toBe("Test Theme");
     });
@@ -318,7 +317,7 @@ describe("ThemeEditor", () => {
       const option = screen.getByText(/50-25-10-5-5-3-2/);
       fireEvent.click(option);
 
-      // Dropdown should close
+      
       expect(screen.queryByText(/50-25-10-5-5-3-2 \(Even\)/)).not.toBeInTheDocument();
     });
   });
@@ -404,7 +403,7 @@ describe("ThemeEditor", () => {
 
       fireEvent.keyDown(document, { key: "Escape" });
 
-      // Dropdown should close
+      
       expect(screen.queryByText(/50-25-10-5-5-3-2/)).not.toBeInTheDocument();
     });
   });

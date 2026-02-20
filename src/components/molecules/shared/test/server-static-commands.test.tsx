@@ -82,9 +82,9 @@ describe("ServerStaticCommands", () => {
         expect(true).toBe(true);
         return;
       }
-      // Mock window as undefined (server side)
+      
       const originalWindow = global.window;
-      // @ts-expect-error - Deleting window for server-side test
+      
       delete global.window;
 
       const result = usePrerenderedCommand("help");
@@ -103,7 +103,7 @@ describe("ServerStaticCommands", () => {
         return;
       }
 
-      // Create mock element
+      
       const mockElement = document.createElement("div");
       mockElement.id = "help-output";
       mockElement.innerHTML = "<div>Help content</div>";

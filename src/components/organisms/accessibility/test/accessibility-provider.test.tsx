@@ -6,7 +6,6 @@ import {
   useAccessibility,
 } from "../accessibility-provider";
 
-// Mock localStorage
 const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
@@ -21,7 +20,6 @@ if (typeof window !== "undefined") {
   });
 }
 
-// Mock matchMedia
 const mockMatchMedia = (matches: boolean) => {
   return vi.fn(() => ({
     matches,
@@ -277,7 +275,7 @@ describe("AccessibilityProvider", () => {
 
       expect(screen.getByTestId("high-contrast")).toHaveTextContent("false");
 
-      // Simulate media query change
+      
       if (changeHandler) {
         act(() => {
           (changeHandler as (e: MediaQueryListEvent) => void)({ matches: true } as MediaQueryListEvent);
@@ -592,7 +590,7 @@ describe("AccessibilityProvider", () => {
         return <div>Test</div>;
       };
 
-      // Suppress console.error for this test
+      
       const consoleError = console.error;
       console.error = vi.fn();
 

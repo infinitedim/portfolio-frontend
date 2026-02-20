@@ -4,7 +4,6 @@ import React from "react";
 import { ErrorBoundary } from "@/components/organisms/error/error-boundary-root";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Component that throws an error
 const ThrowError = ({ shouldThrow }: { shouldThrow: boolean }) => {
   if (shouldThrow) {
     throw new Error("Test error");
@@ -19,7 +18,7 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
     }
     ensureDocumentBody();
     vi.clearAllMocks();
-    // Suppress console.error for error boundary tests
+    
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -109,14 +108,14 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
     const tryAgainButton = screen.getByText("Try Again");
     fireEvent.click(tryAgainButton);
 
-    // Re-render with no error
+    
     rerender(
       <ErrorBoundary>
         <ThrowError shouldThrow={false} />
       </ErrorBoundary>
     );
 
-    // Should render children again
+    
     expect(screen.queryByText("Something went wrong")).not.toBeInTheDocument();
   });
 

@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { useTheme } from "@/hooks/use-theme";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "dark",
   colors: {
@@ -26,7 +25,6 @@ vi.mock("@/hooks/use-theme", () => ({
   })),
 }));
 
-// Mock accessibility hook
 vi.mock(
   "@/components/organisms/accessibility/accessibility-provider",
   () => ({
@@ -36,7 +34,6 @@ vi.mock(
   }),
 );
 
-// Import after mocks
 import { AnimatedButton } from "../button";
 
 describe("AnimatedButton", () => {
@@ -269,7 +266,7 @@ describe("AnimatedButton", () => {
 
       fireEvent.mouseEnter(button!);
 
-      // Button should have hover background color
+      
       expect(button).toHaveStyle({
         backgroundColor: expect.stringContaining(mockThemeConfig.colors.accent),
       });
@@ -287,7 +284,7 @@ describe("AnimatedButton", () => {
       fireEvent.mouseEnter(button!);
       fireEvent.mouseLeave(button!);
 
-      // Should return to original background
+      
       expect(button).toHaveStyle({
         backgroundColor: expect.stringContaining(mockThemeConfig.colors.accent),
       });
@@ -307,7 +304,7 @@ describe("AnimatedButton", () => {
 
       fireEvent.mouseEnter(button!);
 
-      // Background should not change when disabled
+      
       expect(button?.style.backgroundColor).toBe(originalBg);
     });
   });
@@ -390,7 +387,7 @@ describe("AnimatedButton", () => {
 
       const { rerender } = render(<AnimatedButton>Theme</AnimatedButton>);
 
-      // Mock theme change
+      
       vi.mocked(useTheme).mockReturnValueOnce({
         themeConfig: mockThemeConfig,
         theme: "default",
@@ -398,7 +395,7 @@ describe("AnimatedButton", () => {
 
       rerender(<AnimatedButton>Theme</AnimatedButton>);
 
-      // Component should re-render with new theme
+      
       expect(screen.getByText("Theme")).toBeInTheDocument();
     });
   });

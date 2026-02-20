@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ParameterInput } from "../parameter-input";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -143,7 +142,7 @@ describe("ParameterInput", () => {
         />,
       );
 
-      // Expand parameters first to see descriptions
+      
       const idButton = screen.getByText("id").closest("button");
       const emailButton = screen.getByText("email").closest("button");
       
@@ -211,11 +210,11 @@ describe("ParameterInput", () => {
 
       const toggleButton = screen.getByText("id").closest("button");
       
-      // Expand
+      
       fireEvent.click(toggleButton!);
       expect(screen.getByPlaceholderText("Enter id...")).toBeInTheDocument();
 
-      // Collapse
+      
       fireEvent.click(toggleButton!);
       expect(screen.queryByPlaceholderText("Enter id...")).not.toBeInTheDocument();
     });

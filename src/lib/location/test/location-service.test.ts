@@ -1,8 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck - Allow compatibility with both vitest and bun test
+
+
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
-// Import the actual module, not the mocked version
 const { LocationService } = await import("@/lib/location/location-service");
 
 const sampleIpApiResponse = {
@@ -29,7 +28,7 @@ const sampleIpApiFallback = {
 describe("LocationService", () => {
   const originalFetch = globalThis.fetch;
 
-  // Check if we're working with a real service or a mock
+  
   const isRealService = () => {
     const svc = LocationService.getInstance();
     return (
@@ -39,7 +38,7 @@ describe("LocationService", () => {
   };
 
   beforeEach(() => {
-    // Only clear cache if we have the real service
+    
     const svc = LocationService.getInstance();
     if (typeof svc.clearCache === "function") {
       svc.clearCache();
@@ -47,12 +46,12 @@ describe("LocationService", () => {
   });
 
   afterEach(() => {
-    // Restore original fetch
+    
     globalThis.fetch = originalFetch;
   });
 
   it("fetches location from primary service (ipapi.co)", async () => {
-    // Skip if mocked
+    
     if (!isRealService()) {
       expect(true).toBe(true);
       return;
@@ -76,7 +75,7 @@ describe("LocationService", () => {
   });
 
   it("falls back to ip-api.com when primary fails", async () => {
-    // Skip if mocked
+    
     if (!isRealService()) {
       expect(true).toBe(true);
       return;
@@ -100,7 +99,7 @@ describe("LocationService", () => {
   });
 
   it("returns null when both services fail", async () => {
-    // Skip if mocked
+    
     if (!isRealService()) {
       expect(true).toBe(true);
       return;
@@ -116,7 +115,7 @@ describe("LocationService", () => {
   });
 
   it("getTimeInfo and formatOffset behave as expected", () => {
-    // Skip if mocked
+    
     if (!isRealService()) {
       expect(true).toBe(true);
       return;
@@ -131,7 +130,7 @@ describe("LocationService", () => {
   });
 
   it("getWeatherEmoji returns a string and changes by hour", () => {
-    // This test works even with mocked service
+    
     const svc = LocationService.getInstance();
     if (typeof svc.getWeatherEmoji !== "function") {
       expect(true).toBe(true);

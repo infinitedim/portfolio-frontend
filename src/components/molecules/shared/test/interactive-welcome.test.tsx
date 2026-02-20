@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { InteractiveWelcome } from "../interactive-welcome";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {

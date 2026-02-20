@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ThemeManager } from "../theme-manager";
 import type { CustomTheme } from "@/types/customization";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -29,7 +28,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock CustomizationService
 const mockGetCustomThemes = vi.fn(() => []);
 const mockDeleteCustomTheme = vi.fn(() => true);
 const mockDuplicateTheme = vi.fn(() => null) as any;
@@ -44,7 +42,6 @@ vi.mock("@/lib/services/customization-service", () => ({
   },
 }));
 
-// Mock ThemeEditor
 vi.mock("../theme-editor", () => ({
   ThemeEditor: ({ onSave, onCancel }: { onSave: () => void; onCancel: () => void }) => (
     <div data-testid="theme-editor">
@@ -54,7 +51,6 @@ vi.mock("../theme-editor", () => ({
   ),
 }));
 
-// Mock window.confirm and localStorage
 global.confirm = vi.fn(() => true);
 if (typeof window !== "undefined") {
   Object.defineProperty(window, "localStorage", {
@@ -67,7 +63,6 @@ if (typeof window !== "undefined") {
   });
 }
 
-// Mock document.documentElement and body
 if (typeof document !== "undefined") {
   const mockStyle = {
     setProperty: vi.fn(),
@@ -299,7 +294,7 @@ describe("ThemeManager", () => {
       const sortSelect = screen.getByDisplayValue("Sort by Name");
       fireEvent.change(sortSelect, { target: { value: "name" } });
 
-      // Themes should be sorted alphabetically
+      
       const themeCards = screen.getAllByText(/Theme/);
       expect(themeCards.length).toBeGreaterThan(0);
     });

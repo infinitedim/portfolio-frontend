@@ -13,7 +13,6 @@ import {
   initBundleOptimizations,
 } from "../bundler-optimization";
 
-// Mock DOM methods
 const mockDocument = {
   createElement: vi.fn(),
   querySelectorAll: vi.fn(),
@@ -43,7 +42,6 @@ const mockConsole = {
   warn: vi.fn(),
 };
 
-// Mock globals
 Object.defineProperty(global, "document", {
   value: mockDocument,
   writable: true,
@@ -69,14 +67,13 @@ Object.defineProperty(global, "performance", {
   writable: true,
 });
 
-// Store original Object.keys
 const originalObjectKeys = Object.keys;
 
 describe("bundleOptimization", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Reset mock implementations
+    
     mockDocument.createElement.mockReturnValue({
       rel: "",
       href: "",
@@ -88,13 +85,13 @@ describe("bundleOptimization", () => {
 
     mockDocument.querySelectorAll.mockReturnValue([]);
 
-    // Restore original Object.keys before each test
+    
     Object.keys = originalObjectKeys;
   });
 
   afterEach(() => {
     vi.clearAllMocks();
-    // Restore original Object.keys after each test
+    
     Object.keys = originalObjectKeys;
   });
 
@@ -182,7 +179,7 @@ describe("bundleOptimization", () => {
     });
 
     it("should set loading attribute to lazy for images", () => {
-      // Mock HTMLImageElement
+      
       global.HTMLImageElement = class MockHTMLImageElement {
         loading = "";
       } as any;
@@ -263,15 +260,15 @@ describe("bundleOptimization", () => {
     });
 
     it("should not run in non-development mode (test env)", () => {
-      // In test environment (NODE_ENV=test), analyzeBundleSize should exit early
+      
       analyzeBundleSize();
 
-      // Since NODE_ENV is "test", performance.getEntriesByType should NOT be called
+      
       expect(mockWindow.performance.getEntriesByType).not.toHaveBeenCalled();
     });
 
     it("should be callable without throwing", () => {
-      // In test environment, just verify it doesn't throw
+      
       expect(() => analyzeBundleSize()).not.toThrow();
     });
 
@@ -383,7 +380,7 @@ describe("optimizeThirdParty function", () => {
   });
 
   it("should set defer attribute on scripts", () => {
-    // Mock HTMLScriptElement
+    
     global.HTMLScriptElement = class MockHTMLScriptElement {
       defer = false;
     } as any;
@@ -489,12 +486,12 @@ describe("error handling and edge cases", () => {
     };
 
     (global as any).localStorage = mockLocalStorage;
-    // Mock Object.keys only for this specific test
+    
     Object.keys = vi.fn().mockReturnValue(["temp-test"]);
 
     expect(() => optimizeMemoryUsage()).not.toThrow();
 
-    // Restore original values
+    
     global.localStorage = originalLocalStorage;
     Object.keys = originalObjectKeys;
   });
@@ -506,7 +503,7 @@ describe("integration tests", () => {
 
     initBundleOptimizations();
 
-    // Should call multiple optimization functions
+    
     expect(mockDocument.createElement).toHaveBeenCalled();
     expect(mockDocument.head.appendChild).toHaveBeenCalled();
     expect(mockDocument.querySelectorAll).toHaveBeenCalled();

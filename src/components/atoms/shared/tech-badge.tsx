@@ -2,16 +2,6 @@
 
 import { JSX, useState } from "react";
 
-/**
- * Props for the TechBadge component
- * @interface TechBadgeProps
- * @property {string} technology - Name of the technology
- * @property {number} [count] - Optional count to display
- * @property {(tech: string) => void} [onClick] - Click handler callback
- * @property {boolean} [selected] - Whether badge is selected
- * @property {boolean} [interactive] - Whether badge is interactive
- * @property {"sm" | "md" | "lg"} [size] - Badge size
- */
 interface TechBadgeProps {
   technology: string;
   count?: number;
@@ -269,17 +259,6 @@ const SIZE_CLASSES = {
   lg: "px-4 py-2 text-base",
 };
 
-/**
- * TechBadge component
- * @param {TechBadgeProps} props - The props for the TechBadge component
- * @param {string} props.technology - The technology to display
- * @param {number} props.count - The count of the technology
- * @param {Function} props.onClick - The function to call when the TechBadge is clicked
- * @param {boolean} props.selected - Whether the TechBadge is selected
- * @param {boolean} props.interactive - Whether the TechBadge is interactive
- * @param {"sm" | "md" | "lg"} props.size - The size of the TechBadge
- * @returns {JSX.Element} The TechBadge component
- */
 export function TechBadge({
   technology,
   count,

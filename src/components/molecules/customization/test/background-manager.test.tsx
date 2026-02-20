@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { BackgroundManager } from "../background-manager";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -23,7 +22,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock CustomizationService
 const mockGetBackgroundSettings = vi.fn(() => ({
   type: "letter-glitch" as const,
   letterGlitch: {
@@ -47,7 +45,6 @@ vi.mock("@/lib/services/customization-service", () => ({
   },
 }));
 
-// Mock window.dispatchEvent
 const mockDispatchEvent = vi.fn();
 if (typeof window !== "undefined") {
   Object.defineProperty(window, "dispatchEvent", {
@@ -143,7 +140,7 @@ describe("BackgroundManager", () => {
       const noneButton = screen.getByText("None");
       fireEvent.click(noneButton);
 
-      // Letter glitch settings should be hidden
+      
       expect(screen.queryByText("Glitch Colors")).not.toBeInTheDocument();
     });
 
@@ -154,11 +151,11 @@ describe("BackgroundManager", () => {
       }
       render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
 
-      // First switch to none
+      
       const noneButton = screen.getByText("None");
       fireEvent.click(noneButton);
 
-      // Then switch back to letter-glitch
+      
       const glitchButton = screen.getByText("Letter Glitch");
       fireEvent.click(glitchButton);
 
@@ -180,7 +177,7 @@ describe("BackgroundManager", () => {
 
       fireEvent.click(addButton);
 
-      // Should have one more color input
+      
       const newColorInputs = screen.getAllByDisplayValue(/#[0-9a-fA-F]{6}/);
       expect(newColorInputs.length).toBeGreaterThan(initialCount);
     });
@@ -198,7 +195,7 @@ describe("BackgroundManager", () => {
       if (removeButtons.length > 0) {
         fireEvent.click(removeButtons[0]);
 
-        // Should have one less remove button
+        
         const newRemoveButtons = screen.queryAllByText("Remove");
         expect(newRemoveButtons.length).toBeLessThan(initialCount);
       }

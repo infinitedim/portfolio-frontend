@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock Next.js navigation
 const mockPush = vi.fn();
 const mockRouter = {
   push: mockPush,
@@ -17,7 +16,6 @@ vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
 }));
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "dark",
   colors: {
@@ -38,7 +36,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock components
 vi.mock("@/components/molecules/admin/terminal-header", () => ({
   TerminalHeader: () => <div data-testid="terminal-header">Terminal Header</div>,
 }));
@@ -104,11 +101,10 @@ vi.mock("@/components/molecules/admin/blog-editor", () => ({
   ),
 }));
 
-// Import after mocks
 import AdminDashboard from "./page";
 
 describe("AdminDashboard", () => {
-  // Mock localStorage - defined at describe level so it's accessible in all tests
+  
   const localStorageMock = {
     getItem: vi.fn(),
     setItem: vi.fn(),
@@ -124,13 +120,13 @@ describe("AdminDashboard", () => {
     vi.clearAllMocks();
     mockPush.mockClear();
 
-    // Reset mock functions
+    
     localStorageMock.getItem.mockClear();
     localStorageMock.setItem.mockClear();
     localStorageMock.removeItem.mockClear();
     localStorageMock.clear.mockClear();
 
-    // Set up localStorage mock
+    
     if (typeof window !== "undefined") {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
@@ -213,8 +209,8 @@ describe("AdminDashboard", () => {
         expect(mockPush).toHaveBeenCalled();
       });
 
-      // Should redirect, so container might have content briefly before redirect
-      // Just verify redirect was called
+      
+      
       expect(mockPush).toHaveBeenCalled();
     });
   });
@@ -380,7 +376,7 @@ describe("AdminDashboard", () => {
         expect(screen.getByTestId("terminal-sidebar")).toBeInTheDocument();
       });
 
-      // Switch to performance first
+      
       const performanceButton = screen.getByTestId("sidebar-performance");
       fireEvent.click(performanceButton);
 
@@ -388,7 +384,7 @@ describe("AdminDashboard", () => {
         expect(screen.getByTestId("performance-monitor")).toBeInTheDocument();
       });
 
-      // Switch back to overview
+      
       const overviewButton = screen.getByTestId("sidebar-overview");
       fireEvent.click(overviewButton);
 
@@ -430,7 +426,7 @@ describe("AdminDashboard", () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Active Sessions/i)).toBeInTheDocument();
-        // Check for active sessions count more specifically
+        
         const sessionsText = screen.getByText(/Active Sessions/i);
         expect(sessionsText).toBeInTheDocument();
         expect(screen.getByText(/Current admin session/i)).toBeInTheDocument();
@@ -630,10 +626,10 @@ describe("AdminDashboard", () => {
         expect(screen.getByTestId("terminal-sidebar")).toBeInTheDocument();
       });
 
-      // Force an invalid view (this shouldn't happen in normal flow)
-      // But we test the default case
+      
+      
       const sidebar = screen.getByTestId("terminal-sidebar");
-      // The component should handle invalid views gracefully
+      
       expect(sidebar).toBeInTheDocument();
     });
 
@@ -643,7 +639,7 @@ describe("AdminDashboard", () => {
         return;
       }
 
-      // Mock localStorage to throw error
+      
       const originalGetItem = localStorageMock.getItem;
       localStorageMock.getItem.mockImplementationOnce(
         () => {
@@ -651,12 +647,12 @@ describe("AdminDashboard", () => {
         },
       );
 
-      // Component should handle the error gracefully without crashing
-      // It might redirect or show error, but should not throw
+      
+      
       const { container } = render(<AdminDashboard />);
       expect(container).toBeDefined();
       
-      // Restore original
+      
       localStorageMock.getItem = originalGetItem;
     });
   });

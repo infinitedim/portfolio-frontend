@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 
 import {
@@ -13,22 +13,6 @@ import { TabCompletion } from "@/components/molecules/terminal/tab-completion";
 import { CommandSuggestions } from "@/components/molecules/terminal/command-suggestions";
 import { useSecurity } from "@/hooks/use-security";
 
-/**
- * Props for the CommandInput component
- * @interface CommandInputProps
- * @property {string} value - Current input value
- * @property {(value: string) => void} onChange - Callback when input changes
- * @property {(command: string) => void} onSubmit - Callback when command is submitted
- * @property {(direction: "up" | "down") => string} onHistoryNavigate - Navigate command history
- * @property {boolean} isProcessing - Whether a command is currently processing
- * @property {string[]} [availableCommands] - List of available commands for autocompletion
- * @property {string} [prompt] - Custom prompt string (default: "$")
- * @property {React.RefObject<HTMLInputElement | null>} [inputRef] - Ref to the input element
- * @property {() => void} [onClearError] - Callback to clear errors
- * @property {boolean} [showOnEmpty] - Show suggestions when input is empty
- * @property {(input: string, limit?: number) => string[]} [getCommandSuggestions] - Get command suggestions
- * @property {() => string[]} [getFrequentCommands] - Get frequently used commands
- */
 interface CommandInputProps {
   value: string;
   onChange: (value: string) => void;
@@ -44,30 +28,6 @@ interface CommandInputProps {
   getFrequentCommands?: () => string[];
 }
 
-/**
- * Terminal command input component with tab completion and history navigation
- * Provides an interactive input field with autocompletion, security validation, and visual feedback
- * @param {CommandInputProps} props - Component props
- * @param {string} props.value - Current input value
- * @param {(value: string) => void} props.onChange - Input change callback
- * @param {(command: string) => void} props.onSubmit - Command submission callback
- * @param {(direction: "up" | "down") => string} props.onHistoryNavigate - History navigation callback
- * @param {boolean} props.isProcessing - Processing state
- * @param {string[]} [props.availableCommands] - Available commands for completion
- * @param {string} [props.prompt] - Prompt string (default: "$")
- * @returns {JSX.Element} The command input component
- * @example
- * ```tsx
- * <CommandInput
- *   value={input}
- *   onChange={setInput}
- *   onSubmit={handleSubmit}
- *   onHistoryNavigate={navigateHistory}
- *   isProcessing={false}
- *   availableCommands={['help', 'about', 'projects']}
- * />
- * ```
- */
 export function CommandInput({
   value,
   onChange,
@@ -304,7 +264,7 @@ export function CommandInput({
 
       case "i":
       case "I":
-        // Ctrl+I for search history (show suggestions)
+        
         if (e.ctrlKey) {
           e.preventDefault();
           setShowSuggestions(true);

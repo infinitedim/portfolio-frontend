@@ -7,7 +7,6 @@ import {
   ErrorRecoveryService,
 } from "../error-handler";
 
-// Mock useTheme
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -25,7 +24,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock localStorage
 const localStorageMock = {
   getItem: vi.fn(() => "[]"),
   setItem: vi.fn(),
@@ -40,7 +38,6 @@ if (typeof window !== "undefined") {
   });
 }
 
-// Component that throws an error
 const ThrowError = ({ shouldThrow }: { shouldThrow: boolean }) => {
   if (shouldThrow) {
     throw new Error("Test error");

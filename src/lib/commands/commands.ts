@@ -2,13 +2,6 @@ import type { Command, CommandOutput } from "@/types/terminal";
 import { ArgumentParser } from "@/lib/utils/arg-parser";
 import { generateId } from "@/lib/utils/utils";
 
-/**
- * Command for viewing or downloading resume
- * Supports viewing in terminal format or downloading as PDF
- * @example
- * User types: resume --view
- * User types: resume -d (downloads PDF)
- */
 export const resumeCommand: Command = {
   name: "resume",
   description: "View or download resume",
@@ -103,9 +96,6 @@ Examples:
   },
 };
 
-/**
- * Social command - Quick access to social media links
- */
 export const socialCommand: Command = {
   name: "social",
   description: "View social media links",
@@ -212,9 +202,6 @@ Examples:
   },
 };
 
-/**
- * Shortcuts command - Display keyboard shortcuts
- */
 export const shortcutsCommand: Command = {
   name: "shortcuts",
   description: "Show keyboard shortcuts",
@@ -268,9 +255,6 @@ export const shortcutsCommand: Command = {
   },
 };
 
-/**
- * Enhanced contact command with form functionality
- */
 export const enhancedContactCommand: Command = {
   name: "contact",
   description: "Contact information and form",
@@ -373,9 +357,6 @@ Let's build something amazing together! 🚀`,
   },
 };
 
-/**
- * Easter eggs command - Hidden fun commands
- */
 export const easterEggsCommand: Command = {
   name: "easter-eggs",
   description: "Discover hidden commands and features",

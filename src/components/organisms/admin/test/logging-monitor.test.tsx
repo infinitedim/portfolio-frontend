@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { LoggingMonitor } from "../logging-monitor";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -19,7 +18,6 @@ const mockThemeConfig = {
   },
 };
 
-// Mock URL.createObjectURL and URL.revokeObjectURL
 global.URL.createObjectURL = vi.fn(() => "blob:mock-url");
 global.URL.revokeObjectURL = vi.fn();
 
@@ -54,7 +52,7 @@ describe("LoggingMonitor", () => {
       render(<LoggingMonitor themeConfig={mockThemeConfig} />);
 
       await waitFor(() => {
-        // Should have some logs displayed
+        
         const logs = screen.getAllByText(/INFO|WARN|ERROR|DEBUG/i);
         expect(logs.length).toBeGreaterThan(0);
       });
@@ -82,7 +80,7 @@ describe("LoggingMonitor", () => {
 
       const initialLogs = screen.getAllByText(/INFO|WARN|ERROR|DEBUG/i).length;
 
-      // Advance timer to trigger new log generation
+      
       vi.advanceTimersByTime(1000);
 
       await waitFor(() => {
@@ -147,7 +145,7 @@ describe("LoggingMonitor", () => {
       fireEvent.change(searchInput, { target: { value: "authentication" } });
 
       await waitFor(() => {
-        // Should filter logs
+        
         expect(searchInput).toHaveValue("authentication");
       });
     });
@@ -162,7 +160,7 @@ describe("LoggingMonitor", () => {
       const errorButton = screen.getByText("ERROR");
       fireEvent.click(errorButton);
 
-      // Should toggle filter
+      
       expect(errorButton).toBeInTheDocument();
     });
 
@@ -176,7 +174,7 @@ describe("LoggingMonitor", () => {
       const systemButton = screen.getByText("system");
       fireEvent.click(systemButton);
 
-      // Should toggle filter
+      
       expect(systemButton).toBeInTheDocument();
     });
 
@@ -187,7 +185,7 @@ describe("LoggingMonitor", () => {
       }
       render(<LoggingMonitor themeConfig={mockThemeConfig} />);
 
-      // Disable all levels
+      
       const infoButton = screen.getByText("INFO");
       const warnButton = screen.getByText("WARN");
       const errorButton = screen.getByText("ERROR");
@@ -267,7 +265,7 @@ describe("LoggingMonitor", () => {
       }
       render(<LoggingMonitor themeConfig={mockThemeConfig} />);
 
-      // Logs should have timestamps
+      
       const logs = screen.getAllByText(/INFO|WARN|ERROR|DEBUG/i);
       expect(logs.length).toBeGreaterThan(0);
     });
@@ -292,7 +290,7 @@ describe("LoggingMonitor", () => {
       }
       render(<LoggingMonitor themeConfig={mockThemeConfig} />);
 
-      // Should show source brackets
+      
       const sources = screen.getAllByText(/\[system\]|\[auth\]|\[database\]/i);
       expect(sources.length).toBeGreaterThan(0);
     });
@@ -304,7 +302,7 @@ describe("LoggingMonitor", () => {
       }
       render(<LoggingMonitor themeConfig={mockThemeConfig} />);
 
-      // Should show log messages
+      
       const messages = screen.getAllByText(
         /User authentication|Database query|API request/i,
       );
@@ -320,13 +318,13 @@ describe("LoggingMonitor", () => {
       }
       render(<LoggingMonitor themeConfig={mockThemeConfig} />);
 
-      // Generate many logs
+      
       for (let i = 0; i < 1100; i++) {
         vi.advanceTimersByTime(1000);
       }
 
       await waitFor(() => {
-        // Should not exceed 1000 logs
+        
         const logs = screen.getAllByText(/INFO|WARN|ERROR|DEBUG/i);
         expect(logs.length).toBeLessThanOrEqual(1000);
       });
@@ -354,7 +352,7 @@ describe("LoggingMonitor", () => {
       }
       render(<LoggingMonitor themeConfig={mockThemeConfig} />);
 
-      // Some logs may have details
+      
       const logs = screen.getAllByText(/Additional context/i);
       if (logs.length > 0) {
         expect(logs[0]).toBeInTheDocument();

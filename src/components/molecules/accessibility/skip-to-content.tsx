@@ -8,12 +8,6 @@ interface SkipToContentProps {
   className?: string;
 }
 
-/**
- * Skip to Content link for keyboard accessibility
- * Shows when user tabs and allows jumping to main content
- * @param {SkipToContentProps} props - The props for the SkipToContent component
- * @returns {JSX.Element} The SkipToContent component
- */
 export function SkipToContent({
   targetId = "main-content",
   className = "",
@@ -91,9 +85,6 @@ export function SkipToContent({
   );
 }
 
-/**
- * Multiple skip links for complex layouts
- */
 interface SkipLinksProps {
   links: Array<{
     id: string;
@@ -102,11 +93,6 @@ interface SkipLinksProps {
   }>;
 }
 
-/**
- * Skip links for complex layouts
- * @param {SkipLinksProps} props - The props for the SkipLinks component
- * @returns {JSX.Element} The SkipLinks component
- */
 export function SkipLinks({ links }: SkipLinksProps): JSX.Element {
   const { themeConfig, mounted } = useTheme();
 

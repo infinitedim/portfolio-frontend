@@ -237,7 +237,7 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
       }
       window.removeEventListener("resize", handleResize);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [glitchSpeed, smooth]);
 
   return (

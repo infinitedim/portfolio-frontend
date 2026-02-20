@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { RequestResponsePanel } from "../request-response-panel";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -15,7 +14,6 @@ const mockThemeConfig = {
   },
 };
 
-// Mock clipboard API
 const mockWriteText = vi.fn();
 Object.assign(navigator, {
   clipboard: {
@@ -105,11 +103,11 @@ describe("RequestResponsePanel", () => {
         />,
       );
 
-      // Switch to response
+      
       fireEvent.click(screen.getByText("📥 Response Log"));
       expect(screen.getByText("Response Details")).toBeInTheDocument();
 
-      // Switch back to request
+      
       fireEvent.click(screen.getByText("📤 Request Log"));
       expect(screen.getByText("Request Details")).toBeInTheDocument();
     });
@@ -202,7 +200,7 @@ describe("RequestResponsePanel", () => {
         />,
       );
 
-      // Switch to response tab
+      
       fireEvent.click(screen.getByText("📥 Response Log"));
 
       const textarea = screen.getByDisplayValue('{"status": "success"}');
@@ -333,7 +331,7 @@ describe("RequestResponsePanel", () => {
       const copyButton = screen.getByText("📋 Copy");
       fireEvent.click(copyButton);
 
-      // Should not throw
+      
       await waitFor(() => {
         expect(mockWriteText).toHaveBeenCalled();
       });

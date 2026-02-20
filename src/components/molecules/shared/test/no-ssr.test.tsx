@@ -21,7 +21,7 @@ describe("NoSSR", () => {
           <div>Client Content</div>
         </NoSSR>,
       );
-      // Either fallback (before effect) or children (after effect) is visible
+      
       const loading = screen.queryByText("Loading...");
       const content = screen.queryByText("Client Content");
       expect(loading ?? content).toBeTruthy();
@@ -40,7 +40,7 @@ describe("NoSSR", () => {
         </NoSSR>,
       );
 
-      // Wait for useEffect to run
+      
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(screen.getByText("Client Content")).toBeInTheDocument();
@@ -57,7 +57,7 @@ describe("NoSSR", () => {
           <div>Client Content</div>
         </NoSSR>,
       );
-      // With null fallback, no "Loading..." is shown
+      
       expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
       await new Promise((resolve) => setTimeout(resolve, 50));
       expect(screen.getByText("Client Content")).toBeInTheDocument();
@@ -74,7 +74,7 @@ describe("NoSSR", () => {
         </NoSSR>,
       );
 
-      // Wait for useEffect to run
+      
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(screen.getByText("Client Content")).toBeInTheDocument();

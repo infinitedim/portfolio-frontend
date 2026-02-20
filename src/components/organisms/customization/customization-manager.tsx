@@ -17,14 +17,6 @@ interface CustomizationManagerProps {
   onClose: () => void;
 }
 
-/**
- * A modal component that serves as the main hub for all customization options.
- * It contains tabs for managing themes, fonts, settings, and import/export functionality.
- * @param {CustomizationManagerProps} props - The properties for the CustomizationManager component.
- * @param {boolean} props.isOpen - Whether the manager modal is open.
- * @param {() => void} props.onClose - Callback function to close the modal.
- * @returns {JSX.Element | null} - The customization manager modal or null if closed.
- */
 export function CustomizationManager({
   isOpen,
   onClose,

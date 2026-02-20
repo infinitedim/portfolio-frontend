@@ -10,7 +10,6 @@ interface Parameter {
   description: string;
 }
 
-/** Type for parameter input values */
 type ParameterInputValue = string | number | boolean | object | null | undefined;
 
 interface ParameterInputProps {
@@ -20,14 +19,6 @@ interface ParameterInputProps {
   themeConfig: ThemeConfig;
 }
 
-/**
- *
- * @param root0
- * @param root0.parameters
- * @param root0.values
- * @param root0.onChange
- * @param root0.themeConfig
- */
 export function ParameterInput({
   parameters,
   values,

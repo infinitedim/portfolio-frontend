@@ -3,14 +3,6 @@
 import { JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
-/**
- * Props for the TabCompletion component
- * @interface TabCompletionProps
- * @property {string} input - Current input value for matching completions
- * @property {string[]} availableCommands - List of available commands
- * @property {(completion: string) => void} onComplete - Callback when completion is selected
- * @property {boolean} visible - Whether the completion dropdown is visible
- */
 interface TabCompletionProps {
   input: string;
   availableCommands: string[];
@@ -18,25 +10,6 @@ interface TabCompletionProps {
   visible: boolean;
 }
 
-/**
- * Tab completion dropdown component for command input
- * Displays matching commands with enhanced UX and visual feedback
- * @param {TabCompletionProps} props - Component props
- * @param {string} props.input - Current input for matching
- * @param {string[]} props.availableCommands - Available commands
- * @param {(completion: string) => void} props.onComplete - Selection callback
- * @param {boolean} props.visible - Visibility state
- * @returns {JSX.Element | null} The completion dropdown or null
- * @example
- * ```tsx
- * <TabCompletion
- *   input="hel"
- *   availableCommands={['help', 'hello']}
- *   onComplete={handleComplete}
- *   visible={true}
- * />
- * ```
- */
 export function TabCompletion({
   input,
   availableCommands,

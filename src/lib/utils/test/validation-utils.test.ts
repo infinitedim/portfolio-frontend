@@ -224,7 +224,7 @@ describe("ValidationUtils", () => {
       }
       const result = ValidationUtils.validateEnvironment();
 
-      // May pass or fail depending on environment
+      
       expect(result).toHaveProperty("isValid");
       expect(result).toHaveProperty("errors");
       expect(result).toHaveProperty("warnings");

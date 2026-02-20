@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { Breadcrumb, BreadcrumbTemplates } from "../breadcrumb";
 
-// Mock Next.js Link
 vi.mock("next/link", () => ({
   default: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
@@ -97,7 +96,7 @@ describe("Breadcrumb", () => {
       const { container } = render(<Breadcrumb items={items} />);
 
       const svgs = container.querySelectorAll("svg");
-      expect(svgs.length).toBe(2); // Separators between 3 items
+      expect(svgs.length).toBe(2); 
     });
 
     it("should include structured data script", () => {

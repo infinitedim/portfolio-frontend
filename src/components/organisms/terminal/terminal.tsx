@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 
 import { useState, useRef, useEffect, useMemo, useCallback, type JSX } from "react";
@@ -58,32 +58,11 @@ const AVAILABLE_COMMANDS = [
   "tour",
 ] as const;
 
-/**
- * Props for the Terminal component
- * @interface TerminalProps
- * @property {(theme: string) => void} [onThemeChange] - Callback when theme changes
- * @property {(font: string) => void} [onFontChange] - Callback when font changes
- */
 interface TerminalProps {
   onThemeChange?: (theme: string) => void;
   onFontChange?: (font: string) => void;
 }
 
-/**
- * Main terminal component that integrates all terminal features
- * Provides a complete terminal interface with command execution, history, and customization
- * @param {TerminalProps} props - Component props
- * @param {(theme: string) => void} [props.onThemeChange] - Theme change callback
- * @param {(font: string) => void} [props.onFontChange] - Font change callback
- * @returns {JSX.Element | null} The complete terminal interface or null during initialization
- * @example
- * ```tsx
- * <Terminal
- *   onThemeChange={handleThemeChange}
- *   onFontChange={handleFontChange}
- * />
- * ```
- */
 export function Terminal({
   onThemeChange,
   onFontChange,
@@ -96,13 +75,13 @@ export function Terminal({
   const [hasMinimumLoadingTime, setHasMinimumLoadingTime] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Track component mount
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Destructure theme and font hook results early so all hooks/callbacks
-  // below can reference them without "used before declaration" errors.
+
+
   const {
     themeConfig,
     changeTheme,
@@ -115,7 +94,7 @@ export function Terminal({
     resetPerformanceMetrics,
   } = themeHookResult;
 
-  const { fontConfig, changeFont, font, availableFonts } = fontHookResult;
+  const { fontConfig, changeFont, availableFonts } = fontHookResult;
 
   const themePerformance = useMemo(
     () => ({
@@ -138,7 +117,6 @@ export function Terminal({
     getCommandSuggestions,
     getFrequentCommands,
     commandAnalytics,
-    favoriteCommands,
   } = useTerminal(
     undefined,
     undefined,
@@ -152,7 +130,7 @@ export function Terminal({
     type: "info" | "success" | "warning" | "error";
   } | null>(null);
 
-  // Guided tour hook
+
   const {
     isActive: isTourActive,
     currentStep,
@@ -167,10 +145,10 @@ export function Terminal({
     skipTour,
   } = useTour();
 
-  // Auto-start tour for first-time visitors
+
   useEffect(() => {
     if (isMounted && !hasCompletedTour && isFirstVisit && history.length === 0) {
-      // Delay tour start to let the UI settle
+
       const timer = setTimeout(() => {
         startTour();
       }, 1500);
@@ -178,51 +156,58 @@ export function Terminal({
     }
   }, [isMounted, hasCompletedTour, isFirstVisit, history.length, startTour]);
 
-  // Handle demo command from tour - execute command but keep tour running
+
   const handleTourDemoCommand = (command: string) => {
-    // Set the command in input
+
     setCurrentInput(command);
-    // Execute the command so user can see the output
+
     executeCommand(command);
-    // Focus the input after command executes
+
     setTimeout(() => {
       commandInputRef.current?.focus();
     }, 100);
   };
 
-  // Wrapper for nextStep that clears history at specific steps
   const handleTourNext = () => {
-    // Clear history only after history step (step 3, index 3) when moving to next
-    // This allows users to test history navigation before clearing
     if (currentStepIndex === 3 && history.length > 0) {
-      // Clear the history after history demo step
       clearHistory();
     }
-    // Move to next step
     nextStep();
   };
 
-  // Wrapper for skipTour that clears history and shows welcome card
   const handleTourSkip = () => {
-    // Clear history when skipping tour so terminal is clean
     if (history.length > 0) {
       clearHistory();
     }
-    // Show welcome card again
+
     setShowWelcome(true);
-    // Clear any input
     setCurrentInput("");
     skipTour();
   };
 
   const customizationService = CustomizationService.getInstance();
 
-  // Background settings state - use default values initially, load from service in useEffect
+  const DEFAULT_GLITCH_COLORS = useMemo(
+    () => ["#2b4539", "#61dca3", "#61b3dc"],
+    [],
+  );
+
+  const isDefaultGlitchColors = (colors: string[]): boolean => {
+    if (colors.length !== DEFAULT_GLITCH_COLORS.length) return false;
+    return colors.every((c, i) => c === DEFAULT_GLITCH_COLORS[i]);
+  };
+
+  const themeGlitchColors = useMemo((): string[] => {
+    if (!themeConfig?.colors) return DEFAULT_GLITCH_COLORS;
+    const { bg, accent, muted, border } = themeConfig.colors;
+    return [bg, accent, muted || border];
+  }, [DEFAULT_GLITCH_COLORS, themeConfig.colors]);
+
   const [backgroundSettings, setBackgroundSettings] =
     useState<BackgroundSettings>({
       type: "letter-glitch",
       letterGlitch: {
-        glitchColors: ["#2b4539", "#61dca3", "#61b3dc"],
+        glitchColors: DEFAULT_GLITCH_COLORS,
         glitchSpeed: 50,
         centerVignette: false,
         outerVignette: true,
@@ -232,9 +217,9 @@ export function Terminal({
       },
     });
 
-  // Load background settings on mount and listen for updates
+
   useEffect(() => {
-    // Ensure method exists before calling
+
     if (
       customizationService &&
       typeof customizationService.getBackgroundSettings === "function"
@@ -248,7 +233,7 @@ export function Terminal({
       if (customEvent.detail) {
         setBackgroundSettings(customEvent.detail);
       } else {
-        // Fallback: reload from service
+
         if (
           customizationService &&
           typeof customizationService.getBackgroundSettings === "function"
@@ -597,7 +582,8 @@ export function Terminal({
   if (!themeHookResult || !fontHookResult) {
     return (
       <div
-        className="min-h-screen w-full flex items-center justify-center bg-black text-white relative overflow-hidden"
+        className="min-h-screen w-full flex items-center justify-center relative overflow-hidden"
+        style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
         suppressHydrationWarning={true}
       >
         { }
@@ -624,7 +610,8 @@ export function Terminal({
   if (!mounted || !themeConfig || !fontConfig || !hasMinimumLoadingTime) {
     return (
       <div
-        className="min-h-screen w-full flex items-center justify-center bg-black text-white relative overflow-hidden"
+        className="min-h-screen w-full flex items-center justify-center relative overflow-hidden"
+        style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
         suppressHydrationWarning={true}
       >
         { }
@@ -691,7 +678,11 @@ export function Terminal({
         {backgroundSettings.type === "letter-glitch" &&
           backgroundSettings.letterGlitch && (
             <LetterGlitch
-              glitchColors={backgroundSettings.letterGlitch.glitchColors}
+              glitchColors={
+                isDefaultGlitchColors(backgroundSettings.letterGlitch.glitchColors)
+                  ? themeGlitchColors
+                  : backgroundSettings.letterGlitch.glitchColors
+              }
               glitchSpeed={backgroundSettings.letterGlitch.glitchSpeed}
               centerVignette={backgroundSettings.letterGlitch.centerVignette}
               outerVignette={backgroundSettings.letterGlitch.outerVignette}

@@ -3,32 +3,12 @@
 import { useTheme } from "@/hooks/use-theme";
 import type { JSX, HTMLAttributes } from "react";
 
-/**
- * Props for the LoadingSpinner component
- * @interface LoadingSpinnerProps
- * @property {"sm" | "md" | "lg"} [size] - Size of the spinner
- * @property {string} [text] - Optional text to display
- * @property {string} [className] - Additional CSS classes
- */
 interface LoadingSpinnerProps extends HTMLAttributes<HTMLDivElement> {
   size?: "sm" | "md" | "lg";
   text?: string;
   className?: string;
 }
 
-/**
- * Loading spinner component for indicating background activity
- * Displays an animated spinner with optional text and size variations
- * @param {LoadingSpinnerProps} props - Component props
- * @param {"sm" | "md" | "lg"} [props.size="md"] - Spinner size
- * @param {string} [props.text] - Optional loading text
- * @param {string} [props.className] - Additional classes
- * @returns {JSX.Element} The rendered loading spinner
- * @example
- * ```tsx
- * <LoadingSpinner size="lg" text="Loading..." />
- * ```
- */
 export function LoadingSpinner({
   size = "md",
   text,

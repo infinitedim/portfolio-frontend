@@ -3,7 +3,6 @@ import { render, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { PWARegistration } from "../pwa-registration";
 
-// Mock PWAInstallPrompt
 vi.mock("@/components/molecules/pwa/pwa-install-prompt", () => ({
   PWAInstallPrompt: ({ onInstall, onDismiss }: any) => (
     <div data-testid="pwa-install-prompt">
@@ -13,7 +12,6 @@ vi.mock("@/components/molecules/pwa/pwa-install-prompt", () => ({
   ),
 }));
 
-// Mock service worker
 const mockRegister = vi.fn();
 const mockController = null;
 
@@ -28,7 +26,6 @@ Object.defineProperty(navigator, "serviceWorker", {
   configurable: true,
 });
 
-// Mock window.confirm
 const mockConfirm = vi.fn(() => true);
 if (typeof window !== "undefined") {
   window.confirm = mockConfirm;
@@ -58,7 +55,7 @@ describe("PWARegistration", () => {
       }
       const { container } = render(<PWARegistration />);
 
-      // Should not render when not installable
+      
       expect(container.firstChild).toBeNull();
     });
   });
@@ -133,7 +130,7 @@ describe("PWARegistration", () => {
 
       window.dispatchEvent(event);
 
-      // Should handle the event
+      
       expect(event).toBeDefined();
     });
   });

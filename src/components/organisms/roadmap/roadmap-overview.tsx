@@ -10,13 +10,6 @@ interface RoadmapOverviewProps {
   compact?: boolean;
 }
 
-/**
- * Displays an overview of the roadmap progress, including overall stats.
- * @param {RoadmapOverviewProps} props - The properties for the RoadmapOverview component.
- * @param {RoadmapData} props.roadmapData - The roadmap data to display.
- * @param {boolean} [props.compact] - Whether to render a compact version.
- * @returns {JSX.Element} - A roadmap overview component.
- */
 export function RoadmapOverview({
   roadmapData,
   compact = false,

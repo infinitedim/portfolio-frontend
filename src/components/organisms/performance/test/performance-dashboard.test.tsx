@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { PerformanceDashboard } from "../performance-dashboard";
 
-// Mock PerformanceMonitor
 const mockGetReport = vi.fn(() => ({
   summary: {
     totalCommands: 10,
@@ -55,7 +54,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock document.createElement for export
 const mockCreateElement = vi.fn();
 const mockClick = vi.fn();
 const mockSetAttribute = vi.fn();
@@ -167,7 +165,7 @@ describe("PerformanceDashboard", () => {
       vi.advanceTimersByTime(2000);
 
       await waitFor(() => {
-        expect(mockGetReport).toHaveBeenCalledTimes(2); // Initial + refresh
+        expect(mockGetReport).toHaveBeenCalledTimes(2); 
       });
     });
   });

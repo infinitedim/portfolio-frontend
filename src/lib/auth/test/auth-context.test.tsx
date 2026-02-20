@@ -4,11 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { AuthProvider, useAuth } from "../auth-context";
 import { useState } from "react";
 
-// NOTE: Module caching issue with auth-service
-// Problem: When tests run together, mocks from other test files can interfere
-// Solution: Use importActual() in beforeEach to get real module
-
-// Mock authService - but preserve real implementation for other tests
 const mockInitialize = vi.fn();
 const mockGetCurrentUser = vi.fn();
 const mockIsAuthenticated = vi.fn();
@@ -16,21 +11,18 @@ const mockLogin = vi.fn();
 const mockLogout = vi.fn();
 const mockRefresh = vi.fn();
 
-// Use factory function to preserve real module structure
-// This mock only affects imports within this test file
-// For Bun compatibility, use require instead of importActual in factory
 vi.mock("@/lib/auth/auth-service", () => {
-  // Try to get actual module structure if available
+  
   let actual: any = {};
   try {
-    // Use require for Bun compatibility
+    
     if (typeof require !== "undefined") {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      
       actual = require("@/lib/auth/auth-service");
     }
   } catch (e) {
     console.error(e);
-    // If require fails, use empty object
+    
     actual = {};
   }
   return {
@@ -295,12 +287,12 @@ describe("AuthProvider", () => {
         </AuthProvider>,
       );
 
-      // Wait for initialization
+      
       await waitFor(() => {
         expect(mockInitialize).toHaveBeenCalled();
       });
 
-      // Advance timer to trigger refresh interval
+      
       vi.advanceTimersByTime(14 * 60 * 1000);
 
       await waitFor(() => {

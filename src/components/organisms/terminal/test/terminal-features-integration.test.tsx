@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { AdvancedTerminalFeaturesIntegration } from "../terminal-features-integration";
 
-// Mock dependencies
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -102,8 +101,8 @@ describe("AdvancedTerminalFeaturesIntegration", () => {
       }
       render(<AdvancedTerminalFeaturesIntegration />);
 
-      expect(screen.getByText("50")).toBeInTheDocument(); // Total Commands
-      expect(screen.getByText(/95.5%/i)).toBeInTheDocument(); // Success Rate
+      expect(screen.getByText("50")).toBeInTheDocument(); 
+      expect(screen.getByText(/95.5%/i)).toBeInTheDocument(); 
     });
   });
 
@@ -157,7 +156,7 @@ describe("AdvancedTerminalFeaturesIntegration", () => {
       render(<AdvancedTerminalFeaturesIntegration />);
 
       const exportButtons = screen.getAllByText("💾 Export");
-      fireEvent.click(exportButtons[1]); // Second export button for shortcuts
+      fireEvent.click(exportButtons[1]); 
 
       expect(mockExportShortcuts).toHaveBeenCalled();
     });

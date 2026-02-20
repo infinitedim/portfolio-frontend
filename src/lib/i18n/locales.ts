@@ -1,12 +1,5 @@
-/**
- * Configuration for a locale/language
- * @property code - Locale code in format 'language_COUNTRY' (e.g., 'en_US')
- * @property name - English name of the language
- * @property nativeName - Native name of the language
- * @property flag - Flag emoji for the locale
- * @property direction - Text direction ('ltr' for left-to-right, 'rtl' for right-to-left)
- * @property fallback - Optional fallback locale code for regional variants
- */
+
+
 export interface LocaleConfig {
   code: string;
   name: string;
@@ -16,18 +9,10 @@ export interface LocaleConfig {
   fallback?: string;
 }
 
-/**
- * Mapping of locale codes to their configurations
- * @example { 'en_US': { code: 'en_US', name: 'English (US)', ... } }
- */
 export interface LocaleMapping {
   [key: string]: LocaleConfig;
 }
 
-/**
- * Registry of all supported locales with their configurations
- * Contains primary language locales (not regional variants)
- */
 export const SUPPORTED_LOCALES: LocaleMapping = {
   en_US: {
     code: "en_US",
@@ -166,10 +151,6 @@ export const SUPPORTED_LOCALES: LocaleMapping = {
   },
 };
 
-/**
- * Regional variants that map to primary locales
- * e.g., en_GB, en_CA all fallback to en_US
- */
 export const REGIONAL_VARIANTS: LocaleMapping = {
   en_GB: {
     code: "en_US",
@@ -323,88 +304,30 @@ export const REGIONAL_VARIANTS: LocaleMapping = {
   },
 };
 
-/**
- * Combined mapping of all locales including regional variants
- */
 export const ALL_LOCALES = { ...SUPPORTED_LOCALES, ...REGIONAL_VARIANTS };
 
-/**
- * Default locale used when no locale is specified or detected
- */
 export const DEFAULT_LOCALE = "en_US";
 
-/**
- * Retrieves locale configuration by locale code
- * Normalizes hyphens to underscores (e.g., 'en-US' → 'en_US')
- * @param localeCode - Locale code to look up
- * @returns Locale configuration object, or null if not found
- * @example
- * ```ts
- * const config = getLocaleConfig('en-US');
- * console.log(config?.name); // 'English (US)'
- * ```
- */
 export function getLocaleConfig(localeCode: string): LocaleConfig | null {
   const normalizedCode = localeCode.replace("-", "_");
   return ALL_LOCALES[normalizedCode] || null;
 }
 
-/**
- * Checks if a locale code is a regional variant (has a fallback)
- * @param localeCode - Locale code to check
- * @returns True if the locale is a regional variant, false otherwise
- * @example
- * ```ts
- * isRegionalVariant('en_GB'); // true (fallback to en_US)
- * isRegionalVariant('en_US'); // false (primary locale)
- * ```
- */
 export function isRegionalVariant(localeCode: string): boolean {
   const normalizedCode = localeCode.replace("-", "_");
   return !!REGIONAL_VARIANTS[normalizedCode];
 }
 
-/**
- * Gets the fallback locale for regional variants
- * Returns the same code if not a regional variant
- * @param localeCode - Locale code to get fallback for
- * @returns Fallback locale code
- * @example
- * ```ts
- * getFallbackLocale('en_GB'); // 'en_US'
- * getFallbackLocale('en_US'); // 'en_US'
- * ```
- */
 export function getFallbackLocale(localeCode: string): string {
   const normalizedCode = localeCode.replace("-", "_");
   const config = REGIONAL_VARIANTS[normalizedCode];
   return config?.fallback || normalizedCode;
 }
 
-/**
- * Gets list of all primary supported locales (excludes regional variants)
- * @returns Array of locale configuration objects
- * @example
- * ```ts
- * const locales = getSupportedLocales();
- * locales.forEach(locale => console.log(locale.name));
- * ```
- */
 export function getSupportedLocales(): LocaleConfig[] {
   return Object.values(SUPPORTED_LOCALES);
 }
 
-/**
- * Validates if a locale code is supported (including regional variants)
- * @param localeCode - Locale code to validate
- * @returns True if locale is valid, false otherwise
- * @example
- * ```ts
- * isValidLocale('en_US'); // true
- * isValidLocale('en_GB'); // true (regional variant)
- * isValidLocale('xx_XX'); // false
- * ```
- */
 export function isValidLocale(localeCode: string): boolean {
   const normalizedCode = localeCode.replace("-", "_");
   return !!ALL_LOCALES[normalizedCode];

@@ -8,11 +8,6 @@ interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
-/**
- * Admin layout component that provides authentication protection
- * @param {AdminLayoutProps} props - The layout props
- * @returns {React.JSX.Element} - Admin layout component
- */
 export default function AdminLayout({
   children,
 }: AdminLayoutProps): React.JSX.Element {

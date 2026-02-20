@@ -6,28 +6,10 @@ import { CommandOutput } from "@/components/molecules/terminal/command-output";
 import type { TerminalHistory as TerminalHistoryType } from "@/types/terminal";
 import { type JSX } from "react";
 
-/**
- * Props for the TerminalHistory component
- * @interface TerminalHistoryProps
- * @property {TerminalHistoryType[]} history - Array of terminal history entries
- */
 interface TerminalHistoryProps {
   history: TerminalHistoryType[];
 }
 
-/**
- * Renders the command history with outputs in the terminal
- * Displays all executed commands and their results with proper formatting
- * @param {TerminalHistoryProps} props - Component props
- * @param {TerminalHistoryType[]} props.history - Array of history entries
- * @returns {JSX.Element | null} The history display or null if empty
- * @example
- * ```tsx
- * <TerminalHistory history={[
- *   { input: 'help', output: { type: 'info', content: 'Available commands...' }}
- * ]} />
- * ```
- */
 export function TerminalHistory({
   history,
 }: TerminalHistoryProps): JSX.Element | null {

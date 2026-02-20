@@ -1,7 +1,5 @@
-/**
- * Logger index exports test
- * Direct import for Bun test runner compatibility.
- */
+
+
 import { describe, it, expect } from "vitest";
 import * as logger from "../index";
 

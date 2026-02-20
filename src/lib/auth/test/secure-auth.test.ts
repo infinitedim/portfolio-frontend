@@ -3,11 +3,9 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { SecureAuth, useSecureAuth } from "../secure-auth";
 
-// Mock fetch
 const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
 
-// Mock document.cookie
 let mockCookies = "";
 if (typeof document !== "undefined") {
   Object.defineProperty(document, "cookie", {

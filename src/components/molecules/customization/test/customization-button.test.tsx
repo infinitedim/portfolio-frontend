@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { CustomizationButton } from "../customization-button";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -22,7 +21,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock CustomizationManager
 vi.mock("@/components/organisms/customization/customization-manager", () => ({
   CustomizationManager: ({ isOpen, onClose: _onClose }: { isOpen: boolean; onClose: () => void }) => (
     isOpen ? <div data-testid="customization-manager">Customization Manager</div> : null
@@ -104,13 +102,13 @@ describe("CustomizationButton", () => {
 
       const button = screen.getByLabelText("Open customization manager");
       
-      // Open
+      
       fireEvent.click(button);
       expect(screen.getByTestId("customization-manager")).toBeInTheDocument();
 
-      // Close (button sets isOpen to false)
+      
       fireEvent.click(button);
-      // Manager should close (isOpen becomes false)
+      
       expect(screen.queryByTestId("customization-manager")).not.toBeInTheDocument();
     });
   });

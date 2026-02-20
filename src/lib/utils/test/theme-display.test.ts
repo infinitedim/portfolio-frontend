@@ -129,7 +129,7 @@ describe("themeDisplay", () => {
 
   describe("generateColorPreview method", () => {
     it("should handle valid theme names", () => {
-      // Test that method doesn't throw and returns a string
+      
       expect(() =>
         ThemeDisplay.generateColorPreview("dark" as any),
       ).not.toThrow();

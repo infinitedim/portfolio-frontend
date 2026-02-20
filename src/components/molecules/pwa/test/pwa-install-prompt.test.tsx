@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { PWAInstallPrompt } from "../pwa-install-prompt";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -21,7 +20,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock localStorage
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {

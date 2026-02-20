@@ -28,7 +28,7 @@ describe("ProjectsLoading", () => {
       }
       const { container } = render(<ProjectsLoading />);
 
-      // Should have 6 skeleton cards
+      
       const cards = container.querySelectorAll(".bg-terminal-bg");
       expect(cards.length).toBe(6);
     });

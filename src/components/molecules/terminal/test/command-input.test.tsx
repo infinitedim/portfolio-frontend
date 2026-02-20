@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { CommandInput } from "../command-input";
 
-// Mock theme hook
 const mockThemeConfig = {
   colors: {
     bg: "#000000",
@@ -21,7 +20,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock security hook
 vi.mock("@/hooks/use-security", () => ({
   useSecurity: () => ({
     validateInput: vi.fn(() => ({ isValid: true, threats: [] })),
@@ -30,7 +28,6 @@ vi.mock("@/hooks/use-security", () => ({
   }),
 }));
 
-// Mock TabCompletion
 vi.mock("@/components/molecules/terminal/tab-completion", () => ({
   TabCompletion: ({ onComplete }: { onComplete: (cmd: string) => void }) => (
     <button onClick={() => onComplete("help")} data-testid="tab-completion">
@@ -39,7 +36,6 @@ vi.mock("@/components/molecules/terminal/tab-completion", () => ({
   ),
 }));
 
-// Mock CommandSuggestions
 vi.mock("@/components/molecules/terminal/command-suggestions", () => ({
   CommandSuggestions: () => <div data-testid="command-suggestions" />,
 }));
@@ -268,7 +264,7 @@ describe("CommandInput", () => {
       const input = screen.getByRole("textbox");
       fireEvent.keyDown(input, { key: "Tab" });
 
-      // Tab completion should be triggered
+      
       expect(screen.getByTestId("tab-completion")).toBeInTheDocument();
     });
   });

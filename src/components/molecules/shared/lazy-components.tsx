@@ -38,13 +38,6 @@ interface LoadingFallbackProps {
   size?: "sm" | "md" | "lg";
 }
 
-/**
- * Loading fallback component
- * @param {LoadingFallbackProps} props - The props for the LoadingFallback component
- * @param {string} [props.text] - The text to display
- * @param {string} [props.size] - The size of the loading spinner
- * @returns {JSX.Element} The LoadingFallback component
- */
 function LoadingFallback({
   text = "Loading...",
   size = "md",
@@ -87,13 +80,6 @@ function LoadingFallback({
   );
 }
 
-/**
- *
- * @param {ComponentType<P>} LazyComponent - The component to load
- * @param {string} [loadingText] - The text to display
- * @param {string} [loadingSize] - The size of the loading spinner
- * @returns {ComponentType<P>} The wrapped lazy component
- */
 export function withLazyLoading<P extends object>(
   LazyComponent: ComponentType<P>,
   loadingText?: string,

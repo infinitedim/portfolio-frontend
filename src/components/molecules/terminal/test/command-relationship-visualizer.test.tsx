@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { CommandRelationshipVisualizer } from "../command-relationship-visualizer";
 
-// Mock theme hook
 const mockThemeConfig = {
   colors: {
     bg: "#000000",
@@ -19,7 +18,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock command history hook
 const mockHistory = [
   {
     id: "1",
@@ -106,7 +104,7 @@ describe("CommandRelationshipVisualizer", () => {
         <CommandRelationshipVisualizer isVisible={true} onClose={vi.fn()} />,
       );
 
-      // Should display commands from history
+      
       expect(screen.getByText(/help/i)).toBeInTheDocument();
     });
 
@@ -147,7 +145,7 @@ describe("CommandRelationshipVisualizer", () => {
         expect(true).toBe(true);
         return;
       }
-      // Mock is already set up, this test verifies component handles empty history
+      
       render(
         <CommandRelationshipVisualizer isVisible={true} onClose={vi.fn()} />,
       );
@@ -168,7 +166,7 @@ describe("CommandRelationshipVisualizer", () => {
         />,
       );
 
-      // Should limit displayed nodes
+      
       expect(screen.getByText(/help/i)).toBeInTheDocument();
     });
   });

@@ -1,13 +1,8 @@
-/**
- * Client Logger Tests
- * Unit tests for client-side logging functionality
- */
+
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ClientLogger } from "../client-logger";
 
-// Skip this file in Bun - it uses advanced Vitest APIs (vi.spyOn)
-// Run with: bun run test:vitest
 declare const Bun: unknown;
 const isBun = typeof Bun !== "undefined";
 if (isBun) {
@@ -15,7 +10,7 @@ if (isBun) {
     it("skipped in Bun - use vitest", () => {});
   });
 } else {
-  // Mock fetch
+  
   global.fetch = vi.fn();
 
   describe("ClientLogger", () => {
@@ -52,8 +47,8 @@ if (isBun) {
 
     describe("Context Enrichment", () => {
       it("should enrich context with request information", () => {
-        // This test would need to mock browser environment
-        // For now, we'll just verify the method exists
+        
+        
         expect(logger.info).toBeDefined();
       });
     });
@@ -69,7 +64,7 @@ if (isBun) {
     describe("Performance Logging", () => {
       it("should log performance metrics", () => {
         logger.logPerformance("api_call", 150, { endpoint: "/api/users" });
-        // Performance metric should be logged
+        
       });
 
       it("should warn on slow performance", () => {
@@ -84,7 +79,7 @@ if (isBun) {
         logger.logSecurityEvent("failed_login", "high", {
           ip: "192.168.1.1",
         });
-        // Security event should be logged
+        
       });
 
       it("should flush immediately for critical security events", async () => {
@@ -99,7 +94,7 @@ if (isBun) {
     describe("API Call Logging", () => {
       it("should log successful API calls", () => {
         logger.logApiCall("GET", "/api/users", 200, 150);
-        // API call should be logged at debug level
+        
       });
 
       it("should warn on client errors", () => {

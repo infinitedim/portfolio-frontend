@@ -4,10 +4,6 @@ import { generateId } from "@/lib/utils/utils";
 
 let globalOnOpenDemo: ((projectId: string) => void) | null = null;
 
-/**
- * Set the callback for opening demos
- * @param {Function} callback - The callback function
- */
 export function setDemoCallback(callback: (projectId: string) => void) {
   globalOnOpenDemo = callback;
 }
@@ -46,10 +42,6 @@ export const demoCommand: Command = {
   },
 };
 
-/**
- * List all projects
- * @returns {CommandOutput} The command output
- */
 function listProjects(): CommandOutput {
   const projectService = ProjectMetadataService.getInstance();
   const projects = projectService.getAllProjects();
@@ -79,11 +71,6 @@ function listProjects(): CommandOutput {
   };
 }
 
-/**
- * Open a project demo
- * @param {string} projectId - The project ID
- * @returns {CommandOutput} The command output
- */
 function openProject(projectId: string): CommandOutput {
   if (!projectId) {
     return {
@@ -128,11 +115,6 @@ function openProject(projectId: string): CommandOutput {
   };
 }
 
-/**
- * Search projects
- * @param {string} query - The search query
- * @returns {CommandOutput} The command output
- */
 function searchProjects(query: string): CommandOutput {
   if (!query) {
     return {
@@ -170,10 +152,6 @@ function searchProjects(query: string): CommandOutput {
   };
 }
 
-/**
- * List all technologies
- * @returns {CommandOutput} The command output
- */
 function listTechnologies(): CommandOutput {
   const projectService = ProjectMetadataService.getInstance();
   const technologies = projectService.getTechnologies();
@@ -195,10 +173,6 @@ function listTechnologies(): CommandOutput {
   };
 }
 
-/**
- * List all project categories
- * @returns {CommandOutput} The command output
- */
 function listCategories(): CommandOutput {
   const projectService = ProjectMetadataService.getInstance();
   const categories = projectService.getCategories();
@@ -218,10 +192,6 @@ function listCategories(): CommandOutput {
   };
 }
 
-/**
- * Show demo help
- * @returns {CommandOutput} The command output
- */
 function showDemoHelp(): CommandOutput {
   return {
     type: "info",

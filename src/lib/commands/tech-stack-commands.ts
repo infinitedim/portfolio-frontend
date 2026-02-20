@@ -35,10 +35,6 @@ export const techStackCommand: Command = {
   },
 };
 
-/**
- * List all technologies
- * @returns {CommandOutput} The command output
- */
 function listTechnologies(): CommandOutput {
   const projectService = ProjectMetadataService.getInstance();
   const technologies = projectService.getTechnologies();
@@ -81,11 +77,6 @@ function listTechnologies(): CommandOutput {
   };
 }
 
-/**
- * Get projects by technology
- * @param {string} technology - The technology to search for
- * @returns {CommandOutput} The command output
- */
 function getProjectsByTech(technology: string): CommandOutput {
   if (!technology) {
     return {
@@ -134,10 +125,6 @@ function getProjectsByTech(technology: string): CommandOutput {
   };
 }
 
-/**
- * Get technology statistics
- * @returns {CommandOutput} The command output
- */
 function getTechStats(): CommandOutput {
   const projectService = ProjectMetadataService.getInstance();
   const technologies = projectService.getTechnologies();
@@ -190,10 +177,6 @@ function getTechStats(): CommandOutput {
   };
 }
 
-/**
- * Categorize technologies data (internal function)
- * @returns {Record<string, string[]>} The categorized technologies
- */
 function categorizeTechnologiesData(): Record<string, string[]> {
   const projectService = ProjectMetadataService.getInstance();
   const technologies = projectService.getTechnologies();
@@ -254,10 +237,6 @@ function categorizeTechnologiesData(): Record<string, string[]> {
   return categorized;
 }
 
-/**
- * Categorize technologies
- * @returns {CommandOutput} The command output
- */
 function categorizeTechnologies(): CommandOutput {
   const categorized = categorizeTechnologiesData();
 
@@ -276,11 +255,6 @@ function categorizeTechnologies(): CommandOutput {
   };
 }
 
-/**
- * Search technologies
- * @param {string} query - The search query
- * @returns {CommandOutput} The command output
- */
 function searchTechnologies(query: string): CommandOutput {
   if (!query) {
     return {
@@ -336,10 +310,6 @@ function searchTechnologies(query: string): CommandOutput {
   };
 }
 
-/**
- * Show tech-stack help
- * @returns {CommandOutput} The command output
- */
 function showTechStackHelp(): CommandOutput {
   return {
     type: "info",

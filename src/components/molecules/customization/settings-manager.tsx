@@ -6,11 +6,6 @@ import { CustomizationService } from "@/lib/services/customization-service";
 import type { CustomizationSettings } from "@/types/customization";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
 
-/**
- * Manages general and appearance settings for the terminal.
- * Allows users to configure preferences like animations, typography, and auto-saving.
- * @returns {JSX.Element} - The settings management interface.
- */
 export function SettingsManager(): JSX.Element {
   const { themeConfig, theme } = useTheme();
 

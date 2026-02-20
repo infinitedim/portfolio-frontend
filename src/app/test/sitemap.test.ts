@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import sitemap from "../sitemap";
 import type { MetadataRoute } from "next";
 
-// Mock fetch for blog API
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
@@ -10,7 +9,7 @@ describe("sitemap.ts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     delete process.env.NEXT_PUBLIC_BASE_URL;
-    // Mock successful empty blog response
+    
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ items: [] }),
@@ -452,7 +451,7 @@ describe("sitemap.ts", () => {
       mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
       const result = await sitemap();
-      // Should still return static routes even if API fails
+      
       expect(result.length).toBeGreaterThan(0);
     });
   });

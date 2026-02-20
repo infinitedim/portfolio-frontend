@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { LanguageSwitcher } from "../language-switcher";
 
-// Mock theme hook
 const mockThemeConfig = {
   colors: {
     bg: "#000000",
@@ -19,7 +18,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock i18n hook
 const mockChangeLocale = vi.fn(() => true);
 const mockSupportedLocales = [
   {
@@ -394,7 +392,7 @@ describe("LanguageSwitcher", () => {
       fireEvent.click(indonesianButton);
 
       expect(mockChangeLocale).toHaveBeenCalledWith("id");
-      // Dropdown should still close even if changeLocale returns false
+      
       await waitFor(() => {
         expect(button).toHaveAttribute("aria-expanded", "false");
       });
@@ -407,7 +405,7 @@ describe("LanguageSwitcher", () => {
       }
       render(<LanguageSwitcher variant="list" />);
 
-      // Should render all supported locales
+      
       expect(screen.getByText("English")).toBeInTheDocument();
       expect(screen.getByText("Bahasa Indonesia")).toBeInTheDocument();
       expect(screen.getByText("العربية")).toBeInTheDocument();

@@ -1,7 +1,4 @@
-/**
- * Logs API Route
- * Endpoint for receiving client logs from the frontend
- */
+
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerLogger } from "@/lib/logger/server-logger";
@@ -9,55 +6,38 @@ import type { LogEntry } from "@/lib/logger/types";
 
 const logger = createServerLogger("api/logs");
 
-/**
- * Rate limiting map (in-memory, per IP)
- * In production, use Redis or similar
- */
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
-/**
- * Rate limit configuration
- */
 const RATE_LIMIT = {
-  maxRequests: 100, // Max requests per window
-  windowMs: 60 * 1000, // 1 minute window
+  maxRequests: 100, 
+  windowMs: 60 * 1000, 
 };
 
-/**
- * Maximum payload size (1MB)
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const MAX_PAYLOAD_SIZE = 1024 * 1024; // 1MB
+const MAX_PAYLOAD_SIZE = 1024 * 1024; 
 
-/**
- * Maximum batch size (logs per request)
- */
 const MAX_BATCH_SIZE = 100;
 
-/**
- * Check rate limit for IP address
- */
 function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   const now = Date.now();
   const limit = rateLimitMap.get(ip);
 
-  // Clean up expired entries
+  
   if (limit && now > limit.resetTime) {
     rateLimitMap.delete(ip);
   }
 
-  // Get or create limit entry
+  
   const currentLimit = rateLimitMap.get(ip) || {
     count: 0,
     resetTime: now + RATE_LIMIT.windowMs,
   };
 
-  // Check if limit exceeded
+  
   if (currentLimit.count >= RATE_LIMIT.maxRequests) {
     return { allowed: false, remaining: 0 };
   }
 
-  // Increment count
+  
   currentLimit.count++;
   rateLimitMap.set(ip, currentLimit);
 
@@ -67,9 +47,6 @@ function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   };
 }
 
-/**
- * Get client IP address
- */
 function getClientIp(request: NextRequest): string {
   return (
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -78,9 +55,6 @@ function getClientIp(request: NextRequest): string {
   );
 }
 
-/**
- * Validate log entry
- */
 function validateLogEntry(entry: unknown): entry is LogEntry {
   if (!entry || typeof entry !== "object") {
     return false;
@@ -88,7 +62,7 @@ function validateLogEntry(entry: unknown): entry is LogEntry {
 
   const log = entry as Record<string, unknown>;
 
-  // Check required fields
+  
   if (
     typeof log.timestamp !== "string" ||
     typeof log.level !== "string" ||
@@ -97,7 +71,7 @@ function validateLogEntry(entry: unknown): entry is LogEntry {
     return false;
   }
 
-  // Validate log level
+  
   const validLevels = ["trace", "debug", "info", "warn", "error", "fatal"];
   if (!validLevels.includes(log.level)) {
     return false;
@@ -106,19 +80,15 @@ function validateLogEntry(entry: unknown): entry is LogEntry {
   return true;
 }
 
-/**
- * POST /api/logs
- * Receive and process client logs
- */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const startTime = Date.now();
   const requestId = request.headers.get("x-request-id") || crypto.randomUUID();
 
   try {
-    // Get client IP
+    
     const clientIp = getClientIp(request);
 
-    // Check rate limit
+    
     const rateLimit = checkRateLimit(clientIp);
     if (!rateLimit.allowed) {
       logger.warn(
@@ -151,7 +121,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Check content type
+    
     const contentType = request.headers.get("content-type");
     if (!contentType?.includes("application/json")) {
       return NextResponse.json(
@@ -163,7 +133,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Parse request body
+    
     let body: unknown;
     try {
       body = await request.json();
@@ -182,7 +152,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Validate request structure
+    
     if (!body || typeof body !== "object" || !("logs" in body)) {
       return NextResponse.json(
         { error: "Request must contain 'logs' array" },
@@ -195,7 +165,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const { logs } = body as { logs: unknown };
 
-    // Validate logs array
+    
     if (!Array.isArray(logs)) {
       return NextResponse.json(
         { error: "'logs' must be an array" },
@@ -206,7 +176,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Check batch size
+    
     if (logs.length > MAX_BATCH_SIZE) {
       logger.warn(
         "Batch size exceeded",
@@ -234,7 +204,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Validate and filter log entries
+    
     const validLogs: LogEntry[] = [];
     const invalidLogs: number[] = [];
 
@@ -246,7 +216,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
     }
 
-    // Log client logs to server logger
+    
     if (validLogs.length > 0) {
       const clientInfo = {
         ip: clientIp,
@@ -270,7 +240,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Return response
+    
     const responseTime = Date.now() - startTime;
 
     return NextResponse.json(
@@ -282,7 +252,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         batchId: requestId,
       },
       {
-        status: 202, // Accepted
+        status: 202, 
         headers: {
           "X-Request-ID": requestId,
           "X-Response-Time": `${responseTime}ms`,
@@ -309,10 +279,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-/**
- * OPTIONS /api/logs
- * Handle CORS preflight requests
- */
 export async function OPTIONS(): Promise<NextResponse> {
   return new NextResponse(null, {
     status: 204,

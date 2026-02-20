@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TabCompletion } from "../tab-completion";
 
-// Mock theme hook
 const mockThemeConfig = {
   colors: {
     bg: "#000000",
@@ -277,7 +276,7 @@ describe("TabCompletion", () => {
         />,
       );
 
-      // Should show all commands when input is empty
+      
       expect(screen.getByText("help")).toBeInTheDocument();
       expect(screen.getByText("hello")).toBeInTheDocument();
     });

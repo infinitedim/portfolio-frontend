@@ -4,13 +4,13 @@ export interface CustomFont {
   family: string;
   source: "system" | "google" | "custom";
   url?: string;
-  data?: string; // Base64 encoded font data
+  data?: string; 
   ligatures: boolean;
   weight: string;
   style: "normal" | "italic";
   createdAt: Date;
   preview?: string;
-  size?: number; // File size in bytes
+  size?: number; 
 }
 
 export interface CustomTheme {
@@ -26,7 +26,7 @@ export interface CustomTheme {
     error: string;
     accent: string;
     border: string;
-    [key: string]: string; // Allow additional custom colors
+    [key: string]: string; 
   };
   source: "built-in" | "custom" | "imported";
   createdAt: Date;

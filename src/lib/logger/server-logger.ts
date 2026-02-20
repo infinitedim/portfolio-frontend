@@ -1,7 +1,4 @@
-/**
- * Server-Side Logger
- * Server logging for Next.js SSR, API routes, and server components
- */
+
 
 import pino from "pino";
 import type { Logger as PinoLogger } from "pino";
@@ -18,9 +15,6 @@ import { serverConfig, LOG_PATHS, ROTATION_CONFIG } from "./config";
 import { formatError, sanitizeHeaders, isServer } from "./utils";
 import type { LogLevel, LogEntry, LogContext, HttpLog } from "./types";
 
-/**
- * File transport for logging
- */
 class FileTransport {
   private filePath: string;
   private maxSize: number;
@@ -33,13 +27,12 @@ class FileTransport {
     this.maxFiles = config.maxFiles;
     this.compress = config.compress;
 
-    // Ensure directory exists
+    
     this.ensureDirectory();
   }
 
-  /**
-   * Parse size string to bytes
-   */
+  
+
   private parseSize(size: string): number {
     const units: Record<string, number> = {
       b: 1,
@@ -50,7 +43,7 @@ class FileTransport {
 
     const match = size.toLowerCase().match(/^(\d+)([bkmg])?$/);
     if (!match) {
-      return 50 * 1024 * 1024; // Default 50MB
+      return 50 * 1024 * 1024; 
     }
 
     const value = parseInt(match[1], 10);
@@ -58,9 +51,8 @@ class FileTransport {
     return value * units[unit];
   }
 
-  /**
-   * Ensure log directory exists
-   */
+  
+
   private ensureDirectory(): void {
     const dir = dirname(this.filePath);
     if (!existsSync(dir)) {
@@ -68,9 +60,8 @@ class FileTransport {
     }
   }
 
-  /**
-   * Check if file needs rotation
-   */
+  
+
   private needsRotation(): boolean {
     if (!existsSync(this.filePath)) {
       return false;
@@ -80,24 +71,23 @@ class FileTransport {
     return stats.size >= this.maxSize;
   }
 
-  /**
-   * Rotate log file
-   */
+  
+
   private rotate(): void {
     if (!existsSync(this.filePath)) {
       return;
     }
 
-    // Shift existing rotated files
+    
     for (let i = this.maxFiles - 1; i > 0; i--) {
       const oldFile = `${this.filePath}.${i}`;
       const newFile = `${this.filePath}.${i + 1}`;
 
       if (existsSync(oldFile)) {
         if (i === this.maxFiles - 1) {
-          // Delete oldest file
+          
           try {
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            
             require("fs").unlinkSync(oldFile);
           } catch (error) {
             console.error("Failed to delete old log file:", error);
@@ -112,30 +102,29 @@ class FileTransport {
       }
     }
 
-    // Rename current file
+    
     try {
       renameSync(this.filePath, `${this.filePath}.1`);
     } catch (error) {
       console.error("Failed to rotate current log file:", error);
     }
 
-    // TODO: Implement compression if needed
-    // if (this.compress) {
-    //   compressFile(`${this.filePath}.1`);
-    // }
+    
+    
+    
+    
   }
 
-  /**
-   * Write log entry to file
-   */
+  
+
   write(entry: LogEntry): void {
     try {
-      // Check if rotation is needed
+      
       if (this.needsRotation()) {
         this.rotate();
       }
 
-      // Write log entry
+      
       const logLine = JSON.stringify(entry) + "\n";
 
       if (!existsSync(this.filePath)) {
@@ -149,16 +138,13 @@ class FileTransport {
   }
 }
 
-/**
- * Server Logger Class
- */
 class ServerLogger {
   private pino: PinoLogger;
   private fileTransports: Map<string, FileTransport>;
   private enabled: boolean;
 
   constructor() {
-    // Only enable on server side
+    
     if (!isServer()) {
       this.enabled = false;
       this.pino = {} as PinoLogger;
@@ -169,7 +155,7 @@ class ServerLogger {
     this.enabled = true;
     this.fileTransports = new Map();
 
-    // Initialize file transports if file logging is enabled
+    
     if (serverConfig.file) {
       try {
         this.fileTransports.set(
@@ -183,7 +169,7 @@ class ServerLogger {
       }
     }
 
-    // Initialize Pino with server configuration
+    
     this.pino = pino({
       level: serverConfig.level,
       formatters: {
@@ -204,9 +190,8 @@ class ServerLogger {
     });
   }
 
-  /**
-   * Create a child logger with additional context
-   */
+  
+
   child(context: LogContext): ServerLogger {
     const childLogger = new ServerLogger();
     childLogger.pino = this.pino.child(context);
@@ -214,21 +199,20 @@ class ServerLogger {
     return childLogger;
   }
 
-  /**
-   * Write to file transports
-   */
+  
+
   private writeToFile(entry: LogEntry): void {
     if (!serverConfig.file || !this.enabled) {
       return;
     }
 
-    // Write to combined log
+    
     const combinedTransport = this.fileTransports.get("combined");
     if (combinedTransport) {
       combinedTransport.write(entry);
     }
 
-    // Write errors to error log
+    
     if (entry.level === "error" || entry.level === "fatal") {
       const errorTransport = this.fileTransports.get("error");
       if (errorTransport) {
@@ -237,9 +221,8 @@ class ServerLogger {
     }
   }
 
-  /**
-   * Write HTTP logs to access log
-   */
+  
+
   private writeToAccessLog(entry: HttpLog): void {
     if (!serverConfig.file || !this.enabled) {
       return;
@@ -251,9 +234,8 @@ class ServerLogger {
     }
   }
 
-  /**
-   * Enrich log entry with context
-   */
+  
+
   private enrichContext(context?: LogContext): LogContext {
     return {
       environment: serverConfig.environment,
@@ -262,9 +244,8 @@ class ServerLogger {
     };
   }
 
-  /**
-   * Log a trace message
-   */
+  
+
   trace(
     message: string,
     context?: LogContext,
@@ -284,9 +265,8 @@ class ServerLogger {
     this.writeToFile(entry);
   }
 
-  /**
-   * Log a debug message
-   */
+  
+
   debug(
     message: string,
     context?: LogContext,
@@ -306,9 +286,8 @@ class ServerLogger {
     this.writeToFile(entry);
   }
 
-  /**
-   * Log an info message
-   */
+  
+
   info(
     message: string,
     context?: LogContext,
@@ -328,9 +307,8 @@ class ServerLogger {
     this.writeToFile(entry);
   }
 
-  /**
-   * Log a warning message
-   */
+  
+
   warn(
     message: string,
     context?: LogContext,
@@ -350,9 +328,8 @@ class ServerLogger {
     this.writeToFile(entry);
   }
 
-  /**
-   * Log an error
-   */
+  
+
   error(
     message: string,
     error?: unknown,
@@ -378,9 +355,8 @@ class ServerLogger {
     this.writeToFile(entry);
   }
 
-  /**
-   * Log a fatal error
-   */
+  
+
   fatal(
     message: string,
     error?: unknown,
@@ -406,9 +382,8 @@ class ServerLogger {
     this.writeToFile(entry);
   }
 
-  /**
-   * Log an HTTP request/response
-   */
+  
+
   logHttp(
     method: string,
     path: string,
@@ -443,9 +418,8 @@ class ServerLogger {
     this.writeToAccessLog(entry);
   }
 
-  /**
-   * Log an HTTP request with full details
-   */
+  
+
   logRequest(
     method: string,
     url: string,
@@ -465,9 +439,8 @@ class ServerLogger {
     });
   }
 
-  /**
-   * Log an HTTP response
-   */
+  
+
   logResponse(
     method: string,
     url: string,
@@ -479,9 +452,8 @@ class ServerLogger {
     this.logHttp(method, url, statusCode, responseTime, context, metadata);
   }
 
-  /**
-   * Log client logs received from frontend
-   */
+  
+
   logClientLogs(logs: LogEntry[], clientInfo?: Record<string, unknown>): void {
     if (!this.enabled) return;
 
@@ -495,7 +467,7 @@ class ServerLogger {
         },
       };
 
-      // Use appropriate log level
+      
       const level = entry.level || "info";
       const logMethod = this.pino[level] as (obj: unknown) => void;
 
@@ -507,13 +479,11 @@ class ServerLogger {
   }
 }
 
-// Export factory function to create logger instances
 export function createServerLogger(component?: string): ServerLogger {
   const logger = new ServerLogger();
   return component ? logger.child({ component }) : logger;
 }
 
-// Export singleton instance
 const serverLogger = new ServerLogger();
 
 export default serverLogger;

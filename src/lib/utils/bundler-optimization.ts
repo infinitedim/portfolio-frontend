@@ -1,16 +1,5 @@
-/**
- * Bundle optimization utilities for better performance
- */
 
-/**
- * Preloads critical font resources to improve page load performance
- * Adds link elements with rel="preload" for specified fonts
- * @example
- * ```ts
- * preloadCriticalResources();
- * // Preloads Fira Code and Cascadia Code fonts
- * ```
- */
+
 export const preloadCriticalResources = () => {
   const fonts = ["/fonts/fira-code.woff2", "/fonts/cascadia-code.woff2"];
 
@@ -25,15 +14,6 @@ export const preloadCriticalResources = () => {
   });
 };
 
-/**
- * Prefetches theme resources for faster loading when themes are switched
- * Uses rel="prefetch" to hint the browser to load resources during idle time
- * @example
- * ```ts
- * prefetchResources();
- * // Prefetches dracula, hacker, and cyberpunk theme JSON files
- * ```
- */
 export const prefetchResources = () => {
   const themes = ["dracula", "hacker", "cyberpunk"];
 
@@ -45,32 +25,6 @@ export const prefetchResources = () => {
   });
 };
 
-/**
- * Optimizes image loading by adding lazy loading to all images that don't have it
- * Improves initial page load by deferring off-screen images
- * @example
- * ```ts
- * optimizeImageLoading();
- * // All images without loading attribute get loading="lazy"
- * ```
- */
-/**
- * Dynamically imports a module with automatic retry logic
- * Useful for handling transient network failures during code splitting
- * @param importFn - Function that returns a promise from dynamic import
- * @param retries - Number of retry attempts (default: 3)
- * @param delay - Base delay in milliseconds between retries (default: 1000)
- * @returns Promise that resolves to the imported module
- * @throws Error if all retry attempts fail
- * @example
- * ```ts
- * const module = await dynamicImportWithRetry(
- *   () => import('./MyComponent'),
- *   3,
- *   1000
- * );
- * ```
- */
 export const optimizeImageLoading = () => {
   const images = document.querySelectorAll("img:not([loading])");
   images.forEach((img) => {
@@ -79,16 +33,6 @@ export const optimizeImageLoading = () => {
     }
   });
 };
-/**
- * Analyzes and logs bundle performance metrics in development mode
- * Reports load time, DOM content loaded time, and first paint information
- * Only runs in development environment
- * @example
- * ```ts
- * analyzeBundleSize();
- * // Logs: "📊 Bundle Performance Metrics: { loadTime: '1234ms', ... }"
- * ```
- */
 
 export const dynamicImportWithRetry = async <T>(
   importFn: () => Promise<T>,
@@ -110,15 +54,8 @@ export const analyzeBundleSize = () => {
   if (process.env.NODE_ENV !== "development") return;
 
   const performanceEntries = performance.getEntriesByType("navigation");
-  /**
-   * Marks unused exports for removal in production builds
-   * Shows a warning in non-production environments about tree-shaking
-   * @example
-   * ```ts
-   * markUnusedExports();
-   * // Warns about unused export removal in production
-   * ```
-   */
+  
+
   if (performanceEntries.length > 0) {
     const navEntry = performanceEntries[0] as PerformanceNavigationTiming;
     console.log("📊 Bundle Performance Metrics:", {
@@ -128,18 +65,6 @@ export const analyzeBundleSize = () => {
     });
   }
 };
-/**
- * Code splitting strategies for different optimization approaches
- * Provides dynamic import functions organized by route, feature, or size
- * @property byRoute - Import functions organized by application routes
- * @property byFeature - Import functions organized by feature modules
- * @property bySize - Import functions for large third-party libraries
- * @example
- * ```ts
- * const { home } = SplittingStrategies.byRoute();
- * const HomePage = await home();
- * ```
- */
 
 export const markUnusedExports = () => {
   if (process.env.NODE_ENV === "production") {
@@ -170,15 +95,6 @@ export const SplittingStrategies = {
   }),
 };
 
-/**
- * Adds DNS prefetch and preconnect resource hints to improve connection performance
- * Tells the browser to resolve DNS and establish connections early
- * @example
- * ```ts
- * addResourceHints();
- * // Adds dns-prefetch for fonts.googleapis.com and preconnect for fonts.gstatic.com
- * ```
- */
 export const addResourceHints = () => {
   const dnsPrefetch = [
     "https://fonts.googleapis.com",
@@ -203,15 +119,6 @@ export const addResourceHints = () => {
   });
 };
 
-/**
- * Optimizes third-party script loading by deferring analytics and tracking scripts
- * Prevents blocking of main content by deferring non-critical scripts
- * @example
- * ```ts
- * optimizeThirdParty();
- * // All analytics/tracking scripts get defer attribute
- * ```
- */
 export const optimizeThirdParty = () => {
   const analytics = "[src*='analytics']";
   const tracking = "[src*='tracking']";
@@ -225,15 +132,6 @@ export const optimizeThirdParty = () => {
   });
 };
 
-/**
- * Optimizes memory usage by cleaning up event listeners and old localStorage items
- * Periodically checks for excessive event listeners and removes expired cache items
- * @example
- * ```ts
- * optimizeMemoryUsage();
- * // Starts periodic cleanup of listeners and storage
- * ```
- */
 export const optimizeMemoryUsage = () => {
   const cleanupListeners = () => {
     const unusedEvents = ["resize", "scroll", "touchmove"];
@@ -252,11 +150,8 @@ export const optimizeMemoryUsage = () => {
   const clearOldStorage = () => {
     const MS_IN_DAY = 24 * 60 * 60 * 1000;
 
-    /**
-     * @description Check if the data is a data with a timestamp
-     * @param {unknown} data - The data to check
-     * @returns {boolean} True if the data is a data with a timestamp, false otherwise
-     */
+    
+
     function isDataWithTimestamp(data: unknown): data is {timestamp: number} {
       return (
         typeof data === "object" &&
@@ -295,16 +190,6 @@ export const optimizeMemoryUsage = () => {
   });
 };
 
-/**
- * Initializes all bundle optimization strategies
- * Orchestrates preloading, prefetching, and optimization of resources
- * Automatically runs based on document ready state
- * @example
- * ```ts
- * initBundleOptimizations();
- * // Applies all optimization strategies
- * ```
- */
 export const initBundleOptimizations = () => {
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {

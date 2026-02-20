@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ThemeSwitcher } from "../theme-switcher";
 
-// Mock theme hook
 const mockChangeTheme = vi.fn(() => true);
 const mockAvailableThemes = ["dark", "light", "terminal"];
 
@@ -15,7 +14,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock AnimatedButton
 vi.mock("@/components/atoms/shared/button", () => ({
   AnimatedButton: ({
     children,
@@ -83,7 +81,7 @@ describe("ThemeSwitcher", () => {
       }
       render(<ThemeSwitcher />);
 
-      // Use "terminal" - it's a valid ThemeName; "light"/"dark" are not in ThemeName so changeTheme wouldn't be called
+      
       const terminalButton = screen.getByText("terminal");
       fireEvent.click(terminalButton);
 

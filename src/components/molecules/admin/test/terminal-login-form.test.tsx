@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TerminalLoginForm } from "../terminal-login-form";
 
-// Mock theme config
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -16,7 +15,6 @@ const mockThemeConfig = {
   },
 };
 
-// Mock auth context
 const mockLogin = vi.fn();
 vi.mock("@/lib/auth/auth-context", () => ({
   useAuth: () => ({
@@ -24,7 +22,6 @@ vi.mock("@/lib/auth/auth-context", () => ({
   }),
 }));
 
-// Mock i18n hook
 const mockT = vi.fn((key: string) => {
   const translations: Record<string, string> = {
     loading: "Loading...",
@@ -418,15 +415,15 @@ describe("TerminalLoginForm", () => {
       const passwordInput = screen.getByPlaceholderText("Enter your password");
       const submitButton = screen.getByText("Submit");
 
-      // Trigger error
+      
       fireEvent.change(emailInput, { target: { value: "test@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "wrong" } });
       fireEvent.click(submitButton);
 
-      // Clear error by typing
+      
       fireEvent.change(emailInput, { target: { value: "new@example.com" } });
 
-      // Error should be cleared (component should re-render)
+      
       expect(emailInput).toBeInTheDocument();
     });
   });

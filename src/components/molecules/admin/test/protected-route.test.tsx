@@ -3,7 +3,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ProtectedRoute } from "../protected-route";
 
-// Mock Next.js navigation
 const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -16,7 +15,6 @@ vi.mock("next/navigation", () => ({
   }),
 }));
 
-// Mock auth context
 const mockUseAuth = vi.fn();
 vi.mock("@/lib/auth/auth-context", () => ({
   useAuth: () => mockUseAuth(),
@@ -178,7 +176,7 @@ describe("ProtectedRoute", () => {
         </ProtectedRoute>,
       );
 
-      // Initially loading
+      
       mockUseAuth.mockReturnValue({
         isAuthenticated: false,
         isLoading: true,
@@ -190,7 +188,7 @@ describe("ProtectedRoute", () => {
       );
       expect(screen.getByText("Checking authentication...")).toBeInTheDocument();
 
-      // Then authenticated
+      
       mockUseAuth.mockReturnValue({
         isAuthenticated: true,
         isLoading: false,
@@ -215,7 +213,7 @@ describe("ProtectedRoute", () => {
         </ProtectedRoute>,
       );
 
-      // Initially loading
+      
       mockUseAuth.mockReturnValue({
         isAuthenticated: false,
         isLoading: true,
@@ -227,7 +225,7 @@ describe("ProtectedRoute", () => {
       );
       expect(screen.getByText("Checking authentication...")).toBeInTheDocument();
 
-      // Then unauthenticated
+      
       mockUseAuth.mockReturnValue({
         isAuthenticated: false,
         isLoading: false,

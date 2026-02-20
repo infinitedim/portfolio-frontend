@@ -6,11 +6,6 @@ import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
 import { authService } from "@/lib/auth/auth-service";
 
-/**
- * Admin registration page component
- * Only works if no admin exists in the database
- * @returns Registration page with terminal-themed form
- */
 export default function AdminRegisterPage() {
   const { themeConfig } = useTheme();
   const router = useRouter();
@@ -46,7 +41,7 @@ export default function AdminRegisterPage() {
     e.preventDefault();
     setError(null);
 
-    // Validation
+    
     if (!email || !password || !confirmPassword) {
       setError("Email and password are required");
       return;
@@ -117,7 +112,7 @@ export default function AdminRegisterPage() {
             boxShadow: `0 4px 20px ${themeConfig.colors.border}20`,
           }}
         >
-          {/* Terminal Window Header */}
+          
           <div
             className="flex items-center justify-between p-3 border-b"
             style={{ borderColor: themeConfig.colors.border }}
@@ -168,7 +163,7 @@ export default function AdminRegisterPage() {
             </button>
           </div>
 
-          {/* Content */}
+          
           <div className="p-6">
             <div className="mb-6">
               <h1
@@ -213,7 +208,7 @@ export default function AdminRegisterPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Email Field */}
+                
                 <div>
                   <label
                     htmlFor="email"
@@ -242,7 +237,7 @@ export default function AdminRegisterPage() {
                   />
                 </div>
 
-                {/* First Name Field */}
+                
                 <div>
                   <label
                     htmlFor="firstName"
@@ -270,7 +265,7 @@ export default function AdminRegisterPage() {
                   />
                 </div>
 
-                {/* Last Name Field */}
+                
                 <div>
                   <label
                     htmlFor="lastName"
@@ -298,7 +293,7 @@ export default function AdminRegisterPage() {
                   />
                 </div>
 
-                {/* Password Field */}
+                
                 <div>
                   <label
                     htmlFor="password"
@@ -337,7 +332,7 @@ export default function AdminRegisterPage() {
                   </div>
                 </div>
 
-                {/* Confirm Password Field */}
+                
                 <div>
                   <label
                     htmlFor="confirmPassword"
@@ -365,7 +360,7 @@ export default function AdminRegisterPage() {
                   />
                 </div>
 
-                {/* Submit Button */}
+                
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -382,7 +377,7 @@ export default function AdminRegisterPage() {
             )}
           </div>
 
-          {/* Footer */}
+          
           <div
             className="p-3 border-t text-xs text-center"
             style={{ borderColor: themeConfig.colors.border }}

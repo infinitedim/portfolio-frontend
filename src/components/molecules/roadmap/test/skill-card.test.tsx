@@ -4,7 +4,6 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { SkillCard } from "../skill-card";
 import type { RoadmapSkill } from "@/types/roadmap";
 
-// Mock theme hook
 const mockThemeConfig = {
   name: "default",
   colors: {
@@ -25,7 +24,6 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-// Mock formatTimestamp
 vi.mock("@/lib/utils/utils", () => ({
   formatTimestamp: (date: Date) => date.toLocaleDateString(),
 }));

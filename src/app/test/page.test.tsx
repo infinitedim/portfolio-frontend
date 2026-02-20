@@ -2,12 +2,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock Next.js modules
 vi.mock("next", () => ({
   Metadata: {},
 }));
 
-// Mock components
 vi.mock("@/components/organisms/terminal/terminal", () => ({
   Terminal: () => <div data-testid="terminal">Terminal Component</div>,
 }));
@@ -30,10 +28,6 @@ vi.mock("@/components/molecules/shared/home-terminal-header", () => ({
   ),
 }));
 
-// Mock Suspense - don't mock react, just test without Suspense mocking
-// Suspense will work normally in tests
-
-// Import after mocks
 import HomePage, { metadata } from "../page";
 
 describe("HomePage", () => {
@@ -168,7 +162,7 @@ describe("HomePage", () => {
       }
 
       const { container } = render(<HomePage />);
-      // Suspense should render children normally
+      
       expect(container).toBeTruthy();
     });
 

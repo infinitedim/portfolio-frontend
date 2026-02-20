@@ -29,7 +29,7 @@ describe("commandRegistry", () => {
       commandRegistry = await import("@/lib/commands/command-registry");
     }
 
-    // Extract commands from the module
+    
     createHelpCommand = commandRegistry.createHelpCommand;
     aboutCommand = commandRegistry.aboutCommand;
     projectsCommand = commandRegistry.projectsCommand;
@@ -127,7 +127,7 @@ describe("commandRegistry", () => {
       if (typeof window === "undefined") {
         return;
       }
-      // Mock localStorage
+      
       Object.defineProperty(window, "localStorage", {
         value: {
           getItem: vi.fn().mockReturnValue("default"),

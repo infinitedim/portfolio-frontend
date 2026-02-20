@@ -12,16 +12,6 @@ export const revalidate = 3600;
 export const dynamic = "force-static";
 export const fetchCache = "default-cache";
 
-/**
- * Generates dynamic metadata for the projects page
- * @returns Metadata object with SEO optimization
- * @remarks
- * Dynamically generates metadata including:
- * - Project count and featured project names in description
- * - Keywords extracted from all project technologies
- * - Open Graph and Twitter Card data
- * - Canonical URL for SEO
- */
 export async function generateMetadata(): Promise<Metadata> {
   const projects = await getProjectsData();
   const featuredProjects = await getFeaturedProjects();
@@ -63,19 +53,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-/**
- * Projects page component displaying portfolio projects
- * @returns Projects page with featured and all projects sections
- * @remarks
- * Server-side rendered page featuring:
- * - Static generation with revalidation every hour
- * - Featured projects showcase section
- * - Complete projects grid with filtering capabilities
- * - Project statistics (total, featured, technologies, completed)
- * - Structured data for SEO with ItemList schema
- * - Technology tags from all projects
- * - Suspense boundaries for progressive loading
- */
 export default async function ProjectsPage(): Promise<JSX.Element> {
   const [allProjects, featuredProjects] = await Promise.all([
     getProjectsData(),
@@ -211,17 +188,6 @@ export default async function ProjectsPage(): Promise<JSX.Element> {
   );
 }
 
-/**
- * Projects list component rendering project cards in a grid
- * @param props - Component props
- * @param props.projects - Array of projects to display
- * @returns Grid layout of project cards
- * @remarks
- * Renders projects in a responsive grid:
- * - 1 column on mobile
- * - 2 columns on tablet
- * - 3 columns on desktop
- */
 async function ProjectsList({
   projects,
 }: {

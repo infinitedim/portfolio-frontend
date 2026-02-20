@@ -1,12 +1,9 @@
-/**
- * Server logger tests
- * In jsdom (browser-like) environment, isServer() is false so logger is disabled.
- */
+
+
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createServerLogger, ServerLogger } from "../server-logger";
 import { LogLevel } from "../types";
 
-// Skip in Bun - uses pino which is not compatible with Bun test runner
 declare const Bun: unknown;
 const isBun = typeof Bun !== "undefined";
 

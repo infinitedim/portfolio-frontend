@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 
 import * as React from "react";
 import { generateId, useTimerManager, useMountRef } from "./utils/hooks-utils";
 
-// Toast types - defined locally since @/ui/toast doesn't exist
 export type ToastActionElement = React.ReactElement;
 export interface ToastProps {
   id?: string;
@@ -178,14 +177,6 @@ class ToastManager {
 
 let toastManager: ToastManager;
 
-/**
- * Returns the singleton instance of the toast manager
- *
- * Ensures only one toast manager exists across the application,
- * preventing duplicate toast state management.
- *
- * @returns {ToastManager} The singleton toast manager instance
- */
 function getToastManager(): ToastManager {
   if (!toastManager) {
     toastManager = new ToastManager();
@@ -197,54 +188,12 @@ export const reducer = (state: State, action: Action): State => {
   return getToastManager().reducer(state, action);
 };
 
-/**
- * Dispatches an action to update the toast state
- *
- * Central hub for all toast state changes. Calls the reducer to compute
- * new state and notifies all active listeners (useToast instances).
- *
- * @param {Action} action - The action to dispatch (ADD, UPDATE, DISMISS, or REMOVE)
- */
 function dispatch(action: Action) {
   getToastManager().dispatch(action);
 }
 
 type Toast = Omit<ToasterToast, "id">;
 
-/**
- * Imperatively create and display a toast notification
- *
- * Can be called from anywhere in the application to show toasts.
- * Supports various variants (default, destructive, success, etc.)
- *
- * @param {Toast} props - Toast configuration
- * @param {string} [props.title] - Toast title
- * @param {string} [props.description] - Toast description
- * @param {"default" | "destructive"} [props.variant] - Toast variant
- * @param {number} [props.duration] - Display duration in ms
- * @param {ToastActionElement} [props.action] - Action button element
- *
- * @returns {object} Toast control methods
- * @property {string} id - Unique toast ID
- * @property {Function} dismiss - Dismiss this toast
- * @property {Function} update - Update this toast's properties
- *
- * @example
- * ```tsx
- * // Simple toast
- * toast({ title: "Success", description: "Operation completed" });
- *
- * // Toast with action
- * const { id, dismiss } = toast({
- *   title: "Confirm",
- *   description: "Are you sure?",
- *   action: <Button onClick={() => confirm()}>Yes</Button>
- * });
- *
- * // Manually dismiss
- * dismiss();
- * ```
- */
 function toast(props: Toast) {
   const manager = getToastManager();
   const id = manager.genId();
@@ -275,37 +224,6 @@ function toast(props: Toast) {
   };
 }
 
-/**
- * React hook for toast state management and notifications
- *
- * Provides access to toast state and methods for managing toasts.
- * Automatically subscribes component to toast state changes with cleanup.
- * Handles visibility changes and beforeunload events for cleanup.
- *
- * @returns {object} Toast state and methods
- * @property {ToasterToast[]} toasts - Array of active toast notifications
- * @property {Function} toast - Function to create a new toast
- * @property {Function} dismiss - Function to dismiss toast(s) by ID
- *
- * @example
- * ```tsx
- * function MyComponent() {
- *   const { toasts, toast, dismiss } = useToast();
- *
- *   return (
- *     <div>
- *       <button onClick={() => toast({ title: "Hello!" })}>
- *         Show Toast
- *       </button>
- *
- *       {toasts.map(t => (
- *         <Toast key={t.id} {...t} />
- *       ))}
- *     </div>
- *   );
- * }
- * ```
- */
 function useToast() {
   const manager = getToastManager();
   const isMountedRef = useMountRef();

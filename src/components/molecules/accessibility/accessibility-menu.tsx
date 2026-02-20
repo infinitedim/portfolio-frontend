@@ -5,11 +5,6 @@ import { useAccessibility } from "@/components/organisms/accessibility/accessibi
 import { useTheme } from "@/hooks/use-theme";
 import type { ThemeName } from "@/types/theme";
 
-/**
- * Renders a menu with accessibility options for the user.
- * Allows users to adjust font size, toggle focus mode, and get information about high contrast and reduced motion settings.
- * @returns {JSX.Element} - The accessibility menu component.
- */
 export function AccessibilityMenu(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
   const {

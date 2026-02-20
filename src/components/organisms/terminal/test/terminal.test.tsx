@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { Terminal } from "../terminal";
 
-// Mock all dependencies
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: vi.fn(),
 }));
@@ -61,8 +60,8 @@ describe("Terminal", () => {
         expect(true).toBe(true);
         return;
       }
-      // Terminal component is very complex with many dependencies
-      // This test verifies the component can be imported and basic structure exists
+      
+      
       expect(Terminal).toBeDefined();
       expect(typeof Terminal).toBe("function");
     });

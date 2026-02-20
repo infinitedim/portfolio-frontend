@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { CustomizationService } from "@/lib/services/customization-service";
 
-// Simple localStorage mock
 const storage: Record<string, string> = {};
 const localStorageMock = {
   getItem: (k: string) =>
@@ -17,7 +16,6 @@ const localStorageMock = {
   },
 };
 
-// Mock document for DOM operations
 const mockRemove = vi.fn();
 const mockQuerySelectorAll = vi.fn(() => {
   return Array.from({ length: 0 }, () => ({ remove: mockRemove }));
@@ -38,7 +36,7 @@ describe("CustomizationService", () => {
       configurable: true,
     });
     
-    // Mock document if not available
+    
     if (typeof document !== "undefined") {
       Object.defineProperty(document, "querySelectorAll", {
         value: mockQuerySelectorAll,
@@ -61,20 +59,20 @@ describe("CustomizationService", () => {
     mockRemove.mockClear();
     localStorageMock.clear();
 
-    // Reset singleton instance to ensure clean state
-    // Reset singleton instance to ensure clean state
+    
+    
      
     (CustomizationService as any).instance = undefined;
   });
 
   it("returns built-in themes plus custom themes via getAllThemes", () => {
     const svc = CustomizationService.getInstance();
-    // Ensure no custom themes stored
+    
     localStorageMock.removeItem("terminal-custom-themes");
 
     const all = svc.getAllThemes();
     expect(Array.isArray(all)).toBe(true);
-    // built-in themes should be present
+    
     expect(all.length).toBeGreaterThan(0);
   });
 
@@ -85,7 +83,7 @@ describe("CustomizationService", () => {
     }
     const svc = CustomizationService.getInstance();
 
-    // Save a new custom theme
+    
     const saved = svc.saveCustomTheme({
       name: "My Theme",
       description: "A test theme",
@@ -104,27 +102,27 @@ describe("CustomizationService", () => {
     expect(saved).toHaveProperty("id");
     expect(saved.name).toBe("My Theme");
 
-    // Update theme
+    
     const updated = svc.updateCustomTheme(saved.id, { name: "My Theme v2" });
     expect(updated).toBe(true);
 
-    // Duplicate theme
+    
     const duplicate = svc.duplicateTheme(saved.id, "Copied Theme");
     expect(duplicate).not.toBeNull();
     expect(duplicate?.name).toBe("Copied Theme");
 
-    // Delete original
+    
     const deleted = svc.deleteCustomTheme(saved.id);
     expect(deleted).toBe(true);
 
-    // Deleting again should return false
+    
     expect(svc.deleteCustomTheme(saved.id)).toBe(false);
   });
 
   it("manages settings and resetToDefaults", () => {
     const svc = CustomizationService.getInstance();
 
-    // Set some settings
+    
     svc.saveSettings({ currentTheme: "matrix" } as any);
 
     const settings = svc.getSettings();
@@ -132,7 +130,7 @@ describe("CustomizationService", () => {
 
     svc.resetToDefaults();
 
-    // After reset, settings should be default
+    
     const after = svc.getSettings();
     expect(after.currentTheme).toBe("dark");
   });
