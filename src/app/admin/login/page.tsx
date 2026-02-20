@@ -38,10 +38,8 @@ export default function AdminLoginPage() {
         color: themeConfig.colors.text,
       }}
     >
-      { }
       <TerminalHeader />
 
-      { }
       <div className="flex-1 flex items-center justify-center p-4">
         <div
           className="w-full max-w-md"
@@ -52,7 +50,6 @@ export default function AdminLoginPage() {
             boxShadow: `0 4px 20px ${themeConfig.colors.border}20`,
           }}
         >
-          { }
           <div
             className="flex items-center justify-between p-3 border-b"
             style={{ borderColor: themeConfig.colors.border }}
@@ -80,7 +77,6 @@ export default function AdminLoginPage() {
               </span>
             </div>
 
-            { }
             <button
               onClick={handleBack}
               onMouseEnter={() => setIsBackHovered(true)}
@@ -104,7 +100,6 @@ export default function AdminLoginPage() {
             </button>
           </div>
 
-          { }
           <div className="p-6">
             <div className="mb-6">
               <h1
@@ -127,7 +122,6 @@ export default function AdminLoginPage() {
             />
           </div>
 
-          { }
           <div
             className="p-3 border-t text-xs text-center"
             style={{ borderColor: themeConfig.colors.border }}

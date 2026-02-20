@@ -232,7 +232,6 @@ export function TerminalLoadingProgress({
       aria-label="Loading files"
       suppressHydrationWarning={true}
     >
-      { }
       <div
         className="text-center border-b pb-3 mb-4"
         style={{
@@ -247,7 +246,6 @@ export function TerminalLoadingProgress({
           <span className="text-lg font-bold">Terminal Portfolio</span>
         </div>
 
-        { }
         <div className="w-full bg-gray-800 rounded-full h-2 mb-2">
           <div
             className="h-2 rounded-full transition-all duration-300 ease-out"
@@ -259,7 +257,6 @@ export function TerminalLoadingProgress({
           />
         </div>
 
-        { }
         <div className="flex items-center justify-between text-xs">
           <span style={{ color: themeConfig.colors.muted }}>
             {systemInfo || "Initializing..."}
@@ -271,7 +268,6 @@ export function TerminalLoadingProgress({
         </div>
       </div>
 
-      { }
       <div className="space-y-1">
         {loadingFiles.map((file, index) => {
           const isCurrentFile = index === currentFileIndex;
@@ -340,7 +336,6 @@ export function TerminalLoadingProgress({
         })}
       </div>
 
-      { }
       {isComplete && (
         <div
           className="mt-6 pt-4 border-t"

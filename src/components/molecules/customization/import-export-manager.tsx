@@ -108,7 +108,6 @@ export function ImportExportManager({
   return (
     <div className="h-full p-4 overflow-y-auto">
       <div className="max-w-2xl space-y-6">
-        { }
         <div>
           <h3
             className="text-lg font-bold mb-4"
@@ -191,7 +190,6 @@ export function ImportExportManager({
           </div>
         </div>
 
-        { }
         <div>
           <h3
             className="text-lg font-bold mb-4"
@@ -294,7 +292,6 @@ export function ImportExportManager({
           </div>
         </div>
 
-        { }
         <div>
           <h3
             className="text-lg font-bold mb-4"
@@ -367,7 +364,6 @@ export function ImportExportManager({
           </div>
         </div>
 
-        { }
         <div
           className="p-4 rounded border"
           style={{

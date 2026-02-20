@@ -21,7 +21,7 @@ const logSources = ["system", "auth", "database", "api", "frontend"] as const;
 
 export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, _setIsPaused] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLevels, setSelectedLevels] = useState<Set<string>>(
     new Set(logLevels),
@@ -144,11 +144,11 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
     });
   };
 
-  const clearLogs = () => {
+  const _clearLogs = () => {
     setLogs([]);
   };
 
-  const exportLogs = () => {
+  const _exportLogs = () => {
     const logText = filteredLogs
       .map(
         (log) =>
@@ -167,7 +167,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
 
   return (
     <div className="space-y-6">
-      
+
       <div
         className="p-4 border rounded"
         style={{
@@ -183,11 +183,11 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
             >
               logs@portfolio:~$
             </span>
-            <span className="text-sm opacity-70">./tail -f logs
-
-}
+            <span className="text-sm opacity-70">./tail -f logs</span>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          
+
           <div>
             <div className="text-xs opacity-70 mb-2">Search</div>
             <input
@@ -204,7 +204,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
             />
           </div>
 
-          
+
           <div>
             <div className="text-xs opacity-70 mb-2">Log Levels</div>
             <div className="flex flex-wrap gap-1">
@@ -227,7 +227,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
             </div>
           </div>
 
-          
+
           <div>
             <div className="text-xs opacity-70 mb-2">Sources</div>
             <div className="flex flex-wrap gap-1">
@@ -248,7 +248,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
           </div>
         </div>
 
-        
+
         <div
           className="mt-4 pt-4 border-t"
           style={{ borderColor: themeConfig.colors.border }}
@@ -277,7 +277,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
         </div>
       </div>
 
-      
+
       <div
         className="border rounded"
         style={{
@@ -309,11 +309,11 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
                   key={log.id}
                   className="flex items-start space-x-2 hover:opacity-80 transition-opacity"
                 >
-                  <span className="opacity-50 min-w-[140px]">
+                  <span className="opacity-50 min-w-35">
                     {new Date(log.timestamp).toLocaleTimeString()}
                   </span>
                   <span
-                    className="min-w-[60px] font-bold"
+                    className="min-w-15 font-bold"
                     style={{ color: getLevelColor(log.level) }}
                   >
                     {log.level}

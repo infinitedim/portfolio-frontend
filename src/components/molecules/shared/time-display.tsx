@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, JSX } from "react";
+import { useState, useEffect, useCallback, JSX } from "react";
 import {
   LocationService,
   type LocationInfo,
@@ -21,8 +21,8 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
 
   const locationService = LocationService.getInstance();
 
-  
-  const fetchLocation = async () => {
+
+  const fetchLocation = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -39,7 +39,7 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [locationService]);
 
   useEffect(() => {
     fetchLocation();
@@ -48,7 +48,7 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
     }, 1000);
 
     return () => clearInterval(timeInterval);
-  }, [fetchLocation, locationService, setLocation]);
+  }, [fetchLocation]);
 
   const handleRefresh = () => {
     locationService.clearCache();
@@ -161,7 +161,6 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
       <div className="relative w-full max-w-md mx-4 bg-gray-900 rounded-lg border border-gray-700 shadow-2xl overflow-hidden">
-        { }
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5 text-blue-400" />
@@ -187,9 +186,7 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
           </div>
         </div>
 
-        { }
         <div className="p-6">
-          { }
           <div className="text-center mb-6">
             <div className="text-3xl font-mono font-bold text-white mb-2">
               {currentLocalTime}
@@ -202,7 +199,6 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
             )}
           </div>
 
-          { }
           <div className="space-y-4">
             <div className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg">
               <MapPin className="w-5 h-5 text-green-400 shrink-0" />
@@ -252,7 +248,6 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
             </div>
           </div>
 
-          { }
           <div className="mt-6 p-3 bg-gray-800/30 rounded-lg">
             <div className="text-center">
               <div className="text-sm text-gray-400 mb-1">UTC Time</div>

@@ -31,10 +31,10 @@ describe("useTheme", () => {
     mockLocalStorage.clear();
     vi.clearAllMocks();
 
-    
+
     if (typeof window !== "undefined") {
       try {
-        
+
         const descriptor = Object.getOwnPropertyDescriptor(window, "localStorage");
         if (descriptor?.configurable) {
           delete (window as { localStorage?: unknown }).localStorage;
@@ -44,13 +44,14 @@ describe("useTheme", () => {
           writable: true,
           configurable: true,
         });
-      } catch {
-        
-        
+      } catch (error) {
+        if (error instanceof Error) {
+          throw new Error(`Failed to mock localStorage: ${error.message}`);
+        }
       }
     }
 
-    
+
     if (!document.body) {
       const body = document.createElement("body");
       if (document.documentElement) {
@@ -350,7 +351,7 @@ describe("useTheme", () => {
 
       const { result } = renderHook(() => useTheme());
 
-      
+
       expect(typeof result.current.mounted).toBe("boolean");
     });
   });

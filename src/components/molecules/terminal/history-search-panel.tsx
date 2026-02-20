@@ -280,7 +280,6 @@ export function HistorySearchPanel({
 
   const renderAnalytics = () => (
     <div className="space-y-4">
-      { }
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div
           className="p-3 rounded border text-center"
@@ -357,7 +356,6 @@ export function HistorySearchPanel({
         </div>
       </div>
 
-      { }
       <div
         className="p-4 rounded border"
         style={{ borderColor: themeConfig.colors.border }}
@@ -395,7 +393,6 @@ export function HistorySearchPanel({
         </div>
       </div>
 
-      { }
       <div
         className="p-4 rounded border"
         style={{ borderColor: themeConfig.colors.border }}
@@ -431,20 +428,21 @@ export function HistorySearchPanel({
   );
 
   return (
-    
+
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${className}`}
       style={{ backgroundColor: `${themeConfig.colors.bg}e6` }}
-      onClick={onClose}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       onKeyDown={(e) => {
         if (e.key === "Escape") {
           onClose();
         }
       }}
-      role="dialog"
-      aria-modal="true"
-      tabIndex={-1}
+      role="button"
+      aria-label="Close dialog"
+      tabIndex={0}
     >
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={containerRef}
         className="w-full max-w-4xl max-h-[90vh] flex flex-col rounded-lg border shadow-2xl"
@@ -452,13 +450,11 @@ export function HistorySearchPanel({
           backgroundColor: themeConfig.colors.bg,
           borderColor: themeConfig.colors.border,
         }}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleKeyDown}
         role="dialog"
         aria-labelledby="history-panel-title"
         tabIndex={-1}
+        onKeyDown={handleKeyDown}
       >
-        { }
         <div
           className="flex items-center justify-between p-4 border-b"
           style={{ borderColor: themeConfig.colors.border }}
@@ -472,7 +468,6 @@ export function HistorySearchPanel({
               🔍 Command History
             </h3>
 
-            { }
             <div className="flex gap-1">
               {[
                 { id: "search", label: "Search", icon: "🔍" },
@@ -546,13 +541,11 @@ export function HistorySearchPanel({
           </div>
         </div>
 
-        { }
         {activeTab === "search" && (
           <div
             className="p-4 border-b space-y-3"
             style={{ borderColor: themeConfig.colors.border }}
           >
-            { }
             <input
               ref={searchInputRef}
               type="text"
@@ -566,7 +559,6 @@ export function HistorySearchPanel({
               }}
             />
 
-            { }
             <div className="flex flex-wrap gap-3">
               <select
                 value={searchOptions.category || ""}
@@ -638,7 +630,6 @@ export function HistorySearchPanel({
           </div>
         )}
 
-        { }
         <div className="flex-1 overflow-y-auto p-4">
           {activeTab === "search" && (
             <div className="space-y-2">
@@ -675,7 +666,6 @@ export function HistorySearchPanel({
           {activeTab === "analytics" && renderAnalytics()}
         </div>
 
-        { }
         <div
           className="px-4 py-3 border-t text-xs flex items-center justify-between"
           style={{

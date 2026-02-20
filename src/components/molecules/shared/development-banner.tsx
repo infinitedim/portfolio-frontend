@@ -18,30 +18,30 @@ export function DevelopmentBanner(): JSX.Element | null {
     openIssues: 2,
   });
 
-  
+
   const testCoverage = useMemo(() => {
-    
-    
-    
-    
+
+
+
+
     const totalSourceFiles = 165;
     const totalTestFiles = 44;
     const totalTestCases = 871;
-    
-    
-    
+
+
+
     const filesThatShouldHaveTests = Math.round(totalSourceFiles * 0.8);
     const fileCoverage = Math.min(100, Math.round((totalTestFiles / filesThatShouldHaveTests) * 100));
-    
-    
-    
-    
+
+
+
+
     const estimatedTestCasesNeeded = filesThatShouldHaveTests * 12;
     const scenarioCoverage = Math.min(100, Math.round((totalTestCases / estimatedTestCasesNeeded) * 100));
-    
-    
+
+
     const totalCoverage = Math.round((fileCoverage * 0.4) + (scenarioCoverage * 0.6));
-    
+
     return {
       fileCoverage,
       scenarioCoverage,
@@ -49,15 +49,15 @@ export function DevelopmentBanner(): JSX.Element | null {
     };
   }, []);
 
-  
+
   const developmentProgress = useMemo(() => {
-    
-    
-    
-    
-    
-    const baseProgress = 50; 
-    const progressFromTests = Math.round(testCoverage.totalCoverage * 0.3); 
+
+
+
+
+
+    const baseProgress = 50;
+    const progressFromTests = Math.round(testCoverage.totalCoverage * 0.3);
     const totalProgress = Math.min(100, baseProgress + progressFromTests);
     return totalProgress;
   }, [testCoverage]);
@@ -80,8 +80,8 @@ export function DevelopmentBanner(): JSX.Element | null {
 
   if (!isVisible) return null;
 
-  
-  const getLoadingDots = () => {
+
+  const _getLoadingDots = () => {
     return ".".repeat(animationPhase).padEnd(3, " ");
   };
 
@@ -121,7 +121,6 @@ export function DevelopmentBanner(): JSX.Element | null {
       }}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        { }
         <div className="flex items-center gap-4">
           <div
             className="flex items-center gap-2 px-3 py-1 rounded border transition-all duration-300"
@@ -136,7 +135,6 @@ export function DevelopmentBanner(): JSX.Element | null {
           </div>
 
           <div className="hidden lg:flex items-center gap-4">
-            { }
             <div className="flex items-center gap-2">
               <span className="opacity-70">Progress:</span>
               <span style={{ color: themeConfig.colors.accent }}>
@@ -148,7 +146,6 @@ export function DevelopmentBanner(): JSX.Element | null {
               )}
             </div>
 
-            { }
             <div className="flex items-center gap-2">
               <span className="opacity-70">Tests:</span>
               <span style={{ color: getStatusColor("success") }}>
@@ -157,7 +154,6 @@ export function DevelopmentBanner(): JSX.Element | null {
               {getProgressBar(metrics.testCoverage, getStatusColor("success"))}
             </div>
 
-            { }
             <div className="flex items-center gap-2">
               <span className="opacity-70">Perf:</span>
               <span style={{ color: getStatusColor("success") }}>
@@ -171,7 +167,6 @@ export function DevelopmentBanner(): JSX.Element | null {
           </div>
         </div>
 
-        { }
         <div className="hidden md:flex items-center gap-4">
           <div className="flex items-center gap-2">
             <span className="opacity-70">Build:</span>
@@ -223,7 +218,6 @@ export function DevelopmentBanner(): JSX.Element | null {
           </div>
         </div>
 
-        { }
         <div className="flex items-center gap-4">
           <button
             onClick={() => setIsVisible(false)}

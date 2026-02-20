@@ -124,7 +124,6 @@ export function HomeTerminalHeader(): JSX.Element {
         color: themeConfig.colors.text,
       }}
     >
-      { }
       <div className="flex items-center space-x-3">
         <div className="flex items-center space-x-2">
           <span
@@ -199,7 +198,6 @@ export function HomeTerminalHeader(): JSX.Element {
         </div>
       </div>
 
-      { }
       <div className="flex items-center space-x-2">
         <span
           className="font-bold"
@@ -210,7 +208,6 @@ export function HomeTerminalHeader(): JSX.Element {
         <span className="opacity-50">v2.0.0</span>
       </div>
 
-      { }
       <div className="flex items-center space-x-3">
         <div className="flex items-center space-x-2">
           <span className="opacity-70">Lang:</span>
@@ -266,7 +263,6 @@ export function HomeTerminalHeader(): JSX.Element {
           <span>{formatTime(currentTime)}</span>
         </div>
 
-        { }
         <LanguageSwitcher
           variant="dropdown"
           showNative={false}

@@ -169,7 +169,6 @@ export function CustomizationManager({
           color: themeConfig.colors.text,
         }}
       >
-        { }
         <div
           className="flex items-center justify-between p-4 border-b"
           style={{ borderColor: themeConfig.colors.border }}
@@ -200,7 +199,6 @@ export function CustomizationManager({
           </button>
         </div>
 
-        { }
         <div
           className="flex border-b overflow-x-auto"
           style={{ borderColor: themeConfig.colors.border }}
@@ -242,7 +240,6 @@ export function CustomizationManager({
           ))}
         </div>
 
-        { }
         <div className="flex-1 overflow-hidden">
           {isLoading ? (
             <div className="flex items-center justify-center h-full p-6">
@@ -297,7 +294,6 @@ export function CustomizationManager({
           )}
         </div>
 
-        { }
         {notification && (
           <div
             className="absolute bottom-4 right-4 p-3 rounded-lg shadow-lg animate-in slide-in-from-right duration-300"

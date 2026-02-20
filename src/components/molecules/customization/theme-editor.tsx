@@ -27,7 +27,7 @@ export function ThemeEditor({
     setEditedTheme(theme);
   }, [theme]);
 
-  
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isColorRuleOpen) {
@@ -77,7 +77,7 @@ export function ThemeEditor({
     setPreviewMode(!previewMode);
   };
 
-  
+
   useEffect(() => {
     if (previewMode) {
       const root = document.documentElement;
@@ -202,7 +202,6 @@ export function ThemeEditor({
 
   return (
     <div className="h-full flex flex-col">
-      { }
       <div
         className="p-4 border-b"
         style={{ borderColor: themeConfig.colors.border }}
@@ -236,7 +235,6 @@ export function ThemeEditor({
           </div>
         </div>
 
-        { }
         {!theme.id && (
           <div
             className="mt-3 p-3 rounded border"
@@ -300,15 +298,17 @@ export function ThemeEditor({
                         }}
                         aria-label="Close dropdown"
                       />
-                      
+
                       <div
                         className="absolute z-50 w-full mt-1 rounded border shadow-lg overflow-hidden"
                         style={{
                           backgroundColor: themeConfig.colors.bg,
                           borderColor: themeConfig.colors.border,
                         }}
+                        role="presentation"
                         onMouseDown={(e) => e.stopPropagation()}
                         onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
                       >
                         {[
                           { value: "70-20-5-1-1-1-2", label: "70-20-5-1-1-1-2 (Balanced)", desc: "Balanced color distribution" },
@@ -413,7 +413,7 @@ export function ThemeEditor({
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-3">
-          
+
           <div className="mb-3">
             <h4
               className="font-medium mb-2"

@@ -36,10 +36,8 @@ export default function AdminDashboardPage(): JSX.Element {
           color: themeConfig.colors.text,
         }}
       >
-        { }
         <TerminalHeader />
 
-        { }
         <div className="flex-1 p-6">
           <div
             className="max-w-4xl mx-auto"
@@ -50,7 +48,6 @@ export default function AdminDashboardPage(): JSX.Element {
               boxShadow: `0 4px 20px ${themeConfig.colors.border}20`,
             }}
           >
-            { }
             <div
               className="flex items-center justify-between p-3 border-b"
               style={{ borderColor: themeConfig.colors.border }}
@@ -115,7 +112,6 @@ export default function AdminDashboardPage(): JSX.Element {
               </div>
             </div>
 
-            { }
             <div className="p-6">
               <div className="mb-6">
                 <h1
@@ -133,7 +129,6 @@ export default function AdminDashboardPage(): JSX.Element {
                 </p>
               </div>
 
-              { }
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div
                   className="p-4 rounded border"
@@ -216,7 +211,6 @@ export default function AdminDashboardPage(): JSX.Element {
                 </div>
               </div>
 
-              { }
               <div
                 className="p-4 rounded border"
                 style={{ borderColor: themeConfig.colors.border }}
@@ -276,7 +270,6 @@ export default function AdminDashboardPage(): JSX.Element {
               </div>
             </div>
 
-            { }
             <div
               className="p-3 border-t text-xs text-center"
               style={{ borderColor: themeConfig.colors.border }}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 
 interface LetterGlitchClientProps {
   glitchColors?: string[];
@@ -41,18 +41,18 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
   const charWidth = 10;
   const charHeight = 20;
 
-  const getRandomChar = () => {
+  const getRandomChar = useCallback(() => {
     return (
       lettersAndSymbols[Math.floor(Math.random() * lettersAndSymbols.length)] ||
       "A"
     );
-  };
+  }, [lettersAndSymbols]);
 
-  const getRandomColor = () => {
+  const getRandomColor = useCallback(() => {
     return (
       glitchColors[Math.floor(Math.random() * glitchColors.length)] || "#2b4539"
     );
-  };
+  }, [glitchColors]);
 
   const hexToRgb = (hex: string) => {
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -93,18 +93,21 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
     return { columns, rows };
   };
 
-  const initializeLetters = (columns: number, rows: number) => {
-    grid.current = { columns, rows };
-    const totalLetters = columns * rows;
-    letters.current = Array.from({ length: totalLetters }, () => ({
-      char: getRandomChar(),
-      color: getRandomColor(),
-      targetColor: getRandomColor(),
-      colorProgress: 1,
-    }));
-  };
+  const initializeLetters = useCallback(
+    (columns: number, rows: number) => {
+      grid.current = { columns, rows };
+      const totalLetters = columns * rows;
+      letters.current = Array.from({ length: totalLetters }, () => ({
+        char: getRandomChar(),
+        color: getRandomColor(),
+        targetColor: getRandomColor(),
+        colorProgress: 1,
+      }));
+    },
+    [getRandomChar, getRandomColor],
+  );
 
-  const resizeCanvas = () => {
+  const resizeCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const parent = canvas.parentElement;
@@ -126,7 +129,7 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
     const { columns, rows } = calculateGrid(rect.width, rect.height);
     initializeLetters(columns, rows);
     drawLetters();
-  };
+  }, [initializeLetters]);
 
   const drawLetters = () => {
     if (!context.current || !canvasRef.current || letters.current.length === 0)
@@ -149,7 +152,7 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
     });
   };
 
-  const updateLetters = () => {
+  const updateLetters = useCallback(() => {
     if (!letters.current || letters.current.length === 0) return;
 
     const updateCount = Math.max(1, Math.floor(letters.current.length * 0.05));
@@ -168,9 +171,9 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
         letters.current[index].colorProgress = 0;
       }
     }
-  };
+  }, [getRandomChar, getRandomColor, smooth]);
 
-  const handleSmoothTransitions = () => {
+  const handleSmoothTransitions = useCallback(() => {
     let needsRedraw = false;
     letters.current.forEach((letter) => {
       if (letter.colorProgress < 1) {
@@ -193,9 +196,9 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
     if (needsRedraw) {
       drawLetters();
     }
-  };
+  }, []);
 
-  const animate = () => {
+  const animate = useCallback(() => {
     const now = Date.now();
     if (now - lastGlitchTime.current >= glitchSpeed) {
       updateLetters();
@@ -208,7 +211,7 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
     }
 
     animationRef.current = requestAnimationFrame(animate);
-  };
+  }, [glitchSpeed, handleSmoothTransitions, smooth, updateLetters]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -237,8 +240,8 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
       }
       window.removeEventListener("resize", handleResize);
     };
-    
-  }, [glitchSpeed, smooth]);
+
+  }, [animate, glitchSpeed, resizeCanvas, smooth]);
 
   return (
     <div

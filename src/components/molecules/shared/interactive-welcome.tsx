@@ -52,7 +52,6 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
         backgroundColor: `${themeConfig.colors.bg}40`,
       }}
     >
-      { }
       <div className="text-center mb-6">
         <div
           className="text-lg font-bold mb-2"
@@ -69,7 +68,6 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
         </div>
       </div>
 
-      { }
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
         {quickCommands.map((cmd) => {
           const isHighlighted = 'highlight' in cmd && cmd.highlight;
@@ -123,7 +121,6 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
         })}
       </div>
 
-      { }
       <div className="flex items-center justify-between text-xs">
         <div
           className="opacity-60"

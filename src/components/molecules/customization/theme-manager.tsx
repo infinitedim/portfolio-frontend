@@ -268,7 +268,6 @@ export function ThemeManager({
 
   return (
     <div className="h-full flex flex-col">
-      { }
       <div
         className="p-4 border-b"
         style={{ borderColor: themeConfig.colors.border }}
@@ -344,7 +343,6 @@ export function ThemeManager({
         </div>
       </div>
 
-      { }
       <div className="flex-1 overflow-auto p-4">
         {filteredThemes.length === 0 ? (
           <div className="text-center py-12">
@@ -407,7 +405,6 @@ export function ThemeManager({
                       : "none",
                   }}
                 >
-                  { }
                   <div className="mb-3">
                     <div className="flex gap-1 mb-2">
                       {Object.entries(theme.colors)
@@ -426,7 +423,6 @@ export function ThemeManager({
                     </div>
                   </div>
 
-                  { }
                   <div className="mb-3">
                     <div className="flex items-center justify-between mb-1">
                       <h4
@@ -477,7 +473,6 @@ export function ThemeManager({
                     )}
                   </div>
 
-                  { }
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleApplyTheme(theme.id)}

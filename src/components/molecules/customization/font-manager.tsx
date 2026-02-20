@@ -240,13 +240,11 @@ export function FontManager({
 
   return (
     <div className="h-full flex">
-      { }
       <div
         className="w-1/2 border-r"
         style={{ borderColor: themeConfig.colors.border }}
       >
         <div className="p-4 space-y-4">
-          { }
           <div className="space-y-3">
             <div className="flex gap-2">
               <input
@@ -348,7 +346,6 @@ export function FontManager({
             </div>
           </div>
 
-          { }
           <div className="space-y-2 max-h-[60vh] overflow-y-auto">
             {filteredFonts.map((font) => (
               <div
@@ -418,7 +415,6 @@ export function FontManager({
                   </div>
                 </div>
 
-                { }
                 <div
                   className="text-sm mb-2 font-mono"
                   style={{
@@ -437,7 +433,6 @@ export function FontManager({
                   </div>
                 )}
 
-                { }
                 <div className="flex gap-2">
                   <button
                     onClick={(e) => {
@@ -477,11 +472,9 @@ export function FontManager({
         </div>
       </div>
 
-      { }
       <div className="w-1/2">
         {selectedFont ? (
           <div className="h-full flex flex-col">
-            { }
             <div
               className="p-4 border-b"
               style={{ borderColor: themeConfig.colors.border }}
@@ -525,7 +518,6 @@ export function FontManager({
                 </div>
               </div>
 
-              { }
               <div className="flex gap-4 text-xs opacity-75">
                 <span>Source: {selectedFont.source}</span>
                 <span>Weight: {selectedFont.weight}</span>
@@ -539,10 +531,8 @@ export function FontManager({
               </div>
             </div>
 
-            { }
             <div className="flex-1 p-4 overflow-y-auto">
               <div className="space-y-6">
-                { }
                 <div>
                   <h4
                     className="font-medium mb-3"
@@ -551,7 +541,6 @@ export function FontManager({
                     Font Preview
                   </h4>
                   <div className="space-y-4">
-                    { }
                     {[12, 14, 16, 18, 20].map((size) => (
                       <div
                         key={size}
@@ -577,7 +566,6 @@ export function FontManager({
                   </div>
                 </div>
 
-                { }
                 <div>
                   <h4
                     className="font-medium mb-3"
@@ -628,7 +616,6 @@ export function FontManager({
                   </div>
                 </div>
 
-                { }
                 <div>
                   <h4
                     className="font-medium mb-3"
@@ -672,7 +659,6 @@ export function FontManager({
                   </div>
                 </div>
 
-                { }
                 {selectedFont.ligatures && (
                   <div>
                     <h4

@@ -48,28 +48,28 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout>(null);
 
-  
+
   const toLocalPost = (post: BlogPost): LocalBlogPost => ({
     ...post,
-    tags: [], 
+    tags: [],
   });
 
-  
+
   const loadPosts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`${getApiUrl()}/api/blog?pageSize=50`, {
         headers: { Accept: "application/json" },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         const loadedPosts = (data.items || []).map(toLocalPost);
         setPosts(loadedPosts);
-        
-        
+
+
         if (loadedPosts.length > 0 && !currentPost) {
           loadDraft(loadedPosts[0]);
         }
@@ -85,13 +85,13 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   }, [currentPost]);
 
-  
+
   useEffect(() => {
     loadPosts();
-    
-  }, []);
 
-  
+  }, [loadPosts]);
+
+
   useEffect(() => {
     const timeoutId = autoSaveTimeoutRef.current;
     if (timeoutId) {
@@ -104,7 +104,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     };
   }, [title, content, currentPost]);
 
-  
+
   const generateSlug = (titleText: string): string => {
     return titleText
       .toLowerCase()
@@ -115,13 +115,13 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       .substring(0, 50);
   };
 
-  
+
   const saveDraft = async () => {
     if (!title.trim()) {
       setError("Title is required");
       return;
     }
-    
+
     const postSlug = slug.trim() || generateSlug(title);
     if (!postSlug) {
       setError("Slug is required");
@@ -130,7 +130,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
     setIsSaving(true);
     setError(null);
-    
+
     const token = authService.getAccessToken();
     if (!token) {
       setError("Please log in to save posts");
@@ -141,7 +141,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     try {
       const apiUrl = getApiUrl();
       const isUpdate = currentPost && !isNewPost;
-      
+
       const body = {
         title: title.trim(),
         slug: postSlug,
@@ -168,7 +168,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         const savedPost = await response.json();
         const localPost = toLocalPost(savedPost);
         localPost.tags = tags;
-        
+
         if (isUpdate) {
           setPosts((prev) =>
             prev.map((p) => (p.slug === currentPost.slug ? localPost : p))
@@ -176,7 +176,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         } else {
           setPosts((prev) => [localPost, ...prev]);
         }
-        
+
         setCurrentPost(localPost);
         setSlug(localPost.slug);
         setIsNewPost(false);
@@ -193,7 +193,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
-  
+
   const createNewDraft = () => {
     const newDraft: LocalBlogPost = {
       id: `new-${Date.now()}`,
@@ -218,7 +218,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setError(null);
   };
 
-  
+
   const loadDraft = (draft: LocalBlogPost) => {
     setCurrentPost(draft);
     setTitle(draft.title);
@@ -230,17 +230,17 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setError(null);
   };
 
-  
+
   const deletePost = async () => {
     if (!currentPost || isNewPost) return;
-    
+
     if (!confirm(`Delete "${currentPost.title}"? This cannot be undone.`)) {
       return;
     }
 
     setIsSaving(true);
     setError(null);
-    
+
     const token = authService.getAccessToken();
     if (!token) {
       setError("Please log in to delete posts");
@@ -262,8 +262,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
       if (response.ok) {
         setPosts((prev) => prev.filter((p) => p.slug !== currentPost.slug));
-        
-        
+
+
         const remaining = posts.filter((p) => p.slug !== currentPost.slug);
         if (remaining.length > 0) {
           loadDraft(remaining[0]);
@@ -293,10 +293,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
   };
 
-  
+
   const togglePublish = async () => {
     if (!currentPost) return;
-    
+
     const token = authService.getAccessToken();
     if (!token) {
       setError("Please log in to publish posts");
@@ -306,14 +306,14 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setIsSaving(true);
     setError(null);
 
-    
+
     if (isNewPost) {
       if (!title.trim()) {
         setError("Title is required");
         setIsSaving(false);
         return;
       }
-      
+
       const postSlug = slug.trim() || generateSlug(title);
       if (!postSlug) {
         setError("Slug is required");
@@ -329,7 +329,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           summary: summary.trim() || null,
           contentMd: content,
           contentHtml: renderMarkdownToHtml(content),
-          published: true, 
+          published: true,
         };
 
         const response = await fetch(`${apiUrl}/api/blog`, {
@@ -346,7 +346,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           const savedPost = await response.json();
           const localPost = toLocalPost(savedPost);
           localPost.tags = tags;
-          
+
           setPosts((prev) => [localPost, ...prev]);
           setCurrentPost(localPost);
           setSlug(localPost.slug);
@@ -365,7 +365,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       return;
     }
 
-    
+
     try {
       const response = await fetch(
         `${getApiUrl()}/api/blog/${currentPost.slug}`,
@@ -384,7 +384,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         const updatedPost = await response.json();
         const localPost = toLocalPost(updatedPost);
         localPost.tags = tags;
-        
+
         setPosts((prev) =>
           prev.map((p) => (p.slug === currentPost.slug ? localPost : p))
         );
@@ -401,7 +401,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
-  
+
   const renderMarkdownToHtml = (markdown: string): string => {
     return markdown
       .replace(/^### (.*$)/gim, "<h3>$1</h3>")
@@ -485,8 +485,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           className="p-3 border rounded border-red-500 bg-red-50 dark:bg-red-900/20"
         >
           <span className="text-sm text-red-700 dark:text-red-300">{error}</span>
-          <button 
-            onClick={() => setError(null)} 
+          <button
+            onClick={() => setError(null)}
             className="ml-2 text-red-500 hover:text-red-700"
           >
             ×
@@ -643,9 +643,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                     <button
                       key={post.id}
                       onClick={() => loadDraft(post)}
-                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${
-                        isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
-                      }`}
+                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
+                        }`}
                       style={{
                         borderColor: isSelected
                           ? themeConfig.colors.accent
@@ -681,7 +680,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           </div>
         </div>
 
-        { }
         <div className="lg:col-span-3">
           <div
             className="p-4 border rounded"
@@ -734,7 +732,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               )}
             </div>
 
-            { }
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">{t("blogSummary")}</div>
               <textarea
@@ -750,7 +747,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               />
             </div>
 
-            { }
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">{t("blogTags")}</div>
               <div className="flex items-center space-x-2 mb-2">
@@ -799,7 +795,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               </div>
             </div>
 
-            { }
             <div>
               <div className="text-xs opacity-70 mb-2">{t("blogContent")}</div>
               {isPreview ? (
@@ -829,7 +824,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               )}
             </div>
 
-            { }
             {!isPreview && (
               <div
                 className="mt-4 pt-4 border-t"

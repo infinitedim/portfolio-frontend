@@ -3,11 +3,11 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 describe("argParser", () => {
   let ArgumentParser: typeof import("@/lib/utils/arg-parser").ArgumentParser;
-  
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let ParsedArgs: typeof import("@/lib/utils/arg-parser").ArgumentParser;
 
   beforeEach(async () => {
-    
     if (typeof vi !== "undefined" && vi.unmock) {
       vi.unmock("@/lib/utils/arg-parser");
     }
@@ -15,16 +15,12 @@ describe("argParser", () => {
       vi.doUnmock("@/lib/utils/arg-parser");
     }
 
-    
-    
     let module;
     if (typeof vi !== "undefined" && vi.importActual) {
-      
       module = await vi.importActual<typeof import("@/lib/utils/arg-parser")>(
         "@/lib/utils/arg-parser",
       );
     } else {
-      
       module = await import("@/lib/utils/arg-parser");
     }
     ArgumentParser = module.ArgumentParser;
@@ -122,8 +118,8 @@ describe("argParser", () => {
     it("should parse command with positional arguments", () => {
       const result = ArgumentParser.parse("cp file1.txt file2.txt");
       expect(result.command).toBe("cp");
-      expect(result.subcommand).toBe("file1.txt"); 
-      expect(result.positional).toEqual(["file2.txt"]); 
+      expect(result.subcommand).toBe("file1.txt");
+      expect(result.positional).toEqual(["file2.txt"]);
     });
 
     it("should parse command with subcommand and positional arguments", () => {
@@ -173,7 +169,7 @@ describe("argParser", () => {
     it("should handle single hyphen as subcommand", () => {
       const result = ArgumentParser.parse("cat -");
       expect(result.command).toBe("cat");
-      expect(result.subcommand).toBe("-"); 
+      expect(result.subcommand).toBe("-");
       expect(result.positional).toEqual([]);
       expect(result.flags).toEqual([]);
     });
@@ -362,10 +358,10 @@ describe("argParser", () => {
     it("should handle command with mixed arguments order", () => {
       const result = ArgumentParser.parse("git -v commit --message file.txt");
       expect(result.command).toBe("git");
-      expect(result.subcommand).toBeUndefined(); 
+      expect(result.subcommand).toBeUndefined();
       expect(result.flags).toEqual(["v"]);
       expect(result.longFlags).toEqual(["message"]);
-      expect(result.positional).toEqual(["commit", "file.txt"]); 
+      expect(result.positional).toEqual(["commit", "file.txt"]);
     });
 
     it("should handle very long command", () => {

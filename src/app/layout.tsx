@@ -154,7 +154,6 @@ export default function RootLayout({
       suppressHydrationWarning={true}
     >
       <head>
-        { }
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -188,7 +187,6 @@ export default function RootLayout({
           }}
         />
 
-        { }
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

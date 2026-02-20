@@ -1,8 +1,7 @@
-
 "use client";
 
 import * as React from "react";
-import { generateId, useTimerManager, useMountRef } from "./utils/hooks-utils";
+import { useMountRef } from "./utils/hooks-utils";
 
 export type ToastActionElement = React.ReactElement;
 export interface ToastProps {
@@ -26,7 +25,7 @@ export type ToasterToast = ToastProps & {
   action?: ToastActionElement;
 };
 
-const actionTypes = {
+export const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",
   DISMISS_TOAST: "DISMISS_TOAST",

@@ -4,14 +4,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 describe("middleware", () => {
   let mockRequest: NextRequest;
-  
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockResponse: NextResponse;
 
   beforeEach(() => {
-    
     vi.clearAllMocks();
 
-    
     mockRequest = new NextRequest("http://127.0.0.1:3000", {
       method: "GET",
       headers: [
@@ -24,7 +23,6 @@ describe("middleware", () => {
       ],
     });
 
-    
     mockResponse = NextResponse.next();
   });
 
@@ -41,7 +39,7 @@ describe("middleware", () => {
     it("should return a NextResponse", () => {
       const result = middleware(mockRequest);
       expect(result).toBeDefined();
-      
+
       expect(result).toHaveProperty("headers");
       expect(result).toHaveProperty("cookies");
     });
@@ -348,13 +346,11 @@ describe("middleware", () => {
     });
 
     it("should handle missing environment variables", () => {
-      
       const originalOrigins = process.env.ALLOWED_ORIGINS;
       delete (process.env as any).ALLOWED_ORIGINS;
 
       expect(() => middleware(mockRequest)).not.toThrow();
 
-      
       if (originalOrigins) {
         process.env.ALLOWED_ORIGINS = originalOrigins;
       }

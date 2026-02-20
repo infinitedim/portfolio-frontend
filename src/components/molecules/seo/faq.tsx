@@ -72,7 +72,6 @@ export function FAQ({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      { }
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -80,12 +79,10 @@ export function FAQ({
         }}
       />
 
-      { }
       <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
         {title}
       </h2>
 
-      { }
       <div className="space-y-2">
         {items.map((item, index) => (
           <div

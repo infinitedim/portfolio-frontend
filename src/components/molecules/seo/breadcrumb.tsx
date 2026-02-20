@@ -35,7 +35,6 @@ export function Breadcrumb({
 
   return (
     <>
-      { }
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -43,7 +42,6 @@ export function Breadcrumb({
         }}
       />
 
-      { }
       <nav
         aria-label="Breadcrumb"
         className={`flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 ${className}`}

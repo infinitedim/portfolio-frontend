@@ -1,5 +1,3 @@
-
-
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
 const { LocationService } = await import("@/lib/location/location-service");
@@ -28,17 +26,16 @@ const sampleIpApiFallback = {
 describe("LocationService", () => {
   const originalFetch = globalThis.fetch;
 
-  
   const isRealService = () => {
     const svc = LocationService.getInstance();
     return (
       typeof svc.clearCache === "function" &&
-      typeof svc.fetchLocationFromService === "function"
+      typeof (svc as unknown as Record<string, unknown>)
+        .fetchLocationFromService === "function"
     );
   };
 
   beforeEach(() => {
-    
     const svc = LocationService.getInstance();
     if (typeof svc.clearCache === "function") {
       svc.clearCache();
@@ -46,12 +43,10 @@ describe("LocationService", () => {
   });
 
   afterEach(() => {
-    
     globalThis.fetch = originalFetch;
   });
 
   it("fetches location from primary service (ipapi.co)", async () => {
-    
     if (!isRealService()) {
       expect(true).toBe(true);
       return;
@@ -75,7 +70,6 @@ describe("LocationService", () => {
   });
 
   it("falls back to ip-api.com when primary fails", async () => {
-    
     if (!isRealService()) {
       expect(true).toBe(true);
       return;
@@ -99,7 +93,6 @@ describe("LocationService", () => {
   });
 
   it("returns null when both services fail", async () => {
-    
     if (!isRealService()) {
       expect(true).toBe(true);
       return;
@@ -115,7 +108,6 @@ describe("LocationService", () => {
   });
 
   it("getTimeInfo and formatOffset behave as expected", () => {
-    
     if (!isRealService()) {
       expect(true).toBe(true);
       return;
@@ -130,7 +122,6 @@ describe("LocationService", () => {
   });
 
   it("getWeatherEmoji returns a string and changes by hour", () => {
-    
     const svc = LocationService.getInstance();
     if (typeof svc.getWeatherEmoji !== "function") {
       expect(true).toBe(true);

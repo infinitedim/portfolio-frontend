@@ -42,18 +42,18 @@ export function CommandInput({
   getCommandSuggestions,
   getFrequentCommands,
 }: CommandInputProps): JSX.Element {
-  const { themeConfig, theme } = useTheme();
+  const { themeConfig } = useTheme();
 
-  const { validateInput, threatAlerts, isSecure } = useSecurity();
+  const { validateInput, threatAlerts } = useSecurity();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const actualInputRef = externalInputRef || inputRef;
   const measureRef = useRef<HTMLSpanElement>(null);
   const [showCursor, setShowCursor] = useState(true);
   const [showTabCompletion, setShowTabCompletion] = useState(false);
-  const [tabCompletionIndex, setTabCompletionIndex] = useState(0);
+  const [_tabCompletionIndex, setTabCompletionIndex] = useState(0);
   const [showSuggestions, setShowSuggestions] = useState(showOnEmpty);
-  const [suggestionTrigger, setSuggestionTrigger] = useState(false);
+  const [_suggestionTrigger, setSuggestionTrigger] = useState(false);
   const [securityWarning, setSecurityWarning] = useState<string | null>(null);
   const [cursorPosition, setCursorPosition] = useState(0);
   const [cursorIndex, setCursorIndex] = useState(0);
@@ -264,7 +264,7 @@ export function CommandInput({
 
       case "i":
       case "I":
-        
+
         if (e.ctrlKey) {
           e.preventDefault();
           setShowSuggestions(true);
@@ -404,7 +404,6 @@ export function CommandInput({
             enterKeyHint="send"
           />
 
-          { }
           <span
             ref={measureRef}
             className="absolute top-0 left-0 font-mono text-sm invisible whitespace-pre pointer-events-none"
@@ -419,7 +418,6 @@ export function CommandInput({
             }}
           />
 
-          { }
           {showCursor && !isProcessing && (
             <span
               className="absolute top-0 font-mono text-sm pointer-events-none select-none"
@@ -439,7 +437,6 @@ export function CommandInput({
             </span>
           )}
 
-          { }
           {securityWarning && (
             <div
               className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs px-2 py-1 rounded text-center"
@@ -457,7 +454,6 @@ export function CommandInput({
         </div>
       </div>
 
-      { }
       {showTabCompletion && (
         <TabCompletion
           input={value.split(" ").pop() || ""}
@@ -467,7 +463,6 @@ export function CommandInput({
         />
       )}
 
-      { }
       {showSuggestions && (
         <CommandSuggestions
           input={value}
@@ -486,7 +481,6 @@ export function CommandInput({
         />
       )}
 
-      { }
       <style jsx>{`
         @keyframes blink {
           0%,

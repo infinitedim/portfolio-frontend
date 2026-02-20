@@ -1,5 +1,3 @@
-
-
 function getApiUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 }
@@ -68,8 +66,6 @@ class AuthService {
     }
   }
 
-  
-
   private migrateFromLocalStorage(): void {
     if (typeof window === "undefined" || typeof localStorage === "undefined")
       return;
@@ -81,8 +77,6 @@ class AuthService {
       }
     });
   }
-
-  
 
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
@@ -140,8 +134,6 @@ class AuthService {
     }
   }
 
-  
-
   async refresh(): Promise<RefreshResponse> {
     if (!this.refreshToken) {
       return {
@@ -198,8 +190,6 @@ class AuthService {
     }
   }
 
-  
-
   async register(
     email: string,
     password: string,
@@ -250,8 +240,6 @@ class AuthService {
     }
   }
 
-  
-
   async logout(): Promise<boolean> {
     try {
       if (
@@ -274,18 +262,15 @@ class AuthService {
         });
       }
     } catch {
-      
+      void 0;
     }
 
     this.clearTokens();
     return true;
   }
 
-  
-
   async validate(): Promise<ValidateResponse> {
     if (!this.accessToken) {
-      
       if (this.refreshToken) {
         const refreshResult = await this.refresh();
         if (!refreshResult.success) {
@@ -339,10 +324,8 @@ class AuthService {
           user,
         };
       } else {
-        
         const refreshResult = await this.refresh();
         if (refreshResult.success) {
-          
           return this.validate();
         }
 
@@ -361,25 +344,17 @@ class AuthService {
     }
   }
 
-  
-
   isAuthenticated(): boolean {
     return !!this.accessToken && !!this.user;
   }
-
-  
 
   getCurrentUser(): AuthUser | null {
     return this.user;
   }
 
-  
-
   getAccessToken(): string | null {
     return this.accessToken;
   }
-
-  
 
   private clearTokens(): void {
     this.accessToken = null;
@@ -398,8 +373,6 @@ class AuthService {
       }
     }
   }
-
-  
 
   async initialize(): Promise<boolean> {
     if (this.accessToken && this.user) {

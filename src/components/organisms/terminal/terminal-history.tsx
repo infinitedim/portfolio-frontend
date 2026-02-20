@@ -33,7 +33,6 @@ export function TerminalHistory({
           className={`${!isReducedMotion ? "fade-in" : ""}`}
           style={{ animationDelay: `${index * 0.1}s` }}
         >
-          { }
           <div className="flex items-center gap-2 mb-2">
             <span
               className="font-bold"
@@ -50,7 +49,6 @@ export function TerminalHistory({
             </span>
           </div>
 
-          { }
           {entry.output && (
             <div className="ml-4 mb-4">
               <CommandOutput output={entry.output} />

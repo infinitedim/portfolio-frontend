@@ -12,17 +12,17 @@ const mockLogout = vi.fn();
 const mockRefresh = vi.fn();
 
 vi.mock("@/lib/auth/auth-service", () => {
-  
+
   let actual: any = {};
   try {
-    
+
     if (typeof require !== "undefined") {
-      
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       actual = require("@/lib/auth/auth-service");
     }
   } catch (e) {
     console.error(e);
-    
+
     actual = {};
   }
   return {
@@ -287,12 +287,12 @@ describe("AuthProvider", () => {
         </AuthProvider>,
       );
 
-      
+
       await waitFor(() => {
         expect(mockInitialize).toHaveBeenCalled();
       });
 
-      
+
       vi.advanceTimersByTime(14 * 60 * 1000);
 
       await waitFor(() => {

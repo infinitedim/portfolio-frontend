@@ -1,8 +1,6 @@
-
-
-globalThis.vi = {
+(globalThis as Record<string, unknown>).vi = {
   fn: (implementation?: (() => unknown) | undefined) => {
-    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockFn: any = implementation || (() => {});
 
     mockFn.mockReturnValue = (_value: unknown) => {
@@ -33,15 +31,9 @@ globalThis.vi = {
     return spy;
   },
   mock: (_modulePath: string, _factory?: () => unknown) => {
-    
-    
-    
-    
     return undefined;
   },
   hoisted: (factory: () => unknown) => {
-    
-    
     return factory();
   },
   stubGlobal: (name: string, value: unknown) => {
@@ -50,24 +42,12 @@ globalThis.vi = {
   restoreAllMocks: () => {},
   clearAllMocks: () => {},
   resetAllMocks: () => {},
-  clearAllTimers: () => {
-    
-  },
-  advanceTimersByTime: (_ms: number) => {
-    
-  },
-  runAllTimers: () => {
-    
-  },
-  useRealTimers: () => {
-    
-  },
-  useFakeTimers: () => {
-    
-  },
-  unstubAllGlobals: () => {
-    
-  },
+  clearAllTimers: () => {},
+  advanceTimersByTime: (_ms: number) => {},
+  runAllTimers: () => {},
+  useRealTimers: () => {},
+  useFakeTimers: () => {},
+  unstubAllGlobals: () => {},
 };
 
 globalThis.ResizeObserver = class MockResizeObserver {

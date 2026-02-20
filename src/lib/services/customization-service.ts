@@ -1,5 +1,3 @@
-
-
 import type {
   CustomFont,
   CustomTheme,
@@ -7,8 +5,8 @@ import type {
   CustomizationSettings,
   BackgroundSettings,
 } from "@/types/customization";
-import {themes} from "@/lib/themes/theme-config";
-import {fonts} from "@/lib/fonts/font-config";
+import { themes } from "@/lib/themes/theme-config";
+import { fonts } from "@/lib/fonts/font-config";
 
 export class CustomizationService {
   private static instance: CustomizationService;
@@ -138,7 +136,7 @@ export class CustomizationService {
       name: newName || `${originalTheme.name} (Copy)`,
       description: originalTheme.description,
       source: "custom",
-      colors: {...originalTheme.colors},
+      colors: { ...originalTheme.colors },
       tags: originalTheme.tags ? [...originalTheme.tags] : undefined,
     });
 
@@ -270,7 +268,6 @@ export class CustomizationService {
       createdAt: new Date(),
     };
 
-    
     if (fontData.url && typeof document !== "undefined") {
       const existingLink = document.querySelector(
         `link[href="${fontData.url}"]`,
@@ -330,7 +327,7 @@ export class CustomizationService {
       const parsed = JSON.parse(stored);
 
       if (typeof parsed === "object" && parsed !== null) {
-        return {...this.getDefaultSettings(), ...parsed};
+        return { ...this.getDefaultSettings(), ...parsed };
       }
 
       return this.getDefaultSettings();
@@ -344,7 +341,7 @@ export class CustomizationService {
     const storage = this.getStorage();
     if (!storage) return;
     const currentSettings = this.getSettings();
-    const updatedSettings = {...currentSettings, ...settings};
+    const updatedSettings = { ...currentSettings, ...settings };
 
     storage.setItem(this.SETTINGS_KEY, JSON.stringify(updatedSettings));
   }
@@ -376,7 +373,9 @@ export class CustomizationService {
     };
   }
 
-  async importThemes(file: File): Promise<{success: number; errors: string[]}> {
+  async importThemes(
+    file: File,
+  ): Promise<{ success: number; errors: string[] }> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
@@ -417,9 +416,15 @@ export class CustomizationService {
             }
           });
 
-          resolve({success, errors});
+          resolve({ success, errors });
         } catch (error) {
-          reject(new Error("Invalid theme file format"));
+          if (error instanceof Error) {
+            reject(
+              new Error(
+                `Invalid theme file format with error message : ${error.message}`,
+              ),
+            );
+          }
         }
       };
 
@@ -502,7 +507,7 @@ export class CustomizationService {
       const parsed = JSON.parse(stored);
 
       if (typeof parsed === "object" && parsed !== null) {
-        return {...this.getDefaultBackgroundSettings(), ...parsed};
+        return { ...this.getDefaultBackgroundSettings(), ...parsed };
       }
 
       return this.getDefaultBackgroundSettings();
@@ -516,7 +521,7 @@ export class CustomizationService {
     const storage = this.getStorage();
     if (!storage) return;
     const currentSettings = this.getBackgroundSettings();
-    const updatedSettings = {...currentSettings, ...settings};
+    const updatedSettings = { ...currentSettings, ...settings };
 
     storage.setItem(this.BACKGROUND_KEY, JSON.stringify(updatedSettings));
   }

@@ -32,18 +32,15 @@ describe("RoadmapService", () => {
   let RoadmapService: typeof import("@/lib/services/roadmap-service").RoadmapService;
 
   beforeEach(async () => {
-    
     const isolateModules =
       typeof vi !== "undefined" &&
       (vi as { isolateModules?: (fn: () => Promise<void>) => Promise<void> })
         .isolateModules;
     if (isolateModules) {
       await isolateModules(async () => {
-        
         if (vi.unmock) vi.unmock("@/lib/services/roadmap-service");
         if (vi.doUnmock) vi.doUnmock("@/lib/services/roadmap-service");
 
-        
         if (vi.importActual) {
           const module = await vi.importActual<
             typeof import("@/lib/services/roadmap-service")
@@ -55,31 +52,27 @@ describe("RoadmapService", () => {
         }
       });
     } else {
-      
       if (typeof vi !== "undefined") {
         if (vi.unmock) vi.unmock("@/lib/services/roadmap-service");
         if (vi.doUnmock) vi.doUnmock("@/lib/services/roadmap-service");
         if (vi.resetModules) vi.resetModules();
       }
 
-      
-      
       let module;
       if (typeof vi !== "undefined" && vi.importActual) {
-        
         module = await vi.importActual<
           typeof import("@/lib/services/roadmap-service")
         >("@/lib/services/roadmap-service");
       } else {
-        
-        
         if (typeof require !== "undefined" && require.cache) {
           try {
             const modulePath =
               require.resolve("@/lib/services/roadmap-service");
             delete require.cache[modulePath];
           } catch (_e) {
-            
+            throw new Error(
+              'Failed to resolve module "@/lib/services/roadmap-service"',
+            );
           }
         }
         module = await import("@/lib/services/roadmap-service");
@@ -87,10 +80,8 @@ describe("RoadmapService", () => {
       RoadmapService = module.RoadmapService;
     }
 
-    
     (RoadmapService as any).instance = undefined;
 
-    
     Object.defineProperty(globalThis, "fetch", {
       value: vi.fn(() =>
         Promise.resolve({
@@ -101,7 +92,7 @@ describe("RoadmapService", () => {
       writable: true,
       configurable: true,
     });
-    
+
     if (typeof window === "undefined") {
       Object.defineProperty(globalThis, "window", {
         value: {} as any,
@@ -112,7 +103,6 @@ describe("RoadmapService", () => {
   });
 
   afterEach(() => {
-    
     if (RoadmapService) {
       (RoadmapService as any).instance = undefined;
     }
@@ -120,16 +110,11 @@ describe("RoadmapService", () => {
   });
 
   it("initializes and loads fallback/api data", async () => {
-    
     (RoadmapService as any).instance = undefined;
     const svc = RoadmapService.getInstance();
 
-    
-    
     if (!svc) {
-      
-      
-      expect(true).toBe(true); 
+      expect(true).toBe(true);
       return;
     }
 
@@ -141,17 +126,11 @@ describe("RoadmapService", () => {
   });
 
   it("can get category progress and update skills", async () => {
-    
-    
     (RoadmapService as any).instance = undefined;
     const svc = RoadmapService.getInstance();
 
-    
-    
     if (!svc) {
-      
-      
-      expect(true).toBe(true); 
+      expect(true).toBe(true);
       return;
     }
 
@@ -160,17 +139,12 @@ describe("RoadmapService", () => {
     const cat = await svc.getCategoryProgress("frontend");
     expect(cat).not.toBeNull();
 
-    
-    
     if (cat && cat.id === "c1" && cat.name === "Cat") {
-      
-      
       expect(cat).not.toBeNull();
       return;
     }
 
     if (cat && cat.skills && cat.skills.length > 0) {
-      
       const skill = cat.skills[0];
       const updated = await svc.updateSkillProgress(skill.id, {
         status: "in-progress",
@@ -184,7 +158,6 @@ describe("RoadmapService", () => {
         expect(fetchedSkill.status).toBe("in-progress");
       }
     } else {
-      
       expect(cat).not.toBeNull();
     }
   });

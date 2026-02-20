@@ -69,13 +69,11 @@ export function CommandLoadingIndicator({
         color: themeConfig.colors.text,
       }}
     >
-      { }
       <div
         className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"
         style={{ borderColor: `${themeConfig.colors.accent} transparent` }}
       />
 
-      { }
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           {command && (
@@ -96,7 +94,6 @@ export function CommandLoadingIndicator({
         </div>
       </div>
 
-      { }
       <div className="flex gap-1">
         {[0, 1, 2].map((bar) => (
           <div

@@ -53,7 +53,6 @@ export const metadata: Metadata = {
 export default function HomePage(): JSX.Element {
   return (
     <>
-      { }
       <div className="sr-only">
         <h1>Terminal Portfolio - Full-Stack Developer</h1>
         <p>
@@ -95,7 +94,6 @@ export default function HomePage(): JSX.Element {
         </Suspense>
       </main>
 
-      { }
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

@@ -33,19 +33,19 @@ interface ExecutionPattern {
 }
 
 interface InteractiveCommandHistoryProps {
-  
+
   isVisible: boolean;
-  
+
   onCommandSelect: (command: string) => void;
-  
+
   onClose: () => void;
-  
+
   maxHeight?: string;
-  
+
   enableRealTime?: boolean;
-  
+
   showPatterns?: boolean;
-  
+
   enableReplay?: boolean;
 }
 
@@ -222,25 +222,27 @@ export function InteractiveCommandHistory({
   const patterns = commandPatterns();
 
   return (
-    
+
     <div
       ref={containerRef}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
       onClick={(e) => e.target === containerRef.current && onClose()}
       onKeyDown={(e) => e.key === "Escape" && onClose()}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Interactive Command History"
+      role="button"
+      aria-label="Close dialog"
+      tabIndex={0}
     >
       <div
         className="w-full max-w-6xl mx-4 rounded-lg border shadow-2xl overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Interactive Command History"
         style={{
           backgroundColor: themeConfig.colors.bg,
           borderColor: themeConfig.colors.border,
           maxHeight,
         }}
       >
-        { }
         <div
           className="px-6 py-4 border-b flex items-center justify-between"
           style={{
@@ -270,7 +272,6 @@ export function InteractiveCommandHistory({
           </div>
 
           <div className="flex items-center gap-3">
-            { }
             <select
               value={timelineConfig.groupBy}
               onChange={(e) =>
@@ -328,9 +329,7 @@ export function InteractiveCommandHistory({
         </div>
 
         <div className="flex h-full">
-          { }
           <div className="flex-1 overflow-y-auto p-6">
-            { }
             <div className="mb-6">
               <input
                 type="text"
@@ -346,7 +345,6 @@ export function InteractiveCommandHistory({
               />
             </div>
 
-            { }
             <div className="space-y-3">
               {entries.map((entry, index) => (
                 <div
@@ -376,7 +374,6 @@ export function InteractiveCommandHistory({
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
-                        { }
                         <div
                           className="w-3 h-3 rounded-full shrink-0"
                           style={{
@@ -386,7 +383,6 @@ export function InteractiveCommandHistory({
                           }}
                         />
 
-                        { }
                         <code
                           className="font-mono text-sm font-medium truncate"
                           style={{ color: themeConfig.colors.text }}
@@ -394,7 +390,6 @@ export function InteractiveCommandHistory({
                           {entry.command}
                         </code>
 
-                        { }
                         <span
                           className="px-2 py-1 text-xs rounded-full"
                           style={{
@@ -405,7 +400,6 @@ export function InteractiveCommandHistory({
                           {entry.category}
                         </span>
 
-                        { }
                         {entry.favorite && (
                           <span style={{ color: themeConfig.colors.warning }}>
                             ⭐
@@ -425,7 +419,6 @@ export function InteractiveCommandHistory({
                         )}
                       </div>
 
-                      { }
                       {entry.expanded && (
                         <div className="mt-4 pt-4 border-t space-y-3">
                           <div className="grid grid-cols-2 gap-4 text-sm">
@@ -481,7 +474,6 @@ export function InteractiveCommandHistory({
                             </div>
                           )}
 
-                          { }
                           <div className="flex items-center gap-3 pt-2">
                             <button
                               onClick={(e) => {
@@ -529,7 +521,6 @@ export function InteractiveCommandHistory({
                       )}
                     </div>
 
-                    { }
                     {index < entries.length - 1 && (
                       <div
                         className="w-px h-8 mt-6 ml-4"
@@ -565,7 +556,6 @@ export function InteractiveCommandHistory({
             </div>
           </div>
 
-          { }
           {showPatterns && patterns.length > 0 && (
             <div
               className="w-80 border-l overflow-y-auto p-6"
@@ -654,7 +644,6 @@ export function InteractiveCommandHistory({
                 ))}
               </div>
 
-              { }
               <div className="mt-6 pt-6 border-t">
                 <h5
                   className="font-medium mb-3"
@@ -696,7 +685,6 @@ export function InteractiveCommandHistory({
           )}
         </div>
 
-        { }
         <div
           className="px-6 py-3 border-t text-sm"
           style={{

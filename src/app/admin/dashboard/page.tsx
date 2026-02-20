@@ -228,22 +228,17 @@ export default function AdminDashboard(): JSX.Element {
         fontFamily: "JetBrains Mono, Consolas, Monaco, monospace",
       }}
     >
-      { }
       <TerminalHeader />
 
-      { }
       <div className="flex-1 flex">
-        { }
         <TerminalSidebar
           currentView={currentView}
           onViewChange={setCurrentView}
           themeConfig={themeConfig}
         />
 
-        { }
         <div className="flex-1 p-6 overflow-auto">
           <div className="max-w-6xl mx-auto">
-            { }
             <div className="mb-6">
               <div className="flex items-center space-x-2 mb-2">
                 <span
@@ -264,7 +259,6 @@ export default function AdminDashboard(): JSX.Element {
               </div>
             </div>
 
-            { }
             {renderCurrentView()}
           </div>
         </div>

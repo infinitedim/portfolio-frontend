@@ -36,7 +36,6 @@ export function TabCompletion({
         boxShadow: `0 8px 25px -5px ${themeConfig.colors.accent}30, 0 4px 10px -2px ${themeConfig.colors.accent}20`,
       }}
     >
-      { }
       <div
         className="px-3 py-2 text-xs font-mono border-b flex items-center justify-between"
         style={{
@@ -57,7 +56,6 @@ export function TabCompletion({
         </div>
       </div>
 
-      { }
       <div className="max-h-48 overflow-y-auto scrollbar-thin">
         {completions.map((completion) => (
           <button
@@ -112,7 +110,6 @@ export function TabCompletion({
         ))}
       </div>
 
-      { }
       <div
         className="px-3 py-2 text-xs text-center border-t"
         style={{

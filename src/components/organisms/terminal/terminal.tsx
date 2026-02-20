@@ -586,7 +586,6 @@ export function Terminal({
         style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
         suppressHydrationWarning={true}
       >
-        { }
         <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20" />
 
@@ -614,7 +613,6 @@ export function Terminal({
         style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
         suppressHydrationWarning={true}
       >
-        { }
         <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20" />
 
@@ -674,7 +672,6 @@ export function Terminal({
         <DevelopmentBanner />
         <AccessibilityMenu />
 
-        { }
         {backgroundSettings.type === "letter-glitch" &&
           backgroundSettings.letterGlitch && (
             <LetterGlitch
@@ -715,7 +712,6 @@ export function Terminal({
                 <ASCIIBanner />
               </div>
 
-              { }
               {showWelcome && history.length === 0 && !isTourActive && (
                 <InteractiveWelcome
                   onCommandSelect={handleWelcomeCommandSelect}
@@ -727,10 +723,8 @@ export function Terminal({
                 />
               )}
 
-              { }
               <TerminalHistory history={history} />
 
-              { }
               {isProcessing && (
                 <CommandLoadingIndicator
                   command={currentInput}
@@ -768,12 +762,10 @@ export function Terminal({
                 />
               </div>
 
-              { }
               <div ref={bottomRef} />
             </div>
           }
 
-          { }
           <div
             id="customization"
             tabIndex={-1}
@@ -781,13 +773,11 @@ export function Terminal({
             <CustomizationButton />
           </div>
         </div>
-        { }
         <CustomizationManager
           isOpen={showCustomizationManager}
           onClose={() => setShowCustomizationManager(false)}
         />
 
-        { }
         {notification && (
           <NotificationToast
             message={notification.message}

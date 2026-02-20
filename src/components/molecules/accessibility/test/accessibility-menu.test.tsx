@@ -45,16 +45,16 @@ function tryMockLocationReload() {
       });
       locationReloadMocked = true;
     } else {
-      
+
       try {
         vi.spyOn(window.location, "reload").mockImplementation(mockReload);
         locationReloadMocked = true;
       } catch {
-        
+        void 0;
       }
     }
   } catch {
-    
+    void 0;
   }
 }
 
@@ -133,11 +133,11 @@ describe("AccessibilityMenu", () => {
       renderWithProvider();
       const button = screen.getByLabelText("Open accessibility menu");
 
-      
+
       fireEvent.click(button);
       expect(screen.getByText("Accessibility Options")).toBeInTheDocument();
 
-      
+
       fireEvent.click(button);
       expect(screen.queryByText("Accessibility Options")).not.toBeInTheDocument();
     });
@@ -186,7 +186,7 @@ describe("AccessibilityMenu", () => {
       expect(smallButton).toBeInTheDocument();
       fireEvent.click(smallButton);
 
-      
+
       await waitFor(() => {
         const updatedButton = screen.getByLabelText("Set font size to small");
         expect(updatedButton).toBeInTheDocument();
@@ -242,7 +242,7 @@ describe("AccessibilityMenu", () => {
         const updatedButton = screen.getByLabelText(
           /(Enable|Disable) focus mode for better keyboard navigation/,
         );
-        
+
         expect(updatedButton).toBeInTheDocument();
       }, { timeout: 1000 });
     });
@@ -296,9 +296,9 @@ describe("AccessibilityMenu", () => {
         expect(mockChangeTheme).toHaveBeenCalled();
       }, { timeout: 2000 });
 
-      
-      
-      await new Promise((r) => setTimeout(r, 200));
+
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
       if (locationReloadMocked) {
         expect(mockReload).toHaveBeenCalled();
       }
@@ -379,7 +379,7 @@ describe("AccessibilityMenu", () => {
       renderWithProvider();
       const button = screen.getByLabelText("Open accessibility menu");
 
-      
+
       button.focus();
       expect(document.activeElement).toBe(button);
     });

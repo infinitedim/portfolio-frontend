@@ -304,7 +304,6 @@ function DefaultErrorFallback({
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="max-w-md w-full space-y-6">
-        { }
         <div
           className={`p-4 rounded-lg border ${getSeverityColor(error.severity)}`}
         >
@@ -317,7 +316,6 @@ function DefaultErrorFallback({
           </div>
         </div>
 
-        { }
         <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
           <h3 className="font-medium text-gray-900 mb-2">Error Details</h3>
           <p className="text-sm text-gray-600 mb-3">{error.message}</p>
@@ -329,7 +327,6 @@ function DefaultErrorFallback({
           )}
         </div>
 
-        { }
         {error.suggestions.length > 0 && (
           <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
             <h3 className="font-medium text-gray-900 mb-2">💡 Suggestions</h3>
@@ -347,7 +344,6 @@ function DefaultErrorFallback({
           </div>
         )}
 
-        { }
         <div className="flex flex-col space-y-2">
           {getRecoveryActions(error.recoveryStrategy)}
 
@@ -361,7 +357,6 @@ function DefaultErrorFallback({
           )}
         </div>
 
-        { }
         {process.env.NODE_ENV === "development" && errorInfo && (
           <details className="bg-gray-100 p-3 rounded text-xs">
             <summary className="cursor-pointer font-medium">

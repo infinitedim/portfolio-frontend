@@ -27,8 +27,10 @@ if (canRunTests && typeof window !== "undefined") {
       writable: true,
       configurable: true,
     });
-  } catch {
-    
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to mock localStorage: ${error.message}`);
+    }
   }
 }
 
@@ -41,7 +43,7 @@ describe("useI18n", () => {
     ensureDocumentBody();
     localStorageMock.clear();
     vi.clearAllMocks();
-    
+
     i18n.setLocale("en_US");
   });
 
@@ -126,8 +128,8 @@ describe("useI18n", () => {
       }
 
       const { result } = renderHook(() => useI18n());
-      
-      expect(result.current.t("nonExistentKey")).toBe("nonExistentKey");
+
+      expect(result.current.t("nonExistentKey" as never)).toBe("nonExistentKey");
     });
 
     it("should use fallback with tWithFallback", () => {
@@ -137,8 +139,8 @@ describe("useI18n", () => {
       }
 
       const { result } = renderHook(() => useI18n());
-      
-      expect(result.current.tWithFallback("nonExistentKey", "Fallback")).toBe(
+
+      expect(result.current.tWithFallback("nonExistentKey" as never, "Fallback")).toBe(
         "Fallback",
       );
     });
@@ -191,7 +193,7 @@ describe("useI18n", () => {
         expect(success).toBe(true);
       });
 
-      
+
       expect(result.current.currentLocale).toBe("en_US");
     });
 
@@ -208,7 +210,7 @@ describe("useI18n", () => {
         expect(success).toBe(false);
       });
 
-      
+
       expect(result.current.currentLocale).toBe("en_US");
     });
 

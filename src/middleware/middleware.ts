@@ -39,10 +39,9 @@ const logger = createServerLogger("middleware");
 export function middleware(request: NextRequest) {
   const isDevelopment = process.env.NODE_ENV === "development";
 
-  
   if (isDevelopment) {
     const response = NextResponse.next();
-    
+
     response.headers.set("X-Request-ID", crypto.randomUUID());
     return response;
   }
@@ -59,7 +58,6 @@ export function middleware(request: NextRequest) {
     device.type = "tablet";
   }
 
-  
   if (/chrome/i.test(userAgentHeader) && !/edg/i.test(userAgentHeader)) {
     browser.name = "Chrome";
     const match = userAgentHeader.match(/Chrome\/(\d+)/i);
@@ -113,10 +111,10 @@ export function middleware(request: NextRequest) {
   }
 
   const suspiciousPatterns = [
-    /\.\.\
-    /<script/i, 
-    /union.*select/i, 
-    /javascript:/i, 
+    /\.\.\//,
+    /<script/i,
+    /union.*select/i,
+    /javascript:/i,
   ];
 
   const url = request.url;
@@ -229,7 +227,6 @@ export function middleware(request: NextRequest) {
   const responseTime = Date.now() - startTime;
   response.headers.set("X-Response-Time", `${responseTime}ms`);
 
-  
   logger.logHttp(
     request.method,
     request.nextUrl.pathname,
@@ -243,7 +240,6 @@ export function middleware(request: NextRequest) {
     },
   );
 
-  
   if (responseTime > 1000) {
     logger.warn(
       "Slow request detected",

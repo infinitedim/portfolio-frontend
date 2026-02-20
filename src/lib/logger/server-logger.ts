@@ -1,5 +1,3 @@
-
-
 import pino from "pino";
 import type { Logger as PinoLogger } from "pino";
 import {
@@ -27,11 +25,8 @@ class FileTransport {
     this.maxFiles = config.maxFiles;
     this.compress = config.compress;
 
-    
     this.ensureDirectory();
   }
-
-  
 
   private parseSize(size: string): number {
     const units: Record<string, number> = {
@@ -43,7 +38,7 @@ class FileTransport {
 
     const match = size.toLowerCase().match(/^(\d+)([bkmg])?$/);
     if (!match) {
-      return 50 * 1024 * 1024; 
+      return 50 * 1024 * 1024;
     }
 
     const value = parseInt(match[1], 10);
@@ -51,16 +46,12 @@ class FileTransport {
     return value * units[unit];
   }
 
-  
-
   private ensureDirectory(): void {
     const dir = dirname(this.filePath);
     if (!existsSync(dir)) {
       mkdirSync(dir, { recursive: true });
     }
   }
-
-  
 
   private needsRotation(): boolean {
     if (!existsSync(this.filePath)) {
@@ -71,23 +62,19 @@ class FileTransport {
     return stats.size >= this.maxSize;
   }
 
-  
-
   private rotate(): void {
     if (!existsSync(this.filePath)) {
       return;
     }
 
-    
     for (let i = this.maxFiles - 1; i > 0; i--) {
       const oldFile = `${this.filePath}.${i}`;
       const newFile = `${this.filePath}.${i + 1}`;
 
       if (existsSync(oldFile)) {
         if (i === this.maxFiles - 1) {
-          
           try {
-            
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             require("fs").unlinkSync(oldFile);
           } catch (error) {
             console.error("Failed to delete old log file:", error);
@@ -102,29 +89,19 @@ class FileTransport {
       }
     }
 
-    
     try {
       renameSync(this.filePath, `${this.filePath}.1`);
     } catch (error) {
       console.error("Failed to rotate current log file:", error);
     }
-
-    
-    
-    
-    
   }
-
-  
 
   write(entry: LogEntry): void {
     try {
-      
       if (this.needsRotation()) {
         this.rotate();
       }
 
-      
       const logLine = JSON.stringify(entry) + "\n";
 
       if (!existsSync(this.filePath)) {
@@ -144,7 +121,6 @@ class ServerLogger {
   private enabled: boolean;
 
   constructor() {
-    
     if (!isServer()) {
       this.enabled = false;
       this.pino = {} as PinoLogger;
@@ -155,7 +131,6 @@ class ServerLogger {
     this.enabled = true;
     this.fileTransports = new Map();
 
-    
     if (serverConfig.file) {
       try {
         this.fileTransports.set(
@@ -169,7 +144,6 @@ class ServerLogger {
       }
     }
 
-    
     this.pino = pino({
       level: serverConfig.level,
       formatters: {
@@ -190,8 +164,6 @@ class ServerLogger {
     });
   }
 
-  
-
   child(context: LogContext): ServerLogger {
     const childLogger = new ServerLogger();
     childLogger.pino = this.pino.child(context);
@@ -199,20 +171,16 @@ class ServerLogger {
     return childLogger;
   }
 
-  
-
   private writeToFile(entry: LogEntry): void {
     if (!serverConfig.file || !this.enabled) {
       return;
     }
 
-    
     const combinedTransport = this.fileTransports.get("combined");
     if (combinedTransport) {
       combinedTransport.write(entry);
     }
 
-    
     if (entry.level === "error" || entry.level === "fatal") {
       const errorTransport = this.fileTransports.get("error");
       if (errorTransport) {
@@ -220,8 +188,6 @@ class ServerLogger {
       }
     }
   }
-
-  
 
   private writeToAccessLog(entry: HttpLog): void {
     if (!serverConfig.file || !this.enabled) {
@@ -234,8 +200,6 @@ class ServerLogger {
     }
   }
 
-  
-
   private enrichContext(context?: LogContext): LogContext {
     return {
       environment: serverConfig.environment,
@@ -243,8 +207,6 @@ class ServerLogger {
       ...context,
     };
   }
-
-  
 
   trace(
     message: string,
@@ -265,8 +227,6 @@ class ServerLogger {
     this.writeToFile(entry);
   }
 
-  
-
   debug(
     message: string,
     context?: LogContext,
@@ -285,8 +245,6 @@ class ServerLogger {
     this.pino.debug(entry);
     this.writeToFile(entry);
   }
-
-  
 
   info(
     message: string,
@@ -307,8 +265,6 @@ class ServerLogger {
     this.writeToFile(entry);
   }
 
-  
-
   warn(
     message: string,
     context?: LogContext,
@@ -327,8 +283,6 @@ class ServerLogger {
     this.pino.warn(entry);
     this.writeToFile(entry);
   }
-
-  
 
   error(
     message: string,
@@ -355,8 +309,6 @@ class ServerLogger {
     this.writeToFile(entry);
   }
 
-  
-
   fatal(
     message: string,
     error?: unknown,
@@ -381,8 +333,6 @@ class ServerLogger {
     this.pino.fatal(entry);
     this.writeToFile(entry);
   }
-
-  
 
   logHttp(
     method: string,
@@ -418,8 +368,6 @@ class ServerLogger {
     this.writeToAccessLog(entry);
   }
 
-  
-
   logRequest(
     method: string,
     url: string,
@@ -439,8 +387,6 @@ class ServerLogger {
     });
   }
 
-  
-
   logResponse(
     method: string,
     url: string,
@@ -451,8 +397,6 @@ class ServerLogger {
   ): void {
     this.logHttp(method, url, statusCode, responseTime, context, metadata);
   }
-
-  
 
   logClientLogs(logs: LogEntry[], clientInfo?: Record<string, unknown>): void {
     if (!this.enabled) return;
@@ -467,7 +411,6 @@ class ServerLogger {
         },
       };
 
-      
       const level = entry.level || "info";
       const logMethod = this.pino[level] as (obj: unknown) => void;
 

@@ -175,8 +175,7 @@ describe("ProgressIndicator", () => {
         return;
       }
 
-      
-      const { container } = render(<ProgressIndicator progress={50} />);
+      render(<ProgressIndicator progress={50} />);
       const percentage = screen.getByText("50%");
       expect(percentage).toHaveStyle({
         color: mockThemeConfig.colors.accent,
@@ -431,7 +430,7 @@ describe("ProgressIndicator", () => {
 
       const { rerender } = render(<ProgressIndicator progress={50} />);
 
-      
+
       vi.mocked(useTheme).mockReturnValueOnce({
         themeConfig: mockThemeConfig,
         theme: "default",
@@ -439,7 +438,7 @@ describe("ProgressIndicator", () => {
 
       rerender(<ProgressIndicator progress={50} />);
 
-      
+
       const { container: rerenderedContainer } = render(<ProgressIndicator progress={50} />);
       expect(rerenderedContainer).toBeTruthy();
     });

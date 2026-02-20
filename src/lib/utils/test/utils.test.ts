@@ -7,31 +7,23 @@ describe("utils", () => {
   let formatTimestamp: any;
 
   beforeEach(async () => {
-    
     if (typeof vi !== "undefined") {
       if (vi.unmock) vi.unmock("@/lib/utils/utils");
       if (vi.doUnmock) vi.doUnmock("@/lib/utils/utils");
       if (vi.resetModules) vi.resetModules();
     }
 
-    
     vi.clearAllMocks();
 
-    
-    
     if (typeof vi !== "undefined" && vi.importActual) {
-      
       utils = await vi.importActual<typeof import("../utils")>("../utils");
     } else {
-      
-      
       if (typeof require !== "undefined" && require.cache) {
         try {
           const modulePath = require.resolve("../utils");
           delete require.cache[modulePath];
         } catch (e) {
           console.error(e);
-          
         }
       }
       utils = await import("../utils");
@@ -58,8 +50,13 @@ describe("utils", () => {
     });
 
     it("should handle conditional classes", () => {
-      
-      const result = cn("base", true && "conditional", false && "not-included");
+      const isConditional = true;
+      const isNotIncluded = false;
+      const result = cn(
+        "base",
+        isConditional && "conditional",
+        isNotIncluded && "not-included",
+      );
       expect(result).toBe("base conditional");
     });
 
@@ -94,12 +91,13 @@ describe("utils", () => {
     });
 
     it("should handle complex class combinations", () => {
+      const includeConditional = true;
       const result = cn(
         "base-class",
         ["array-class1", "array-class2"],
         { "object-class": true, "hidden-class": false },
-        
-        true && "conditional-class",
+
+        includeConditional && "conditional-class",
       );
       expect(result).toContain("base-class");
       expect(result).toContain("array-class1");
@@ -124,7 +122,7 @@ describe("utils", () => {
 
     it("should generate unique IDs", async () => {
       const id1 = generateId();
-      
+
       await new Promise((resolve) => setTimeout(resolve, 1));
       const id2 = generateId();
       expect(id1).not.toBe(id2);
@@ -147,7 +145,7 @@ describe("utils", () => {
       const ids: string[] = [];
       for (let i = 0; i < 5; i++) {
         ids.push(generateId());
-        
+
         if (i < 4) {
           await new Promise((resolve) => setTimeout(resolve, 1));
         }
@@ -159,7 +157,7 @@ describe("utils", () => {
     it("should use base36 encoding", () => {
       const id = generateId();
       const parts = id.split("_");
-      
+
       const base36Regex = /^[0-9a-z]+$/;
       expect(base36Regex.test(parts[0])).toBe(true);
       expect(base36Regex.test(parts[1])).toBe(true);
@@ -194,7 +192,7 @@ describe("utils", () => {
       const date = new Date("2024-01-05T09:08:07.000Z");
       const result = formatTimestamp(date);
       expect(result).toContain("01-05");
-      
+
       expect(result).toMatch(/\d{2}:\d{2}:\d{2}$/);
     });
 
@@ -226,7 +224,7 @@ describe("utils", () => {
       edgeCases.forEach((date) => {
         const result = formatTimestamp(date);
         expect(result).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
-        expect(result.length).toBe(19); 
+        expect(result.length).toBe(19);
       });
     });
 

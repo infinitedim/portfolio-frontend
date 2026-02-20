@@ -73,8 +73,6 @@ export function useAnimations() {
     };
   }, []);
 
-  
-
   const createTypewriterEffect = useCallback(
     async (
       element: HTMLElement,
@@ -95,7 +93,7 @@ export function useAnimations() {
 
       return new Promise((resolve) => {
         let i = 0;
-        let timerId: NodeJS.Timeout;
+        let _timerId: NodeJS.Timeout;
 
         const typeNextChar = () => {
           if (!isMountedRef.current) {
@@ -109,7 +107,7 @@ export function useAnimations() {
           if (i < text.length) {
             element.textContent = text.slice(0, i + 1);
             i++;
-            timerId = setTimeout(typeNextChar, fullConfig.speed);
+            _timerId = setTimeout(typeNextChar, fullConfig.speed);
           } else {
             if (fullConfig.cursor) {
               element.classList.remove("typing-cursor");
@@ -118,8 +116,7 @@ export function useAnimations() {
           }
         };
 
-        
-        timerId = setTimeout(typeNextChar, fullConfig.speed);
+        _timerId = setTimeout(typeNextChar, fullConfig.speed);
       });
     },
     [isReducedMotion, isMountedRef],

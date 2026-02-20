@@ -63,7 +63,6 @@ export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
       className="select-none mb-6 w-full overflow-hidden"
       key={`ascii-banner-${theme}`}
     >
-      { }
       <div className="hidden sm:block">
         <pre
           style={bannerStyles}
@@ -73,7 +72,6 @@ export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
         </pre>
       </div>
 
-      { }
       <div className="block sm:hidden">
         <pre
           style={{ ...bannerStyles, fontSize: "7px" }}
@@ -83,7 +81,6 @@ export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
         </pre>
       </div>
 
-      { }
       <div className="text-center mt-6 space-y-2 px-4">
         <div
           style={{ color: themeConfig.colors.accent }}
@@ -99,7 +96,6 @@ export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
         </div>
       </div>
 
-      { }
       <div className="mt-6 mb-4 px-4">
         <div
           className="h-px w-full opacity-30"

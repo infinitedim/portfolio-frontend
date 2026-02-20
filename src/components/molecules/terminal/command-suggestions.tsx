@@ -238,7 +238,6 @@ export function CommandSuggestions({
         backdropFilter: "blur(8px)",
       }}
     >
-      { }
       <div
         className="px-4 py-3 text-xs font-mono border-b flex items-center justify-between"
         style={{
@@ -281,7 +280,6 @@ export function CommandSuggestions({
         </div>
       </div>
 
-      { }
       <div className="max-h-72 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-current scrollbar-thumb-opacity-20">
         {suggestions.map((suggestion, index) => (
           <button
@@ -316,7 +314,6 @@ export function CommandSuggestions({
           >
             <div className="flex items-center justify-between min-w-0">
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                { }
                 <span
                   className="shrink-0 text-sm transition-transform duration-200 group-hover:scale-110"
                   style={{ color: getTypeColor(suggestion.type) }}
@@ -325,7 +322,6 @@ export function CommandSuggestions({
                   {getTypeIcon(suggestion.type)}
                 </span>
 
-                { }
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span
@@ -340,7 +336,6 @@ export function CommandSuggestions({
                       {suggestion.command}
                     </span>
 
-                    { }
                     {suggestion.category && (
                       <span
                         className="text-xs px-2 py-0.5 rounded-full shrink-0 font-medium"
@@ -353,7 +348,6 @@ export function CommandSuggestions({
                       </span>
                     )}
 
-                    { }
                     {enableLearning &&
                       suggestion.frequency &&
                       suggestion.frequency > 0 && (
@@ -370,7 +364,6 @@ export function CommandSuggestions({
                       )}
                   </div>
 
-                  { }
                   {showDescriptions && suggestion.description && (
                     <div
                       className="text-sm mb-1 opacity-75 leading-relaxed"
@@ -380,7 +373,6 @@ export function CommandSuggestions({
                     </div>
                   )}
 
-                  { }
                   {suggestion.usage && (
                     <div
                       className="text-xs font-mono opacity-60 bg-black bg-opacity-10 px-2 py-1 rounded"
@@ -392,9 +384,7 @@ export function CommandSuggestions({
                 </div>
               </div>
 
-              { }
               <div className="flex items-center gap-2 shrink-0 ml-3">
-                { }
                 {suggestion.lastUsed && (
                   <span
                     className="text-xs px-2 py-1 rounded-full opacity-60"
@@ -408,7 +398,6 @@ export function CommandSuggestions({
                   </span>
                 )}
 
-                { }
                 <span
                   className="text-xs px-2 py-1 rounded-full font-medium"
                   style={{
@@ -422,7 +411,6 @@ export function CommandSuggestions({
               </div>
             </div>
 
-            { }
             {index === selectedIndex && (
               <div
                 className="absolute inset-0 pointer-events-none opacity-5"
@@ -433,7 +421,6 @@ export function CommandSuggestions({
         ))}
       </div>
 
-      { }
       <div
         className="px-4 py-3 text-xs border-t"
         style={{

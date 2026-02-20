@@ -1,5 +1,3 @@
-
-
 import { NextRequest, NextResponse } from "next/server";
 import { createServerLogger } from "@/lib/logger/server-logger";
 import type { LogEntry } from "@/lib/logger/types";
@@ -9,11 +7,11 @@ const logger = createServerLogger("api/logs");
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
 const RATE_LIMIT = {
-  maxRequests: 100, 
-  windowMs: 60 * 1000, 
+  maxRequests: 100,
+  windowMs: 60 * 1000,
 };
 
-const MAX_PAYLOAD_SIZE = 1024 * 1024; 
+const _MAX_PAYLOAD_SIZE = 1024 * 1024;
 
 const MAX_BATCH_SIZE = 100;
 
@@ -21,23 +19,19 @@ function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   const now = Date.now();
   const limit = rateLimitMap.get(ip);
 
-  
   if (limit && now > limit.resetTime) {
     rateLimitMap.delete(ip);
   }
 
-  
   const currentLimit = rateLimitMap.get(ip) || {
     count: 0,
     resetTime: now + RATE_LIMIT.windowMs,
   };
 
-  
   if (currentLimit.count >= RATE_LIMIT.maxRequests) {
     return { allowed: false, remaining: 0 };
   }
 
-  
   currentLimit.count++;
   rateLimitMap.set(ip, currentLimit);
 
@@ -62,7 +56,6 @@ function validateLogEntry(entry: unknown): entry is LogEntry {
 
   const log = entry as Record<string, unknown>;
 
-  
   if (
     typeof log.timestamp !== "string" ||
     typeof log.level !== "string" ||
@@ -71,7 +64,6 @@ function validateLogEntry(entry: unknown): entry is LogEntry {
     return false;
   }
 
-  
   const validLevels = ["trace", "debug", "info", "warn", "error", "fatal"];
   if (!validLevels.includes(log.level)) {
     return false;
@@ -85,10 +77,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const requestId = request.headers.get("x-request-id") || crypto.randomUUID();
 
   try {
-    
     const clientIp = getClientIp(request);
 
-    
     const rateLimit = checkRateLimit(clientIp);
     if (!rateLimit.allowed) {
       logger.warn(
@@ -121,7 +111,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    
     const contentType = request.headers.get("content-type");
     if (!contentType?.includes("application/json")) {
       return NextResponse.json(
@@ -133,7 +122,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    
     let body: unknown;
     try {
       body = await request.json();
@@ -152,7 +140,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    
     if (!body || typeof body !== "object" || !("logs" in body)) {
       return NextResponse.json(
         { error: "Request must contain 'logs' array" },
@@ -165,7 +152,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const { logs } = body as { logs: unknown };
 
-    
     if (!Array.isArray(logs)) {
       return NextResponse.json(
         { error: "'logs' must be an array" },
@@ -176,7 +162,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    
     if (logs.length > MAX_BATCH_SIZE) {
       logger.warn(
         "Batch size exceeded",
@@ -204,7 +189,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    
     const validLogs: LogEntry[] = [];
     const invalidLogs: number[] = [];
 
@@ -216,7 +200,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
     }
 
-    
     if (validLogs.length > 0) {
       const clientInfo = {
         ip: clientIp,
@@ -240,7 +223,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    
     const responseTime = Date.now() - startTime;
 
     return NextResponse.json(
@@ -252,7 +234,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         batchId: requestId,
       },
       {
-        status: 202, 
+        status: 202,
         headers: {
           "X-Request-ID": requestId,
           "X-Response-Time": `${responseTime}ms`,

@@ -108,7 +108,6 @@ export function TerminalHeader({
         color: resolvedTheme.colors.text,
       }}
     >
-      { }
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
           <span
@@ -164,7 +163,6 @@ export function TerminalHeader({
         </div>
       </div>
 
-      { }
       <div className="flex items-center space-x-2">
         <span
           className="font-bold"
@@ -175,7 +173,6 @@ export function TerminalHeader({
         <span className="opacity-50">v1.0.0</span>
       </div>
 
-      { }
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
           <span className="opacity-70">{t("adminCPU")}:</span>

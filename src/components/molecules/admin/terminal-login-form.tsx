@@ -1,4 +1,4 @@
- 
+
 
 "use client";
 
@@ -25,7 +25,7 @@ export function TerminalLoginForm({
   );
   const [showPassword, setShowPassword] = useState(false);
   const [cursorVisible, setCursorVisible] = useState(true);
-  const [isTyping, setIsTyping] = useState(false);
+  const [isTyping, _setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -33,7 +33,6 @@ export function TerminalLoginForm({
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
-  const actualInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isLoading) return;
@@ -113,7 +112,7 @@ export function TerminalLoginForm({
         setError(result.error || "Login failed");
         setCurrentField("password");
       }
-    } catch (err) {
+    } catch (_err) {
       setError("An unexpected error occurred");
       setCurrentField("password");
     } finally {
@@ -169,7 +168,6 @@ export function TerminalLoginForm({
             spellCheck="false"
           />
 
-          { }
           {isActive && cursorVisible && !isLoading && (
             <span
               className={`absolute top-0 font-mono text-sm pointer-events-none select-none transition-all duration-150 ${isTyping ? "animate-pulse" : ""}`}
@@ -183,7 +181,6 @@ export function TerminalLoginForm({
             </span>
           )}
 
-          { }
           {isPassword && value && (
             <button
               type="button"
@@ -201,7 +198,6 @@ export function TerminalLoginForm({
           )}
         </div>
 
-        { }
         {isFocused && (
           <div
             className="absolute bottom-0 left-0 h-0.5 transition-all duration-300 ease-out"
@@ -218,7 +214,6 @@ export function TerminalLoginForm({
 
   return (
     <div className="space-y-6">
-      { }
       {error && (
         <div
           className="p-3 rounded border text-sm font-mono"
@@ -232,12 +227,10 @@ export function TerminalLoginForm({
         </div>
       )}
 
-      { }
       <div className="relative">
         {renderInputField("email", email, "Enter your email", emailInputRef)}
       </div>
 
-      { }
       <div className="relative">
         {renderInputField(
           "password",
@@ -247,7 +240,6 @@ export function TerminalLoginForm({
         )}
       </div>
 
-      { }
       <div className="flex items-center space-x-2">
         <span
           className={`text-sm font-mono transition-all duration-300 ${buttonHover ? "opacity-100" : "opacity-80"}`}
@@ -310,7 +302,6 @@ export function TerminalLoginForm({
         })()}
       </div>
 
-      { }
       <div className="text-xs opacity-60 text-center">
         <div>Press Tab to switch fields • Press Enter to submit</div>
         <div>Use Ctrl+C to cancel • Use Ctrl+L to clear</div>

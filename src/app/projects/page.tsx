@@ -61,7 +61,6 @@ export default async function ProjectsPage(): Promise<JSX.Element> {
 
   return (
     <main className="min-h-screen bg-terminal-bg text-terminal-text">
-      { }
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
@@ -88,7 +87,6 @@ export default async function ProjectsPage(): Promise<JSX.Element> {
         </div>
       </section>
 
-      { }
       {featuredProjects.length > 0 && (
         <section className="py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
@@ -108,7 +106,6 @@ export default async function ProjectsPage(): Promise<JSX.Element> {
         </section>
       )}
 
-      { }
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold font-mono mb-8 text-terminal-text">
@@ -121,7 +118,6 @@ export default async function ProjectsPage(): Promise<JSX.Element> {
         </div>
       </section>
 
-      { }
       <section className="py-12 px-4 sm:px-6 lg:px-8 border-t border-terminal-border">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -157,7 +153,6 @@ export default async function ProjectsPage(): Promise<JSX.Element> {
         </div>
       </section>
 
-      { }
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

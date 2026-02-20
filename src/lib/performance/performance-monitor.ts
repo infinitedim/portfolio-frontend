@@ -1,5 +1,3 @@
-
-
 interface PerformanceMetric {
   name: string;
   value: number;
@@ -43,26 +41,20 @@ export class PerformanceMonitor {
     return PerformanceMonitor.instance;
   }
 
-  
-
   setEnabled(enabled: boolean): void {
     this.isEnabled = enabled;
     console.log(`Performance monitoring ${enabled ? "enabled" : "disabled"}`);
   }
 
-  
-
   startTiming(
     name: string,
-    
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     category: PerformanceMetric["category"] = "system",
   ): void {
     if (!this.isEnabled) return;
 
     this.startTimes.set(name, performance.now());
   }
-
-  
 
   endTiming(
     name: string,
@@ -73,8 +65,6 @@ export class PerformanceMonitor {
 
     const startTime = this.startTimes.get(name);
     if (!startTime) {
-      
-      
       return 0;
     }
 
@@ -84,8 +74,6 @@ export class PerformanceMonitor {
     this.recordMetric(name, duration, category, metadata);
     return duration;
   }
-
-  
 
   recordMetric(
     name: string,
@@ -117,8 +105,6 @@ export class PerformanceMonitor {
     }
   }
 
-  
-
   measureCommand<T>(
     commandName: string,
     commandFn: () => Promise<T>,
@@ -146,8 +132,6 @@ export class PerformanceMonitor {
       });
   }
 
-  
-
   measureRender(componentName: string, renderFn: () => void): void {
     if (!this.isEnabled) {
       renderFn();
@@ -158,8 +142,6 @@ export class PerformanceMonitor {
     renderFn();
     this.endTiming(`render-${componentName}`, "render");
   }
-
-  
 
   getReport(): PerformanceReport {
     const commandMetrics = this.metrics.filter((m) => m.category === "command");
@@ -202,15 +184,11 @@ export class PerformanceMonitor {
     };
   }
 
-  
-
   getMetricsByCategory(
     category: PerformanceMetric["category"],
   ): PerformanceMetric[] {
     return this.metrics.filter((m) => m.category === category);
   }
-
-  
 
   clearMetrics(): void {
     this.metrics = [];
@@ -218,14 +196,10 @@ export class PerformanceMonitor {
     console.log("Performance metrics cleared");
   }
 
-  
-
   exportMetrics(): string {
     const report = this.getReport();
     return JSON.stringify(report, null, 2);
   }
-
-  
 
   private setupPerformanceObserver(): void {
     if (typeof window === "undefined" || !("PerformanceObserver" in window)) {
@@ -249,8 +223,6 @@ export class PerformanceMonitor {
     }
   }
 
-  
-
   private startSystemMonitoring(): void {
     if (typeof window === "undefined") return;
 
@@ -270,8 +242,6 @@ export class PerformanceMonitor {
     this.intervals.set("history-monitoring", historyInterval);
   }
 
-  
-
   stopMonitoring(): void {
     this.intervals.forEach((interval) => {
       clearInterval(interval);
@@ -286,8 +256,6 @@ export class PerformanceMonitor {
     this.metrics.length = 0;
   }
 
-  
-
   private getMemoryUsage(): number | undefined {
     if (
       typeof window !== "undefined" &&
@@ -301,8 +269,6 @@ export class PerformanceMonitor {
     }
     return undefined;
   }
-
-  
 
   private getHistorySize(): number {
     try {
@@ -321,8 +287,6 @@ export class PerformanceMonitor {
       return 0;
     }
   }
-
-  
 
   private generateRecommendations(): string[] {
     const recommendations: string[] = [];

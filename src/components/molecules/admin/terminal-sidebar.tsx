@@ -67,7 +67,6 @@ export function TerminalSidebar({
         backgroundColor: themeConfig.colors.bg,
       }}
     >
-      { }
       <div
         className="p-4 border-b"
         style={{ borderColor: themeConfig.colors.border }}
@@ -92,7 +91,6 @@ export function TerminalSidebar({
         </div>
       </div>
 
-      { }
       <div className="flex-1 p-4 space-y-2">
         {navigationItems.map((item) => (
           <button
@@ -131,7 +129,6 @@ export function TerminalSidebar({
         ))}
       </div>
 
-      { }
       <div
         className="p-4 border-t"
         style={{ borderColor: themeConfig.colors.border }}
@@ -161,7 +158,6 @@ export function TerminalSidebar({
           </div>
         </div>
 
-        { }
         <div
           className="mt-4 pt-4 border-t"
           style={{ borderColor: themeConfig.colors.border }}

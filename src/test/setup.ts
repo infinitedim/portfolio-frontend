@@ -136,7 +136,7 @@ function ensureDOMReady() {
       try {
         document.body = document.createElement("body");
       } catch {
-        
+        throw new Error("Failed to create and assign body element to document");
       }
     }
   }
@@ -152,9 +152,7 @@ global.ResizeObserver = class MockResizeObserver {
   observe = vi.fn();
   unobserve = vi.fn();
   disconnect = vi.fn();
-  constructor(_callback: ResizeObserverCallback) {
-    
-  }
+  constructor(_callback: ResizeObserverCallback) {}
 } as unknown as typeof ResizeObserver;
 
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
@@ -170,15 +168,14 @@ if (typeof window !== "undefined") {
       matches: false,
       media: query,
       onchange: null,
-      addListener: vi.fn(), 
-      removeListener: vi.fn(), 
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
     })),
   });
 
-  
   Object.defineProperty(window, "location", {
     writable: true,
     value: {

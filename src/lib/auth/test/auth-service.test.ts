@@ -20,8 +20,12 @@ function defineGlobalProperty(
         configurable: true,
       });
     }
-  } catch {
-    
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(
+        `Failed to define global property "${key}": ${error.message}`,
+      );
+    }
   }
 }
 
@@ -36,7 +40,6 @@ describe("AuthService", () => {
   let authService: typeof import("@/lib/auth/auth-service").authService;
 
   beforeEach(async () => {
-    
     if (typeof vi !== "undefined" && vi.unmock) {
       vi.unmock("@/lib/auth/auth-service");
     }
@@ -44,38 +47,30 @@ describe("AuthService", () => {
       vi.doUnmock("@/lib/auth/auth-service");
     }
 
-    
     vi.clearAllMocks();
 
-    
-    
     let module;
     if (
       typeof vi !== "undefined" &&
       vi.importActual &&
       typeof vi.importActual === "function"
     ) {
-      
       module = await vi.importActual<typeof import("@/lib/auth/auth-service")>(
         "@/lib/auth/auth-service",
       );
     } else {
-      
-      
       if (typeof require !== "undefined" && require.cache) {
         try {
           const modulePath = require.resolve("@/lib/auth/auth-service");
           delete require.cache[modulePath];
         } catch (e) {
           console.error(e);
-          
         }
       }
       module = await import("@/lib/auth/auth-service");
     }
     authService = module.authService;
 
-    
     (authService as any).accessToken = null;
     (authService as any).refreshToken = null;
     (authService as any).user = null;
@@ -83,7 +78,6 @@ describe("AuthService", () => {
 
   describe("isAuthenticated", () => {
     it("should return true when user is authenticated", () => {
-      
       if (!authService || (authService as any).isAuthenticated?.mock) {
         expect(true).toBe(true);
         return;
@@ -100,7 +94,6 @@ describe("AuthService", () => {
     });
 
     it("should return false when user is not authenticated", () => {
-      
       if (!authService || (authService as any).isAuthenticated?.mock) {
         expect(true).toBe(true);
         return;
@@ -115,7 +108,6 @@ describe("AuthService", () => {
 
   describe("getCurrentUser", () => {
     it("should return current user", () => {
-      
       if (!authService || (authService as any).getCurrentUser?.mock) {
         expect(true).toBe(true);
         return;
@@ -132,7 +124,6 @@ describe("AuthService", () => {
     });
 
     it("should return null when no user", () => {
-      
       if (!authService || (authService as any).getCurrentUser?.mock) {
         expect(true).toBe(true);
         return;
@@ -146,8 +137,6 @@ describe("AuthService", () => {
 
   describe("getAccessToken", () => {
     it("should return access token", () => {
-      
-      
       if (
         !authService ||
         !authService.getAccessToken ||
@@ -162,8 +151,6 @@ describe("AuthService", () => {
     });
 
     it("should return null when no token", () => {
-      
-      
       if (
         !authService ||
         !authService.getAccessToken ||

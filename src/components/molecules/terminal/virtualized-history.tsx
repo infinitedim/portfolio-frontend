@@ -19,7 +19,7 @@ export function VirtualizedHistory({
 }: VirtualizedHistoryProps): JSX.Element {
   const { themeConfig, theme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [visibleRange, setVisibleRange] = useState({
+  const [_visibleRange, _setVisibleRange] = useState({
     start: 0,
     end: maxVisibleItems,
   });
@@ -72,7 +72,6 @@ export function VirtualizedHistory({
           key={`${entry.timestamp.getTime()}-${index}`}
           className="space-y-2"
         >
-          { }
           <div className="flex items-center gap-2 font-mono">
             <span style={{ color: themeConfig.colors.prompt }}>{prompt}</span>
             <span style={{ color: themeConfig.colors.text }}>
@@ -80,7 +79,6 @@ export function VirtualizedHistory({
             </span>
           </div>
 
-          { }
           <div className="ml-4">
             <CommandOutput output={entry.output} />
           </div>

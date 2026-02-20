@@ -100,7 +100,6 @@ export function RealTimePerformanceMonitor({
         borderColor: themeConfig.colors.border,
       }}
     >
-      { }
       <div
         className="px-4 py-3 border-b flex items-center justify-between"
         style={{
@@ -144,9 +143,7 @@ export function RealTimePerformanceMonitor({
         </div>
       </div>
 
-      { }
       <div className="p-4 space-y-3">
-        { }
         <div className="flex items-center justify-between">
           <span
             className="text-xs font-medium"
@@ -178,7 +175,6 @@ export function RealTimePerformanceMonitor({
           </div>
         </div>
 
-        { }
         <div className="flex items-center justify-between">
           <span
             className="text-xs font-medium"
@@ -216,7 +212,6 @@ export function RealTimePerformanceMonitor({
           </div>
         </div>
 
-        { }
         <div className="flex items-center justify-between">
           <span
             className="text-xs font-medium"
@@ -239,7 +234,6 @@ export function RealTimePerformanceMonitor({
           </div>
         </div>
 
-        { }
         <div className="flex items-center justify-between">
           <span
             className="text-xs font-medium"
@@ -257,7 +251,6 @@ export function RealTimePerformanceMonitor({
 
         {isExpanded && (
           <>
-            { }
             <div className="flex items-center justify-between">
               <span
                 className="text-xs font-medium"
@@ -278,7 +271,6 @@ export function RealTimePerformanceMonitor({
               </span>
             </div>
 
-            { }
             <div className="flex items-center justify-between">
               <span
                 className="text-xs font-medium"
@@ -294,7 +286,6 @@ export function RealTimePerformanceMonitor({
               </span>
             </div>
 
-            { }
             <div className="flex items-center justify-between">
               <span
                 className="text-xs font-medium"
@@ -352,7 +343,6 @@ export function RealTimePerformanceMonitor({
         </div>
       )}
 
-      { }
       <div
         className="px-4 py-2 text-xs border-t"
         style={{
