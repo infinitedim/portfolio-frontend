@@ -204,7 +204,9 @@ async function fetchWithCache<T>(
   url: string,
   options: RequestInit & { cacheTime?: number } = {},
 ): Promise<T> {
-  const { ...fetchOptions } = options;
+  // Destructure out the custom `cacheTime` key so it is never forwarded to
+  // the native `fetch` API (which does not accept it).
+  const { cacheTime: _cacheTime, ...fetchOptions } = options;
 
   try {
     const response = await fetch(url, {
@@ -508,7 +510,22 @@ function getFallbackAboutData(): AboutInfo {
 }
 
 export async function invalidateCache(section?: string): Promise<void> {
-  console.log(`Cache invalidated for section: ${section || "all"}`);
+  // NOTE: server-side cache invalidation requires `revalidatePath` or
+  // `revalidateTag` inside a Next.js Server Action or Route Handler.
+  // This client-callable stub intentionally throws in production to surface
+  // call sites that rely on it working, so they can be migrated properly.
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      `invalidateCache('${section ?? "all"}') is not implemented. ` +
+        "Use revalidatePath / revalidateTag in a Server Action instead.",
+    );
+  }
+  // In development: log a warning so developers notice it needs wiring.
+  console.warn(
+    `[invalidateCache] Called with section='${
+      section ?? "all"
+    }' but no-op implementation is active. Wire up revalidatePath/revalidateTag.`,
+  );
 }
 
 export async function checkDataHealth(): Promise<{

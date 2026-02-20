@@ -1,7 +1,7 @@
 "use client";
 
-import {useState, useCallback, useRef, useEffect} from "react";
-import {CommandParser} from "@/lib/commands/command-parser";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { CommandParser } from "@/lib/commands/command-parser";
 import {
   createHelpCommand,
   aboutCommand,
@@ -19,13 +19,13 @@ import {
   languageListCommand,
   languageInfoCommand,
 } from "@/lib/commands/language-commands";
-import {useCommandHistory} from "./use-command-history";
-import {generateId} from "@/lib/utils/utils";
+import { useCommandHistory } from "./use-command-history";
+import { generateId } from "@/lib/utils/utils";
 
 const getSkillsCommand = async () => {
   if (typeof window === "undefined") return null;
   try {
-    const {skillsCommand} = await import("@/lib/commands/skills-commands");
+    const { skillsCommand } = await import("@/lib/commands/skills-commands");
     return skillsCommand;
   } catch (error) {
     console.error("Failed to load skills command:", error);
@@ -35,35 +35,75 @@ const getSkillsCommand = async () => {
 
 const getRoadmapCommands = async () => {
   if (typeof window === "undefined")
-    return {roadmapCommand: null, progressCommand: null};
+    return { roadmapCommand: null, progressCommand: null };
   try {
-    const {roadmapCommand, progressCommand} =
+    const { roadmapCommand, progressCommand } =
       await import("@/lib/commands/roadmap-commands");
-    return {roadmapCommand, progressCommand};
+    return { roadmapCommand, progressCommand };
   } catch (error) {
     console.error("Failed to load roadmap commands:", error);
-    return {roadmapCommand: null, progressCommand: null};
+    return { roadmapCommand: null, progressCommand: null };
   }
 };
 
-import {
-  customizeCommand,
-  themesCommand,
-  fontsCommand,
-} from "@/lib/commands/customization-commands";
-import {demoCommand, setDemoCallback} from "@/lib/commands/demo-commands";
-import {githubCommand} from "@/lib/commands/github-commands";
-import {techStackCommand} from "@/lib/commands/tech-stack-commands";
-import {createLocationCommand} from "@/lib/commands/location-commands";
-import {tourCommand} from "@/lib/commands/tour-commands";
-import {
-  resumeCommand,
-  socialCommand,
-  shortcutsCommand,
-  enhancedContactCommand,
-  easterEggsCommand,
-} from "@/lib/commands/commands";
-import type {CommandOutput, TerminalHistory} from "@/types/terminal";
+// Lazy-load the remaining heavy command modules so they are not bundled into
+// the initial terminal chunk.  Each import() returns a separate async chunk.
+const getCustomizationCommands = async () => {
+  try {
+    return await import("@/lib/commands/customization-commands");
+  } catch {
+    return null;
+  }
+};
+
+const getDemoCommands = async () => {
+  try {
+    return await import("@/lib/commands/demo-commands");
+  } catch {
+    return null;
+  }
+};
+
+const getGithubCommands = async () => {
+  try {
+    return await import("@/lib/commands/github-commands");
+  } catch {
+    return null;
+  }
+};
+
+const getTechStackCommands = async () => {
+  try {
+    return await import("@/lib/commands/tech-stack-commands");
+  } catch {
+    return null;
+  }
+};
+
+const getLocationCommands = async () => {
+  try {
+    return await import("@/lib/commands/location-commands");
+  } catch {
+    return null;
+  }
+};
+
+const getTourCommands = async () => {
+  try {
+    return await import("@/lib/commands/tour-commands");
+  } catch {
+    return null;
+  }
+};
+
+const getMiscCommands = async () => {
+  try {
+    return await import("@/lib/commands/commands");
+  } catch {
+    return null;
+  }
+};
+import type { CommandOutput, TerminalHistory } from "@/types/terminal";
 
 const STORAGE_KEYS = {
   COMMAND_HISTORY: "terminal-command-history",
@@ -180,7 +220,7 @@ export function useTerminal(
       switchCount: number;
       averageSwitchTime: number;
       lastSwitchTime: number;
-      popularThemes: {theme: string; count: number}[];
+      popularThemes: { theme: string; count: number }[];
       renderTime: number;
     };
     resetMetrics: () => void;
@@ -204,6 +244,23 @@ export function useTerminal(
     enableAnalytics: true,
     autoCategories: true,
   });
+
+  // ----------------------------------------------------------------
+  // Stable refs — allow parser closures to always read the latest
+  // values without adding them to the initializeParser useEffect
+  // dependencies (which would re-create the whole parser on every cmd).
+  // ----------------------------------------------------------------
+  const clearAdvancedHistoryRef = useRef(clearAdvancedHistory);
+  const analyticsRef = useRef(analytics);
+  const advancedHistoryRef = useRef(advancedHistory);
+  const onOpenDemoRef = useRef(onOpenDemo);
+  const themePerformanceRef = useRef(themePerformance);
+  // Always keep refs pointing at the latest values (assigned during render).
+  clearAdvancedHistoryRef.current = clearAdvancedHistory;
+  analyticsRef.current = analytics;
+  advancedHistoryRef.current = advancedHistory;
+  onOpenDemoRef.current = onOpenDemo;
+  themePerformanceRef.current = themePerformance;
 
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -237,11 +294,42 @@ export function useTerminal(
       parser.register(aliasCommand);
       parser.register(pwaCommand);
 
-      parser.register(resumeCommand);
-      parser.register(socialCommand);
-      parser.register(shortcutsCommand);
-      parser.register(enhancedContactCommand);
-      parser.register(easterEggsCommand);
+      // Lazy-load heavy command modules to keep the initial parser chunk small.
+      const [
+        miscCmds,
+        customCmds,
+        demoCmds,
+        githubCmds,
+        techCmds,
+        locationCmds,
+        tourCmds,
+      ] = await Promise.allSettled([
+        getMiscCommands(),
+        getCustomizationCommands(),
+        getDemoCommands(),
+        getGithubCommands(),
+        getTechStackCommands(),
+        getLocationCommands(),
+        getTourCommands(),
+      ]);
+
+      const misc = miscCmds.status === "fulfilled" ? miscCmds.value : null;
+      if (misc) {
+        if (misc.resumeCommand) parser.register(misc.resumeCommand);
+        if (misc.socialCommand) parser.register(misc.socialCommand);
+        if (misc.shortcutsCommand) parser.register(misc.shortcutsCommand);
+        if (misc.enhancedContactCommand)
+          parser.register(misc.enhancedContactCommand);
+        if (misc.easterEggsCommand) parser.register(misc.easterEggsCommand);
+      }
+
+      const custom =
+        customCmds.status === "fulfilled" ? customCmds.value : null;
+      if (custom) {
+        if (custom.customizeCommand) parser.register(custom.customizeCommand);
+        if (custom.themesCommand) parser.register(custom.themesCommand);
+        if (custom.fontsCommand) parser.register(custom.fontsCommand);
+      }
 
       parser.register({
         name: "history",
@@ -252,7 +340,7 @@ export function useTerminal(
           const hasFlag = (flag: string) => args.includes(`--${flag}`);
 
           if (hasFlag("clear")) {
-            clearAdvancedHistory();
+            clearAdvancedHistoryRef.current();
             return {
               type: "success",
               content: "Command history cleared",
@@ -262,7 +350,7 @@ export function useTerminal(
           }
 
           if (hasFlag("stats")) {
-            const stats = analytics || {
+            const stats = analyticsRef.current || {
               totalCommands: 0,
               uniqueCommands: 0,
               successRate: 100,
@@ -299,7 +387,7 @@ export function useTerminal(
             };
           }
 
-          const recentHistory = advancedHistory.slice(0, 20);
+          const recentHistory = advancedHistoryRef.current.slice(0, 20);
           if (recentHistory.length === 0) {
             return {
               type: "info",
@@ -337,15 +425,13 @@ export function useTerminal(
       });
 
       const skillsCmd = await getSkillsCommand();
-      const {roadmapCommand, progressCommand} = await getRoadmapCommands();
+      const { roadmapCommand, progressCommand } = await getRoadmapCommands();
 
       if (skillsCmd) parser.register(skillsCmd);
       if (roadmapCommand) parser.register(roadmapCommand);
       if (progressCommand) parser.register(progressCommand);
 
-      parser.register(customizeCommand);
-      parser.register(themesCommand);
-      parser.register(fontsCommand);
+      // customization commands are already registered above from the lazy loaders
 
       parser.register(languageCommand);
       parser.register(languageListCommand);
@@ -360,8 +446,8 @@ export function useTerminal(
           const hasFlag = (flag: string) => args.includes(`--${flag}`);
 
           if (hasFlag("reset")) {
-            if (themePerformance?.resetMetrics) {
-              themePerformance.resetMetrics();
+            if (themePerformanceRef.current?.resetMetrics) {
+              themePerformanceRef.current.resetMetrics();
             }
 
             return {
@@ -372,16 +458,17 @@ export function useTerminal(
             };
           }
 
-          const themeReport = themePerformance?.getPerformanceReport() || {
-            totalSwitches: 0,
-            averageTime: 0,
-            fastestSwitch: 0,
-            slowestSwitch: 0,
-            themeUsage: {},
-          };
+          const themeReport =
+            themePerformanceRef.current?.getPerformanceReport() || {
+              totalSwitches: 0,
+              averageTime: 0,
+              fastestSwitch: 0,
+              slowestSwitch: 0,
+              themeUsage: {},
+            };
 
           interface PerformanceReport {
-            metrics: Array<{name: string; value: number}>;
+            metrics: Array<{ name: string; value: number }>;
             summary: {
               totalCommands: number;
               averageCommandTime: number;
@@ -394,7 +481,7 @@ export function useTerminal(
 
           let monitor: PerformanceReport;
           try {
-            const {PerformanceMonitor} =
+            const { PerformanceMonitor } =
               await import("@/lib/performance/performance-monitor");
             monitor = PerformanceMonitor.getInstance().getReport();
           } catch (error) {
@@ -459,7 +546,7 @@ export function useTerminal(
             };
           }
 
-          const currentMetrics = themePerformance?.themeMetrics || {
+          const currentMetrics = themePerformanceRef.current?.themeMetrics || {
             renderTime: 0,
           };
 
@@ -474,7 +561,7 @@ export function useTerminal(
               monitor.summary.totalCommands > 0
                 ? (
                     ((monitor.summary.totalCommands -
-                      monitor.metrics.filter((m: {name: string}) =>
+                      monitor.metrics.filter((m: { name: string }) =>
                         m.name.includes("error"),
                       ).length) /
                       monitor.summary.totalCommands) *
@@ -495,12 +582,28 @@ export function useTerminal(
         },
       });
 
-      setDemoCallback(onOpenDemo || (() => {}));
-      parser.register(demoCommand);
-      parser.register(githubCommand);
-      parser.register(techStackCommand);
-      parser.register(tourCommand);
-      parser.register(createLocationCommand());
+      // setDemoCallback handled via demo module below
+
+      const demo = demoCmds.status === "fulfilled" ? demoCmds.value : null;
+      if (demo) {
+        if (demo.setDemoCallback)
+          demo.setDemoCallback(onOpenDemoRef.current || (() => {}));
+        if (demo.demoCommand) parser.register(demo.demoCommand);
+      }
+
+      const gh = githubCmds.status === "fulfilled" ? githubCmds.value : null;
+      if (gh?.githubCommand) parser.register(gh.githubCommand);
+
+      const tech = techCmds.status === "fulfilled" ? techCmds.value : null;
+      if (tech?.techStackCommand) parser.register(tech.techStackCommand);
+
+      const tour = tourCmds.status === "fulfilled" ? tourCmds.value : null;
+      if (tour?.tourCommand) parser.register(tour.tourCommand);
+
+      const location =
+        locationCmds.status === "fulfilled" ? locationCmds.value : null;
+      if (location?.createLocationCommand)
+        parser.register(location.createLocationCommand());
 
       parser.register(createHelpCommand(() => parser.getCommands()));
 
@@ -514,14 +617,9 @@ export function useTerminal(
     return () => {
       parserRef.current = null;
     };
-  }, [
-    onOpenAuth,
-    onOpenDemo,
-    advancedHistory,
-    analytics,
-    clearAdvancedHistory,
-    themePerformance,
-  ]);
+     
+  }, []);
+  // ^ Intentionally empty: refs keep closures fresh without re-creating the parser.
 
   useEffect(() => {
     if (!isClient || !isMountedRef.current) return;
@@ -543,15 +641,27 @@ export function useTerminal(
   useEffect(() => {
     if (!isClient || !isMountedRef.current) return;
 
-    try {
-      localStorage.setItem(
-        STORAGE_KEYS.COMMAND_HISTORY,
-        JSON.stringify(commandHistory),
-      );
-    } catch (error) {
-      console.warn("Failed to save command history:", error);
-    }
+    // Throttle writes to localStorage — debounce by 300 ms so rapid
+    // command execution does not block the main thread on every keystroke.
+    const timer = setTimeout(() => {
+      try {
+        localStorage.setItem(
+          STORAGE_KEYS.COMMAND_HISTORY,
+          JSON.stringify(commandHistory),
+        );
+      } catch (error) {
+        console.warn("Failed to save command history:", error);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [commandHistory, isClient]);
+
+  // Keep a ref so executeCommand can check for deduplication without
+  // needing commandHistory in its dep array (which would cause a new
+  // function reference — and therefore child re-renders — on every command).
+  const commandHistoryRef = useRef(commandHistory);
+  commandHistoryRef.current = commandHistory;
 
   const executeCommand = useCallback(
     async (input: string): Promise<CommandOutput | null> => {
@@ -583,8 +693,9 @@ export function useTerminal(
           );
 
           if (
-            commandHistory.length === 0 ||
-            commandHistory[commandHistory.length - 1] !== input.trim()
+            commandHistoryRef.current.length === 0 ||
+            commandHistoryRef.current[commandHistoryRef.current.length - 1] !==
+              input.trim()
           ) {
             setCommandHistory((prev) => [...prev, input.trim()]);
           }
@@ -648,7 +759,7 @@ export function useTerminal(
         }
       }
     },
-    [commandHistory, addToAdvancedHistory],
+    [addToAdvancedHistory], // commandHistory read via commandHistoryRef — not a dep
   );
 
   const addToHistory = useCallback(

@@ -5,15 +5,10 @@ import {
   useTimerManager,
 } from "./utils/hooks-utils";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let trpcClient: any = null;
-if (typeof window !== "undefined") {
-  try {
-    trpcClient = null;
-  } catch (error) {
-    console.warn("Failed to load tRPC for security:", error);
-  }
-}
+// tRPC integration was planned but never implemented; the hook uses
+// client-side validation exclusively. Keeping the conditional check below
+// allows future wiring without changing the call sites.
+// const trpcClient: Record<string, never> | null = null;
 
 interface SecurityState {
   isRateLimited: boolean;
@@ -209,34 +204,14 @@ export function useSecurity() {
       }
     > => {
       try {
-        let validation: ValidationResult;
+        const validation: ValidationResult = validateInputClientSide(input);
         let shouldProceed = false;
         let alert: ThreatAlert | undefined;
 
-        if (trpcClient?.security?.validateInput) {
-          try {
-            const result = await trpcClient.security.validateInput.mutate({
-              input,
-            });
-            validation = {
-              isValid: result.isValid,
-              sanitizedInput: result.sanitizedInput,
-              error: result.error,
-              riskLevel: result.riskLevel,
-            };
-            shouldProceed = result.isValid;
-          } catch (error) {
-            console.warn(
-              "Backend validation failed, using client-side fallback:",
-              error,
-            );
-            validation = validateInputClientSide(input);
-            shouldProceed = validation.isValid;
-          }
-        } else {
-          validation = validateInputClientSide(input);
-          shouldProceed = validation.isValid;
-        }
+        // trpcClient is always null (tRPC not wired up yet) so we use
+        // client-side validation exclusively. The null check is kept here
+        // as a seam for future backend integration without touching call sites.
+        shouldProceed = validation.isValid;
 
         if (isClientSide() && isMountedRef.current) {
           recentInputs.current.push(input);

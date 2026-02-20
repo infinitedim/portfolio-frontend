@@ -102,7 +102,7 @@ export class SecureAuth {
     let cookieString = `${name}=${value}; expires=${expires}; path=${options.path}; SameSite=${options.sameSite}`;
 
     if (options.secure) {
-      cookieString += "Secure";
+      cookieString += "; Secure";
     }
 
     document.cookie = cookieString;
@@ -145,11 +145,11 @@ export class SecureAuth {
         "Content-Type": "application/json",
         Accept: "application/json",
       };
-      
+
       if (accessToken) {
         headers.Authorization = `Bearer ${accessToken}`;
       }
-      
+
       const response = await fetch(`${getApiUrl()}/api/auth/verify`, {
         method: "POST",
         headers,
@@ -189,9 +189,9 @@ export class SecureAuth {
   static async login(
     email: string,
     password: string,
-  ): Promise<{ 
-    success: boolean; 
-    error?: string; 
+  ): Promise<{
+    success: boolean;
+    error?: string;
     accessToken?: string;
     refreshToken?: string;
     user?: Record<string, unknown>;
@@ -210,7 +210,7 @@ export class SecureAuth {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        return { 
+        return {
           success: true,
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
@@ -236,17 +236,20 @@ export class SecureAuth {
    * console.log('User logged out');
    * ```
    */
-  static async logout(accessToken?: string, refreshToken?: string): Promise<void> {
+  static async logout(
+    accessToken?: string,
+    refreshToken?: string,
+  ): Promise<void> {
     try {
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
         Accept: "application/json",
       };
-      
+
       if (accessToken) {
         headers.Authorization = `Bearer ${accessToken}`;
       }
-      
+
       await fetch(`${getApiUrl()}/api/auth/logout`, {
         method: "POST",
         headers,

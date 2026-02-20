@@ -154,7 +154,12 @@ export default function AdminLoginPage() {
             <span style={{ color: themeConfig.colors.muted }}>
               Don't have an account?{" "}
               <button
-                onClick={() => router.push("/admin/register")}
+                onClick={() =>
+                  // Route exists in app/admin/register/page.tsx — cast needed
+                  // because typedRoutes requires `next build` to generate defs.
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  router.push("/admin/register" as any)
+                }
                 className="underline hover:no-underline"
                 style={{ color: themeConfig.colors.accent }}
               >

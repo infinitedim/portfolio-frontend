@@ -94,7 +94,7 @@ export function middleware(request: NextRequest) {
 
   const userAgentHeader = request.headers.get("user-agent") || "";
   const device = { type: "desktop" };
-  const browser = { name: "unknown" };
+  const browser: BrowserInfo = { name: "unknown" };
 
   if (/mobile/i.test(userAgentHeader)) {
     device.type = "mobile";
@@ -102,17 +102,26 @@ export function middleware(request: NextRequest) {
     device.type = "tablet";
   }
 
-  if (/chrome/i.test(userAgentHeader)) {
-    browser.name = "chrome";
+  // Parse browser name AND version so the Chrome 90+ COEP/COOP check can work.
+  if (/chrome/i.test(userAgentHeader) && !/edg/i.test(userAgentHeader)) {
+    browser.name = "Chrome";
+    const match = userAgentHeader.match(/Chrome\/(\d+)/i);
+    if (match) browser.version = match[1];
   } else if (/firefox/i.test(userAgentHeader)) {
     browser.name = "firefox";
+    const match = userAgentHeader.match(/Firefox\/(\d+)/i);
+    if (match) browser.version = match[1];
   } else if (
     /safari/i.test(userAgentHeader) &&
     !/chrome/i.test(userAgentHeader)
   ) {
     browser.name = "safari";
+    const match = userAgentHeader.match(/Version\/(\d+)/i);
+    if (match) browser.version = match[1];
   } else if (/edg/i.test(userAgentHeader)) {
     browser.name = "edge";
+    const match = userAgentHeader.match(/Edg(?:e|)\/(\d+)/i);
+    if (match) browser.version = match[1];
   }
 
   const response = NextResponse.next();
@@ -179,8 +188,8 @@ export function middleware(request: NextRequest) {
 
   if (
     browser.name === "Chrome" &&
-    typeof (browser as BrowserInfo).version === "string" &&
-    parseInt((browser as BrowserInfo).version!, 10) >= 90
+    typeof browser.version === "string" &&
+    parseInt(browser.version, 10) >= 90
   ) {
     response.headers.set("X-Browser-Support", "modern");
     response.headers.set("Cross-Origin-Embedder-Policy", "require-corp");

@@ -92,25 +92,36 @@ class ClientLogger {
     };
 
     // Flush logs before page unload
-    if (typeof window !== "undefined") {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.addEventListener === "function"
+    ) {
       window.addEventListener("beforeunload", () => {
         this.flush();
       });
 
       // Also flush on visibility change (when tab is hidden)
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-          this.flush();
-        }
-      });
+      if (
+        typeof document !== "undefined" &&
+        typeof document.addEventListener === "function"
+      ) {
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            this.flush();
+          }
+        });
+      }
     }
   }
 
   /**
-   * Create a child logger with additional context
+   * Create a child logger with additional context.
+   * Reuses the parent's buffer and event listeners instead of constructing a
+   * brand-new ClientLogger (which would attach duplicate `beforeunload` /
+   * `visibilitychange` listeners on every call).
    */
   child(context: LogContext): ClientLogger {
-    const childLogger = new ClientLogger();
+    const childLogger = Object.create(this) as ClientLogger;
     childLogger.pino = this.pino.child(context);
     return childLogger;
   }

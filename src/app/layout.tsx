@@ -1,11 +1,30 @@
 import type { Metadata, Viewport } from "next";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import type { JSX, ReactNode } from "react";
-import PWARegistration from "../components/organisms/pwa/pwa-registration";
+import dynamic from "next/dynamic";
 import { AuthProvider } from "../lib/auth";
 import { AccessibilityProvider } from "../components/organisms/accessibility/accessibility-provider";
 import { ScreenReaderAnnouncer } from "../components/molecules/accessibility/screen-reader-announcer";
-import { WebVitalsMonitor } from "../components/monitoring/web-vitals-monitor";
+
+// Load non-critical UI components after hydration so they don't block LCP.
+const PWARegistration = dynamic(
+  () => import("../components/organisms/pwa/pwa-registration"),
+  { ssr: false },
+);
+const WebVitalsMonitor = dynamic(
+  () => import("../components/monitoring/web-vitals-monitor"),
+  { ssr: false },
+);
+
+// Self-hosted with `next/font` — eliminates FOUT (flash of unstyled text) and
+// prevents CLS from font swaps. Subsets Latin to keep payload small.
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono",
+  weight: ["400", "500", "600", "700"],
+});
 
 /**
  * Viewport configuration for the application
@@ -161,19 +180,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={"antialiased"}
+      className={`antialiased ${jetbrainsMono.variable}`}
     >
       <head>
-        { }
-        <link
-          rel="dns-prefetch"
-          href="https://www.google-analytics.com"
-        />
-        <link
-          rel="dns-prefetch"
-          href="https://www.googletagmanager.com"
-        />
-
         { }
         <script
           type="application/ld+json"

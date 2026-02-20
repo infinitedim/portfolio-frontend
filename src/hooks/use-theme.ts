@@ -237,11 +237,13 @@ export function useTheme(): UseThemeReturn {
           themeClasses.push(`theme-${themeName}`);
           body.className = themeClasses.join(" ");
 
+          // Use setProperty to update each CSS variable individually.
+          // This surgically replaces only our variables without clobbering
+          // any other inline styles (avoids the cssText += accumulation bug).
           const cssVars = generateCSSVariables(config.colors);
-          const cssText = Object.entries(cssVars)
-            .map(([property, value]) => `${property}: ${value}`)
-            .join("; ");
-          root.style.cssText += `; ${cssText}`;
+          Object.entries(cssVars).forEach(([property, value]) => {
+            root.style.setProperty(property, value);
+          });
 
           appliedThemeRef.current = themeName;
         });

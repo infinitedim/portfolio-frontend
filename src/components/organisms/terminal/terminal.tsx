@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useRef, useEffect, useMemo, type JSX } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useTerminal } from "@/hooks/use-terminal";
 import { useI18n } from "@/hooks/use-i18n";
@@ -27,6 +27,36 @@ import { isFontName } from "@/types/font";
 import { GuidedTour } from "@/components/organisms/onboarding/guided-tour";
 import { useTour } from "@/hooks/use-tour";
 import type { BackgroundSettings } from "@/types/customization";
+
+const AVAILABLE_COMMANDS = [
+  "help",
+  "skills",
+  "customize",
+  "themes",
+  "fonts",
+  "status",
+  "clear",
+  "alias",
+  "about",
+  "contact",
+  "projects",
+  "experience",
+  "education",
+  "roadmap",
+  "progress",
+  "theme",
+  "font",
+  "language",
+  "demo",
+  "github",
+  "tech-stack",
+  "resume",
+  "social",
+  "shortcuts",
+  "easter-eggs",
+  "pwa",
+  "tour",
+] as const;
 
 /**
  * Props for the Terminal component
@@ -71,13 +101,29 @@ export function Terminal({
     setIsMounted(true);
   }, []);
 
+  // Destructure theme and font hook results early so all hooks/callbacks
+  // below can reference them without "used before declaration" errors.
+  const {
+    themeConfig,
+    changeTheme,
+    theme,
+    availableThemes,
+    mounted,
+    error: themeError,
+    getPerformanceReport,
+    themeMetrics,
+    resetPerformanceMetrics,
+  } = themeHookResult;
+
+  const { fontConfig, changeFont, font, availableFonts } = fontHookResult;
+
   const themePerformance = useMemo(
     () => ({
-      getPerformanceReport: themeHookResult.getPerformanceReport,
-      themeMetrics: themeHookResult.themeMetrics,
-      resetMetrics: themeHookResult.resetPerformanceMetrics,
+      getPerformanceReport,
+      themeMetrics,
+      resetMetrics: resetPerformanceMetrics,
     }),
-    [themeHookResult],
+    [getPerformanceReport, themeMetrics, resetPerformanceMetrics],
   );
 
   const {
@@ -244,11 +290,14 @@ export function Terminal({
   }, []);
 
   useEffect(() => {
-    if (bottomRef.current && !isReducedMotion) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-    } else if (bottomRef.current) {
-      bottomRef.current.scrollIntoView();
-    }
+    const rafId = requestAnimationFrame(() => {
+      if (bottomRef.current && !isReducedMotion) {
+        bottomRef.current.scrollIntoView({ behavior: "smooth" });
+      } else if (bottomRef.current) {
+        bottomRef.current.scrollIntoView();
+      }
+    });
+    return () => cancelAnimationFrame(rafId);
   }, [history, isReducedMotion]);
 
   useEffect(() => {
@@ -303,6 +352,25 @@ export function Terminal({
     return () => document.removeEventListener("keydown", handleGlobalKeydown);
   }, [showCustomizationManager, setCurrentInput]);
 
+  const handleWelcomeCommandSelect = useCallback(
+    (command: string) => {
+      setCurrentInput(command);
+      // This will be defined below, use a forward reference pattern
+      return command;
+    },
+    [setCurrentInput],
+  );
+
+  const showNotification = useCallback(
+    (
+      message: string,
+      type: "info" | "success" | "warning" | "error" = "info",
+    ) => {
+      setNotification({ message, type });
+    },
+    [],
+  );
+
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
@@ -335,57 +403,7 @@ export function Terminal({
     }
   }, [history.length]);
 
-  if (!themeHookResult || !fontHookResult) {
-    return (
-      <div
-        className="min-h-screen w-full flex items-center justify-center bg-black text-white relative overflow-hidden"
-        suppressHydrationWarning={true}
-      >
-        { }
-        <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20" />
-
-        <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
-          <TerminalLoadingProgress
-            duration={2000}
-            files={[
-              { path: t("loading"), size: "" },
-              { path: t("loading"), size: "" },
-              { path: t("loading"), size: "" },
-            ]}
-            completionText={`🔧 ${t("terminalReady")}!`}
-            autoStart={true}
-            showSystemInfo={true}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  const {
-    themeConfig,
-    changeTheme,
-    theme,
-    availableThemes,
-    mounted,
-    error: themeError,
-  } = themeHookResult;
-
-  const { fontConfig, changeFont, font, availableFonts } = fontHookResult;
-
-  const showNotification = (
-    message: string,
-    type: "info" | "success" | "warning" | "error" = "info",
-  ) => {
-    setNotification({ message, type });
-  };
-
-  const handleWelcomeCommandSelect = (command: string) => {
-    setCurrentInput(command);
-    handleSubmit(command);
-  };
-
-  const handleSubmit = async (command: string) => {
+  const handleSubmit = useCallback(async (command: string) => {
     const output = await executeCommand(command);
 
     if (output) {
@@ -574,7 +592,34 @@ export function Terminal({
     }
 
     setCurrentInput("");
-  };
+  }, [addToHistory, announceMessage, availableFonts?.length, availableThemes?.length, changeFont, changeTheme, commandAnalytics, customizationService, executeCommand, fontConfig?.family, fontConfig?.ligatures, fontConfig?.name, mounted, onFontChange, onThemeChange, setCurrentInput, showNotification, startTour, theme, themeConfig?.name, themeError, themeHookResult]);
+
+  if (!themeHookResult || !fontHookResult) {
+    return (
+      <div
+        className="min-h-screen w-full flex items-center justify-center bg-black text-white relative overflow-hidden"
+        suppressHydrationWarning={true}
+      >
+        { }
+        <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20" />
+
+        <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
+          <TerminalLoadingProgress
+            duration={2000}
+            files={[
+              { path: t("loading"), size: "" },
+              { path: t("loading"), size: "" },
+              { path: t("loading"), size: "" },
+            ]}
+            completionText={`🔧 ${t("terminalReady")}!`}
+            autoStart={true}
+            showSystemInfo={true}
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (!mounted || !themeConfig || !fontConfig || !hasMinimumLoadingTime) {
     return (
@@ -659,7 +704,6 @@ export function Terminal({
         <div
           ref={terminalRef}
           id="main-content"
-          key={`terminal-${theme}`}
           className={`min-h-screen w-full pt-4 px-2 pb-4 sm:pt-16 sm:px-6 lg:px-8 cursor-text terminal-container relative z-10 ${!isReducedMotion ? "transition-all duration-300" : ""}`}
           style={{
             backgroundColor: "transparent",
@@ -725,35 +769,7 @@ export function Terminal({
                   onSubmit={handleSubmit}
                   onHistoryNavigate={navigateHistory}
                   isProcessing={isProcessing}
-                  availableCommands={[
-                    "help",
-                    "skills",
-                    "customize",
-                    "themes",
-                    "fonts",
-                    "status",
-                    "clear",
-                    "alias",
-                    "about",
-                    "contact",
-                    "projects",
-                    "experience",
-                    "education",
-                    "roadmap",
-                    "progress",
-                    "theme",
-                    "font",
-                    "language",
-                    "demo",
-                    "github",
-                    "tech-stack",
-                    "resume",
-                    "social",
-                    "shortcuts",
-                    "easter-eggs",
-                    "pwa",
-                    "tour",
-                  ]}
+                  availableCommands={AVAILABLE_COMMANDS as unknown as string[]}
                   inputRef={commandInputRef}
                   getCommandSuggestions={getCommandSuggestions}
                   getFrequentCommands={getFrequentCommands}

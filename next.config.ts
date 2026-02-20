@@ -1,8 +1,9 @@
 const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig = {
-  // Disable heavy features in dev for faster startup
-  reactStrictMode: !isDev,
+  // StrictMode should always be on — it catches deprecation warnings and
+  // double-invocation bugs before they reach users.
+  reactStrictMode: true,
   reactCompiler: !isDev,
   typedRoutes: true,
   serverExternalPackages: ["bcryptjs"],
@@ -37,14 +38,15 @@ const nextConfig = {
   },
   images: {
     loader: "default",
-    formats: ["image/webp"],
+    // AVIF gives ~30% better compression than WebP with broad modern browser support
+    formats: ["image/avif", "image/webp"],
     ...(isDev
       ? {}
       : {
         deviceSizes: [640, 750, 828, 1080, 1200],
         imageSizes: [16, 32, 48, 64, 96, 128],
       }),
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 86400, // 24 h — assets with hash-based URLs can be cached longer
     dangerouslyAllowSVG: false,
     contentDispositionType: "inline",
     remotePatterns: [

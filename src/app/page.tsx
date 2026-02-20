@@ -1,9 +1,19 @@
 import { Metadata } from "next";
-import { Terminal } from "../components/organisms/terminal/terminal";
+import dynamic from "next/dynamic";
 import { StaticContent } from "../components/organisms/shared/static-content";
 import { type JSX, Suspense } from "react";
 import { TerminalLoadingProgress } from "../components/molecules/terminal/terminal-loading-progress";
 import { HomeTerminalHeader } from "../components/molecules/shared/home-terminal-header";
+
+// Dynamically import Terminal so it is NOT part of the main JS bundle.
+// ssr:false is correct — the terminal is entirely client-side.
+const Terminal = dynamic(
+  () =>
+    import("../components/organisms/terminal/terminal").then(
+      (m) => m.Terminal,
+    ),
+  { ssr: false },
+);
 
 /**
  * Metadata for the home page
