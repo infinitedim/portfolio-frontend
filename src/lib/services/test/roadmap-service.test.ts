@@ -69,9 +69,10 @@ describe("RoadmapService", () => {
             const modulePath =
               require.resolve("@/lib/services/roadmap-service");
             delete require.cache[modulePath];
-          } catch (_e) {
+          } catch (e) {
             throw new Error(
               'Failed to resolve module "@/lib/services/roadmap-service"',
+              { cause: e },
             );
           }
         }

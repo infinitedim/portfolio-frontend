@@ -24,6 +24,7 @@ function defineGlobalProperty(
     if (error instanceof Error) {
       throw new Error(
         `Failed to define global property "${key}": ${error.message}`,
+        { cause: error },
       );
     }
   }

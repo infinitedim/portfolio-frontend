@@ -46,7 +46,7 @@ describe("useTheme", () => {
         });
       } catch (error) {
         if (error instanceof Error) {
-          throw new Error(`Failed to mock localStorage: ${error.message}`);
+          throw new Error(`Failed to mock localStorage: ${error.message}`, { cause: error });
         }
       }
     }
