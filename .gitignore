@@ -241,7 +241,7 @@ tools/**/src/**/*.js
 tools/**/src/**/*.js.map
 
 
-.env.*
+.env.development
 *.log.*
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs,visualstudiocode,git,turbo,vercel,node,react

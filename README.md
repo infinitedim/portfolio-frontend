@@ -477,22 +477,9 @@ vercel
 
 ### Backend Deployment
 
-The Rust backend can be deployed to:
+The Rust backend can be deployed using Docker:
 
-1. **VPS/Cloud VM** (DigitalOcean, AWS EC2, etc.)
-
-   ```bash
-   # Build release binary
-   cargo build --release
-
-   # Copy binary and config to server
-   scp target/release/portfolio-backend user@server:/opt/portfolio/
-   scp -r config user@server:/opt/portfolio/
-
-   # Run with systemd or supervisor
-   ```
-
-2. **Docker Container**
+1. **Docker Container**
 
    ```bash
    # Build Docker image
@@ -505,7 +492,8 @@ The Rust backend can be deployed to:
      portfolio-backend
    ```
 
-3. **Logging Stack**
+2. **Logging Stack**
+
    ```bash
    # Deploy Loki + Grafana stack
    docker-compose -f docker-compose.logging.yml up -d
@@ -519,8 +507,6 @@ The Rust backend can be deployed to:
 - [ ] Set up HTTPS/TLS certificates
 - [ ] Configure CORS origins
 - [ ] Set up log retention policies
-- [ ] Configure firewall rules
-- [ ] Set up automated backups
 - [ ] Configure monitoring alerts
 
 ## 🎨 API Reference for Developers

@@ -1,6 +1,7 @@
 # ============================================================================
 # GitHub Actions CD Pipeline - Frontend Production Deployment
 # Runs on: Push to main branch (after CI passes)
+# Deployment target: Vercel
 # ============================================================================
 
 name: CD - Production
@@ -15,13 +16,9 @@ concurrency:
   group: production-deployment
   cancel-in-progress: false
 
-env:
-  DOCKER_REGISTRY: ghcr.io
-  DOCKER_REPO: ${{ github.repository }}
-
 jobs:
   deploy:
-    name: Deploy to Production
+    name: Deploy to Vercel (Production)
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     environment:
@@ -36,138 +33,17 @@ jobs:
         id: sha
         run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.1
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
         with:
-          ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
-
-      - name: Add VPS to known hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Create deployment directory
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p ~/portfolio-frontend/docker/nginx/ssl"
-
-      - name: Copy Docker Compose files
-        run: |
-          scp docker-compose.prod.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/portfolio-frontend/ || true
-          scp -r docker/nginx ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/portfolio-frontend/docker/ 2>/dev/null || true
-          scp scripts/deploy.sh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/portfolio-frontend/ 2>/dev/null || true
-          scp scripts/health-check.sh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/portfolio-frontend/ 2>/dev/null || true
-
-      - name: Create environment file (frontend only)
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cat > ~/portfolio-frontend/.env << 'EOF'
-          # Docker configuration
-          DOCKER_REGISTRY=${{ env.DOCKER_REGISTRY }}
-          DOCKER_REPO=${{ env.DOCKER_REPO }}
-          IMAGE_TAG=${{ steps.sha.outputs.short }}
-          DOMAIN=${{ vars.DOMAIN }}
-
-          # Core Runtime (frontend)
-          NODE_ENV=production
-          PORT=3000
-          LOG_LEVEL=info
-
-          # Application URLs
-          NEXT_PUBLIC_BASE_URL=${{ vars.NEXT_PUBLIC_APP_URL }}
-          NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
-
-          # Roadmap (if used by frontend)
-          NEXT_PUBLIC_ROADMAP_AUTH_TOKEN=${{ secrets.ROADMAP_AUTH_TOKEN }}
-          NEXT_PUBLIC_ROADMAP_USER_ID=${{ vars.ROADMAP_USER_ID }}
-
-          # Monitoring
-          NEXT_PUBLIC_ANALYTICS_ENABLED=true
-          SENTRY_DSN=${{ secrets.SENTRY_DSN }}
-          SENTRY_ENVIRONMENT=production
-          EOF"
-
-      - name: Login to Container Registry on VPS
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo ${{ secrets.GH_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin"
-
-      - name: Pull latest images
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd ~/portfolio-frontend && docker compose -f docker-compose.prod.yml pull" || true
-
-      - name: Deploy with zero-downtime
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd ~/portfolio-frontend && chmod +x deploy.sh && ./deploy.sh" || true
-
-      - name: Run health checks
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd ~/portfolio-frontend && chmod +x health-check.sh && ./health-check.sh" || true
-
-      - name: Cleanup old images
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "docker image prune -af --filter 'until=168h'"
-
-      - name: Notify deployment success
-        if: success()
-        uses: slackapi/slack-github-action@v2.1.1
-        with:
-          payload: |
-            {
-              "text": "✅ Frontend deployment to production successful!",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "✅ *Frontend Deployment Successful*\n\n*Repository:* ${{ github.repository }}\n*Branch:* main\n*Commit:* `${{ steps.sha.outputs.short }}`\n*URL:* ${{ vars.PRODUCTION_URL }}"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        continue-on-error: true
-
-  rollback:
-    name: Rollback Deployment
-    runs-on: ubuntu-latest
-    if: ${{ failure() || github.event_name == 'workflow_dispatch' }}
-    needs: deploy
-    environment:
-      name: production
-
-    steps:
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
-
-      - name: Add VPS to known hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Rollback to previous version
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd ~/portfolio-frontend && \
-            docker compose -f docker-compose.prod.yml down && \
-            git checkout HEAD~1 -- docker-compose.prod.yml && \
-            docker compose -f docker-compose.prod.yml up -d" || true
-
-      - name: Notify rollback
-        uses: slackapi/slack-github-action@v2.1.1
-        with:
-          payload: |
-            {
-              "text": "⚠️ Frontend deployment rolled back!",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "⚠️ *Frontend Deployment Rolled Back*\n\n*Repository:* ${{ github.repository }}\n*Reason:* Deployment failure detected"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: "--prod"
+          working-directory: ./
         continue-on-error: true

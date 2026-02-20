@@ -265,10 +265,9 @@
 #### Medium Priority
 
 - [ ] **Notification integrations**
-  - Slack webhook notifications (configuration ready - see SLACK_SETUP.md)
-  - Discord webhook support
-  - Telegram bot integration
-  - Email notification service
+- Discord webhook support
+- Telegram bot integration
+- Email notification service
 
 - [ ] **Third-party services**
   - Cal.com integration for scheduling

@@ -2,20 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import type { JSX, ReactNode } from "react";
-import dynamic from "next/dynamic";
 import { AuthProvider } from "../lib/auth";
 import { AccessibilityProvider } from "../components/organisms/accessibility/accessibility-provider";
 import { ScreenReaderAnnouncer } from "../components/molecules/accessibility/screen-reader-announcer";
-
-// Load non-critical UI components after hydration so they don't block LCP.
-const PWARegistration = dynamic(
-  () => import("../components/organisms/pwa/pwa-registration"),
-  { ssr: false },
-);
-const WebVitalsMonitor = dynamic(
-  () => import("../components/monitoring/web-vitals-monitor"),
-  { ssr: false },
-);
+import { ClientOnlyComponents } from "../components/layout/client-only-components";
 
 // Self-hosted with `next/font` — eliminates FOUT (flash of unstyled text) and
 // prevents CLS from font swaps. Subsets Latin to keep payload small.
@@ -243,8 +233,7 @@ export default function RootLayout({
         />
       </head>
       <body className={"antialiased"}>
-        <PWARegistration />
-        <WebVitalsMonitor />
+        <ClientOnlyComponents />
         <AuthProvider>
           <AccessibilityProvider>
             <ScreenReaderAnnouncer message="Terminal Portfolio" />
