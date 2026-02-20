@@ -18,6 +18,9 @@ interface BlogPost {
   contentMd: string | null;
   contentHtml: string | null;
   published: boolean;
+  tags: string[];
+  readingTimeMinutes: number;
+  viewCount: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,7 +33,7 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
     const backendUrl = getBackendUrl();
     const response = await fetch(`${backendUrl}/api/blog/${slug}`, {
-      next: { revalidate: 3600 }, 
+      next: { revalidate: 3600 },
     });
 
     if (response.ok) {
@@ -103,7 +106,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  
+
   if (!post.published) {
     notFound();
   }
@@ -111,7 +114,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        
+
         <nav className="mb-8">
           <Link
             href="/blog"
@@ -121,9 +124,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </Link>
         </nav>
 
-        
+
         <article className="prose prose-invert prose-green max-w-none">
-          
+
           <header className="mb-8 not-prose">
             <h1 className="text-4xl font-bold text-green-400 mb-4">
               {post.title}
@@ -131,7 +134,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {post.summary && (
               <p className="text-xl text-gray-400 mb-4">{post.summary}</p>
             )}
-            <div className="flex items-center gap-4 text-sm text-gray-500">
+            {post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mb-4">
+                {post.tags.map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/blog?tag=${encodeURIComponent(tag)}` as never}
+                    className="text-xs px-2 py-0.5 rounded-full bg-gray-800 border border-gray-700 text-gray-400 hover:border-green-400/50 hover:text-green-400 transition-colors"
+                  >
+                    #{tag}
+                  </Link>
+                ))}
+              </div>
+            )}
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
               <time dateTime={post.createdAt}>
                 Published:{" "}
                 {new Date(post.createdAt).toLocaleDateString("en-US", {
@@ -150,17 +166,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   })}
                 </time>
               )}
+              {post.readingTimeMinutes > 0 && (
+                <span>{post.readingTimeMinutes} min read</span>
+              )}
+              {post.viewCount > 0 && (
+                <span>{post.viewCount.toLocaleString()} views</span>
+              )}
             </div>
           </header>
 
-          
+
           <div className="border-t border-gray-800 pt-8">
             {post.contentHtml ? (
               <div
                 dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-                className="prose prose-invert prose-green max-w-none 
-                  prose-headings:text-green-400 
-                  prose-a:text-green-400 
+                className="prose prose-invert prose-green max-w-none
+                  prose-headings:text-green-400
+                  prose-a:text-green-400
                   prose-strong:text-gray-100
                   prose-code:text-green-300
                   prose-code:bg-gray-800
@@ -180,7 +202,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </article>
 
-        
+
         <footer className="mt-12 pt-8 border-t border-gray-800">
           <Link
             href="/blog"
@@ -194,4 +216,4 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 }
 
-export const revalidate = 3600; 
+export const revalidate = 3600;
