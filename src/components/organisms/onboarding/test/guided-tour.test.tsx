@@ -63,26 +63,26 @@ describe("GuidedTour", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
 
-    
-    
 
-    
+
+
+
     mockConfirmReturnValue = true;
     mockConfirm.mockClear();
     mockConfirm.mockImplementation(() => mockConfirmReturnValue);
     mockAnnounceMessage.mockClear();
 
-    
+
     if (typeof document !== "undefined") {
       const existingElement = document.getElementById("test-target");
       if (existingElement && existingElement.parentNode) {
         existingElement.parentNode.removeChild(existingElement);
       }
 
-      
+
       const testElement = document.createElement("div");
       testElement.id = "test-target";
-      
+
       testElement.getBoundingClientRect = () =>
       ({
         top: 100,
@@ -101,10 +101,10 @@ describe("GuidedTour", () => {
   });
 
   afterEach(() => {
-    
-    
 
-    
+
+
+
     if (typeof document !== "undefined" && typeof document.getElementById === "function") {
       try {
         const testElement = document.getElementById("test-target");
@@ -113,11 +113,11 @@ describe("GuidedTour", () => {
         }
       } catch (e) {
         console.error(e);
-        
+
       }
     }
 
-    
+
     vi.clearAllMocks();
   });
 
@@ -351,7 +351,7 @@ describe("GuidedTour", () => {
       expect(onPrev).toHaveBeenCalled();
     });
 
-    it("should navigate next on Enter", () => {
+    it("should NOT navigate next on Enter (Enter is reserved for command input)", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -375,7 +375,7 @@ describe("GuidedTour", () => {
 
       fireEvent.keyDown(document, { key: "Enter" });
 
-      expect(onNext).toHaveBeenCalled();
+      expect(onNext).not.toHaveBeenCalled();
     });
 
     it("should skip on Escape", () => {
@@ -388,7 +388,7 @@ describe("GuidedTour", () => {
         return;
       }
       const onSkip = vi.fn();
-      
+
       mockConfirmReturnValue = true;
       mockConfirm.mockReset();
       mockConfirm.mockImplementation(() => true);
@@ -561,7 +561,7 @@ describe("GuidedTour", () => {
         return;
       }
       const onSkip = vi.fn();
-      
+
       mockConfirmReturnValue = true;
       mockConfirm.mockReset();
       mockConfirm.mockImplementation(() => true);
@@ -581,9 +581,9 @@ describe("GuidedTour", () => {
       const skipButton = screen.getByText("Skip");
       fireEvent.click(skipButton);
 
-      
+
       expect(mockConfirm).toHaveBeenCalledWith("Are you sure you want to skip the tour?");
-      
+
       expect(onSkip).toHaveBeenCalledTimes(1);
     });
   });

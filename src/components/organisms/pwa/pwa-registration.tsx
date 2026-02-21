@@ -2,6 +2,10 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { PWAInstallPrompt } from "@/components/molecules/pwa/pwa-install-prompt";
+import {
+  TOUR_STORAGE_KEY,
+  TOUR_VERSION,
+} from "@/components/organisms/onboarding/tour-steps";
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -25,6 +29,7 @@ export function PWARegistration() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [swUpdateAvailable, setSwUpdateAvailable] = useState(false);
+  const [tourCompleted, setTourCompleted] = useState(false);
 
   const mountedRef = useRef(true);
   const registrationRef = useRef<ServiceWorkerRegistration | null>(null);
@@ -415,17 +420,54 @@ export function PWARegistration() {
 
   useEffect(() => {
     if (error) {
-      
+
       if (!error.includes("404") && !error.includes("bad HTTP response code")) {
         console.error("PWA Component Error:", error);
       } else {
-        
+
         console.debug("PWA: Service worker not available (expected in some environments)");
       }
     }
   }, [error]);
 
-  if (!isInstallable || isInstalled) {
+  // Check tour completion status and listen for tour-completed event
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Check if tour was already completed (from localStorage)
+    const checkTourCompleted = (): boolean => {
+      try {
+        const stored = localStorage.getItem(TOUR_STORAGE_KEY);
+        if (stored) {
+          const data = JSON.parse(stored);
+          return data.version === TOUR_VERSION && data.completed === true;
+        }
+      } catch {
+        // If we can't read tour state, assume not completed
+      }
+      return false;
+    };
+
+    if (checkTourCompleted()) {
+      setTourCompleted(true);
+      return;
+    }
+
+    // Listen for tour completion event
+    const handleTourCompleted = () => {
+      if (mountedRef.current) {
+        console.log("PWA: Tour completed, enabling install prompt");
+        setTourCompleted(true);
+      }
+    };
+
+    window.addEventListener("tour-completed", handleTourCompleted);
+    return () => {
+      window.removeEventListener("tour-completed", handleTourCompleted);
+    };
+  }, []);
+
+  if (!isInstallable || isInstalled || !tourCompleted) {
     return null;
   }
 

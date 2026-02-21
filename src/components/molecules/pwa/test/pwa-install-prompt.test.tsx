@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { PWAInstallPrompt } from "../pwa-install-prompt";
 
@@ -90,7 +90,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(100);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(100);
+      });
 
       expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
     });
@@ -107,7 +109,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(3000);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3000);
+      });
 
       expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
     });
@@ -125,7 +129,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
       expect(screen.getByText("Get the native app experience")).toBeInTheDocument();
@@ -144,7 +150,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Install Now")).toBeInTheDocument();
     });
@@ -162,7 +170,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Later")).toBeInTheDocument();
     });
@@ -180,7 +190,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Faster loading & offline access")).toBeInTheDocument();
       expect(screen.getByText("Native app experience")).toBeInTheDocument();
@@ -200,7 +212,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       const closeButton = screen.getByLabelText("Close");
       expect(closeButton).toBeInTheDocument();
@@ -219,7 +233,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       const dialog = screen.getByRole("dialog");
       expect(dialog).toHaveAttribute("aria-labelledby", "pwa-prompt-title");
@@ -241,14 +257,18 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Install Now")).toBeInTheDocument();
 
       const installButton = screen.getByText("Install Now");
       fireEvent.click(installButton);
 
-      await vi.advanceTimersByTimeAsync(300);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(300);
+      });
 
       expect(mockOnInstall).toHaveBeenCalled();
     });
@@ -266,14 +286,18 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Install Now")).toBeInTheDocument();
 
       const installButton = screen.getByText("Install Now");
       fireEvent.click(installButton);
 
-      await vi.advanceTimersByTimeAsync(300);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(300);
+      });
 
       expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
     });
@@ -293,14 +317,18 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Later")).toBeInTheDocument();
 
       const laterButton = screen.getByText("Later");
       fireEvent.click(laterButton);
 
-      await vi.advanceTimersByTimeAsync(300);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(300);
+      });
 
       expect(mockOnDismiss).toHaveBeenCalled();
     });
@@ -318,18 +346,20 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       const closeButton = screen.getByLabelText("Close");
       expect(closeButton).toBeInTheDocument();
 
       fireEvent.click(closeButton);
 
-      vi.advanceTimersByTime(300);
-
-      await waitFor(() => {
-        expect(mockOnDismiss).toHaveBeenCalled();
+      await act(async () => {
+        vi.advanceTimersByTime(300);
       });
+
+      expect(mockOnDismiss).toHaveBeenCalled();
     });
 
     it("should hide prompt after dismiss", async () => {
@@ -345,18 +375,20 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Later")).toBeInTheDocument();
 
       const laterButton = screen.getByText("Later");
       fireEvent.click(laterButton);
 
-      vi.advanceTimersByTime(300);
-
-      await waitFor(() => {
-        expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
+      await act(async () => {
+        vi.advanceTimersByTime(300);
       });
+
+      expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
     });
 
     it("should save dismissal to localStorage when persistDismissal is true", async () => {
@@ -373,18 +405,20 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Later")).toBeInTheDocument();
 
       const laterButton = screen.getByText("Later");
       fireEvent.click(laterButton);
 
-      vi.advanceTimersByTime(300);
-
-      await waitFor(() => {
-        expect(localStorageMock.getItem("pwa-prompt-dismissed")).toBe("true");
+      await act(async () => {
+        vi.advanceTimersByTime(300);
       });
+
+      expect(localStorageMock.getItem("pwa-prompt-dismissed")).toBe("true");
     });
 
     it("should not save dismissal to localStorage when persistDismissal is false", async () => {
@@ -401,14 +435,18 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Later")).toBeInTheDocument();
 
       const laterButton = screen.getByText("Later");
       fireEvent.click(laterButton);
 
-      vi.advanceTimersByTime(300);
+      await act(async () => {
+        vi.advanceTimersByTime(300);
+      });
 
       expect(localStorageMock.getItem("pwa-prompt-dismissed")).toBeNull();
     });
@@ -428,17 +466,19 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
 
       fireEvent.keyDown(document, { key: "Escape" });
 
-      vi.advanceTimersByTime(300);
-
-      await waitFor(() => {
-        expect(mockOnDismiss).toHaveBeenCalled();
+      await act(async () => {
+        vi.advanceTimersByTime(300);
       });
+
+      expect(mockOnDismiss).toHaveBeenCalled();
     });
   });
 
@@ -480,7 +520,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      await vi.advanceTimersByTimeAsync(1);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1);
+      });
 
       expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
     });

@@ -1,5 +1,10 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import {
+  TagFilter,
+  type TagWithCount,
+} from "@/components/molecules/blog/tag-filter";
+import { TagChip } from "@/components/atoms/shared/tag-chip";
 
 function getBackendUrl(): string {
   return (
@@ -75,15 +80,25 @@ async function getBlogPosts(
   return { items: [], page, pageSize, total: 0 };
 }
 
-async function getAvailableTags(): Promise<string[]> {
+async function getAvailableTags(): Promise<TagWithCount[]> {
   try {
     const backendUrl = getBackendUrl();
     const response = await fetch(`${backendUrl}/api/blog/tags`, {
       next: { revalidate: 3600 },
     });
     if (response.ok) {
-      const data: { tags: string[] } = await response.json();
-      return data.tags;
+      const data = await response.json();
+      // Support both old format { tags: string[] } and new format TagWithCount[]
+      if (Array.isArray(data)) {
+        return data as TagWithCount[];
+      }
+      if (data.tags && Array.isArray(data.tags)) {
+        return data.tags.map((t: string) => ({
+          name: t,
+          slug: t.toLowerCase().replace(/\s+/g, "-"),
+          postCount: 0,
+        }));
+      }
     }
   } catch (error) {
     console.error("Failed to fetch tags:", error);
@@ -163,21 +178,11 @@ export default async function BlogPage({
           </form>
 
           {availableTags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              <span className="text-xs text-gray-500 self-center">Filter:</span>
-              {availableTags.map((t) => (
-                <Link
-                  key={t}
-                  href={buildUrl({ tag: t === tag ? undefined : t, page: 1 })}
-                  className={`text-xs px-2 py-1 rounded-full border transition-colors ${t === tag
-                      ? "bg-green-400/20 border-green-400 text-green-300"
-                      : "border-gray-700 text-gray-400 hover:border-green-400/50 hover:text-green-400"
-                    }`}
-                >
-                  {t}
-                </Link>
-              ))}
-            </div>
+            <TagFilter
+              tags={availableTags}
+              activeTag={tag}
+              searchParam={search}
+            />
           )}
         </header>
 
@@ -218,9 +223,8 @@ export default async function BlogPage({
                       <Link
                         key={t}
                         href={buildUrl({ tag: t, page: 1 })}
-                        className="text-xs px-2 py-0.5 rounded-full bg-gray-800 border border-gray-700 text-gray-400 hover:border-green-400/50 hover:text-green-400 transition-colors"
                       >
-                        #{t}
+                        <TagChip name={t} size="sm" active={t === tag} />
                       </Link>
                     ))}
                   </div>

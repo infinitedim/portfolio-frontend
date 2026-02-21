@@ -1,6 +1,12 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { ScrollProgress } from "@/components/molecules/blog/scroll-progress";
+import { BackToTop } from "@/components/molecules/blog/back-to-top";
+import { CopyCodeButton } from "@/components/molecules/blog/copy-code-button";
+import { ShareButtons } from "@/components/molecules/blog/share-buttons";
+import { TableOfContents } from "@/components/molecules/blog/table-of-contents";
+import { TagChip } from "@/components/atoms/shared/tag-chip";
 
 function getBackendUrl(): string {
   return (
@@ -113,6 +119,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
+      {/* Reading progress bar */}
+      <ScrollProgress />
+
       <main className="container mx-auto px-4 py-8 max-w-4xl">
 
         <nav className="mb-8">
@@ -124,6 +133,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </Link>
         </nav>
 
+        {/* Table of Contents (only renders when content has ≥2 headings) */}
+        {post.contentHtml && (
+          <TableOfContents
+            contentHtml={post.contentHtml}
+            className="mb-8 lg:hidden"
+          />
+        )}
 
         <article className="prose prose-invert prose-green max-w-none">
 
@@ -140,9 +156,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <Link
                     key={tag}
                     href={`/blog?tag=${encodeURIComponent(tag)}` as never}
-                    className="text-xs px-2 py-0.5 rounded-full bg-gray-800 border border-gray-700 text-gray-400 hover:border-green-400/50 hover:text-green-400 transition-colors"
                   >
-                    #{tag}
+                    <TagChip name={tag} size="sm" />
                   </Link>
                 ))}
               </div>
@@ -175,7 +190,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
           </header>
 
-
           <div className="border-t border-gray-800 pt-8">
             {post.contentHtml ? (
               <div
@@ -190,7 +204,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   prose-code:rounded
                   prose-pre:bg-gray-900
                   prose-pre:border
-                  prose-pre:border-gray-800"
+                  prose-pre:border-gray-800
+                  prose-pre:relative"
               />
             ) : post.contentMd ? (
               <div className="whitespace-pre-wrap font-mono text-sm text-gray-300">
@@ -200,18 +215,30 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <p className="text-gray-500">No content available.</p>
             )}
           </div>
+
+          {/* Copy button injected into every <pre> block */}
+          <CopyCodeButton />
         </article>
 
+        <footer className="mt-12 pt-8 border-t border-gray-800 space-y-6">
+          {/* Social share */}
+          <ShareButtons
+            title={post.title}
+            slug={post.slug}
+            summary={post.summary}
+          />
 
-        <footer className="mt-12 pt-8 border-t border-gray-800">
           <Link
             href="/blog"
-            className="text-green-400 hover:text-green-300 transition-colors"
+            className="block text-green-400 hover:text-green-300 transition-colors"
           >
             ← Back to Blog
           </Link>
         </footer>
       </main>
+
+      {/* Floating back-to-top button */}
+      <BackToTop />
     </div>
   );
 }

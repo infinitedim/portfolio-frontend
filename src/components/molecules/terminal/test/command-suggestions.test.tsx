@@ -74,16 +74,16 @@ describe("CommandSuggestions", () => {
         expect(true).toBe(true);
         return;
       }
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
+
+
+
+
+
+
 
       const { container } = render(
         <CommandSuggestions
@@ -183,11 +183,11 @@ describe("CommandSuggestions", () => {
 
       fireEvent.keyDown(document, { key: "ArrowDown" });
 
-      
+
       expect(screen.getByText("help")).toBeInTheDocument();
     });
 
-    it("should select suggestion with Enter key", async () => {
+    it("should NOT select suggestion with Enter key (Enter is reserved for command execution)", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -208,7 +208,7 @@ describe("CommandSuggestions", () => {
 
       fireEvent.keyDown(document, { key: "Enter" });
 
-      expect(onSelect).toHaveBeenCalledWith("help");
+      expect(onSelect).not.toHaveBeenCalled();
     });
 
     it("should hide when Escape key is pressed", async () => {
@@ -250,17 +250,6 @@ describe("CommandSuggestions", () => {
         description: `Description ${i}`,
       }));
 
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
       render(
         <CommandSuggestions
           input="com"
@@ -272,8 +261,11 @@ describe("CommandSuggestions", () => {
       );
 
       await waitFor(() => {
-        const suggestions = screen.getAllByText(/command-/);
-        expect(suggestions.length).toBeLessThanOrEqual(5);
+        const suggestions = screen.queryAllByRole("option");
+        const commandSuggestions = suggestions.filter((element) => {
+          return element?.textContent?.includes("command-") ?? false;
+        });
+        expect(commandSuggestions.length).toBeLessThanOrEqual(5);
       });
     });
   });

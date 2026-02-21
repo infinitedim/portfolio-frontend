@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { CommandInput } from "../command-input";
 
@@ -22,7 +22,13 @@ vi.mock("@/hooks/use-theme", () => ({
 
 vi.mock("@/hooks/use-security", () => ({
   useSecurity: () => ({
-    validateInput: vi.fn(() => ({ isValid: true, threats: [] })),
+    validateInput: vi.fn(async (input: string) => ({
+      isValid: true,
+      shouldProceed: true,
+      sanitizedInput: input?.trim?.() ?? input,
+      error: null,
+      riskLevel: "low",
+    })),
     threatAlerts: [],
     isSecure: true,
   }),
@@ -148,7 +154,7 @@ describe("CommandInput", () => {
       expect(onChange).toHaveBeenCalledWith("help");
     });
 
-    it("should call onSubmit when Enter is pressed", () => {
+    it("should call onSubmit when Enter is pressed", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -167,7 +173,9 @@ describe("CommandInput", () => {
       const input = screen.getByRole("textbox");
       fireEvent.keyDown(input, { key: "Enter" });
 
-      expect(onSubmit).toHaveBeenCalledWith("help");
+      await waitFor(() => {
+        expect(onSubmit).toHaveBeenCalledWith("help");
+      });
     });
 
     it("should not submit when processing", () => {
@@ -244,11 +252,12 @@ describe("CommandInput", () => {
   });
 
   describe("Tab Completion", () => {
-    it("should show tab completion when Tab is pressed", () => {
+    it("should show tab completion when Tab is pressed", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
+      vi.useFakeTimers();
       const onChange = vi.fn();
       render(
         <CommandInput
@@ -262,10 +271,17 @@ describe("CommandInput", () => {
       );
 
       const input = screen.getByRole("textbox");
-      fireEvent.keyDown(input, { key: "Tab" });
+      // Dismiss auto-shown suggestions (triggered by focus + value.length > 0)
+      await act(async () => {
+        fireEvent.keyDown(input, { key: "Escape" });
+      });
+      // Now Tab should trigger tab completion since suggestions are hidden
+      await act(async () => {
+        fireEvent.keyDown(input, { key: "Tab" });
+      });
 
-      
       expect(screen.getByTestId("tab-completion")).toBeInTheDocument();
+      vi.useRealTimers();
     });
   });
 

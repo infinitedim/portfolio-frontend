@@ -4,6 +4,13 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import type { ThemeConfig } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { authService } from "@/lib/auth/auth-service";
+import { useDraftAutosave, type DraftData } from "@/hooks/use-draft-autosave";
+import { MarkdownEditor } from "./markdown-editor";
+import {
+  ImageUploadButton,
+  ImageDropZone,
+} from "./image-upload-button";
+import { TagChip } from "@/components/atoms/shared/tag-chip";
 
 function getApiUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
@@ -17,12 +24,13 @@ interface BlogPost {
   contentHtml: string | null;
   summary: string | null;
   published: boolean;
+  tags: string[];
   createdAt: string;
   updatedAt: string;
 }
 
 interface LocalBlogPost extends BlogPost {
-  tags: string[];
+  // LocalBlogPost now uses tags from the API directly
 }
 
 interface BlogEditorProps {
@@ -38,21 +46,48 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const [slug, setSlug] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
-  const [isPreview, setIsPreview] = useState(false);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [posts, setPosts] = useState<LocalBlogPost[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isNewPost, setIsNewPost] = useState(false);
-  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const [showDraftPrompt, setShowDraftPrompt] = useState(false);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout>(null);
+
+  const draftKey = `admin:blog-draft:${currentPost?.id && !isNewPost ? currentPost.id : "new"}`;
+  const { savedDraft, saveDraft: saveDraftToLocal, clearDraft, lastSavedAt: draftSavedAt, hasDraft } = useDraftAutosave({
+    key: draftKey,
+    debounceMs: 2000,
+  });
 
 
   const toLocalPost = (post: BlogPost): LocalBlogPost => ({
     ...post,
-    tags: [],
+    tags: post.tags ?? [],
   });
+
+  // Fetch available tags for autocomplete
+  const fetchAvailableTags = useCallback(async () => {
+    try {
+      const response = await fetch(`${getApiUrl()}/api/blog/tags`, {
+        headers: { Accept: "application/json" },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        // Support both formats
+        if (Array.isArray(data)) {
+          setAvailableTags(data.map((t: { name: string }) => t.name));
+        } else if (data.tags) {
+          setAvailableTags(data.tags);
+        }
+      }
+    } catch {
+      // silently ignore - tags autocomplete is optional
+    }
+  }, []);
 
 
   const loadPosts = useCallback(async () => {
@@ -88,8 +123,21 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
   useEffect(() => {
     loadPosts();
+    fetchAvailableTags();
+  }, [loadPosts, fetchAvailableTags]);
 
-  }, [loadPosts]);
+  // Auto-save draft to localStorage on content changes
+  useEffect(() => {
+    if (title || content || summary) {
+      saveDraftToLocal({
+        content,
+        title,
+        summary,
+        tags,
+        savedAt: new Date().toISOString(),
+      });
+    }
+  }, [title, content, summary, tags, saveDraftToLocal]);
 
 
   useEffect(() => {
@@ -149,6 +197,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         contentMd: content,
         contentHtml: renderMarkdownToHtml(content),
         published: currentPost?.published ?? false,
+        tags,
       };
 
       const response = await fetch(
@@ -167,7 +216,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       if (response.ok) {
         const savedPost = await response.json();
         const localPost = toLocalPost(savedPost);
-        localPost.tags = tags;
 
         if (isUpdate) {
           setPosts((prev) =>
@@ -179,8 +227,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
         setCurrentPost(localPost);
         setSlug(localPost.slug);
+        setTags(localPost.tags);
         setIsNewPost(false);
         setLastSaved(new Date());
+        clearDraft();
       } else {
         const errData = await response.json();
         setError(errData.error || "Failed to save post");
@@ -228,6 +278,38 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setTags(draft.tags);
     setIsNewPost(false);
     setError(null);
+
+    // Check if there's a localStorage draft for this post
+    if (typeof window !== "undefined") {
+      const key = `admin:blog-draft:${draft.id}`;
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const localDraft: DraftData = JSON.parse(raw);
+          // Only prompt if the local draft is different
+          if (localDraft.content && localDraft.content !== (draft.contentMd || "")) {
+            setShowDraftPrompt(true);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+  };
+
+  const loadLocalDraft = () => {
+    if (savedDraft) {
+      setTitle(savedDraft.title || title);
+      setContent(savedDraft.content || content);
+      setSummary(savedDraft.summary || summary);
+      setTags(savedDraft.tags?.length ? savedDraft.tags : tags);
+    }
+    setShowDraftPrompt(false);
+  };
+
+  const dismissDraftPrompt = () => {
+    setShowDraftPrompt(false);
+    clearDraft();
   };
 
 
@@ -283,15 +365,59 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   };
 
   const addTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setTags((prev) => [...prev, tagInput.trim()]);
+    const trimmed = tagInput.trim();
+    if (trimmed && !tags.some((t) => t.toLowerCase() === trimmed.toLowerCase())) {
+      setTags((prev) => [...prev, trimmed]);
       setTagInput("");
+      setTagSuggestions([]);
     }
   };
 
   const removeTag = (tagToRemove: string) => {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
   };
+
+  const handleTagInputChange = (value: string) => {
+    setTagInput(value);
+    if (value.trim()) {
+      const filtered = availableTags.filter(
+        (t) =>
+          t.toLowerCase().includes(value.toLowerCase()) &&
+          !tags.some((existing) => existing.toLowerCase() === t.toLowerCase()),
+      );
+      setTagSuggestions(filtered.slice(0, 5));
+    } else {
+      setTagSuggestions([]);
+    }
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTag();
+    } else if (e.key === "Backspace" && tagInput === "" && tags.length > 0) {
+      setTags((prev) => prev.slice(0, -1));
+    } else if (e.key === "Escape") {
+      setTagSuggestions([]);
+    }
+  };
+
+  const selectTagSuggestion = (tag: string) => {
+    if (!tags.some((t) => t.toLowerCase() === tag.toLowerCase())) {
+      setTags((prev) => [...prev, tag]);
+    }
+    setTagInput("");
+    setTagSuggestions([]);
+  };
+
+  const handleImageUpload = useCallback(
+    (url: string) => {
+      // Insert markdown image at end of content
+      const imageMarkdown = `\n![image](${url})\n`;
+      setContent((prev) => prev + imageMarkdown);
+    },
+    [],
+  );
 
 
   const togglePublish = async () => {
@@ -330,6 +456,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           contentMd: content,
           contentHtml: renderMarkdownToHtml(content),
           published: true,
+          tags,
         };
 
         const response = await fetch(`${apiUrl}/api/blog`, {
@@ -345,13 +472,14 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         if (response.ok) {
           const savedPost = await response.json();
           const localPost = toLocalPost(savedPost);
-          localPost.tags = tags;
 
           setPosts((prev) => [localPost, ...prev]);
           setCurrentPost(localPost);
           setSlug(localPost.slug);
+          setTags(localPost.tags);
           setIsNewPost(false);
           setLastSaved(new Date());
+          clearDraft();
         } else {
           const errData = await response.json();
           setError(errData.error || "Failed to publish post");
@@ -383,12 +511,12 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       if (response.ok) {
         const updatedPost = await response.json();
         const localPost = toLocalPost(updatedPost);
-        localPost.tags = tags;
 
         setPosts((prev) =>
           prev.map((p) => (p.slug === currentPost.slug ? localPost : p))
         );
         setCurrentPost(localPost);
+        setTags(localPost.tags);
       } else {
         const errData = await response.json();
         setError(errData.error || "Failed to update publish status");
@@ -412,60 +540,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       .replace(/```(\w+)?\n([\s\S]*?)```/gim, "<pre><code>$2</code></pre>")
       .replace(/`([^`]+)`/gim, "<code>$1</code>")
       .replace(/\n/gim, "<br>");
-  };
-
-  /**
-   * Sanitizes HTML content to prevent XSS attacks
-   * Removes dangerous tags and attributes while preserving safe formatting
-   */
-  const sanitizeHtml = (html: string): string => {
-    const allowedTags = [
-      "h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "strong",
-      "em", "code", "pre", "ul", "ol", "li", "blockquote", "a",
-    ];
-    const allowedAttributes: Record<string, string[]> = {
-      a: ["href", "title"],
-    };
-
-    if (typeof document === "undefined") return html;
-
-    const temp = document.createElement("div");
-    temp.innerHTML = html;
-
-    const sanitizeNode = (node: Node): void => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        const element = node as Element;
-        const tagName = element.tagName.toLowerCase();
-
-        if (!allowedTags.includes(tagName)) {
-          const text = document.createTextNode(element.textContent || "");
-          element.parentNode?.replaceChild(text, element);
-          return;
-        }
-
-        const attrs = Array.from(element.attributes);
-        for (const attr of attrs) {
-          const attrName = attr.name.toLowerCase();
-          if (
-            attrName.startsWith("on") ||
-            (attrName === "href" && attr.value.toLowerCase().includes("javascript:"))
-          ) {
-            element.removeAttribute(attr.name);
-          } else if (!allowedAttributes[tagName]?.includes(attrName)) {
-            element.removeAttribute(attr.name);
-          }
-        }
-      }
-
-      Array.from(node.childNodes).forEach(sanitizeNode);
-    };
-
-    sanitizeNode(temp);
-    return temp.innerHTML;
-  };
-
-  const renderMarkdownPreview = (markdown: string) => {
-    return sanitizeHtml(renderMarkdownToHtml(markdown));
   };
 
   // Show loading state
@@ -589,20 +663,13 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               </span>
             )}
           </div>
-          <button
-            onClick={() => setIsPreview(!isPreview)}
-            className="px-2 py-1 border rounded transition-colors"
-            style={{
-              borderColor: isPreview
-                ? themeConfig.colors.accent
-                : themeConfig.colors.border,
-              color: isPreview
-                ? themeConfig.colors.accent
-                : themeConfig.colors.text,
-            }}
-          >
-            {isPreview ? `📝 ${t("commandEdit")}` : `👁️ ${t("blogPreview")}`}
-          </button>
+          <div className="flex items-center gap-2">
+            {draftSavedAt && (
+              <span className="text-xs text-gray-500">
+                Draft saved {draftSavedAt.toLocaleTimeString()}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -749,108 +816,113 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">{t("blogTags")}</div>
-              <div className="flex items-center space-x-2 mb-2">
-                <input
-                  type="text"
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && addTag()}
-                  className="flex-1 px-3 py-2 text-sm border rounded bg-transparent font-mono"
+              <div className="relative">
+                <div className="flex items-center flex-wrap gap-1 p-2 border rounded bg-transparent min-h-10"
                   style={{
                     borderColor: themeConfig.colors.border,
-                    color: themeConfig.colors.text,
-                  }}
-                  placeholder={`${t("blogAddTag")}...`}
-                />
-                <button
-                  onClick={addTag}
-                  className="px-3 py-2 text-xs border rounded transition-colors"
-                  style={{
-                    borderColor: themeConfig.colors.accent,
-                    color: themeConfig.colors.accent,
                   }}
                 >
-                  {t("blogAddTag")}
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2 py-1 text-xs border rounded flex items-center space-x-1"
+                  {tags.map((tag) => (
+                    <TagChip
+                      key={tag}
+                      name={tag}
+                      size="sm"
+                      active
+                      removable
+                      onRemove={() => removeTag(tag)}
+                    />
+                  ))}
+                  <input
+                    type="text"
+                    value={tagInput}
+                    onChange={(e) => handleTagInputChange(e.target.value)}
+                    onKeyDown={handleTagKeyDown}
+                    className="flex-1 min-w-30 px-1 py-0.5 text-sm bg-transparent font-mono outline-none"
+                    style={{ color: themeConfig.colors.text }}
+                    placeholder={tags.length === 0 ? `${t("blogAddTag")}... (Enter to add)` : "Add tag..."}
+                  />
+                </div>
+                {tagSuggestions.length > 0 && (
+                  <div
+                    className="absolute z-10 w-full mt-1 border rounded shadow-lg max-h-40 overflow-y-auto"
                     style={{
                       borderColor: themeConfig.colors.border,
                       backgroundColor: themeConfig.colors.bg,
                     }}
                   >
-                    <span>{tag}</span>
-                    <button
-                      onClick={() => removeTag(tag)}
-                      className="opacity-50 hover:opacity-100"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
+                    {tagSuggestions.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        onClick={() => selectTagSuggestion(suggestion)}
+                        className="w-full px-3 py-2 text-xs text-left hover:bg-green-400/10 transition-colors"
+                        style={{ color: themeConfig.colors.text }}
+                      >
+                        #{suggestion}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
             <div>
-              <div className="text-xs opacity-70 mb-2">{t("blogContent")}</div>
-              {isPreview ? (
-                <div
-                  className="w-full min-h-100 px-3 py-2 text-sm border rounded font-mono overflow-y-auto"
-                  style={{
-                    borderColor: themeConfig.colors.border,
-                    backgroundColor: themeConfig.colors.bg,
-                    color: themeConfig.colors.text,
-                  }}
-                  dangerouslySetInnerHTML={{
-                    __html: renderMarkdownPreview(content),
-                  }}
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-xs opacity-70">{t("blogContent")}</div>
+                <ImageUploadButton
+                  onUploadComplete={handleImageUpload}
+                  disabled={isSaving}
                 />
-              ) : (
-                <textarea
-                  ref={contentRef}
+              </div>
+              <ImageDropZone onUploadComplete={handleImageUpload}>
+                <MarkdownEditor
                   value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  className="w-full min-h-100 px-3 py-2 text-sm border rounded bg-transparent font-mono resize-none"
-                  style={{
-                    borderColor: themeConfig.colors.border,
-                    color: themeConfig.colors.text,
-                  }}
+                  onChange={setContent}
+                  height={500}
+                  previewMode="live"
+                  onSave={saveDraft}
                   placeholder="Write your content in Markdown..."
                 />
-              )}
+              </ImageDropZone>
             </div>
-
-            {!isPreview && (
-              <div
-                className="mt-4 pt-4 border-t"
-                style={{ borderColor: themeConfig.colors.border }}
-              >
-                <div className="text-xs opacity-70 mb-2">
-                  Markdown Quick Reference
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-xs opacity-50">
-                  <div>
-                    <div># Heading 1</div>
-                    <div>## Heading 2</div>
-                    <div>**Bold text**</div>
-                    <div>*Italic text*</div>
-                  </div>
-                  <div>
-                    <div>`code`</div>
-                    <div>```javascript</div>
-                    <div>console.log('code block');</div>
-                    <div>```</div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
+
+      {/* Draft restore prompt */}
+      {showDraftPrompt && hasDraft && (
+        <div className="fixed bottom-4 right-4 z-50 p-4 border rounded-lg shadow-lg max-w-sm"
+          style={{
+            borderColor: themeConfig.colors.accent,
+            backgroundColor: themeConfig.colors.bg,
+          }}
+        >
+          <p className="text-sm mb-3" style={{ color: themeConfig.colors.text }}>
+            A saved draft was found. Would you like to restore it?
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={loadLocalDraft}
+              className="px-3 py-1 text-xs border rounded transition-colors"
+              style={{
+                borderColor: themeConfig.colors.accent,
+                color: themeConfig.colors.accent,
+              }}
+            >
+              Restore Draft
+            </button>
+            <button
+              onClick={dismissDraftPrompt}
+              className="px-3 py-1 text-xs border rounded transition-colors opacity-70 hover:opacity-100"
+              style={{
+                borderColor: themeConfig.colors.border,
+                color: themeConfig.colors.text,
+              }}
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

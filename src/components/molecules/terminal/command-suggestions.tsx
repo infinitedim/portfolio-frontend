@@ -105,7 +105,6 @@ export function CommandSuggestions({
             prev > 0 ? prev - 1 : suggestions.length - 1,
           );
           break;
-        case "Enter":
         case "Tab":
           if (suggestions[selectedIndex]) {
             e.preventDefault();
@@ -274,7 +273,7 @@ export function CommandSuggestions({
         <div className="flex items-center gap-2 text-xs opacity-60">
           <span>↑↓ Navigate</span>
           <span>•</span>
-          <span>Enter/Tab Select</span>
+          <span>Tab Select</span>
           <span>•</span>
           <span>Esc Close</span>
         </div>
