@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import pino from "pino";
@@ -34,7 +32,6 @@ class ClientLogger {
   private enabled: boolean;
 
   constructor() {
-    
     if (!isClient()) {
       this.enabled = false;
       this.pino = {} as PinoLogger;
@@ -56,7 +53,6 @@ class ClientLogger {
       retryDelay: 1000,
     };
 
-    
     this.pino = pino({
       level: clientConfig.level,
       browser: {
@@ -75,14 +71,12 @@ class ClientLogger {
       }),
     });
 
-    
     this.buffer = {
       logs: [],
       timer: null,
       retryCount: 0,
     };
 
-    
     if (
       typeof window !== "undefined" &&
       typeof window.addEventListener === "function"
@@ -91,7 +85,6 @@ class ClientLogger {
         this.flush();
       });
 
-      
       if (
         typeof document !== "undefined" &&
         typeof document.addEventListener === "function"
@@ -105,22 +98,16 @@ class ClientLogger {
     }
   }
 
-  
-
   child(context: LogContext): ClientLogger {
     const childLogger = Object.create(this) as ClientLogger;
     childLogger.pino = this.pino.child(context);
     return childLogger;
   }
 
-  
-
   private shouldSample(level: LogLevel): boolean {
     const rate = SAMPLING_CONFIG[level as keyof typeof SAMPLING_CONFIG] || 1.0;
     return Math.random() < rate;
   }
-
-  
 
   private enrichContext(context?: LogContext): LogContext {
     const requestContext = getRequestContext();
@@ -130,14 +117,11 @@ class ClientLogger {
     };
   }
 
-  
-
   private addToBuffer(entry: LogEntry): void {
     if (!clientConfig.remote || !this.enabled) {
       return;
     }
 
-    
     const maskedEntry = clientConfig.maskPII
       ? {
           ...entry,
@@ -147,13 +131,11 @@ class ClientLogger {
 
     this.buffer.logs.push(maskedEntry);
 
-    
     if (this.buffer.logs.length >= this.config.maxBatchSize) {
       this.flush();
       return;
     }
 
-    
     if (!this.buffer.timer) {
       this.buffer.timer = setTimeout(() => {
         this.flush();
@@ -161,42 +143,43 @@ class ClientLogger {
     }
   }
 
-  
-
   async flush(): Promise<void> {
     if (!this.enabled || this.buffer.logs.length === 0) {
       return;
     }
 
-    
     if (this.buffer.timer) {
       clearTimeout(this.buffer.timer);
       this.buffer.timer = null;
     }
 
-    
     const logsToSend = [...this.buffer.logs];
     this.buffer.logs = [];
 
     try {
-      const response = await fetch(clientConfig.apiEndpoint || "/api/logs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // Use encrypted transport so log entries are opaque in the browser
+      // network tab. encryptedFetchRaw is imported dynamically to avoid
+      // pulling in Web Crypto on the server (this code only runs in the browser).
+      const { encryptedFetchRaw } =
+        await import("@/lib/crypto/encrypted-fetch");
+      const response = await encryptedFetchRaw(
+        clientConfig.apiEndpoint || "/api/logs",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ logs: logsToSend }),
+          keepalive: true,
         },
-        body: JSON.stringify({ logs: logsToSend }),
-        
-        keepalive: true,
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to send logs: ${response.status}`);
       }
 
-      
       this.buffer.retryCount = 0;
     } catch (error) {
-      
       this.buffer.retryCount++;
 
       if (this.buffer.retryCount <= this.config.maxRetries) {
@@ -205,10 +188,8 @@ class ClientLogger {
 
         console.warn(`Failed to send logs, retrying in ${delay}ms...`, error);
 
-        
         this.buffer.logs.unshift(...logsToSend);
 
-        
         setTimeout(() => {
           this.flush();
         }, delay);
@@ -218,8 +199,6 @@ class ClientLogger {
       }
     }
   }
-
-  
 
   trace(
     message: string,
@@ -240,8 +219,6 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  
-
   debug(
     message: string,
     context?: LogContext,
@@ -260,8 +237,6 @@ class ClientLogger {
     this.pino.debug(entry);
     this.addToBuffer(entry);
   }
-
-  
 
   info(
     message: string,
@@ -282,8 +257,6 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  
-
   warn(
     message: string,
     context?: LogContext,
@@ -302,8 +275,6 @@ class ClientLogger {
     this.pino.warn(entry);
     this.addToBuffer(entry);
   }
-
-  
 
   error(
     message: string,
@@ -333,8 +304,6 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  
-
   fatal(
     message: string,
     error?: unknown,
@@ -362,11 +331,8 @@ class ClientLogger {
     this.pino.fatal(entry);
     this.addToBuffer(entry);
 
-    
     this.flush();
   }
-
-  
 
   logError(error: unknown, context?: LogContext): void {
     const errorDetails = formatError(error);
@@ -383,8 +349,6 @@ class ClientLogger {
       },
     );
   }
-
-  
 
   logUserAction(
     actionType: string,
@@ -406,8 +370,6 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  
-
   logPerformance(
     metricName: string,
     value: number,
@@ -416,7 +378,6 @@ class ClientLogger {
   ): void {
     if (!this.enabled) return;
 
-    
     let level: LogLevel = "debug" as LogLevel;
     let message = `Performance: ${metricName} = ${value}ms`;
 
@@ -443,8 +404,6 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
-  
-
   logSecurityEvent(
     eventType: string,
     threatLevel: "low" | "medium" | "high" | "critical",
@@ -453,7 +412,6 @@ class ClientLogger {
   ): void {
     if (!this.enabled) return;
 
-    
     const levelMap = {
       low: "info" as LogLevel,
       medium: "warn" as LogLevel,
@@ -476,13 +434,10 @@ class ClientLogger {
     this.pino[level](entry);
     this.addToBuffer(entry);
 
-    
     if (threatLevel === "high" || threatLevel === "critical") {
       this.flush();
     }
   }
-
-  
 
   logApiCall(
     method: string,

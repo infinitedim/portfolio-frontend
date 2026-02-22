@@ -181,17 +181,12 @@ export function useTerminal(
     autoCategories: true,
   });
 
-  
-  
-  
-  
-  
   const clearAdvancedHistoryRef = useRef(clearAdvancedHistory);
   const analyticsRef = useRef(analytics);
   const advancedHistoryRef = useRef(advancedHistory);
   const onOpenDemoRef = useRef(onOpenDemo);
   const themePerformanceRef = useRef(themePerformance);
-  
+
   clearAdvancedHistoryRef.current = clearAdvancedHistory;
   analyticsRef.current = analytics;
   advancedHistoryRef.current = advancedHistory;
@@ -202,20 +197,14 @@ export function useTerminal(
   const [historyIndex, setHistoryIndex] = useState(-1);
 
   const parserRef = useRef<CommandParser | null>(null);
-  const isMountedRef = useRef(true);
+  const isMountedRef = useRef(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isMountedRef.current) return;
+    isMountedRef.current = true;
 
     const initializeParser = async () => {
       const parser = new CommandParser();
@@ -230,7 +219,6 @@ export function useTerminal(
       parser.register(aliasCommand);
       parser.register(pwaCommand);
 
-      
       const [
         miscCmds,
         customCmds,
@@ -366,8 +354,6 @@ export function useTerminal(
       if (skillsCmd) parser.register(skillsCmd);
       if (roadmapCommand) parser.register(roadmapCommand);
       if (progressCommand) parser.register(progressCommand);
-
-      
 
       parser.register(languageCommand);
       parser.register(languageListCommand);
@@ -518,8 +504,6 @@ export function useTerminal(
         },
       });
 
-      
-
       const demo = demoCmds.status === "fulfilled" ? demoCmds.value : null;
       if (demo) {
         if (demo.setDemoCallback)
@@ -551,11 +535,10 @@ export function useTerminal(
     });
 
     return () => {
+      isMountedRef.current = false;
       parserRef.current = null;
     };
-     
   }, []);
-  
 
   useEffect(() => {
     if (!isClient || !isMountedRef.current) return;
@@ -577,8 +560,6 @@ export function useTerminal(
   useEffect(() => {
     if (!isClient || !isMountedRef.current) return;
 
-    
-    
     const timer = setTimeout(() => {
       try {
         localStorage.setItem(
@@ -593,9 +574,6 @@ export function useTerminal(
     return () => clearTimeout(timer);
   }, [commandHistory, isClient]);
 
-  
-  
-  
   const commandHistoryRef = useRef(commandHistory);
   commandHistoryRef.current = commandHistory;
 
@@ -695,7 +673,7 @@ export function useTerminal(
         }
       }
     },
-    [addToAdvancedHistory], 
+    [addToAdvancedHistory],
   );
 
   const addToHistory = useCallback(

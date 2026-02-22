@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerLogger } from "@/lib/logger/server-logger";
 import type { LogEntry } from "@/lib/logger/types";
+import { withEncryption } from "@/lib/crypto/with-encryption";
 
 const logger = createServerLogger("api/logs");
 
@@ -72,7 +73,7 @@ function validateLogEntry(entry: unknown): entry is LogEntry {
   return true;
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+async function postHandler(request: NextRequest): Promise<NextResponse> {
   const startTime = Date.now();
   const requestId = request.headers.get("x-request-id") || crypto.randomUUID();
 
@@ -260,6 +261,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 }
+
+export const POST = withEncryption(postHandler);
 
 export async function OPTIONS(): Promise<NextResponse> {
   return new NextResponse(null, {

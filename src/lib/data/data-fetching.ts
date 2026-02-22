@@ -2,14 +2,13 @@ import { cache } from "react";
 
 function getBackendUrl(): string {
   if (typeof window === "undefined") {
-    
     return (
       process.env.BACKEND_URL ??
       process.env.NEXT_PUBLIC_API_URL ??
       "http://localhost:3001"
     );
   }
-  
+
   return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 }
 
@@ -136,8 +135,6 @@ async function fetchWithCache<T>(
   url: string,
   options: RequestInit & { cacheTime?: number } = {},
 ): Promise<T> {
-  
-  
   const { cacheTime: _cacheTime, ...fetchOptions } = options;
 
   try {
@@ -171,40 +168,40 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   const backendUrl = getBackendUrl();
 
   try {
-    
-    const [skillsRes, projectsRes, experienceRes, aboutRes] = await Promise.allSettled([
-      fetch(`${backendUrl}/api/portfolio?section=skills`, {
-        next: { revalidate: CACHE_DURATIONS.SKILLS / 1000 },
-      }),
-      fetch(`${backendUrl}/api/portfolio?section=projects`, {
-        next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
-      }),
-      fetch(`${backendUrl}/api/portfolio?section=experience`, {
-        next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000 },
-      }),
-      fetch(`${backendUrl}/api/portfolio?section=about`, {
-        next: { revalidate: CACHE_DURATIONS.ABOUT / 1000 },
-      }),
-    ]);
+    const [skillsRes, projectsRes, experienceRes, aboutRes] =
+      await Promise.allSettled([
+        fetch(`${backendUrl}/api/portfolio?section=skills`, {
+          next: { revalidate: CACHE_DURATIONS.SKILLS / 1000 },
+        }),
+        fetch(`${backendUrl}/api/portfolio?section=projects`, {
+          next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
+        }),
+        fetch(`${backendUrl}/api/portfolio?section=experience`, {
+          next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000 },
+        }),
+        fetch(`${backendUrl}/api/portfolio?section=about`, {
+          next: { revalidate: CACHE_DURATIONS.ABOUT / 1000 },
+        }),
+      ]);
 
     const skills =
       skillsRes.status === "fulfilled" && skillsRes.value.ok
-        ? (await skillsRes.value.json()).data ?? []
+        ? ((await skillsRes.value.json()).data ?? [])
         : [];
 
     const projects =
       projectsRes.status === "fulfilled" && projectsRes.value.ok
-        ? (await projectsRes.value.json()).data ?? STATIC_PROJECTS
+        ? ((await projectsRes.value.json()).data ?? STATIC_PROJECTS)
         : STATIC_PROJECTS;
 
     const experience =
       experienceRes.status === "fulfilled" && experienceRes.value.ok
-        ? (await experienceRes.value.json()).data ?? []
+        ? ((await experienceRes.value.json()).data ?? [])
         : [];
 
     const about =
       aboutRes.status === "fulfilled" && aboutRes.value.ok
-        ? (await aboutRes.value.json()).data ?? getFallbackAboutData()
+        ? ((await aboutRes.value.json()).data ?? getFallbackAboutData())
         : getFallbackAboutData();
 
     return {
@@ -252,7 +249,7 @@ export const getProjectsData = cache(
         `${backendUrl}/api/portfolio?section=projects`,
         {
           next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
-        }
+        },
       );
 
       if (response.ok) {
@@ -266,9 +263,8 @@ export const getProjectsData = cache(
       });
     }
 
-    
     return limit ? STATIC_PROJECTS.slice(0, limit) : STATIC_PROJECTS;
-  }
+  },
 );
 
 export const getExperienceData = cache(async (): Promise<Experience[]> => {
@@ -279,7 +275,7 @@ export const getExperienceData = cache(async (): Promise<Experience[]> => {
       `${backendUrl}/api/portfolio?section=experience`,
       {
         next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000 },
-      }
+      },
     );
 
     if (response.ok) {
@@ -441,18 +437,142 @@ function getFallbackAboutData(): AboutInfo {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Roadmap types (mirrors backend JSON shape from roadmap.sh)
+// ---------------------------------------------------------------------------
+
+export interface RoadmapProgress {
+  resourceTitle: string;
+  resourceType: string;
+  resourceId: string;
+  done: number;
+  learning: number;
+  skipped: number;
+  total: number;
+  updatedAt: string;
+  isFavorite: boolean;
+  isCustomResource: boolean;
+}
+
+export interface RoadmapDashboard {
+  name: string;
+  email: string;
+  avatar: string;
+  headline: string;
+  username: string;
+  progresses: RoadmapProgress[];
+  profileVisibility: string;
+  projects: unknown[];
+}
+
+export interface RoadmapStreak {
+  count: number;
+  longestCount: number;
+  previousCount: number;
+  firstVisitAt: string;
+  lastVisitAt: string;
+  refByUserCount: number;
+}
+
+export interface RoadmapTeam {
+  _id: string;
+  name: string;
+  type: string;
+  avatar: string;
+  roadmaps: string[];
+  memberId: string;
+  role: string;
+  status: string;
+  personalProgressOnly: boolean;
+}
+
+export interface RoadmapFavourites {
+  roadmapSlugs: string[];
+  weeklySubscriptions: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Roadmap data fetchers (server-side, via portfolio backend proxy)
+// ---------------------------------------------------------------------------
+
+export const getRoadmapDashboard = cache(
+  async (): Promise<RoadmapDashboard | null> => {
+    const backendUrl = getBackendUrl();
+    try {
+      const response = await fetch(`${backendUrl}/api/roadmap/dashboard`, {
+        next: { revalidate: 300 },
+      });
+      if (!response.ok) return null;
+      return (await response.json()) as RoadmapDashboard;
+    } catch (error) {
+      console.error("Failed to fetch roadmap dashboard", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return null;
+    }
+  },
+);
+
+export const getRoadmapStreak = cache(
+  async (): Promise<RoadmapStreak | null> => {
+    const backendUrl = getBackendUrl();
+    try {
+      const response = await fetch(`${backendUrl}/api/roadmap/streak`, {
+        next: { revalidate: 300 },
+      });
+      if (!response.ok) return null;
+      return (await response.json()) as RoadmapStreak;
+    } catch (error) {
+      console.error("Failed to fetch roadmap streak", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return null;
+    }
+  },
+);
+
+export const getRoadmapTeams = cache(async (): Promise<RoadmapTeam[]> => {
+  const backendUrl = getBackendUrl();
+  try {
+    const response = await fetch(`${backendUrl}/api/roadmap/teams`, {
+      next: { revalidate: 600 },
+    });
+    if (!response.ok) return [];
+    return (await response.json()) as RoadmapTeam[];
+  } catch (error) {
+    console.error("Failed to fetch roadmap teams", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return [];
+  }
+});
+
+export const getRoadmapFavourites = cache(
+  async (): Promise<RoadmapFavourites | null> => {
+    const backendUrl = getBackendUrl();
+    try {
+      const response = await fetch(`${backendUrl}/api/roadmap/favourites`, {
+        next: { revalidate: 600 },
+      });
+      if (!response.ok) return null;
+      return (await response.json()) as RoadmapFavourites;
+    } catch (error) {
+      console.error("Failed to fetch roadmap favourites", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return null;
+    }
+  },
+);
+
 export async function invalidateCache(section?: string): Promise<void> {
-  
-  
-  
-  
   if (process.env.NODE_ENV === "production") {
     throw new Error(
       `invalidateCache('${section ?? "all"}') is not implemented. ` +
         "Use revalidatePath / revalidateTag in a Server Action instead.",
     );
   }
-  
+
   console.warn(
     `[invalidateCache] Called with section='${
       section ?? "all"
