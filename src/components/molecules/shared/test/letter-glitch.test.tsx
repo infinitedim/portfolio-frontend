@@ -3,6 +3,9 @@ import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { LetterGlitch } from "../letter-glitch";
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("next/dynamic", () => ({
   default: (_loader: () => Promise<any>) => {
     const MockComponent = () => (

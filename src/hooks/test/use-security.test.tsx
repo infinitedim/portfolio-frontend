@@ -3,6 +3,9 @@ import { renderHook, act } from "@testing-library/react";
 import { useSecurity, useSecurityMonitoring } from "@/hooks/use-security";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/lib/trpc", () => ({
   trpc: null,
 }));

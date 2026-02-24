@@ -4,6 +4,9 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ProjectCard } from "../project-card";
 import type { Project } from "@/lib/data/data-fetching";
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/components/molecules/shared/optimized-image", () => ({
   OptimizedImage: ({ alt }: { alt: string }) => (
     <div data-testid="optimized-image">{alt}</div>

@@ -1,11 +1,6 @@
-# [test]
 preload = ["./src/test/bun-setup.ts"]
 timeout = 10000
-
-# Exclude only files that absolutely cannot work with Bun
-# Most vi.mock() calls are now handled by the compatibility layer
-# [test.exclude]
-paths = [
-  # These files have complex vi.mock usage that can't be shimmed
-  "src/lib/logger/test/client-logger.test.ts",
-]
+# Exclude test files that cannot run under Bun's native test runner:
+# - e2e/ uses Playwright (needs playwright test runner)
+# - layout.integration.test fails due to next/font/google ESM-only exports
+exclude = ["e2e/**", "src/app/test/layout.integration.test.tsx"]

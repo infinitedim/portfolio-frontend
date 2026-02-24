@@ -10,6 +10,9 @@ const mockRefreshData = vi.fn();
 
 let roadmapServiceInstance: any = null;
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/lib/services/roadmap-service", () => ({
   RoadmapService: {
     getInstance: () => roadmapServiceInstance,

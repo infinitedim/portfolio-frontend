@@ -25,6 +25,9 @@ const mockGetReport = vi.fn(() => ({
 const mockClearMetrics = vi.fn();
 const mockExportMetrics = vi.fn(() => JSON.stringify({ test: "data" }));
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/lib/performance/performance-monitor", () => ({
   PerformanceMonitor: {
     getInstance: () => ({

@@ -29,8 +29,9 @@ interface BlogPost {
   updatedAt: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface LocalBlogPost extends BlogPost {
-  // LocalBlogPost now uses tags from the API directly
+  // No additional fields for now, but this allows us to easily add local-only fields later if needed
 }
 
 interface BlogEditorProps {

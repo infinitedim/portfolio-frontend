@@ -166,7 +166,13 @@ class ServerLogger {
 
   child(context: LogContext): ServerLogger {
     const childLogger = new ServerLogger();
-    childLogger.pino = this.pino.child(context);
+    // When running outside a server environment (e.g., bun test with jsdom),
+    // this.pino is an empty object stub — guard against missing child method.
+    if (typeof this.pino.child === "function") {
+      childLogger.pino = this.pino.child(context);
+    } else {
+      childLogger.pino = this.pino;
+    }
     childLogger.fileTransports = this.fileTransports;
     return childLogger;
   }

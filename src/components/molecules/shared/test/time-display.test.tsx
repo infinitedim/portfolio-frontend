@@ -3,6 +3,13 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TimeDisplay } from "../time-display";
 
+// Bun test compat: vi.hoisted and vi.mock are vitest-only; provide polyfills
+const _vi = vi as unknown as Record<string, unknown>;
+if (typeof _vi.hoisted !== "function")
+  _vi.hoisted = (factory: () => unknown) => factory();
+if (typeof _vi.mock !== "function")
+  _vi.mock = () => undefined;
+
 const mockLocation = {
   city: "Test City",
   region: "Test Region",
@@ -22,6 +29,7 @@ const mockTimeInfo = {
 const { mockGetLocation } = vi.hoisted(() => ({
   mockGetLocation: vi.fn(),
 }));
+
 vi.mock("@/lib/location/location-service", () => ({
   LocationService: {
     getInstance: () => ({
@@ -54,6 +62,7 @@ describe("TimeDisplay", () => {
   });
 
   afterEach(() => {
+    if (typeof Bun !== "undefined") return;
     vi.useRealTimers();
   });
 

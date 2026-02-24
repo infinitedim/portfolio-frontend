@@ -5,6 +5,9 @@ import { renderHook, act } from "@testing-library/react";
 import { useTour } from "@/hooks/use-tour";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/components/organisms/onboarding/tour-steps", () => ({
   TOUR_STEPS: [{ id: "step1", target: "#test", content: "Test" }],
   TOUR_STORAGE_KEY: "tour-storage-test",

@@ -18,6 +18,9 @@ const mockThemeConfig = {
   },
 };
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
     themeConfig: mockThemeConfig,
@@ -70,7 +73,7 @@ const mockCreateElement = vi.fn((tag: string) => {
       style: {},
     } as any;
   }
-  
+
   if (originalCreateElement) {
     return originalCreateElement(tag);
   }
@@ -136,6 +139,7 @@ describe("FontManager", () => {
   });
 
   afterEach(() => {
+    if (!canRunTests) return;
     vi.useRealTimers();
   });
 
@@ -242,7 +246,7 @@ describe("FontManager", () => {
       const fontCard = fontCards[0].closest("div[role='button']");
       fireEvent.click(fontCard!);
 
-      
+
       expect(fontCard).toBeInTheDocument();
       expect(screen.getByText("Font Preview")).toBeInTheDocument();
     });
@@ -353,7 +357,7 @@ describe("FontManager", () => {
       fireEvent.click(saveButton);
 
       expect(mockSaveSettings).toHaveBeenCalled();
-      expect(mockOnClose).not.toHaveBeenCalled(); 
+      expect(mockOnClose).not.toHaveBeenCalled();
     });
   });
 
@@ -397,25 +401,25 @@ describe("FontManager", () => {
 
   describe("Random Font Generation", () => {
     it("should generate random font when button is clicked", async () => {
-      vi.useFakeTimers();
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
+      vi.useFakeTimers();
       render(
         <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
       );
 
-      
+
       (mockGetCustomFonts as any).mockReturnValueOnce([]);
-      
+
       const randomButton = screen.getByText("🎲 Pick Random Font");
-      
+
       await act(async () => {
         fireEvent.click(randomButton);
       });
-      
-      
+
+
       await act(async () => {
         vi.advanceTimersByTime(600);
         await vi.runAllTimersAsync();
@@ -428,7 +432,7 @@ describe("FontManager", () => {
       await waitFor(() => {
         expect(mockOnUpdate).toHaveBeenCalled();
       }, { timeout: 5000 });
-      
+
       vi.useRealTimers();
     }, 15000);
 
@@ -452,11 +456,11 @@ describe("FontManager", () => {
 
   describe("File Upload", () => {
     it("should handle file upload", async () => {
-      vi.useFakeTimers();
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
+      vi.useFakeTimers();
       const mockFile = new File(["font data"], "font.woff", { type: "font/woff" });
       mockSaveCustomFont.mockResolvedValue(undefined);
 
@@ -465,7 +469,7 @@ describe("FontManager", () => {
       );
 
       const uploadButton = screen.getByText(/📁 Upload/);
-      
+
       await act(async () => {
         fireEvent.click(uploadButton);
       });
@@ -481,7 +485,7 @@ describe("FontManager", () => {
           fireEvent.change(fileInput);
         });
 
-        
+
         await act(async () => {
           vi.advanceTimersByTime(200);
           await vi.runAllTimersAsync();
@@ -491,7 +495,7 @@ describe("FontManager", () => {
       await waitFor(() => {
         expect(mockSaveCustomFont).toHaveBeenCalled();
       }, { timeout: 5000 });
-      
+
       vi.useRealTimers();
     }, 15000);
   });

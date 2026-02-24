@@ -10,6 +10,9 @@ const mockUseTheme = vi.fn(() => ({
   resolvedTheme: "dark",
 }));
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("next-themes", () => ({
   ThemeProvider: ({ children }: any) => <div>{children}</div>,
   useTheme: () => mockUseTheme(),

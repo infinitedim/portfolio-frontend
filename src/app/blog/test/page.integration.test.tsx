@@ -1,19 +1,33 @@
 
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import BlogPage from "../page";
 
-vi.stubGlobal(
-  "fetch",
-  vi.fn(function defaultFetch() {
-    return Promise.resolve({ ok: false } as Response);
-  }),
-);
+// Bun test compat: vi.stubGlobal and vi.mocked are vitest-only; provide polyfills
+const _vi = vi as unknown as Record<string, unknown>;
+if (typeof _vi.stubGlobal !== "function")
+  _vi.stubGlobal = (name: string, value: unknown) => { (globalThis as Record<string, unknown>)[name] = value; };
+if (typeof _vi.mocked !== "function")
+  _vi.mocked = (fn: unknown) => fn;
+
+// Save original fetch to restore after each test
+const _origFetch = (globalThis as Record<string, unknown>).fetch;
 
 describe("BlogPage integration", () => {
   beforeEach(() => {
-    vi.mocked(fetch).mockReset();
+    // Set up a fresh fetch mock for each test to avoid cross-file contamination
+    _vi.stubGlobal(
+      "fetch",
+      vi.fn(function defaultFetch() {
+        return Promise.resolve({ ok: false } as Response);
+      }),
+    );
+  });
+
+  afterEach(() => {
+    // Restore original fetch so other tests are not affected
+    (globalThis as Record<string, unknown>).fetch = _origFetch;
   });
 
   it("should render empty state when no posts", async () => {
@@ -46,6 +60,7 @@ describe("BlogPage integration", () => {
             slug: "first-post",
             summary: "Summary",
             published: true,
+            tags: [],
             createdAt: "2024-01-01T00:00:00Z",
             updatedAt: "2024-01-01T00:00:00Z",
           },

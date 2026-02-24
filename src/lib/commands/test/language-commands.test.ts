@@ -11,6 +11,10 @@ interface LocaleConfig {
 let mockCurrentLocale = "en_US";
 let mockSetLocaleResult = true;
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function")
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/lib/i18n/i18n-service", () => ({
   i18n: {
     getCurrentLocale: () => mockCurrentLocale,
@@ -59,8 +63,8 @@ vi.mock("@/lib/i18n/i18n-service", () => ({
       languageNotSupported: "Language not supported",
       languageFallback: "Falling back to",
       languageChanged: "Language changed successfully",
-      currentLanguage: "Current Language",
-      availableLanguages: "Available Languages",
+      currentLanguage: "Current language",
+      availableLanguages: "Available languages",
     };
     return translations[key] || key;
   },
@@ -168,7 +172,6 @@ import {
 
 describe("languageCommands", () => {
   beforeEach(() => {
-    
     mockCurrentLocale = "en_US";
     mockSetLocaleResult = true;
   });
@@ -177,9 +180,6 @@ describe("languageCommands", () => {
     vi.clearAllMocks();
   });
 
-  
-  
-  
   describe("languageCommand (lang)", () => {
     describe("command metadata", () => {
       it("should have correct command name", () => {
@@ -213,14 +213,14 @@ describe("languageCommands", () => {
 
       it("should show current language information", async () => {
         const result = await languageCommand.execute([]);
-        expect(result.content).toContain("Current Language");
+        expect(result.content).toContain("Current language");
         expect(result.content).toContain("🇺🇸");
         expect(result.content).toContain("English");
       });
 
       it("should show available languages list", async () => {
         const result = await languageCommand.execute([]);
-        expect(result.content).toContain("Available Languages");
+        expect(result.content).toContain("Available languages");
       });
 
       it("should include usage examples", async () => {
@@ -240,7 +240,7 @@ describe("languageCommands", () => {
       it("should change language successfully to Indonesian", async () => {
         const result = await languageCommand.execute(["id_ID"]);
         expect(result.type).toBe("success");
-        
+
         expect(
           (result.content as string).includes("berhasil diubah") ||
             (result.content as string).includes("Indonesian"),
@@ -284,7 +284,7 @@ describe("languageCommands", () => {
       it("should handle regional variant en_GB", async () => {
         const result = await languageCommand.execute(["en_GB"]);
         expect(result.type).toBe("success");
-        
+
         expect(
           (result.content as string).includes("regional variant") ||
             (result.content as string).includes("fall back") ||
@@ -302,7 +302,7 @@ describe("languageCommands", () => {
       it("should handle regional variant with hyphen (en-GB)", async () => {
         const result = await languageCommand.execute(["en-GB"]);
         expect(result.type).toBe("success");
-        
+
         expect(
           (result.content as string).includes("regional variant") ||
             (result.content as string).includes("fall back") ||
@@ -331,9 +331,8 @@ describe("languageCommands", () => {
       });
 
       it("should return error for empty string locale", async () => {
-        
         const result = await languageCommand.execute([""]);
-        
+
         expect(result.type).toBe("info");
       });
     });
@@ -342,7 +341,7 @@ describe("languageCommands", () => {
       it("should return error when setLocale fails for direct locale", async () => {
         mockSetLocaleResult = false;
         const result = await languageCommand.execute(["fr_FR"]);
-        
+
         expect(["error", "success"]).toContain(result.type);
         if (result.type === "error") {
           expect(result.content).toContain("Failed to change language");
@@ -351,9 +350,6 @@ describe("languageCommands", () => {
     });
   });
 
-  
-  
-  
   describe("languageListCommand (langlist)", () => {
     describe("command metadata", () => {
       it("should have correct command name", () => {
@@ -430,9 +426,9 @@ describe("languageCommands", () => {
         mockCurrentLocale = "en_US";
         const result = await languageListCommand.execute([]);
         const content = result.content as string;
-        
+
         expect(content).toContain("English (US)");
-        
+
         const hasIndicator =
           content.includes("✅") || content.includes("(Current)");
         expect(hasIndicator).toBe(true);
@@ -440,9 +436,6 @@ describe("languageCommands", () => {
     });
   });
 
-  
-  
-  
   describe("languageInfoCommand (langinfo)", () => {
     describe("command metadata", () => {
       it("should have correct command name", () => {
@@ -475,7 +468,7 @@ describe("languageCommands", () => {
 
       it("should show detailed current language information", async () => {
         const result = await languageInfoCommand.execute([]);
-        
+
         expect(
           (result.content as string).includes("Language") ||
             (result.content as string).includes("Information"),
@@ -491,10 +484,9 @@ describe("languageCommands", () => {
         mockCurrentLocale = "en_US";
         const result = await languageInfoCommand.execute([]);
         const content = result.content as string;
-        
-        
+
         expect(content.length).toBeGreaterThan(0);
-        
+
         expect(
           content.includes("English") ||
             content.includes("en_US") ||
@@ -550,8 +542,7 @@ describe("languageCommands", () => {
         mockCurrentLocale = "en_US";
         const result = await languageInfoCommand.execute(["en_US"]);
         const content = result.content as string;
-        
-        
+
         expect(
           content.includes("Status:") ||
             content.includes("Current") ||
@@ -613,24 +604,17 @@ describe("languageCommands", () => {
     });
   });
 
-  
-  
-  
   describe("Integration Tests", () => {
     it("should maintain consistent state across commands", async () => {
-      
       mockCurrentLocale = "en_US";
 
-      
       let result = await languageCommand.execute([]);
       expect(result.content).toContain("English");
 
-      
       result = await languageCommand.execute(["id_ID"]);
       expect(result.type).toBe("success");
 
-      
-      mockCurrentLocale = "id_ID"; 
+      mockCurrentLocale = "id_ID";
       result = await languageListCommand.execute([]);
       expect(result.content).toContain("Indonesian");
     });
@@ -640,7 +624,6 @@ describe("languageCommands", () => {
       const listResult = await languageListCommand.execute([]);
       const infoResult = await languageInfoCommand.execute([]);
 
-      
       for (const result of [langResult, listResult, infoResult]) {
         expect(result).toHaveProperty("type");
         expect(result).toHaveProperty("content");
@@ -660,9 +643,6 @@ describe("languageCommands", () => {
     });
   });
 
-  
-  
-  
   describe("Edge Cases", () => {
     it("should handle multiple consecutive language changes", async () => {
       const locales = ["id_ID", "es_ES", "fr_FR", "ar_SA"];
@@ -676,16 +656,14 @@ describe("languageCommands", () => {
     it("should handle changing to already current language", async () => {
       mockCurrentLocale = "en_US";
       const result = await languageCommand.execute(["en_US"]);
-      
+
       expect(result.type).toBe("success");
     });
 
     it("should handle case variations in locale codes", async () => {
-      
       const result1 = await languageCommand.execute(["id_ID"]);
       expect(result1.type).toBe("success");
 
-      
       const result2 = await languageCommand.execute(["id-ID"]);
       expect(result2.type).toBe("success");
     });
@@ -694,19 +672,15 @@ describe("languageCommands", () => {
       mockCurrentLocale = "en_US";
       const result = await languageInfoCommand.execute(["en_US"]);
       const content = result.content as string;
-      
-      
-      
+
       expect(content.length).toBeGreaterThan(0);
-      
+
       expect(
         content.includes("Language Information:") ||
           content.includes("Flag:") ||
           content.includes("Name:"),
       ).toBe(true);
-      
-      
-      
+
       expect(result.type).toBe("info");
     });
   });

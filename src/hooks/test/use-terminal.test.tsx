@@ -5,6 +5,9 @@ import { renderHook, act } from "@testing-library/react";
 import { useTerminal } from "@/hooks/use-terminal";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/lib/commands/skills-commands", () => ({ skillsCommand: null }));
 vi.mock("@/lib/commands/roadmap-commands", () => ({
   roadmapCommand: null,

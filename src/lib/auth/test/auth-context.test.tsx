@@ -11,6 +11,9 @@ const mockLogin = vi.fn();
 const mockLogout = vi.fn();
 const mockRefresh = vi.fn();
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/lib/auth/auth-service", () => {
 
   let actual: any = {};

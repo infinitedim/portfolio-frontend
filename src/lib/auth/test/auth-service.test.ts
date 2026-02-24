@@ -32,10 +32,25 @@ function defineGlobalProperty(
 
 defineGlobalProperty("localStorage", storageMock);
 defineGlobalProperty("sessionStorage", storageMock);
-defineGlobalProperty("window", {
-  localStorage: storageMock,
-  sessionStorage: storageMock,
-});
+// Patch localStorage/sessionStorage on the existing window object rather than
+// replacing the whole window. Replacing window removes browser APIs like
+// addEventListener and breaks tests that run after this file in the same process.
+if (typeof window !== "undefined") {
+  try {
+    Object.defineProperty(window, "localStorage", {
+      value: storageMock,
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(window, "sessionStorage", {
+      value: storageMock,
+      writable: true,
+      configurable: true,
+    });
+  } catch {
+    // ignore if already non-configurable
+  }
+}
 
 describe("AuthService", () => {
   let authService: typeof import("@/lib/auth/auth-service").authService;

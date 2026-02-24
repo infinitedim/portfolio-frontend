@@ -21,6 +21,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "next/font/google": [
+        "./src/__mocks__/next-font-google.ts"
       ]
     },
     "plugins": [

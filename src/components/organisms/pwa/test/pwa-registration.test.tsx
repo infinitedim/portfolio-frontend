@@ -3,6 +3,9 @@ import { render, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { PWARegistration } from "../pwa-registration";
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/components/molecules/pwa/pwa-install-prompt", () => ({
   PWAInstallPrompt: ({ onInstall, onDismiss }: any) => (
     <div data-testid="pwa-install-prompt">

@@ -1,4 +1,12 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeEach,
+  afterEach,
+  afterAll,
+} from "vitest";
 import {
   preloadCriticalResources,
   prefetchResources,
@@ -42,6 +50,13 @@ const mockConsole = {
   warn: vi.fn(),
 };
 
+// Save original window/document/console/performance before replacing them, so we can restore
+// after all tests in this file to avoid polluting subsequent test files.
+const _savedWindow = (globalThis as Record<string, unknown>).window;
+const _savedDocument = (globalThis as Record<string, unknown>).document;
+const _savedConsole = (globalThis as Record<string, unknown>).console;
+const _savedPerformance = (globalThis as Record<string, unknown>).performance;
+
 Object.defineProperty(global, "document", {
   value: mockDocument,
   writable: true,
@@ -73,7 +88,6 @@ describe("bundleOptimization", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    
     mockDocument.createElement.mockReturnValue({
       rel: "",
       href: "",
@@ -85,13 +99,12 @@ describe("bundleOptimization", () => {
 
     mockDocument.querySelectorAll.mockReturnValue([]);
 
-    
     Object.keys = originalObjectKeys;
   });
 
   afterEach(() => {
     vi.clearAllMocks();
-    
+
     Object.keys = originalObjectKeys;
   });
 
@@ -179,7 +192,6 @@ describe("bundleOptimization", () => {
     });
 
     it("should set loading attribute to lazy for images", () => {
-      
       global.HTMLImageElement = class MockHTMLImageElement {
         loading = "";
       } as any;
@@ -260,15 +272,12 @@ describe("bundleOptimization", () => {
     });
 
     it("should not run in non-development mode (test env)", () => {
-      
       analyzeBundleSize();
 
-      
       expect(mockWindow.performance.getEntriesByType).not.toHaveBeenCalled();
     });
 
     it("should be callable without throwing", () => {
-      
       expect(() => analyzeBundleSize()).not.toThrow();
     });
 
@@ -380,7 +389,6 @@ describe("optimizeThirdParty function", () => {
   });
 
   it("should set defer attribute on scripts", () => {
-    
     global.HTMLScriptElement = class MockHTMLScriptElement {
       defer = false;
     } as any;
@@ -486,12 +494,11 @@ describe("error handling and edge cases", () => {
     };
 
     (global as any).localStorage = mockLocalStorage;
-    
+
     Object.keys = vi.fn().mockReturnValue(["temp-test"]);
 
     expect(() => optimizeMemoryUsage()).not.toThrow();
 
-    
     global.localStorage = originalLocalStorage;
     Object.keys = originalObjectKeys;
   });
@@ -503,7 +510,6 @@ describe("integration tests", () => {
 
     initBundleOptimizations();
 
-    
     expect(mockDocument.createElement).toHaveBeenCalled();
     expect(mockDocument.head.appendChild).toHaveBeenCalled();
     expect(mockDocument.querySelectorAll).toHaveBeenCalled();
@@ -511,5 +517,14 @@ describe("integration tests", () => {
 
   it("should handle different environments", () => {
     expect(() => markUnusedExports()).not.toThrow();
+  });
+
+  afterAll(() => {
+    // Restore globals AFTER ALL tests in this file complete so subsequent files
+    // (e.g. blog/[slug] integration test) have a proper jsdom window.
+    (globalThis as Record<string, unknown>).window = _savedWindow;
+    (globalThis as Record<string, unknown>).document = _savedDocument;
+    (globalThis as Record<string, unknown>).console = _savedConsole;
+    (globalThis as Record<string, unknown>).performance = _savedPerformance;
   });
 });

@@ -217,9 +217,9 @@ export default async function BlogPage({
                 {post.summary && (
                   <p className="text-gray-400 mb-3">{post.summary}</p>
                 )}
-                {post.tags.length > 0 && (
+                {(post.tags?.length ?? 0) > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
-                    {post.tags.map((t) => (
+                    {post.tags!.map((t) => (
                       <Link
                         key={t}
                         href={buildUrl({ tag: t, page: 1 })}

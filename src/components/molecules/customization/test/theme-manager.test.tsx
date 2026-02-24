@@ -20,6 +20,9 @@ const mockThemeConfig = {
 const mockChangeTheme = vi.fn(() => true);
 const mockIsThemeActive = vi.fn(() => false) as any;
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
     themeConfig: mockThemeConfig,

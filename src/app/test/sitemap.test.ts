@@ -1,15 +1,17 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import sitemap from "../sitemap";
 import type { MetadataRoute } from "next";
 
 const mockFetch = vi.fn();
+const _origFetch = (globalThis as Record<string, unknown>).fetch;
 global.fetch = mockFetch;
 
 describe("sitemap.ts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     delete process.env.NEXT_PUBLIC_BASE_URL;
-    
+    // Re-ensure fetch is mocked (in case another test file replaced it)
+    (globalThis as Record<string, unknown>).fetch = mockFetch;
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ items: [] }),
@@ -41,8 +43,12 @@ describe("sitemap.ts", () => {
   describe("Static Routes", () => {
     it("should include home page", async () => {
       const result = await sitemap();
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.site";
-      const homePage = result.find((item: MetadataRoute.Sitemap[number]) => item.url === baseUrl || item.url === `${baseUrl}/`);
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.site";
+      const homePage = result.find(
+        (item: MetadataRoute.Sitemap[number]) =>
+          item.url === baseUrl || item.url === `${baseUrl}/`,
+      );
       expect(homePage).toBeDefined();
       expect(homePage?.priority).toBe(1.0);
       expect(homePage?.changeFrequency).toBe("weekly");
@@ -60,28 +66,36 @@ describe("sitemap.ts", () => {
 
     it("should include skills page", async () => {
       const result = await sitemap();
-      const skillsPage = result.find((item: MetadataRoute.Sitemap[number]) => item.url.includes("/skills"));
+      const skillsPage = result.find((item: MetadataRoute.Sitemap[number]) =>
+        item.url.includes("/skills"),
+      );
       expect(skillsPage).toBeDefined();
       expect(skillsPage?.priority).toBe(0.8);
     });
 
     it("should include about page", async () => {
       const result = await sitemap();
-      const aboutPage = result.find((item: MetadataRoute.Sitemap[number]) => item.url.includes("/about"));
+      const aboutPage = result.find((item: MetadataRoute.Sitemap[number]) =>
+        item.url.includes("/about"),
+      );
       expect(aboutPage).toBeDefined();
       expect(aboutPage?.priority).toBe(0.7);
     });
 
     it("should include contact page", async () => {
       const result = await sitemap();
-      const contactPage = result.find((item: MetadataRoute.Sitemap[number]) => item.url.includes("/contact"));
+      const contactPage = result.find((item: MetadataRoute.Sitemap[number]) =>
+        item.url.includes("/contact"),
+      );
       expect(contactPage).toBeDefined();
       expect(contactPage?.priority).toBe(0.6);
     });
 
     it("should include resume page", async () => {
       const result = await sitemap();
-      const resumePage = result.find((item: MetadataRoute.Sitemap[number]) => item.url.includes("/resume"));
+      const resumePage = result.find((item: MetadataRoute.Sitemap[number]) =>
+        item.url.includes("/resume"),
+      );
       expect(resumePage).toBeDefined();
       expect(resumePage?.priority).toBe(0.7);
     });
@@ -89,7 +103,8 @@ describe("sitemap.ts", () => {
     it("should include blog page", async () => {
       const result = await sitemap();
       const blogPage = result.find(
-        (item: MetadataRoute.Sitemap[number]) => item.url.includes("/blog") && !item.url.includes("/blog/"),
+        (item: MetadataRoute.Sitemap[number]) =>
+          item.url.includes("/blog") && !item.url.includes("/blog/"),
       );
       expect(blogPage).toBeDefined();
       expect(blogPage?.priority).toBe(0.8);
@@ -153,7 +168,9 @@ describe("sitemap.ts", () => {
 
     it("should have lastModified dates for projects", async () => {
       const result = await sitemap();
-      const projects = result.filter((item: MetadataRoute.Sitemap[number]) => item.url.includes("/projects/"));
+      const projects = result.filter((item: MetadataRoute.Sitemap[number]) =>
+        item.url.includes("/projects/"),
+      );
       projects.forEach((project: MetadataRoute.Sitemap[number]) => {
         expect(project.lastModified).toBeInstanceOf(Date);
       });
@@ -283,7 +300,7 @@ describe("sitemap.ts", () => {
           ],
         }),
       });
-      
+
       const result = await sitemap();
       const blogPost = result.find((item: MetadataRoute.Sitemap[number]) =>
         item.url.includes("/blog/web-development-tips"),
@@ -296,12 +313,10 @@ describe("sitemap.ts", () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          items: [
-            { slug: "test-post", updatedAt: "2024-01-01T00:00:00Z" },
-          ],
+          items: [{ slug: "test-post", updatedAt: "2024-01-01T00:00:00Z" }],
         }),
       });
-      
+
       const result = await sitemap();
       const blogPost = result.find((item: MetadataRoute.Sitemap[number]) =>
         item.url.includes("/blog/test-post"),
@@ -316,12 +331,10 @@ describe("sitemap.ts", () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          items: [
-            { slug: "dated-post", updatedAt },
-          ],
+          items: [{ slug: "dated-post", updatedAt }],
         }),
       });
-      
+
       const result = await sitemap();
       const blogPost = result.find((item: MetadataRoute.Sitemap[number]) =>
         item.url.includes("/blog/dated-post"),
@@ -340,10 +353,11 @@ describe("sitemap.ts", () => {
           ],
         }),
       });
-      
+
       const result = await sitemap();
-      const blogPosts = result.filter((item: MetadataRoute.Sitemap[number]) => 
-        item.url.includes("/blog/") && !item.url.endsWith("/blog")
+      const blogPosts = result.filter(
+        (item: MetadataRoute.Sitemap[number]) =>
+          item.url.includes("/blog/") && !item.url.endsWith("/blog"),
       );
       blogPosts.forEach((post: MetadataRoute.Sitemap[number]) => {
         expect(post.lastModified).toBeInstanceOf(Date);
@@ -451,7 +465,7 @@ describe("sitemap.ts", () => {
       mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
       const result = await sitemap();
-      
+
       expect(result.length).toBeGreaterThan(0);
     });
   });

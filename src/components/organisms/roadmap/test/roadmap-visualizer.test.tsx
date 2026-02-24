@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { RoadmapVisualizer } from "../roadmap-visualizer";
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/components/molecules/roadmap/skill-card", () => ({
   SkillCard: ({ skill }: any) => (
     <div data-testid="skill-card">{skill.name}</div>

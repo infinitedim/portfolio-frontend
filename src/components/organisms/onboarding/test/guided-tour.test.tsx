@@ -7,6 +7,9 @@ import type { TourStep } from "../tour-steps";
 const mockAnnounceMessage = vi.fn();
 const mockIsReducedMotion = false;
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/components/organisms/accessibility/accessibility-provider", () => ({
   useAccessibility: () => ({
     announceMessage: mockAnnounceMessage,

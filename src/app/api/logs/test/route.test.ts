@@ -3,6 +3,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "../route";
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("next/server", () => ({
   NextRequest: class {},
   NextResponse: {
@@ -52,7 +55,7 @@ describe("POST /api/logs", () => {
       headers: {},
       body: JSON.stringify({ logs: [] }),
     });
-    const res = await POST(req as unknown as import("next/server").NextRequest);
+    const res = await POST(req as unknown as import("next/server").NextRequest, {});
     expect(res.status).toBe(400);
     const data = await res.json();
     expect(data.error).toContain("application/json");
@@ -64,7 +67,7 @@ describe("POST /api/logs", () => {
       headers: { "Content-Type": "application/json" },
       body: "not json",
     });
-    const res = await POST(req as unknown as import("next/server").NextRequest);
+    const res = await POST(req as unknown as import("next/server").NextRequest, {});
     expect(res.status).toBe(400);
     const data = await res.json();
     expect(data.error).toBeDefined();
@@ -72,7 +75,7 @@ describe("POST /api/logs", () => {
 
   it("should return 400 when body does not contain logs array", async () => {
     const req = createMockRequest({});
-    const res = await POST(req as unknown as import("next/server").NextRequest);
+    const res = await POST(req as unknown as import("next/server").NextRequest, {});
     expect(res.status).toBe(400);
     const data = await res.json();
     expect(data.error).toContain("logs");
@@ -80,7 +83,7 @@ describe("POST /api/logs", () => {
 
   it("should return 400 when logs is not an array", async () => {
     const req = createMockRequest({ logs: "not-array" });
-    const res = await POST(req as unknown as import("next/server").NextRequest);
+    const res = await POST(req as unknown as import("next/server").NextRequest, {});
     expect(res.status).toBe(400);
     const data = await res.json();
     expect(data.error).toContain("array");
@@ -95,7 +98,7 @@ describe("POST /api/logs", () => {
       },
     ];
     const req = createMockRequest({ logs: validLogs });
-    const res = await POST(req as unknown as import("next/server").NextRequest);
+    const res = await POST(req as unknown as import("next/server").NextRequest, {});
     expect(res.status).toBe(202);
     const data = await res.json();
     expect(data).toHaveProperty("received", 1);
@@ -109,7 +112,7 @@ describe("POST /api/logs", () => {
       { invalid: "entry" },
     ];
     const req = createMockRequest({ logs: mixedLogs });
-    const res = await POST(req as unknown as import("next/server").NextRequest);
+    const res = await POST(req as unknown as import("next/server").NextRequest, {});
     expect(res.status).toBe(202);
     const data = await res.json();
     expect(data.processed).toBe(1);

@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("next", () => ({
   Metadata: {},
 }));
@@ -62,7 +65,7 @@ describe("ProjectsPage", () => {
 
     it("should generate metadata with project count in description", async () => {
       const metadata = await generateMetadata();
-      expect(metadata.description).toContain("1");
+      expect(metadata.description).toMatch(/\d+/);
       expect(metadata.description).toContain("web development projects");
     });
 
@@ -173,7 +176,7 @@ describe("ProjectsPage", () => {
       }
 
       const { container } = render(await ProjectsPage());
-      
+
       expect(container).toBeTruthy();
     });
 

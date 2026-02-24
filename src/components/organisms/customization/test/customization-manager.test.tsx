@@ -6,6 +6,9 @@ import { CustomizationManager } from "../customization-manager";
 const mockGetAllThemes = vi.fn(() => []);
 const mockGetAllFonts = vi.fn(() => []);
 
+// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
+if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
 vi.mock("@/lib/services/customization-service", () => ({
   CustomizationService: {
     getInstance: () => ({
@@ -68,10 +71,20 @@ vi.mock("@/components/molecules/terminal/terminal-loading-progress", () => ({
 
 const mockReload = vi.fn();
 if (typeof window !== "undefined") {
-  Object.defineProperty(window, "location", {
-    value: { reload: mockReload },
-    writable: true,
-  });
+  try {
+    Object.defineProperty(window, "location", {
+      value: { reload: mockReload },
+      writable: true,
+      configurable: true,
+    });
+  } catch {
+    // bun+jsdom: location may not be reconfigurable; mock reload directly
+    try {
+      (window.location as Record<string, unknown>).reload = mockReload;
+    } catch {
+      // ignore if location is fully frozen
+    }
+  }
 }
 
 describe("CustomizationManager", () => {
