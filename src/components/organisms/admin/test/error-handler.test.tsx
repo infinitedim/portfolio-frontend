@@ -27,7 +27,7 @@ describe("ErrorHandler", () => {
   });
 
   afterEach(() => {
-    globalThis.fetch = originalFetch;
+    (globalThis as { fetch: unknown }).fetch = originalFetch;
     vi.restoreAllMocks();
   });
 
@@ -37,7 +37,7 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockResolvedValue({
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ status: "healthy" }),
       });
@@ -51,7 +51,6 @@ describe("ErrorHandler", () => {
       );
 
       await waitFor(() => {
-        
         expect(container.firstChild).toBeNull();
       });
     });
@@ -61,7 +60,7 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockResolvedValue({
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockResolvedValue({
         ok: false,
         json: async () => ({}),
       });
@@ -84,7 +83,7 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockResolvedValue({
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockResolvedValue({
         ok: false,
         json: async () => ({}),
       });
@@ -109,7 +108,9 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
+      (globalThis as { fetch: unknown }).fetch = vi
+        .fn()
+        .mockRejectedValue(new Error("Network error"));
 
       render(
         <ErrorHandler
@@ -136,7 +137,7 @@ describe("ErrorHandler", () => {
         ok: true,
         json: async () => ({}),
       });
-      globalThis.fetch = mockFetch;
+      (globalThis as { fetch: unknown }).fetch = mockFetch;
 
       render(
         <ErrorHandler
@@ -163,7 +164,7 @@ describe("ErrorHandler", () => {
         ok: true,
         json: async () => ({ status: "healthy" }),
       });
-      globalThis.fetch = mockFetch;
+      (globalThis as { fetch: unknown }).fetch = mockFetch;
 
       render(
         <ErrorHandler
@@ -190,7 +191,7 @@ describe("ErrorHandler", () => {
         ok: true,
         json: async () => ({ status: "healthy" }),
       });
-      globalThis.fetch = mockFetch;
+      (globalThis as { fetch: unknown }).fetch = mockFetch;
 
       render(
         <ErrorHandler
@@ -215,7 +216,7 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockResolvedValue({
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ status: "healthy" }),
       });
@@ -228,9 +229,10 @@ describe("ErrorHandler", () => {
         />,
       );
 
-      
       await waitFor(() => {
-        expect(screen.queryByText(/Service Status Monitor/i)).not.toBeInTheDocument();
+        expect(
+          screen.queryByText(/Service Status Monitor/i),
+        ).not.toBeInTheDocument();
       });
     });
 
@@ -239,7 +241,7 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockResolvedValue({
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockResolvedValue({
         ok: false,
         json: async () => ({}),
       });
@@ -262,10 +264,13 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockImplementation(
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockImplementation(
         () =>
           new Promise((resolve) => {
-            setTimeout(() => resolve({ ok: false, json: async () => ({}) }), 100);
+            setTimeout(
+              () => resolve({ ok: false, json: async () => ({}) }),
+              100,
+            );
           }),
       );
 
@@ -277,7 +282,6 @@ describe("ErrorHandler", () => {
         />,
       );
 
-      
       await waitFor(() => {
         expect(screen.getByText(/checking/i)).toBeInTheDocument();
       });
@@ -291,7 +295,9 @@ describe("ErrorHandler", () => {
         return;
       }
       const onError = vi.fn();
-      globalThis.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
+      (globalThis as { fetch: unknown }).fetch = vi
+        .fn()
+        .mockRejectedValue(new Error("Network error"));
 
       render(
         <ErrorHandler
@@ -312,7 +318,7 @@ describe("ErrorHandler", () => {
         return;
       }
       const onRecovery = vi.fn();
-      globalThis.fetch = vi.fn().mockResolvedValue({
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ status: "healthy" }),
       });
@@ -341,7 +347,7 @@ describe("ErrorHandler", () => {
         ok: false,
         json: async () => ({}),
       });
-      globalThis.fetch = mockFetch;
+      (globalThis as { fetch: unknown }).fetch = mockFetch;
 
       render(
         <ErrorHandler
@@ -369,10 +375,13 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockImplementation(
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockImplementation(
         () =>
           new Promise((resolve) => {
-            setTimeout(() => resolve({ ok: false, json: async () => ({}) }), 100);
+            setTimeout(
+              () => resolve({ ok: false, json: async () => ({}) }),
+              100,
+            );
           }),
       );
 
@@ -397,7 +406,7 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockResolvedValue({
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockResolvedValue({
         ok: false,
         json: async () => ({}),
       });
@@ -412,7 +421,9 @@ describe("ErrorHandler", () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Troubleshooting Guide/i)).toBeInTheDocument();
-        expect(screen.getByText(/Backend server is not running/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/Backend server is not running/i),
+        ).toBeInTheDocument();
       });
     });
 
@@ -421,13 +432,15 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      
-      globalThis.fetch = vi.fn().mockImplementation(async (url) => {
-        if (url.includes("/health/database")) {
-          return { ok: false, json: async () => ({}) };
-        }
-        return { ok: true, json: async () => ({ status: "healthy" }) };
-      });
+
+      (globalThis as { fetch: unknown }).fetch = vi
+        .fn()
+        .mockImplementation(async (url) => {
+          if (url.includes("/health/database")) {
+            return { ok: false, json: async () => ({}) };
+          }
+          return { ok: true, json: async () => ({ status: "healthy" }) };
+        });
 
       render(
         <ErrorHandler
@@ -438,7 +451,9 @@ describe("ErrorHandler", () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText(/Database connection failed/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/Database connection failed/i),
+        ).toBeInTheDocument();
       });
     });
   });
@@ -453,7 +468,7 @@ describe("ErrorHandler", () => {
         expect(true).toBe(true);
         return;
       }
-      globalThis.fetch = vi.fn().mockResolvedValue({
+      (globalThis as { fetch: unknown }).fetch = vi.fn().mockResolvedValue({
         ok: false,
         json: async () => ({}),
       });

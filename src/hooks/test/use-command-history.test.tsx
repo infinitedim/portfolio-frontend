@@ -20,7 +20,6 @@ const localStorageMock = (() => {
 })();
 
 if (canRunTests) {
-
   try {
     Object.defineProperty(window, "localStorage", {
       value: localStorageMock,
@@ -42,7 +41,6 @@ describe("useCommandHistory", () => {
 
     localStorageMock.clear();
     vi.clearAllMocks();
-
 
     if (!document.body) {
       const body = document.createElement("body");
@@ -66,16 +64,16 @@ describe("useCommandHistory", () => {
     act(() => result.current.addCommand("two"));
     act(() => result.current.addCommand("three"));
 
-
     await waitFor(() => {
       expect(result.current.allHistory.length).toBe(3);
     });
 
-
-    const commands = result.current.allHistory.map((entry: { command: string; timestamp: Date; success: boolean }) => entry.command);
+    const commands = result.current.allHistory.map(
+      (entry: { command: string; timestamp: Date; success: boolean }) =>
+        entry.command,
+    );
 
     expect(commands).toEqual(["three", "two", "one"]);
-
 
     expect(localStorageMock.setItem).toHaveBeenCalled();
   });

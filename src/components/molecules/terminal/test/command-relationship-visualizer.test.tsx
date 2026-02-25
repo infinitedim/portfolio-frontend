@@ -12,8 +12,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -76,7 +79,10 @@ describe("CommandRelationshipVisualizer", () => {
         return;
       }
       render(
-        <CommandRelationshipVisualizer isVisible={true} onClose={vi.fn()} />,
+        <CommandRelationshipVisualizer
+          isVisible={true}
+          onClose={vi.fn()}
+        />,
       );
 
       expect(screen.getByText(/command relationship/i)).toBeInTheDocument();
@@ -89,7 +95,10 @@ describe("CommandRelationshipVisualizer", () => {
       }
       const onClose = vi.fn();
       render(
-        <CommandRelationshipVisualizer isVisible={true} onClose={onClose} />,
+        <CommandRelationshipVisualizer
+          isVisible={true}
+          onClose={onClose}
+        />,
       );
 
       const closeButton = screen.getByLabelText(/close/i);
@@ -104,10 +113,12 @@ describe("CommandRelationshipVisualizer", () => {
         return;
       }
       render(
-        <CommandRelationshipVisualizer isVisible={true} onClose={vi.fn()} />,
+        <CommandRelationshipVisualizer
+          isVisible={true}
+          onClose={vi.fn()}
+        />,
       );
 
-      
       expect(screen.getByText(/help/i)).toBeInTheDocument();
     });
 
@@ -117,7 +128,10 @@ describe("CommandRelationshipVisualizer", () => {
         return;
       }
       render(
-        <CommandRelationshipVisualizer isVisible={true} onClose={vi.fn()} />,
+        <CommandRelationshipVisualizer
+          isVisible={true}
+          onClose={vi.fn()}
+        />,
       );
 
       const clusterButton = screen.getByText(/clusters/i);
@@ -134,7 +148,10 @@ describe("CommandRelationshipVisualizer", () => {
         return;
       }
       render(
-        <CommandRelationshipVisualizer isVisible={true} onClose={vi.fn()} />,
+        <CommandRelationshipVisualizer
+          isVisible={true}
+          onClose={vi.fn()}
+        />,
       );
 
       const categoryFilter = screen.getByText(/all/i);
@@ -148,9 +165,12 @@ describe("CommandRelationshipVisualizer", () => {
         expect(true).toBe(true);
         return;
       }
-      
+
       render(
-        <CommandRelationshipVisualizer isVisible={true} onClose={vi.fn()} />,
+        <CommandRelationshipVisualizer
+          isVisible={true}
+          onClose={vi.fn()}
+        />,
       );
 
       expect(screen.getByText(/no commands/i)).toBeInTheDocument();
@@ -169,7 +189,6 @@ describe("CommandRelationshipVisualizer", () => {
         />,
       );
 
-      
       expect(screen.getByText(/help/i)).toBeInTheDocument();
     });
   });

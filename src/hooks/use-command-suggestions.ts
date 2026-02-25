@@ -1,7 +1,7 @@
 "use client";
 
-import {useState, useEffect, useMemo, useRef, useCallback} from "react";
-import {useDebouncedValue} from "@/hooks/use-debounced-value";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 
 export interface SuggestionItem {
   command: string;
@@ -228,7 +228,7 @@ class FuzzyMatcher {
 class SuggestionCache {
   private cache = new Map<
     string,
-    {suggestions: SuggestionItem[]; timestamp: number; hits: number}
+    { suggestions: SuggestionItem[]; timestamp: number; hits: number }
   >();
   private readonly TTL = 5 * 60 * 1000;
   private readonly MAX_SIZE = 50;
@@ -323,7 +323,7 @@ export function useCommandSuggestions(
       if (!enableLearning) return;
 
       setUserContext((prev) => {
-        const newContext = {...prev};
+        const newContext = { ...prev };
 
         newContext.recentCommands = [
           command,

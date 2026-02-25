@@ -5,8 +5,6 @@ import { TypoTolerance } from "./typo-tolerance";
 export class CommandParser {
   private commands: Map<string, Command> = new Map();
 
-  
-
   register(command: Command): void {
     if (!command) return;
     this.commands.set(command.name.toLowerCase(), command);
@@ -15,8 +13,6 @@ export class CommandParser {
     );
   }
 
-  
-
   getCommands(): Command[] {
     const uniqueCommands = new Map<string, Command>();
     for (const command of Array.from(this.commands.values())) {
@@ -24,8 +20,6 @@ export class CommandParser {
     }
     return Array.from(uniqueCommands.values());
   }
-
-  
 
   async parse(input: string): Promise<CommandOutput> {
     const trimmedInput = input.trim();

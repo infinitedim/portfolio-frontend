@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { TOUR_STEPS, TOUR_STORAGE_KEY, TOUR_VERSION, type TourStep } from "../tour-steps";
+import {
+  TOUR_STEPS,
+  TOUR_STORAGE_KEY,
+  TOUR_VERSION,
+  type TourStep,
+} from "../tour-steps";
 
 describe("tour-steps", () => {
   describe("TourStep Interface", () => {
@@ -92,7 +97,9 @@ describe("tour-steps", () => {
     });
 
     it("should have command-input step with target", () => {
-      const commandInputStep = TOUR_STEPS.find((step) => step.id === "command-input");
+      const commandInputStep = TOUR_STEPS.find(
+        (step) => step.id === "command-input",
+      );
       expect(commandInputStep).toBeDefined();
       expect(commandInputStep?.target).toBe("#command-input");
     });
@@ -103,7 +110,9 @@ describe("tour-steps", () => {
     });
 
     it("should have steps with tips", () => {
-      const stepsWithTips = TOUR_STEPS.filter((step) => step.tips && step.tips.length > 0);
+      const stepsWithTips = TOUR_STEPS.filter(
+        (step) => step.tips && step.tips.length > 0,
+      );
       expect(stepsWithTips.length).toBeGreaterThan(0);
     });
   });

@@ -19,19 +19,15 @@ export const metadata: Metadata = {
   alternates: { canonical: "/roadmap" },
 };
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 function pct(done: number, total: number): number {
   return total > 0 ? Math.round((done / total) * 100) : 0;
 }
 
 function statusColor(p: number): string {
-  if (p === 100) return "#10b981"; // green
-  if (p >= 50) return "#3b82f6";  // blue
-  if (p > 0) return "#f59e0b";    // amber
-  return "#6b7280";               // gray
+  if (p === 100) return "#10b981";
+  if (p >= 50) return "#3b82f6";
+  if (p > 0) return "#f59e0b";
+  return "#6b7280";
 }
 
 function formatDate(iso: string): string {
@@ -41,10 +37,6 @@ function formatDate(iso: string): string {
     year: "numeric",
   });
 }
-
-// ---------------------------------------------------------------------------
-// Sub-components (server components, no "use client")
-// ---------------------------------------------------------------------------
 
 function StreakCard({ streak }: { streak: RoadmapStreak }): JSX.Element {
   return (
@@ -59,7 +51,10 @@ function StreakCard({ streak }: { streak: RoadmapStreak }): JSX.Element {
           { label: "Previous", value: streak.previousCount },
           { label: "Referrals", value: streak.refByUserCount },
         ].map(({ label, value }) => (
-          <div key={label} className="text-center">
+          <div
+            key={label}
+            className="text-center"
+          >
             <div className="text-3xl font-bold text-white">{value}</div>
             <div className="mt-1 text-xs text-neutral-400">{label}</div>
           </div>
@@ -79,7 +74,7 @@ function ProgressRow({ p }: { p: RoadmapProgress }): JSX.Element {
 
   return (
     <div className="rounded border border-neutral-800 bg-neutral-900 p-4 font-mono">
-      {/* Header */}
+      {}
       <div className="mb-2 flex items-start justify-between gap-2">
         <a
           href={`https://roadmap.sh/${p.resourceId}`}
@@ -89,12 +84,15 @@ function ProgressRow({ p }: { p: RoadmapProgress }): JSX.Element {
         >
           {p.resourceTitle}
         </a>
-        <span className="shrink-0 text-sm font-bold" style={{ color }}>
+        <span
+          className="shrink-0 text-sm font-bold"
+          style={{ color }}
+        >
           {percent}%
         </span>
       </div>
 
-      {/* Progress bar */}
+      {}
       <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-700">
         <div
           className="h-full rounded-full transition-all"
@@ -102,7 +100,7 @@ function ProgressRow({ p }: { p: RoadmapProgress }): JSX.Element {
         />
       </div>
 
-      {/* Stats */}
+      {}
       <div className="mt-2 flex gap-4 text-xs text-neutral-400">
         <span>
           ✅ <span className="text-neutral-200">{p.done}</span> done
@@ -122,7 +120,7 @@ function ProgressRow({ p }: { p: RoadmapProgress }): JSX.Element {
         </span>
       </div>
 
-      {/* Updated */}
+      {}
       <div className="mt-1 text-right text-xs text-neutral-600">
         updated {formatDate(p.updatedAt)}
       </div>
@@ -139,14 +137,13 @@ function DashboardSection({
   const totalItems = dashboard.progresses.reduce((s, p) => s + p.total, 0);
   const overall = pct(totalDone, totalItems);
 
-  // Sort: by progress descending
   const sorted = [...dashboard.progresses].sort(
     (a, b) => pct(b.done, b.total) - pct(a.done, a.total),
   );
 
   return (
     <div className="space-y-4">
-      {/* Summary */}
+      {}
       <div className="rounded-lg border border-neutral-700 bg-neutral-900 p-5 font-mono">
         <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-neutral-400">
           📊 Overall Progress
@@ -172,13 +169,16 @@ function DashboardSection({
         </div>
       </div>
 
-      {/* Individual roadmaps */}
+      {}
       <h2 className="font-mono text-sm font-bold uppercase tracking-wider text-neutral-400">
         Roadmaps ({dashboard.progresses.length})
       </h2>
       <div className="grid gap-3 sm:grid-cols-2">
         {sorted.map((p) => (
-          <ProgressRow key={p.resourceId} p={p} />
+          <ProgressRow
+            key={p.resourceId}
+            p={p}
+          />
         ))}
       </div>
     </div>
@@ -198,10 +198,6 @@ function EmptyState(): JSX.Element {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Page
-// ---------------------------------------------------------------------------
-
 async function RoadmapContent(): Promise<JSX.Element> {
   const [dashboard, streak, teams, favourites] = await Promise.all([
     getRoadmapDashboard(),
@@ -214,7 +210,7 @@ async function RoadmapContent(): Promise<JSX.Element> {
 
   return (
     <div className="space-y-6">
-      {/* Profile header */}
+      {}
       <div className="flex items-center gap-4 font-mono">
         <div>
           <h1 className="text-xl font-bold text-white">{dashboard.name}</h1>
@@ -234,10 +230,10 @@ async function RoadmapContent(): Promise<JSX.Element> {
         </div>
       </div>
 
-      {/* Streak */}
+      {}
       {streak && <StreakCard streak={streak} />}
 
-      {/* Roadmap progress */}
+      {}
       <DashboardSection dashboard={dashboard} />
     </div>
   );

@@ -12,8 +12,11 @@ const mockRouter = {
   refresh: vi.fn(),
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
@@ -40,7 +43,9 @@ vi.mock("@/hooks/use-theme", () => ({
 }));
 
 vi.mock("@/components/molecules/admin/terminal-header", () => ({
-  TerminalHeader: () => <div data-testid="terminal-header">Terminal Header</div>,
+  TerminalHeader: () => (
+    <div data-testid="terminal-header">Terminal Header</div>
+  ),
 }));
 
 vi.mock("@/components/molecules/admin/terminal-sidebar", () => ({
@@ -64,10 +69,16 @@ vi.mock("@/components/molecules/admin/terminal-sidebar", () => ({
       >
         Performance
       </button>
-      <button data-testid="sidebar-logs" onClick={() => onViewChange("logs")}>
+      <button
+        data-testid="sidebar-logs"
+        onClick={() => onViewChange("logs")}
+      >
         Logs
       </button>
-      <button data-testid="sidebar-blog" onClick={() => onViewChange("blog")}>
+      <button
+        data-testid="sidebar-blog"
+        onClick={() => onViewChange("blog")}
+      >
         Blog
       </button>
       <button
@@ -107,7 +118,6 @@ vi.mock("@/components/molecules/admin/blog-editor", () => ({
 import AdminDashboard from "./page";
 
 describe("AdminDashboard", () => {
-  
   const localStorageMock = {
     getItem: vi.fn(),
     setItem: vi.fn(),
@@ -123,13 +133,11 @@ describe("AdminDashboard", () => {
     vi.clearAllMocks();
     mockPush.mockClear();
 
-    
     localStorageMock.getItem.mockClear();
     localStorageMock.setItem.mockClear();
     localStorageMock.removeItem.mockClear();
     localStorageMock.clear.mockClear();
 
-    
     if (typeof window !== "undefined") {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
@@ -168,9 +176,7 @@ describe("AdminDashboard", () => {
         return;
       }
 
-      localStorageMock.getItem.mockReturnValue(
-        null,
-      );
+      localStorageMock.getItem.mockReturnValue(null);
 
       render(<AdminDashboard />);
 
@@ -185,9 +191,7 @@ describe("AdminDashboard", () => {
         return;
       }
 
-      localStorageMock.getItem.mockReturnValue(
-        "test-token",
-      );
+      localStorageMock.getItem.mockReturnValue("test-token");
 
       render(<AdminDashboard />);
 
@@ -202,9 +206,7 @@ describe("AdminDashboard", () => {
         return;
       }
 
-      localStorageMock.getItem.mockReturnValue(
-        null,
-      );
+      localStorageMock.getItem.mockReturnValue(null);
 
       render(<AdminDashboard />);
 
@@ -212,17 +214,13 @@ describe("AdminDashboard", () => {
         expect(mockPush).toHaveBeenCalled();
       });
 
-      
-      
       expect(mockPush).toHaveBeenCalled();
     });
   });
 
   describe("Component Rendering", () => {
     beforeEach(() => {
-      localStorageMock.getItem.mockReturnValue(
-        "test-token",
-      );
+      localStorageMock.getItem.mockReturnValue("test-token");
     });
 
     it("should render TerminalHeader", async () => {
@@ -282,9 +280,7 @@ describe("AdminDashboard", () => {
 
   describe("View Switching", () => {
     beforeEach(() => {
-      localStorageMock.getItem.mockReturnValue(
-        "test-token",
-      );
+      localStorageMock.getItem.mockReturnValue("test-token");
     });
 
     it("should switch to performance view", async () => {
@@ -379,7 +375,6 @@ describe("AdminDashboard", () => {
         expect(screen.getByTestId("terminal-sidebar")).toBeInTheDocument();
       });
 
-      
       const performanceButton = screen.getByTestId("sidebar-performance");
       fireEvent.click(performanceButton);
 
@@ -387,7 +382,6 @@ describe("AdminDashboard", () => {
         expect(screen.getByTestId("performance-monitor")).toBeInTheDocument();
       });
 
-      
       const overviewButton = screen.getByTestId("sidebar-overview");
       fireEvent.click(overviewButton);
 
@@ -399,9 +393,7 @@ describe("AdminDashboard", () => {
 
   describe("Overview View", () => {
     beforeEach(() => {
-      localStorageMock.getItem.mockReturnValue(
-        "test-token",
-      );
+      localStorageMock.getItem.mockReturnValue("test-token");
     });
 
     it("should display system status card", async () => {
@@ -415,7 +407,9 @@ describe("AdminDashboard", () => {
       await waitFor(() => {
         expect(screen.getByText(/System Status/i)).toBeInTheDocument();
         expect(screen.getByText(/ONLINE/i)).toBeInTheDocument();
-        expect(screen.getByText(/All systems operational/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/All systems operational/i),
+        ).toBeInTheDocument();
       });
     });
 
@@ -429,7 +423,7 @@ describe("AdminDashboard", () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Active Sessions/i)).toBeInTheDocument();
-        
+
         const sessionsText = screen.getByText(/Active Sessions/i);
         expect(sessionsText).toBeInTheDocument();
         expect(screen.getByText(/Current admin session/i)).toBeInTheDocument();
@@ -490,9 +484,7 @@ describe("AdminDashboard", () => {
 
   describe("Settings View", () => {
     beforeEach(() => {
-      localStorageMock.getItem.mockReturnValue(
-        "test-token",
-      );
+      localStorageMock.getItem.mockReturnValue("test-token");
     });
 
     it("should display system settings", async () => {
@@ -561,9 +553,7 @@ describe("AdminDashboard", () => {
       fireEvent.click(logoutButton);
 
       await waitFor(() => {
-        expect(localStorageMock.removeItem).toHaveBeenCalledWith(
-          "adminToken",
-        );
+        expect(localStorageMock.removeItem).toHaveBeenCalledWith("adminToken");
         expect(mockPush).toHaveBeenCalledWith("/admin/login");
       });
     });
@@ -571,9 +561,7 @@ describe("AdminDashboard", () => {
 
   describe("Theme Configuration", () => {
     beforeEach(() => {
-      localStorageMock.getItem.mockReturnValue(
-        "test-token",
-      );
+      localStorageMock.getItem.mockReturnValue("test-token");
     });
 
     it("should apply theme colors to container", async () => {
@@ -585,7 +573,9 @@ describe("AdminDashboard", () => {
       const { container } = render(<AdminDashboard />);
 
       await waitFor(() => {
-        const mainDiv = container.querySelector("div[style*='background-color']");
+        const mainDiv = container.querySelector(
+          "div[style*='background-color']",
+        );
         expect(mainDiv).toBeTruthy();
       });
     });
@@ -619,9 +609,7 @@ describe("AdminDashboard", () => {
         return;
       }
 
-      localStorageMock.getItem.mockReturnValue(
-        "test-token",
-      );
+      localStorageMock.getItem.mockReturnValue("test-token");
 
       render(<AdminDashboard />);
 
@@ -629,10 +617,8 @@ describe("AdminDashboard", () => {
         expect(screen.getByTestId("terminal-sidebar")).toBeInTheDocument();
       });
 
-      
-      
       const sidebar = screen.getByTestId("terminal-sidebar");
-      
+
       expect(sidebar).toBeInTheDocument();
     });
 
@@ -642,20 +628,14 @@ describe("AdminDashboard", () => {
         return;
       }
 
-      
       const originalGetItem = localStorageMock.getItem;
-      localStorageMock.getItem.mockImplementationOnce(
-        () => {
-          throw new Error("localStorage error");
-        },
-      );
+      localStorageMock.getItem.mockImplementationOnce(() => {
+        throw new Error("localStorage error");
+      });
 
-      
-      
       const { container } = render(<AdminDashboard />);
       expect(container).toBeDefined();
-      
-      
+
       localStorageMock.getItem = originalGetItem;
     });
   });

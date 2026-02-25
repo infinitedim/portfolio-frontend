@@ -11,7 +11,6 @@ describe("commands.ts", () => {
   let enhancedCommands: any;
 
   beforeEach(async () => {
-    
     if (typeof vi !== "undefined" && vi.unmock) {
       vi.unmock("@/lib/utils/arg-parser");
     }
@@ -19,14 +18,10 @@ describe("commands.ts", () => {
       vi.doUnmock("@/lib/utils/arg-parser");
     }
 
-    
-    
     if (typeof vi !== "undefined" && vi.importActual) {
-      
       commands =
         await vi.importActual<typeof import("../commands")>("../commands");
     } else {
-      
       commands = await import("../commands");
     }
 
@@ -38,7 +33,6 @@ describe("commands.ts", () => {
     enhancedCommands = commands.enhancedCommands;
   });
 
-  
   const mockClick = vi.fn();
   const mockOpen = vi.fn();
   const mockCreateElement = vi.fn(() => ({

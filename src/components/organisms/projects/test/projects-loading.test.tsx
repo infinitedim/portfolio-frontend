@@ -28,7 +28,6 @@ describe("ProjectsLoading", () => {
       }
       const { container } = render(<ProjectsLoading />);
 
-      
       const cards = container.querySelectorAll(".bg-terminal-bg");
       expect(cards.length).toBe(6);
     });
@@ -41,7 +40,11 @@ describe("ProjectsLoading", () => {
       const { container } = render(<ProjectsLoading />);
 
       const grid = container.querySelector(".grid");
-      expect(grid).toHaveClass("grid-cols-1", "md:grid-cols-2", "lg:grid-cols-3");
+      expect(grid).toHaveClass(
+        "grid-cols-1",
+        "md:grid-cols-2",
+        "lg:grid-cols-3",
+      );
     });
   });
 });

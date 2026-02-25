@@ -322,7 +322,7 @@ export function RealTimePerformanceMonitor({
                 2,
                 (point.responseTime /
                   Math.max(...history.map((h) => h.responseTime))) *
-                64,
+                  64,
               );
               return (
                 <div

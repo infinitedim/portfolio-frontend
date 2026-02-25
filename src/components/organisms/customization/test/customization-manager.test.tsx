@@ -6,8 +6,11 @@ import { CustomizationManager } from "../customization-manager";
 const mockGetAllThemes = vi.fn(() => []);
 const mockGetAllFonts = vi.fn(() => []);
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/lib/services/customization-service", () => ({
   CustomizationService: {
@@ -52,7 +55,9 @@ vi.mock("@/components/molecules/customization/font-manager", () => ({
 }));
 
 vi.mock("@/components/molecules/customization/settings-manager", () => ({
-  SettingsManager: () => <div data-testid="settings-manager">Settings Manager</div>,
+  SettingsManager: () => (
+    <div data-testid="settings-manager">Settings Manager</div>
+  ),
 }));
 
 vi.mock("@/components/molecules/customization/import-export-manager", () => ({
@@ -62,11 +67,15 @@ vi.mock("@/components/molecules/customization/import-export-manager", () => ({
 }));
 
 vi.mock("@/components/molecules/customization/background-manager", () => ({
-  BackgroundManager: () => <div data-testid="background-manager">Background Manager</div>,
+  BackgroundManager: () => (
+    <div data-testid="background-manager">Background Manager</div>
+  ),
 }));
 
 vi.mock("@/components/molecules/terminal/terminal-loading-progress", () => ({
-  TerminalLoadingProgress: () => <div data-testid="loading-progress">Loading...</div>,
+  TerminalLoadingProgress: () => (
+    <div data-testid="loading-progress">Loading...</div>
+  ),
 }));
 
 const mockReload = vi.fn();
@@ -78,11 +87,13 @@ if (typeof window !== "undefined") {
       configurable: true,
     });
   } catch {
-    // bun+jsdom: location may not be reconfigurable; mock reload directly
     try {
-      (window.location as Record<string, unknown>).reload = mockReload;
+      (window.location as unknown as Record<string, unknown>).reload =
+        mockReload;
     } catch {
-      // ignore if location is fully frozen
+      console.warn(
+        "Failed to mock window.location.reload. Theme application tests may not work as expected.",
+      );
     }
   }
 }
@@ -109,7 +120,10 @@ describe("CustomizationManager", () => {
         return;
       }
       const { container } = render(
-        <CustomizationManager isOpen={false} onClose={vi.fn()} />,
+        <CustomizationManager
+          isOpen={false}
+          onClose={vi.fn()}
+        />,
       );
 
       expect(container.firstChild).toBeNull();
@@ -120,7 +134,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       expect(screen.getByText(/Customization Manager/i)).toBeInTheDocument();
     });
@@ -130,7 +149,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       expect(screen.getByText(/Current theme: default/i)).toBeInTheDocument();
     });
@@ -140,7 +164,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       expect(screen.getByText(/🎨 Themes/i)).toBeInTheDocument();
       expect(screen.getByText(/🔤 Fonts/i)).toBeInTheDocument();
@@ -156,7 +185,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       expect(screen.getByTestId("theme-manager")).toBeInTheDocument();
     });
@@ -166,7 +200,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const fontsTab = screen.getByText(/🔤 Fonts/i);
       fireEvent.click(fontsTab);
@@ -179,7 +218,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const backgroundsTab = screen.getByText(/🖼️ Backgrounds/i);
       fireEvent.click(backgroundsTab);
@@ -192,7 +236,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const settingsTab = screen.getByText(/⚙️ Settings/i);
       fireEvent.click(settingsTab);
@@ -205,7 +254,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const importExportTab = screen.getByText(/📦 Import\/Export/i);
       fireEvent.click(importExportTab);
@@ -224,7 +278,12 @@ describe("CustomizationManager", () => {
         () => new Promise((resolve) => setTimeout(() => resolve([]), 100)),
       );
 
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       expect(screen.getByTestId("loading-progress")).toBeInTheDocument();
     });
@@ -239,7 +298,12 @@ describe("CustomizationManager", () => {
       (mockGetAllThemes as any).mockReturnValue(themes);
       (mockGetAllFonts as any).mockReturnValue(fonts);
 
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       await waitFor(() => {
         expect(mockGetAllThemes).toHaveBeenCalled();
@@ -255,7 +319,12 @@ describe("CustomizationManager", () => {
         return;
       }
       const onClose = vi.fn();
-      render(<CustomizationManager isOpen={true} onClose={onClose} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={onClose}
+        />,
+      );
 
       const applyButton = screen.getByText("Apply Theme");
       fireEvent.click(applyButton);
@@ -280,7 +349,12 @@ describe("CustomizationManager", () => {
       }
       mockChangeTheme.mockReturnValue(false);
 
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const applyButton = screen.getByText("Apply Theme");
       fireEvent.click(applyButton);
@@ -298,7 +372,12 @@ describe("CustomizationManager", () => {
         return;
       }
       const onClose = vi.fn();
-      render(<CustomizationManager isOpen={true} onClose={onClose} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={onClose}
+        />,
+      );
 
       const closeButton = screen.getByLabelText(/Close customization manager/i);
       fireEvent.click(closeButton);
@@ -316,7 +395,12 @@ describe("CustomizationManager", () => {
         return;
       }
       const onClose = vi.fn();
-      render(<CustomizationManager isOpen={true} onClose={onClose} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={onClose}
+        />,
+      );
 
       fireEvent.keyDown(document, { key: "Escape" });
 
@@ -330,7 +414,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const applyButton = screen.getByText("Apply Theme");
       fireEvent.click(applyButton);
@@ -345,7 +434,12 @@ describe("CustomizationManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const applyButton = screen.getByText("Apply Theme");
       fireEvent.click(applyButton);
@@ -357,7 +451,9 @@ describe("CustomizationManager", () => {
       vi.advanceTimersByTime(3000);
 
       await waitFor(() => {
-        expect(screen.queryByText(/applied successfully/i)).not.toBeInTheDocument();
+        expect(
+          screen.queryByText(/applied successfully/i),
+        ).not.toBeInTheDocument();
       });
     });
   });
@@ -374,7 +470,12 @@ describe("CustomizationManager", () => {
       ];
       (mockGetAllThemes as any).mockReturnValue(themes);
 
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       expect(screen.getByText("2")).toBeInTheDocument();
     });
@@ -390,7 +491,12 @@ describe("CustomizationManager", () => {
       ];
       (mockGetAllFonts as any).mockReturnValue(fonts);
 
-      render(<CustomizationManager isOpen={true} onClose={vi.fn()} />);
+      render(
+        <CustomizationManager
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const fontsTab = screen.getByText(/🔤 Fonts/i);
       fireEvent.click(fontsTab);

@@ -22,8 +22,6 @@ export interface ParameterValidation {
 }
 
 export class ValidationUtils {
-  
-
   static validateServiceMethod(
     service: string,
     method: string,
@@ -58,8 +56,6 @@ export class ValidationUtils {
       warnings,
     };
   }
-
-  
 
   static validateParameters(
     parameters: Array<{
@@ -164,8 +160,6 @@ export class ValidationUtils {
     });
   }
 
-  
-
   static validateHttpMethod(
     method: string,
     type: "query" | "mutation",
@@ -194,8 +188,6 @@ export class ValidationUtils {
       warnings,
     };
   }
-
-  
 
   static sanitizeValue(value: ParameterValue, type: string): ParameterValue {
     if (value === undefined || value === null) {
@@ -232,8 +224,6 @@ export class ValidationUtils {
     }
   }
 
-  
-
   static validateUrl(url: string): ValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -258,8 +248,6 @@ export class ValidationUtils {
       warnings,
     };
   }
-
-  
 
   static validateEnvironment(): ValidationResult {
     const errors: string[] = [];
@@ -294,8 +282,6 @@ export class ValidationUtils {
     };
   }
 
-  
-
   static formatValidationErrors(validation: ValidationResult): string {
     if (validation.isValid) {
       return "";
@@ -316,8 +302,6 @@ export class ValidationUtils {
     return parts.join("\n");
   }
 
-  
-
   static isEmpty(value: unknown): boolean {
     if (value === null || value === undefined) {
       return true;
@@ -337,8 +321,6 @@ export class ValidationUtils {
 
     return false;
   }
-
-  
 
   static validatePayloadSize(
     payload: unknown,

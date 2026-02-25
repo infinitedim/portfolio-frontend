@@ -11,16 +11,16 @@ const mockLogin = vi.fn();
 const mockLogout = vi.fn();
 const mockRefresh = vi.fn();
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/lib/auth/auth-service", () => {
-
   let actual: any = {};
   try {
-
     if (typeof require !== "undefined") {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       actual = require("@/lib/auth/auth-service");
     }
   } catch (e) {
@@ -67,7 +67,9 @@ describe("AuthProvider", () => {
       }
       const TestComponent = () => {
         const { isLoading } = useAuth();
-        return <div data-testid="child">{isLoading ? "Loading" : "Loaded"}</div>;
+        return (
+          <div data-testid="child">{isLoading ? "Loading" : "Loaded"}</div>
+        );
       };
 
       render(
@@ -193,7 +195,10 @@ describe("AuthProvider", () => {
         expect(true).toBe(true);
         return;
       }
-      mockLogin.mockResolvedValue({ success: false, error: "Invalid credentials" });
+      mockLogin.mockResolvedValue({
+        success: false,
+        error: "Invalid credentials",
+      });
 
       const TestComponent = () => {
         const { login } = useAuth();
@@ -223,7 +228,9 @@ describe("AuthProvider", () => {
       loginButton.click();
 
       await waitFor(() => {
-        expect(screen.getByTestId("result")).toHaveTextContent("Invalid credentials");
+        expect(screen.getByTestId("result")).toHaveTextContent(
+          "Invalid credentials",
+        );
       });
     });
   });
@@ -290,11 +297,9 @@ describe("AuthProvider", () => {
         </AuthProvider>,
       );
 
-
       await waitFor(() => {
         expect(mockInitialize).toHaveBeenCalled();
       });
-
 
       vi.advanceTimersByTime(14 * 60 * 1000);
 

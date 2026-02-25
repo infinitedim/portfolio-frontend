@@ -3,12 +3,10 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TimeDisplay } from "../time-display";
 
-// Bun test compat: vi.hoisted and vi.mock are vitest-only; provide polyfills
 const _vi = vi as unknown as Record<string, unknown>;
 if (typeof _vi.hoisted !== "function")
   _vi.hoisted = (factory: () => unknown) => factory();
-if (typeof _vi.mock !== "function")
-  _vi.mock = () => undefined;
+if (typeof _vi.mock !== "function") _vi.mock = () => undefined;
 
 const mockLocation = {
   city: "Test City",
@@ -104,7 +102,9 @@ describe("TimeDisplay", () => {
 
       await waitFor(
         () => {
-          expect(screen.getByText("Test City, Test Region")).toBeInTheDocument();
+          expect(
+            screen.getByText("Test City, Test Region"),
+          ).toBeInTheDocument();
           expect(screen.getByText("Test Country")).toBeInTheDocument();
         },
         { timeout: 2000 },
@@ -222,7 +222,9 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
-      mockGetLocation.mockReset().mockRejectedValue(new Error("Failed to fetch"));
+      mockGetLocation
+        .mockReset()
+        .mockRejectedValue(new Error("Failed to fetch"));
       vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 
@@ -240,7 +242,9 @@ describe("TimeDisplay", () => {
         expect(true).toBe(true);
         return;
       }
-      mockGetLocation.mockReset().mockRejectedValue(new Error("Failed to fetch"));
+      mockGetLocation
+        .mockReset()
+        .mockRejectedValue(new Error("Failed to fetch"));
       vi.useRealTimers();
       render(<TimeDisplay onClose={mockOnClose} />);
 

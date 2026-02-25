@@ -180,15 +180,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  
   let blogRoutes: MetadataRoute.Sitemap = [];
   try {
     const backendUrl = getBackendUrl();
     const response = await fetch(
       `${backendUrl}/api/blog?pageSize=500&published=true`,
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: 3600 } },
     );
-    
+
     if (response.ok) {
       const data = await response.json();
       blogRoutes = (data.items || []).map((post: BlogPostItem) => ({
@@ -200,7 +199,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch (error) {
     console.error("Failed to fetch blog posts for sitemap:", error);
-    
   }
 
   const legalRoutes: MetadataRoute.Sitemap = [

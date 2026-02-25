@@ -9,7 +9,6 @@ describe("EnhancedErrorBoundary (error-boundary.tsx)", () => {
   let useErrorBoundary: any;
 
   beforeEach(async () => {
-    
     if (typeof vi !== "undefined" && vi.unmock) {
       vi.unmock("../error-types");
     }
@@ -17,15 +16,12 @@ describe("EnhancedErrorBoundary (error-boundary.tsx)", () => {
       vi.doUnmock("../error-types");
     }
 
-    
-    
     if (typeof vi !== "undefined" && vi.importActual) {
-      
-      errorBoundary = await vi.importActual<typeof import("../error-boundary")>(
-        "../error-boundary"
-      );
+      errorBoundary =
+        await vi.importActual<typeof import("../error-boundary")>(
+          "../error-boundary",
+        );
     } else {
-      
       errorBoundary = await import("../error-boundary");
     }
 
@@ -34,7 +30,6 @@ describe("EnhancedErrorBoundary (error-boundary.tsx)", () => {
     useErrorBoundary = errorBoundary.useErrorBoundary;
   });
 
-  
   const ThrowError = ({ shouldThrow }: { shouldThrow: boolean }) => {
     if (shouldThrow) {
       throw new Error("Test error");
@@ -46,7 +41,7 @@ describe("EnhancedErrorBoundary (error-boundary.tsx)", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    vi.spyOn(console, "error").mockImplementation(() => { });
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   describe("Rendering", () => {

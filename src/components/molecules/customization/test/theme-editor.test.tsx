@@ -17,8 +17,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -53,8 +56,7 @@ describe("ThemeEditor", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
     vi.useFakeTimers();
-    
-    
+
     if (typeof document !== "undefined") {
       const mockStyle = {
         setProperty: vi.fn(),
@@ -276,7 +278,6 @@ describe("ThemeEditor", () => {
       const generateButton = screen.getByText("Generate Random Theme");
       fireEvent.click(generateButton);
 
-      
       const nameInput = screen.getByPlaceholderText("Enter theme name");
       expect((nameInput as HTMLInputElement).value).not.toBe("Test Theme");
     });
@@ -320,8 +321,9 @@ describe("ThemeEditor", () => {
       const option = screen.getByText(/50-25-10-5-5-3-2/);
       fireEvent.click(option);
 
-      
-      expect(screen.queryByText(/50-25-10-5-5-3-2 \(Even\)/)).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/50-25-10-5-5-3-2 \(Even\)/),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -406,7 +408,6 @@ describe("ThemeEditor", () => {
 
       fireEvent.keyDown(document, { key: "Escape" });
 
-      
       expect(screen.queryByText(/50-25-10-5-5-3-2/)).not.toBeInTheDocument();
     });
   });

@@ -36,7 +36,6 @@ export class ErrorBoundary extends Component<
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ errorInfo });
 
-    
     const errorId = crypto.randomUUID();
     clientLogger.logError(error, {
       component: "error-boundary-root",
@@ -49,7 +48,6 @@ export class ErrorBoundary extends Component<
       console.error("Component stack:", errorInfo.componentStack);
     }
 
-    
     try {
       const errorStore = JSON.parse(localStorage.getItem("error-logs") || "[]");
       errorStore.push({
@@ -57,7 +55,7 @@ export class ErrorBoundary extends Component<
         message: error.message,
         timestamp: new Date().toISOString(),
       });
-      
+
       if (errorStore.length > 10) {
         errorStore.splice(0, errorStore.length - 10);
       }
@@ -65,9 +63,8 @@ export class ErrorBoundary extends Component<
     } catch (storageError) {
       throw new Error(
         `Failed to store error log: ${storageError instanceof Error ? storageError.message : String(storageError)}`,
-        { cause: storageError }
+        { cause: storageError },
       );
-      
     }
 
     this.props.onError?.(error, errorInfo);

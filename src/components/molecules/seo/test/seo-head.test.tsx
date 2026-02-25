@@ -9,9 +9,10 @@ describe("SEOHead", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
 
-    
     if (typeof document !== "undefined" && document.head) {
-      const existingTags = document.querySelectorAll("meta, link, script[type='application/ld+json']");
+      const existingTags = document.querySelectorAll(
+        "meta, link, script[type='application/ld+json']",
+      );
       existingTags.forEach((tag) => tag.remove());
     }
     if (typeof document !== "undefined") {
@@ -22,9 +23,10 @@ describe("SEOHead", () => {
   afterEach(() => {
     if (!canRunTests) return;
     if (typeof document === "undefined") return;
-    
-    
-    const dynamicTags = document.querySelectorAll("meta, link, script[type='application/ld+json']");
+
+    const dynamicTags = document.querySelectorAll(
+      "meta, link, script[type='application/ld+json']",
+    );
     dynamicTags.forEach((tag) => tag.remove());
     document.title = "";
   });
@@ -42,7 +44,6 @@ describe("SEOHead", () => {
 
       render(<SEOHead title="Test Title" />);
 
-      
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       await waitFor(
@@ -160,7 +161,12 @@ describe("SEOHead", () => {
         return;
       }
 
-      render(<SEOHead title="Test Title" description="Test" />);
+      render(
+        <SEOHead
+          title="Test Title"
+          description="Test"
+        />,
+      );
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -184,13 +190,20 @@ describe("SEOHead", () => {
         return;
       }
 
-      render(<SEOHead title="Test" description="Test description" />);
+      render(
+        <SEOHead
+          title="Test"
+          description="Test description"
+        />,
+      );
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       await waitFor(
         () => {
-          const meta = document.querySelector('meta[property="og:description"]');
+          const meta = document.querySelector(
+            'meta[property="og:description"]',
+          );
           expect(meta).toBeInTheDocument();
           expect(meta).toHaveAttribute("content", "Test description");
         },
@@ -208,7 +221,12 @@ describe("SEOHead", () => {
         return;
       }
 
-      render(<SEOHead type="article" title="Test" />);
+      render(
+        <SEOHead
+          type="article"
+          title="Test"
+        />,
+      );
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -234,7 +252,12 @@ describe("SEOHead", () => {
         return;
       }
 
-      render(<SEOHead title="Test" description="Test description" />);
+      render(
+        <SEOHead
+          title="Test"
+          description="Test description"
+        />,
+      );
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 

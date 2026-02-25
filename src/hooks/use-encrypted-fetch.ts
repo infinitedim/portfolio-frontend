@@ -1,13 +1,3 @@
-/**
- * useEncryptedFetch — React hook that wraps encryptedFetch with
- * loading / error state and optional auto-initialisation.
- *
- * Example:
- *   const { data, loading, error, refetch } = useEncryptedFetch<Dashboard>(
- *     "/api/roadmap/dashboard",
- *   );
- */
-
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -22,7 +12,7 @@ interface UseEncryptedFetchState<T> {
 
 interface UseEncryptedFetchOptions extends Omit<RequestInit, "body"> {
   body?: string;
-  /** If true the hook fetches on mount. Default true. */
+
   auto?: boolean;
 }
 
@@ -48,15 +38,13 @@ export function useEncryptedFetch<T = unknown>(
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url, JSON.stringify(fetchOptions)]);
+  }, [fetchOptions, url]);
 
   useEffect(() => {
     if (auto || triggerRef.current > 0) {
       execute();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [execute, triggerRef.current]);
+  }, [auto, execute]);
 
   const refetch = useCallback(() => {
     triggerRef.current += 1;

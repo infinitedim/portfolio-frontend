@@ -6,10 +6,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { authService } from "@/lib/auth/auth-service";
 import { useDraftAutosave, type DraftData } from "@/hooks/use-draft-autosave";
 import { MarkdownEditor } from "./markdown-editor";
-import {
-  ImageUploadButton,
-  ImageDropZone,
-} from "./image-upload-button";
+import { ImageUploadButton, ImageDropZone } from "./image-upload-button";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 
 function getApiUrl(): string {
@@ -30,9 +27,7 @@ interface BlogPost {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface LocalBlogPost extends BlogPost {
-  // No additional fields for now, but this allows us to easily add local-only fields later if needed
-}
+interface LocalBlogPost extends BlogPost {}
 
 interface BlogEditorProps {
   themeConfig: ThemeConfig;
@@ -59,18 +54,22 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout>(null);
 
   const draftKey = `admin:blog-draft:${currentPost?.id && !isNewPost ? currentPost.id : "new"}`;
-  const { savedDraft, saveDraft: saveDraftToLocal, clearDraft, lastSavedAt: draftSavedAt, hasDraft } = useDraftAutosave({
+  const {
+    savedDraft,
+    saveDraft: saveDraftToLocal,
+    clearDraft,
+    lastSavedAt: draftSavedAt,
+    hasDraft,
+  } = useDraftAutosave({
     key: draftKey,
     debounceMs: 2000,
   });
-
 
   const toLocalPost = (post: BlogPost): LocalBlogPost => ({
     ...post,
     tags: post.tags ?? [],
   });
 
-  // Fetch available tags for autocomplete
   const fetchAvailableTags = useCallback(async () => {
     try {
       const response = await fetch(`${getApiUrl()}/api/blog/tags`, {
@@ -78,7 +77,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       });
       if (response.ok) {
         const data = await response.json();
-        // Support both formats
+
         if (Array.isArray(data)) {
           setAvailableTags(data.map((t: { name: string }) => t.name));
         } else if (data.tags) {
@@ -86,10 +85,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         }
       }
     } catch {
-      // silently ignore - tags autocomplete is optional
+      console.warn("Failed to fetch available tags");
     }
   }, []);
-
 
   const loadPosts = useCallback(async () => {
     setIsLoading(true);
@@ -104,7 +102,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         const data = await response.json();
         const loadedPosts = (data.items || []).map(toLocalPost);
         setPosts(loadedPosts);
-
 
         if (loadedPosts.length > 0 && !currentPost) {
           loadDraft(loadedPosts[0]);
@@ -121,13 +118,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   }, [currentPost]);
 
-
   useEffect(() => {
     loadPosts();
     fetchAvailableTags();
   }, [loadPosts, fetchAvailableTags]);
 
-  // Auto-save draft to localStorage on content changes
   useEffect(() => {
     if (title || content || summary) {
       saveDraftToLocal({
@@ -139,7 +134,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       });
     }
   }, [title, content, summary, tags, saveDraftToLocal]);
-
 
   useEffect(() => {
     const timeoutId = autoSaveTimeoutRef.current;
@@ -153,7 +147,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     };
   }, [title, content, currentPost]);
 
-
   const generateSlug = (titleText: string): string => {
     return titleText
       .toLowerCase()
@@ -163,7 +156,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       .replace(/^-|-$/g, "")
       .substring(0, 50);
   };
-
 
   const saveDraft = async () => {
     if (!title.trim()) {
@@ -202,7 +194,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       };
 
       const response = await fetch(
-        isUpdate ? `${apiUrl}/api/blog/${currentPost.slug}` : `${apiUrl}/api/blog`,
+        isUpdate
+          ? `${apiUrl}/api/blog/${currentPost.slug}`
+          : `${apiUrl}/api/blog`,
         {
           method: isUpdate ? "PATCH" : "POST",
           headers: {
@@ -211,7 +205,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(body),
-        }
+        },
       );
 
       if (response.ok) {
@@ -220,7 +214,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
         if (isUpdate) {
           setPosts((prev) =>
-            prev.map((p) => (p.slug === currentPost.slug ? localPost : p))
+            prev.map((p) => (p.slug === currentPost.slug ? localPost : p)),
           );
         } else {
           setPosts((prev) => [localPost, ...prev]);
@@ -243,7 +237,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       setIsSaving(false);
     }
   };
-
 
   const createNewDraft = () => {
     const newDraft: LocalBlogPost = {
@@ -269,7 +262,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setError(null);
   };
 
-
   const loadDraft = (draft: LocalBlogPost) => {
     setCurrentPost(draft);
     setTitle(draft.title);
@@ -280,20 +272,22 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setIsNewPost(false);
     setError(null);
 
-    // Check if there's a localStorage draft for this post
     if (typeof window !== "undefined") {
       const key = `admin:blog-draft:${draft.id}`;
       try {
         const raw = localStorage.getItem(key);
         if (raw) {
           const localDraft: DraftData = JSON.parse(raw);
-          // Only prompt if the local draft is different
-          if (localDraft.content && localDraft.content !== (draft.contentMd || "")) {
+
+          if (
+            localDraft.content &&
+            localDraft.content !== (draft.contentMd || "")
+          ) {
             setShowDraftPrompt(true);
           }
         }
       } catch {
-        // ignore
+        console.warn("Failed to check for local draft");
       }
     }
   };
@@ -312,7 +306,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setShowDraftPrompt(false);
     clearDraft();
   };
-
 
   const deletePost = async () => {
     if (!currentPost || isNewPost) return;
@@ -340,12 +333,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
             Accept: "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (response.ok) {
         setPosts((prev) => prev.filter((p) => p.slug !== currentPost.slug));
-
 
         const remaining = posts.filter((p) => p.slug !== currentPost.slug);
         if (remaining.length > 0) {
@@ -367,7 +359,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
   const addTag = () => {
     const trimmed = tagInput.trim();
-    if (trimmed && !tags.some((t) => t.toLowerCase() === trimmed.toLowerCase())) {
+    if (
+      trimmed &&
+      !tags.some((t) => t.toLowerCase() === trimmed.toLowerCase())
+    ) {
       setTags((prev) => [...prev, trimmed]);
       setTagInput("");
       setTagSuggestions([]);
@@ -411,15 +406,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setTagSuggestions([]);
   };
 
-  const handleImageUpload = useCallback(
-    (url: string) => {
-      // Insert markdown image at end of content
-      const imageMarkdown = `\n![image](${url})\n`;
-      setContent((prev) => prev + imageMarkdown);
-    },
-    [],
-  );
-
+  const handleImageUpload = useCallback((url: string) => {
+    const imageMarkdown = `\n![image](${url})\n`;
+    setContent((prev) => prev + imageMarkdown);
+  }, []);
 
   const togglePublish = async () => {
     if (!currentPost) return;
@@ -432,7 +422,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
     setIsSaving(true);
     setError(null);
-
 
     if (isNewPost) {
       if (!title.trim()) {
@@ -494,7 +483,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       return;
     }
 
-
     try {
       const response = await fetch(
         `${getApiUrl()}/api/blog/${currentPost.slug}`,
@@ -506,7 +494,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ published: !currentPost.published }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -514,7 +502,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         const localPost = toLocalPost(updatedPost);
 
         setPosts((prev) =>
-          prev.map((p) => (p.slug === currentPost.slug ? localPost : p))
+          prev.map((p) => (p.slug === currentPost.slug ? localPost : p)),
         );
         setCurrentPost(localPost);
         setTags(localPost.tags);
@@ -530,7 +518,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
-
   const renderMarkdownToHtml = (markdown: string): string => {
     return markdown
       .replace(/^### (.*$)/gim, "<h3>$1</h3>")
@@ -543,11 +530,12 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       .replace(/\n/gim, "<br>");
   };
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <span style={{ color: themeConfig.colors.accent }}>Loading posts...</span>
+        <span style={{ color: themeConfig.colors.accent }}>
+          Loading posts...
+        </span>
       </div>
     );
   }
@@ -556,10 +544,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     <div className="space-y-6">
       {/* Error display */}
       {error && (
-        <div
-          className="p-3 border rounded border-red-500 bg-red-50 dark:bg-red-900/20"
-        >
-          <span className="text-sm text-red-700 dark:text-red-300">{error}</span>
+        <div className="p-3 border rounded border-red-500 bg-red-50 dark:bg-red-900/20">
+          <span className="text-sm text-red-700 dark:text-red-300">
+            {error}
+          </span>
           <button
             onClick={() => setError(null)}
             className="ml-2 text-red-500 hover:text-red-700"
@@ -626,7 +614,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   : themeConfig.colors.accent,
               }}
             >
-              {currentPost?.published ? "📤 Unpublish" : `🚀 ${t("blogPublish")}`}
+              {currentPost?.published
+                ? "📤 Unpublish"
+                : `🚀 ${t("blogPublish")}`}
             </button>
             {currentPost && !isNewPost && (
               <button
@@ -706,13 +696,15 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 </div>
               ) : (
                 posts.map((post) => {
-                  const isSelected = currentPost?.slug === post.slug && !isNewPost;
+                  const isSelected =
+                    currentPost?.slug === post.slug && !isNewPost;
                   return (
                     <button
                       key={post.id}
                       onClick={() => loadDraft(post)}
-                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
-                        }`}
+                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${
+                        isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
+                      }`}
                       style={{
                         borderColor: isSelected
                           ? themeConfig.colors.accent
@@ -736,9 +728,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                           ✅ {t("blogPublished")}
                         </div>
                       ) : (
-                        <div className="text-xs mt-1 opacity-50">
-                          Draft
-                        </div>
+                        <div className="text-xs mt-1 opacity-50">Draft</div>
                       )}
                     </button>
                   );
@@ -756,7 +746,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               backgroundColor: themeConfig.colors.bg,
             }}
           >
-            {/* Title */}
+            {}
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">{t("blogTitle")}</div>
               <input
@@ -764,7 +754,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 value={title}
                 onChange={(e) => {
                   setTitle(e.target.value);
-                  // Auto-generate slug if empty or new post
+
                   if (isNewPost || !slug) {
                     setSlug(generateSlug(e.target.value));
                   }
@@ -778,20 +768,24 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               />
             </div>
 
-            {/* Slug */}
+            {}
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">Slug (URL path)</div>
               <input
                 type="text"
                 value={slug}
-                onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
+                onChange={(e) =>
+                  setSlug(
+                    e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
+                  )
+                }
                 className="w-full px-3 py-2 text-sm border rounded bg-transparent font-mono"
                 style={{
                   borderColor: themeConfig.colors.border,
                   color: themeConfig.colors.text,
                 }}
                 placeholder="my-blog-post-slug"
-                disabled={!isNewPost && !!currentPost} // Can't change slug after creation
+                disabled={!isNewPost && !!currentPost}
               />
               {!isNewPost && currentPost && (
                 <div className="text-xs opacity-50 mt-1">
@@ -818,7 +812,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">{t("blogTags")}</div>
               <div className="relative">
-                <div className="flex items-center flex-wrap gap-1 p-2 border rounded bg-transparent min-h-10"
+                <div
+                  className="flex items-center flex-wrap gap-1 p-2 border rounded bg-transparent min-h-10"
                   style={{
                     borderColor: themeConfig.colors.border,
                   }}
@@ -840,7 +835,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                     onKeyDown={handleTagKeyDown}
                     className="flex-1 min-w-30 px-1 py-0.5 text-sm bg-transparent font-mono outline-none"
                     style={{ color: themeConfig.colors.text }}
-                    placeholder={tags.length === 0 ? `${t("blogAddTag")}... (Enter to add)` : "Add tag..."}
+                    placeholder={
+                      tags.length === 0
+                        ? `${t("blogAddTag")}... (Enter to add)`
+                        : "Add tag..."
+                    }
                   />
                 </div>
                 {tagSuggestions.length > 0 && (
@@ -889,15 +888,19 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         </div>
       </div>
 
-      {/* Draft restore prompt */}
+      {}
       {showDraftPrompt && hasDraft && (
-        <div className="fixed bottom-4 right-4 z-50 p-4 border rounded-lg shadow-lg max-w-sm"
+        <div
+          className="fixed bottom-4 right-4 z-50 p-4 border rounded-lg shadow-lg max-w-sm"
           style={{
             borderColor: themeConfig.colors.accent,
             backgroundColor: themeConfig.colors.bg,
           }}
         >
-          <p className="text-sm mb-3" style={{ color: themeConfig.colors.text }}>
+          <p
+            className="text-sm mb-3"
+            style={{ color: themeConfig.colors.text }}
+          >
             A saved draft was found. Would you like to restore it?
           </p>
           <div className="flex gap-2">

@@ -1,7 +1,13 @@
-
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback, type JSX } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+  type JSX,
+} from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useTerminal } from "@/hooks/use-terminal";
 import { useI18n } from "@/hooks/use-i18n";
@@ -75,12 +81,9 @@ export function Terminal({
   const [hasMinimumLoadingTime, setHasMinimumLoadingTime] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-
 
   const {
     themeConfig,
@@ -117,11 +120,7 @@ export function Terminal({
     getCommandSuggestions,
     getFrequentCommands,
     commandAnalytics,
-  } = useTerminal(
-    undefined,
-    undefined,
-    themePerformance,
-  );
+  } = useTerminal(undefined, undefined, themePerformance);
   const [showCustomizationManager, setShowCustomizationManager] =
     useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
@@ -129,7 +128,6 @@ export function Terminal({
     message: string;
     type: "info" | "success" | "warning" | "error";
   } | null>(null);
-
 
   const {
     isActive: isTourActive,
@@ -145,10 +143,13 @@ export function Terminal({
     skipTour,
   } = useTour();
 
-
   useEffect(() => {
-    if (isMounted && !hasCompletedTour && isFirstVisit && history.length === 0) {
-
+    if (
+      isMounted &&
+      !hasCompletedTour &&
+      isFirstVisit &&
+      history.length === 0
+    ) {
       const timer = setTimeout(() => {
         startTour();
       }, 1500);
@@ -156,9 +157,7 @@ export function Terminal({
     }
   }, [isMounted, hasCompletedTour, isFirstVisit, history.length, startTour]);
 
-
   const handleTourDemoCommand = (command: string) => {
-
     setCurrentInput(command);
 
     executeCommand(command);
@@ -217,9 +216,7 @@ export function Terminal({
       },
     });
 
-
   useEffect(() => {
-
     if (
       customizationService &&
       typeof customizationService.getBackgroundSettings === "function"
@@ -233,7 +230,6 @@ export function Terminal({
       if (customEvent.detail) {
         setBackgroundSettings(customEvent.detail);
       } else {
-
         if (
           customizationService &&
           typeof customizationService.getBackgroundSettings === "function"
@@ -340,7 +336,7 @@ export function Terminal({
   const handleWelcomeCommandSelect = useCallback(
     (command: string) => {
       setCurrentInput(command);
-      // This will be defined below, use a forward reference pattern
+
       return command;
     },
     [setCurrentInput],
@@ -388,202 +384,230 @@ export function Terminal({
     }
   }, [history.length]);
 
-  const handleSubmit = useCallback(async (command: string) => {
-    const output = await executeCommand(command);
+  const handleSubmit = useCallback(
+    async (command: string) => {
+      const output = await executeCommand(command);
 
-    if (output) {
-      // Handle tour command
-      if (
-        typeof output.content === "string" &&
-        output.content === "START_GUIDED_TOUR"
-      ) {
-        startTour();
-        addToHistory(command, {
-          ...output,
-          content: "🚀 Starting guided tour...",
-          type: "success",
-        });
-        return;
-      }
+      if (output) {
+        if (
+          typeof output.content === "string" &&
+          output.content === "START_GUIDED_TOUR"
+        ) {
+          startTour();
+          addToHistory(command, {
+            ...output,
+            content: "🚀 Starting guided tour...",
+            type: "success",
+          });
+          return;
+        }
 
-      if (
-        typeof output.content === "string" &&
-        output.content === "OPEN_CUSTOMIZATION_MANAGER"
-      ) {
-        setShowCustomizationManager(true);
-        addToHistory(command, {
-          ...output,
-          content: "🎨 Opening customization manager...",
-          type: "success",
-        });
-        showNotification("Customization manager opened!", "success");
-        return;
-      }
+        if (
+          typeof output.content === "string" &&
+          output.content === "OPEN_CUSTOMIZATION_MANAGER"
+        ) {
+          setShowCustomizationManager(true);
+          addToHistory(command, {
+            ...output,
+            content: "🎨 Opening customization manager...",
+            type: "success",
+          });
+          showNotification("Customization manager opened!", "success");
+          return;
+        }
 
-      if (
-        typeof output.content === "string" &&
-        output.content.startsWith("CHANGE_THEME:")
-      ) {
-        const themeName = output.content.split(":")[1];
-        console.log(`🎨 Terminal: Attempting to change theme to ${themeName}`);
+        if (
+          typeof output.content === "string" &&
+          output.content.startsWith("CHANGE_THEME:")
+        ) {
+          const themeName = output.content.split(":")[1];
+          console.log(
+            `🎨 Terminal: Attempting to change theme to ${themeName}`,
+          );
 
-        if (typeof changeTheme === "function" && isThemeName(themeName)) {
-          const success = changeTheme(themeName);
+          if (typeof changeTheme === "function" && isThemeName(themeName)) {
+            const success = changeTheme(themeName);
 
-          if (success) {
-            onThemeChange?.(themeName);
-            showNotification(`Theme changed to "${themeName}"`, "success");
-            announceMessage(`Theme changed to ${themeName}`, "polite");
+            if (success) {
+              onThemeChange?.(themeName);
+              showNotification(`Theme changed to "${themeName}"`, "success");
+              announceMessage(`Theme changed to ${themeName}`, "polite");
+
+              addToHistory(command, {
+                ...output,
+                content: [
+                  `✅ Theme changed to "${themeName}"`,
+                  "💾 Theme preference saved automatically.",
+                  "🎨 Theme applied instantly!",
+                ].join("\n"),
+                type: "success",
+              });
+            } else {
+              const errorMsg =
+                themeError ||
+                `Theme "${themeName}" may not exist or be invalid.`;
+              showNotification(`Failed to change theme: ${errorMsg}`, "error");
+              addToHistory(command, {
+                ...output,
+                content: [
+                  `❌ Failed to change theme to "${themeName}"`,
+                  `🔍 Error: ${errorMsg}`,
+                  "💡 Use 'theme -l' to list available themes.",
+                ].join("\n"),
+                type: "error",
+              });
+            }
+          } else {
+            console.error("changeTheme function not available");
+            showNotification("Theme change function not available", "error");
+          }
+        } else if (
+          typeof output.content === "string" &&
+          output.content.startsWith("CHANGE_FONT:")
+        ) {
+          const fontName = output.content.split(":")[1];
+
+          if (typeof changeFont === "function" && isFontName(fontName)) {
+            changeFont(fontName);
+            onFontChange?.(fontName);
+
+            showNotification(`Font changed to "${fontName}"`, "success");
+            announceMessage(`Font changed to ${fontName}`, "polite");
 
             addToHistory(command, {
               ...output,
               content: [
-                `✅ Theme changed to "${themeName}"`,
-                "💾 Theme preference saved automatically.",
-                "🎨 Theme applied instantly!",
+                `✅ Font changed to "${fontName}"`,
+                "",
+                `🔤 Applied ${fontConfig?.name || "Unknown"} typeface`,
+                `🔤 Family: ${fontConfig?.family || "Unknown"}`,
+
+                `${fontConfig?.ligatures ? "✨ Font ligatures enabled for enhanced readability" : "📝 Standard font rendering"}`,
+                "💾 Font preference saved automatically",
+                "",
+                "💡 Quick commands:",
+                "   font -l    # List all fonts",
+                "   font -c    # Show current font info",
+                "   customize  # Open customization manager",
               ].join("\n"),
               type: "success",
             });
-
           } else {
-            const errorMsg =
-              themeError || `Theme "${themeName}" may not exist or be invalid.`;
-            showNotification(`Failed to change theme: ${errorMsg}`, "error");
-            addToHistory(command, {
-              ...output,
-              content: [
-                `❌ Failed to change theme to "${themeName}"`,
-                `🔍 Error: ${errorMsg}`,
-                "💡 Use 'theme -l' to list available themes.",
-              ].join("\n"),
-              type: "error",
-            });
+            console.error("changeFont function not available");
+            showNotification("Font change function not available", "error");
           }
-        } else {
-          console.error("changeTheme function not available");
-          showNotification("Theme change function not available", "error");
-        }
-      }
-      else if (
-        typeof output.content === "string" &&
-        output.content.startsWith("CHANGE_FONT:")
-      ) {
-        const fontName = output.content.split(":")[1];
+        } else if (
+          typeof output.content === "string" &&
+          output.content === "SHOW_STATUS"
+        ) {
+          const uptime = new Date().toLocaleString();
+          const customThemes = customizationService.getCustomThemes().length;
+          const customFonts = customizationService.getCustomFonts().length;
 
-        if (typeof changeFont === "function" && isFontName(fontName)) {
-          changeFont(fontName);
-          onFontChange?.(fontName);
+          const analytics = commandAnalytics || {
+            totalCommands: 0,
+            uniqueCommands: 0,
+            successRate: 100,
+            topCommands: [],
+          };
 
-          showNotification(`Font changed to "${fontName}"`, "success");
-          announceMessage(`Font changed to ${fontName}`, "polite");
+          const performanceReport = themeHookResult.getPerformanceReport();
+          const currentMetrics = themeHookResult.themeMetrics;
+
+          const statusInfo = [
+            "🖥️  Terminal Portfolio System Status",
+            "═".repeat(60),
+            "",
+            `📊 Status: ${Math.random() > 0.5 ? "🟢 Online" : "🟡 Development"}`,
+            `🎨 Current Theme: ${themeConfig?.name || "Unknown"} (${theme})`,
+            `🔤 Current Font: ${fontConfig?.name || "Unknown"}${fontConfig?.ligatures ? " (ligatures)" : ""}`,
+            `⏰ Session Started: ${uptime}`,
+            `💻 Platform: ${mounted && typeof window !== "undefined" ? window.navigator.platform : "Server"}`,
+            "",
+            "📈 Command Analytics:",
+            `   • Total commands executed: ${analytics.totalCommands}`,
+            `   • Unique commands used: ${analytics.uniqueCommands}`,
+            `   • Success rate: ${analytics.successRate.toFixed(1)}%`,
+            `   • Most used: ${analytics.topCommands[0]?.command || "N/A"}`,
+            "",
+            "⚡ Performance Metrics:",
+            `   • Theme switches: ${performanceReport.totalSwitches}`,
+            `   • Average switch time: ${performanceReport.averageTime.toFixed(1)}ms`,
+            `   • Current theme render: ${currentMetrics.renderTime.toFixed(1)}ms`,
+            `   • Fastest switch: ${performanceReport.fastestSwitch.toFixed(1)}ms`,
+            `   • Most used theme: ${currentMetrics.popularThemes[0]?.theme || theme}`,
+            "",
+            "🎨 Theme System:",
+            `   • ${availableThemes?.length || 0} built-in themes available`,
+            `   • ${customThemes} custom themes created`,
+            "   • Use 'theme -l' to list all themes",
+            "",
+            "🔤 Font System:",
+            `   • ${availableFonts?.length || 0} system fonts available`,
+            `   • ${customFonts} custom fonts uploaded`,
+            "   • Use 'font -l' to list all fonts",
+            "",
+            "⌨️  Enhanced Features:",
+            "   • Smart command suggestions (↑/↓ or Ctrl+R)",
+            "   • Command analytics and favorites",
+            "   • Tab completion with history",
+            "   • Real-time performance monitoring",
+            "",
+            "🎯 Development Progress:",
+            "   ▓▓▓▓▓▓▓▓▓░ 95% Complete",
+            "",
+            "💡 Performance Commands:",
+            "   • 'perf' - Quick performance overview",
+            "   • 'perf --detailed' - Detailed metrics",
+            "   • 'perf --reset' - Reset all metrics",
+          ].join("\n");
 
           addToHistory(command, {
             ...output,
-            content: [
-              `✅ Font changed to "${fontName}"`,
-              "",
-              `🔤 Applied ${fontConfig?.name || "Unknown"} typeface`,
-              `🔤 Family: ${fontConfig?.family || "Unknown"}`,
-
-              `${fontConfig?.ligatures ? "✨ Font ligatures enabled for enhanced readability" : "📝 Standard font rendering"}`,
-              "💾 Font preference saved automatically",
-              "",
-              "💡 Quick commands:",
-              "   font -l    # List all fonts",
-              "   font -c    # Show current font info",
-              "   customize  # Open customization manager",
-            ].join("\n"),
+            content: statusInfo,
             type: "success",
           });
         } else {
-          console.error("changeFont function not available");
-          showNotification("Font change function not available", "error");
+          addToHistory(command, output);
         }
       }
-      else if (
-        typeof output.content === "string" &&
-        output.content === "SHOW_STATUS"
-      ) {
-        const uptime = new Date().toLocaleString();
-        const customThemes = customizationService.getCustomThemes().length;
-        const customFonts = customizationService.getCustomFonts().length;
 
-        const analytics = commandAnalytics || {
-          totalCommands: 0,
-          uniqueCommands: 0,
-          successRate: 100,
-          topCommands: [],
-        };
-
-        const performanceReport = themeHookResult.getPerformanceReport();
-        const currentMetrics = themeHookResult.themeMetrics;
-
-        const statusInfo = [
-          "🖥️  Terminal Portfolio System Status",
-          "═".repeat(60),
-          "",
-          `📊 Status: ${Math.random() > 0.5 ? "🟢 Online" : "🟡 Development"}`,
-          `🎨 Current Theme: ${themeConfig?.name || "Unknown"} (${theme})`,
-          `🔤 Current Font: ${fontConfig?.name || "Unknown"}${fontConfig?.ligatures ? " (ligatures)" : ""}`,
-          `⏰ Session Started: ${uptime}`,
-          `💻 Platform: ${mounted && typeof window !== "undefined" ? window.navigator.platform : "Server"}`,
-          "",
-          "📈 Command Analytics:",
-          `   • Total commands executed: ${analytics.totalCommands}`,
-          `   • Unique commands used: ${analytics.uniqueCommands}`,
-          `   • Success rate: ${analytics.successRate.toFixed(1)}%`,
-          `   • Most used: ${analytics.topCommands[0]?.command || "N/A"}`,
-          "",
-          "⚡ Performance Metrics:",
-          `   • Theme switches: ${performanceReport.totalSwitches}`,
-          `   • Average switch time: ${performanceReport.averageTime.toFixed(1)}ms`,
-          `   • Current theme render: ${currentMetrics.renderTime.toFixed(1)}ms`,
-          `   • Fastest switch: ${performanceReport.fastestSwitch.toFixed(1)}ms`,
-          `   • Most used theme: ${currentMetrics.popularThemes[0]?.theme || theme}`,
-          "",
-          "🎨 Theme System:",
-          `   • ${availableThemes?.length || 0} built-in themes available`,
-          `   • ${customThemes} custom themes created`,
-          "   • Use 'theme -l' to list all themes",
-          "",
-          "🔤 Font System:",
-          `   • ${availableFonts?.length || 0} system fonts available`,
-          `   • ${customFonts} custom fonts uploaded`,
-          "   • Use 'font -l' to list all fonts",
-          "",
-          "⌨️  Enhanced Features:",
-          "   • Smart command suggestions (↑/↓ or Ctrl+R)",
-          "   • Command analytics and favorites",
-          "   • Tab completion with history",
-          "   • Real-time performance monitoring",
-          "",
-          "🎯 Development Progress:",
-          "   ▓▓▓▓▓▓▓▓▓░ 95% Complete",
-          "",
-          "💡 Performance Commands:",
-          "   • 'perf' - Quick performance overview",
-          "   • 'perf --detailed' - Detailed metrics",
-          "   • 'perf --reset' - Reset all metrics",
-        ].join("\n");
-
-        addToHistory(command, {
-          ...output,
-          content: statusInfo,
-          type: "success",
-        });
-      } else {
-        addToHistory(command, output);
-      }
-    }
-
-    setCurrentInput("");
-  }, [addToHistory, announceMessage, availableFonts?.length, availableThemes?.length, changeFont, changeTheme, commandAnalytics, customizationService, executeCommand, fontConfig?.family, fontConfig?.ligatures, fontConfig?.name, mounted, onFontChange, onThemeChange, setCurrentInput, showNotification, startTour, theme, themeConfig?.name, themeError, themeHookResult]);
+      setCurrentInput("");
+    },
+    [
+      addToHistory,
+      announceMessage,
+      availableFonts?.length,
+      availableThemes?.length,
+      changeFont,
+      changeTheme,
+      commandAnalytics,
+      customizationService,
+      executeCommand,
+      fontConfig?.family,
+      fontConfig?.ligatures,
+      fontConfig?.name,
+      mounted,
+      onFontChange,
+      onThemeChange,
+      setCurrentInput,
+      showNotification,
+      startTour,
+      theme,
+      themeConfig?.name,
+      themeError,
+      themeHookResult,
+    ],
+  );
 
   if (!themeHookResult || !fontHookResult) {
     return (
       <div
         className="min-h-screen w-full flex items-center justify-center relative overflow-hidden"
-        style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
+        style={{
+          backgroundColor: "var(--terminal-bg, #0a0a0a)",
+          color: "var(--terminal-text, #e5e5e5)",
+        }}
         suppressHydrationWarning={true}
       >
         <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
@@ -610,7 +634,10 @@ export function Terminal({
     return (
       <div
         className="min-h-screen w-full flex items-center justify-center relative overflow-hidden"
-        style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
+        style={{
+          backgroundColor: "var(--terminal-bg, #0a0a0a)",
+          color: "var(--terminal-text, #e5e5e5)",
+        }}
         suppressHydrationWarning={true}
       >
         <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
@@ -676,7 +703,9 @@ export function Terminal({
           backgroundSettings.letterGlitch && (
             <LetterGlitch
               glitchColors={
-                isDefaultGlitchColors(backgroundSettings.letterGlitch.glitchColors)
+                isDefaultGlitchColors(
+                  backgroundSettings.letterGlitch.glitchColors,
+                )
                   ? themeGlitchColors
                   : backgroundSettings.letterGlitch.glitchColors
               }
@@ -786,7 +815,7 @@ export function Terminal({
           />
         )}
 
-        {/* Guided Tour Overlay */}
+        {}
         {isTourActive && currentStep && (
           <GuidedTour
             step={currentStep}

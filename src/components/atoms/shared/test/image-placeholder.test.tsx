@@ -76,7 +76,10 @@ describe("ImagePlaceholder", () => {
       }
 
       const { container } = render(
-        <ImagePlaceholder width={600} height={450} />,
+        <ImagePlaceholder
+          width={600}
+          height={450}
+        />,
       );
       const div = container.querySelector("div");
       expect(div).toHaveStyle({ width: "600px", height: "450px" });
@@ -190,7 +193,9 @@ describe("ImagePlaceholder", () => {
       }
 
       const { container } = render(<ImagePlaceholder />);
-      const centerDiv = container.querySelector(".flex.items-center.justify-center");
+      const centerDiv = container.querySelector(
+        ".flex.items-center.justify-center",
+      );
       expect(centerDiv).toBeTruthy();
     });
 

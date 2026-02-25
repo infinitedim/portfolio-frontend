@@ -1,5 +1,3 @@
-
-
 import React, { Component, type ErrorInfo, type ReactNode } from "react";
 import {
   EnhancedError,
@@ -94,7 +92,6 @@ export class EnhancedErrorBoundary extends Component<
 
   private reportError = (error: EnhancedError, errorInfo: ErrorInfo) => {
     try {
-      
       clientLogger.logError(error, {
         component: "error-boundary",
         action: "error-caught",
@@ -131,9 +128,13 @@ export class EnhancedErrorBoundary extends Component<
         sessionStorage.setItem("errorReports", JSON.stringify(existingReports));
       } catch (storageError) {
         console.warn("Failed to store error report:", storageError);
-        clientLogger.warn("Failed to store error report in sessionStorage", {
-          component: "error-boundary",
-        }, { error: storageError });
+        clientLogger.warn(
+          "Failed to store error report in sessionStorage",
+          {
+            component: "error-boundary",
+          },
+          { error: storageError },
+        );
       }
     } catch (reportingError) {
       console.error("Failed to report error:", reportingError);

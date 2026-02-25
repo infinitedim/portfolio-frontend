@@ -1,5 +1,3 @@
-
-
 export const SEO_CONFIG = {
   site: {
     name: "Terminal Portfolio",

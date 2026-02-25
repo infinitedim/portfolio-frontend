@@ -47,46 +47,44 @@ jobs:
         run: bun run type-check
 
   # Temporarily disabled for faster deployment
-  # test:
-  #   name: Tests
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 20
-  #   needs: lint
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Setup Bun
-  #       uses: oven-sh/setup-bun@v2
-  #       with:
-  #         bun-version: ${{ env.BUN_VERSION }}
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-  #     - name: Cache dependencies
-  #       uses: actions/cache@v5
-  #       with:
-  #         path: |
-  #           ~/.bun/install/cache
-  #           node_modules
-  #         key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-bun-
+      - name: Cache dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
 
-  #     - name: Install dependencies
-  #       run: bun install
+      - name: Install dependencies
+        run: bun install
 
-  #     - name: Run unit and integration tests
-  #       run: bun run test
+      - name: Run unit and integration tests
+        run: bun run test
 
-  #     - name: Run coverage and enforce 88% threshold
-  #       run: bun run test:coverage
-  #       timeout-minutes: 25
+      - name: Run coverage and enforce 88% threshold
+        run: bun run test:coverage
+        timeout-minutes: 25
 
-  #     - name: Upload coverage reports
-  #       uses: codecov/codecov-action@v5
-  #       with:
-  #         token: ${{ secrets.CODECOV_TOKEN }}
-  #         files: ./coverage/lcov.info
-  #         fail_ci_if_error: false
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
 
   build:
     name: Build

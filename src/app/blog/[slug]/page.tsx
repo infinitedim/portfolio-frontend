@@ -88,7 +88,7 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
     const backendUrl = getBackendUrl();
     const response = await fetch(
       `${backendUrl}/api/blog?pageSize=100&published=true`,
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: 3600 } },
     );
 
     if (response.ok) {
@@ -112,18 +112,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-
   if (!post.published) {
     notFound();
   }
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
-      {/* Reading progress bar */}
+      {}
       <ScrollProgress />
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-
         <nav className="mb-8">
           <Link
             href="/blog"
@@ -133,7 +131,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </Link>
         </nav>
 
-        {/* Table of Contents (only renders when content has ≥2 headings) */}
+        {}
         {post.contentHtml && (
           <TableOfContents
             contentHtml={post.contentHtml}
@@ -142,7 +140,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         )}
 
         <article className="prose prose-invert prose-green max-w-none">
-
           <header className="mb-8 not-prose">
             <h1 className="text-4xl font-bold text-green-400 mb-4">
               {post.title}
@@ -157,7 +154,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     key={tag}
                     href={`/blog?tag=${encodeURIComponent(tag)}` as never}
                   >
-                    <TagChip name={tag} size="sm" />
+                    <TagChip
+                      name={tag}
+                      size="sm"
+                    />
                   </Link>
                 ))}
               </div>
@@ -216,12 +216,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
           </div>
 
-          {/* Copy button injected into every <pre> block */}
+          {}
           <CopyCodeButton />
         </article>
 
         <footer className="mt-12 pt-8 border-t border-gray-800 space-y-6">
-          {/* Social share */}
+          {}
           <ShareButtons
             title={post.title}
             slug={post.slug}
@@ -237,7 +237,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </footer>
       </main>
 
-      {/* Floating back-to-top button */}
+      {}
       <BackToTop />
     </div>
   );

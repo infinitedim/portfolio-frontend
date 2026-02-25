@@ -18,13 +18,9 @@ export default function AdminLoginPage() {
     return null;
   }
 
-  
-
   const handleBack = () => {
     router.push("/");
   };
-
-  
 
   const handleLoginSuccess = () => {
     router.push("/admin");
@@ -81,8 +77,9 @@ export default function AdminLoginPage() {
               onClick={handleBack}
               onMouseEnter={() => setIsBackHovered(true)}
               onMouseLeave={() => setIsBackHovered(false)}
-              className={`px-3 py-1 text-xs font-mono rounded transition-all duration-200 ${isBackHovered ? "scale-105" : "scale-100"
-                }`}
+              className={`px-3 py-1 text-xs font-mono rounded transition-all duration-200 ${
+                isBackHovered ? "scale-105" : "scale-100"
+              }`}
               style={{
                 backgroundColor: isBackHovered
                   ? themeConfig.colors.accent
@@ -129,22 +126,19 @@ export default function AdminLoginPage() {
             <span style={{ color: themeConfig.colors.muted }}>
               Press ← Back to return to home • Use Tab to navigate • Enter to
               submit
-            </span>            <br />
+            </span>{" "}
+            <br />
             <span style={{ color: themeConfig.colors.muted }}>
               Don't have an account?{" "}
               <button
-                onClick={() =>
-                  // Route exists in app/admin/register/page.tsx — cast needed
-                  // because typedRoutes requires `next build` to generate defs.
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  router.push("/admin/register" as any)
-                }
+                onClick={() => router.push("/admin/register")}
                 className="underline hover:no-underline"
                 style={{ color: themeConfig.colors.accent }}
               >
                 Register here
               </button>
-            </span>          </div>
+            </span>{" "}
+          </div>
         </div>
       </div>
     </div>

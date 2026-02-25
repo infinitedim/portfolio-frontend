@@ -221,7 +221,7 @@ Object.defineProperty(window, "sessionStorage", {
   writable: true,
 });
 
-global.fetch = vi.fn();
+global.fetch = vi.fn() as unknown as typeof fetch;
 
 Object.defineProperty(URL, "createObjectURL", {
   value: vi.fn(() => "mock-blob-url"),

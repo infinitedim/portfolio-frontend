@@ -4,9 +4,8 @@ import { ProjectMetadataService } from "@/lib/projects/project-metadata";
 
 describe("demoCommand", () => {
   beforeEach(() => {
-    
     const svc = ProjectMetadataService.getInstance();
-    
+
     (svc as any).projects = [
       {
         id: "p1",

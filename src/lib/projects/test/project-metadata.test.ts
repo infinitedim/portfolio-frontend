@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { ProjectMetadataService, SAMPLE_PROJECTS } from "@/lib/projects/project-metadata";
+import {
+  ProjectMetadataService,
+  SAMPLE_PROJECTS,
+} from "@/lib/projects/project-metadata";
 
 describe("ProjectMetadataService", () => {
   beforeEach(() => {
-    
     const svc = ProjectMetadataService.getInstance();
     svc["projects"] = [...SAMPLE_PROJECTS];
   });

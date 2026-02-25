@@ -22,7 +22,6 @@ function createTouchEvent(
     force: 1,
   })) as unknown as TouchList;
 
-  
   const activeTouches =
     type === "touchend" ? ([] as unknown as TouchList) : touchList;
 
@@ -39,7 +38,6 @@ function createTouchEvent(
 function callTouchEnd(
   handlers: ReturnType<ReturnType<typeof useGestures>["getGestureHandlers"]>,
 ) {
-  
   (handlers.onTouchEnd as () => void)();
 }
 
@@ -98,21 +96,18 @@ describe("useGestures", () => {
     const { result } = renderHook(() => useGestures({ onSwipeRight }));
     const handlers = result.current.getGestureHandlers();
 
-    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [{ clientX: 0, clientY: 100 }]),
       );
     });
 
-    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [{ clientX: 100, clientY: 100 }]),
       );
     });
 
-    
     act(() => {
       callTouchEnd(handlers);
     });
@@ -223,7 +218,6 @@ describe("useGestures", () => {
       );
     });
 
-    
     act(() => {
       vi.advanceTimersByTime(600);
     });
@@ -247,7 +241,6 @@ describe("useGestures", () => {
       );
     });
 
-    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [{ clientX: 150, clientY: 100 }]),
@@ -271,7 +264,6 @@ describe("useGestures", () => {
     const { result } = renderHook(() => useGestures({ onDoubleTap }));
     const handlers = result.current.getGestureHandlers();
 
-    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]),
@@ -279,7 +271,6 @@ describe("useGestures", () => {
       callTouchEnd(handlers);
     });
 
-    
     act(() => {
       vi.advanceTimersByTime(100);
     });
@@ -304,7 +295,6 @@ describe("useGestures", () => {
     const { result } = renderHook(() => useGestures({ onPinchOut }));
     const handlers = result.current.getGestureHandlers();
 
-    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [
@@ -314,7 +304,6 @@ describe("useGestures", () => {
       );
     });
 
-    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [
@@ -337,7 +326,6 @@ describe("useGestures", () => {
     const { result } = renderHook(() => useGestures({ onPinchIn }));
     const handlers = result.current.getGestureHandlers();
 
-    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [
@@ -347,7 +335,6 @@ describe("useGestures", () => {
       );
     });
 
-    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [
@@ -370,21 +357,18 @@ describe("useGestures", () => {
     const { result } = renderHook(() => useGestures({ onPullToRefresh }));
     const handlers = result.current.getGestureHandlers();
 
-    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [{ clientX: 100, clientY: 50 }]),
       );
     });
 
-    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [{ clientX: 100, clientY: 150 }]),
       );
     });
 
-    
     expect(result.current.isPullRefreshing).toBe(true);
     expect(result.current.pullDistance).toBeGreaterThan(0);
   });
@@ -408,7 +392,6 @@ describe("useGestures", () => {
       callTouchEnd(handlers);
     });
 
-    
     expect(result.current.pullDistance).toBeLessThanOrEqual(100);
   });
 
@@ -425,14 +408,12 @@ describe("useGestures", () => {
     );
     const handlers = result.current.getGestureHandlers();
 
-    
     act(() => {
       handlers.onTouchStart(
         createTouchEvent("touchstart", [{ clientX: 0, clientY: 100 }]),
       );
     });
 
-    
     act(() => {
       handlers.onTouchMove(
         createTouchEvent("touchmove", [{ clientX: 80, clientY: 100 }]),
@@ -443,7 +424,6 @@ describe("useGestures", () => {
       callTouchEnd(handlers);
     });
 
-    
     expect(onSwipeRight).not.toHaveBeenCalled();
   });
 
@@ -546,8 +526,6 @@ describe("useTerminalGestures", () => {
       result.current.addToHistory("command1");
     });
 
-    
-    
     expect(
       result.current.commandHistory.filter((c) => c === "command1"),
     ).toHaveLength(1);

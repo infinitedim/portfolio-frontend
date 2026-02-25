@@ -50,7 +50,9 @@ describe("StaticContent", () => {
       }
       const { container } = render(<StaticContent />);
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script).toBeInTheDocument();
     });
 

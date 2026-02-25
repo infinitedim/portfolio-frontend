@@ -12,8 +12,11 @@ const mockRouter = {
   refresh: vi.fn(),
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
@@ -66,7 +69,9 @@ vi.mock("@/components/molecules/admin/protected-route", () => ({
 }));
 
 vi.mock("@/components/molecules/admin/terminal-header", () => ({
-  TerminalHeader: () => <div data-testid="terminal-header">Terminal Header</div>,
+  TerminalHeader: () => (
+    <div data-testid="terminal-header">Terminal Header</div>
+  ),
 }));
 
 import AdminDashboardPage from "../page";
@@ -273,11 +278,11 @@ describe("AdminDashboardPage", () => {
       const logoutButton = screen.getByText(/🚪 Logout/i);
 
       fireEvent.mouseEnter(logoutButton);
-      
+
       expect(logoutButton).toBeInTheDocument();
 
       fireEvent.mouseLeave(logoutButton);
-      
+
       expect(logoutButton).toBeInTheDocument();
     });
   });
@@ -313,7 +318,6 @@ describe("AdminDashboardPage", () => {
         return;
       }
 
-      
       mockUseAuth.mockReturnValueOnce({
         user: null,
         logout: mockLogout,
@@ -324,7 +328,7 @@ describe("AdminDashboardPage", () => {
       } as unknown as ReturnType<typeof mockUseAuth>);
 
       render(<AdminDashboardPage />);
-      
+
       expect(screen.getByText(/Admin Dashboard/i)).toBeInTheDocument();
     });
 
@@ -360,8 +364,10 @@ describe("AdminDashboardPage", () => {
       }
 
       render(<AdminDashboardPage />);
-      
-      const managePostsButton = screen.getByText(/Manage Posts/i).closest("button");
+
+      const managePostsButton = screen
+        .getByText(/Manage Posts/i)
+        .closest("button");
       const settingsButton = screen.getByText(/Settings/i).closest("button");
       const analyticsButton = screen.getByText(/Analytics/i).closest("button");
 

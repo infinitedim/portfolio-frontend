@@ -2,10 +2,7 @@
 // Minimal service worker for frontend-only application
 
 const CACHE_NAME = "portfolio-v1";
-const urlsToCache = [
-  "/",
-  "/offline",
-];
+const urlsToCache = ["/", "/offline"];
 
 // Install event - cache resources
 self.addEventListener("install", (event) => {

@@ -3,12 +3,7 @@
 import type { ThemeConfig } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
 
-type DashboardView =
-  | "overview"
-  | "performance"
-  | "logs"
-  | "blog"
-  | "settings";
+type DashboardView = "overview" | "performance" | "logs" | "blog" | "settings";
 
 interface TerminalSidebarProps {
   currentView: DashboardView;
@@ -30,27 +25,27 @@ const navigationItems: {
   command: string;
   icon: string;
 }[] = [
-    {
-      id: "overview",
-      labelKey: "adminOverview",
-      command: "overview",
-      icon: "🏠",
-    },
-    {
-      id: "performance",
-      labelKey: "adminPerformance",
-      command: "performance",
-      icon: "📊",
-    },
-    { id: "logs", labelKey: "adminLogs", command: "logs", icon: "📋" },
-    { id: "blog", labelKey: "adminBlogEditor", command: "blog", icon: "✏️" },
-    {
-      id: "settings",
-      labelKey: "adminSettings",
-      command: "settings",
-      icon: "⚙️",
-    },
-  ];
+  {
+    id: "overview",
+    labelKey: "adminOverview",
+    command: "overview",
+    icon: "🏠",
+  },
+  {
+    id: "performance",
+    labelKey: "adminPerformance",
+    command: "performance",
+    icon: "📊",
+  },
+  { id: "logs", labelKey: "adminLogs", command: "logs", icon: "📋" },
+  { id: "blog", labelKey: "adminBlogEditor", command: "blog", icon: "✏️" },
+  {
+    id: "settings",
+    labelKey: "adminSettings",
+    command: "settings",
+    icon: "⚙️",
+  },
+];
 
 export function TerminalSidebar({
   currentView,
@@ -96,10 +91,11 @@ export function TerminalSidebar({
           <button
             key={item.id}
             onClick={() => onViewChange(item.id as DashboardView)}
-            className={`w-full p-3 text-left border rounded transition-all duration-200 font-mono text-sm ${currentView === item.id
+            className={`w-full p-3 text-left border rounded transition-all duration-200 font-mono text-sm ${
+              currentView === item.id
                 ? "scale-105"
                 : "hover:scale-102 hover:opacity-80"
-              }`}
+            }`}
             style={{
               borderColor:
                 currentView === item.id

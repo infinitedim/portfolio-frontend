@@ -47,7 +47,6 @@ export function BackgroundManager({
     customizationService.saveBackgroundSettings(settings);
     onUpdate?.();
 
-    
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent("background-settings-updated", { detail: settings }),
@@ -62,25 +61,19 @@ export function BackgroundManager({
     }));
   }, []);
 
-  const handleRemoveColor = useCallback(
-    (index: number) => {
-      setLetterGlitchSettings((prev) => ({
-        ...prev,
-        glitchColors: prev.glitchColors.filter((_, i) => i !== index),
-      }));
-    },
-    [],
-  );
+  const handleRemoveColor = useCallback((index: number) => {
+    setLetterGlitchSettings((prev) => ({
+      ...prev,
+      glitchColors: prev.glitchColors.filter((_, i) => i !== index),
+    }));
+  }, []);
 
-  const handleColorChange = useCallback(
-    (index: number, color: string) => {
-      setLetterGlitchSettings((prev) => ({
-        ...prev,
-        glitchColors: prev.glitchColors.map((c, i) => (i === index ? color : c)),
-      }));
-    },
-    [],
-  );
+  const handleColorChange = useCallback((index: number, color: string) => {
+    setLetterGlitchSettings((prev) => ({
+      ...prev,
+      glitchColors: prev.glitchColors.map((c, i) => (i === index ? color : c)),
+    }));
+  }, []);
 
   return (
     <div className="h-full flex flex-col p-4 space-y-4 overflow-y-auto">
@@ -143,7 +136,10 @@ export function BackgroundManager({
               </h4>
               <div className="space-y-2">
                 {letterGlitchSettings.glitchColors.map((color, index) => (
-                  <div key={index} className="flex items-center gap-2">
+                  <div
+                    key={index}
+                    className="flex items-center gap-2"
+                  >
                     <input
                       type="color"
                       value={color}
@@ -334,7 +330,10 @@ export function BackgroundManager({
         )}
       </div>
 
-      <div className="flex gap-2 pt-4 border-t" style={{ borderColor: themeConfig.colors.border }}>
+      <div
+        className="flex gap-2 pt-4 border-t"
+        style={{ borderColor: themeConfig.colors.border }}
+      >
         <button
           onClick={handleSave}
           className="flex-1 px-4 py-2 rounded border font-medium transition-all hover:opacity-80"

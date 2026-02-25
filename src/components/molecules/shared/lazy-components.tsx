@@ -4,33 +4,43 @@ import { lazy, Suspense, type ComponentType, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
 export const LazyCustomizationManager = lazy(() =>
-  import("@/components/organisms/customization/customization-manager").then((module) => ({
-    default: module.CustomizationManager,
-  })),
+  import("@/components/organisms/customization/customization-manager").then(
+    (module) => ({
+      default: module.CustomizationManager,
+    }),
+  ),
 );
 
 export const LazyFontManager = lazy(() =>
-  import("@/components/molecules/customization/font-manager").then((module) => ({
-    default: module.FontManager,
-  })),
+  import("@/components/molecules/customization/font-manager").then(
+    (module) => ({
+      default: module.FontManager,
+    }),
+  ),
 );
 
 export const LazyThemeManager = lazy(() =>
-  import("@/components/molecules/customization/theme-manager").then((module) => ({
-    default: module.ThemeManager,
-  })),
+  import("@/components/molecules/customization/theme-manager").then(
+    (module) => ({
+      default: module.ThemeManager,
+    }),
+  ),
 );
 
 export const LazyRoadmapVisualizer = lazy(() =>
-  import("@/components/organisms/roadmap/roadmap-visualizer").then((module) => ({
-    default: module.RoadmapVisualizer,
-  })),
+  import("@/components/organisms/roadmap/roadmap-visualizer").then(
+    (module) => ({
+      default: module.RoadmapVisualizer,
+    }),
+  ),
 );
 
 export const LazyHistorySearchPanel = lazy(() =>
-  import("@/components/molecules/terminal/history-search-panel").then((module) => ({
-    default: module.HistorySearchPanel,
-  })),
+  import("@/components/molecules/terminal/history-search-panel").then(
+    (module) => ({
+      default: module.HistorySearchPanel,
+    }),
+  ),
 );
 
 interface LoadingFallbackProps {

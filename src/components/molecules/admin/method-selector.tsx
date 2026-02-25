@@ -56,10 +56,11 @@ export function MethodSelector({
         <button
           key={method.name}
           onClick={() => onMethodSelect(method)}
-          className={`w-full p-4 text-left border rounded-lg transition-all duration-200 font-mono text-sm ${selectedMethod?.name === method.name
-            ? "scale-105"
-            : "hover:scale-102 hover:opacity-80"
-            }`}
+          className={`w-full p-4 text-left border rounded-lg transition-all duration-200 font-mono text-sm ${
+            selectedMethod?.name === method.name
+              ? "scale-105"
+              : "hover:scale-102 hover:opacity-80"
+          }`}
           style={{
             borderColor:
               selectedMethod?.name === method.name

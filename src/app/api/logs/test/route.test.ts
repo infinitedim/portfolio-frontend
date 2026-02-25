@@ -3,8 +3,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "../route";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/server", () => ({
   NextRequest: class {},

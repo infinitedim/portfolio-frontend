@@ -1,6 +1,6 @@
 "use client";
 
-import {useState, useEffect, useCallback, useRef, useMemo} from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 
 interface MobileState {
   isMobile: boolean;
@@ -26,7 +26,7 @@ export function useMobile(): MobileState {
 
   const deviceInfo = useMemo(() => {
     if (typeof window === "undefined") {
-      return {isIOS: false, isAndroid: false};
+      return { isIOS: false, isAndroid: false };
     }
     const userAgent = navigator.userAgent;
     return {
@@ -106,7 +106,7 @@ export function useMobile(): MobileState {
 
     updateState();
 
-    window.addEventListener("resize", debouncedUpdate, {passive: true});
+    window.addEventListener("resize", debouncedUpdate, { passive: true });
     window.addEventListener("orientationchange", debouncedUpdate, {
       passive: true,
     });

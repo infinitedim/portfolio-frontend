@@ -3,8 +3,11 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { RoadmapVisualizer } from "../roadmap-visualizer";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/components/molecules/roadmap/skill-card", () => ({
   SkillCard: ({ skill }: any) => (
@@ -51,9 +54,33 @@ const mockRoadmapData = {
       progress: 50,
       color: "#00ff00",
       skills: [
-        { id: "s1", name: "Skill 1", category: "cat1", description: "Test", status: "completed" as const, progress: 100, priority: "high" as const },
-        { id: "s2", name: "Skill 2", category: "cat1", description: "Test", status: "in-progress" as const, progress: 50, priority: "high" as const },
-        { id: "s3", name: "Skill 3", category: "cat1", description: "Test", status: "not-started" as const, progress: 0, priority: "high" as const },
+        {
+          id: "s1",
+          name: "Skill 1",
+          category: "cat1",
+          description: "Test",
+          status: "completed" as const,
+          progress: 100,
+          priority: "high" as const,
+        },
+        {
+          id: "s2",
+          name: "Skill 2",
+          category: "cat1",
+          description: "Test",
+          status: "in-progress" as const,
+          progress: 50,
+          priority: "high" as const,
+        },
+        {
+          id: "s3",
+          name: "Skill 3",
+          category: "cat1",
+          description: "Test",
+          status: "not-started" as const,
+          progress: 0,
+          priority: "high" as const,
+        },
       ],
     },
   ],

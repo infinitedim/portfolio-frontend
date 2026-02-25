@@ -14,8 +14,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -59,7 +62,12 @@ describe("ProgressBar", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(<ProgressBar progress={50} height="h-4" />);
+      const { container } = render(
+        <ProgressBar
+          progress={50}
+          height="h-4"
+        />,
+      );
 
       const progressBar = container.querySelector(".h-4");
       expect(progressBar).toBeInTheDocument();
@@ -71,7 +79,10 @@ describe("ProgressBar", () => {
         return;
       }
       const { container } = render(
-        <ProgressBar progress={50} className="custom-class" />,
+        <ProgressBar
+          progress={50}
+          className="custom-class"
+        />,
       );
 
       const progressBar = container.querySelector(".custom-class");
@@ -152,7 +163,12 @@ describe("ProgressBar", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<ProgressBar progress={50} showPercentage={true} />);
+      render(
+        <ProgressBar
+          progress={50}
+          showPercentage={true}
+        />,
+      );
 
       expect(screen.getByText("50%")).toBeInTheDocument();
     });
@@ -162,7 +178,12 @@ describe("ProgressBar", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<ProgressBar progress={33.7} showPercentage={true} />);
+      render(
+        <ProgressBar
+          progress={33.7}
+          showPercentage={true}
+        />,
+      );
 
       expect(screen.getByText("34%")).toBeInTheDocument();
     });
@@ -172,7 +193,12 @@ describe("ProgressBar", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<ProgressBar progress={0} showPercentage={true} />);
+      render(
+        <ProgressBar
+          progress={0}
+          showPercentage={true}
+        />,
+      );
 
       expect(screen.getByText("0%")).toBeInTheDocument();
     });
@@ -182,7 +208,12 @@ describe("ProgressBar", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<ProgressBar progress={100} showPercentage={true} />);
+      render(
+        <ProgressBar
+          progress={100}
+          showPercentage={true}
+        />,
+      );
 
       expect(screen.getByText("100%")).toBeInTheDocument();
     });
@@ -205,7 +236,12 @@ describe("ProgressBar", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(<ProgressBar progress={50} animated={false} />);
+      const { container } = render(
+        <ProgressBar
+          progress={50}
+          animated={false}
+        />,
+      );
 
       const progressFill = container.querySelector(".animate-pulse");
       expect(progressFill).not.toBeInTheDocument();
@@ -244,9 +280,7 @@ describe("ProgressBar", () => {
       }
       const { container } = render(<ProgressBar progress={50} />);
 
-      const background = container.querySelector(
-        '[style*="background-color"]',
-      );
+      const background = container.querySelector('[style*="background-color"]');
       expect(background).toBeInTheDocument();
     });
   });

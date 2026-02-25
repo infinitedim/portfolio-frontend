@@ -14,7 +14,7 @@ import {
 } from "../data-fetching";
 
 const mockFetch = vi.fn();
-globalThis.fetch = mockFetch;
+globalThis.fetch = mockFetch as unknown as typeof fetch;
 
 global.Blob = class Blob {
   size: number;
@@ -233,7 +233,6 @@ describe("data-fetching.ts", () => {
       }
       await invalidateCache("test-section");
 
-      
       expect(true).toBe(true);
     });
   });

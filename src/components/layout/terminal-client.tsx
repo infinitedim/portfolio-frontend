@@ -4,8 +4,7 @@ import dynamic from "next/dynamic";
 import { TerminalLoadingProgress } from "../molecules/terminal/terminal-loading-progress";
 
 const Terminal = dynamic(
-  () =>
-    import("../organisms/terminal/terminal").then((m) => m.Terminal),
+  () => import("../organisms/terminal/terminal").then((m) => m.Terminal),
   {
     ssr: false,
     loading: () => (

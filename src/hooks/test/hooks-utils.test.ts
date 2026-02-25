@@ -51,7 +51,7 @@ describe("hookUtils", () => {
       return;
     }
     ensureDocumentBody();
-    
+
     if (typeof window !== "undefined") {
       Object.defineProperty(window, "localStorage", {
         value: mockLocalStorage,
@@ -59,7 +59,7 @@ describe("hookUtils", () => {
         configurable: true,
       });
     }
-    
+
     vi.useFakeTimers();
     mockLocalStorage.clear();
     vi.clearAllMocks();
@@ -86,7 +86,7 @@ describe("hookUtils", () => {
         expect(true).toBe(true);
         return;
       }
-      
+
       expect(isClientSide()).toBe(true);
     });
   });
@@ -371,7 +371,6 @@ describe("hookUtils", () => {
 
       expect(() => {
         safeDOMManipulation(() => {
-          
           const div = document.createElement("div");
           div.textContent = "test";
         });

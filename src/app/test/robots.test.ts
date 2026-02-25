@@ -9,7 +9,7 @@ function getRulesArray(result: MetadataRoute.Robots) {
 describe("robots.ts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     delete process.env.NEXT_PUBLIC_BASE_URL;
   });
 
@@ -39,14 +39,18 @@ describe("robots.ts", () => {
   describe("Universal Rules (*)", () => {
     it("should have universal rule for all user agents", () => {
       const result = robots();
-      const rulesArray = Array.isArray(result.rules) ? result.rules : [result.rules];
+      const rulesArray = Array.isArray(result.rules)
+        ? result.rules
+        : [result.rules];
       const universalRule = rulesArray.find((rule) => rule.userAgent === "*");
       expect(universalRule).toBeDefined();
     });
 
     it("should allow public routes", () => {
       const result = robots();
-      const rulesArray = Array.isArray(result.rules) ? result.rules : [result.rules];
+      const rulesArray = Array.isArray(result.rules)
+        ? result.rules
+        : [result.rules];
       const universalRule = rulesArray.find((rule) => rule.userAgent === "*");
       expect(universalRule?.allow).toContain("/");
       expect(universalRule?.allow).toContain("/projects");
@@ -246,18 +250,14 @@ describe("robots.ts", () => {
     it("should have rule for GPTBot", () => {
       const result = robots();
       const rulesArray = getRulesArray(result);
-      const gptBotRule = rulesArray.find(
-        (rule) => rule.userAgent === "GPTBot",
-      );
+      const gptBotRule = rulesArray.find((rule) => rule.userAgent === "GPTBot");
       expect(gptBotRule).toBeDefined();
     });
 
     it("should disallow all routes for GPTBot", () => {
       const result = robots();
       const rulesArray = getRulesArray(result);
-      const gptBotRule = rulesArray.find(
-        (rule) => rule.userAgent === "GPTBot",
-      );
+      const gptBotRule = rulesArray.find((rule) => rule.userAgent === "GPTBot");
       expect(gptBotRule?.disallow).toContain("/");
       expect(gptBotRule?.allow).toBeUndefined();
     });

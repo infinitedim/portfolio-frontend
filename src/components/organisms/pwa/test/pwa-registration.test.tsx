@@ -3,8 +3,11 @@ import { render, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { PWARegistration } from "../pwa-registration";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/components/molecules/pwa/pwa-install-prompt", () => ({
   PWAInstallPrompt: ({ onInstall, onDismiss }: any) => (
@@ -58,7 +61,6 @@ describe("PWARegistration", () => {
       }
       const { container } = render(<PWARegistration />);
 
-      
       expect(container.firstChild).toBeNull();
     });
   });
@@ -133,7 +135,6 @@ describe("PWARegistration", () => {
 
       window.dispatchEvent(event);
 
-      
       expect(event).toBeDefined();
     });
   });

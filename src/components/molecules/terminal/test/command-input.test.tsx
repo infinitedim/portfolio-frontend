@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { CommandInput } from "../command-input";
 
@@ -13,8 +19,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -39,7 +48,10 @@ vi.mock("@/hooks/use-security", () => ({
 
 vi.mock("@/components/molecules/terminal/tab-completion", () => ({
   TabCompletion: ({ onComplete }: { onComplete: (cmd: string) => void }) => (
-    <button onClick={() => onComplete("help")} data-testid="tab-completion">
+    <button
+      onClick={() => onComplete("help")}
+      data-testid="tab-completion"
+    >
       Tab Complete
     </button>
   ),
@@ -274,11 +286,11 @@ describe("CommandInput", () => {
       );
 
       const input = screen.getByRole("textbox");
-      // Dismiss auto-shown suggestions (triggered by focus + value.length > 0)
+
       await act(async () => {
         fireEvent.keyDown(input, { key: "Escape" });
       });
-      // Now Tab should trigger tab completion since suggestions are hidden
+
       await act(async () => {
         fireEvent.keyDown(input, { key: "Tab" });
       });

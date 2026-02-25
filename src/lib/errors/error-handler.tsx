@@ -419,8 +419,6 @@ export class ErrorRecoveryService {
     return ErrorRecoveryService.instance;
   }
 
-  
-
   handleCommandError(
     command: string,
     error: string,
@@ -470,8 +468,6 @@ export class ErrorRecoveryService {
     };
   }
 
-  
-
   getErrorReports(): [] {
     try {
       const historyData = localStorage.getItem("terminal-errors");
@@ -489,8 +485,6 @@ export class ErrorRecoveryService {
       return [];
     }
   }
-
-  
 
   clearErrorReports(): void {
     localStorage.removeItem("terminal-errors");

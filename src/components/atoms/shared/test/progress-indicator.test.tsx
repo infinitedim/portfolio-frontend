@@ -17,8 +17,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: vi.fn(() => ({
@@ -123,7 +126,12 @@ describe("ProgressIndicator", () => {
         return;
       }
 
-      render(<ProgressIndicator progress={50} showPercentage={false} />);
+      render(
+        <ProgressIndicator
+          progress={50}
+          showPercentage={false}
+        />,
+      );
       expect(screen.queryByText(/label/i)).not.toBeInTheDocument();
     });
 
@@ -133,7 +141,12 @@ describe("ProgressIndicator", () => {
         return;
       }
 
-      render(<ProgressIndicator progress={50} label="Loading..." />);
+      render(
+        <ProgressIndicator
+          progress={50}
+          label="Loading..."
+        />,
+      );
       expect(screen.getByText("Loading...")).toBeInTheDocument();
     });
 
@@ -144,7 +157,10 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(
-        <ProgressIndicator progress={50} label="Loading" />,
+        <ProgressIndicator
+          progress={50}
+          label="Loading"
+        />,
       );
       const label = container.querySelector("span");
       expect(label).toHaveStyle({ color: mockThemeConfig.colors.text });
@@ -168,7 +184,12 @@ describe("ProgressIndicator", () => {
         return;
       }
 
-      render(<ProgressIndicator progress={50} showPercentage={false} />);
+      render(
+        <ProgressIndicator
+          progress={50}
+          showPercentage={false}
+        />,
+      );
       expect(screen.queryByText("50%")).not.toBeInTheDocument();
     });
 
@@ -194,7 +215,10 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(
-        <ProgressIndicator progress={50} size="sm" />,
+        <ProgressIndicator
+          progress={50}
+          size="sm"
+        />,
       );
       const progressBar = container.querySelector(".h-1");
       expect(progressBar).toBeTruthy();
@@ -207,7 +231,10 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(
-        <ProgressIndicator progress={50} size="md" />,
+        <ProgressIndicator
+          progress={50}
+          size="md"
+        />,
       );
       const progressBar = container.querySelector(".h-2");
       expect(progressBar).toBeTruthy();
@@ -220,7 +247,10 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(
-        <ProgressIndicator progress={50} size="lg" />,
+        <ProgressIndicator
+          progress={50}
+          size="lg"
+        />,
       );
       const progressBar = container.querySelector(".h-3");
       expect(progressBar).toBeTruthy();
@@ -244,7 +274,11 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(
-        <ProgressIndicator progress={50} size="sm" label="Loading" />,
+        <ProgressIndicator
+          progress={50}
+          size="sm"
+          label="Loading"
+        />,
       );
       const textElement = container.querySelector(".text-xs");
       expect(textElement).toBeTruthy();
@@ -257,7 +291,11 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(
-        <ProgressIndicator progress={50} size="md" label="Loading" />,
+        <ProgressIndicator
+          progress={50}
+          size="md"
+          label="Loading"
+        />,
       );
       const textElement = container.querySelector(".text-sm");
       expect(textElement).toBeTruthy();
@@ -270,7 +308,11 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(
-        <ProgressIndicator progress={50} size="lg" label="Loading" />,
+        <ProgressIndicator
+          progress={50}
+          size="lg"
+          label="Loading"
+        />,
       );
       const textElement = container.querySelector(".text-base");
       expect(textElement).toBeTruthy();
@@ -296,7 +338,10 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(
-        <ProgressIndicator progress={50} animated={false} />,
+        <ProgressIndicator
+          progress={50}
+          animated={false}
+        />,
       );
       const progressBar = container.querySelector(".animate-pulse");
       expect(progressBar).not.toBeInTheDocument();
@@ -308,7 +353,9 @@ describe("ProgressIndicator", () => {
         return;
       }
 
-      const { container: transitionContainer } = render(<ProgressIndicator progress={50} />);
+      const { container: transitionContainer } = render(
+        <ProgressIndicator progress={50} />,
+      );
       const progressBar = transitionContainer.querySelector(".transition-all");
       expect(progressBar).toBeTruthy();
     });
@@ -335,9 +382,9 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(<ProgressIndicator progress={50} />);
-      const background = container.querySelector(
-        '[style*="background-color"]',
-      ) ?? container.querySelector('[style*="backgroundColor"]');
+      const background =
+        container.querySelector('[style*="background-color"]') ??
+        container.querySelector('[style*="backgroundColor"]');
       expect(background).toBeTruthy();
     });
 
@@ -385,7 +432,10 @@ describe("ProgressIndicator", () => {
       }
 
       const { container } = render(
-        <ProgressIndicator progress={50} label="Loading" />,
+        <ProgressIndicator
+          progress={50}
+          label="Loading"
+        />,
       );
       const flexDiv = container.querySelector(".flex.justify-between");
       expect(flexDiv).toBeTruthy();
@@ -433,7 +483,6 @@ describe("ProgressIndicator", () => {
 
       const { rerender } = render(<ProgressIndicator progress={50} />);
 
-
       vi.mocked(useTheme).mockReturnValueOnce({
         themeConfig: mockThemeConfig,
         theme: "default",
@@ -441,8 +490,9 @@ describe("ProgressIndicator", () => {
 
       rerender(<ProgressIndicator progress={50} />);
 
-
-      const { container: rerenderedContainer } = render(<ProgressIndicator progress={50} />);
+      const { container: rerenderedContainer } = render(
+        <ProgressIndicator progress={50} />,
+      );
       expect(rerenderedContainer).toBeTruthy();
     });
   });

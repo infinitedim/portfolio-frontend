@@ -14,8 +14,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -32,7 +35,7 @@ describe("SkipToContent", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    
+
     const mockElement = {
       focus: mockFocus,
       scrollIntoView: mockScrollIntoView,
@@ -113,7 +116,10 @@ describe("SkipToContent", () => {
       }
       render(<SkipToContent />);
       const link = screen.getByLabelText("Skip to main terminal content");
-      const clickEvent = new MouseEvent("click", { bubbles: true, cancelable: true });
+      const clickEvent = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+      });
       const preventDefault = vi.spyOn(clickEvent, "preventDefault");
 
       fireEvent(link, clickEvent);
@@ -259,7 +265,6 @@ describe("SkipLinks", () => {
         { id: "sidebar", label: "Sidebar" },
       ];
 
-      
       render(<SkipLinks links={links} />);
       const nav = screen.getByLabelText("Skip to content links");
       expect(nav).toBeInTheDocument();
@@ -278,7 +283,6 @@ describe("SkipLinks", () => {
         { id: "content", label: "Content", icon: "📄" },
       ];
 
-      
       render(<SkipLinks links={links} />);
       expect(screen.getByText("🏠 Main")).toBeInTheDocument();
       expect(screen.getByText("📄 Content")).toBeInTheDocument();
@@ -291,7 +295,7 @@ describe("SkipLinks", () => {
       }
       ensureDocumentBody();
       const links = [{ id: "main", label: "Main Content" }];
-      
+
       render(<SkipLinks links={links} />);
       expect(screen.getByText("Main Content")).toBeInTheDocument();
     });
@@ -305,7 +309,7 @@ describe("SkipLinks", () => {
       }
       ensureDocumentBody();
       const links = [{ id: "main-content", label: "Main" }];
-      
+
       render(<SkipLinks links={links} />);
       const link = screen.getByText("Main");
 
@@ -323,7 +327,7 @@ describe("SkipLinks", () => {
       }
       ensureDocumentBody();
       const links = [{ id: "main-content", label: "Main" }];
-      
+
       render(<SkipLinks links={links} />);
       const link = screen.getByText("Main");
 
@@ -340,7 +344,7 @@ describe("SkipLinks", () => {
       }
       ensureDocumentBody();
       const links = [{ id: "main-content", label: "Main" }];
-      
+
       render(<SkipLinks links={links} />);
       const link = screen.getByText("Main");
 
@@ -357,7 +361,7 @@ describe("SkipLinks", () => {
       }
       ensureDocumentBody();
       const links = [{ id: "main", label: "Main" }];
-      
+
       render(<SkipLinks links={links} />);
       const link = screen.getByText("Main");
       const keyEvent = new KeyboardEvent("keydown", {
@@ -381,7 +385,7 @@ describe("SkipLinks", () => {
       }
       ensureDocumentBody();
       const links = [{ id: "main", label: "Main" }];
-      
+
       render(<SkipLinks links={links} />);
       const nav = screen.getByLabelText("Skip to content links");
       expect(nav).toBeInTheDocument();

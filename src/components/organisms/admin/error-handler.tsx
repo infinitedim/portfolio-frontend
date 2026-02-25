@@ -3,8 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { ThemeConfig } from "@/types/theme";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 interface ErrorHandlerProps {
   themeConfig: ThemeConfig;
@@ -36,7 +35,6 @@ export function ErrorHandler({
     setLastError(null);
 
     try {
-      
       const backendResponse = await fetch(`${API_URL}/health`, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -46,7 +44,6 @@ export function ErrorHandler({
         backend: backendResponse.ok ? "connected" : "disconnected",
       }));
 
-      
       const dbResponse = await fetch(`${API_URL}/health/database`, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -56,17 +53,16 @@ export function ErrorHandler({
           const dbData = await dbResponse.json();
           setServiceStatus((prev) => ({
             ...prev,
-            database: dbData.status === "healthy" ? "connected" : "disconnected",
+            database:
+              dbData.status === "healthy" ? "connected" : "disconnected",
           }));
         } catch {
-          
           setServiceStatus((prev) => ({ ...prev, database: "disconnected" }));
         }
       } else {
         setServiceStatus((prev) => ({ ...prev, database: "disconnected" }));
       }
 
-      
       const redisResponse = await fetch(`${API_URL}/health/redis`, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -76,10 +72,10 @@ export function ErrorHandler({
           const redisData = await redisResponse.json();
           setServiceStatus((prev) => ({
             ...prev,
-            redis: redisData.status === "healthy" ? "connected" : "disconnected",
+            redis:
+              redisData.status === "healthy" ? "connected" : "disconnected",
           }));
         } catch {
-          
           setServiceStatus((prev) => ({ ...prev, redis: "disconnected" }));
         }
       } else {
@@ -158,8 +154,9 @@ export function ErrorHandler({
         <button
           onClick={checkServiceHealth}
           disabled={isChecking}
-          className={`px-3 py-1 rounded text-sm font-mono transition-all duration-200 ${isChecking ? "opacity-50 cursor-not-allowed" : "hover:scale-105"
-            }`}
+          className={`px-3 py-1 rounded text-sm font-mono transition-all duration-200 ${
+            isChecking ? "opacity-50 cursor-not-allowed" : "hover:scale-105"
+          }`}
           style={{
             backgroundColor: themeConfig.colors.accent,
             color: themeConfig.colors.bg,
@@ -197,7 +194,6 @@ export function ErrorHandler({
         </div>
       )}
 
-      
       <div className="space-y-2">
         <h4
           className="text-sm font-semibold"
@@ -238,7 +234,6 @@ export function ErrorHandler({
         </div>
       </div>
 
-      
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           onClick={() => window.open(`${API_URL}/health`, "_blank")}

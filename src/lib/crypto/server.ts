@@ -1,22 +1,3 @@
-/**
- * Server-side cryptography utilities.
- *
- * Encryption layer: Browser ↔ Next.js API routes only.
- * Next.js → Rust backend: plaintext (server-to-server, trusted).
- * Logging (Loki / Prometheus / Grafana): always receives plaintext because
- * decryption happens BEFORE any logger is invoked inside API handlers.
- *
- * Algorithm:
- *   1. ECDH P-256  — ephemeral key exchange (forward secrecy)
- *   2. PBKDF2-SHA-256 (100 000 iterations, random per-session salt)
- *      → 64 bytes of master key material
- *        [0:32]  = AES-256-GCM key
- *        [32:64] = HMAC-SHA-256 key
- *   3. AES-256-GCM — authenticated encryption of every payload
- *   4. HMAC-SHA-256 — independent MAC over (sessionId ‖ iv ‖ ciphertext ‖ tag)
- *      verified with timingSafeEqual before every decrypt
- */
-
 import {
   createECDH,
   createHash,
@@ -28,35 +9,25 @@ import {
   pbkdf2Sync,
 } from "crypto";
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
+const CURVE = "prime256v1";
+const AES_ALGO = "aes-256-gcm";
+const IV_LENGTH = 12;
+const TAG_LENGTH = 16;
+const PBKDF2_SALT_LENGTH = 16;
 
-const CURVE = "prime256v1"; // P-256 — fixed by WebCrypto spec, not configurable
-const AES_ALGO = "aes-256-gcm"; // fixed by spec
-const IV_LENGTH = 12; // bytes (96-bit for GCM — fixed by spec)
-const TAG_LENGTH = 16; // bytes (128-bit auth tag — fixed by spec)
-const PBKDF2_SALT_LENGTH = 16; // bytes (standard recommendation)
-
-// Configurable via env — keeps security parameters out of source code
 const SESSION_TTL =
   parseInt(process.env.CRYPTO_SESSION_TTL ?? "", 10) || 15 * 60 * 1000;
 const PBKDF2_ITERATIONS =
   parseInt(process.env.CRYPTO_PBKDF2_ITERATIONS ?? "", 10) || 100_000;
 
-// ---------------------------------------------------------------------------
-// Session store (module-level; lives for the process lifetime)
-// ---------------------------------------------------------------------------
-
 interface CryptoSession {
-  aesKey: Buffer; // 32-byte AES-256-GCM key  (from PBKDF2 output [0:32])
-  hmacKey: Buffer; // 32-byte HMAC-SHA-256 key (from PBKDF2 output [32:64])
+  aesKey: Buffer;
+  hmacKey: Buffer;
   expiresAt: number;
 }
 
 const sessions = new Map<string, CryptoSession>();
 
-/** Purge expired sessions (called lazily on new sessions). */
 function pruneExpired(): void {
   const now = Date.now();
   for (const [id, session] of sessions) {
@@ -64,23 +35,14 @@ function pruneExpired(): void {
   }
 }
 
-// ---------------------------------------------------------------------------
-// ECDH key exchange
-// ---------------------------------------------------------------------------
-
 export interface HandshakeResult {
   sessionId: string;
-  serverPublicKeyB64: string; // base64 P-256 uncompressed point
-  pbkdf2Salt: string; // base64, random per-session salt
-  pbkdf2Iterations: number; // sent to client so it never has to hardcode this
+  serverPublicKeyB64: string;
+  pbkdf2Salt: string;
+  pbkdf2Iterations: number;
   expiresAt: number;
 }
 
-/**
- * Perform ECDH key agreement with the client's ephemeral public key.
- * Stores the derived AES session key and returns the server's ephemeral
- * public key so the browser can derive the same shared secret.
- */
 export function serverHandshake(clientPublicKeyB64: string): HandshakeResult {
   pruneExpired();
 
@@ -91,9 +53,6 @@ export function serverHandshake(clientPublicKeyB64: string): HandshakeResult {
 
   const sharedSecret = ecdh.computeSecret(clientPublicKeyBuf);
 
-  // PBKDF2: stretch the ECDH shared secret into 64 bytes of key material.
-  // A random per-session salt is sent to the client so it can derive the
-  // same keys independently.
   const salt = randomBytes(PBKDF2_SALT_LENGTH);
   const keyMaterial = pbkdf2Sync(
     sharedSecret,
@@ -120,15 +79,11 @@ export function serverHandshake(clientPublicKeyB64: string): HandshakeResult {
   };
 }
 
-// ---------------------------------------------------------------------------
-// AES-256-GCM encrypt / decrypt
-// ---------------------------------------------------------------------------
-
 export interface EncryptedPayload {
-  iv: string; // base64
-  ciphertext: string; // base64
-  tag: string; // base64 (AES-GCM auth tag)
-  hmac: string; // base64 (HMAC-SHA-256 over sessionId ‖ iv ‖ ciphertext ‖ tag)
+  iv: string;
+  ciphertext: string;
+  tag: string;
+  hmac: string;
 }
 
 export function serverEncrypt(
@@ -166,7 +121,6 @@ export function serverDecrypt(
   const ciphertext = Buffer.from(payload.ciphertext, "base64");
   const tag = Buffer.from(payload.tag, "base64");
 
-  // Verify HMAC BEFORE touching the ciphertext (fail-fast, timing-safe)
   const expectedHmac = computeServerHmac(
     session.hmacKey,
     sessionId,
@@ -195,10 +149,6 @@ export function serverDecrypt(
   ]).toString("utf8");
 }
 
-// ---------------------------------------------------------------------------
-// HMAC helper
-// ---------------------------------------------------------------------------
-
 function computeServerHmac(
   hmacKey: Buffer,
   sessionId: string,
@@ -213,10 +163,6 @@ function computeServerHmac(
   mac.update(tag);
   return mac.digest("base64");
 }
-
-// ---------------------------------------------------------------------------
-// Session utils
-// ---------------------------------------------------------------------------
 
 function getSession(sessionId: string): CryptoSession {
   const session = sessions.get(sessionId);
@@ -242,10 +188,6 @@ export function refreshSession(sessionId: string): void {
   const session = sessions.get(sessionId);
   if (session) session.expiresAt = Date.now() + SESSION_TTL;
 }
-
-// ---------------------------------------------------------------------------
-// Fingerprint helper (used to bind session to client IP)
-// ---------------------------------------------------------------------------
 
 export function fingerprintHash(ip: string, userAgent: string): string {
   return createHash("sha256")

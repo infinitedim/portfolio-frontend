@@ -13,8 +13,11 @@ const mockRouter = {
   refresh: vi.fn(),
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
@@ -61,7 +64,9 @@ vi.mock("@/lib/auth/auth-context", () => ({
 }));
 
 vi.mock("@/components/molecules/admin/terminal-header", () => ({
-  TerminalHeader: () => <div data-testid="terminal-header">Terminal Header</div>,
+  TerminalHeader: () => (
+    <div data-testid="terminal-header">Terminal Header</div>
+  ),
 }));
 
 vi.mock("@/components/molecules/admin/terminal-login-form", () => ({
@@ -166,7 +171,7 @@ describe("AdminLoginPage", () => {
       }
 
       const { container } = render(<AdminLoginPage />);
-      
+
       expect(container.textContent).toContain("admin@portfolio:~$ login");
     });
 
@@ -218,7 +223,6 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      
       vi.mocked(useAuth).mockReturnValueOnce({
         isAuthenticated: true,
         isLoading: false,
@@ -239,7 +243,6 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      
       vi.mocked(useAuth).mockReturnValueOnce({
         isAuthenticated: true,
         isLoading: false,
@@ -251,7 +254,6 @@ describe("AdminLoginPage", () => {
 
       const { container } = render(<AdminLoginPage />);
 
-      
       expect(container.children.length).toBe(0);
     });
   });
@@ -291,11 +293,11 @@ describe("AdminLoginPage", () => {
       const backButton = screen.getByText(/← Back/i);
 
       fireEvent.mouseEnter(backButton);
-      
+
       expect(backButton).toBeInTheDocument();
 
       fireEvent.mouseLeave(backButton);
-      
+
       expect(backButton).toBeInTheDocument();
     });
   });
@@ -307,7 +309,6 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      
       vi.mocked(useAuth).mockReturnValueOnce({
         isAuthenticated: false,
         isLoading: true,
@@ -319,7 +320,6 @@ describe("AdminLoginPage", () => {
 
       render(<AdminLoginPage />);
 
-      
       expect(mockPush).not.toHaveBeenCalled();
     });
 

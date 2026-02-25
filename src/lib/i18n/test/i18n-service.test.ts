@@ -2,8 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { I18nService, i18n, t, tWithFallback } from "../i18n-service";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("../locales", () => ({
   getLocaleConfig: vi.fn((code: string) => ({
@@ -40,7 +43,7 @@ describe("I18nService", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
     localStorageMock.getItem.mockReturnValue(null);
-    
+
     (I18nService as any).instance = undefined;
   });
 

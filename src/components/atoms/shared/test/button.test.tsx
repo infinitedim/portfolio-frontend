@@ -18,8 +18,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: vi.fn(() => ({
@@ -28,14 +31,11 @@ vi.mock("@/hooks/use-theme", () => ({
   })),
 }));
 
-vi.mock(
-  "@/components/organisms/accessibility/accessibility-provider",
-  () => ({
-    useAccessibility: vi.fn(() => ({
-      isReducedMotion: false,
-    })),
-  }),
-);
+vi.mock("@/components/organisms/accessibility/accessibility-provider", () => ({
+  useAccessibility: vi.fn(() => ({
+    isReducedMotion: false,
+  })),
+}));
 
 import { AnimatedButton } from "../button";
 
@@ -247,7 +247,10 @@ describe("AnimatedButton", () => {
 
       const handleClick = vi.fn();
       render(
-        <AnimatedButton onClick={handleClick} disabled>
+        <AnimatedButton
+          onClick={handleClick}
+          disabled
+        >
           Disabled
         </AnimatedButton>,
       );
@@ -269,7 +272,6 @@ describe("AnimatedButton", () => {
 
       fireEvent.mouseEnter(button!);
 
-      
       expect(button).toHaveStyle({
         backgroundColor: expect.stringContaining(mockThemeConfig.colors.accent),
       });
@@ -287,7 +289,6 @@ describe("AnimatedButton", () => {
       fireEvent.mouseEnter(button!);
       fireEvent.mouseLeave(button!);
 
-      
       expect(button).toHaveStyle({
         backgroundColor: expect.stringContaining(mockThemeConfig.colors.accent),
       });
@@ -307,7 +308,6 @@ describe("AnimatedButton", () => {
 
       fireEvent.mouseEnter(button!);
 
-      
       expect(button?.style.backgroundColor).toBe(originalBg);
     });
   });
@@ -346,9 +346,7 @@ describe("AnimatedButton", () => {
         return;
       }
 
-      render(
-        <AnimatedButton ariaLabel="Custom label">Button</AnimatedButton>,
-      );
+      render(<AnimatedButton ariaLabel="Custom label">Button</AnimatedButton>);
       const button = screen.getByLabelText("Custom label");
       expect(button).toBeInTheDocument();
     });
@@ -390,7 +388,6 @@ describe("AnimatedButton", () => {
 
       const { rerender } = render(<AnimatedButton>Theme</AnimatedButton>);
 
-      
       vi.mocked(useTheme).mockReturnValueOnce({
         themeConfig: mockThemeConfig,
         theme: "default",
@@ -398,7 +395,6 @@ describe("AnimatedButton", () => {
 
       rerender(<AnimatedButton>Theme</AnimatedButton>);
 
-      
       expect(screen.getByText("Theme")).toBeInTheDocument();
     });
   });
@@ -414,9 +410,7 @@ describe("AnimatedButton", () => {
         isReducedMotion: true,
       } as ReturnType<typeof useAccessibility>);
 
-      const { container } = render(
-        <AnimatedButton>No Motion</AnimatedButton>,
-      );
+      const { container } = render(<AnimatedButton>No Motion</AnimatedButton>);
       const button = container.querySelector("button");
       expect(button?.className).not.toContain("transition-all");
       expect(button?.className).not.toContain("hover:scale-105");

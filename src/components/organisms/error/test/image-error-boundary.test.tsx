@@ -8,7 +8,12 @@ const ThrowError = ({ shouldThrow }: { shouldThrow: boolean }) => {
   if (shouldThrow) {
     throw new Error("Image load error");
   }
-  return <img src="test.jpg" alt="Test" />;
+  return (
+    <img
+      src="test.jpg"
+      alt="Test"
+    />
+  );
 };
 
 describe("ImageErrorBoundary", () => {
@@ -16,7 +21,7 @@ describe("ImageErrorBoundary", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    
+
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -84,7 +89,9 @@ describe("ImageErrorBoundary", () => {
         expect(true).toBe(true);
         return;
       }
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
       render(
         <ImageErrorBoundary>
@@ -122,7 +129,9 @@ describe("ImageErrorBoundary", () => {
         </ImageErrorBoundary>,
       );
 
-      const fallback = container.querySelector(".flex.items-center.justify-center");
+      const fallback = container.querySelector(
+        ".flex.items-center.justify-center",
+      );
       expect(fallback).toBeInTheDocument();
     });
   });
@@ -141,14 +150,12 @@ describe("ImageErrorBoundary", () => {
 
       expect(screen.getByText(/Failed to load image/i)).toBeInTheDocument();
 
-      
       rerender(
         <ImageErrorBoundary>
           <ThrowError shouldThrow={false} />
         </ImageErrorBoundary>,
       );
 
-      
       expect(screen.getByAltText("Test")).toBeInTheDocument();
     });
   });

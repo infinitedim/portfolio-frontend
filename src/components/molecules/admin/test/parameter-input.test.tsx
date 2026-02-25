@@ -142,10 +142,9 @@ describe("ParameterInput", () => {
         />,
       );
 
-      
       const idButton = screen.getByText("id").closest("button");
       const emailButton = screen.getByText("email").closest("button");
-      
+
       if (idButton) fireEvent.click(idButton);
       if (emailButton) fireEvent.click(emailButton);
 
@@ -209,14 +208,14 @@ describe("ParameterInput", () => {
       );
 
       const toggleButton = screen.getByText("id").closest("button");
-      
-      
+
       fireEvent.click(toggleButton!);
       expect(screen.getByPlaceholderText("Enter id...")).toBeInTheDocument();
 
-      
       fireEvent.click(toggleButton!);
-      expect(screen.queryByPlaceholderText("Enter id...")).not.toBeInTheDocument();
+      expect(
+        screen.queryByPlaceholderText("Enter id..."),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -282,7 +281,9 @@ describe("ParameterInput", () => {
       const toggleButton = screen.getByText("id").closest("button");
       fireEvent.click(toggleButton!);
 
-      const input = screen.getByPlaceholderText("Enter id...") as HTMLInputElement;
+      const input = screen.getByPlaceholderText(
+        "Enter id...",
+      ) as HTMLInputElement;
       expect(input.value).toBe("current-value");
     });
   });
@@ -349,7 +350,9 @@ describe("ParameterInput", () => {
       const toggleButton = screen.getByText("age").closest("button");
       fireEvent.click(toggleButton!);
 
-      const input = screen.getByPlaceholderText("Enter age...") as HTMLInputElement;
+      const input = screen.getByPlaceholderText(
+        "Enter age...",
+      ) as HTMLInputElement;
       expect(input.value).toBe("25");
     });
   });
@@ -510,7 +513,9 @@ describe("ParameterInput", () => {
       const toggleButton = screen.getByText("metadata").closest("button");
       fireEvent.click(toggleButton!);
 
-      const textarea = screen.getByPlaceholderText("Enter metadata as JSON...") as HTMLTextAreaElement;
+      const textarea = screen.getByPlaceholderText(
+        "Enter metadata as JSON...",
+      ) as HTMLTextAreaElement;
       expect(textarea.value).toContain('"key"');
       expect(textarea.value).toContain('"value"');
     });

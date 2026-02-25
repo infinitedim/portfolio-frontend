@@ -66,9 +66,12 @@ async function getBlogPosts(
     if (search) params.set("search", search);
     if (tag) params.set("tag", tag);
 
-    const response = await fetch(`${backendUrl}/api/blog?${params.toString()}`, {
-      next: { revalidate: 3600 },
-    });
+    const response = await fetch(
+      `${backendUrl}/api/blog?${params.toString()}`,
+      {
+        next: { revalidate: 3600 },
+      },
+    );
 
     if (response.ok) {
       return await response.json();
@@ -88,7 +91,7 @@ async function getAvailableTags(): Promise<TagWithCount[]> {
     });
     if (response.ok) {
       const data = await response.json();
-      // Support both old format { tags: string[] } and new format TagWithCount[]
+
       if (Array.isArray(data)) {
         return data as TagWithCount[];
       }
@@ -123,7 +126,11 @@ export default async function BlogPage({
   ]);
   const totalPages = Math.ceil(total / pageSize);
 
-  const buildUrl = (overrides: { page?: number; search?: string; tag?: string }): never => {
+  const buildUrl = (overrides: {
+    page?: number;
+    search?: string;
+    tag?: string;
+  }): never => {
     const p = new URLSearchParams();
     const newPage = overrides.page ?? page;
     const newSearch = "search" in overrides ? overrides.search : search;
@@ -152,7 +159,11 @@ export default async function BlogPage({
             Latest articles, tutorials, and insights.
           </p>
 
-          <form method="GET" action="/blog" className="flex gap-2 mb-4">
+          <form
+            method="GET"
+            action="/blog"
+            className="flex gap-2 mb-4"
+          >
             <input
               type="text"
               name="search"
@@ -160,7 +171,13 @@ export default async function BlogPage({
               placeholder="Search posts..."
               className="flex-1 bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-green-400"
             />
-            {tag && <input type="hidden" name="tag" value={tag} />}
+            {tag && (
+              <input
+                type="hidden"
+                name="tag"
+                value={tag}
+              />
+            )}
             <button
               type="submit"
               className="px-4 py-2 bg-green-400/10 border border-green-400/40 text-green-400 rounded text-sm hover:bg-green-400/20 transition-colors"
@@ -194,7 +211,10 @@ export default async function BlogPage({
                 {search && <span>&ldquo;{search}&rdquo;</span>}
                 {search && tag && " in "}
                 {tag && <span className="text-green-400">#{tag}</span>}.{" "}
-                <Link href="/blog" className="text-green-400 hover:underline">
+                <Link
+                  href="/blog"
+                  className="text-green-400 hover:underline"
+                >
                   View all posts
                 </Link>
               </p>
@@ -224,7 +244,11 @@ export default async function BlogPage({
                         key={t}
                         href={buildUrl({ tag: t, page: 1 })}
                       >
-                        <TagChip name={t} size="sm" active={t === tag} />
+                        <TagChip
+                          name={t}
+                          size="sm"
+                          active={t === tag}
+                        />
                       </Link>
                     ))}
                   </div>

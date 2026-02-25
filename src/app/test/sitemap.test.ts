@@ -1,16 +1,17 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import sitemap from "../sitemap";
 import type { MetadataRoute } from "next";
 
 const mockFetch = vi.fn();
 const _origFetch = (globalThis as Record<string, unknown>).fetch;
-global.fetch = mockFetch;
+
+global.fetch = mockFetch as unknown as typeof fetch;
 
 describe("sitemap.ts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     delete process.env.NEXT_PUBLIC_BASE_URL;
-    // Re-ensure fetch is mocked (in case another test file replaced it)
+
     (globalThis as Record<string, unknown>).fetch = mockFetch;
     mockFetch.mockResolvedValue({
       ok: true,
@@ -462,7 +463,9 @@ describe("sitemap.ts", () => {
     });
 
     it("should handle API errors gracefully", async () => {
-      mockFetch.mockRejectedValueOnce(new Error("Network error"));
+      mockFetch.mockImplementationOnce(async () => {
+        throw new Error("Network error");
+      });
 
       const result = await sitemap();
 

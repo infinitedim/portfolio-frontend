@@ -1,5 +1,3 @@
-
-
 import { useState, useCallback, useRef, useEffect } from "react";
 import { EnhancedError, ErrorUtils } from "./error-types";
 import { AsyncErrorHandler, AsyncResult } from "./async-error-handler";
@@ -37,8 +35,6 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
     onSuccess,
     resetOnSuccess = true,
   } = options;
-
-  
 
   const execute = useCallback(
     async <T>(fn: () => Promise<T>): Promise<T | null> => {
@@ -107,8 +103,6 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
     [maxRetries, retryDelay, onError, onRetry, onSuccess, resetOnSuccess],
   );
 
-  
-
   const setError = useCallback((error: Error | string) => {
     const enhancedError =
       typeof error === "string"
@@ -121,8 +115,6 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
     }));
   }, []);
 
-  
-
   const clearError = useCallback(() => {
     setErrorState({
       error: null,
@@ -131,8 +123,6 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
       lastRetryAt: null,
     });
   }, []);
-
-  
 
   const retry = useCallback(
     async <T>(fn: () => Promise<T>): Promise<T | null> => {

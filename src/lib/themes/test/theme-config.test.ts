@@ -31,12 +31,11 @@ describe("themeConfig", () => {
     });
 
     it("should have multiple themes", () => {
-      
       const currentThemes = themes;
       expect(currentThemes).toBeDefined();
       expect(typeof currentThemes).toBe("object");
       const themeNames = Object.keys(currentThemes);
-      
+
       expect(themeNames.length).toBeGreaterThan(10);
     });
 
@@ -84,7 +83,6 @@ describe("themeConfig", () => {
         expect(colors).toHaveProperty("info");
         expect(colors).toHaveProperty("prompt");
 
-        
         Object.values(colors).forEach((color) => {
           expect(typeof color).toBe("string");
           expect(color).toMatch(/^#[0-9a-fA-F]{6}$/);
@@ -181,9 +179,8 @@ describe("themeConfig", () => {
       const result = getSortedThemeNames();
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
-      
+
       if (result.length === 1 && result[0] === "default") {
-        
         expect(result).toContain("default");
       } else {
         expect(result).toContain("default");
@@ -194,9 +191,8 @@ describe("themeConfig", () => {
       expect(getSortedThemeNames).toBeDefined();
       const result = getSortedThemeNames();
       expect(Array.isArray(result)).toBe(true);
-      
+
       if (result.length <= 1) {
-        
         expect(result.length).toBeGreaterThanOrEqual(1);
       } else {
         const popularThemes = ["cyberpunk", "dracula", "matrix", "monokai"];
@@ -293,9 +289,7 @@ describe("themeConfig", () => {
       const validThemes = ["default", "matrix", "cyberpunk", "dracula"];
 
       validThemes.forEach((theme) => {
-        
         if (Object.keys(currentThemes).length <= 1) {
-          
           expect(validateTheme("default")).toBe(true);
         } else {
           expect(validateTheme(theme)).toBe(true);
@@ -383,7 +377,6 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const result = getThemePreview(themeName as any);
@@ -395,7 +388,6 @@ describe("themeConfig", () => {
           expect(result).toContain("Accent:");
         });
       } else {
-        
         const result = getThemePreview("default" as any);
         expect(typeof result).toBe("string");
         expect(result.length).toBeGreaterThan(0);
@@ -433,7 +425,6 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const theme = currentThemes[themeName as keyof typeof currentThemes];
@@ -441,11 +432,9 @@ describe("themeConfig", () => {
           if (!theme) return;
           const { bg, text } = theme.colors;
 
-          
           expect(bg).not.toBe(text);
         });
       } else {
-        
         const defaultTheme = currentThemes.default;
         if (defaultTheme) {
           expect(defaultTheme.colors.bg).not.toBe(defaultTheme.colors.text);
@@ -459,7 +448,6 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const theme = currentThemes[themeName as keyof typeof currentThemes];
@@ -483,7 +471,6 @@ describe("themeConfig", () => {
           expect(colorKeys.sort()).toEqual(expectedKeys.sort());
         });
       } else {
-        
         const defaultTheme = currentThemes.default;
         if (defaultTheme) {
           expect(Object.keys(defaultTheme.colors).length).toBeGreaterThan(0);
@@ -497,7 +484,6 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const theme = currentThemes[themeName as keyof typeof currentThemes];
@@ -507,10 +493,8 @@ describe("themeConfig", () => {
           expect(colors).toBeDefined();
 
           Object.entries(colors).forEach(([colorName, colorValue]) => {
-            
             expect(colorValue).toMatch(/^#[0-9a-fA-F]{6}$/);
 
-            
             if (colorName !== "bg" && colorName !== "text") {
               expect(colorValue).not.toBe("#ffffff");
               expect(colorValue).not.toBe("#000000");
@@ -518,7 +502,6 @@ describe("themeConfig", () => {
           });
         });
       } else {
-        
         const defaultTheme = currentThemes.default;
         if (defaultTheme) {
           Object.values(defaultTheme.colors).forEach((colorValue) => {
@@ -536,7 +519,6 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(currentThemes);
       expect(themeNames.length).toBeGreaterThan(0);
 
-      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           const theme = currentThemes[themeName as keyof typeof currentThemes];
@@ -547,7 +529,6 @@ describe("themeConfig", () => {
           expect(theme.description?.length).toBeLessThan(100);
         });
       } else {
-        
         const defaultTheme = currentThemes.default;
         if (defaultTheme) {
           expect(defaultTheme.description).toBeDefined();
@@ -609,8 +590,7 @@ describe("themeConfig", () => {
 
       const themeNames = getSortedThemeNames();
       expect(themeNames.length).toBeGreaterThan(0);
-      
-      
+
       if (themeNames.length > 1) {
         const validTheme = themeNames[0];
         expect(validateTheme(validTheme)).toBe(true);
@@ -619,7 +599,6 @@ describe("themeConfig", () => {
         const preview = getThemePreview(validTheme);
         expect(preview).toContain(config.name);
       } else {
-        
         expect(validateTheme("default")).toBe(true);
         const config = getThemeConfig("default");
         expect(config).toBeDefined();
@@ -651,13 +630,13 @@ describe("themeConfig", () => {
       const themeNames = getSortedThemeNames();
       expect(themeNames.length).toBeGreaterThan(0);
 
-      
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
           expect(validateTheme(themeName)).toBe(true);
 
           const config = getThemeConfig(themeName as any);
-          const originalTheme = currentThemes[themeName as keyof typeof currentThemes];
+          const originalTheme =
+            currentThemes[themeName as keyof typeof currentThemes];
           if (originalTheme) {
             expect(config.name).toBe(originalTheme.name);
           }
@@ -666,7 +645,6 @@ describe("themeConfig", () => {
           expect(preview).toContain(config.name);
         });
       } else {
-        
         expect(validateTheme("default")).toBe(true);
         const config = getThemeConfig("default");
         expect(config.name).toBe("Default Dark");

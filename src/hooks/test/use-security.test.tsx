@@ -3,8 +3,11 @@ import { renderHook, act } from "@testing-library/react";
 import { useSecurity, useSecurityMonitoring } from "@/hooks/use-security";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/lib/trpc", () => ({
   trpc: null,
@@ -250,7 +253,6 @@ describe("useSecurity hook", () => {
       }
       const { result } = renderHook(() => useSecurity());
 
-      
       let validation;
       await act(async () => {
         validation = await result.current.validateInput("");
@@ -327,7 +329,6 @@ describe("useSecurity hook", () => {
       const metrics1 = result.current.getSecurityMetrics();
       const metrics2 = result.current.getSecurityMetrics();
 
-      
       expect(metrics1).toEqual(metrics2);
     });
   });
@@ -366,7 +367,6 @@ describe("useSecurity hook", () => {
       }
       const { result } = renderHook(() => useSecurity());
 
-      
       expect(result.current.securityState.isRateLimited).toBe(false);
 
       act(() => {
@@ -463,7 +463,7 @@ describe("useSecurityMonitoring hook", () => {
       expect(true).toBe(true);
       return;
     }
-    
+
     const _originalEnv = process.env.NODE_ENV;
     vi.stubEnv("NODE_ENV", "development");
 
@@ -471,7 +471,6 @@ describe("useSecurityMonitoring hook", () => {
 
     expect(result.current.isSecure).toBe(true);
 
-    
     unmount();
     vi.unstubAllEnvs();
   });

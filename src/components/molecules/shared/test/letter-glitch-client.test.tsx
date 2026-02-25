@@ -78,12 +78,10 @@ describe("LetterGlitchClient", () => {
     vi.clearAllMocks();
     rafCallbacks = [];
 
-    
     mockCanvas.getContext.mockReturnValue(mockContext);
     mockCanvas.width = 0;
     mockCanvas.height = 0;
 
-    
     if (typeof HTMLCanvasElement !== "undefined") {
       vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(
         mockContext as any,
@@ -101,7 +99,6 @@ describe("LetterGlitchClient", () => {
       } as DOMRect);
     }
 
-    
     Object.defineProperty(HTMLElement.prototype, "parentElement", {
       writable: true,
       configurable: true,
@@ -215,13 +212,16 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient />);
 
-      await waitFor(() => {
-        if (typeof HTMLCanvasElement !== "undefined") {
-          expect(HTMLCanvasElement.prototype.getContext).toHaveBeenCalledWith(
-            "2d",
-          );
-        }
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          if (typeof HTMLCanvasElement !== "undefined") {
+            expect(HTMLCanvasElement.prototype.getContext).toHaveBeenCalledWith(
+              "2d",
+            );
+          }
+        },
+        { timeout: 1000 },
+      );
     });
 
     it("should set canvas dimensions based on parent", async () => {
@@ -231,10 +231,13 @@ describe("LetterGlitchClient", () => {
       }
       const { container } = render(<LetterGlitchClient />);
 
-      await waitFor(() => {
-        const canvas = container.querySelector("canvas");
-        expect(canvas).toBeInTheDocument();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          const canvas = container.querySelector("canvas");
+          expect(canvas).toBeInTheDocument();
+        },
+        { timeout: 1000 },
+      );
     });
   });
 
@@ -247,7 +250,6 @@ describe("LetterGlitchClient", () => {
       const customColors = ["#ff0000", "#00ff00", "#0000ff"];
       render(<LetterGlitchClient glitchColors={customColors} />);
 
-      
       expect(true).toBe(true);
     });
 
@@ -258,7 +260,6 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient glitchSpeed={100} />);
 
-      
       expect(true).toBe(true);
     });
 
@@ -269,7 +270,6 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient characters="ABC123" />);
 
-      
       expect(true).toBe(true);
     });
 
@@ -280,7 +280,6 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient smooth={true} />);
 
-      
       expect(true).toBe(true);
     });
 
@@ -291,7 +290,6 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient smooth={false} />);
 
-      
       expect(true).toBe(true);
     });
   });
@@ -304,10 +302,12 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient />);
 
-      await waitFor(() => {
-        
-        expect(mockRequestAnimationFrame).toHaveBeenCalled();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(mockRequestAnimationFrame).toHaveBeenCalled();
+        },
+        { timeout: 1000 },
+      );
     });
 
     it("should handle animation frame callbacks", async () => {
@@ -317,13 +317,15 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient glitchSpeed={50} />);
 
-      await waitFor(() => {
-        if (rafCallbacks.length > 0) {
-          
-          rafCallbacks[0]();
-          expect(true).toBe(true);
-        }
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          if (rafCallbacks.length > 0) {
+            rafCallbacks[0]();
+            expect(true).toBe(true);
+          }
+        },
+        { timeout: 1000 },
+      );
     });
   });
 
@@ -339,11 +341,13 @@ describe("LetterGlitchClient", () => {
       }
       render(<LetterGlitchClient />);
 
-      await waitFor(() => {
-        
-        window.dispatchEvent(new Event("resize"));
-        expect(true).toBe(true);
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          window.dispatchEvent(new Event("resize"));
+          expect(true).toBe(true);
+        },
+        { timeout: 1000 },
+      );
     });
 
     it("should debounce resize events", async () => {
@@ -358,16 +362,18 @@ describe("LetterGlitchClient", () => {
       vi.useFakeTimers();
       render(<LetterGlitchClient />);
 
-      await waitFor(() => {
-        
-        window.dispatchEvent(new Event("resize"));
-        window.dispatchEvent(new Event("resize"));
-        window.dispatchEvent(new Event("resize"));
+      await waitFor(
+        () => {
+          window.dispatchEvent(new Event("resize"));
+          window.dispatchEvent(new Event("resize"));
+          window.dispatchEvent(new Event("resize"));
 
-        vi.advanceTimersByTime(100);
+          vi.advanceTimersByTime(100);
 
-        expect(true).toBe(true);
-      }, { timeout: 1000 });
+          expect(true).toBe(true);
+        },
+        { timeout: 1000 },
+      );
 
       vi.useRealTimers();
     });
@@ -381,13 +387,15 @@ describe("LetterGlitchClient", () => {
       }
       const { unmount } = render(<LetterGlitchClient />);
 
-      await waitFor(() => {
-        expect(mockRequestAnimationFrame).toHaveBeenCalled();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(mockRequestAnimationFrame).toHaveBeenCalled();
+        },
+        { timeout: 1000 },
+      );
 
       unmount();
 
-      
       expect(mockCancelAnimationFrame).toHaveBeenCalled();
     });
 
@@ -403,9 +411,12 @@ describe("LetterGlitchClient", () => {
       const removeEventListenerSpy = vi.spyOn(window, "removeEventListener");
       const { unmount } = render(<LetterGlitchClient />);
 
-      await waitFor(() => {
-        expect(true).toBe(true);
-      }, { timeout: 100 });
+      await waitFor(
+        () => {
+          expect(true).toBe(true);
+        },
+        { timeout: 100 },
+      );
 
       unmount();
 
@@ -424,9 +435,7 @@ describe("LetterGlitchClient", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
-        <LetterGlitchClient className="fixed" />,
-      );
+      const { container } = render(<LetterGlitchClient className="fixed" />);
 
       const wrapper = container.querySelector("div");
       expect(wrapper).toHaveStyle({ position: "fixed" });
@@ -437,9 +446,7 @@ describe("LetterGlitchClient", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
-        <LetterGlitchClient className="z-0" />,
-      );
+      const { container } = render(<LetterGlitchClient className="z-0" />);
 
       const wrapper = container.querySelector("div");
       expect(wrapper).toHaveStyle({ zIndex: 0 });
@@ -463,7 +470,7 @@ describe("LetterGlitchClient", () => {
         expect(true).toBe(true);
         return;
       }
-      
+
       render(<LetterGlitchClient />);
       expect(true).toBe(true);
     });
@@ -473,7 +480,7 @@ describe("LetterGlitchClient", () => {
         expect(true).toBe(true);
         return;
       }
-      
+
       render(<LetterGlitchClient />);
       expect(true).toBe(true);
     });

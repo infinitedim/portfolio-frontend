@@ -27,7 +27,6 @@ export function ThemeEditor({
     setEditedTheme(theme);
   }, [theme]);
 
-
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isColorRuleOpen) {
@@ -76,7 +75,6 @@ export function ThemeEditor({
     }
     setPreviewMode(!previewMode);
   };
-
 
   useEffect(() => {
     if (previewMode) {
@@ -228,7 +226,11 @@ export function ThemeEditor({
                   ? themeConfig.colors.accent
                   : themeConfig.colors.text,
               }}
-              title={previewMode ? "Click to disable live preview in terminal" : "Click to preview theme in terminal"}
+              title={
+                previewMode
+                  ? "Click to disable live preview in terminal"
+                  : "Click to preview theme in terminal"
+              }
             >
               {previewMode ? "👁️ Live Preview ON" : "👁️ Preview in Terminal"}
             </button>
@@ -266,9 +268,12 @@ export function ThemeEditor({
                     }}
                   >
                     <span>
-                      {colorRule === "70-20-5-1-1-1-2" && "70-20-5-1-1-1-2 (Balanced)"}
-                      {colorRule === "50-25-10-5-5-3-2" && "50-25-10-5-5-3-2 (Even)"}
-                      {colorRule === "40-20-15-10-5-5-5" && "40-20-15-10-5-5-5 (Distributed)"}
+                      {colorRule === "70-20-5-1-1-1-2" &&
+                        "70-20-5-1-1-1-2 (Balanced)"}
+                      {colorRule === "50-25-10-5-5-3-2" &&
+                        "50-25-10-5-5-3-2 (Even)"}
+                      {colorRule === "40-20-15-10-5-5-5" &&
+                        "40-20-15-10-5-5-5 (Distributed)"}
                     </span>
                     <svg
                       className={`w-4 h-4 transition-transform ${isColorRuleOpen ? "rotate-180" : ""}`}
@@ -311,9 +316,21 @@ export function ThemeEditor({
                         onKeyDown={(e) => e.stopPropagation()}
                       >
                         {[
-                          { value: "70-20-5-1-1-1-2", label: "70-20-5-1-1-1-2 (Balanced)", desc: "Balanced color distribution" },
-                          { value: "50-25-10-5-5-3-2", label: "50-25-10-5-5-3-2 (Even)", desc: "Even color distribution" },
-                          { value: "40-20-15-10-5-5-5", label: "40-20-15-10-5-5-5 (Distributed)", desc: "Distributed color spread" },
+                          {
+                            value: "70-20-5-1-1-1-2",
+                            label: "70-20-5-1-1-1-2 (Balanced)",
+                            desc: "Balanced color distribution",
+                          },
+                          {
+                            value: "50-25-10-5-5-3-2",
+                            label: "50-25-10-5-5-3-2 (Even)",
+                            desc: "Even color distribution",
+                          },
+                          {
+                            value: "40-20-15-10-5-5-5",
+                            label: "40-20-15-10-5-5-5 (Distributed)",
+                            desc: "Distributed color spread",
+                          },
                         ].map((option) => (
                           <button
                             key={option.value}
@@ -413,7 +430,6 @@ export function ThemeEditor({
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-3">
-
           <div className="mb-3">
             <h4
               className="font-medium mb-2"
@@ -432,25 +448,37 @@ export function ThemeEditor({
             >
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span style={{ color: editedTheme.colors?.prompt || "#00ff00" }}>
+                  <span
+                    style={{ color: editedTheme.colors?.prompt || "#00ff00" }}
+                  >
                     $
                   </span>
                   <span>help</span>
                 </div>
-                <div style={{ color: editedTheme.colors?.success || "#00ff00" }}>
+                <div
+                  style={{ color: editedTheme.colors?.success || "#00ff00" }}
+                >
                   ✅ Available commands: about, projects, contact
                 </div>
                 <div className="flex items-center gap-2">
-                  <span style={{ color: editedTheme.colors?.prompt || "#00ff00" }}>
+                  <span
+                    style={{ color: editedTheme.colors?.prompt || "#00ff00" }}
+                  >
                     $
                   </span>
-                  <span>theme {editedTheme.name.toLowerCase().replace(/\s+/g, "-")}</span>
+                  <span>
+                    theme {editedTheme.name.toLowerCase().replace(/\s+/g, "-")}
+                  </span>
                 </div>
-                <div style={{ color: editedTheme.colors?.success || "#00ff00" }}>
+                <div
+                  style={{ color: editedTheme.colors?.success || "#00ff00" }}
+                >
                   Theme changed to "{editedTheme.name}"
                 </div>
                 <div className="flex items-center gap-2">
-                  <span style={{ color: editedTheme.colors?.prompt || "#00ff00" }}>
+                  <span
+                    style={{ color: editedTheme.colors?.prompt || "#00ff00" }}
+                  >
                     $
                   </span>
                   <span>invalid-command</span>
@@ -459,21 +487,34 @@ export function ThemeEditor({
                   ❌ Command not found. Type 'help' for available commands.
                 </div>
                 <div className="flex items-center gap-2">
-                  <span style={{ color: editedTheme.colors?.prompt || "#00ff00" }}>
+                  <span
+                    style={{ color: editedTheme.colors?.prompt || "#00ff00" }}
+                  >
                     $
                   </span>
-                  <span style={{ color: editedTheme.colors?.accent || "#0066cc" }}>
+                  <span
+                    style={{ color: editedTheme.colors?.accent || "#0066cc" }}
+                  >
                     skills overview
                   </span>
                 </div>
                 <div>
-                  <span style={{ color: editedTheme.colors?.accent || "#0066cc" }}>
+                  <span
+                    style={{ color: editedTheme.colors?.accent || "#0066cc" }}
+                  >
                     🗺️ Skills Progress Overview
                   </span>
                 </div>
-                <div className="mt-3 pt-3 border-t" style={{ borderColor: editedTheme.colors?.border || "#333333" }}>
+                <div
+                  className="mt-3 pt-3 border-t"
+                  style={{
+                    borderColor: editedTheme.colors?.border || "#333333",
+                  }}
+                >
                   <div className="flex items-center gap-2">
-                    <span style={{ color: editedTheme.colors?.prompt || "#00ff00" }}>
+                    <span
+                      style={{ color: editedTheme.colors?.prompt || "#00ff00" }}
+                    >
                       $
                     </span>
                     <span className="animate-pulse">_</span>
@@ -498,8 +539,12 @@ export function ThemeEditor({
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <label className="block text-sm font-medium leading-tight">{label}</label>
-                    <p className="text-xs opacity-75 leading-tight mt-0.5">{description}</p>
+                    <label className="block text-sm font-medium leading-tight">
+                      {label}
+                    </label>
+                    <p className="text-xs opacity-75 leading-tight mt-0.5">
+                      {description}
+                    </p>
                   </div>
                   <div
                     className="w-8 h-8 rounded border shrink-0"

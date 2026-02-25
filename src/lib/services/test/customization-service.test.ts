@@ -35,8 +35,7 @@ describe("CustomizationService", () => {
       writable: true,
       configurable: true,
     });
-    
-    
+
     if (typeof document !== "undefined") {
       Object.defineProperty(document, "querySelectorAll", {
         value: mockQuerySelectorAll,
@@ -52,27 +51,24 @@ describe("CustomizationService", () => {
         configurable: true,
       });
     }
-    
+
     mockQuerySelectorAll.mockReturnValue(
       Array.from({ length: 0 }, () => ({ remove: mockRemove })),
     );
     mockRemove.mockClear();
     localStorageMock.clear();
 
-    
-    
-     
     (CustomizationService as any).instance = undefined;
   });
 
   it("returns built-in themes plus custom themes via getAllThemes", () => {
     const svc = CustomizationService.getInstance();
-    
+
     localStorageMock.removeItem("terminal-custom-themes");
 
     const all = svc.getAllThemes();
     expect(Array.isArray(all)).toBe(true);
-    
+
     expect(all.length).toBeGreaterThan(0);
   });
 
@@ -83,7 +79,6 @@ describe("CustomizationService", () => {
     }
     const svc = CustomizationService.getInstance();
 
-    
     const saved = svc.saveCustomTheme({
       name: "My Theme",
       description: "A test theme",
@@ -102,27 +97,22 @@ describe("CustomizationService", () => {
     expect(saved).toHaveProperty("id");
     expect(saved.name).toBe("My Theme");
 
-    
     const updated = svc.updateCustomTheme(saved.id, { name: "My Theme v2" });
     expect(updated).toBe(true);
 
-    
     const duplicate = svc.duplicateTheme(saved.id, "Copied Theme");
     expect(duplicate).not.toBeNull();
     expect(duplicate?.name).toBe("Copied Theme");
 
-    
     const deleted = svc.deleteCustomTheme(saved.id);
     expect(deleted).toBe(true);
 
-    
     expect(svc.deleteCustomTheme(saved.id)).toBe(false);
   });
 
   it("manages settings and resetToDefaults", () => {
     const svc = CustomizationService.getInstance();
 
-    
     svc.saveSettings({ currentTheme: "matrix" } as any);
 
     const settings = svc.getSettings();
@@ -130,7 +120,6 @@ describe("CustomizationService", () => {
 
     svc.resetToDefaults();
 
-    
     const after = svc.getSettings();
     expect(after.currentTheme).toBe("dark");
   });

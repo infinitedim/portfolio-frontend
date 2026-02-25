@@ -1,5 +1,3 @@
-
-
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { AsyncErrorHandler, AsyncUtils } from "../async-error-handler";
 import { NetworkError, ErrorSeverity } from "../error-types";
@@ -45,12 +43,11 @@ describe("Async Error Handler", () => {
       expect(result.success).toBe(false);
       expect(result.error).toBeInstanceOf(NetworkError);
       expect(result.retryCount).toBe(2);
-      expect(failFn).toHaveBeenCalledTimes(3); 
+      expect(failFn).toHaveBeenCalledTimes(3);
       expect(onRetry).toHaveBeenCalledTimes(2);
     });
 
     it("should respect timeout configuration", async () => {
-      
       const slowFn = vi.fn().mockImplementation(
         () =>
           new Promise((resolve) => {
@@ -58,7 +55,6 @@ describe("Async Error Handler", () => {
           }),
       );
 
-      
       const result = await handler.execute(slowFn, {
         timeout: 50,
         retryConfig: {
@@ -175,7 +171,7 @@ describe("AsyncUtils", () => {
 
       const result = await AsyncUtils.retry(retryFn, {
         maxRetries: 3,
-        baseDelay: 1, 
+        baseDelay: 1,
         maxDelay: 5,
       });
 
@@ -195,7 +191,7 @@ describe("AsyncUtils", () => {
         AsyncUtils.retry(errorFn, { maxRetries: 2, baseDelay: 1, maxDelay: 5 }),
       ).rejects.toThrow();
 
-      expect(errorFn).toHaveBeenCalledTimes(3); 
+      expect(errorFn).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -220,11 +216,9 @@ describe("AsyncUtils", () => {
         monitoringPeriod: 1000,
       });
 
-      
       await expect(circuitBreaker()).rejects.toThrow("Service down");
       await expect(circuitBreaker()).rejects.toThrow("Service down");
 
-      
       await expect(circuitBreaker()).rejects.toThrow("Circuit breaker is OPEN");
     });
   });

@@ -7,8 +7,11 @@ import type { TourStep } from "../tour-steps";
 const mockAnnounceMessage = vi.fn();
 const mockIsReducedMotion = false;
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/components/organisms/accessibility/accessibility-provider", () => ({
   useAccessibility: () => ({
@@ -38,7 +41,7 @@ global.ResizeObserver = class MockResizeObserver {
   observe = vi.fn();
   unobserve = vi.fn();
   disconnect = vi.fn();
-  constructor(_callback: ResizeObserverCallback) { }
+  constructor(_callback: ResizeObserverCallback) {}
 } as unknown as typeof ResizeObserver;
 
 let mockConfirmReturnValue = true;
@@ -66,15 +69,10 @@ describe("GuidedTour", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
 
-
-
-
-
     mockConfirmReturnValue = true;
     mockConfirm.mockClear();
     mockConfirm.mockImplementation(() => mockConfirmReturnValue);
     mockAnnounceMessage.mockClear();
-
 
     if (typeof document !== "undefined") {
       const existingElement = document.getElementById("test-target");
@@ -82,33 +80,31 @@ describe("GuidedTour", () => {
         existingElement.parentNode.removeChild(existingElement);
       }
 
-
       const testElement = document.createElement("div");
       testElement.id = "test-target";
 
       testElement.getBoundingClientRect = () =>
-      ({
-        top: 100,
-        left: 100,
-        width: 200,
-        height: 50,
-        bottom: 150,
-        right: 300,
-        x: 100,
-        y: 100,
-        toJSON: () => ({}),
-      } as DOMRect);
+        ({
+          top: 100,
+          left: 100,
+          width: 200,
+          height: 50,
+          bottom: 150,
+          right: 300,
+          x: 100,
+          y: 100,
+          toJSON: () => ({}),
+        }) as DOMRect;
       testElement.scrollIntoView = vi.fn();
       document.body.appendChild(testElement);
     }
   });
 
   afterEach(() => {
-
-
-
-
-    if (typeof document !== "undefined" && typeof document.getElementById === "function") {
+    if (
+      typeof document !== "undefined" &&
+      typeof document.getElementById === "function"
+    ) {
       try {
         const testElement = document.getElementById("test-target");
         if (testElement && testElement.parentNode) {
@@ -116,10 +112,8 @@ describe("GuidedTour", () => {
         }
       } catch (e) {
         console.error(e);
-
       }
     }
-
 
     vi.clearAllMocks();
   });
@@ -584,8 +578,9 @@ describe("GuidedTour", () => {
       const skipButton = screen.getByText("Skip");
       fireEvent.click(skipButton);
 
-
-      expect(mockConfirm).toHaveBeenCalledWith("Are you sure you want to skip the tour?");
+      expect(mockConfirm).toHaveBeenCalledWith(
+        "Are you sure you want to skip the tour?",
+      );
 
       expect(onSkip).toHaveBeenCalledTimes(1);
     });

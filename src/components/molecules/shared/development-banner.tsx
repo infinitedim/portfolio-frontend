@@ -18,29 +18,26 @@ export function DevelopmentBanner(): JSX.Element | null {
     openIssues: 2,
   });
 
-
   const testCoverage = useMemo(() => {
-
-
-
-
     const totalSourceFiles = 165;
     const totalTestFiles = 44;
     const totalTestCases = 871;
 
-
-
     const filesThatShouldHaveTests = Math.round(totalSourceFiles * 0.8);
-    const fileCoverage = Math.min(100, Math.round((totalTestFiles / filesThatShouldHaveTests) * 100));
-
-
-
+    const fileCoverage = Math.min(
+      100,
+      Math.round((totalTestFiles / filesThatShouldHaveTests) * 100),
+    );
 
     const estimatedTestCasesNeeded = filesThatShouldHaveTests * 12;
-    const scenarioCoverage = Math.min(100, Math.round((totalTestCases / estimatedTestCasesNeeded) * 100));
+    const scenarioCoverage = Math.min(
+      100,
+      Math.round((totalTestCases / estimatedTestCasesNeeded) * 100),
+    );
 
-
-    const totalCoverage = Math.round((fileCoverage * 0.4) + (scenarioCoverage * 0.6));
+    const totalCoverage = Math.round(
+      fileCoverage * 0.4 + scenarioCoverage * 0.6,
+    );
 
     return {
       fileCoverage,
@@ -49,13 +46,7 @@ export function DevelopmentBanner(): JSX.Element | null {
     };
   }, []);
 
-
   const developmentProgress = useMemo(() => {
-
-
-
-
-
     const baseProgress = 50;
     const progressFromTests = Math.round(testCoverage.totalCoverage * 0.3);
     const totalProgress = Math.min(100, baseProgress + progressFromTests);
@@ -79,7 +70,6 @@ export function DevelopmentBanner(): JSX.Element | null {
   }, []);
 
   if (!isVisible) return null;
-
 
   const _getLoadingDots = () => {
     return ".".repeat(animationPhase).padEnd(3, " ");

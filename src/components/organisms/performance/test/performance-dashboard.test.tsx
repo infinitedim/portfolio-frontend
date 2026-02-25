@@ -25,8 +25,11 @@ const mockGetReport = vi.fn(() => ({
 const mockClearMetrics = vi.fn();
 const mockExportMetrics = vi.fn(() => JSON.stringify({ test: "data" }));
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/lib/performance/performance-monitor", () => ({
   PerformanceMonitor: {
@@ -88,7 +91,10 @@ describe("PerformanceDashboard", () => {
         return;
       }
       const { container } = render(
-        <PerformanceDashboard isOpen={false} onClose={vi.fn()} />,
+        <PerformanceDashboard
+          isOpen={false}
+          onClose={vi.fn()}
+        />,
       );
 
       expect(container.firstChild).toBeNull();
@@ -99,7 +105,12 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       expect(screen.getByText(/Performance Dashboard/i)).toBeInTheDocument();
     });
@@ -109,7 +120,12 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       expect(screen.getByText(/Total Commands/i)).toBeInTheDocument();
       expect(screen.getByText("10")).toBeInTheDocument();
@@ -122,7 +138,12 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const commandButton = screen.getByText(/command/i);
       fireEvent.click(commandButton);
@@ -135,7 +156,12 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const allButton = screen.getByText(/All Metrics/i);
       fireEvent.click(allButton);
@@ -150,7 +176,12 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const checkbox = screen.getByLabelText(/Auto refresh/i);
       fireEvent.click(checkbox);
@@ -163,12 +194,17 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       vi.advanceTimersByTime(2000);
 
       await waitFor(() => {
-        expect(mockGetReport).toHaveBeenCalledTimes(2); 
+        expect(mockGetReport).toHaveBeenCalledTimes(2);
       });
     });
   });
@@ -179,7 +215,12 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const refreshButton = screen.getByText(/Refresh/i);
       fireEvent.click(refreshButton);
@@ -192,7 +233,12 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const clearButton = screen.getByText(/Clear Metrics/i);
       fireEvent.click(clearButton);
@@ -209,7 +255,12 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       const exportButton = screen.getByText(/Export Data/i);
       fireEvent.click(exportButton);
@@ -227,7 +278,12 @@ describe("PerformanceDashboard", () => {
         return;
       }
       const onClose = vi.fn();
-      render(<PerformanceDashboard isOpen={true} onClose={onClose} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={onClose}
+        />,
+      );
 
       const closeButton = screen.getByText("✕");
       fireEvent.click(closeButton);
@@ -242,10 +298,17 @@ describe("PerformanceDashboard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<PerformanceDashboard isOpen={true} onClose={vi.fn()} />);
+      render(
+        <PerformanceDashboard
+          isOpen={true}
+          onClose={vi.fn()}
+        />,
+      );
 
       expect(screen.getByText(/Recommendations/i)).toBeInTheDocument();
-      expect(screen.getByText(/Optimize command execution/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Optimize command execution/i),
+      ).toBeInTheDocument();
     });
   });
 });

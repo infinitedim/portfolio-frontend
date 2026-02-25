@@ -1,5 +1,3 @@
-
-
 import React, { useRef, useEffect, useCallback, RefObject } from "react";
 
 export const isClientSide = (): boolean => {

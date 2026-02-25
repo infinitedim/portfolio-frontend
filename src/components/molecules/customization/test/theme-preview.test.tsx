@@ -17,8 +17,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -41,7 +44,7 @@ describe("ThemePreview", () => {
       accent: "#0080ff",
       border: "#333333",
     },
-        source: "custom" as const,
+    source: "custom" as const,
     createdAt: new Date("2024-01-01"),
     modifiedAt: new Date("2024-01-02"),
   };

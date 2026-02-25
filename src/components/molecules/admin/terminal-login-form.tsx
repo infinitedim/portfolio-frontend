@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -253,10 +251,11 @@ export function TerminalLoginForm({
 
         {(() => {
           const isDisabled = isLoading || !email || !password;
-          const buttonClassName = `w-full p-3 text-left font-mono text-sm transition-all duration-300 ease-out ${isDisabled
-            ? "cursor-not-allowed opacity-60"
-            : "cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
-            }`;
+          const buttonClassName = `w-full p-3 text-left font-mono text-sm transition-all duration-300 ease-out ${
+            isDisabled
+              ? "cursor-not-allowed opacity-60"
+              : "cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+          }`;
 
           return (
             <button
@@ -272,10 +271,11 @@ export function TerminalLoginForm({
                 backgroundColor: isDisabled
                   ? `${themeConfig.colors.muted}20`
                   : `${themeConfig.colors.accent}20`,
-                border: `1px solid ${isDisabled
-                  ? themeConfig.colors.muted
-                  : themeConfig.colors.accent
-                  }`,
+                border: `1px solid ${
+                  isDisabled
+                    ? themeConfig.colors.muted
+                    : themeConfig.colors.accent
+                }`,
                 filter:
                   buttonHover && !isDisabled
                     ? `drop-shadow(0 0 12px ${themeConfig.colors.accent}40)`

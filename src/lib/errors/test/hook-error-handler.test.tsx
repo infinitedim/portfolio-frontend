@@ -1,5 +1,3 @@
-
-
 import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
@@ -21,11 +19,11 @@ describe("Hook Error Handler", () => {
 
   describe("useErrorHandler", () => {
     it("should initialize with no error", () => {
-    if (!canRunTests) {
-      expect(true).toBe(true);
-      return;
-    }
-    const { result } = renderHook(() => useErrorHandler());
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      const { result } = renderHook(() => useErrorHandler());
 
       expect(result.current.error).toBeNull();
       expect(result.current.isLoading).toBe(false);
@@ -35,11 +33,11 @@ describe("Hook Error Handler", () => {
     });
 
     it("should set error when setError is called", () => {
-    if (!canRunTests) {
-      expect(true).toBe(true);
-      return;
-    }
-    const { result } = renderHook(() => useErrorHandler());
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      const { result } = renderHook(() => useErrorHandler());
       const testError = new NetworkError("Test error", {
         severity: ErrorSeverity.HIGH,
       });
@@ -53,11 +51,11 @@ describe("Hook Error Handler", () => {
     });
 
     it("should clear error when clearError is called", () => {
-    if (!canRunTests) {
-      expect(true).toBe(true);
-      return;
-    }
-    const { result } = renderHook(() => useErrorHandler());
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      const { result } = renderHook(() => useErrorHandler());
       const testError = new NetworkError("Test error", {
         severity: ErrorSeverity.HIGH,
       });

@@ -666,8 +666,8 @@ export const pwaCommand: Command = {
 
     const isOnline = typeof navigator !== "undefined" ? navigator.onLine : true;
     const isInstalled =
-      typeof window !== "undefined" &&
       (typeof window !== "undefined" &&
+        typeof window !== "undefined" &&
         window.matchMedia &&
         window.matchMedia("(display-mode: standalone)").matches) ||
       (typeof navigator !== "undefined" &&

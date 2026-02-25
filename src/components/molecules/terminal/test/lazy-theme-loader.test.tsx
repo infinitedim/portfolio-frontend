@@ -18,8 +18,11 @@ const mockThemes = {
   light: { ...mockThemeConfig, name: "light" },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/lib/themes/theme-config", () => ({
   themes: mockThemes,
@@ -103,7 +106,7 @@ describe("LazyThemeLoader", () => {
         expect(true).toBe(true);
         return;
       }
-      
+
       vi.doMock("@/lib/themes/theme-config", () => {
         throw new Error("Failed to load");
       });
@@ -114,7 +117,6 @@ describe("LazyThemeLoader", () => {
 
       render(<LazyThemeLoader themeName="default">{children}</LazyThemeLoader>);
 
-      
       await waitFor(() => {
         expect(screen.queryByTestId("loaded-content")).not.toBeInTheDocument();
       });
@@ -153,7 +155,6 @@ describe("LazyThemeLoader", () => {
 
       unmount();
 
-      
       expect(true).toBe(true);
     });
   });

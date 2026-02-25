@@ -1,4 +1,3 @@
- 
 "use client";
 
 import { JSX, useState } from "react";
@@ -14,14 +13,10 @@ export default function AdminDashboardPage(): JSX.Element {
   const router = useRouter();
   const [isLogoutHovered, setIsLogoutHovered] = useState(false);
 
-  
-
   const handleLogout = async () => {
     await logout();
     router.push("/admin/login");
   };
-
-  
 
   const handleBackToHome = () => {
     router.push("/");
@@ -92,8 +87,9 @@ export default function AdminDashboardPage(): JSX.Element {
                   onClick={handleLogout}
                   onMouseEnter={() => setIsLogoutHovered(true)}
                   onMouseLeave={() => setIsLogoutHovered(false)}
-                  className={`px-3 py-1 text-xs font-mono rounded transition-all duration-200 ${isLogoutHovered ? "scale-105" : "scale-100"
-                    }`}
+                  className={`px-3 py-1 text-xs font-mono rounded transition-all duration-200 ${
+                    isLogoutHovered ? "scale-105" : "scale-100"
+                  }`}
                   style={{
                     backgroundColor: isLogoutHovered
                       ? themeConfig.colors.error

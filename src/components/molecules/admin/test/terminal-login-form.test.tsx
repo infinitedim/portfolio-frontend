@@ -16,8 +16,12 @@ const mockThemeConfig = {
 };
 
 const mockLogin = vi.fn();
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/lib/auth/auth-context", () => ({
   useAuth: () => ({
@@ -114,7 +118,9 @@ describe("TerminalLoginForm", () => {
         />,
       );
 
-      expect(screen.getByText(/Press Tab to switch fields/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Press Tab to switch fields/),
+      ).toBeInTheDocument();
     });
   });
 
@@ -289,7 +295,10 @@ describe("TerminalLoginForm", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(mockLogin).toHaveBeenCalledWith("test@example.com", "password123");
+        expect(mockLogin).toHaveBeenCalledWith(
+          "test@example.com",
+          "password123",
+        );
       });
     });
 
@@ -356,7 +365,10 @@ describe("TerminalLoginForm", () => {
         return;
       }
       mockLogin.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ success: true }), 100)),
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ success: true }), 100),
+          ),
       );
 
       render(
@@ -418,15 +430,12 @@ describe("TerminalLoginForm", () => {
       const passwordInput = screen.getByPlaceholderText("Enter your password");
       const submitButton = screen.getByText("Submit");
 
-      
       fireEvent.change(emailInput, { target: { value: "test@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "wrong" } });
       fireEvent.click(submitButton);
 
-      
       fireEvent.change(emailInput, { target: { value: "new@example.com" } });
 
-      
       expect(emailInput).toBeInTheDocument();
     });
   });

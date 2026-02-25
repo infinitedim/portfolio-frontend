@@ -35,7 +35,10 @@ describe("ScreenReaderAnnouncer", () => {
       }
       ensureDocumentBody();
       render(
-        <ScreenReaderAnnouncer message="Urgent message" priority="assertive" />,
+        <ScreenReaderAnnouncer
+          message="Urgent message"
+          priority="assertive"
+        />,
       );
       const announcer = screen.getByRole("status", { hidden: true });
       expect(announcer).toHaveAttribute("aria-live", "assertive");
@@ -62,10 +65,8 @@ describe("ScreenReaderAnnouncer", () => {
       render(<ScreenReaderAnnouncer message="Test message" />);
       const announcer = screen.getByRole("status", { hidden: true });
 
-      
       expect(announcer.textContent).toBe("");
 
-      
       vi.advanceTimersByTime(100);
 
       await waitFor(() => {
@@ -85,21 +86,24 @@ describe("ScreenReaderAnnouncer", () => {
       const announcer = screen.getByRole("status", { hidden: true });
 
       vi.advanceTimersByTime(100);
-      await waitFor(() => {
-        expect(announcer.textContent).toBe("First message");
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(announcer.textContent).toBe("First message");
+        },
+        { timeout: 1000 },
+      );
 
-      
       rerender(<ScreenReaderAnnouncer message="Second message" />);
 
-      
       expect(announcer.textContent).toBe("");
 
-      
       vi.advanceTimersByTime(100);
-      await waitFor(() => {
-        expect(announcer.textContent).toBe("Second message");
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(announcer.textContent).toBe("Second message");
+        },
+        { timeout: 1000 },
+      );
     });
 
     it("should handle empty message", () => {

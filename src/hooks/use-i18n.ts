@@ -1,5 +1,5 @@
-import {useState, useEffect, useCallback, useMemo} from "react";
-import {i18n, t, type TranslationKeys} from "@/lib/i18n/i18n-service";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { i18n, t, type TranslationKeys } from "@/lib/i18n/i18n-service";
 
 export function useI18n() {
   const [currentLocale, setCurrentLocale] = useState(() => {

@@ -248,14 +248,15 @@ describe("ProjectDemoModal", () => {
       );
 
       const refreshButton = screen.getByTitle("Refresh demo");
-      const iframe = screen.getByTitle("Test Project Demo") as HTMLIFrameElement;
+      const iframe = screen.getByTitle(
+        "Test Project Demo",
+      ) as HTMLIFrameElement;
 
       const initialSrc = iframe.src;
       fireEvent.click(refreshButton);
 
       vi.advanceTimersByTime(10);
 
-      
       expect(iframe.src).toBe(initialSrc);
       vi.useRealTimers();
     });
@@ -297,7 +298,9 @@ describe("ProjectDemoModal", () => {
       fireEvent.load(iframe);
 
       await waitFor(() => {
-        expect(screen.queryByText("Loading project demo...")).not.toBeInTheDocument();
+        expect(
+          screen.queryByText("Loading project demo..."),
+        ).not.toBeInTheDocument();
       });
     });
   });

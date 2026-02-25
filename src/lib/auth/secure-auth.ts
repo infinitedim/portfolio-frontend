@@ -19,8 +19,6 @@ export class SecureAuth {
     path: "/",
   };
 
-  
-
   static getCookie(name: string): string | null {
     if (typeof document === "undefined") return null;
 
@@ -34,8 +32,6 @@ export class SecureAuth {
 
     return null;
   }
-
-  
 
   static setCookie(
     name: string,
@@ -56,15 +52,11 @@ export class SecureAuth {
     document.cookie = cookieString;
   }
 
-  
-
   static removeCookie(name: string, path: string = "/"): void {
     if (typeof document === "undefined") return;
 
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; SameSite=Strict`;
   }
-
-  
 
   static async verifyAuthentication(accessToken?: string): Promise<{
     isValid: boolean;
@@ -88,7 +80,7 @@ export class SecureAuth {
 
       if (response.ok) {
         const data = await response.json();
-        
+
         const isValid = data.success || data.isValid;
         return { isValid, user: data.user };
       } else {
@@ -99,8 +91,6 @@ export class SecureAuth {
       return { isValid: false };
     }
   }
-
-  
 
   static async login(
     email: string,
@@ -140,8 +130,6 @@ export class SecureAuth {
       return { success: false, error: "Network error" };
     }
   }
-
-  
 
   static async logout(
     accessToken?: string,

@@ -15,8 +15,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -94,7 +97,9 @@ describe("AdvancedTerminalFeaturesIntegration", () => {
       }
       render(<AdvancedTerminalFeaturesIntegration />);
 
-      expect(screen.getByText(/Advanced Terminal Features/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Advanced Terminal Features/i),
+      ).toBeInTheDocument();
     });
 
     it("should display statistics", () => {
@@ -104,8 +109,8 @@ describe("AdvancedTerminalFeaturesIntegration", () => {
       }
       render(<AdvancedTerminalFeaturesIntegration />);
 
-      expect(screen.getByText("50")).toBeInTheDocument(); 
-      expect(screen.getByText(/95.5%/i)).toBeInTheDocument(); 
+      expect(screen.getByText("50")).toBeInTheDocument();
+      expect(screen.getByText(/95.5%/i)).toBeInTheDocument();
     });
   });
 
@@ -159,7 +164,7 @@ describe("AdvancedTerminalFeaturesIntegration", () => {
       render(<AdvancedTerminalFeaturesIntegration />);
 
       const exportButtons = screen.getAllByText("💾 Export");
-      fireEvent.click(exportButtons[1]); 
+      fireEvent.click(exportButtons[1]);
 
       expect(mockExportShortcuts).toHaveBeenCalled();
     });

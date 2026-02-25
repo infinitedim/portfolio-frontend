@@ -46,8 +46,6 @@ export class AliasManager {
     return AliasManager.instance;
   }
 
-  
-
   private loadAliases(): void {
     try {
       const saved = localStorage.getItem("terminal-aliases");
@@ -69,8 +67,6 @@ export class AliasManager {
     }
   }
 
-  
-
   private saveAliases(): void {
     try {
       const customAliases = Object.fromEntries(
@@ -84,8 +80,6 @@ export class AliasManager {
     }
   }
 
-  
-
   resolve(command: string): string {
     const parts = command.trim().split(" ");
     const alias = parts[0].toLowerCase();
@@ -97,8 +91,6 @@ export class AliasManager {
 
     return command;
   }
-
-  
 
   addAlias(alias: string, command: string): boolean {
     if (!alias || !command) return false;
@@ -113,8 +105,6 @@ export class AliasManager {
     this.saveAliases();
     return true;
   }
-
-  
 
   removeAlias(alias: string): boolean {
     const normalizedAlias = alias.toLowerCase().trim();
@@ -132,13 +122,9 @@ export class AliasManager {
     return false;
   }
 
-  
-
   getAllAliases(): Record<string, string> {
     return { ...this.aliases };
   }
-
-  
 
   getCustomAliases(): Record<string, string> {
     return Object.fromEntries(
@@ -146,13 +132,9 @@ export class AliasManager {
     );
   }
 
-  
-
   hasAlias(alias: string): boolean {
     return alias.toLowerCase() in this.aliases;
   }
-
-  
 
   resetToDefaults(): void {
     this.aliases = { ...DEFAULT_ALIASES };

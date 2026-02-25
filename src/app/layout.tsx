@@ -211,7 +211,6 @@ export default function RootLayout({
           }}
         />
 
-        
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{

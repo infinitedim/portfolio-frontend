@@ -11,7 +11,6 @@ describe("useMobile", () => {
 
     ensureDocumentBody();
 
-    
     if (!document.body) {
       const body = document.createElement("body");
       if (document.documentElement) {
@@ -26,12 +25,11 @@ describe("useMobile", () => {
       return;
     }
 
-    
     globalThis.innerWidth = 500;
     globalThis.innerHeight = 800;
 
     const { result } = renderHook(() => useMobile());
-    
+
     expect(result.current.isMobile).toBe(true);
   });
 });

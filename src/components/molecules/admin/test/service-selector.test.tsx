@@ -137,7 +137,9 @@ describe("ServiceSelector", () => {
         />,
       );
 
-      const userServiceButton = screen.getByText("User Service").closest("button");
+      const userServiceButton = screen
+        .getByText("User Service")
+        .closest("button");
       fireEvent.click(userServiceButton!);
 
       expect(mockOnServiceSelect).toHaveBeenCalledWith(mockServices[0]);
@@ -157,7 +159,9 @@ describe("ServiceSelector", () => {
         />,
       );
 
-      const userServiceButton = screen.getByText("User Service").closest("button");
+      const userServiceButton = screen
+        .getByText("User Service")
+        .closest("button");
       expect(userServiceButton).toHaveClass("scale-105");
     });
 
@@ -175,7 +179,9 @@ describe("ServiceSelector", () => {
         />,
       );
 
-      const postServiceButton = screen.getByText("Post Service").closest("button");
+      const postServiceButton = screen
+        .getByText("Post Service")
+        .closest("button");
       expect(postServiceButton?.textContent).toContain("▶");
     });
   });

@@ -113,7 +113,12 @@ describe("TechBadge", () => {
         return;
       }
 
-      render(<TechBadge technology="React" count={5} />);
+      render(
+        <TechBadge
+          technology="React"
+          count={5}
+        />,
+      );
       expect(screen.getByText("5")).toBeInTheDocument();
     });
 
@@ -123,7 +128,12 @@ describe("TechBadge", () => {
         return;
       }
 
-      const { container } = render(<TechBadge technology="React" count={10} />);
+      const { container } = render(
+        <TechBadge
+          technology="React"
+          count={10}
+        />,
+      );
       const countBadge = container.querySelector(".rounded-full");
       expect(countBadge).toBeTruthy();
     });
@@ -137,7 +147,10 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" size="sm" />,
+        <TechBadge
+          technology="React"
+          size="sm"
+        />,
       );
       const badge = container.querySelector("span");
       expect(badge?.className).toContain("text-xs");
@@ -150,7 +163,10 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" size="md" />,
+        <TechBadge
+          technology="React"
+          size="md"
+        />,
       );
       const badge = container.querySelector("span");
       expect(badge?.className).toContain("text-sm");
@@ -163,7 +179,10 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" size="lg" />,
+        <TechBadge
+          technology="React"
+          size="lg"
+        />,
       );
       const badge = container.querySelector("span");
       expect(badge?.className).toContain("text-base");
@@ -201,7 +220,10 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" interactive />,
+        <TechBadge
+          technology="React"
+          interactive
+        />,
       );
       const badge = container.querySelector("span");
       expect(badge?.getAttribute("role")).toBe("button");
@@ -214,7 +236,10 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" interactive />,
+        <TechBadge
+          technology="React"
+          interactive
+        />,
       );
       const badge = container.querySelector("span");
       expect(badge?.getAttribute("tabIndex")).toBe("0");
@@ -249,7 +274,10 @@ describe("TechBadge", () => {
 
       const handleClick = vi.fn();
       render(
-        <TechBadge technology="React" onClick={handleClick} />,
+        <TechBadge
+          technology="React"
+          onClick={handleClick}
+        />,
       );
 
       const badge = screen.getByText("React");
@@ -330,7 +358,11 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" interactive selected />,
+        <TechBadge
+          technology="React"
+          interactive
+          selected
+        />,
       );
       const badge = container.querySelector("span");
       expect(badge?.className).toContain("ring-2");
@@ -344,7 +376,10 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" interactive />,
+        <TechBadge
+          technology="React"
+          interactive
+        />,
       );
       const badge = container.querySelector("span");
       expect(badge?.className).not.toContain("ring-2");
@@ -359,7 +394,10 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" interactive />,
+        <TechBadge
+          technology="React"
+          interactive
+        />,
       );
       const badge = container.querySelector("span");
       expect(badge?.className).toContain("hover:scale-105");
@@ -373,12 +411,15 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" interactive />,
+        <TechBadge
+          technology="React"
+          interactive
+        />,
       );
       const badge = container.querySelector("span");
 
       fireEvent.mouseEnter(badge!);
-      
+
       expect(badge).toBeInTheDocument();
     });
 
@@ -389,13 +430,16 @@ describe("TechBadge", () => {
       }
 
       const { container } = render(
-        <TechBadge technology="React" interactive />,
+        <TechBadge
+          technology="React"
+          interactive
+        />,
       );
       const badge = container.querySelector("span");
 
       fireEvent.mouseEnter(badge!);
       fireEvent.mouseLeave(badge!);
-      
+
       expect(badge).toBeInTheDocument();
     });
   });
@@ -485,8 +529,7 @@ describe("TechBadge", () => {
 
         const { container } = render(<TechBadge technology={tech} />);
         const badge = container.querySelector("span");
-        
-        
+
         expect(badge?.className).toMatch(/bg-[\w-]+\/\d+|bg-black\/\d+/);
         expect(badge?.className).toMatch(/text-[\w-]+-\d+|text-gray-\d+/);
       });

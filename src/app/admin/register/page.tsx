@@ -41,7 +41,6 @@ export default function AdminRegisterPage() {
     e.preventDefault();
     setError(null);
 
-    
     if (!email || !password || !confirmPassword) {
       setError("Email and password are required");
       return;
@@ -60,7 +59,12 @@ export default function AdminRegisterPage() {
     setIsLoading(true);
 
     try {
-      const result = await authService.register(email, password, firstName, lastName);
+      const result = await authService.register(
+        email,
+        password,
+        firstName,
+        lastName,
+      );
 
       if (result.success) {
         setSuccess(true);
@@ -112,7 +116,6 @@ export default function AdminRegisterPage() {
             boxShadow: `0 4px 20px ${themeConfig.colors.border}20`,
           }}
         >
-          
           <div
             className="flex items-center justify-between p-3 border-b"
             style={{ borderColor: themeConfig.colors.border }}
@@ -144,8 +147,9 @@ export default function AdminRegisterPage() {
               onClick={handleBack}
               onMouseEnter={() => setIsBackHovered(true)}
               onMouseLeave={() => setIsBackHovered(false)}
-              className={`px-3 py-1 text-xs font-mono rounded transition-all duration-200 ${isBackHovered ? "scale-105" : "scale-100"
-                }`}
+              className={`px-3 py-1 text-xs font-mono rounded transition-all duration-200 ${
+                isBackHovered ? "scale-105" : "scale-100"
+              }`}
               style={{
                 backgroundColor: isBackHovered
                   ? themeConfig.colors.accent
@@ -163,7 +167,6 @@ export default function AdminRegisterPage() {
             </button>
           </div>
 
-          
           <div className="p-6">
             <div className="mb-6">
               <h1
@@ -207,8 +210,10 @@ export default function AdminRegisterPage() {
                 ✓ Registration successful! Redirecting to login...
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-4"
+              >
                 <div>
                   <label
                     htmlFor="email"
@@ -237,7 +242,6 @@ export default function AdminRegisterPage() {
                   />
                 </div>
 
-                
                 <div>
                   <label
                     htmlFor="firstName"
@@ -265,7 +269,6 @@ export default function AdminRegisterPage() {
                   />
                 </div>
 
-                
                 <div>
                   <label
                     htmlFor="lastName"
@@ -293,7 +296,6 @@ export default function AdminRegisterPage() {
                   />
                 </div>
 
-                
                 <div>
                   <label
                     htmlFor="password"
@@ -332,7 +334,6 @@ export default function AdminRegisterPage() {
                   </div>
                 </div>
 
-                
                 <div>
                   <label
                     htmlFor="confirmPassword"
@@ -360,7 +361,6 @@ export default function AdminRegisterPage() {
                   />
                 </div>
 
-                
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -377,7 +377,6 @@ export default function AdminRegisterPage() {
             )}
           </div>
 
-          
           <div
             className="p-3 border-t text-xs text-center"
             style={{ borderColor: themeConfig.colors.border }}

@@ -12,7 +12,7 @@ describe("PerformanceMonitor (performance-index.tsx)", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    
+
     (PerformanceMonitor as any).instance = undefined;
   });
 
@@ -72,7 +72,6 @@ describe("PerformanceMonitor (performance-index.tsx)", () => {
       const monitor = PerformanceMonitor.getInstance();
       const measure = monitor.startMeasure("test-op");
 
-      
       const duration = measure.end();
 
       expect(duration).toBeGreaterThanOrEqual(0);
@@ -118,13 +117,14 @@ describe("PerformanceMonitor (performance-index.tsx)", () => {
       }
       const onRender = vi.fn();
       render(
-        <PerformanceProfiler id="test" onRender={onRender}>
+        <PerformanceProfiler
+          id="test"
+          onRender={onRender}
+        >
           <div>Test</div>
         </PerformanceProfiler>,
       );
 
-      
-      
       expect(onRender).toBeDefined();
     });
   });
@@ -135,8 +135,7 @@ describe("PerformanceMonitor (performance-index.tsx)", () => {
         expect(true).toBe(true);
         return;
       }
-      
-      
+
       expect(typeof usePerfMeasure).toBe("function");
     });
   });

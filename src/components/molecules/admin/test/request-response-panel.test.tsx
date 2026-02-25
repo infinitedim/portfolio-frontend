@@ -103,11 +103,9 @@ describe("RequestResponsePanel", () => {
         />,
       );
 
-      
       fireEvent.click(screen.getByText("📥 Response Log"));
       expect(screen.getByText("Response Details")).toBeInTheDocument();
 
-      
       fireEvent.click(screen.getByText("📤 Request Log"));
       expect(screen.getByText("Request Details")).toBeInTheDocument();
     });
@@ -146,7 +144,9 @@ describe("RequestResponsePanel", () => {
         />,
       );
 
-      expect(screen.getByText("Select a service and method to see request data")).toBeInTheDocument();
+      expect(
+        screen.getByText("Select a service and method to see request data"),
+      ).toBeInTheDocument();
     });
 
     it("should show copy button when request log has content", () => {
@@ -200,7 +200,6 @@ describe("RequestResponsePanel", () => {
         />,
       );
 
-      
       fireEvent.click(screen.getByText("📥 Response Log"));
 
       const textarea = screen.getByDisplayValue('{"status": "success"}');
@@ -223,7 +222,9 @@ describe("RequestResponsePanel", () => {
 
       fireEvent.click(screen.getByText("📥 Response Log"));
 
-      expect(screen.getByText("Execute a request to see response data")).toBeInTheDocument();
+      expect(
+        screen.getByText("Execute a request to see response data"),
+      ).toBeInTheDocument();
     });
 
     it("should show loading indicator when isLoading is true", () => {
@@ -331,7 +332,6 @@ describe("RequestResponsePanel", () => {
       const copyButton = screen.getByText("📋 Copy");
       fireEvent.click(copyButton);
 
-      
       await waitFor(() => {
         expect(mockWriteText).toHaveBeenCalled();
       });

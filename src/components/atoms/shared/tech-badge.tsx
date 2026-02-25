@@ -290,11 +290,11 @@ export function TechBadge({
 
   const interactiveClasses = interactive
     ? [
-      "cursor-pointer hover:scale-105 hover:shadow-lg",
-      selected
-        ? "ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-900"
-        : "",
-    ]
+        "cursor-pointer hover:scale-105 hover:shadow-lg",
+        selected
+          ? "ring-2 ring-blue-400 ring-offset-2 ring-offset-gray-900"
+          : "",
+      ]
     : [];
 
   const hoverClasses = isHovered && interactive ? "shadow-lg scale-105" : "";

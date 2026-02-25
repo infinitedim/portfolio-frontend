@@ -17,7 +17,6 @@ describe("useFont", () => {
       return;
     }
 
-    
     if (typeof document !== "undefined") {
       document.documentElement.style.setProperty(
         "--terminal-font-family",

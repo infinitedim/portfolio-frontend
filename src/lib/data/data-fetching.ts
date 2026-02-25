@@ -437,10 +437,6 @@ function getFallbackAboutData(): AboutInfo {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Roadmap types (mirrors backend JSON shape from roadmap.sh)
-// ---------------------------------------------------------------------------
-
 export interface RoadmapProgress {
   resourceTitle: string;
   resourceType: string;
@@ -490,10 +486,6 @@ export interface RoadmapFavourites {
   roadmapSlugs: string[];
   weeklySubscriptions: string[];
 }
-
-// ---------------------------------------------------------------------------
-// Roadmap data fetchers (server-side, via portfolio backend proxy)
-// ---------------------------------------------------------------------------
 
 export const getRoadmapDashboard = cache(
   async (): Promise<RoadmapDashboard | null> => {

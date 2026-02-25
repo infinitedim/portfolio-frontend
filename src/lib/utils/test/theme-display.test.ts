@@ -129,7 +129,6 @@ describe("themeDisplay", () => {
 
   describe("generateColorPreview method", () => {
     it("should handle valid theme names", () => {
-      
       expect(() =>
         ThemeDisplay.generateColorPreview("dark" as any),
       ).not.toThrow();

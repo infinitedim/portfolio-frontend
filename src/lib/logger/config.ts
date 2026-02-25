@@ -1,5 +1,3 @@
-
-
 import { LogLevel, type LoggerConfig, type BatchConfig } from "./types";
 
 function getEnvironment(): "development" | "staging" | "production" {
@@ -11,15 +9,14 @@ function getEnvironment(): "development" | "staging" | "production" {
 
 const DEFAULT_BATCH_CONFIG: BatchConfig = {
   maxBatchSize: 10,
-  maxBatchWait: 5000, 
+  maxBatchWait: 5000,
   maxRetries: 3,
-  retryDelay: 1000, 
+  retryDelay: 1000,
 };
 
 function getLogLevel(): LogLevel {
   const env = getEnvironment();
 
-  
   const envLogLevel = process.env.NEXT_PUBLIC_LOG_LEVEL?.toLowerCase();
   if (
     envLogLevel &&
@@ -28,7 +25,6 @@ function getLogLevel(): LogLevel {
     return envLogLevel as LogLevel;
   }
 
-  
   switch (env) {
     case "production":
       return LogLevel.INFO;
@@ -42,18 +38,15 @@ function getLogLevel(): LogLevel {
 }
 
 function getApiEndpoint(): string {
-  
   if (process.env.NEXT_PUBLIC_LOG_API_URL) {
     return process.env.NEXT_PUBLIC_LOG_API_URL;
   }
 
-  
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   if (baseUrl) {
     return `${baseUrl}/api/logs`;
   }
 
-  
   return "/api/logs";
 }
 
@@ -62,11 +55,11 @@ export const clientConfig: LoggerConfig = {
   pretty: getEnvironment() === "development",
   environment: getEnvironment(),
   console: true,
-  file: false, 
-  remote: getEnvironment() !== "development", 
+  file: false,
+  remote: getEnvironment() !== "development",
   batch: DEFAULT_BATCH_CONFIG,
   apiEndpoint: getApiEndpoint(),
-  maskPII: true, 
+  maskPII: true,
 };
 
 export const serverConfig: LoggerConfig = {
@@ -74,8 +67,8 @@ export const serverConfig: LoggerConfig = {
   pretty: getEnvironment() === "development",
   environment: getEnvironment(),
   console: true,
-  file: getEnvironment() !== "development", 
-  remote: false, 
+  file: getEnvironment() !== "development",
+  remote: false,
   maskPII: true,
 };
 
@@ -126,15 +119,14 @@ export const LOG_PATHS = {
 } as const;
 
 export const ROTATION_CONFIG = {
-  maxSize: "50m", 
+  maxSize: "50m",
   maxFiles: 10,
   compress: true,
 } as const;
 
 export const SAMPLING_CONFIG = {
-  
   debug: getEnvironment() === "production" ? 0.1 : 1.0,
-  
+
   info: 1.0,
   warn: 1.0,
   error: 1.0,
@@ -142,6 +134,6 @@ export const SAMPLING_CONFIG = {
 } as const;
 
 export const PERFORMANCE_THRESHOLDS = {
-  slow: 1000, 
-  critical: 5000, 
+  slow: 1000,
+  critical: 5000,
 } as const;

@@ -1,15 +1,3 @@
-/**
- * Higher-order function that wraps a Next.js API route handler with
- * AES-256-GCM decryption (request) + encryption (response).
- *
- * Non-encrypted requests (X-Encrypted header absent) are passed through
- * unchanged so the route still works from server-to-server calls, health
- * checks, and the Rust backend.
- *
- * Logging is NOT affected: decryption happens before any logger is called
- * inside the handler, so Loki / Prometheus always see plaintext.
- */
-
 import { NextRequest, NextResponse } from "next/server";
 import {
   serverDecrypt,
@@ -19,18 +7,10 @@ import {
   type EncryptedPayload,
 } from "./server";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 type RouteHandler<C = unknown> = (
   req: NextRequest,
   context: C,
 ) => Promise<NextResponse> | NextResponse;
-
-// ---------------------------------------------------------------------------
-// withEncryption HOF
-// ---------------------------------------------------------------------------
 
 export function withEncryption<C = unknown>(
   handler: RouteHandler<C>,
@@ -38,14 +18,12 @@ export function withEncryption<C = unknown>(
   return async (req: NextRequest, context: C): Promise<NextResponse> => {
     const encrypted = req.headers.get("x-encrypted");
 
-    // ── Pass-through for non-encrypted callers (server-to-server, SSR) ──
     if (!encrypted || encrypted !== "1") {
       return handler(req, context);
     }
 
     const sessionId = req.headers.get("x-session-id") ?? "";
 
-    // ── Validate session ─────────────────────────────────────────────────
     if (!hasSession(sessionId)) {
       return NextResponse.json(
         { error: "invalid or expired crypto session — re-handshake required" },
@@ -53,7 +31,6 @@ export function withEncryption<C = unknown>(
       );
     }
 
-    // ── Decrypt request body ─────────────────────────────────────────────
     let decryptedBody: string | null = null;
     const contentType = req.headers.get("content-type") ?? "";
     const hasBody = req.method !== "GET" && req.method !== "HEAD";
@@ -86,12 +63,11 @@ export function withEncryption<C = unknown>(
       }
     }
 
-    // ── Build a synthetic Request with the decrypted body ────────────────
     const syntheticReq = new NextRequest(req.url, {
       method: req.method,
       headers: (() => {
         const h = new Headers(req.headers);
-        // Remove encryption markers so the inner handler doesn't see them
+
         h.delete("x-encrypted");
         h.delete("x-session-id");
         if (decryptedBody !== null) {
@@ -103,7 +79,6 @@ export function withEncryption<C = unknown>(
       body: decryptedBody !== null ? decryptedBody : undefined,
     });
 
-    // ── Call the inner handler ────────────────────────────────────────────
     let innerResponse: NextResponse;
     try {
       innerResponse = await handler(syntheticReq, context);
@@ -114,7 +89,6 @@ export function withEncryption<C = unknown>(
       );
     }
 
-    // ── Encrypt the response ─────────────────────────────────────────────
     let responseText: string;
     try {
       responseText = await innerResponse.text();
@@ -127,7 +101,6 @@ export function withEncryption<C = unknown>(
       refreshSession(sessionId);
       encryptedPayload = serverEncrypt(sessionId, responseText);
     } catch (_e) {
-      // Session expired between request start and response — client must re-handshake
       return NextResponse.json(
         { error: "session expired during response encryption" },
         { status: 401 },
@@ -139,16 +112,12 @@ export function withEncryption<C = unknown>(
       headers: {
         "x-encrypted": "1",
         "x-session-id": sessionId,
-        // Forward relevant response headers (e.g. Cache-Control)
+
         ...extractSafeHeaders(innerResponse.headers),
       },
     });
   };
 }
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 
 function isEncryptedPayload(v: unknown): v is EncryptedPayload {
   return (

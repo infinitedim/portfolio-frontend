@@ -48,7 +48,6 @@ export function FontManager({
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  
   const googleFonts = [
     "Fira Code",
     "JetBrains Mono",
@@ -73,8 +72,6 @@ export function FontManager({
     "Press Start 2P",
   ];
 
-  
-  
   const fontsWithLigatures = [
     "Fira Code",
     "JetBrains Mono",
@@ -85,7 +82,6 @@ export function FontManager({
   const generateRandomFont = async () => {
     setIsGeneratingRandom(true);
     try {
-      
       const availableFonts = randomFontLigatures
         ? googleFonts.filter((font) => fontsWithLigatures.includes(font))
         : googleFonts;
@@ -96,7 +92,6 @@ export function FontManager({
         return;
       }
 
-      
       if (randomFontLigatures) {
         console.log("Available fonts with ligatures:", availableFonts);
       }
@@ -106,23 +101,26 @@ export function FontManager({
       const fontFamily = randomFontName.replace(/\s+/g, "+");
       const googleFontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@400&display=swap`;
 
-      console.log("Picked random font:", randomFontName, "from", availableFonts.length, "available fonts");
+      console.log(
+        "Picked random font:",
+        randomFontName,
+        "from",
+        availableFonts.length,
+        "available fonts",
+      );
       console.log("All available fonts with ligatures:", availableFonts);
 
-      
       const existingFonts = customizationService.getCustomFonts();
       const existingFont = existingFonts.find(
-        (f) => f.name === randomFontName && f.source === "google"
+        (f) => f.name === randomFontName && f.source === "google",
       );
 
       let savedFont: CustomFont;
 
       if (existingFont) {
-        
         console.log("Using existing font:", existingFont.name);
         savedFont = existingFont;
       } else {
-        
         const newFont: Omit<CustomFont, "id" | "createdAt"> = {
           name: randomFontName,
           family: `"${randomFontName}", monospace`,
@@ -135,12 +133,11 @@ export function FontManager({
 
         savedFont = customizationService.saveCustomFontFromGoogle(newFont);
       }
-      
-      
+
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       onUpdate();
-      
+
       setSelectedFont(savedFont);
     } catch (error) {
       console.error("Failed to generate random font:", error);
@@ -283,7 +280,11 @@ export function FontManager({
 
             <select
               value={filterSource}
-              onChange={(e) => setFilterSource(e.target.value as "all" | "system" | "google" | "custom")}
+              onChange={(e) =>
+                setFilterSource(
+                  e.target.value as "all" | "system" | "google" | "custom",
+                )
+              }
               className="w-full px-2 py-1 rounded border bg-transparent"
               style={{
                 borderColor: themeConfig.colors.border,
@@ -296,7 +297,6 @@ export function FontManager({
               <option value="custom">Custom</option>
             </select>
 
-            
             <div
               className="p-3 rounded border"
               style={{

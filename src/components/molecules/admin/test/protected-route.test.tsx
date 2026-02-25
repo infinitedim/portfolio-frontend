@@ -4,8 +4,12 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ProtectedRoute } from "../protected-route";
 
 const mockPush = vi.fn();
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -49,7 +53,9 @@ describe("ProtectedRoute", () => {
         </ProtectedRoute>,
       );
 
-      expect(screen.getByText("Checking authentication...")).toBeInTheDocument();
+      expect(
+        screen.getByText("Checking authentication..."),
+      ).toBeInTheDocument();
       expect(screen.queryByText("Protected Content")).not.toBeInTheDocument();
     });
 
@@ -71,7 +77,9 @@ describe("ProtectedRoute", () => {
       );
 
       expect(screen.getByText("Custom Loading...")).toBeInTheDocument();
-      expect(screen.queryByText("Checking authentication...")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Checking authentication..."),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -179,7 +187,6 @@ describe("ProtectedRoute", () => {
         </ProtectedRoute>,
       );
 
-      
       mockUseAuth.mockReturnValue({
         isAuthenticated: false,
         isLoading: true,
@@ -189,9 +196,10 @@ describe("ProtectedRoute", () => {
           <div>Protected Content</div>
         </ProtectedRoute>,
       );
-      expect(screen.getByText("Checking authentication...")).toBeInTheDocument();
+      expect(
+        screen.getByText("Checking authentication..."),
+      ).toBeInTheDocument();
 
-      
       mockUseAuth.mockReturnValue({
         isAuthenticated: true,
         isLoading: false,
@@ -216,7 +224,6 @@ describe("ProtectedRoute", () => {
         </ProtectedRoute>,
       );
 
-      
       mockUseAuth.mockReturnValue({
         isAuthenticated: false,
         isLoading: true,
@@ -226,9 +233,10 @@ describe("ProtectedRoute", () => {
           <div>Protected Content</div>
         </ProtectedRoute>,
       );
-      expect(screen.getByText("Checking authentication...")).toBeInTheDocument();
+      expect(
+        screen.getByText("Checking authentication..."),
+      ).toBeInTheDocument();
 
-      
       mockUseAuth.mockReturnValue({
         isAuthenticated: false,
         isLoading: false,

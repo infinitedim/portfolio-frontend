@@ -1,5 +1,3 @@
-
-
 export const preloadCriticalResources = () => {
   const fonts = ["/fonts/fira-code.woff2", "/fonts/cascadia-code.woff2"];
 
@@ -15,6 +13,12 @@ export const preloadCriticalResources = () => {
 };
 
 export const prefetchResources = () => {
+  if (
+    typeof document === "undefined" ||
+    typeof document.createElement !== "function"
+  ) {
+    return;
+  }
   const themes = ["dracula", "hacker", "cyberpunk"];
 
   themes.forEach((theme) => {
@@ -54,7 +58,6 @@ export const analyzeBundleSize = () => {
   if (process.env.NODE_ENV !== "development") return;
 
   const performanceEntries = performance.getEntriesByType("navigation");
-  
 
   if (performanceEntries.length > 0) {
     const navEntry = performanceEntries[0] as PerformanceNavigationTiming;
@@ -137,7 +140,7 @@ export const optimizeMemoryUsage = () => {
     const unusedEvents = ["resize", "scroll", "touchmove"];
     unusedEvents.forEach((event) => {
       const listeners = (
-        window as Window & {_eventListeners?: Record<string, unknown[]>}
+        window as Window & { _eventListeners?: Record<string, unknown[]> }
       )._eventListeners?.[event];
       if (listeners && listeners.length > 10) {
         console.warn(`Many ${event} listeners detected. Consider cleanup.`);
@@ -150,14 +153,12 @@ export const optimizeMemoryUsage = () => {
   const clearOldStorage = () => {
     const MS_IN_DAY = 24 * 60 * 60 * 1000;
 
-    
-
-    function isDataWithTimestamp(data: unknown): data is {timestamp: number} {
+    function isDataWithTimestamp(data: unknown): data is { timestamp: number } {
       return (
         typeof data === "object" &&
         data !== null &&
         "timestamp" in data &&
-        typeof (data as {timestamp: unknown}).timestamp === "number"
+        typeof (data as { timestamp: unknown }).timestamp === "number"
       );
     }
 

@@ -4,8 +4,11 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ProjectCard } from "../project-card";
 import type { Project } from "@/lib/data/data-fetching";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/components/molecules/shared/optimized-image", () => ({
   OptimizedImage: ({ alt }: { alt: string }) => (
@@ -66,7 +69,9 @@ describe("ProjectCard", () => {
       }
       render(<ProjectCard project={mockProject} />);
 
-      expect(screen.getByText("A test project description")).toBeInTheDocument();
+      expect(
+        screen.getByText("A test project description"),
+      ).toBeInTheDocument();
     });
 
     it("should render technologies", () => {
@@ -105,7 +110,12 @@ describe("ProjectCard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<ProjectCard project={mockProject} featured={true} />);
+      render(
+        <ProjectCard
+          project={mockProject}
+          featured={true}
+        />,
+      );
 
       expect(screen.getByText("⭐ FEATURED")).toBeInTheDocument();
     });
@@ -115,7 +125,12 @@ describe("ProjectCard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<ProjectCard project={mockProject} featured={false} />);
+      render(
+        <ProjectCard
+          project={mockProject}
+          featured={false}
+        />,
+      );
 
       expect(screen.queryByText("⭐ FEATURED")).not.toBeInTheDocument();
     });
@@ -142,9 +157,14 @@ describe("ProjectCard", () => {
       }
       render(<ProjectCard project={mockProject} />);
 
-      const githubLink = screen.getByLabelText("View source code of Test Project");
+      const githubLink = screen.getByLabelText(
+        "View source code of Test Project",
+      );
       expect(githubLink).toBeInTheDocument();
-      expect(githubLink).toHaveAttribute("href", "https://github.com/example/project");
+      expect(githubLink).toHaveAttribute(
+        "href",
+        "https://github.com/example/project",
+      );
       expect(githubLink).toHaveAttribute("target", "_blank");
     });
 
@@ -193,7 +213,10 @@ describe("ProjectCard", () => {
         expect(true).toBe(true);
         return;
       }
-      const inProgressProject = { ...mockProject, status: "in-progress" as const };
+      const inProgressProject = {
+        ...mockProject,
+        status: "in-progress" as const,
+      };
 
       render(<ProjectCard project={inProgressProject} />);
 
@@ -247,7 +270,10 @@ describe("ProjectCard", () => {
       const { container } = render(<ProjectCard project={mockProject} />);
 
       const article = container.querySelector("article[itemscope]");
-      expect(article).toHaveAttribute("itemtype", "https://schema.org/CreativeWork");
+      expect(article).toHaveAttribute(
+        "itemtype",
+        "https://schema.org/CreativeWork",
+      );
     });
 
     it("should have itemProp for name", () => {

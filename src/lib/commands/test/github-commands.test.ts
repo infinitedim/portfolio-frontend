@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
 if (typeof (vi as unknown as Record<string, unknown>).mock !== "function")
   (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
@@ -105,7 +104,6 @@ describe("githubCommand", () => {
     });
 
     it("returns user info when username provided", async () => {
-      // Requires vi.mock for GitHubService — not available in bun test
       if (typeof Bun !== "undefined") {
         expect(true).toBe(true);
         return;
@@ -125,7 +123,6 @@ describe("githubCommand", () => {
     });
 
     it("returns repository list when username provided", async () => {
-      // Requires vi.mock for GitHubService — not available in bun test
       if (typeof Bun !== "undefined") {
         expect(true).toBe(true);
         return;
@@ -146,7 +143,6 @@ describe("githubCommand", () => {
     });
 
     it("returns repo info when both params provided", async () => {
-      // Requires vi.mock for GitHubService — not available in bun test
       if (typeof Bun !== "undefined") {
         expect(true).toBe(true);
         return;
@@ -169,7 +165,6 @@ describe("githubCommand", () => {
     });
 
     it("returns commits when params provided", async () => {
-      // Requires vi.mock for GitHubService — not available in bun test
       if (typeof Bun !== "undefined") {
         expect(true).toBe(true);
         return;
@@ -192,7 +187,6 @@ describe("githubCommand", () => {
     });
 
     it("returns language stats when params provided", async () => {
-      // Requires vi.mock for GitHubService — not available in bun test
       if (typeof Bun !== "undefined") {
         expect(true).toBe(true);
         return;
@@ -216,7 +210,6 @@ describe("githubCommand", () => {
     });
 
     it("returns search results when query provided", async () => {
-      // Requires vi.mock for GitHubService — not available in bun test
       if (typeof Bun !== "undefined") {
         expect(true).toBe(true);
         return;
@@ -238,7 +231,6 @@ describe("githubCommand", () => {
     });
 
     it("returns starred repos when username provided", async () => {
-      // Requires vi.mock for GitHubService — not available in bun test
       if (typeof Bun !== "undefined") {
         expect(true).toBe(true);
         return;
@@ -256,7 +248,6 @@ describe("githubCommand", () => {
     });
 
     it("returns gists when username provided", async () => {
-      // Requires vi.mock for GitHubService — not available in bun test
       if (typeof Bun !== "undefined") {
         expect(true).toBe(true);
         return;

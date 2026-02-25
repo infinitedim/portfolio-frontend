@@ -13,8 +13,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -23,9 +26,11 @@ vi.mock("@/hooks/use-theme", () => ({
 }));
 
 vi.mock("@/components/molecules/terminal/command-output", () => ({
-  CommandOutput: ({ output }: { output: { type: string; content: string } }) => (
-    <div data-testid="command-output">{output.content}</div>
-  ),
+  CommandOutput: ({
+    output,
+  }: {
+    output: { type: string; content: string };
+  }) => <div data-testid="command-output">{output.content}</div>,
 }));
 
 const mockHistory: TerminalHistory[] = [
@@ -71,9 +76,7 @@ describe("VirtualizedTerminalHistory", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
-        <VirtualizedTerminalHistory history={[]} />,
-      );
+      const { container } = render(<VirtualizedTerminalHistory history={[]} />);
 
       expect(container.firstChild).toBeInTheDocument();
     });
@@ -84,7 +87,10 @@ describe("VirtualizedTerminalHistory", () => {
         return;
       }
       const { container } = render(
-        <VirtualizedTerminalHistory history={mockHistory} itemHeight={150} />,
+        <VirtualizedTerminalHistory
+          history={mockHistory}
+          itemHeight={150}
+        />,
       );
 
       expect(container.firstChild).toBeInTheDocument();
@@ -111,7 +117,10 @@ describe("VirtualizedTerminalHistory", () => {
         return;
       }
       const { container } = render(
-        <VirtualizedTerminalHistory history={mockHistory} overscan={10} />,
+        <VirtualizedTerminalHistory
+          history={mockHistory}
+          overscan={10}
+        />,
       );
 
       expect(container.firstChild).toBeInTheDocument();
@@ -132,7 +141,6 @@ describe("VirtualizedTerminalHistory", () => {
 
       render(<VirtualizedTerminalHistory history={largeHistory} />);
 
-      
       const outputs = screen.getAllByTestId("command-output");
       expect(outputs.length).toBeLessThan(1000);
     });

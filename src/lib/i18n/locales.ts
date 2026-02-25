@@ -1,5 +1,3 @@
-
-
 export interface LocaleConfig {
   code: string;
   name: string;

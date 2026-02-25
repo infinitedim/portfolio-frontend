@@ -1,5 +1,3 @@
-
-
 import { vi, type Mock } from "vitest";
 import React, { type ReactElement, type ReactNode } from "react";
 
@@ -49,11 +47,11 @@ export function mockFetch(
     return Promise.reject(new Error(`No mock found for ${method} ${url}`));
   });
 
-  global.fetch = fetchMock;
+  global.fetch = fetchMock as unknown as typeof fetch;
 }
 
 export function resetFetchMock(): void {
-  global.fetch = vi.fn();
+  global.fetch = vi.fn() as unknown as typeof fetch;
 }
 
 export function createMockTRPCClient<T extends Record<string, unknown>>(
@@ -64,7 +62,7 @@ export function createMockTRPCClient<T extends Record<string, unknown>>(
       if (overrides && prop in overrides) {
         return overrides[prop as keyof T];
       }
-      
+
       return new Proxy(
         {},
         {

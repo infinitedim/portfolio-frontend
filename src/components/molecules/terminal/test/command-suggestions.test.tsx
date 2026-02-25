@@ -12,8 +12,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -77,16 +80,6 @@ describe("CommandSuggestions", () => {
         expect(true).toBe(true);
         return;
       }
-
-
-
-
-
-
-
-
-
-
 
       const { container } = render(
         <CommandSuggestions
@@ -185,7 +178,6 @@ describe("CommandSuggestions", () => {
       });
 
       fireEvent.keyDown(document, { key: "ArrowDown" });
-
 
       expect(screen.getByText("help")).toBeInTheDocument();
     });

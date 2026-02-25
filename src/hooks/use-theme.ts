@@ -184,9 +184,6 @@ export function useTheme(): UseThemeReturn {
           themeClasses.push(`theme-${themeName}`);
           body.className = themeClasses.join(" ");
 
-          
-          
-          
           const cssVars = generateCSSVariables(config.colors);
           Object.entries(cssVars).forEach(([property, value]) => {
             root.style.setProperty(property, value);
@@ -195,7 +192,6 @@ export function useTheme(): UseThemeReturn {
           appliedThemeRef.current = themeName;
         });
 
-        
         setTimeout(() => {
           const renderTime = performanceMonitor.endTiming(
             "theme-application",
@@ -219,7 +215,7 @@ export function useTheme(): UseThemeReturn {
           "theme",
           { error: String(error), theme: themeName },
         );
-        
+
         performanceMonitor.endTiming("theme-application", "theme");
         if (isMountedRef.current) {
           setState((prev) => ({ ...prev, error: "Failed to apply theme" }));
@@ -297,7 +293,6 @@ export function useTheme(): UseThemeReturn {
 
   useEffect(() => {
     try {
-      
       appliedThemeRef.current = null;
       setState((prev) => ({ ...prev, mounted: true }));
 

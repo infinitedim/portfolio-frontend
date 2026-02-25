@@ -2,8 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { Terminal } from "../terminal";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: vi.fn(),
@@ -63,8 +66,7 @@ describe("Terminal", () => {
         expect(true).toBe(true);
         return;
       }
-      
-      
+
       expect(Terminal).toBeDefined();
       expect(typeof Terminal).toBe("function");
     });

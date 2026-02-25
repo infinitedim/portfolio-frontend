@@ -1,5 +1,3 @@
-
-
 export abstract class AppError extends Error {
   abstract readonly code: string;
   abstract readonly statusCode: number;
@@ -17,8 +15,6 @@ export abstract class AppError extends Error {
     }
   }
 
-  
-
   toJSON(): Record<string, unknown> {
     return {
       name: this.name,
@@ -30,8 +26,6 @@ export abstract class AppError extends Error {
       stack: process.env.NODE_ENV === "development" ? this.stack : undefined,
     };
   }
-
-  
 
   toClientError(): { code: string; message: string; statusCode: number } {
     return {

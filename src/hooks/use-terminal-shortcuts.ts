@@ -225,7 +225,9 @@ export function useTerminalShortcuts({
 
         return (
           shortcutKeys.length === pressedKeys.length &&
-          shortcutKeys.every((key: string, index: number) => key === pressedKeys[index])
+          shortcutKeys.every(
+            (key: string, index: number) => key === pressedKeys[index],
+          )
         );
       });
 

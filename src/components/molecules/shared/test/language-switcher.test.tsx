@@ -12,8 +12,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -114,7 +117,12 @@ describe("LanguageSwitcher", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<LanguageSwitcher showNative={true} variant="list" />);
+      render(
+        <LanguageSwitcher
+          showNative={true}
+          variant="list"
+        />,
+      );
 
       expect(screen.getByText("Bahasa Indonesia")).toBeInTheDocument();
     });
@@ -124,7 +132,12 @@ describe("LanguageSwitcher", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<LanguageSwitcher showNative={false} variant="list" />);
+      render(
+        <LanguageSwitcher
+          showNative={false}
+          variant="list"
+        />,
+      );
 
       expect(screen.getByText("Indonesian")).toBeInTheDocument();
     });
@@ -356,8 +369,8 @@ describe("LanguageSwitcher", () => {
       const options = screen.getAllByRole("option");
       expect(options.length).toBeGreaterThan(0);
 
-      const selectedOption = options.find((opt) =>
-        opt.getAttribute("aria-selected") === "true",
+      const selectedOption = options.find(
+        (opt) => opt.getAttribute("aria-selected") === "true",
       );
       expect(selectedOption).toBeInTheDocument();
     });
@@ -395,7 +408,7 @@ describe("LanguageSwitcher", () => {
       fireEvent.click(indonesianButton);
 
       expect(mockChangeLocale).toHaveBeenCalledWith("id");
-      
+
       await waitFor(() => {
         expect(button).toHaveAttribute("aria-expanded", "false");
       });
@@ -408,7 +421,6 @@ describe("LanguageSwitcher", () => {
       }
       render(<LanguageSwitcher variant="list" />);
 
-      
       expect(screen.getByText("English")).toBeInTheDocument();
       expect(screen.getByText("Bahasa Indonesia")).toBeInTheDocument();
       expect(screen.getByText("العربية")).toBeInTheDocument();

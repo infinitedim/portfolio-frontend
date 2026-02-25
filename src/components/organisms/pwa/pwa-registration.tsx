@@ -127,7 +127,8 @@ export function PWARegistration() {
 
       const isStandalone =
         window.matchMedia?.("(display-mode: standalone)")?.matches || false;
-      const isIOSStandalone = (navigator as Navigator & { standalone?: boolean }).standalone === true;
+      const isIOSStandalone =
+        (navigator as Navigator & { standalone?: boolean }).standalone === true;
       const isTWA = document.referrer.includes("android-app://");
       const isInstalledPWA = isStandalone || isIOSStandalone || isTWA;
 
@@ -227,13 +228,19 @@ export function PWARegistration() {
         const errorMessage =
           error instanceof Error ? error.message : "Unknown error";
 
-        if (!errorMessage.includes("404") && !errorMessage.includes("Failed to register")) {
+        if (
+          !errorMessage.includes("404") &&
+          !errorMessage.includes("Failed to register")
+        ) {
           console.error("PWA: Service worker registration failed:", error);
         } else {
           console.warn("PWA: Service worker not available:", errorMessage);
         }
 
-        if (!errorMessage.includes("404") && !errorMessage.includes("bad HTTP response code")) {
+        if (
+          !errorMessage.includes("404") &&
+          !errorMessage.includes("bad HTTP response code")
+        ) {
           setError(`Service worker registration failed: ${errorMessage}`);
         }
         return null;
@@ -420,21 +427,19 @@ export function PWARegistration() {
 
   useEffect(() => {
     if (error) {
-
       if (!error.includes("404") && !error.includes("bad HTTP response code")) {
         console.error("PWA Component Error:", error);
       } else {
-
-        console.debug("PWA: Service worker not available (expected in some environments)");
+        console.debug(
+          "PWA: Service worker not available (expected in some environments)",
+        );
       }
     }
   }, [error]);
 
-  // Check tour completion status and listen for tour-completed event
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Check if tour was already completed (from localStorage)
     const checkTourCompleted = (): boolean => {
       try {
         const stored = localStorage.getItem(TOUR_STORAGE_KEY);
@@ -443,7 +448,7 @@ export function PWARegistration() {
           return data.version === TOUR_VERSION && data.completed === true;
         }
       } catch {
-        // If we can't read tour state, assume not completed
+        console.warn("PWA: Failed to read tour completion status");
       }
       return false;
     };
@@ -453,7 +458,6 @@ export function PWARegistration() {
       return;
     }
 
-    // Listen for tour completion event
     const handleTourCompleted = () => {
       if (mountedRef.current) {
         console.log("PWA: Tour completed, enabling install prompt");

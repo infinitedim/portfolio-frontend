@@ -33,7 +33,6 @@ interface ExecutionPattern {
 }
 
 interface InteractiveCommandHistoryProps {
-
   isVisible: boolean;
 
   onCommandSelect: (command: string) => void;
@@ -222,7 +221,6 @@ export function InteractiveCommandHistory({
   const patterns = commandPatterns();
 
   return (
-
     <div
       ref={containerRef}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
@@ -349,8 +347,9 @@ export function InteractiveCommandHistory({
               {entries.map((entry, index) => (
                 <div
                   key={entry.id}
-                  className={`group p-4 rounded-lg border cursor-pointer transition-all duration-200 ${entry.expanded ? "ring-2" : ""
-                    }`}
+                  className={`group p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+                    entry.expanded ? "ring-2" : ""
+                  }`}
                   style={{
                     backgroundColor: entry.expanded
                       ? `${themeConfig.colors.accent}10`
@@ -575,10 +574,11 @@ export function InteractiveCommandHistory({
                 {patterns.map((pattern, index) => (
                   <div
                     key={index}
-                    className={`p-3 rounded border cursor-pointer transition-all duration-200 ${selectedPattern === pattern.sequence.join(" → ")
-                      ? "ring-2"
-                      : ""
-                      }`}
+                    className={`p-3 rounded border cursor-pointer transition-all duration-200 ${
+                      selectedPattern === pattern.sequence.join(" → ")
+                        ? "ring-2"
+                        : ""
+                    }`}
                     style={{
                       backgroundColor:
                         selectedPattern === pattern.sequence.join(" → ")

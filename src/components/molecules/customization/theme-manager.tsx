@@ -60,13 +60,11 @@ export function ThemeManager({
     console.log(`🎨 ThemeManager: Applying theme ${themeId}`);
 
     try {
-      
-      const customTheme = customizationService.getCustomThemes().find(
-        (t) => t.id === themeId,
-      );
+      const customTheme = customizationService
+        .getCustomThemes()
+        .find((t) => t.id === themeId);
 
       if (customTheme) {
-        
         const root = document.documentElement;
         const body = document.body;
 
@@ -75,14 +73,16 @@ export function ThemeManager({
           return;
         }
 
-        
         const themeConfig = {
           name: customTheme.name,
           colors: {
             bg: customTheme.colors.bg,
             text: customTheme.colors.text,
             accent: customTheme.colors.accent,
-            muted: customTheme.colors.muted || customTheme.colors.border || customTheme.colors.text,
+            muted:
+              customTheme.colors.muted ||
+              customTheme.colors.border ||
+              customTheme.colors.text,
             border: customTheme.colors.border,
             success: customTheme.colors.success || customTheme.colors.accent,
             error: customTheme.colors.error || "#ff4444",
@@ -92,7 +92,6 @@ export function ThemeManager({
           },
         };
 
-        
         const hexToHsl = (hex: string): string => {
           if (!hex?.match(/^#[0-9A-Fa-f]{6}$/)) return "0 0% 0%";
           const r = parseInt(hex.slice(1, 3), 16) / 255;
@@ -149,19 +148,16 @@ export function ThemeManager({
           "--popover-foreground": hexToHsl(themeConfig.colors.text),
         };
 
-        
         Object.entries(cssVars).forEach(([property, value]) => {
           root.style.setProperty(property, value);
         });
 
-        
         const themeClasses = body.className
           .split(" ")
           .filter((cls) => !cls.startsWith("theme-"));
         themeClasses.push(`theme-custom-${customTheme.id}`);
         body.className = themeClasses.join(" ");
 
-        
         if (typeof window !== "undefined" && window.localStorage) {
           window.localStorage.setItem("terminal-theme", themeId);
         }
@@ -172,7 +168,6 @@ export function ThemeManager({
           onApplyTheme(themeId);
         }
       } else {
-        
         const success = changeTheme(themeId as ThemeName);
 
         if (success) {
@@ -312,7 +307,11 @@ export function ThemeManager({
           <div className="flex gap-2">
             <select
               value={filterSource}
-              onChange={(e) => setFilterSource(e.target.value as "all" | "built-in" | "custom" | "imported")}
+              onChange={(e) =>
+                setFilterSource(
+                  e.target.value as "all" | "built-in" | "custom" | "imported",
+                )
+              }
               className="px-3 py-2 rounded border text-sm"
               style={{
                 backgroundColor: `${themeConfig.colors.muted}20`,
@@ -327,7 +326,9 @@ export function ThemeManager({
             </select>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as "name" | "created" | "modified")}
+              onChange={(e) =>
+                setSortBy(e.target.value as "name" | "created" | "modified")
+              }
               className="px-3 py-2 rounded border text-sm"
               style={{
                 backgroundColor: `${themeConfig.colors.muted}20`,

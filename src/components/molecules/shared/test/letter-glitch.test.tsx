@@ -3,8 +3,11 @@ import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { LetterGlitch } from "../letter-glitch";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/dynamic", () => ({
   default: (_loader: () => Promise<any>) => {
@@ -47,9 +50,7 @@ describe("LetterGlitch", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
-        <LetterGlitch className="custom-class" />,
-      );
+      const { container } = render(<LetterGlitch className="custom-class" />);
 
       const canvas = container.querySelector("canvas");
       expect(canvas).toBeInTheDocument();
@@ -82,9 +83,10 @@ describe("LetterGlitch", () => {
         expect(true).toBe(true);
         return;
       }
-      const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+      const consoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
-      
       vi.mock("next/dynamic", () => ({
         default: () => {
           throw new Error("Test error");
@@ -93,7 +95,6 @@ describe("LetterGlitch", () => {
 
       const { container } = render(<LetterGlitch />);
 
-      
       const fallback = container.querySelector("div[aria-hidden='true']");
       expect(fallback).toBeInTheDocument();
 

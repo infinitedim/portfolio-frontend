@@ -12,8 +12,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -39,9 +42,7 @@ describe("CommandLoadingIndicator", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
-        <CommandLoadingIndicator visible={false} />,
-      );
+      const { container } = render(<CommandLoadingIndicator visible={false} />);
 
       expect(container.firstChild).toBeNull();
     });
@@ -61,7 +62,12 @@ describe("CommandLoadingIndicator", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<CommandLoadingIndicator visible={true} command="help" />);
+      render(
+        <CommandLoadingIndicator
+          visible={true}
+          command="help"
+        />,
+      );
 
       expect(screen.getByText("help")).toBeInTheDocument();
     });
@@ -93,7 +99,10 @@ describe("CommandLoadingIndicator", () => {
       }
       const customMessages = ["Custom message 1", "Custom message 2"];
       render(
-        <CommandLoadingIndicator visible={true} messages={customMessages} />,
+        <CommandLoadingIndicator
+          visible={true}
+          messages={customMessages}
+        />,
       );
 
       expect(screen.getByText("Custom message 1")).toBeInTheDocument();
@@ -104,13 +113,9 @@ describe("CommandLoadingIndicator", () => {
         expect(true).toBe(true);
         return;
       }
-      
-      
-      const { container } = render(
-        <CommandLoadingIndicator visible={true} />,
-      );
 
-      
+      const { container } = render(<CommandLoadingIndicator visible={true} />);
+
       expect(container.firstChild).toBeInTheDocument();
     });
   });
@@ -123,12 +128,14 @@ describe("CommandLoadingIndicator", () => {
       }
       const messages = ["Message 1", "Message 2", "Message 3"];
       render(
-        <CommandLoadingIndicator visible={true} messages={messages} />,
+        <CommandLoadingIndicator
+          visible={true}
+          messages={messages}
+        />,
       );
 
       expect(screen.getByText("Message 1")).toBeInTheDocument();
 
-      
       vi.advanceTimersByTime(1500);
 
       await waitFor(() => {
@@ -149,7 +156,10 @@ describe("CommandLoadingIndicator", () => {
       }
       const messages = ["Message 1", "Message 2"];
       const { rerender } = render(
-        <CommandLoadingIndicator visible={true} messages={messages} />,
+        <CommandLoadingIndicator
+          visible={true}
+          messages={messages}
+        />,
       );
 
       vi.advanceTimersByTime(1500);
@@ -158,15 +168,19 @@ describe("CommandLoadingIndicator", () => {
         expect(screen.getByText("Message 2")).toBeInTheDocument();
       });
 
-      
       rerender(
-        <CommandLoadingIndicator visible={false} messages={messages} />,
+        <CommandLoadingIndicator
+          visible={false}
+          messages={messages}
+        />,
       );
       rerender(
-        <CommandLoadingIndicator visible={true} messages={messages} />,
+        <CommandLoadingIndicator
+          visible={true}
+          messages={messages}
+        />,
       );
 
-      
       expect(screen.getByText("Message 1")).toBeInTheDocument();
     });
 
@@ -177,15 +191,12 @@ describe("CommandLoadingIndicator", () => {
       }
       render(<CommandLoadingIndicator visible={true} />);
 
-      
       const dotsElement = screen.getByText(/Processing command/i).parentElement;
       expect(dotsElement).toBeInTheDocument();
 
-      
       vi.advanceTimersByTime(400);
 
       await waitFor(() => {
-        
         expect(dotsElement).toBeInTheDocument();
       });
     });
@@ -195,17 +206,13 @@ describe("CommandLoadingIndicator", () => {
         expect(true).toBe(true);
         return;
       }
-      const { rerender } = render(
-        <CommandLoadingIndicator visible={true} />,
-      );
+      const { rerender } = render(<CommandLoadingIndicator visible={true} />);
 
-      vi.advanceTimersByTime(1200); 
+      vi.advanceTimersByTime(1200);
 
-      
       rerender(<CommandLoadingIndicator visible={false} />);
       rerender(<CommandLoadingIndicator visible={true} />);
 
-      
       const dotsElement = screen.getByText(/Processing command/i).parentElement;
       expect(dotsElement).toBeInTheDocument();
     });
@@ -217,9 +224,7 @@ describe("CommandLoadingIndicator", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
-        <CommandLoadingIndicator visible={true} />,
-      );
+      const { container } = render(<CommandLoadingIndicator visible={true} />);
 
       const spinner = container.querySelector(".animate-spin");
       expect(spinner).toBeInTheDocument();
@@ -230,9 +235,7 @@ describe("CommandLoadingIndicator", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
-        <CommandLoadingIndicator visible={true} />,
-      );
+      const { container } = render(<CommandLoadingIndicator visible={true} />);
 
       const bars = container.querySelectorAll(".animate-pulse");
       expect(bars.length).toBeGreaterThan(0);
@@ -243,9 +246,7 @@ describe("CommandLoadingIndicator", () => {
         expect(true).toBe(true);
         return;
       }
-      const { container } = render(
-        <CommandLoadingIndicator visible={true} />,
-      );
+      const { container } = render(<CommandLoadingIndicator visible={true} />);
 
       const indicator = container.firstChild as HTMLElement;
       expect(indicator).toHaveStyle({

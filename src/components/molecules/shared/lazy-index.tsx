@@ -3,27 +3,35 @@
 import { lazy } from "react";
 
 export const LazyCustomizationManager = lazy(() =>
-  import("@/components/organisms/customization/customization-manager").then((module) => ({
-    default: module.CustomizationManager,
-  })),
+  import("@/components/organisms/customization/customization-manager").then(
+    (module) => ({
+      default: module.CustomizationManager,
+    }),
+  ),
 );
 
 export const LazyThemeEditor = lazy(() =>
-  import("@/components/molecules/customization/theme-editor").then((module) => ({
-    default: module.ThemeEditor,
-  })),
+  import("@/components/molecules/customization/theme-editor").then(
+    (module) => ({
+      default: module.ThemeEditor,
+    }),
+  ),
 );
 
 export const LazyFontManager = lazy(() =>
-  import("@/components/molecules/customization/font-manager").then((module) => ({
-    default: module.FontManager,
-  })),
+  import("@/components/molecules/customization/font-manager").then(
+    (module) => ({
+      default: module.FontManager,
+    }),
+  ),
 );
 
 export const LazyRoadmapVisualizer = lazy(() =>
-  import("@/components/organisms/roadmap/roadmap-visualizer").then((module) => ({
-    default: module.RoadmapVisualizer,
-  })),
+  import("@/components/organisms/roadmap/roadmap-visualizer").then(
+    (module) => ({
+      default: module.RoadmapVisualizer,
+    }),
+  ),
 );
 
 export const LazyLoadingFallback = () => (

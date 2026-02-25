@@ -696,7 +696,7 @@ export class I18nService {
   private listeners: Set<(locale: string) => void> = new Set();
 
   private constructor() {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
       const savedLocale = localStorage.getItem("portfolio_locale");
       if (savedLocale && isValidLocale(savedLocale)) {
         this.currentLocale = savedLocale;

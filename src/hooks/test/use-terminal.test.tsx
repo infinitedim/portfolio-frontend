@@ -1,13 +1,16 @@
-
-
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterAll } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useTerminal } from "@/hooks/use-terminal";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
-
+declare const Bun: unknown;
+if (typeof Bun !== "undefined") {
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+} else if (
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+) {
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+}
 vi.mock("@/lib/commands/skills-commands", () => ({ skillsCommand: null }));
 vi.mock("@/lib/commands/roadmap-commands", () => ({
   roadmapCommand: null,
@@ -80,7 +83,13 @@ vi.mock("@/hooks/use-command-history", () => ({
     getSuggestions: () => [],
     clearHistory: vi.fn(),
     history: [],
-    analytics: { totalCommands: 0, uniqueCommands: 0, successRate: 100, topCommands: [], commandsByCategory: {} },
+    analytics: {
+      totalCommands: 0,
+      uniqueCommands: 0,
+      successRate: 100,
+      topCommands: [],
+      commandsByCategory: {},
+    },
   }),
 }));
 
@@ -124,4 +133,35 @@ describe("useTerminal", () => {
     act(() => result.current.setCurrentInput("help"));
     expect(result.current.currentInput).toBe("help");
   });
+});
+
+afterAll(() => {
+  const mockedModules = [
+    "@/lib/commands/skills-commands",
+    "@/lib/commands/roadmap-commands",
+    "@/lib/commands/command-registry",
+    "@/lib/commands/language-commands",
+    "@/lib/commands/customization-commands",
+    "@/lib/commands/demo-commands",
+    "@/lib/commands/github-commands",
+    "@/lib/commands/tech-stack-commands",
+    "@/lib/commands/location-commands",
+    "@/lib/commands/tour-commands",
+    "@/lib/commands/commands",
+    "@/hooks/use-command-history",
+  ];
+  mockedModules.forEach((m) => {
+    try {
+      vi.unmock(m);
+    } catch {
+      console.warn(`Module ${m} was not mocked or could not be unmocked`);
+    }
+  });
+  try {
+    vi.resetModules();
+  } catch {
+    console.warn(
+      "Failed to reset modules. This may cause issues with other tests.",
+    );
+  }
 });

@@ -1,7 +1,7 @@
 "use client";
 
-import {useState, useEffect, useMemo, useCallback, useRef} from "react";
-import {useDebouncedValue} from "@/hooks/use-debounced-value";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 
 export interface HistoryItem {
   command: string;
@@ -121,7 +121,7 @@ export function useHistory({
   const toggleFavorite = useCallback((command: string) => {
     setHistory((prev) =>
       prev.map((item) =>
-        item.command === command ? {...item, favorite: !item.favorite} : item,
+        item.command === command ? { ...item, favorite: !item.favorite } : item,
       ),
     );
   }, []);
@@ -184,7 +184,7 @@ export function useHistory({
     return Object.entries(getCommandFrequency)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
-      .map(([command, count]) => ({command, count}));
+      .map(([command, count]) => ({ command, count }));
   }, [getCommandFrequency]);
 
   const clearHistory = useCallback(() => {
@@ -194,7 +194,7 @@ export function useHistory({
 
   const exportHistory = useCallback(() => {
     const dataStr = JSON.stringify(history, null, 2);
-    const blob = new Blob([dataStr], {type: "application/json"});
+    const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;

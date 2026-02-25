@@ -3,8 +3,11 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { OptimizedImage } from "../optimized-image";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/image", () => ({
   default: ({
@@ -18,7 +21,6 @@ vi.mock("next/image", () => ({
     onLoadingComplete?: () => void;
     onError?: () => void;
   }) => {
-    
     setTimeout(() => {
       if (onLoadingComplete) onLoadingComplete();
     }, 100);
@@ -47,7 +49,12 @@ describe("OptimizedImage", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<OptimizedImage src="/test.jpg" alt="Test image" />);
+      render(
+        <OptimizedImage
+          src="/test.jpg"
+          alt="Test image"
+        />,
+      );
 
       expect(screen.getByTestId("next-image")).toBeInTheDocument();
       expect(screen.getByAltText("Test image")).toBeInTheDocument();
@@ -77,7 +84,11 @@ describe("OptimizedImage", () => {
         return;
       }
       const { container } = render(
-        <OptimizedImage src="/test.jpg" alt="Test image" fill={true} />,
+        <OptimizedImage
+          src="/test.jpg"
+          alt="Test image"
+          fill={true}
+        />,
       );
 
       const img = container.querySelector("img");
@@ -109,7 +120,10 @@ describe("OptimizedImage", () => {
         return;
       }
       const { container } = render(
-        <OptimizedImage src="/invalid.jpg" alt="Test image" />,
+        <OptimizedImage
+          src="/invalid.jpg"
+          alt="Test image"
+        />,
       );
 
       const img = container.querySelector("img");
@@ -130,7 +144,12 @@ describe("OptimizedImage", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<OptimizedImage src="/test.jpg" alt="Test image" />);
+      render(
+        <OptimizedImage
+          src="/test.jpg"
+          alt="Test image"
+        />,
+      );
 
       const img = screen.getByTestId("next-image");
       expect(img).toHaveClass("scale-110", "blur-2xl", "grayscale");
@@ -141,12 +160,20 @@ describe("OptimizedImage", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<OptimizedImage src="/test.jpg" alt="Test image" />);
+      render(
+        <OptimizedImage
+          src="/test.jpg"
+          alt="Test image"
+        />,
+      );
 
-      await waitFor(() => {
-        const img = screen.getByTestId("next-image");
-        expect(img).toHaveClass("scale-100", "blur-0", "grayscale-0");
-      }, { timeout: 200 });
+      await waitFor(
+        () => {
+          const img = screen.getByTestId("next-image");
+          expect(img).toHaveClass("scale-100", "blur-0", "grayscale-0");
+        },
+        { timeout: 200 },
+      );
     });
   });
 });

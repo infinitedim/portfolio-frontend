@@ -1,5 +1,3 @@
-
-
 export interface ParsedArgs {
   command: string;
   subcommand?: string;
@@ -9,8 +7,6 @@ export interface ParsedArgs {
 }
 
 export class ArgumentParser {
-  
-
   static parse(input: string): ParsedArgs {
     const parts = input.trim().split(/\s+/);
     const command = parts[0] || "";
@@ -46,16 +42,12 @@ export class ArgumentParser {
     };
   }
 
-  
-
   static hasFlag(args: ParsedArgs, short: string, long?: string): boolean {
     return (
       args.flags.includes(short) ||
       (long ? args.longFlags.includes(long) : false)
     );
   }
-
-  
 
   static hasFlagAny(
     args: ParsedArgs,

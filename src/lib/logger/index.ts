@@ -1,5 +1,3 @@
-
-
 export { default as clientLogger, ClientLogger } from "./client-logger";
 
 export {
@@ -15,7 +13,6 @@ export {
 } from "./web-vitals";
 
 export type {
-  
   LogContext,
   LogEntry,
   ErrorLog,

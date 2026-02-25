@@ -18,7 +18,7 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
     }
     ensureDocumentBody();
     vi.clearAllMocks();
-    
+
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -31,7 +31,7 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
     render(
       <ErrorBoundary>
         <div>Test content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText("Test content")).toBeInTheDocument();
@@ -46,11 +46,13 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText("Something went wrong")).toBeInTheDocument();
-    expect(screen.getByText(/An error occurred while loading/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/An error occurred while loading/),
+    ).toBeInTheDocument();
   });
 
   it("displays custom fallback when provided", () => {
@@ -62,7 +64,7 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
     render(
       <ErrorBoundary fallback={<div>Custom error message</div>}>
         <ThrowError shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText("Custom error message")).toBeInTheDocument();
@@ -74,12 +76,14 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
       return;
     }
 
-    const reloadSpy = vi.spyOn(window.location, "reload").mockImplementation(() => {});
+    const reloadSpy = vi
+      .spyOn(window.location, "reload")
+      .mockImplementation(() => {});
 
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     const refreshButton = screen.getByText("Refresh Page");
@@ -100,7 +104,7 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
     const { rerender } = render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText("Something went wrong")).toBeInTheDocument();
@@ -108,14 +112,12 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
     const tryAgainButton = screen.getByText("Try Again");
     fireEvent.click(tryAgainButton);
 
-    
     rerender(
       <ErrorBoundary>
         <ThrowError shouldThrow={false} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
-    
     expect(screen.queryByText("Something went wrong")).not.toBeInTheDocument();
   });
 
@@ -128,7 +130,7 @@ describe("ErrorBoundary (error-boundary.tsx)", () => {
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     const details = screen.getByText("Error Details");

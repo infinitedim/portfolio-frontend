@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -233,10 +232,11 @@ export function HistorySearchPanel({
             )}
 
             <span
-              className={`px-1.5 py-0.5 rounded text-xs ${entry.success
-                ? "bg-green-500/20 text-green-400"
-                : "bg-red-500/20 text-red-400"
-                }`}
+              className={`px-1.5 py-0.5 rounded text-xs ${
+                entry.success
+                  ? "bg-green-500/20 text-green-400"
+                  : "bg-red-500/20 text-red-400"
+              }`}
             >
               {entry.success ? "✓" : "✗"}
             </span>
@@ -428,21 +428,17 @@ export function HistorySearchPanel({
   );
 
   return (
-
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${className}`}
       style={{ backgroundColor: `${themeConfig.colors.bg}e6` }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      onKeyDown={(e) => {
-        if (e.key === "Escape") {
-          onClose();
-        }
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
       }}
+      onKeyDown={handleKeyDown}
       role="button"
       aria-label="Close dialog"
       tabIndex={0}
     >
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={containerRef}
         className="w-full max-w-4xl max-h-[90vh] flex flex-col rounded-lg border shadow-2xl"
@@ -453,7 +449,6 @@ export function HistorySearchPanel({
         role="dialog"
         aria-labelledby="history-panel-title"
         tabIndex={-1}
-        onKeyDown={handleKeyDown}
       >
         <div
           className="flex items-center justify-between p-4 border-b"
@@ -478,8 +473,9 @@ export function HistorySearchPanel({
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                  className={`px-3 py-1.5 rounded text-sm transition-colors ${activeTab === tab.id ? "font-medium" : ""
-                    }`}
+                  className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                    activeTab === tab.id ? "font-medium" : ""
+                  }`}
                   style={{
                     backgroundColor:
                       activeTab === tab.id

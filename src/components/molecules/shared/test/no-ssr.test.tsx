@@ -21,7 +21,7 @@ describe("NoSSR", () => {
           <div>Client Content</div>
         </NoSSR>,
       );
-      
+
       const loading = screen.queryByText("Loading...");
       const content = screen.queryByText("Client Content");
       expect(loading ?? content).toBeTruthy();
@@ -40,7 +40,6 @@ describe("NoSSR", () => {
         </NoSSR>,
       );
 
-      
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(screen.getByText("Client Content")).toBeInTheDocument();
@@ -57,7 +56,7 @@ describe("NoSSR", () => {
           <div>Client Content</div>
         </NoSSR>,
       );
-      
+
       expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
       await new Promise((resolve) => setTimeout(resolve, 50));
       expect(screen.getByText("Client Content")).toBeInTheDocument();
@@ -74,7 +73,6 @@ describe("NoSSR", () => {
         </NoSSR>,
       );
 
-      
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(screen.getByText("Client Content")).toBeInTheDocument();

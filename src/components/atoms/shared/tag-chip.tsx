@@ -52,11 +52,11 @@ export function TagChip({
       onKeyDown={
         onClick
           ? (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onClick();
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
             }
-          }
           : undefined
       }
       className={clsx(

@@ -11,7 +11,6 @@ interface LocaleConfig {
 let mockCurrentLocale = "en_US";
 let mockSetLocaleResult = true;
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
 if (typeof (vi as unknown as Record<string, unknown>).mock !== "function")
   (vi as unknown as Record<string, unknown>).mock = () => undefined;
 

@@ -157,9 +157,6 @@ class ClientLogger {
     this.buffer.logs = [];
 
     try {
-      // Use encrypted transport so log entries are opaque in the browser
-      // network tab. encryptedFetchRaw is imported dynamically to avoid
-      // pulling in Web Crypto on the server (this code only runs in the browser).
       const { encryptedFetchRaw } =
         await import("@/lib/crypto/encrypted-fetch");
       const response = await encryptedFetchRaw(

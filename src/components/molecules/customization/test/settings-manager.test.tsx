@@ -16,8 +16,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -54,7 +57,9 @@ vi.mock("@/lib/services/customization-service", () => ({
 }));
 
 vi.mock("@/components/molecules/terminal/terminal-loading-progress", () => ({
-  TerminalLoadingProgress: () => <div data-testid="loading-progress">Loading...</div>,
+  TerminalLoadingProgress: () => (
+    <div data-testid="loading-progress">Loading...</div>
+  ),
 }));
 
 global.confirm = vi.fn(() => true);

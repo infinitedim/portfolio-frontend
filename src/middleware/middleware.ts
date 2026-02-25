@@ -91,9 +91,9 @@ export function middleware(request: NextRequest) {
   });
 
   const origin = request.headers.get("origin") || "";
-  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",").map((o) =>
-    o.trim(),
-  ) || ["http://127.0.0.1:3000"];
+  const allowedOrigins =
+    process.env.ALLOWED_ORIGINS?.split(",").map((o) => o.trim()) || [];
+
   const corsHeaders = getCORSHeaders(origin, allowedOrigins);
 
   Object.entries(corsHeaders).forEach(([key, value]) => {

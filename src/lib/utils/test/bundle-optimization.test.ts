@@ -50,8 +50,6 @@ const mockConsole = {
   warn: vi.fn(),
 };
 
-// Save original window/document/console/performance before replacing them, so we can restore
-// after all tests in this file to avoid polluting subsequent test files.
 const _savedWindow = (globalThis as Record<string, unknown>).window;
 const _savedDocument = (globalThis as Record<string, unknown>).document;
 const _savedConsole = (globalThis as Record<string, unknown>).console;
@@ -429,6 +427,15 @@ describe("optimizeMemoryUsage function", () => {
 });
 
 describe("initBundleOptimizations function", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+  });
+
   it("should be defined and exportable", () => {
     expect(initBundleOptimizations).toBeDefined();
     expect(typeof initBundleOptimizations).toBe("function");
@@ -505,6 +512,15 @@ describe("error handling and edge cases", () => {
 });
 
 describe("integration tests", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+  });
+
   it("should work together in initBundleOptimizations", () => {
     mockDocument.readyState = "complete";
 
@@ -520,8 +536,6 @@ describe("integration tests", () => {
   });
 
   afterAll(() => {
-    // Restore globals AFTER ALL tests in this file complete so subsequent files
-    // (e.g. blog/[slug] integration test) have a proper jsdom window.
     (globalThis as Record<string, unknown>).window = _savedWindow;
     (globalThis as Record<string, unknown>).document = _savedDocument;
     (globalThis as Record<string, unknown>).console = _savedConsole;

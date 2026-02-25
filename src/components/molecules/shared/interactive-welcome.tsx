@@ -18,7 +18,12 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
   const [selectedCommand, setSelectedCommand] = useState<string | null>(null);
 
   const quickCommands = [
-    { command: "tour", description: "Take a guided tour", icon: "🎓", highlight: true },
+    {
+      command: "tour",
+      description: "Take a guided tour",
+      icon: "🎓",
+      highlight: true,
+    },
     { command: "help", description: "View all available commands", icon: "❓" },
     { command: "about", description: "Learn about me", icon: "👨‍💻" },
     { command: "skills", description: "View my technical skills", icon: "🛠️" },
@@ -29,7 +34,6 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
   const handleCommandClick = (command: string) => {
     setSelectedCommand(command);
 
-    
     if (command === "tour" && onStartTour) {
       setTimeout(() => {
         onStartTour();
@@ -70,25 +74,30 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
         {quickCommands.map((cmd) => {
-          const isHighlighted = 'highlight' in cmd && cmd.highlight;
+          const isHighlighted = "highlight" in cmd && cmd.highlight;
           return (
             <button
               key={cmd.command}
               onClick={() => handleCommandClick(cmd.command)}
-              className={`p-3 rounded-lg border transition-all duration-200 text-left hover:scale-105 ${selectedCommand === cmd.command ? "animate-pulse" : ""
-                } ${isHighlighted ? "ring-2 ring-offset-2 ring-offset-transparent" : ""}`}
-              style={{
-                borderColor: isHighlighted
-                  ? themeConfig.colors.accent
-                  : themeConfig.colors.border,
-                backgroundColor:
-                  selectedCommand === cmd.command || isHighlighted
-                    ? `${themeConfig.colors.accent}20`
-                    : `${themeConfig.colors.bg}20`,
-                color: themeConfig.colors.text,
-                
-                "--tw-ring-color": isHighlighted ? themeConfig.colors.accent : undefined,
-              } as React.CSSProperties}
+              className={`p-3 rounded-lg border transition-all duration-200 text-left hover:scale-105 ${
+                selectedCommand === cmd.command ? "animate-pulse" : ""
+              } ${isHighlighted ? "ring-2 ring-offset-2 ring-offset-transparent" : ""}`}
+              style={
+                {
+                  borderColor: isHighlighted
+                    ? themeConfig.colors.accent
+                    : themeConfig.colors.border,
+                  backgroundColor:
+                    selectedCommand === cmd.command || isHighlighted
+                      ? `${themeConfig.colors.accent}20`
+                      : `${themeConfig.colors.bg}20`,
+                  color: themeConfig.colors.text,
+
+                  "--tw-ring-color": isHighlighted
+                    ? themeConfig.colors.accent
+                    : undefined,
+                } as React.CSSProperties
+              }
             >
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">{cmd.icon}</span>
@@ -103,7 +112,7 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
                     className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
                     style={{
                       backgroundColor: themeConfig.colors.accent,
-                      color: themeConfig.colors.bg
+                      color: themeConfig.colors.bg,
                     }}
                   >
                     NEW

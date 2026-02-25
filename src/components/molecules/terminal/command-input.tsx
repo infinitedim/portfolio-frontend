@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -264,7 +263,6 @@ export function CommandInput({
 
       case "i":
       case "I":
-
         if (e.ctrlKey) {
           e.preventDefault();
           setShowSuggestions(true);
@@ -468,8 +466,7 @@ export function CommandInput({
           input={value}
           availableCommands={availableCommands}
           onSelect={handleSuggestionSelect}
-          onCommandUsed={() => {
-          }}
+          onCommandUsed={() => {}}
           visible={showSuggestions}
           showOnEmpty={true}
           showDescriptions={true}

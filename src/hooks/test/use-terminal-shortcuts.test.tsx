@@ -1,12 +1,13 @@
-
-
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useTerminalShortcuts } from "@/hooks/use-terminal-shortcuts";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-command-history", () => ({
   useCommandHistory: () => ({ getSuggestions: () => [] }),
@@ -55,4 +56,3 @@ describe("useTerminalShortcuts", () => {
     expect(() => act(() => result.current.resetToDefaults())).not.toThrow();
   });
 });
-

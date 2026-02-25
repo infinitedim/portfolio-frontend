@@ -58,7 +58,10 @@ export function CommandSuggestions({
   });
 
   useEffect(() => {
-    console.log("CommandSuggestions visibility effect:", { visible, suggestionsLength: suggestions.length });
+    console.log("CommandSuggestions visibility effect:", {
+      visible,
+      suggestionsLength: suggestions.length,
+    });
 
     if (visible && suggestions.length > 0) {
       const timer = setTimeout(() => {
@@ -148,7 +151,7 @@ export function CommandSuggestions({
     console.log("CommandSuggestions NOT rendering:", {
       isVisible,
       suggestionsLength: suggestions.length,
-      hasThemeConfig: !!themeConfig?.colors
+      hasThemeConfig: !!themeConfig?.colors,
     });
     return null;
   }
@@ -156,7 +159,7 @@ export function CommandSuggestions({
   console.log("CommandSuggestions IS rendering:", {
     isVisible,
     suggestionsLength: suggestions.length,
-    suggestions: suggestions.map(s => s.command)
+    suggestions: suggestions.map((s) => s.command),
   });
 
   const getTypeIcon = (type: SuggestionItem["type"]) => {
@@ -226,10 +229,11 @@ export function CommandSuggestions({
     <div
       ref={containerRef}
       key={`-suggestions-${theme}`}
-      className={`absolute top-full left-0 right-0 z-50 mt-1 rounded-lg border shadow-xl overflow-hidden transition-all duration-300 ease-out transform-gpu ${isVisible
-        ? "opacity-100 scale-100 translate-y-0"
-        : "opacity-0 scale-95 -translate-y-2"
-        }`}
+      className={`absolute top-full left-0 right-0 z-50 mt-1 rounded-lg border shadow-xl overflow-hidden transition-all duration-300 ease-out transform-gpu ${
+        isVisible
+          ? "opacity-100 scale-100 translate-y-0"
+          : "opacity-0 scale-95 -translate-y-2"
+      }`}
       style={{
         backgroundColor: themeConfig.colors.bg,
         borderColor: themeConfig.colors.border,
@@ -288,10 +292,11 @@ export function CommandSuggestions({
             role="option"
             aria-selected={index === selectedIndex}
             tabIndex={0}
-            className={`w-full text-left px-4 py-3 cursor-pointer transition-all duration-200 ease-out focus:outline-none group relative ${index === selectedIndex
-              ? "opacity-100 transform scale-[1.02]"
-              : "opacity-85 hover:opacity-100 hover:transform hover:scale-[1.01]"
-              }`}
+            className={`w-full text-left px-4 py-3 cursor-pointer transition-all duration-200 ease-out focus:outline-none group relative ${
+              index === selectedIndex
+                ? "opacity-100 transform scale-[1.02]"
+                : "opacity-85 hover:opacity-100 hover:transform hover:scale-[1.01]"
+            }`}
             style={{
               backgroundColor:
                 index === selectedIndex

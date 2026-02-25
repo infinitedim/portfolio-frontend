@@ -6,7 +6,10 @@ import dynamic from "next/dynamic";
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), {
   ssr: false,
   loading: () => (
-    <div className="w-full border border-gray-700 rounded-lg bg-gray-900 animate-pulse flex items-center justify-center" style={{ minHeight: 500 }}>
+    <div
+      className="w-full border border-gray-700 rounded-lg bg-gray-900 animate-pulse flex items-center justify-center"
+      style={{ minHeight: 500 }}
+    >
       <span className="text-sm text-gray-500">Loading editor...</span>
     </div>
   ),
@@ -31,7 +34,6 @@ export function MarkdownEditor({
 }: MarkdownEditorProps) {
   const [colorMode, setColorMode] = useState<"light" | "dark">("dark");
 
-  // Detect theme from document
   useEffect(() => {
     const detectTheme = () => {
       if (typeof document === "undefined") return;
@@ -40,14 +42,12 @@ export function MarkdownEditor({
         html.classList.contains("dark") ||
         html.getAttribute("data-theme") === "dark" ||
         html.style.colorScheme === "dark" ||
-        // Default to dark for our terminal-themed portfolio
         !html.classList.contains("light");
       setColorMode(isDark ? "dark" : "light");
     };
 
     detectTheme();
 
-    // Observe class changes on html element
     const observer = new MutationObserver(detectTheme);
     observer.observe(document.documentElement, {
       attributes: true,
@@ -57,7 +57,6 @@ export function MarkdownEditor({
     return () => observer.disconnect();
   }, []);
 
-  // Ctrl+S handler
   useEffect(() => {
     if (!onSave) return;
 
@@ -80,7 +79,10 @@ export function MarkdownEditor({
   );
 
   return (
-    <div data-color-mode={colorMode} className="rounded-lg overflow-hidden border border-gray-700">
+    <div
+      data-color-mode={colorMode}
+      className="rounded-lg overflow-hidden border border-gray-700"
+    >
       <MDEditor
         value={value}
         onChange={handleChange}

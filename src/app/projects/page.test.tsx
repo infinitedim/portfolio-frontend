@@ -2,8 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next", () => ({
   Metadata: {},
@@ -85,7 +88,9 @@ describe("ProjectsPage", () => {
     it("should have Twitter Card configuration", async () => {
       const metadata = await generateMetadata();
       expect(metadata.twitter).toBeDefined();
-      expect((metadata.twitter as { card?: string })?.card).toBe("summary_large_image");
+      expect((metadata.twitter as { card?: string })?.card).toBe(
+        "summary_large_image",
+      );
     });
 
     it("should have canonical URL", async () => {

@@ -7,7 +7,7 @@ function getApiUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 }
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 interface UploadResponse {
@@ -40,7 +40,6 @@ export function ImageUploadButton({
     async (file: File) => {
       setError(null);
 
-      // Client-side validations
       if (!ACCEPTED_TYPES.includes(file.type)) {
         setError("Format not supported. Use JPEG, PNG, WebP, or GIF.");
         return;
@@ -83,7 +82,7 @@ export function ImageUploadButton({
         setError("Network error during upload");
       } finally {
         setIsUploading(false);
-        // Reset input so same file can be re-selected
+
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
@@ -119,9 +118,7 @@ export function ImageUploadButton({
       >
         {isUploading ? "⏳ Uploading..." : "🖼️ Upload Image"}
       </button>
-      {error && (
-        <span className="text-xs text-red-400 mt-1">{error}</span>
-      )}
+      {error && <span className="text-xs text-red-400 mt-1">{error}</span>}
     </div>
   );
 }

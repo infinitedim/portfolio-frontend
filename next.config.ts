@@ -1,8 +1,6 @@
 const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig = {
-  // StrictMode should always be on — it catches deprecation warnings and
-  // double-invocation bugs before they reach users.
   reactStrictMode: true,
   reactCompiler: !isDev,
   typedRoutes: true,
@@ -11,8 +9,6 @@ const nextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: "2mb" },
     typedEnv: true,
-    // optimizePackageImports already includes lucide-react by default
-    // Adding more can help with other heavy libraries
     optimizePackageImports: [
       "@radix-ui/react-accordion",
       "@radix-ui/react-alert-dialog",
@@ -29,8 +25,6 @@ const nextConfig = {
       "recharts",
     ],
   },
-
-  // Turbopack configuration (stable in Next.js 16)
   turbopack: {
     resolveAlias: {
       canvas: "./empty-module.ts",
@@ -38,15 +32,14 @@ const nextConfig = {
   },
   images: {
     loader: "default",
-    // AVIF gives ~30% better compression than WebP with broad modern browser support
     formats: ["image/avif", "image/webp"],
     ...(isDev
       ? {}
       : {
-        deviceSizes: [640, 750, 828, 1080, 1200],
-        imageSizes: [16, 32, 48, 64, 96, 128],
-      }),
-    minimumCacheTTL: 86400, // 24 h — assets with hash-based URLs can be cached longer
+          deviceSizes: [640, 750, 828, 1080, 1200],
+          imageSizes: [16, 32, 48, 64, 96, 128],
+        }),
+    minimumCacheTTL: 86400,
     dangerouslyAllowSVG: false,
     contentDispositionType: "inline",
     remotePatterns: [
@@ -56,14 +49,14 @@ const nextConfig = {
       },
     ],
   },
-  compress: !isDev, // Disable compression in dev
+  compress: !isDev,
   poweredByHeader: false,
-  generateEtags: !isDev, // Disable in dev
+  generateEtags: !isDev,
   compiler: {
     removeConsole: !isDev
       ? {
-        exclude: ["error", "warn"],
-      }
+          exclude: ["error", "warn"],
+        }
       : false,
     reactRemoveProperties: !isDev,
     styledComponents: false,
@@ -71,105 +64,103 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  // Skip headers in dev for faster startup
+
   ...(isDev
     ? {}
     : {
-      async headers() {
-        return [
-          {
-            source: "/(.*)",
-            headers: [
-              {
-                key: "X-DNS-Prefetch-Control",
-                value: "on",
-              },
-              {
-                key: "X-Content-Type-Options",
-                value: "nosniff",
-              },
-              {
-                key: "X-Frame-Options",
-                value: "DENY",
-              },
-              {
-                key: "Referrer-Policy",
-                value: "strict-origin-when-cross-origin",
-              },
-              {
-                key: "Permissions-Policy",
-                value:
-                  "geolocation=(), microphone=(), camera=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=()",
-              },
-              {
-                key: "Cross-Origin-Embedder-Policy",
-                value: "credentialless",
-              },
-              {
-                key: "Cross-Origin-Opener-Policy",
-                value: "same-origin",
-              },
-              {
-                key: "Cross-Origin-Resource-Policy",
-                value: "same-origin",
-              },
-              {
-                key: "X-Permitted-Cross-Domain-Policies",
-                value: "none",
-              },
-              {
-                key: "Strict-Transport-Security",
-                value: "max-age=31536000; includeSubDomains; preload",
-              },
-            ],
-          },
-          {
-            source: "/sw.js",
-            headers: [
-              {
-                key: "Service-Worker-Allowed",
-                value: "/",
-              },
-              {
-                key: "Cache-Control",
-                value: "public, max-age=0, must-revalidate",
-              },
-            ],
-          },
-          {
-            source: "/:path*\\.(ico|png|jpg|jpeg|gif|webp|svg|css|js)",
-            headers: [
-              {
-                key: "Cache-Control",
-                value: "public, max-age=31536000, immutable",
-              },
-            ],
-          },
-        ];
-      },
-    }),
+        async headers() {
+          return [
+            {
+              source: "/(.*)",
+              headers: [
+                {
+                  key: "X-DNS-Prefetch-Control",
+                  value: "on",
+                },
+                {
+                  key: "X-Content-Type-Options",
+                  value: "nosniff",
+                },
+                {
+                  key: "X-Frame-Options",
+                  value: "DENY",
+                },
+                {
+                  key: "Referrer-Policy",
+                  value: "strict-origin-when-cross-origin",
+                },
+                {
+                  key: "Permissions-Policy",
+                  value:
+                    "geolocation=(), microphone=(), camera=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=()",
+                },
+                {
+                  key: "Cross-Origin-Embedder-Policy",
+                  value: "credentialless",
+                },
+                {
+                  key: "Cross-Origin-Opener-Policy",
+                  value: "same-origin",
+                },
+                {
+                  key: "Cross-Origin-Resource-Policy",
+                  value: "same-origin",
+                },
+                {
+                  key: "X-Permitted-Cross-Domain-Policies",
+                  value: "none",
+                },
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=31536000; includeSubDomains; preload",
+                },
+              ],
+            },
+            {
+              source: "/sw.js",
+              headers: [
+                {
+                  key: "Service-Worker-Allowed",
+                  value: "/",
+                },
+                {
+                  key: "Cache-Control",
+                  value: "public, max-age=0, must-revalidate",
+                },
+              ],
+            },
+            {
+              source: "/:path*\\.(ico|png|jpg|jpeg|gif|webp|svg|css|js)",
+              headers: [
+                {
+                  key: "Cache-Control",
+                  value: "public, max-age=31536000, immutable",
+                },
+              ],
+            },
+          ];
+        },
+      }),
 
   redirects: isDev
     ? undefined
     : async () => [
-      {
-        source: "/home",
-        destination: "/",
-        permanent: true,
-      },
-      {
-        source: "/terminal",
-        destination: "/",
-        permanent: true,
-      },
-    ],
+        {
+          source: "/home",
+          destination: "/",
+          permanent: true,
+        },
+        {
+          source: "/terminal",
+          destination: "/",
+          permanent: true,
+        },
+      ],
 };
 
-// Only conditionally import bundle analyzer when needed
 let finalConfig = nextConfig;
 
 if (process.env.ANALYZE === "true") {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const withBundleAnalyzer = require("@next/bundle-analyzer")({
     enabled: true,
     openAnalyzer: true,

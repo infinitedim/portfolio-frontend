@@ -17,8 +17,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -27,8 +30,8 @@ vi.mock("@/hooks/use-theme", () => ({
 }));
 
 const mockExportThemes = vi.fn(() => ({ themes: [] }));
-const mockImportThemes = vi.fn(
-  () => Promise.resolve({ success: 1, errors: [] as string[] })
+const mockImportThemes = vi.fn(() =>
+  Promise.resolve({ success: 1, errors: [] as string[] }),
 ) as any;
 const mockGetSettings = vi.fn(() => ({}));
 const mockGetCustomThemes = vi.fn(() => []);
@@ -73,7 +76,7 @@ if (typeof document !== "undefined") {
     writable: true,
     configurable: true,
   });
-  
+
   Object.defineProperty(document, "body", {
     value: {
       appendChild: vi.fn(),
@@ -85,7 +88,10 @@ if (typeof document !== "undefined") {
 }
 
 global.Blob = class Blob {
-  constructor(public parts: any[], public options: any) {}
+  constructor(
+    public parts: any[],
+    public options: any,
+  ) {}
 } as any;
 
 global.confirm = vi.fn(() => true);
@@ -175,7 +181,9 @@ describe("ImportExportManager", () => {
         expect(true).toBe(true);
         return;
       }
-      mockGetCustomThemes.mockReturnValue([{ id: "1", name: "Theme 1" }] as any);
+      mockGetCustomThemes.mockReturnValue([
+        { id: "1", name: "Theme 1" },
+      ] as any);
 
       render(<ImportExportManager onUpdate={mockOnUpdate} />);
 
@@ -231,7 +239,9 @@ describe("ImportExportManager", () => {
       const chooseFileButton = screen.getByText("📁 Choose File");
       fireEvent.click(chooseFileButton);
 
-      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const fileInput = document.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
       if (fileInput) {
         Object.defineProperty(fileInput, "files", {
           value: [mockFile],
@@ -262,7 +272,9 @@ describe("ImportExportManager", () => {
       const chooseFileButton = screen.getByText("📁 Choose File");
       fireEvent.click(chooseFileButton);
 
-      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const fileInput = document.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
       if (fileInput) {
         Object.defineProperty(fileInput, "files", {
           value: [mockFile],
@@ -272,7 +284,9 @@ describe("ImportExportManager", () => {
         fireEvent.change(fileInput);
 
         await waitFor(() => {
-          expect(screen.getByText(/Successfully imported 2 themes/)).toBeInTheDocument();
+          expect(
+            screen.getByText(/Successfully imported 2 themes/),
+          ).toBeInTheDocument();
         });
       }
     });
@@ -296,7 +310,9 @@ describe("ImportExportManager", () => {
       const chooseFileButton = screen.getByText("📁 Choose File");
       fireEvent.click(chooseFileButton);
 
-      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const fileInput = document.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
       if (fileInput) {
         Object.defineProperty(fileInput, "files", {
           value: [mockFile],

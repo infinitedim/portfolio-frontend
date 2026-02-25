@@ -36,8 +36,11 @@ const mockT = vi.fn((key: string) => {
   return translations[key] || key;
 });
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-i18n", () => ({
   useI18n: () => ({
@@ -124,12 +127,15 @@ describe("BlogEditor", () => {
       }
       render(<BlogEditor themeConfig={mockThemeConfig} />);
 
-      
       waitFor(() => {
-        const draftButtons = screen.getAllByText(/New Post|Welcome to the Blog Editor/);
+        const draftButtons = screen.getAllByText(
+          /New Post|Welcome to the Blog Editor/,
+        );
         if (draftButtons.length > 0) {
           fireEvent.click(draftButtons[0]);
-          expect(screen.getByDisplayValue(/Welcome to the Blog Editor|New Post/)).toBeInTheDocument();
+          expect(
+            screen.getByDisplayValue(/Welcome to the Blog Editor|New Post/),
+          ).toBeInTheDocument();
         }
       });
     });
@@ -171,7 +177,9 @@ describe("BlogEditor", () => {
         target: { value: "# New Content" },
       });
 
-      expect((contentTextarea as HTMLTextAreaElement).value).toBe("# New Content");
+      expect((contentTextarea as HTMLTextAreaElement).value).toBe(
+        "# New Content",
+      );
     });
 
     it("should update summary when typed", () => {
@@ -186,7 +194,9 @@ describe("BlogEditor", () => {
         target: { value: "This is a summary" },
       });
 
-      expect((summaryTextarea as HTMLTextAreaElement).value).toBe("This is a summary");
+      expect((summaryTextarea as HTMLTextAreaElement).value).toBe(
+        "This is a summary",
+      );
     });
   });
 
@@ -228,14 +238,14 @@ describe("BlogEditor", () => {
       }
       render(<BlogEditor themeConfig={mockThemeConfig} />);
 
-      
       const tagInput = screen.getByPlaceholderText(/Add Tag/);
       const addTagButton = screen.getByText(/Add Tag/);
       fireEvent.change(tagInput, { target: { value: "test" } });
       fireEvent.click(addTagButton);
 
-      
-      const removeButton = screen.getByText("test").parentElement?.querySelector("button");
+      const removeButton = screen
+        .getByText("test")
+        .parentElement?.querySelector("button");
       if (removeButton) {
         fireEvent.click(removeButton);
         expect(screen.queryByText("test")).not.toBeInTheDocument();
@@ -291,7 +301,6 @@ describe("BlogEditor", () => {
       const previewButton = screen.getByText(/Preview/);
       fireEvent.click(previewButton);
 
-      
       expect(screen.getByText(/Heading|Bold text/)).toBeInTheDocument();
     });
   });
@@ -342,7 +351,6 @@ describe("BlogEditor", () => {
       fireEvent.click(publishButton);
 
       await waitFor(() => {
-        
         expect(screen.getByText(/Published/)).toBeInTheDocument();
       });
     });
@@ -364,7 +372,6 @@ describe("BlogEditor", () => {
       const previewButton = screen.getByText(/Preview/);
       fireEvent.click(previewButton);
 
-      
       expect(screen.getByText(/Heading 1|Heading 2/)).toBeInTheDocument();
     });
 
@@ -383,7 +390,6 @@ describe("BlogEditor", () => {
       const previewButton = screen.getByText(/Preview/);
       fireEvent.click(previewButton);
 
-      
       expect(screen.getByText(/Bold text/)).toBeInTheDocument();
     });
   });

@@ -50,8 +50,8 @@ describe("useTimerManager", () => {
       }
       const { result } = renderHook(() => useTimerManager());
 
-      const id1 = result.current.setTimeout(() => { }, 1000);
-      const id2 = result.current.setTimeout(() => { }, 1000);
+      const id1 = result.current.setTimeout(() => {}, 1000);
+      const id2 = result.current.setTimeout(() => {}, 1000);
 
       expect(id1).not.toBe(id2);
       expect(id1).toContain("timer_");
@@ -112,7 +112,6 @@ describe("useTimerManager", () => {
         vi.advanceTimersByTime(100);
       });
 
-      
       expect(result.current.hasErrors).toBe(true);
       expect(result.current.getErrors().length).toBeGreaterThan(0);
     });
@@ -145,8 +144,8 @@ describe("useTimerManager", () => {
       }
       const { result } = renderHook(() => useTimerManager());
 
-      const id1 = result.current.setInterval(() => { }, 1000);
-      const id2 = result.current.setInterval(() => { }, 1000);
+      const id1 = result.current.setInterval(() => {}, 1000);
+      const id2 = result.current.setInterval(() => {}, 1000);
 
       expect(id1).not.toBe(id2);
     });
@@ -173,7 +172,6 @@ describe("useTimerManager", () => {
         vi.advanceTimersByTime(1000);
       });
 
-      
       expect(callback).toHaveBeenCalledTimes(2);
     });
 
@@ -316,12 +314,16 @@ describe("useTimerManager", () => {
       const { result } = renderHook(() => useTimerManager());
       let shouldThrow = true;
 
-      result.current.setInterval(() => {
-        if (shouldThrow) {
-          shouldThrow = false;
-          throw new Error("Intermittent error");
-        }
-      }, 100, "flaky-interval");
+      result.current.setInterval(
+        () => {
+          if (shouldThrow) {
+            shouldThrow = false;
+            throw new Error("Intermittent error");
+          }
+        },
+        100,
+        "flaky-interval",
+      );
 
       act(() => {
         vi.advanceTimersByTime(100);
@@ -333,7 +335,6 @@ describe("useTimerManager", () => {
         vi.advanceTimersByTime(100);
       });
 
-      
       expect(result.current.hasErrors).toBe(false);
     });
   });
@@ -387,9 +388,7 @@ describe("useAnimationFrame", () => {
     });
   });
 
-  afterEach(() => {
-    
-  });
+  afterEach(() => {});
 
   it("requests animation frame", () => {
     if (!canRunTests) {
@@ -412,7 +411,7 @@ describe("useAnimationFrame", () => {
     }
     const { result } = renderHook(() => useAnimationFrame());
 
-    result.current.requestFrame(() => { });
+    result.current.requestFrame(() => {});
     result.current.cancelFrame();
 
     expect(mockCancelAnimationFrame).toHaveBeenCalled();
@@ -425,8 +424,8 @@ describe("useAnimationFrame", () => {
     }
     const { result } = renderHook(() => useAnimationFrame());
 
-    result.current.requestFrame(() => { });
-    result.current.requestFrame(() => { });
+    result.current.requestFrame(() => {});
+    result.current.requestFrame(() => {});
 
     expect(mockCancelAnimationFrame).toHaveBeenCalledTimes(1);
     expect(mockRequestAnimationFrame).toHaveBeenCalledTimes(2);
@@ -439,7 +438,7 @@ describe("useAnimationFrame", () => {
     }
     const { result, unmount } = renderHook(() => useAnimationFrame());
 
-    result.current.requestFrame(() => { });
+    result.current.requestFrame(() => {});
     unmount();
 
     expect(mockCancelAnimationFrame).toHaveBeenCalled();
@@ -475,14 +474,12 @@ describe("useDebounce", () => {
       result.current();
     });
 
-    
     expect(callback).not.toHaveBeenCalled();
 
     act(() => {
       vi.advanceTimersByTime(300);
     });
 
-    
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
@@ -503,14 +500,13 @@ describe("useDebounce", () => {
     });
 
     act(() => {
-      result.current(); 
+      result.current();
     });
 
     act(() => {
       vi.advanceTimersByTime(200);
     });
 
-    
     expect(callback).not.toHaveBeenCalled();
 
     act(() => {
@@ -581,9 +577,9 @@ describe("useThrottle", () => {
     const { result } = renderHook(() => useThrottle(callback, 300));
 
     act(() => {
-      result.current(); 
-      result.current(); 
-      result.current(); 
+      result.current();
+      result.current();
+      result.current();
     });
 
     expect(callback).toHaveBeenCalledTimes(1);
@@ -598,8 +594,8 @@ describe("useThrottle", () => {
     const { result } = renderHook(() => useThrottle(callback, 300));
 
     act(() => {
-      result.current(); 
-      result.current(); 
+      result.current();
+      result.current();
     });
 
     expect(callback).toHaveBeenCalledTimes(1);
@@ -608,7 +604,6 @@ describe("useThrottle", () => {
       vi.advanceTimersByTime(300);
     });
 
-    
     expect(callback).toHaveBeenCalledTimes(2);
   });
 

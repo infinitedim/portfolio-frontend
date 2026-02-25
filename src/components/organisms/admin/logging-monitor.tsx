@@ -167,7 +167,6 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
 
   return (
     <div className="space-y-6">
-
       <div
         className="p-4 border rounded"
         style={{
@@ -187,7 +186,6 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
           <div>
             <div className="text-xs opacity-70 mb-2">Search</div>
             <input
@@ -203,7 +201,6 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
               }}
             />
           </div>
-
 
           <div>
             <div className="text-xs opacity-70 mb-2">Log Levels</div>
@@ -227,7 +224,6 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
             </div>
           </div>
 
-
           <div>
             <div className="text-xs opacity-70 mb-2">Sources</div>
             <div className="flex flex-wrap gap-1">
@@ -247,7 +243,6 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
             </div>
           </div>
         </div>
-
 
         <div
           className="mt-4 pt-4 border-t"
@@ -276,7 +271,6 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
           </div>
         </div>
       </div>
-
 
       <div
         className="border rounded"

@@ -19,8 +19,7 @@ export function Breadcrumb({
   items,
   className = "",
 }: BreadcrumbProps): JSX.Element {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.site";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
   const structuredData = {
     "@context": "https://schema.org",

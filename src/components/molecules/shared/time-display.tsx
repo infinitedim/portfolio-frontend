@@ -21,7 +21,6 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
 
   const locationService = LocationService.getInstance();
 
-
   const fetchLocation = useCallback(async () => {
     try {
       setIsLoading(true);

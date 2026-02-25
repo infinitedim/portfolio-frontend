@@ -2,8 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next", () => ({
   Metadata: {},
@@ -14,9 +17,7 @@ vi.mock("@/components/organisms/terminal/terminal", () => ({
 }));
 
 vi.mock("@/components/organisms/shared/static-content", () => ({
-  StaticContent: () => (
-    <div data-testid="static-content">Static Content</div>
-  ),
+  StaticContent: () => <div data-testid="static-content">Static Content</div>,
 }));
 
 vi.mock("@/components/molecules/terminal/terminal-loading-progress", () => ({
@@ -69,7 +70,9 @@ describe("HomePage", () => {
 
     it("should have Twitter Card configuration", () => {
       expect(metadata.twitter).toBeDefined();
-      expect((metadata.twitter as { card?: string })?.card).toBe("summary_large_image");
+      expect((metadata.twitter as { card?: string })?.card).toBe(
+        "summary_large_image",
+      );
       expect(metadata.twitter?.title).toBe(
         "Terminal Portfolio | Full-Stack Developer",
       );
@@ -165,7 +168,7 @@ describe("HomePage", () => {
       }
 
       const { container } = render(<HomePage />);
-      
+
       expect(container).toBeTruthy();
     });
 

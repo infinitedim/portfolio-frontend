@@ -10,8 +10,6 @@ export interface ThemeDisplayOptions {
 }
 
 export class ThemeDisplay {
-  
-
   static generateList(options: ThemeDisplayOptions = {}): string {
     const {
       showCurrent = true,
@@ -86,8 +84,6 @@ export class ThemeDisplay {
     return lines.join("\n");
   }
 
-  
-
   static generateColorPreview(themeName: ThemeName): string {
     const config = themes[themeName];
     if (!config) return "";
@@ -109,8 +105,6 @@ export class ThemeDisplay {
 
     return lines.join("\n");
   }
-
-  
 
   static generateThemeComparison(themeNames: ThemeName[]): string {
     if (themeNames.length === 0) return "No themes to compare";

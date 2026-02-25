@@ -99,7 +99,7 @@ describe("LocationService", () => {
     }
 
     globalThis.fetch = (() =>
-      Promise.resolve({ ok: false } as Response)) as typeof fetch;
+      Promise.resolve({ ok: false } as Response)) as unknown as typeof fetch;
 
     const svc = LocationService.getInstance();
     const loc = await svc.getLocation();

@@ -240,7 +240,6 @@ const LetterGlitchClient: React.FC<LetterGlitchClientProps> = ({
       }
       window.removeEventListener("resize", handleResize);
     };
-
   }, [animate, glitchSpeed, resizeCanvas, smooth]);
 
   return (

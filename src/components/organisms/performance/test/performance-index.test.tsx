@@ -13,7 +13,7 @@ describe("performance-index.tsx", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    
+
     (PerformanceMonitor as any).instance = undefined;
   });
 

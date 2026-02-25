@@ -3,13 +3,20 @@ import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { Breadcrumb, BreadcrumbTemplates } from "../breadcrumb";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/link", () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
+  default: ({
+    children,
+    href,
+  }: {
+    children: React.ReactNode;
+    href: string;
+  }) => <a href={href}>{children}</a>,
 }));
 
 describe("Breadcrumb", () => {
@@ -99,7 +106,7 @@ describe("Breadcrumb", () => {
       const { container } = render(<Breadcrumb items={items} />);
 
       const svgs = container.querySelectorAll("svg");
-      expect(svgs.length).toBe(2); 
+      expect(svgs.length).toBe(2);
     });
 
     it("should include structured data script", () => {
@@ -114,7 +121,9 @@ describe("Breadcrumb", () => {
 
       const { container } = render(<Breadcrumb items={items} />);
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script).toBeInTheDocument();
     });
   });

@@ -1,10 +1,4 @@
-
-
-import {
-  PII_PATTERNS,
-  SENSITIVE_HEADERS,
-  SENSITIVE_FIELDS,
-} from "./config";
+import { PII_PATTERNS, SENSITIVE_HEADERS, SENSITIVE_FIELDS } from "./config";
 
 function maskEmail(email: string): string {
   const [local, domain] = email.split("@");
@@ -42,19 +36,16 @@ function maskIpAddress(ip: string): string {
 export function maskPIIString(text: string): string {
   let masked = text;
 
-  
   masked = masked.replace(PII_PATTERNS.email, (match) => maskEmail(match));
 
-  
   masked = masked.replace(PII_PATTERNS.phone, (match) => maskPhone(match));
 
-  
-  masked = masked.replace(PII_PATTERNS.creditCard, (match) => maskCreditCard(match));
+  masked = masked.replace(PII_PATTERNS.creditCard, (match) =>
+    maskCreditCard(match),
+  );
 
-  
   masked = masked.replace(PII_PATTERNS.ssn, () => "***-**-****");
 
-  
   masked = masked.replace(PII_PATTERNS.ipv4, (match) => maskIpAddress(match));
 
   return masked;
@@ -81,9 +72,8 @@ export function maskPII(data: unknown): unknown {
     const masked: Record<string, unknown> = {};
 
     for (const [key, value] of Object.entries(data)) {
-      
-      const isSensitive = SENSITIVE_FIELDS.some(
-        (field) => key.toLowerCase().includes(field.toLowerCase())
+      const isSensitive = SENSITIVE_FIELDS.some((field) =>
+        key.toLowerCase().includes(field.toLowerCase()),
       );
 
       if (isSensitive) {
@@ -102,18 +92,18 @@ export function maskPII(data: unknown): unknown {
 }
 
 export function sanitizeHeaders(
-  headers: Record<string, string> | Headers
+  headers: Record<string, string> | Headers,
 ): Record<string, string> {
   const sanitized: Record<string, string> = {};
 
-  const entries = headers instanceof Headers
-    ? Array.from(headers.entries())
-    : Object.entries(headers);
+  const entries =
+    headers instanceof Headers
+      ? Array.from(headers.entries())
+      : Object.entries(headers);
 
   for (const [key, value] of entries) {
     const lowerKey = key.toLowerCase();
 
-    
     if (SENSITIVE_HEADERS.some((h) => lowerKey.includes(h))) {
       sanitized[key] = "[REDACTED]";
       continue;
@@ -176,16 +166,13 @@ export function getRequestContext(): {
     return {};
   }
 
-  
   const requestId = getCookie("x-request-id") || generateCorrelationId();
 
-  
   const sessionId = getCookie("session-id");
 
-  
-  const userId = getCookie("user-id") || localStorage.getItem("userId") || undefined;
+  const userId =
+    getCookie("user-id") || localStorage.getItem("userId") || undefined;
 
-  
   const deviceType = getDeviceType();
 
   return {
@@ -203,7 +190,6 @@ export function generateCorrelationId(): string {
     return crypto.randomUUID();
   }
 
-  
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
@@ -242,6 +228,9 @@ function getDeviceType(): string {
 }
 
 export function isClient(): boolean {
+  if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined") {
+    return false;
+  }
   return typeof window !== "undefined";
 }
 
@@ -287,7 +276,9 @@ export function safeStringify(obj: unknown, maxDepth = 5): string {
       }
       seen.add(value);
 
-      const items = value.slice(0, 10).map((item) => stringify(item, depth + 1));
+      const items = value
+        .slice(0, 10)
+        .map((item) => stringify(item, depth + 1));
       const suffix = value.length > 10 ? `, ... ${value.length - 10} more` : "";
       return `[${items.join(", ")}${suffix}]`;
     }
@@ -299,12 +290,11 @@ export function safeStringify(obj: unknown, maxDepth = 5): string {
       seen.add(value);
 
       const entries = Object.entries(value).slice(0, 10);
-      const props = entries.map(
-        ([k, v]) => `${k}: ${stringify(v, depth + 1)}`
-      );
-      const suffix = Object.keys(value).length > 10
-        ? `, ... ${Object.keys(value).length - 10} more`
-        : "";
+      const props = entries.map(([k, v]) => `${k}: ${stringify(v, depth + 1)}`);
+      const suffix =
+        Object.keys(value).length > 10
+          ? `, ... ${Object.keys(value).length - 10} more`
+          : "";
       return `{${props.join(", ")}${suffix}}`;
     }
 

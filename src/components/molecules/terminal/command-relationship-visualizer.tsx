@@ -1,4 +1,3 @@
- 
 "use client";
 
 import { useState, useMemo } from "react";
@@ -192,8 +191,9 @@ export function CommandRelationshipVisualizer({
                 <button
                   key={mode}
                   onClick={() => setViewMode(mode as typeof viewMode)}
-                  className={`px-3 py-1 text-sm rounded transition-colors ${viewMode === mode ? "ring-2" : ""
-                    }`}
+                  className={`px-3 py-1 text-sm rounded transition-colors ${
+                    viewMode === mode ? "ring-2" : ""
+                  }`}
                   style={{
                     backgroundColor:
                       viewMode === mode
@@ -261,8 +261,9 @@ export function CommandRelationshipVisualizer({
                         key={node.id}
                         role="button"
                         tabIndex={0}
-                        className={`relative p-4 rounded-lg border cursor-pointer transition-all duration-200 ${isSelected ? "ring-2 scale-105" : "hover:scale-102"
-                          }`}
+                        className={`relative p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+                          isSelected ? "ring-2 scale-105" : "hover:scale-102"
+                        }`}
                         style={{
                           backgroundColor: isSelected
                             ? `${getCategoryColor(node.category)}20`

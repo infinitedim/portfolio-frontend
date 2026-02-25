@@ -1,19 +1,13 @@
-// bun-setup.ts — preload file for bun test
-// Sets up a full browser-like DOM environment using jsdom so that React Testing
-// Library and other DOM-dependent tests work under bun's native test runner.
-
 import { JSDOM } from "jsdom";
 import { expect } from "bun:test";
-// Add @testing-library/jest-dom matchers (toBeInTheDocument, toHaveClass, etc.)
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const jestDomMatchers = require("@testing-library/jest-dom/matchers") as Record<
   string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (...args: any[]) => any
+  (...args: unknown[]) => unknown
 >;
-expect.extend(jestDomMatchers);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+expect.extend(jestDomMatchers as any);
 
-// ── jsdom globals ────────────────────────────────────────────────────────────
 const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
   url: "http://localhost:3000",
   pretendToBeVisual: true,
@@ -21,11 +15,6 @@ const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
 
 const { window: jsdomWindow } = dom;
 
-// Expose DOM globals that React Testing Library and tests rely on.
-// NOTE: globalThis.window IS set so that React Testing Library's act-compat.js
-// and renderHook can function. Component tests that need vi.mock module mocking
-// guard themselves via `canRunTests` (see test-helpers.ts) which now uses
-// `typeof Bun === "undefined"` to skip correctly when running under bun test.
 const g = globalThis as typeof globalThis & Record<string, unknown>;
 
 g.window = jsdomWindow as unknown as Window & typeof globalThis;
@@ -61,7 +50,6 @@ g.PointerEvent = jsdomWindow.PointerEvent as unknown as typeof PointerEvent;
 g.DOMParser = jsdomWindow.DOMParser;
 g.SVGElement = jsdomWindow.SVGElement;
 
-// ── matchMedia ───────────────────────────────────────────────────────────────
 const matchMediaMock = (query: string) => ({
   matches: false,
   media: query,
@@ -73,8 +61,7 @@ const matchMediaMock = (query: string) => ({
   dispatchEvent: () => false,
 });
 g.matchMedia = matchMediaMock;
-// Also patch the jsdom window object itself so that code accessing
-// `window.matchMedia` directly (not via globalThis) also gets the stub.
+
 try {
   Object.defineProperty(jsdomWindow, "matchMedia", {
     value: matchMediaMock,
@@ -82,10 +69,11 @@ try {
     configurable: true,
   });
 } catch {
-  // ignore if already defined
+  throw new Error("Failed to define matchMedia on jsdom window", {
+    cause: new Error("JSDOM may not support matchMedia in this environment"),
+  });
 }
 
-// ── localStorage / sessionStorage ────────────────────────────────────────────
 function makeStorage() {
   const store: Record<string, string> = {};
   return {
@@ -108,7 +96,6 @@ function makeStorage() {
 g.localStorage = makeStorage() as unknown as Storage;
 g.sessionStorage = makeStorage() as unknown as Storage;
 
-// ── ResizeObserver / IntersectionObserver ────────────────────────────────────
 g.ResizeObserver = class MockResizeObserver {
   observe() {}
   unobserve() {}
@@ -122,7 +109,6 @@ g.IntersectionObserver = class MockIntersectionObserver {
   disconnect() {}
 } as unknown as typeof IntersectionObserver;
 
-// ── URL helpers ───────────────────────────────────────────────────────────────
 if (typeof URL !== "undefined") {
   if (!URL.createObjectURL) {
     Object.defineProperty(URL, "createObjectURL", {
@@ -138,7 +124,6 @@ if (typeof URL !== "undefined") {
   }
 }
 
-// ── Scroll helpers ────────────────────────────────────────────────────────────
 if (typeof Element !== "undefined" && !Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
 }

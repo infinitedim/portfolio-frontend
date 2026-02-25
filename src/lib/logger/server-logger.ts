@@ -74,7 +74,6 @@ class FileTransport {
       if (existsSync(oldFile)) {
         if (i === this.maxFiles - 1) {
           try {
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
             require("fs").unlinkSync(oldFile);
           } catch (error) {
             console.error("Failed to delete old log file:", error);
@@ -166,8 +165,7 @@ class ServerLogger {
 
   child(context: LogContext): ServerLogger {
     const childLogger = new ServerLogger();
-    // When running outside a server environment (e.g., bun test with jsdom),
-    // this.pino is an empty object stub — guard against missing child method.
+
     if (typeof this.pino.child === "function") {
       childLogger.pino = this.pino.child(context);
     } else {

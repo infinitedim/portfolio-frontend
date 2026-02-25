@@ -33,7 +33,9 @@ describe("JsonLd", () => {
 
       const { container } = render(<JsonLd data={data} />);
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script).toBeInTheDocument();
       expect(script?.textContent).toContain("Test Person");
     });
@@ -46,7 +48,10 @@ describe("JsonLd", () => {
       const data = { test: "data" };
 
       const { container } = render(
-        <JsonLd data={data} type="application/json" />,
+        <JsonLd
+          data={data}
+          type="application/json"
+        />,
       );
 
       const script = container.querySelector('script[type="application/json"]');
@@ -61,10 +66,15 @@ describe("JsonLd", () => {
         return;
       }
       const { container } = render(
-        <PersonSchema name="John Doe" url="https://example.com" />,
+        <PersonSchema
+          name="John Doe"
+          url="https://example.com"
+        />,
       );
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script?.textContent).toContain("Person");
       expect(script?.textContent).toContain("John Doe");
     });
@@ -84,7 +94,9 @@ describe("JsonLd", () => {
         />,
       );
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script?.textContent).toContain("jobTitle");
       expect(script?.textContent).toContain("description");
     });
@@ -97,10 +109,15 @@ describe("JsonLd", () => {
         return;
       }
       const { container } = render(
-        <WebSiteSchema name="Test Site" url="https://example.com" />,
+        <WebSiteSchema
+          name="Test Site"
+          url="https://example.com"
+        />,
       );
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script?.textContent).toContain("WebSite");
       expect(script?.textContent).toContain("Test Site");
     });
@@ -119,7 +136,9 @@ describe("JsonLd", () => {
         />,
       );
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script?.textContent).toContain("SoftwareApplication");
       expect(script?.textContent).toContain("Test App");
     });
@@ -132,10 +151,15 @@ describe("JsonLd", () => {
         return;
       }
       const { container } = render(
-        <OrganizationSchema name="Test Org" url="https://example.com" />,
+        <OrganizationSchema
+          name="Test Org"
+          url="https://example.com"
+        />,
       );
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script?.textContent).toContain("Organization");
       expect(script?.textContent).toContain("Test Org");
     });
@@ -156,7 +180,9 @@ describe("JsonLd", () => {
         />,
       );
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script?.textContent).toContain("BreadcrumbList");
     });
   });
@@ -176,7 +202,9 @@ describe("JsonLd", () => {
         />,
       );
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script?.textContent).toContain("FAQPage");
     });
   });
@@ -197,7 +225,9 @@ describe("JsonLd", () => {
         />,
       );
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script?.textContent).toContain("Article");
       expect(script?.textContent).toContain("Test Article");
     });

@@ -14,8 +14,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -39,7 +42,9 @@ describe("ASCIIBanner", () => {
       }
       render(<ASCIIBanner />);
 
-      expect(screen.getByText("Interactive Developer Portfolio")).toBeInTheDocument();
+      expect(
+        screen.getByText("Interactive Developer Portfolio"),
+      ).toBeInTheDocument();
     });
 
     it("should render subtitle text", () => {
@@ -49,9 +54,7 @@ describe("ASCIIBanner", () => {
       }
       render(<ASCIIBanner />);
 
-      expect(
-        screen.getByText(/Type 'help' to explore/),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/Type 'help' to explore/)).toBeInTheDocument();
     });
 
     it("should render desktop banner on large screens", () => {

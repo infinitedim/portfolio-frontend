@@ -1,12 +1,13 @@
-
-
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useTour } from "@/hooks/use-tour";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/components/organisms/onboarding/tour-steps", () => ({
   TOUR_STEPS: [{ id: "step1", target: "#test", content: "Test" }],
@@ -21,7 +22,7 @@ describe("useTour", () => {
     vi.clearAllMocks();
     if (typeof window !== "undefined" && window.localStorage) {
       (window.localStorage as { removeItem: (k: string) => void }).removeItem(
-        "tour-storage-test"
+        "tour-storage-test",
       );
     }
   });

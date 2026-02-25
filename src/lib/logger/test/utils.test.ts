@@ -1,5 +1,3 @@
-
-
 import { describe, it, expect } from "vitest";
 import {
   maskPII,
@@ -25,14 +23,14 @@ describe("Logger Utils", () => {
       const input = "Call 555-123-4567 today";
       const result = maskPIIString(input);
       expect(result).not.toContain("555-123-4567");
-      expect(result).toContain("4567"); 
+      expect(result).toContain("4567");
     });
 
     it("should mask credit card numbers", () => {
       const input = "Card: 1234-5678-9012-3456";
       const result = maskPIIString(input);
       expect(result).not.toContain("1234-5678-9012");
-      expect(result).toContain("3456"); 
+      expect(result).toContain("3456");
     });
 
     it("should mask IP addresses", () => {
@@ -53,7 +51,7 @@ describe("Logger Utils", () => {
       const result = maskPII(input);
       expect(result).toHaveProperty("email");
       expect((result as any).email).not.toContain("user@example.com");
-      expect((result as any).name).toBe("John Doe"); 
+      expect((result as any).name).toBe("John Doe");
     });
 
     it("should mask sensitive field names", () => {
@@ -65,7 +63,7 @@ describe("Logger Utils", () => {
       const result = maskPII(input);
       expect((result as any).password).toBe("[REDACTED]");
       expect((result as any).apiKey).toBe("[REDACTED]");
-      expect((result as any).username).toBe("john"); 
+      expect((result as any).username).toBe("john");
     });
 
     it("should handle nested objects", () => {
@@ -109,7 +107,7 @@ describe("Logger Utils", () => {
         "Content-Type": "application/json",
       });
       const result = sanitizeHeaders(headers);
-      
+
       expect(result.authorization || result.Authorization).toBe("[REDACTED]");
       expect(result["content-type"] || result["Content-Type"]).toBe(
         "application/json",

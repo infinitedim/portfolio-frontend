@@ -23,7 +23,9 @@ describe("FAQ", () => {
       }
       render(<FAQ items={mockFAQItems} />);
 
-      expect(screen.getByText("Frequently Asked Questions")).toBeInTheDocument();
+      expect(
+        screen.getByText("Frequently Asked Questions"),
+      ).toBeInTheDocument();
     });
 
     it("should render custom title", () => {
@@ -31,7 +33,12 @@ describe("FAQ", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<FAQ items={mockFAQItems} title="Custom FAQ" />);
+      render(
+        <FAQ
+          items={mockFAQItems}
+          title="Custom FAQ"
+        />,
+      );
 
       expect(screen.getByText("Custom FAQ")).toBeInTheDocument();
     });
@@ -64,7 +71,9 @@ describe("FAQ", () => {
       }
       const { container } = render(<FAQ items={mockFAQItems} />);
 
-      const script = container.querySelector('script[type="application/ld+json"]');
+      const script = container.querySelector(
+        'script[type="application/ld+json"]',
+      );
       expect(script).toBeInTheDocument();
     });
   });

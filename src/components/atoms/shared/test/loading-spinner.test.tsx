@@ -17,8 +17,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: vi.fn(() => ({
@@ -158,7 +161,10 @@ describe("LoadingSpinner", () => {
       }
 
       const { container } = render(
-        <LoadingSpinner size="sm" text="Loading" />,
+        <LoadingSpinner
+          size="sm"
+          text="Loading"
+        />,
       );
       const textElement = container.querySelector(".text-xs");
       expect(textElement).toBeTruthy();
@@ -171,7 +177,10 @@ describe("LoadingSpinner", () => {
       }
 
       const { container } = render(
-        <LoadingSpinner size="md" text="Loading" />,
+        <LoadingSpinner
+          size="md"
+          text="Loading"
+        />,
       );
       const textElement = container.querySelector(".text-sm");
       expect(textElement).toBeTruthy();
@@ -184,7 +193,10 @@ describe("LoadingSpinner", () => {
       }
 
       const { container } = render(
-        <LoadingSpinner size="lg" text="Loading" />,
+        <LoadingSpinner
+          size="lg"
+          text="Loading"
+        />,
       );
       const textElement = container.querySelector(".text-base");
       expect(textElement).toBeTruthy();
@@ -270,9 +282,7 @@ describe("LoadingSpinner", () => {
         return;
       }
 
-      const { container } = render(
-        <LoadingSpinner className="custom-class" />,
-      );
+      const { container } = render(<LoadingSpinner className="custom-class" />);
       const outerDiv = container.firstChild as HTMLElement;
       expect(outerDiv?.className).toContain("custom-class");
     });
@@ -302,7 +312,6 @@ describe("LoadingSpinner", () => {
 
       const { rerender } = render(<LoadingSpinner />);
 
-      
       vi.mocked(useTheme).mockReturnValueOnce({
         themeConfig: mockThemeConfig,
         theme: "default",
@@ -310,7 +319,6 @@ describe("LoadingSpinner", () => {
 
       rerender(<LoadingSpinner />);
 
-      
       const { container } = render(<LoadingSpinner />);
       expect(container).toBeTruthy();
     });

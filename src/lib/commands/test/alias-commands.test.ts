@@ -10,7 +10,6 @@ const localStorageMock = {
 
 describe("AliasManager and aliasCommand", () => {
   beforeEach(() => {
-    
     if (typeof window !== "undefined") {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
@@ -25,24 +24,22 @@ describe("AliasManager and aliasCommand", () => {
       });
     }
 
-    
     localStorageMock.getItem.mockReturnValue(null);
     localStorageMock.setItem.mockClear();
     localStorageMock.removeItem.mockClear();
     localStorageMock.clear.mockClear();
 
-    
     AliasManager.getInstance().resetToDefaults();
   });
 
   it("resolves default alias and allows add/remove custom alias", () => {
     const manager = AliasManager.getInstance();
     expect(manager.hasAlias("h")).toBe(true);
-    
+
     expect(manager.addAlias("ll", "skills")).toBe(true);
     expect(manager.hasAlias("ll")).toBe(true);
     expect(manager.getCustomAliases()).toHaveProperty("ll");
-    
+
     expect(manager.removeAlias("ll")).toBe(true);
     expect(manager.hasAlias("ll")).toBe(false);
   });

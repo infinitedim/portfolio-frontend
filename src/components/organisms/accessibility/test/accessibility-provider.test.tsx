@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor, fireEvent, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  act,
+} from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import {
   AccessibilityProvider,
@@ -142,7 +148,9 @@ describe("AccessibilityProvider", () => {
 
       const TestComponent = () => {
         const context = useAccessibility();
-        return <span data-testid="focus-mode">{context.focusMode.toString()}</span>;
+        return (
+          <span data-testid="focus-mode">{context.focusMode.toString()}</span>
+        );
       };
 
       render(
@@ -275,10 +283,11 @@ describe("AccessibilityProvider", () => {
 
       expect(screen.getByTestId("high-contrast")).toHaveTextContent("false");
 
-      
       if (changeHandler) {
         act(() => {
-          (changeHandler as (e: MediaQueryListEvent) => void)({ matches: true } as MediaQueryListEvent);
+          (changeHandler as (e: MediaQueryListEvent) => void)({
+            matches: true,
+          } as MediaQueryListEvent);
         });
       }
 
@@ -590,7 +599,6 @@ describe("AccessibilityProvider", () => {
         return <div>Test</div>;
       };
 
-      
       const consoleError = console.error;
       console.error = vi.fn();
 
@@ -610,9 +618,7 @@ describe("AccessibilityProvider", () => {
         const context = useAccessibility();
         return (
           <div>
-            <span data-testid="has-context">
-              {context ? "true" : "false"}
-            </span>
+            <span data-testid="has-context">{context ? "true" : "false"}</span>
           </div>
         );
       };

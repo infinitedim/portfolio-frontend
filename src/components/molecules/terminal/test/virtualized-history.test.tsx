@@ -13,8 +13,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -24,9 +27,11 @@ vi.mock("@/hooks/use-theme", () => ({
 }));
 
 vi.mock("@/components/molecules/terminal/command-output", () => ({
-  CommandOutput: ({ output }: { output: { type: string; content: string } }) => (
-    <div data-testid="command-output">{output.content}</div>
-  ),
+  CommandOutput: ({
+    output,
+  }: {
+    output: { type: string; content: string };
+  }) => <div data-testid="command-output">{output.content}</div>,
 }));
 
 const mockHistory: TerminalHistory[] = [
@@ -82,7 +87,12 @@ describe("VirtualizedHistory", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<VirtualizedHistory history={mockHistory} prompt=">" />);
+      render(
+        <VirtualizedHistory
+          history={mockHistory}
+          prompt=">"
+        />,
+      );
 
       expect(screen.getByText(/>/)).toBeInTheDocument();
     });
@@ -99,10 +109,12 @@ describe("VirtualizedHistory", () => {
       }));
 
       render(
-        <VirtualizedHistory history={largeHistory} maxVisibleItems={10} />,
+        <VirtualizedHistory
+          history={largeHistory}
+          maxVisibleItems={10}
+        />,
       );
 
-      
       const outputs = screen.getAllByTestId("command-output");
       expect(outputs.length).toBeLessThanOrEqual(10);
     });

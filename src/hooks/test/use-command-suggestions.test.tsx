@@ -55,12 +55,10 @@ describe("useCommandSuggestions", () => {
         useCommandSuggestions("", mockCommands, { showOnEmpty: true }),
       );
 
-      
       act(() => {
         vi.advanceTimersByTime(100);
       });
 
-      
       expect(Array.isArray(result.current.suggestions)).toBe(true);
     });
 
@@ -100,7 +98,7 @@ describe("useCommandSuggestions", () => {
       if (result.current.suggestions.length > 0) {
         expect(helpSuggestion).toBeDefined();
       } else {
-        expect(true).toBe(true); 
+        expect(true).toBe(true);
       }
     });
 
@@ -138,13 +136,12 @@ describe("useCommandSuggestions", () => {
         { initialProps: { input: "" } },
       );
 
-      rerender({ input: "prj" }); 
+      rerender({ input: "prj" });
 
       act(() => {
         vi.advanceTimersByTime(100);
       });
 
-      
       expect(Array.isArray(result.current.suggestions)).toBe(true);
     });
   });
@@ -190,7 +187,6 @@ describe("useCommandSuggestions", () => {
         vi.advanceTimersByTime(100);
       });
 
-      
       expect(result.current.suggestions.length).toBe(0);
     });
   });
@@ -249,8 +245,7 @@ describe("useCommandSuggestions", () => {
         result.current.updateCommandUsage("help");
       });
 
-      
-      expect(true).toBe(true); 
+      expect(true).toBe(true);
     });
   });
 
@@ -280,7 +275,6 @@ describe("useCommandSuggestions", () => {
         result.current.clearCache();
       });
 
-      
       expect(true).toBe(true);
     });
   });
@@ -341,13 +335,11 @@ describe("useCommandSuggestions", () => {
         { initialProps: { input: "" } },
       );
 
-      
       rerender({ input: "h" });
       rerender({ input: "he" });
       rerender({ input: "hel" });
       rerender({ input: "help" });
 
-      
       expect(Array.isArray(result.current.suggestions)).toBe(true);
     });
   });

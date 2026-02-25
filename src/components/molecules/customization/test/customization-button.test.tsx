@@ -14,8 +14,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -25,9 +28,16 @@ vi.mock("@/hooks/use-theme", () => ({
 }));
 
 vi.mock("@/components/organisms/customization/customization-manager", () => ({
-  CustomizationManager: ({ isOpen, onClose: _onClose }: { isOpen: boolean; onClose: () => void }) => (
-    isOpen ? <div data-testid="customization-manager">Customization Manager</div> : null
-  ),
+  CustomizationManager: ({
+    isOpen,
+    onClose: _onClose,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+  }) =>
+    isOpen ? (
+      <div data-testid="customization-manager">Customization Manager</div>
+    ) : null,
 }));
 
 describe("CustomizationButton", () => {
@@ -57,7 +67,10 @@ describe("CustomizationButton", () => {
       render(<CustomizationButton />);
 
       const button = screen.getByLabelText("Open customization manager");
-      expect(button).toHaveAttribute("aria-label", "Open customization manager");
+      expect(button).toHaveAttribute(
+        "aria-label",
+        "Open customization manager",
+      );
     });
 
     it("should have title attribute", () => {
@@ -104,15 +117,15 @@ describe("CustomizationButton", () => {
       render(<CustomizationButton />);
 
       const button = screen.getByLabelText("Open customization manager");
-      
-      
+
       fireEvent.click(button);
       expect(screen.getByTestId("customization-manager")).toBeInTheDocument();
 
-      
       fireEvent.click(button);
-      
-      expect(screen.queryByTestId("customization-manager")).not.toBeInTheDocument();
+
+      expect(
+        screen.queryByTestId("customization-manager"),
+      ).not.toBeInTheDocument();
     });
   });
 });

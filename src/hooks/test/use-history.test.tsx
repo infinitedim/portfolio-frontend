@@ -11,7 +11,6 @@ describe("useEnhancedHistory", () => {
 
     ensureDocumentBody();
 
-    
     if (!document.body) {
       const body = document.createElement("body");
       if (document.documentElement) {
@@ -34,7 +33,7 @@ describe("useEnhancedHistory", () => {
 
     expect(result.current.totalCommands).toBeGreaterThan(0);
     act(() => result.current.toggleFavorite("build project"));
-    
+
     expect(Array.isArray(result.current.favorites)).toBe(true);
     const suggestions = result.current.getSuggestions("b");
     expect(Array.isArray(suggestions)).toBe(true);

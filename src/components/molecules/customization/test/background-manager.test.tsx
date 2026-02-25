@@ -16,8 +16,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -74,7 +77,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       expect(screen.getByText("Background Type")).toBeInTheDocument();
     });
@@ -84,7 +92,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       expect(screen.getByText("Letter Glitch")).toBeInTheDocument();
       expect(screen.getByText("None")).toBeInTheDocument();
@@ -95,7 +108,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       expect(screen.getByText("Glitch Colors")).toBeInTheDocument();
       expect(screen.getByText(/Glitch Speed:/)).toBeInTheDocument();
@@ -106,7 +124,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       expect(screen.getByText("Save Background Settings")).toBeInTheDocument();
     });
@@ -116,7 +139,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       expect(screen.getByText("Cancel")).toBeInTheDocument();
     });
@@ -138,12 +166,16 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const noneButton = screen.getByText("None");
       fireEvent.click(noneButton);
 
-      
       expect(screen.queryByText("Glitch Colors")).not.toBeInTheDocument();
     });
 
@@ -152,13 +184,16 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
-      
       const noneButton = screen.getByText("None");
       fireEvent.click(noneButton);
 
-      
       const glitchButton = screen.getByText("Letter Glitch");
       fireEvent.click(glitchButton);
 
@@ -172,7 +207,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const addButton = screen.getByText("+ Add Color");
       const initialColorInputs = screen.getAllByDisplayValue("#2b4539");
@@ -180,7 +220,6 @@ describe("BackgroundManager", () => {
 
       fireEvent.click(addButton);
 
-      
       const newColorInputs = screen.getAllByDisplayValue(/#[0-9a-fA-F]{6}/);
       expect(newColorInputs.length).toBeGreaterThan(initialCount);
     });
@@ -190,7 +229,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const removeButtons = screen.getAllByText("Remove");
       const initialCount = removeButtons.length;
@@ -198,7 +242,6 @@ describe("BackgroundManager", () => {
       if (removeButtons.length > 0) {
         fireEvent.click(removeButtons[0]);
 
-        
         const newRemoveButtons = screen.queryAllByText("Remove");
         expect(newRemoveButtons.length).toBeLessThan(initialCount);
       }
@@ -221,7 +264,12 @@ describe("BackgroundManager", () => {
         },
       });
 
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       expect(screen.queryByText("Remove")).not.toBeInTheDocument();
     });
@@ -231,7 +279,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const colorInputs = screen.getAllByDisplayValue("#2b4539");
       if (colorInputs.length > 0) {
@@ -246,7 +299,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const textInputs = screen.getAllByDisplayValue("#2b4539");
       if (textInputs.length > 0) {
@@ -263,7 +321,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const speedSlider = screen.getByLabelText(/Glitch Speed:/);
       fireEvent.change(speedSlider, { target: { value: "100" } });
@@ -278,7 +341,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const checkbox = screen.getByLabelText("Center Vignette");
       const initialChecked = (checkbox as HTMLInputElement).checked;
@@ -293,7 +361,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const checkbox = screen.getByLabelText("Outer Vignette");
       const initialChecked = (checkbox as HTMLInputElement).checked;
@@ -308,7 +381,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const checkbox = screen.getByLabelText("Smooth Animation");
       const initialChecked = (checkbox as HTMLInputElement).checked;
@@ -325,9 +403,16 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
-      const textarea = screen.getByPlaceholderText("Enter characters to display...");
+      const textarea = screen.getByPlaceholderText(
+        "Enter characters to display...",
+      );
       fireEvent.change(textarea, { target: { value: "NEW_CHARS" } });
 
       expect((textarea as HTMLTextAreaElement).value).toBe("NEW_CHARS");
@@ -340,7 +425,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const saveButton = screen.getByText("Save Background Settings");
       fireEvent.click(saveButton);
@@ -354,7 +444,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const saveButton = screen.getByText("Save Background Settings");
       fireEvent.click(saveButton);
@@ -369,7 +464,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const noneButton = screen.getByText("None");
       fireEvent.click(noneButton);
@@ -391,7 +491,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       const cancelButton = screen.getByText("Cancel");
       fireEvent.click(cancelButton);
@@ -406,7 +511,12 @@ describe("BackgroundManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<BackgroundManager onUpdate={mockOnUpdate} onClose={mockOnClose} />);
+      render(
+        <BackgroundManager
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
+      );
 
       expect(mockGetBackgroundSettings).toHaveBeenCalled();
     });

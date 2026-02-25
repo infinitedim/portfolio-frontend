@@ -22,8 +22,11 @@ const mockThemeConfig = {
 
 const mockChangeTheme = vi.fn(() => true);
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -48,7 +51,6 @@ function tryMockLocationReload() {
       });
       locationReloadMocked = true;
     } else {
-
       try {
         vi.spyOn(window.location, "reload").mockImplementation(mockReload);
         locationReloadMocked = true;
@@ -98,7 +100,9 @@ describe("AccessibilityMenu", () => {
         return;
       }
       renderWithProvider();
-      expect(screen.queryByText("Accessibility Options")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Accessibility Options"),
+      ).not.toBeInTheDocument();
     });
 
     it("should show menu content when button is clicked", () => {
@@ -136,13 +140,13 @@ describe("AccessibilityMenu", () => {
       renderWithProvider();
       const button = screen.getByLabelText("Open accessibility menu");
 
-
       fireEvent.click(button);
       expect(screen.getByText("Accessibility Options")).toBeInTheDocument();
 
-
       fireEvent.click(button);
-      expect(screen.queryByText("Accessibility Options")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Accessibility Options"),
+      ).not.toBeInTheDocument();
     });
 
     it("should close menu when close button is clicked", () => {
@@ -157,7 +161,9 @@ describe("AccessibilityMenu", () => {
       const closeButton = screen.getByLabelText("Close accessibility menu");
       fireEvent.click(closeButton);
 
-      expect(screen.queryByText("Accessibility Options")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Accessibility Options"),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -171,9 +177,15 @@ describe("AccessibilityMenu", () => {
       const button = screen.getByLabelText("Open accessibility menu");
       fireEvent.click(button);
 
-      expect(screen.getByLabelText("Set font size to small")).toBeInTheDocument();
-      expect(screen.getByLabelText("Set font size to medium")).toBeInTheDocument();
-      expect(screen.getByLabelText("Set font size to large")).toBeInTheDocument();
+      expect(
+        screen.getByLabelText("Set font size to small"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText("Set font size to medium"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText("Set font size to large"),
+      ).toBeInTheDocument();
     });
 
     it("should change font size when button is clicked", async () => {
@@ -189,11 +201,13 @@ describe("AccessibilityMenu", () => {
       expect(smallButton).toBeInTheDocument();
       fireEvent.click(smallButton);
 
-
-      await waitFor(() => {
-        const updatedButton = screen.getByLabelText("Set font size to small");
-        expect(updatedButton).toBeInTheDocument();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          const updatedButton = screen.getByLabelText("Set font size to small");
+          expect(updatedButton).toBeInTheDocument();
+        },
+        { timeout: 1000 },
+      );
     });
 
     it("should highlight active font size", () => {
@@ -241,13 +255,16 @@ describe("AccessibilityMenu", () => {
 
       fireEvent.click(focusButton);
 
-      await waitFor(() => {
-        const updatedButton = screen.getByLabelText(
-          /(Enable|Disable) focus mode for better keyboard navigation/,
-        );
+      await waitFor(
+        () => {
+          const updatedButton = screen.getByLabelText(
+            /(Enable|Disable) focus mode for better keyboard navigation/,
+          );
 
-        expect(updatedButton).toBeInTheDocument();
-      }, { timeout: 1000 });
+          expect(updatedButton).toBeInTheDocument();
+        },
+        { timeout: 1000 },
+      );
     });
   });
 
@@ -278,9 +295,12 @@ describe("AccessibilityMenu", () => {
       const themeButton = screen.getByLabelText("Toggle theme");
       fireEvent.click(themeButton);
 
-      await waitFor(() => {
-        expect(mockChangeTheme).toHaveBeenCalled();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          expect(mockChangeTheme).toHaveBeenCalled();
+        },
+        { timeout: 1000 },
+      );
     });
 
     it("should reload page after theme change", async () => {
@@ -295,11 +315,12 @@ describe("AccessibilityMenu", () => {
       const themeButton = screen.getByLabelText("Toggle theme");
       fireEvent.click(themeButton);
 
-      await waitFor(() => {
-        expect(mockChangeTheme).toHaveBeenCalled();
-      }, { timeout: 2000 });
-
-
+      await waitFor(
+        () => {
+          expect(mockChangeTheme).toHaveBeenCalled();
+        },
+        { timeout: 2000 },
+      );
 
       await new Promise((resolve) => setTimeout(resolve, 200));
       if (locationReloadMocked) {
@@ -381,7 +402,6 @@ describe("AccessibilityMenu", () => {
       }
       renderWithProvider();
       const button = screen.getByLabelText("Open accessibility menu");
-
 
       button.focus();
       expect(document.activeElement).toBe(button);

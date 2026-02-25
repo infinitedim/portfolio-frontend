@@ -1,6 +1,6 @@
 "use client";
 
-import {useState, useCallback, useEffect} from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   TOUR_STEPS,
   TOUR_STORAGE_KEY,
@@ -16,33 +16,32 @@ interface TourState {
 }
 
 interface UseTourReturn {
-  
   isActive: boolean;
-  
+
   currentStep: TourStep | null;
-  
+
   currentStepIndex: number;
-  
+
   totalSteps: number;
-  
+
   progress: number;
-  
+
   hasCompletedTour: boolean;
-  
+
   isFirstVisit: boolean;
-  
+
   startTour: () => void;
-  
+
   nextStep: () => void;
-  
+
   prevStep: () => void;
-  
+
   skipTour: () => void;
-  
+
   completeTour: () => void;
-  
+
   goToStep: (index: number) => void;
-  
+
   resetTour: () => void;
 }
 
@@ -60,7 +59,6 @@ export function useTour(): UseTourReturn {
     isFirstVisit: true,
   });
 
-  
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -68,7 +66,7 @@ export function useTour(): UseTourReturn {
       const stored = localStorage.getItem(TOUR_STORAGE_KEY);
       if (stored) {
         const data: StoredTourData = JSON.parse(stored);
-        
+
         if (data.version === TOUR_VERSION && data.completed) {
           setState((prev) => ({
             ...prev,
@@ -76,7 +74,6 @@ export function useTour(): UseTourReturn {
             isFirstVisit: false,
           }));
         } else {
-          
           setState((prev) => ({
             ...prev,
             hasCompletedTour: false,
@@ -116,7 +113,6 @@ export function useTour(): UseTourReturn {
     setState((prev) => {
       const nextIndex = prev.currentStepIndex + 1;
       if (nextIndex >= TOUR_STEPS.length) {
-        
         saveTourState(true);
         return {
           ...prev,

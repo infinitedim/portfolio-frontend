@@ -14,8 +14,11 @@ const mockRouter = {
   refresh: vi.fn(),
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
@@ -92,9 +95,7 @@ describe("AdminLayout", () => {
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockImplementation(
-        () => new Promise(() => { }), 
-      );
+      mockVerifyAuthentication.mockImplementation(() => new Promise(() => {}));
 
       render(
         <AdminLayout>
@@ -156,7 +157,7 @@ describe("AdminLayout", () => {
 
       const consoleErrorSpy = vi
         .spyOn(console, "error")
-        .mockImplementation(() => { });
+        .mockImplementation(() => {});
 
       render(
         <AdminLayout>
@@ -194,7 +195,6 @@ describe("AdminLayout", () => {
         expect(mockPush).toHaveBeenCalled();
       });
 
-      
       expect(container.children.length).toBe(0);
     });
   });
@@ -207,9 +207,7 @@ describe("AdminLayout", () => {
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockImplementation(
-        () => new Promise(() => { }), 
-      );
+      mockVerifyAuthentication.mockImplementation(() => new Promise(() => {}));
 
       const { container } = render(
         <AdminLayout>
@@ -228,9 +226,7 @@ describe("AdminLayout", () => {
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockImplementation(
-        () => new Promise(() => { }), 
-      );
+      mockVerifyAuthentication.mockImplementation(() => new Promise(() => {}));
 
       render(
         <AdminLayout>
@@ -305,7 +301,6 @@ describe("AdminLayout", () => {
         expect(mockVerifyAuthentication).toHaveBeenCalledTimes(1);
       });
 
-      
       mockPathname.mockReturnValue("/admin/dashboard");
       mockVerifyAuthentication.mockResolvedValue({ isValid: true });
 
@@ -351,7 +346,7 @@ describe("AdminLayout", () => {
 
       const consoleErrorSpy = vi
         .spyOn(console, "error")
-        .mockImplementation(() => { });
+        .mockImplementation(() => {});
 
       render(
         <AdminLayout>

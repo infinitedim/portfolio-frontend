@@ -35,7 +35,7 @@ describe("auth/index.ts", () => {
         expect(true).toBe(true);
         return;
       }
-      
+
       expect(authModule).toBeDefined();
     });
   });

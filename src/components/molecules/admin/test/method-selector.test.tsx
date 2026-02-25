@@ -26,9 +26,7 @@ describe("MethodSelector", () => {
       description: "Get user information",
       type: "query",
       httpMethod: "GET",
-      parameters: [
-        { name: "id", type: "string", required: true },
-      ],
+      parameters: [{ name: "id", type: "string", required: true }],
     },
     {
       name: "createUser",

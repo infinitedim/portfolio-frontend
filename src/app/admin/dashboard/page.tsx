@@ -9,12 +9,7 @@ import { LoggingMonitor } from "@/components/organisms/admin/logging-monitor";
 import { BlogEditor } from "@/components/molecules/admin/blog-editor";
 import { useTheme } from "@/hooks/use-theme";
 
-type DashboardView =
-  | "overview"
-  | "performance"
-  | "logs"
-  | "blog"
-  | "settings";
+type DashboardView = "overview" | "performance" | "logs" | "blog" | "settings";
 
 export default function AdminDashboard(): JSX.Element {
   const router = useRouter();
@@ -33,15 +28,12 @@ export default function AdminDashboard(): JSX.Element {
         }
         setIsAuthenticated(true);
       } catch (error) {
-        
         console.error("Failed to access localStorage:", error);
         router.push("/admin/login");
       }
     }
     setIsLoading(false);
   }, [router]);
-
-  
 
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
@@ -62,8 +54,6 @@ export default function AdminDashboard(): JSX.Element {
   if (!isAuthenticated) {
     return <></>;
   }
-
-  
 
   const renderCurrentView = () => {
     switch (currentView) {

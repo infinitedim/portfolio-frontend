@@ -2,10 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
-import {
-  EnhancedErrorBoundary,
-  ErrorRecoveryService,
-} from "../error-handler";
+import { EnhancedErrorBoundary, ErrorRecoveryService } from "../error-handler";
 
 const mockThemeConfig = {
   name: "default",
@@ -18,8 +15,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -53,7 +53,7 @@ describe("error-handler.tsx", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    vi.spyOn(console, "error").mockImplementation(() => { });
+    vi.spyOn(console, "error").mockImplementation(() => {});
     localStorageMock.getItem.mockReturnValue("[]");
   });
 
@@ -172,7 +172,9 @@ describe("error-handler.tsx", () => {
       const service = ErrorRecoveryService.getInstance();
       service.clearErrorReports();
 
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith("terminal-errors");
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(
+        "terminal-errors",
+      );
     });
   });
 });

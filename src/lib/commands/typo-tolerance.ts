@@ -1,8 +1,4 @@
-
-
 export class TypoTolerance {
-  
-
   public static levenshteinDistance(a: string, b: string): number {
     const matrix = Array(b.length + 1)
       .fill(null)
@@ -24,8 +20,6 @@ export class TypoTolerance {
 
     return matrix[b.length][a.length];
   }
-
-  
 
   static findSimilarCommand(
     input: string,
@@ -49,8 +43,6 @@ export class TypoTolerance {
     return bestMatch;
   }
 
-  
-
   static fuzzyMatch(input: string, commands: string[]): string[] {
     const matches = commands.filter((command) => {
       const distance = this.levenshteinDistance(
@@ -72,8 +64,6 @@ export class TypoTolerance {
       return distanceA - distanceB;
     });
   }
-
-  
 
   static getSuggestionScore(input: string, command: string): number {
     const lowerInput = input.toLowerCase();
@@ -104,8 +94,6 @@ export class TypoTolerance {
 
     return 0;
   }
-
-  
 
   static getSuggestionType(
     input: string,

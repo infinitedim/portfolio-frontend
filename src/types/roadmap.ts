@@ -4,7 +4,7 @@ export interface RoadmapSkill {
   category: string;
   description: string;
   status: "not-started" | "in-progress" | "completed";
-  progress: number; 
+  progress: number;
   projects?: string[];
   dateCompleted?: Date;
   priority: "low" | "medium" | "high";
@@ -16,7 +16,7 @@ export interface RoadmapCategory {
   name: string;
   description: string;
   skills: RoadmapSkill[];
-  progress: number; 
+  progress: number;
   color: string;
 }
 

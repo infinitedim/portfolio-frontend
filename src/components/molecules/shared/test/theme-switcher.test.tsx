@@ -6,8 +6,11 @@ import { ThemeSwitcher } from "../theme-switcher";
 const mockChangeTheme = vi.fn(() => true);
 const mockAvailableThemes = ["dark", "light", "terminal"];
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -27,7 +30,10 @@ vi.mock("@/components/atoms/shared/button", () => ({
     onClick: () => void;
     variant: string;
   }) => (
-    <button onClick={onClick} data-variant={variant}>
+    <button
+      onClick={onClick}
+      data-variant={variant}
+    >
       {children}
     </button>
   ),
@@ -84,7 +90,6 @@ describe("ThemeSwitcher", () => {
       }
       render(<ThemeSwitcher />);
 
-      
       const terminalButton = screen.getByText("terminal");
       fireEvent.click(terminalButton);
 

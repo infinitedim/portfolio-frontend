@@ -4,7 +4,7 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { SecureAuth, useSecureAuth } from "../secure-auth";
 
 const mockFetch = vi.fn();
-globalThis.fetch = mockFetch;
+globalThis.fetch = mockFetch as unknown as typeof fetch;
 
 let mockCookies = "";
 if (typeof document !== "undefined") {

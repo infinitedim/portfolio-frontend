@@ -10,7 +10,13 @@ interface Parameter {
   description: string;
 }
 
-type ParameterInputValue = string | number | boolean | object | null | undefined;
+type ParameterInputValue =
+  | string
+  | number
+  | boolean
+  | object
+  | null
+  | undefined;
 
 interface ParameterInputProps {
   parameters: Parameter[];
@@ -60,7 +66,8 @@ export function ParameterInput({
       }
 
       case "boolean": {
-        const boolValue = typeof rawValue === "boolean" ? rawValue : Boolean(rawValue);
+        const boolValue =
+          typeof rawValue === "boolean" ? rawValue : Boolean(rawValue);
         return (
           <select
             value={boolValue.toString()}
@@ -79,7 +86,10 @@ export function ParameterInput({
       }
 
       case "object": {
-        const objValue = typeof rawValue === "string" ? rawValue : JSON.stringify(rawValue ?? {}, null, 2);
+        const objValue =
+          typeof rawValue === "string"
+            ? rawValue
+            : JSON.stringify(rawValue ?? {}, null, 2);
         return (
           <textarea
             value={objValue}
@@ -104,7 +114,8 @@ export function ParameterInput({
       }
 
       default: {
-        const strValue = typeof rawValue === "string" ? rawValue : String(rawValue ?? "");
+        const strValue =
+          typeof rawValue === "string" ? rawValue : String(rawValue ?? "");
         return (
           <input
             type="text"

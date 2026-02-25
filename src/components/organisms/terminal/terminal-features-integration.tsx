@@ -221,28 +221,32 @@ export function AdvancedTerminalFeaturesIntegration({
             </div>
 
             <div className="space-y-2">
-              {analytics.topCommands.slice(0, 3).map((item: { command: string; count: number }, index: number) => (
-                <div
-                  key={item.command}
-                  className="flex items-center justify-between p-2 rounded"
-                  style={{ backgroundColor: `${themeConfig.colors.bg}40` }}
-                >
-                  <span
-                    className="font-mono text-sm"
-                    style={{ color: themeConfig.colors.text }}
-                  >
-                    {index + 1}. {item.command}
-                  </span>
-                  <div className="flex items-center gap-2 text-xs">
-                    <span style={{ color: themeConfig.colors.muted }}>
-                      {item.count}x
-                    </span>
-                    <span style={{ color: themeConfig.colors.muted }}>
-                      {item.count} times
-                    </span>
-                  </div>
-                </div>
-              ))}
+              {analytics.topCommands
+                .slice(0, 3)
+                .map(
+                  (item: { command: string; count: number }, index: number) => (
+                    <div
+                      key={item.command}
+                      className="flex items-center justify-between p-2 rounded"
+                      style={{ backgroundColor: `${themeConfig.colors.bg}40` }}
+                    >
+                      <span
+                        className="font-mono text-sm"
+                        style={{ color: themeConfig.colors.text }}
+                      >
+                        {index + 1}. {item.command}
+                      </span>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span style={{ color: themeConfig.colors.muted }}>
+                          {item.count}x
+                        </span>
+                        <span style={{ color: themeConfig.colors.muted }}>
+                          {item.count} times
+                        </span>
+                      </div>
+                    </div>
+                  ),
+                )}
             </div>
 
             <div className="flex gap-2">

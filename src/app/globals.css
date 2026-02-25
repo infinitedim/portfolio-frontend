@@ -47,8 +47,7 @@ body {
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* Animation Variables */
-    --animation-duration: 300ms;
+--animation-duration: 300ms;
     --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
     --bounce-easing: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
@@ -89,7 +88,6 @@ body {
   }
 }
 
-/* Advanced Animation Keyframes */
 @keyframes matrixFall {
   0% {
     transform: translateY(-100vh);
@@ -267,7 +265,6 @@ body {
   }
 }
 
-/* Mobile Terminal Enhancements */
 .enhanced-mobile-terminal {
   min-height: 100vh;
   display: flex;
@@ -299,7 +296,6 @@ body {
   z-index: 1000;
 }
 
-/* Animation Utilities */
 .animate-slide-in-up {
   animation: slideInUp var(--animation-duration) var(--animation-easing) both;
 }
@@ -336,14 +332,12 @@ body {
   animation: glow 1s ease-in-out infinite alternate;
 }
 
-/* Typing Animation */
 .typing-cursor::after {
   content: "▋";
   animation: typingCursor 1s infinite;
   color: currentColor;
 }
 
-/* Matrix Rain Effect */
 .matrix-drop {
   font-family: monospace;
   font-weight: bold;
@@ -355,7 +349,6 @@ body {
   z-index: -1;
 }
 
-/* Interactive Elements */
 .interactive-hover {
   transition: all var(--animation-duration) var(--animation-easing);
 }
@@ -370,7 +363,6 @@ body {
   transition-duration: 150ms;
 }
 
-/* Quick Commands Styles */
 .quick-command-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -409,7 +401,6 @@ body {
   transform: scale(1.1);
 }
 
-/* Security Indicators */
 .security-indicator {
   display: inline-flex;
   align-items: center;
@@ -439,7 +430,6 @@ body {
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
-/* Pull to Refresh */
 .pull-to-refresh {
   position: relative;
   overflow: hidden;
@@ -450,7 +440,6 @@ body {
   transform: translateY(60px);
 }
 
-/* Floating Action Button */
 .fab {
   position: fixed;
   bottom: 2rem;
@@ -477,7 +466,6 @@ body {
   transform: scale(0.95);
 }
 
-/* Gesture Feedback */
 .gesture-feedback {
   position: fixed;
   top: 50%;
@@ -498,75 +486,65 @@ body {
   opacity: 1;
 }
 
-/* Terminal with Glitch Background */
 .terminal-container {
   backdrop-filter: blur(0.5px);
   -webkit-backdrop-filter: blur(0.5px);
 }
 
-/* Ensure terminal content is readable over glitch */
 .terminal-container .space-y-4 {
   position: relative;
   z-index: 1;
 }
 
-/* Global Mobile Optimizations */
 @media (max-width: 768px) {
-  /* Ensure proper mobile viewport */
+  
   html,
   body {
     overflow-x: hidden;
     width: 100%;
   }
 
-  /* Terminal Container Mobile Optimizations */
-  .terminal-container {
+.terminal-container {
     padding-top: 0.5rem !important;
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
     min-height: 100vh;
     min-height: 100dvh;
-    /* Support for dynamic viewport height */
+    
     width: 100%;
     overflow-x: hidden;
   }
 
-  /* Mobile content spacing */
-  .terminal-container .space-y-4 > * + * {
+.terminal-container .space-y-4 > * + * {
     margin-top: 1rem;
   }
 
-  /* Ensure full width usage on mobile */
-  .terminal-container > div {
+.terminal-container > div {
     max-width: 100% !important;
     padding-left: 0;
     padding-right: 0;
     width: 100%;
   }
 
-  /* Mobile terminal history optimizations */
-  .terminal-history {
+.terminal-history {
     font-size: 0.875rem;
     line-height: 1.4;
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
 
-  /* Mobile command input optimizations */
-  .command-input-container {
+.command-input-container {
     padding: 0.75rem 0;
     margin-top: 1rem;
     width: 100%;
   }
 
-  /* Mobile ASCII banner adjustments */
-  .ascii-banner {
+.ascii-banner {
     font-size: 6px !important;
     line-height: 1.1 !important;
   }
 
-  /* Quick command grid for mobile */
-  .quick-command-grid {
+.quick-command-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
     padding: 0.75rem;
@@ -589,16 +567,14 @@ body {
     font-size: 1.25rem;
   }
 
-  /* Mobile-specific optimizations for long text */
-  pre {
+pre {
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow-wrap: break-word;
     font-size: 0.75rem;
   }
 
-  /* Ensure mobile terminal doesn't have horizontal scroll */
-  .mobile-terminal {
+.mobile-terminal {
     width: 100%;
     overflow-x: hidden;
   }
@@ -615,7 +591,6 @@ body {
   }
 }
 
-/* Accessibility and Performance */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --animation-duration: 0.01ms;
@@ -666,7 +641,6 @@ body {
   }
 }
 
-/* Performance Optimizations */
 .will-change-transform {
   will-change: transform;
 }
@@ -681,7 +655,6 @@ body {
   perspective: 1000px;
 }
 
-/* Loading States */
 .loading-shimmer {
   background: linear-gradient(
     90deg,
@@ -717,7 +690,6 @@ body {
   animation: fade-in 0.5s ease-out;
 }
 
-/* Terminal Input Styles */
 .terminal-input {
   background: transparent;
   border: none;
@@ -743,7 +715,6 @@ textarea.terminal-input {
   animation: typingCursor 1s infinite;
 }
 
-/* Letter Glitch Background */
 .letter-glitch-bg {
   position: absolute;
   inset: 0;
@@ -920,7 +891,6 @@ textarea.terminal-input {
   }
 }
 
-/* Subtle noise layer to add texture */
 .letter-glitch-bg::after {
   content: "";
   position: absolute;

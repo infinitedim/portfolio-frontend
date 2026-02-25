@@ -1,5 +1,3 @@
-
-
 import { describe, it, expect } from "vitest";
 import * as logger from "../index";
 

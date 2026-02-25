@@ -6,17 +6,13 @@ import type {
 } from "@/types/roadmap";
 import type { RoadmapDashboard, RoadmapStreak } from "@/lib/data/data-fetching";
 
-// encryptedFetch is lazily imported only in browser context to avoid pulling
-// in Web Crypto API on the server.
 async function apiFetch<T>(url: string): Promise<T | null> {
   try {
     if (typeof window === "undefined") {
-      // Server-side: plain fetch directly to backend
       const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) return null;
       return (await res.json()) as T;
     } else {
-      // Browser: go through encrypted Next.js proxy
       const { encryptedFetch } = await import("@/lib/crypto/encrypted-fetch");
       return encryptedFetch<T>(url);
     }
@@ -41,16 +37,12 @@ export class RoadmapService {
     return RoadmapService.instance;
   }
 
-  // -----------------------------------------------------------------------
-  // Internal helpers
-  // -----------------------------------------------------------------------
-
   private roadmapUrl(path: string): string {
     const base =
       typeof window === "undefined"
         ? (process.env.BACKEND_URL ??
-           process.env.NEXT_PUBLIC_API_URL ??
-           "http://localhost:8080")
+          process.env.NEXT_PUBLIC_API_URL ??
+          "http://localhost:8080")
         : (process.env.NEXT_PUBLIC_API_URL ?? "");
     return `${base}/api/roadmap/${path}`;
   }
@@ -77,10 +69,6 @@ export class RoadmapService {
     };
     return colorMap[id] ?? "#6366f1";
   }
-
-  // -----------------------------------------------------------------------
-  // Load data from backend
-  // -----------------------------------------------------------------------
 
   private async loadApiData(): Promise<void> {
     const now = Date.now();
@@ -135,18 +123,12 @@ export class RoadmapService {
       completedSkills: totalDone,
       totalSkills: totalItems,
       categories,
-      lastUpdated: streak
-        ? new Date(streak.lastVisitAt)
-        : new Date(),
+      lastUpdated: streak ? new Date(streak.lastVisitAt) : new Date(),
     };
 
     this.loaded = true;
     this.lastFetchTime = now;
   }
-
-  // -----------------------------------------------------------------------
-  // Public API
-  // -----------------------------------------------------------------------
 
   public async initialize(): Promise<void> {
     await this.loadApiData();
@@ -233,10 +215,6 @@ export class RoadmapService {
       cat.skills.filter((s) => s.status === status),
     );
   }
-
-  // -----------------------------------------------------------------------
-  // Fallback when backend is unreachable
-  // -----------------------------------------------------------------------
 
   private loadFallbackData(): void {
     this.progress = {

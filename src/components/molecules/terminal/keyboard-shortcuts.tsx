@@ -303,21 +303,17 @@ export function KeyboardShortcut({
   if (!isOpen) return null;
 
   return (
-
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${className}`}
       style={{ backgroundColor: `${themeConfig.colors.bg}e6` }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      onKeyDown={(e) => {
-        if (e.key === "Escape") {
-          onClose();
-        }
-      }}
       role="button"
-      aria-label="Close dialog"
+      aria-label="Close keyboard shortcuts"
       tabIndex={0}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      onKeyDown={handlePanelKeyDown}
     >
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={containerRef}
         className="w-full max-w-4xl max-h-[90vh] flex flex-col rounded-lg border shadow-2xl"
@@ -328,7 +324,6 @@ export function KeyboardShortcut({
         role="dialog"
         aria-labelledby="shortcuts-panel-title"
         tabIndex={-1}
-        onKeyDown={handlePanelKeyDown}
       >
         <div
           className="flex items-center justify-between p-4 border-b"

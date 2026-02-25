@@ -1,61 +1,56 @@
-
-
 export enum ErrorSeverity {
-  
   LOW = "LOW",
-  
+
   MEDIUM = "MEDIUM",
-  
+
   HIGH = "HIGH",
-  
+
   CRITICAL = "CRITICAL",
 }
 
 export enum ErrorCategory {
-  
   NETWORK = "NETWORK",
-  
+
   VALIDATION = "VALIDATION",
-  
+
   AUTHENTICATION = "AUTHENTICATION",
-  
+
   AUTHORIZATION = "AUTHORIZATION",
-  
+
   DATABASE = "DATABASE",
-  
+
   API = "API",
-  
+
   UI = "UI",
-  
+
   PERFORMANCE = "PERFORMANCE",
-  
+
   SECURITY = "SECURITY",
-  
+
   BUSINESS_LOGIC = "BUSINESS_LOGIC",
-  
+
   EXTERNAL_SERVICE = "EXTERNAL_SERVICE",
-  
+
   CONFIGURATION = "CONFIGURATION",
-  
+
   UNKNOWN = "UNKNOWN",
 }
 
 export enum ErrorRecoveryStrategy {
-  
   RETRY = "RETRY",
-  
+
   FALLBACK = "FALLBACK",
-  
+
   IGNORE = "IGNORE",
-  
+
   USER_ACTION = "USER_ACTION",
-  
+
   REDIRECT = "REDIRECT",
-  
+
   REFRESH = "REFRESH",
-  
+
   LOGOUT = "LOGOUT",
-  
+
   ESCALATE = "ESCALATE",
 }
 
@@ -134,8 +129,6 @@ export class EnhancedError extends Error {
       Error.captureStackTrace(this, this.constructor);
     }
   }
-
-  
 
   toJSON(): Record<string, unknown> {
     return {
@@ -359,8 +352,6 @@ export class BusinessLogicError extends EnhancedError {
 }
 
 export class ErrorUtils {
-  
-
   static enhance(
     error: Error,
     options: Partial<ErrorMetadata> = {},
@@ -374,8 +365,6 @@ export class ErrorUtils {
       ...options,
     });
   }
-
-  
 
   static isRetryable(error: Error): boolean {
     if (error instanceof EnhancedError) {
@@ -396,8 +385,6 @@ export class ErrorUtils {
     return retryablePatterns.some((pattern) => pattern.test(error.message));
   }
 
-  
-
   static getSeverity(error: Error): ErrorSeverity {
     if (error instanceof EnhancedError) {
       return error.severity;
@@ -412,8 +399,6 @@ export class ErrorUtils {
 
     return ErrorSeverity.MEDIUM;
   }
-
-  
 
   static getCategory(error: Error): ErrorCategory {
     if (error instanceof EnhancedError) {
@@ -437,8 +422,6 @@ export class ErrorUtils {
 
     return ErrorCategory.UNKNOWN;
   }
-
-  
 
   static getSuggestions(error: Error): string[] {
     if (error instanceof EnhancedError) {

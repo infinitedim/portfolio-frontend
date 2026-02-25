@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { FontManager } from "../font-manager";
 import type { CustomFont } from "@/types/customization";
@@ -18,8 +24,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -61,7 +70,11 @@ vi.mock("@/lib/services/customization-service", () => ({
 global.alert = vi.fn();
 global.confirm = vi.fn(() => true);
 
-const originalCreateElement = typeof document !== "undefined" ? document.createElement.bind(document) : undefined;
+const originalCreateElement =
+  typeof document !== "undefined" &&
+  typeof document.createElement === "function"
+    ? document.createElement.bind(document)
+    : undefined;
 const mockCreateElement = vi.fn((tag: string) => {
   if (tag === "a") {
     return {
@@ -150,10 +163,16 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
-      expect(screen.getByPlaceholderText("Search fonts...")).toBeInTheDocument();
+      expect(
+        screen.getByPlaceholderText("Search fonts..."),
+      ).toBeInTheDocument();
     });
 
     it("should render search input", () => {
@@ -162,7 +181,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       const searchInput = screen.getByPlaceholderText("Search fonts...");
@@ -175,7 +198,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       expect(screen.getByText(/📁 Upload/)).toBeInTheDocument();
@@ -187,7 +214,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       expect(screen.getByDisplayValue("All Sources")).toBeInTheDocument();
@@ -199,7 +230,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       expect(screen.getByText("Pick Random Font")).toBeInTheDocument();
@@ -211,7 +246,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       expect(screen.getByText("Fira Code")).toBeInTheDocument();
@@ -225,7 +264,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       expect(screen.getByText("Select a Font")).toBeInTheDocument();
@@ -239,13 +282,16 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       const fontCards = screen.getAllByText("Fira Code");
       const fontCard = fontCards[0].closest("div[role='button']");
       fireEvent.click(fontCard!);
-
 
       expect(fontCard).toBeInTheDocument();
       expect(screen.getByText("Font Preview")).toBeInTheDocument();
@@ -257,10 +303,16 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
-      const fontCard = screen.getByText("Fira Code").closest("div[role='button']");
+      const fontCard = screen
+        .getByText("Fira Code")
+        .closest("div[role='button']");
       fireEvent.click(fontCard!);
 
       expect(screen.getByText("Font Preview")).toBeInTheDocument();
@@ -275,7 +327,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       const searchInput = screen.getByPlaceholderText("Search fonts...");
@@ -291,7 +347,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       const filterSelect = screen.getByDisplayValue("All Sources");
@@ -309,10 +369,16 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
-      const fontCard = screen.getByText("JetBrains Mono").closest("div[role='button']");
+      const fontCard = screen
+        .getByText("JetBrains Mono")
+        .closest("div[role='button']");
       fireEvent.click(fontCard!);
 
       const applyButton = screen.getByText("✅ Apply Font");
@@ -328,10 +394,16 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
-      const fontCard = screen.getByText("Fira Code").closest("div[role='button']");
+      const fontCard = screen
+        .getByText("Fira Code")
+        .closest("div[role='button']");
       fireEvent.click(fontCard!);
 
       const applyButton = screen.getByText("✅ Apply Font");
@@ -347,10 +419,16 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
-      const fontCard = screen.getByText("Fira Code").closest("div[role='button']");
+      const fontCard = screen
+        .getByText("Fira Code")
+        .closest("div[role='button']");
       fireEvent.click(fontCard!);
 
       const saveButton = screen.getByText("💾 Save as Current Font");
@@ -368,7 +446,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       const deleteButton = screen.getByText("Delete");
@@ -385,7 +467,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       const firaCodeCards = screen.getAllByText("Fira Code");
@@ -407,9 +493,12 @@ describe("FontManager", () => {
       }
       vi.useFakeTimers();
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
-
 
       (mockGetCustomFonts as any).mockReturnValueOnce([]);
 
@@ -419,19 +508,24 @@ describe("FontManager", () => {
         fireEvent.click(randomButton);
       });
 
-
       await act(async () => {
         vi.advanceTimersByTime(600);
         await vi.runAllTimersAsync();
       });
 
-      await waitFor(() => {
-        expect(mockSaveCustomFontFromGoogle).toHaveBeenCalled();
-      }, { timeout: 5000 });
+      await waitFor(
+        () => {
+          expect(mockSaveCustomFontFromGoogle).toHaveBeenCalled();
+        },
+        { timeout: 5000 },
+      );
 
-      await waitFor(() => {
-        expect(mockOnUpdate).toHaveBeenCalled();
-      }, { timeout: 5000 });
+      await waitFor(
+        () => {
+          expect(mockOnUpdate).toHaveBeenCalled();
+        },
+        { timeout: 5000 },
+      );
 
       vi.useRealTimers();
     }, 15000);
@@ -442,7 +536,11 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       const ligaturesCheckbox = screen.getByLabelText(/Ligatures/);
@@ -450,7 +548,9 @@ describe("FontManager", () => {
 
       fireEvent.click(ligaturesCheckbox);
 
-      expect((ligaturesCheckbox as HTMLInputElement).checked).not.toBe(initialChecked);
+      expect((ligaturesCheckbox as HTMLInputElement).checked).not.toBe(
+        initialChecked,
+      );
     });
   });
 
@@ -461,11 +561,17 @@ describe("FontManager", () => {
         return;
       }
       vi.useFakeTimers();
-      const mockFile = new File(["font data"], "font.woff", { type: "font/woff" });
+      const mockFile = new File(["font data"], "font.woff", {
+        type: "font/woff",
+      });
       mockSaveCustomFont.mockResolvedValue(undefined);
 
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
       const uploadButton = screen.getByText(/📁 Upload/);
@@ -474,7 +580,9 @@ describe("FontManager", () => {
         fireEvent.click(uploadButton);
       });
 
-      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      const fileInput = document.querySelector(
+        'input[type="file"]',
+      ) as HTMLInputElement;
       if (fileInput) {
         Object.defineProperty(fileInput, "files", {
           value: [mockFile],
@@ -485,16 +593,18 @@ describe("FontManager", () => {
           fireEvent.change(fileInput);
         });
 
-
         await act(async () => {
           vi.advanceTimersByTime(200);
           await vi.runAllTimersAsync();
         });
       }
 
-      await waitFor(() => {
-        expect(mockSaveCustomFont).toHaveBeenCalled();
-      }, { timeout: 5000 });
+      await waitFor(
+        () => {
+          expect(mockSaveCustomFont).toHaveBeenCalled();
+        },
+        { timeout: 5000 },
+      );
 
       vi.useRealTimers();
     }, 15000);
@@ -507,10 +617,16 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
-      const fontCard = screen.getByText("Fira Code").closest("div[role='button']");
+      const fontCard = screen
+        .getByText("Fira Code")
+        .closest("div[role='button']");
       fireEvent.keyDown(fontCard!, { key: "Enter" });
 
       expect(screen.getByText("Font Preview")).toBeInTheDocument();
@@ -522,10 +638,16 @@ describe("FontManager", () => {
         return;
       }
       render(
-        <FontManager fonts={mockFonts} onUpdate={mockOnUpdate} onClose={mockOnClose} />,
+        <FontManager
+          fonts={mockFonts}
+          onUpdate={mockOnUpdate}
+          onClose={mockOnClose}
+        />,
       );
 
-      const fontCard = screen.getByText("Fira Code").closest("div[role='button']");
+      const fontCard = screen
+        .getByText("Fira Code")
+        .closest("div[role='button']");
       fireEvent.keyDown(fontCard!, { key: " " });
 
       expect(screen.getByText("Font Preview")).toBeInTheDocument();

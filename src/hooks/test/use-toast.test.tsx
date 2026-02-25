@@ -13,7 +13,6 @@ describe("useToast", () => {
 
     vi.useFakeTimers();
 
-    
     if (!document.body) {
       const body = document.createElement("body");
       if (document.documentElement) {
@@ -110,7 +109,6 @@ describe("useToast", () => {
         t.dismiss();
       });
 
-      
       expect(
         result.current.toasts.every(
           (t: { open?: boolean }) => t.open === false || t.open === undefined,

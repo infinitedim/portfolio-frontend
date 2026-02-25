@@ -17,8 +17,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -193,7 +196,12 @@ describe("SkillCard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<SkillCard skill={mockSkill} showProjects={true} />);
+      render(
+        <SkillCard
+          skill={mockSkill}
+          showProjects={true}
+        />,
+      );
 
       expect(screen.getByText("Related Projects:")).toBeInTheDocument();
       expect(screen.getByText("Project 1")).toBeInTheDocument();
@@ -205,7 +213,12 @@ describe("SkillCard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<SkillCard skill={mockSkill} showProjects={false} />);
+      render(
+        <SkillCard
+          skill={mockSkill}
+          showProjects={false}
+        />,
+      );
 
       expect(screen.queryByText("Related Projects:")).not.toBeInTheDocument();
     });
@@ -217,7 +230,12 @@ describe("SkillCard", () => {
       }
       const skillWithoutProjects = { ...mockSkill, projects: [] };
 
-      render(<SkillCard skill={skillWithoutProjects} showProjects={true} />);
+      render(
+        <SkillCard
+          skill={skillWithoutProjects}
+          showProjects={true}
+        />,
+      );
 
       expect(screen.queryByText("Related Projects:")).not.toBeInTheDocument();
     });
@@ -229,7 +247,12 @@ describe("SkillCard", () => {
       }
       const skillWithoutProjects = { ...mockSkill, projects: undefined };
 
-      render(<SkillCard skill={skillWithoutProjects} showProjects={true} />);
+      render(
+        <SkillCard
+          skill={skillWithoutProjects}
+          showProjects={true}
+        />,
+      );
 
       expect(screen.queryByText("Related Projects:")).not.toBeInTheDocument();
     });
@@ -266,7 +289,12 @@ describe("SkillCard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<SkillCard skill={mockSkill} compact={true} />);
+      render(
+        <SkillCard
+          skill={mockSkill}
+          compact={true}
+        />,
+      );
 
       expect(screen.getByText("React")).toBeInTheDocument();
       expect(screen.getByText("75%")).toBeInTheDocument();
@@ -277,7 +305,12 @@ describe("SkillCard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<SkillCard skill={mockSkill} compact={true} />);
+      render(
+        <SkillCard
+          skill={mockSkill}
+          compact={true}
+        />,
+      );
 
       expect(
         screen.queryByText("A JavaScript library for building user interfaces"),
@@ -289,7 +322,13 @@ describe("SkillCard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<SkillCard skill={mockSkill} compact={true} showProjects={true} />);
+      render(
+        <SkillCard
+          skill={mockSkill}
+          compact={true}
+          showProjects={true}
+        />,
+      );
 
       expect(screen.queryByText("Related Projects:")).not.toBeInTheDocument();
     });
@@ -299,7 +338,12 @@ describe("SkillCard", () => {
         expect(true).toBe(true);
         return;
       }
-      render(<SkillCard skill={mockSkill} compact={true} />);
+      render(
+        <SkillCard
+          skill={mockSkill}
+          compact={true}
+        />,
+      );
 
       expect(screen.getByText("75%")).toBeInTheDocument();
     });

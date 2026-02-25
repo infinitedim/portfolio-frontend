@@ -14,8 +14,11 @@ const mockThemeConfig = {
   },
 };
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -77,7 +80,9 @@ describe("PWAInstallPrompt", () => {
         />,
       );
 
-      expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Install Portfolio App"),
+      ).not.toBeInTheDocument();
     });
 
     it("should render after delay", async () => {
@@ -137,7 +142,9 @@ describe("PWAInstallPrompt", () => {
       });
 
       expect(screen.getByText("Install Portfolio App")).toBeInTheDocument();
-      expect(screen.getByText("Get the native app experience")).toBeInTheDocument();
+      expect(
+        screen.getByText("Get the native app experience"),
+      ).toBeInTheDocument();
     });
 
     it("should render install button", async () => {
@@ -197,7 +204,9 @@ describe("PWAInstallPrompt", () => {
         await vi.advanceTimersByTimeAsync(1);
       });
 
-      expect(screen.getByText("Faster loading & offline access")).toBeInTheDocument();
+      expect(
+        screen.getByText("Faster loading & offline access"),
+      ).toBeInTheDocument();
       expect(screen.getByText("Native app experience")).toBeInTheDocument();
       expect(screen.getByText("Home screen shortcut")).toBeInTheDocument();
     });
@@ -242,7 +251,10 @@ describe("PWAInstallPrompt", () => {
 
       const dialog = screen.getByRole("dialog");
       expect(dialog).toHaveAttribute("aria-labelledby", "pwa-prompt-title");
-      expect(dialog).toHaveAttribute("aria-describedby", "pwa-prompt-description");
+      expect(dialog).toHaveAttribute(
+        "aria-describedby",
+        "pwa-prompt-description",
+      );
     });
   });
 
@@ -302,7 +314,9 @@ describe("PWAInstallPrompt", () => {
         await vi.advanceTimersByTimeAsync(300);
       });
 
-      expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Install Portfolio App"),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -391,7 +405,9 @@ describe("PWAInstallPrompt", () => {
         vi.advanceTimersByTime(300);
       });
 
-      expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Install Portfolio App"),
+      ).not.toBeInTheDocument();
     });
 
     it("should save dismissal to localStorage when persistDismissal is true", async () => {
@@ -504,7 +520,9 @@ describe("PWAInstallPrompt", () => {
 
       vi.advanceTimersByTime(1000);
 
-      expect(screen.queryByText("Install Portfolio App")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Install Portfolio App"),
+      ).not.toBeInTheDocument();
     });
 
     it("should show prompt if not previously dismissed", async () => {

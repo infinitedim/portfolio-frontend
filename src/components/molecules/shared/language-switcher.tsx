@@ -5,15 +5,14 @@ import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
 
 interface LanguageSwitcherProps {
-  
   variant?: "dropdown" | "list";
-  
+
   className?: string;
-  
+
   showNative?: boolean;
-  
+
   showFlags?: boolean;
-  
+
   onLanguageChange?: (locale: string) => void;
 }
 

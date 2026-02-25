@@ -1,21 +1,3 @@
-/**
- * encryptedFetch — drop-in replacement for fetch() for browser→Next.js calls.
- *
- * Transparently:
- *  1. Ensures an ECDH session exists (performs handshake if needed).
- *  2. Encrypts the request body (JSON only).
- *  3. Sends X-Encrypted: 1 + X-Session-ID headers.
- *  4. Decrypts the AES-GCM response envelope.
- *  5. Returns a synthetic Response with the plaintext body.
- *
- * Usage (identical to fetch):
- *   const data = await encryptedFetch<MyType>("/api/roadmap/dashboard");
- *   const result = await encryptedFetch<Result>("/api/auth/login", {
- *     method: "POST",
- *     body: JSON.stringify({ email, password }),
- *   });
- */
-
 "use client";
 
 import {
@@ -24,10 +6,6 @@ import {
   resetClientSession,
   type EncryptedEnvelope,
 } from "@/lib/crypto/client";
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
 type FetchOptions = Omit<RequestInit, "body"> & { body?: string };
 
@@ -49,11 +27,7 @@ function isEncryptedEnvelope(v: unknown): v is EncryptedResponseEnvelope {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Core
-// ---------------------------------------------------------------------------
-
-const MAX_RETRY = 1; // retry once after session expiry
+const MAX_RETRY = 1;
 
 async function doFetch(
   url: string,
@@ -78,8 +52,6 @@ async function doFetch(
     }
     sessionId = envelope.sessionId;
   } else {
-    // For GET / body-less requests we still need a session ID so the server
-    // can verify the caller. Trigger a handshake by calling encrypt on "{}".
     try {
       const dummy = await clientEncrypt("{}");
       sessionId = dummy.sessionId;
@@ -112,18 +84,15 @@ async function doFetch(
         : undefined,
   });
 
-  // ── Session expired → re-handshake once ────────────────────────────────
   if (res.status === 401 && attempt < MAX_RETRY) {
     resetClientSession();
     return doFetch(url, options, attempt + 1);
   }
 
   if (!res.ok && res.headers.get("x-encrypted") !== "1") {
-    // Non-encrypted error response — return as-is
     return res;
   }
 
-  // ── Decrypt response ────────────────────────────────────────────────────
   let json: unknown;
   try {
     json = await res.json();
@@ -132,7 +101,6 @@ async function doFetch(
   }
 
   if (!isEncryptedEnvelope(json)) {
-    // Server returned a non-encrypted error (e.g. 4xx before handler ran)
     return new Response(JSON.stringify(json), {
       status: res.status,
       headers: { "content-type": "application/json" },
@@ -143,7 +111,6 @@ async function doFetch(
   try {
     plaintext = await clientDecrypt(json);
   } catch (e) {
-    // Decryption failure — re-handshake and retry
     if (attempt < MAX_RETRY) {
       resetClientSession();
       return doFetch(url, options, attempt + 1);
@@ -165,9 +132,6 @@ async function doFetch(
   });
 }
 
-/**
- * Encrypted fetch — JSON response automatically parsed.
- */
 export async function encryptedFetch<T = unknown>(
   url: string,
   options: FetchOptions = {},
@@ -182,9 +146,6 @@ export async function encryptedFetch<T = unknown>(
   return res.json() as Promise<T>;
 }
 
-/**
- * Low-level variant that returns the raw Response (already decrypted).
- */
 export async function encryptedFetchRaw(
   url: string,
   options: FetchOptions = {},

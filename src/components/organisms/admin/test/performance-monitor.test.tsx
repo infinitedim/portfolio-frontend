@@ -38,12 +38,19 @@ describe("PerformanceMonitor", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
 
-    
-    HTMLCanvasElement.prototype.getContext = vi.fn(() => mockCanvasContext as any);
+    HTMLCanvasElement.prototype.getContext = vi.fn(
+      () => mockCanvasContext as any,
+    );
   });
 
   afterEach(() => {
-    vi.clearAllTimers();
+    try {
+      vi.clearAllTimers();
+    } catch {
+      console.warn(
+        "Failed to clear timers. This may cause issues with other tests.",
+      );
+    }
   });
 
   describe("Rendering", () => {
@@ -55,7 +62,9 @@ describe("PerformanceMonitor", () => {
       render(<PerformanceMonitor themeConfig={mockThemeConfig} />);
 
       expect(screen.getByText(/monitor@portfolio/i)).toBeInTheDocument();
-      expect(screen.getByText(/Real-time Performance Metrics/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Real-time Performance Metrics/i),
+      ).toBeInTheDocument();
     });
 
     it("should render canvas for visualization", () => {
@@ -144,11 +153,13 @@ describe("PerformanceMonitor", () => {
       const pauseButton = screen.getByText(/Pause/i);
       fireEvent.click(pauseButton);
 
-      const metricsBefore = screen.getByText(/CPU Usage/i).parentElement?.textContent;
+      const metricsBefore =
+        screen.getByText(/CPU Usage/i).parentElement?.textContent;
 
       await vi.advanceTimersByTimeAsync(2000);
 
-      const metricsAfter = screen.getByText(/CPU Usage/i).parentElement?.textContent;
+      const metricsAfter =
+        screen.getByText(/CPU Usage/i).parentElement?.textContent;
       expect(metricsAfter).toBe(metricsBefore);
     });
 
@@ -167,7 +178,8 @@ describe("PerformanceMonitor", () => {
       fireEvent.click(resumeButton);
 
       await vi.advanceTimersByTimeAsync(1000);
-      const metricsAfter = screen.getByText(/CPU Usage/i).parentElement?.textContent;
+      const metricsAfter =
+        screen.getByText(/CPU Usage/i).parentElement?.textContent;
       expect(metricsAfter).toBeDefined();
     });
   });
@@ -200,9 +212,9 @@ describe("PerformanceMonitor", () => {
       const updateCountBefore = mockCanvasContext.fillRect.mock.calls.length;
 
       await vi.advanceTimersByTimeAsync(1000);
-      expect(mockCanvasContext.fillRect.mock.calls.length).toBeGreaterThanOrEqual(
-        updateCountBefore,
-      );
+      expect(
+        mockCanvasContext.fillRect.mock.calls.length,
+      ).toBeGreaterThanOrEqual(updateCountBefore);
     });
   });
 

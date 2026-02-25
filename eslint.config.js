@@ -129,7 +129,7 @@ export default [
         },
       ],
       "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-require-imports": "warn",
+      "@typescript-eslint/no-require-imports": "off",
       "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
       "prefer-const": "error",
       "no-var": "error",

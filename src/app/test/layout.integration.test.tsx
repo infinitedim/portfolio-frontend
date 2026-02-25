@@ -1,24 +1,34 @@
-
-
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import RootLayout, { metadata, viewport } from "../layout";
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("../components/organisms/pwa/pwa-registration", () => ({
   default: () => <div data-testid="pwa-registration">PWA</div>,
 }));
 vi.mock("@/lib/auth", () => ({
-  AuthProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="auth-provider">{children}</div>,
+  AuthProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="auth-provider">{children}</div>
+  ),
 }));
 vi.mock("../components/organisms/accessibility/accessibility-provider", () => ({
-  AccessibilityProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="accessibility">{children}</div>,
+  AccessibilityProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="accessibility">{children}</div>
+  ),
 }));
-vi.mock("../components/molecules/accessibility/screen-reader-announcer", () => ({
-  ScreenReaderAnnouncer: () => <div data-testid="screen-reader">Announcer</div>,
-}));
+vi.mock(
+  "../components/molecules/accessibility/screen-reader-announcer",
+  () => ({
+    ScreenReaderAnnouncer: () => (
+      <div data-testid="screen-reader">Announcer</div>
+    ),
+  }),
+);
 vi.mock("../components/monitoring/web-vitals-monitor", () => ({
   WebVitalsMonitor: () => null,
 }));
@@ -37,12 +47,14 @@ describe("RootLayout integration", () => {
   });
 
   it("should render children within providers", () => {
-    // vi.mock is a no-op in bun test; the real AuthProvider lacks data-testid="auth-provider"
-    if (typeof Bun !== "undefined") { expect(true).toBe(true); return; }
+    if (typeof Bun !== "undefined") {
+      expect(true).toBe(true);
+      return;
+    }
     render(
       <RootLayout>
         <div data-testid="child">Child content</div>
-      </RootLayout>
+      </RootLayout>,
     );
     expect(screen.getByTestId("child")).toBeInTheDocument();
     expect(screen.getByTestId("auth-provider")).toBeInTheDocument();

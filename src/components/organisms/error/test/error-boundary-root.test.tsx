@@ -23,8 +23,8 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
     }
     ensureDocumentBody();
     vi.clearAllMocks();
-    
-    vi.spyOn(console, "error").mockImplementation(() => { });
+
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   describe("ErrorBoundary Component", () => {
@@ -149,15 +149,15 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
       const tryAgainButton = screen.getByText("Try again");
       fireEvent.click(tryAgainButton);
 
-      
       rerender(
         <ErrorBoundary>
           <ThrowError shouldThrow={false} />
         </ErrorBoundary>,
       );
 
-      
-      expect(screen.queryByText("Something went wrong")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Something went wrong"),
+      ).not.toBeInTheDocument();
       expect(screen.getByText("No error")).toBeInTheDocument();
     });
 
@@ -197,7 +197,12 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
       const error = new Error("Test error");
       const resetAction = vi.fn();
 
-      render(<CompactErrorFallback error={error} resetAction={resetAction} />);
+      render(
+        <CompactErrorFallback
+          error={error}
+          resetAction={resetAction}
+        />,
+      );
 
       expect(screen.getByText("Test error")).toBeInTheDocument();
     });
@@ -211,7 +216,12 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
       const error = new Error("Test error");
       const resetAction = vi.fn();
 
-      render(<CompactErrorFallback error={error} resetAction={resetAction} />);
+      render(
+        <CompactErrorFallback
+          error={error}
+          resetAction={resetAction}
+        />,
+      );
 
       const tryAgainButton = screen.getByText("Try again");
       fireEvent.click(tryAgainButton);
@@ -282,7 +292,6 @@ describe("ErrorBoundary (error-boundary-root.tsx)", () => {
         </AsyncBoundary>,
       );
 
-      
       expect(screen.getByText("Content")).toBeInTheDocument();
     });
   });

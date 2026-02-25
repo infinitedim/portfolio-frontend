@@ -127,8 +127,6 @@ export function useSecurity() {
   } | null>(null);
   const CACHE_DURATION = 5000;
 
-  
-
   const validateInput = useCallback(
     async (
       input: string,
@@ -143,9 +141,6 @@ export function useSecurity() {
         let shouldProceed = false;
         let alert: ThreatAlert | undefined;
 
-        
-        
-        
         shouldProceed = validation.isValid;
 
         if (isClientSide() && isMountedRef.current) {
@@ -225,8 +220,6 @@ export function useSecurity() {
     },
     [isMountedRef],
   );
-
-  
 
   const validateInputSync = useCallback(
     (
@@ -318,8 +311,6 @@ export function useSecurity() {
     [isMountedRef],
   );
 
-  
-
   const resetRateLimit = useCallback(() => {
     if (!isMountedRef.current) return;
 
@@ -328,8 +319,6 @@ export function useSecurity() {
       isRateLimited: false,
     }));
   }, [isMountedRef]);
-
-  
 
   const getSecurityMetrics = useCallback((): SecurityMetrics => {
     if (!isClientSide()) {
@@ -403,8 +392,6 @@ export function useSecurity() {
     )();
   }, [threatAlerts]);
 
-  
-
   const clearOldAlerts = useCallback(() => {
     if (!isClientSide() || !isMountedRef.current) return;
 
@@ -422,8 +409,6 @@ export function useSecurity() {
       }
     }, undefined)();
   }, [isMountedRef]);
-
-  
 
   const getSecurityRecommendations = useCallback((): string[] => {
     return withErrorHandling(() => {

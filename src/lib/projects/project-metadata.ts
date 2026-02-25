@@ -1,5 +1,3 @@
-
-
 export interface ProjectMetadata {
   id: string;
   name: string;
@@ -62,8 +60,6 @@ export class ProjectMetadataService {
 
   private constructor() {}
 
-  
-
   static getInstance(): ProjectMetadataService {
     if (!ProjectMetadataService.instance) {
       ProjectMetadataService.instance = new ProjectMetadataService();
@@ -71,31 +67,21 @@ export class ProjectMetadataService {
     return ProjectMetadataService.instance;
   }
 
-  
-
   getAllProjects(): ProjectMetadata[] {
     return [...this.projects];
   }
-
-  
 
   getProjectById(id: string): ProjectMetadata | undefined {
     return this.projects.find((project) => project.id === id);
   }
 
-  
-
   getFeaturedProjects(): ProjectMetadata[] {
     return this.projects.filter((project) => project.featured);
   }
 
-  
-
   getProjectsByCategory(category: ProjectCategory): ProjectMetadata[] {
     return this.projects.filter((project) => project.category === category);
   }
-
-  
 
   getProjectsByTechnology(technology: string): ProjectMetadata[] {
     const tech = technology.toLowerCase();
@@ -103,8 +89,6 @@ export class ProjectMetadataService {
       project.technologies.some((t) => t.toLowerCase().includes(tech)),
     );
   }
-
-  
 
   searchProjects(query: string): ProjectMetadata[] {
     const searchTerm = query.toLowerCase();
@@ -119,8 +103,6 @@ export class ProjectMetadataService {
     );
   }
 
-  
-
   getTechnologies(): string[] {
     const techSet = new Set<string>();
     this.projects.forEach((project) => {
@@ -128,8 +110,6 @@ export class ProjectMetadataService {
     });
     return Array.from(techSet).sort();
   }
-
-  
 
   getCategories(): ProjectCategory[] {
     return Object.keys(PROJECT_CATEGORIES) as ProjectCategory[];

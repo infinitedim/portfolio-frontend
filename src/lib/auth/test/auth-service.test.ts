@@ -32,9 +32,7 @@ function defineGlobalProperty(
 
 defineGlobalProperty("localStorage", storageMock);
 defineGlobalProperty("sessionStorage", storageMock);
-// Patch localStorage/sessionStorage on the existing window object rather than
-// replacing the whole window. Replacing window removes browser APIs like
-// addEventListener and breaks tests that run after this file in the same process.
+
 if (typeof window !== "undefined") {
   try {
     Object.defineProperty(window, "localStorage", {
@@ -48,7 +46,14 @@ if (typeof window !== "undefined") {
       configurable: true,
     });
   } catch {
-    // ignore if already non-configurable
+    throw new Error(
+      "Failed to define localStorage and sessionStorage on window",
+      {
+        cause: new Error(
+          "Unable to define localStorage and sessionStorage on window",
+        ),
+      },
+    );
   }
 }
 

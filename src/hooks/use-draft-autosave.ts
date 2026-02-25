@@ -52,7 +52,9 @@ function removeDraft(key: string): void {
   try {
     localStorage.removeItem(key);
   } catch {
-    // ignore
+    throw new Error("Failed to remove draft from localStorage", {
+      cause: new Error("Unable to remove draft from localStorage"),
+    });
   }
 }
 
@@ -65,12 +67,10 @@ export function useDraftAutosave({
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const keyRef = useRef(key);
 
-  // Update key ref
   useEffect(() => {
     keyRef.current = key;
   }, [key]);
 
-  // Load draft on mount / key change
   useEffect(() => {
     const draft = readDraft(key);
     setSavedDraft(draft);
@@ -107,7 +107,6 @@ export function useDraftAutosave({
     setLastSavedAt(null);
   }, []);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {

@@ -1,5 +1,3 @@
-
-
 import {
   EnhancedError,
   ErrorCategory,
@@ -44,16 +42,12 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
 export class AsyncErrorHandler {
   private static instance: AsyncErrorHandler;
 
-  
-
   static getInstance(): AsyncErrorHandler {
     if (!AsyncErrorHandler.instance) {
       AsyncErrorHandler.instance = new AsyncErrorHandler();
     }
     return AsyncErrorHandler.instance;
   }
-
-  
 
   async execute<T>(
     fn: () => Promise<T>,
@@ -120,8 +114,6 @@ export class AsyncErrorHandler {
     };
   }
 
-  
-
   async executeAll<T>(
     functions: Array<() => Promise<T>>,
     config: AsyncErrorHandlerConfig & { failFast?: boolean } = {},
@@ -171,8 +163,6 @@ export class AsyncErrorHandler {
     };
   }
 
-  
-
   private async withTimeout<T>(
     promise: Promise<T>,
     timeout: number,
@@ -195,13 +185,9 @@ export class AsyncErrorHandler {
     return Promise.race([promise, timeoutPromise]);
   }
 
-  
-
   private async delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-
-  
 
   private combineErrors(errors: EnhancedError[]): EnhancedError {
     const messages = errors.map((e) => e.message).join("; ");
@@ -232,8 +218,6 @@ export class AsyncErrorHandler {
 }
 
 export class AsyncUtils {
-  
-
   static async safe<T>(
     fn: () => Promise<T>,
     fallbackValue?: T,
@@ -249,8 +233,6 @@ export class AsyncUtils {
     }
   }
 
-  
-
   static async retry<T>(
     fn: () => Promise<T>,
     config: Partial<RetryConfig> = {},
@@ -265,8 +247,6 @@ export class AsyncUtils {
 
     throw result.error || new Error("Retry failed");
   }
-
-  
 
   static createCircuitBreaker<T>(
     fn: () => Promise<T>,
@@ -327,8 +307,6 @@ export class AsyncUtils {
       }
     };
   }
-
-  
 
   static async processBatch<T, R>(
     items: T[],

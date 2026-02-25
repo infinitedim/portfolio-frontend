@@ -111,7 +111,6 @@ describe("RoadmapService", () => {
   });
 
   it("initializes and loads fallback/api data", async () => {
-    // Requires vi.mock for crypto/fetch mocking — not available in bun test
     if (typeof Bun !== "undefined") {
       expect(true).toBe(true);
       return;
@@ -132,7 +131,6 @@ describe("RoadmapService", () => {
   });
 
   it("can get category progress and update skills", async () => {
-    // Requires vi.mock for crypto/fetch mocking — not available in bun test
     if (typeof Bun !== "undefined") {
       expect(true).toBe(true);
       return;

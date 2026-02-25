@@ -20,8 +20,11 @@ const mockThemeConfig = {
 const mockChangeTheme = vi.fn(() => true);
 const mockIsThemeActive = vi.fn(() => false) as any;
 
-// Bun test compat: ensure vi.mock is callable (vitest hoists this; in bun it runs inline)
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("@/hooks/use-theme", () => ({
   useTheme: () => ({
@@ -46,7 +49,13 @@ vi.mock("@/lib/services/customization-service", () => ({
 }));
 
 vi.mock("../theme-editor", () => ({
-  ThemeEditor: ({ onSave, onCancel }: { onSave: () => void; onCancel: () => void }) => (
+  ThemeEditor: ({
+    onSave,
+    onCancel,
+  }: {
+    onSave: () => void;
+    onCancel: () => void;
+  }) => (
     <div data-testid="theme-editor">
       <button onClick={onSave}>Save</button>
       <button onClick={onCancel}>Cancel</button>
@@ -75,7 +84,7 @@ if (typeof document !== "undefined") {
     writable: true,
     configurable: true,
   });
-  
+
   Object.defineProperty(document, "body", {
     value: {
       className: "",
@@ -179,7 +188,9 @@ describe("ThemeManager", () => {
         />,
       );
 
-      expect(screen.getByPlaceholderText("Search themes...")).toBeInTheDocument();
+      expect(
+        screen.getByPlaceholderText("Search themes..."),
+      ).toBeInTheDocument();
     });
 
     it("should render theme cards", () => {
@@ -297,7 +308,6 @@ describe("ThemeManager", () => {
       const sortSelect = screen.getByDisplayValue("Sort by Name");
       fireEvent.change(sortSelect, { target: { value: "name" } });
 
-      
       const themeCards = screen.getAllByText(/Theme/);
       expect(themeCards.length).toBeGreaterThan(0);
     });
@@ -416,7 +426,9 @@ describe("ThemeManager", () => {
       );
 
       const applyButtons = screen.getAllByText(/Apply|Active/);
-      const activeButton = applyButtons.find((btn) => btn.textContent === "✓ Active");
+      const activeButton = applyButtons.find(
+        (btn) => btn.textContent === "✓ Active",
+      );
       expect(activeButton).toBeInTheDocument();
     });
   });

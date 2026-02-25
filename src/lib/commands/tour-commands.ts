@@ -1,5 +1,5 @@
-import type {Command} from "@/types/terminal";
-import {TOUR_STORAGE_KEY} from "@/components/organisms/onboarding/tour-steps";
+import type { Command } from "@/types/terminal";
+import { TOUR_STORAGE_KEY } from "@/components/organisms/onboarding/tour-steps";
 
 export const tourCommand: Command = {
   name: "tour",
@@ -10,13 +10,11 @@ export const tourCommand: Command = {
     const hasResetFlag = args?.includes("--reset") || args?.includes("-r");
 
     if (hasResetFlag) {
-      
       if (typeof window !== "undefined") {
         localStorage.removeItem(TOUR_STORAGE_KEY);
       }
     }
 
-    
     return {
       content: "START_GUIDED_TOUR",
       type: "success" as const,

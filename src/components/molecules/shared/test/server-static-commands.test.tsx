@@ -103,7 +103,6 @@ describe("ServerStaticCommands", () => {
         return;
       }
 
-
       const mockElement = document.createElement("div");
       mockElement.id = "help-output";
       mockElement.innerHTML = "<div>Help content</div>";
