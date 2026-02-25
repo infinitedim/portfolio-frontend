@@ -73,7 +73,7 @@ jobs:
         run: bun install
 
       - name: Run unit and integration tests
-        run: bun run test
+        run: bun test
 
       - name: Run coverage and enforce 88% threshold
         run: bun run test:coverage
