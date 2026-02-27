@@ -150,6 +150,9 @@ export function useTimerManager(): TimerManager {
       if (document.hidden) {
         currentTimeouts.forEach((timeout) => global.clearTimeout(timeout));
         currentIntervals.forEach((interval) => global.clearInterval(interval));
+
+        currentTimeouts.clear();
+        currentIntervals.clear();
       }
     };
 

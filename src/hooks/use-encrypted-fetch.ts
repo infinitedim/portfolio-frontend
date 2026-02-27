@@ -26,19 +26,21 @@ export function useEncryptedFetch<T = unknown>(
   const [loading, setLoading] = useState(auto);
   const [error, setError] = useState<string | null>(null);
   const triggerRef = useRef(0);
+  const fetchOptionsRef = useRef(fetchOptions);
+  fetchOptionsRef.current = fetchOptions;
 
   const execute = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const result = await encryptedFetch<T>(url, fetchOptions);
+      const result = await encryptedFetch<T>(url, fetchOptionsRef.current);
       setData(result);
     } catch (e) {
       setError((e as Error).message);
     } finally {
       setLoading(false);
     }
-  }, [fetchOptions, url]);
+  }, [url]);
 
   useEffect(() => {
     if (auto || triggerRef.current > 0) {

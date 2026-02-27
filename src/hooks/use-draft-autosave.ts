@@ -51,10 +51,8 @@ function removeDraft(key: string): void {
   if (isSSR()) return;
   try {
     localStorage.removeItem(key);
-  } catch {
-    throw new Error("Failed to remove draft from localStorage", {
-      cause: new Error("Unable to remove draft from localStorage"),
-    });
+  } catch (e) {
+    throw new Error("Failed to remove draft from localStorage", { cause: e });
   }
 }
 

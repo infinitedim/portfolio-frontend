@@ -12,12 +12,34 @@ const RATE_LIMIT = {
   windowMs: 60 * 1000,
 };
 
+// Prune expired entries every 200 requests to prevent unbounded memory growth
+// from unique IPs (e.g. scanners/bots hitting the endpoint once and never again).
+let pruneCounter = 0;
+const PRUNE_EVERY = 200;
+
+function pruneRateLimitMap(): void {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now > entry.resetTime) {
+      rateLimitMap.delete(ip);
+    }
+  }
+}
+
 const _MAX_PAYLOAD_SIZE = 1024 * 1024;
 
 const MAX_BATCH_SIZE = 100;
 
 function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   const now = Date.now();
+
+  // Periodic global cleanup to evict expired entries from all IPs
+  pruneCounter += 1;
+  if (pruneCounter >= PRUNE_EVERY) {
+    pruneCounter = 0;
+    pruneRateLimitMap();
+  }
+
   const limit = rateLimitMap.get(ip);
 
   if (limit && now > limit.resetTime) {

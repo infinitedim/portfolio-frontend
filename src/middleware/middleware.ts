@@ -147,7 +147,6 @@ export function middleware(request: NextRequest) {
     parseInt(browser.version, 10) >= 90
   ) {
     response.headers.set("X-Browser-Support", "modern");
-    response.headers.set("Cross-Origin-Embedder-Policy", "require-corp");
     response.headers.set("Cross-Origin-Opener-Policy", "same-origin");
   } else {
     response.headers.set("X-Browser-Support", "legacy");
@@ -176,7 +175,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api/")) {
-    response.headers.set("Cache-Control", "public, max-age=300, s-maxage=600");
+    response.headers.set("Cache-Control", "no-store");
   } else if (pathname.startsWith("/_next/static/")) {
     response.headers.set(
       "Cache-Control",
