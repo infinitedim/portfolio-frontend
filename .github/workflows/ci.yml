@@ -76,7 +76,7 @@ jobs:
         run: bun test
 
       - name: Run coverage and enforce 88% threshold
-        run: bun run test:coverage
+        run: bun test:coverage
         timeout-minutes: 25
 
       - name: Upload coverage reports
@@ -181,6 +181,6 @@ jobs:
   #       run: bunx playwright install --with-deps chromium
 
   #     - name: Run E2E tests
-  #       run: bun run test:e2e
+  #       run: bun test:e2e
   #       env:
   #         CI: "true"

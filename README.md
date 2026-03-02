@@ -413,12 +413,12 @@ bun test                    # ~14 seconds for full suite! ⚡
 bun test --watch            # Watch mode
 
 # Comprehensive tests with Vitest (for CI/CD)
-bun run test:vitest         # ~700 seconds but 100% compatibility
-bun run test:coverage       # With coverage reports
+bun test:vitest         # ~700 seconds but 100% compatibility
+bun test:coverage       # With coverage reports
 
 # E2E tests with Playwright
-bun run test:e2e            # Full E2E test suite
-bun run test:e2e:ui         # Interactive UI mode
+bun test:e2e            # Full E2E test suite
+bun test:e2e:ui         # Interactive UI mode
 ```
 
 **⚡ Performance Note**: We use **Bun test** for local development (50x faster!) and **Vitest** for comprehensive CI/CD testing. Some advanced mocking features (vi.mock) are currently disabled in Bun but work in Vitest.
