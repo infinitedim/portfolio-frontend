@@ -1,22 +1,13 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { ScrollProgress } from "@/components/molecules/blog/scroll-progress";
 import { BackToTop } from "@/components/molecules/blog/back-to-top";
 import { CopyCodeButton } from "@/components/molecules/blog/copy-code-button";
 import { ShareButtons } from "@/components/molecules/blog/share-buttons";
 import { TableOfContents } from "@/components/molecules/blog/table-of-contents";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
-import { CommentsSkeleton } from "@/components/molecules/blog/giscus-comments";
-
-const GiscusComments = dynamic(
-  () =>
-    import("@/components/molecules/blog/giscus-comments").then((mod) => ({
-      default: mod.GiscusComments,
-    })),
-  { ssr: false, loading: () => <CommentsSkeleton /> },
-);
+import { GiscusComments } from "@/components/molecules/blog/giscus-comments-dynamic";
 
 function getBackendUrl(): string {
   return (

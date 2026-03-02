@@ -62,8 +62,16 @@ vi.mock("next/server", () => ({
   },
 }));
 
+// Preserve native crypto.subtle and getRandomValues so code that uses
+// Web Crypto API (e.g. clientEncrypt / performHandshake) still works in jsdom.
+// Only override helpers that tests don't need to be real (randomUUID, randomBytes).
+const _nativeCrypto = globalThis.crypto;
+
 Object.defineProperty(global, "crypto", {
   value: {
+    subtle: _nativeCrypto?.subtle,
+    getRandomValues: <T extends ArrayBufferView>(array: T): T =>
+      _nativeCrypto?.getRandomValues(array) ?? array,
     randomUUID: vi.fn(() => "test-uuid-12345"),
     randomBytes: vi.fn(() => ({
       toString: () => "test-nonce-base64",
@@ -241,6 +249,42 @@ if (typeof HTMLElement !== "undefined") {
 
 if (typeof window !== "undefined") {
   window.scrollTo = vi.fn();
+}
+
+// Global mock for navigator.serviceWorker so any component that calls
+// navigator.serviceWorker.register(...).then/catch() works in jsdom without crashing.
+// Individual test files can override this via Object.defineProperty with configurable:true.
+if (typeof window !== "undefined") {
+  try {
+    Object.defineProperty(navigator, "serviceWorker", {
+      value: {
+        register: vi.fn().mockResolvedValue({
+          installing: null,
+          waiting: null,
+          active: null,
+          update: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        }),
+        controller: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        getRegistrations: vi.fn().mockResolvedValue([]),
+        ready: Promise.resolve({
+          active: null,
+          installing: null,
+          waiting: null,
+          update: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        }),
+      },
+      writable: true,
+      configurable: true,
+    });
+  } catch {
+    // navigator.serviceWorker may not be configurable in all environments; ignore
+  }
 }
 
 beforeAll(() => {
