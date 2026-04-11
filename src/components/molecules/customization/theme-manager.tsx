@@ -4,6 +4,7 @@ import { useState, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { CustomizationService } from "@/lib/services/customization-service";
 import { ThemeEditor } from "./theme-editor";
+import { TerminalDropdown, type DropdownOption } from "@/components/atoms/terminal/terminal-dropdown";
 import type { CustomTheme } from "@/types/customization";
 import { ThemeName } from "@/types/theme";
 
@@ -52,7 +53,7 @@ export function ThemeManager({
           return bModified.getTime() - aModified.getTime();
         }
         default:
-          return a.name.localeCompare(b.name);
+          return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       }
     });
 
@@ -305,41 +306,31 @@ export function ThemeManager({
             }}
           />
           <div className="flex gap-2">
-            <select
+            <TerminalDropdown
               value={filterSource}
-              onChange={(e) =>
+              onChange={(value) =>
                 setFilterSource(
-                  e.target.value as "all" | "built-in" | "custom" | "imported",
+                  value as "all" | "built-in" | "custom" | "imported",
                 )
               }
-              className="px-3 py-2 rounded border text-sm"
-              style={{
-                backgroundColor: `${themeConfig.colors.muted}20`,
-                borderColor: themeConfig.colors.border,
-                color: themeConfig.colors.text,
-              }}
-            >
-              <option value="all">All Sources</option>
-              <option value="built-in">Built-in</option>
-              <option value="custom">Custom</option>
-              <option value="imported">Imported</option>
-            </select>
-            <select
+              options={[
+                { label: "All Sources", value: "all" },
+                { label: "Built-in", value: "built-in" },
+                { label: "Custom", value: "custom" },
+                { label: "Imported", value: "imported" },
+              ]}
+            />
+            <TerminalDropdown
               value={sortBy}
-              onChange={(e) =>
-                setSortBy(e.target.value as "name" | "created" | "modified")
+              onChange={(value) =>
+                setSortBy(value as "name" | "created" | "modified")
               }
-              className="px-3 py-2 rounded border text-sm"
-              style={{
-                backgroundColor: `${themeConfig.colors.muted}20`,
-                borderColor: themeConfig.colors.border,
-                color: themeConfig.colors.text,
-              }}
-            >
-              <option value="name">Sort by Name</option>
-              <option value="created">Sort by Created</option>
-              <option value="modified">Sort by Modified</option>
-            </select>
+              options={[
+                { label: "Sort by Name", value: "name" },
+                { label: "Sort by Created", value: "created" },
+                { label: "Sort by Modified", value: "modified" },
+              ]}
+            />
           </div>
         </div>
       </div>

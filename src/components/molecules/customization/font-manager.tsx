@@ -6,6 +6,7 @@ import { useState, useRef, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useFont } from "@/hooks/use-font";
 import { CustomizationService } from "@/lib/services/customization-service";
+import { TerminalDropdown } from "@/components/atoms/terminal/terminal-dropdown";
 import type { CustomFont } from "@/types/customization";
 import type { FontName } from "@/types/font";
 
@@ -278,24 +279,21 @@ export function FontManager({
               className="hidden"
             />
 
-            <select
+            <TerminalDropdown
               value={filterSource}
-              onChange={(e) =>
+              onChange={(value) =>
                 setFilterSource(
-                  e.target.value as "all" | "system" | "google" | "custom",
+                  value as "all" | "system" | "google" | "custom",
                 )
               }
-              className="w-full px-2 py-1 rounded border bg-transparent"
-              style={{
-                borderColor: themeConfig.colors.border,
-                color: themeConfig.colors.text,
-              }}
-            >
-              <option value="all">All Sources</option>
-              <option value="system">System</option>
-              <option value="google">Google Fonts</option>
-              <option value="custom">Custom</option>
-            </select>
+              options={[
+                { label: "All Sources", value: "all" },
+                { label: "System", value: "system" },
+                { label: "Google Fonts", value: "google" },
+                { label: "Custom", value: "custom" },
+              ]}
+              className="w-full"
+            />
 
             <div
               className="p-3 rounded border"

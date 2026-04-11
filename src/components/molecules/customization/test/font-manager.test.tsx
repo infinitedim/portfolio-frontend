@@ -1,3 +1,4 @@
+import React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   render,
@@ -8,6 +9,7 @@ import {
 } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { FontManager } from "../font-manager";
+import { AccessibilityProvider } from "@/components/organisms/accessibility/accessibility-provider";
 import type { CustomFont } from "@/types/customization";
 
 const mockThemeConfig = {
@@ -144,12 +146,19 @@ describe("FontManager", () => {
   const mockOnClose = vi.fn();
 
   beforeEach(() => {
-    if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
     (mockGetCustomFonts as any).mockReturnValue(mockFonts);
     vi.useFakeTimers();
   });
+
+  const renderWithProviders = (ui: React.ReactElement) => {
+    return render(
+      <AccessibilityProvider>
+        {ui}
+      </AccessibilityProvider>
+    );
+  };
 
   afterEach(() => {
     if (!canRunTests) return;
@@ -162,7 +171,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -180,7 +189,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -197,7 +206,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -213,7 +222,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -221,7 +230,7 @@ describe("FontManager", () => {
         />,
       );
 
-      expect(screen.getByDisplayValue("All Sources")).toBeInTheDocument();
+      expect(screen.getByText("All Sources")).toBeInTheDocument();
     });
 
     it("should render random font generator", () => {
@@ -229,7 +238,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -245,7 +254,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -263,7 +272,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -281,7 +290,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -302,7 +311,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -326,7 +335,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -346,7 +355,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -354,8 +363,11 @@ describe("FontManager", () => {
         />,
       );
 
-      const filterSelect = screen.getByDisplayValue("All Sources");
-      fireEvent.change(filterSelect, { target: { value: "custom" } });
+      const filterDropdown = screen.getByText("All Sources").closest("button");
+      fireEvent.click(filterDropdown!);
+      
+      const customOption = screen.getByRole("option", { name: /Custom/ });
+      fireEvent.click(customOption);
 
       expect(screen.getByText("Custom Font")).toBeInTheDocument();
       expect(screen.queryByText("Fira Code")).not.toBeInTheDocument();
@@ -368,7 +380,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -393,7 +405,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -418,7 +430,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -445,7 +457,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -466,7 +478,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -492,7 +504,7 @@ describe("FontManager", () => {
         return;
       }
       vi.useFakeTimers();
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -535,7 +547,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -566,7 +578,7 @@ describe("FontManager", () => {
       });
       mockSaveCustomFont.mockResolvedValue(undefined);
 
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -616,7 +628,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}
@@ -637,7 +649,7 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <FontManager
           fonts={mockFonts}
           onUpdate={mockOnUpdate}

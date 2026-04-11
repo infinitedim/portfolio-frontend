@@ -1,7 +1,9 @@
+import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ThemeManager } from "../theme-manager";
+import { AccessibilityProvider } from "@/components/organisms/accessibility/accessibility-provider";
 import type { CustomTheme } from "@/types/customization";
 
 const mockThemeConfig = {
@@ -76,22 +78,10 @@ if (typeof window !== "undefined") {
 }
 
 if (typeof document !== "undefined") {
-  const mockStyle = {
-    setProperty: vi.fn(),
-  };
-  Object.defineProperty(document, "documentElement", {
-    value: { style: mockStyle },
-    writable: true,
-    configurable: true,
-  });
-
-  Object.defineProperty(document, "body", {
-    value: {
-      className: "",
-    },
-    writable: true,
-    configurable: true,
-  });
+  // Only override style.setProperty if it doesn't exist or we want to mock it specifically
+  // instead of replacing the entire documentElement
+  const originalSetProperty = document.documentElement.style.setProperty;
+  document.documentElement.style.setProperty = vi.fn();
 }
 
 describe("ThemeManager", () => {
@@ -136,11 +126,18 @@ describe("ThemeManager", () => {
   const mockOnApplyTheme = vi.fn();
 
   beforeEach(() => {
-    if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
     mockIsThemeActive.mockReturnValue(false);
   });
+
+  const renderWithProviders = (ui: React.ReactElement) => {
+    return render(
+      <AccessibilityProvider>
+        {ui}
+      </AccessibilityProvider>
+    );
+  };
 
   describe("Rendering", () => {
     it("should render theme manager", () => {
@@ -148,7 +145,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -164,7 +161,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -180,7 +177,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -198,7 +195,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -215,7 +212,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -236,7 +233,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -257,7 +254,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -277,7 +274,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -285,8 +282,11 @@ describe("ThemeManager", () => {
         />,
       );
 
-      const filterSelect = screen.getByDisplayValue("All Sources");
-      fireEvent.change(filterSelect, { target: { value: "custom" } });
+      const filterDropdown = screen.getByText("All Sources").closest("button");
+      fireEvent.click(filterDropdown!);
+      
+      const customOption = screen.getByRole("option", { name: /Custom/ });
+      fireEvent.click(customOption);
 
       expect(screen.getByText("Dark Theme")).toBeInTheDocument();
       expect(screen.queryByText("Light Theme")).not.toBeInTheDocument();
@@ -297,7 +297,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -305,8 +305,11 @@ describe("ThemeManager", () => {
         />,
       );
 
-      const sortSelect = screen.getByDisplayValue("Sort by Name");
-      fireEvent.change(sortSelect, { target: { value: "name" } });
+      const sortDropdown = screen.getByText("Sort by Name").closest("button");
+      fireEvent.click(sortDropdown!);
+      
+      const nameOption = screen.getAllByRole("option", { name: /Sort by Name/ })[0];
+      fireEvent.click(nameOption);
 
       const themeCards = screen.getAllByText(/Theme/);
       expect(themeCards.length).toBeGreaterThan(0);
@@ -319,7 +322,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -346,7 +349,7 @@ describe("ThemeManager", () => {
         name: "Dark Theme (Copy)",
       });
 
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -368,7 +371,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -391,7 +394,7 @@ describe("ThemeManager", () => {
         expect(true).toBe(true);
         return;
       }
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}
@@ -416,7 +419,7 @@ describe("ThemeManager", () => {
       }
       mockIsThemeActive.mockImplementation((id: string) => id === "theme-1");
 
-      render(
+      renderWithProviders(
         <ThemeManager
           themes={mockThemes}
           onUpdate={mockOnUpdate}

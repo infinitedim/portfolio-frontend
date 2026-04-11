@@ -1,275 +1,108 @@
+/**
+ * @fileoverview Terminal – main component (refactored)
+ *
+ * This file is now a thin composition layer. All state and business logic
+ * live in `TerminalProvider` (via TerminalContext). This component is
+ * responsible only for:
+ *
+ *  1. Wrapping `TerminalContent` with `<TerminalProvider>`
+ *  2. Rendering the full-page loading screen before mount
+ *  3. Wiring DOM-level side effects (scroll, global keydown, click-focus)
+ *  4. Laying out the structural regions of the terminal page
+ *
+ * @example
+ * ```tsx
+ * <Terminal onThemeChange={handleTheme} onFontChange={handleFont} />
+ * ```
+ */
+
 "use client";
 
 import {
   useState,
-  useRef,
   useEffect,
-  useMemo,
+  useRef,
   useCallback,
   type JSX,
 } from "react";
-import { useTheme } from "@/hooks/use-theme";
-import { useTerminal } from "@/hooks/use-terminal";
-import { useI18n } from "@/hooks/use-i18n";
-import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
-import { CommandInput } from "@/components/molecules/terminal/command-input";
+import { TerminalProvider, useTerminalContext } from "@/lib/context/terminal-context";
+import { TerminalHeader } from "./terminal-header";
+import { TerminalInputSection } from "./terminal-input-section";
+import { TerminalCustomizationToolbar } from "./terminal-customization-toolbar";
 import { TerminalHistory } from "./terminal-history";
-import { ASCIIBanner } from "@/components/molecules/shared/ascii-banner";
-import { InteractiveWelcome } from "@/components/molecules/shared/interactive-welcome";
 import { MobileTerminal } from "@/components/organisms/terminal/mobile-terminal";
-import { AccessibilityMenu } from "@/components/molecules/accessibility/accessibility-menu";
-import { NotificationToast } from "@/components/molecules/shared/notification-toast";
-import { DevelopmentBanner } from "@/components/molecules/shared/development-banner";
-import { useFont } from "@/hooks/use-font";
-import { CustomizationService } from "@/lib/services/customization-service";
-import { CustomizationButton } from "@/components/molecules/customization/customization-button";
-import { CustomizationManager } from "@/components/organisms/customization/customization-manager";
 import { SkipLinks } from "@/components/molecules/accessibility/skip-to-content";
-import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
-import { CommandLoadingIndicator } from "@/components/molecules/terminal/command-loading-indicator";
 import { LetterGlitch } from "@/components/molecules/shared/letter-glitch";
-import { isThemeName } from "@/types/theme";
-import { isFontName } from "@/types/font";
 import { GuidedTour } from "@/components/organisms/onboarding/guided-tour";
-import { useTour } from "@/hooks/use-tour";
-import type { BackgroundSettings } from "@/types/customization";
+import { DevelopmentBanner } from "@/components/molecules/shared/development-banner";
+import { AccessibilityMenu } from "@/components/molecules/accessibility/accessibility-menu";
+import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
 
-const AVAILABLE_COMMANDS = [
-  "help",
-  "skills",
-  "customize",
-  "themes",
-  "fonts",
-  "status",
-  "clear",
-  "alias",
-  "about",
-  "contact",
-  "projects",
-  "experience",
-  "education",
-  "roadmap",
-  "progress",
-  "theme",
-  "font",
-  "language",
-  "demo",
-  "github",
-  "tech-stack",
-  "resume",
-  "social",
-  "shortcuts",
-  "easter-eggs",
-  "pwa",
-  "tour",
-] as const;
+// ---------------------------------------------------------------------------
+// Props
+// ---------------------------------------------------------------------------
 
 interface TerminalProps {
   onThemeChange?: (theme: string) => void;
   onFontChange?: (font: string) => void;
 }
 
-export function Terminal({
-  onThemeChange,
-  onFontChange,
-}: TerminalProps): JSX.Element | null {
-  const themeHookResult = useTheme();
-  const fontHookResult = useFont();
-  const { announceMessage, isReducedMotion } = useAccessibility();
-  const { t } = useI18n();
+// ---------------------------------------------------------------------------
+// TerminalContent – uses context
+// ---------------------------------------------------------------------------
 
-  const [hasMinimumLoadingTime, setHasMinimumLoadingTime] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
+/**
+ * Internal component that consumes TerminalContext.
+ * Handles DOM side-effects and assembles the visible page regions.
+ */
+function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.Element | null {
   const {
     themeConfig,
-    changeTheme,
-    theme,
-    availableThemes,
+    fontConfig,
     mounted,
-    error: themeError,
-    getPerformanceReport,
-    themeMetrics,
-    resetPerformanceMetrics,
-  } = themeHookResult;
-
-  const { fontConfig, changeFont, availableFonts } = fontHookResult;
-
-  const themePerformance = useMemo(
-    () => ({
-      getPerformanceReport,
-      themeMetrics,
-      resetMetrics: resetPerformanceMetrics,
-    }),
-    [getPerformanceReport, themeMetrics, resetPerformanceMetrics],
-  );
-
-  const {
+    isReducedMotion,
     history,
-    currentInput,
-    setCurrentInput,
-    isProcessing,
-    executeCommand,
-    addToHistory,
-    navigateHistory,
-    clearHistory,
-    getCommandSuggestions,
-    getFrequentCommands,
-    commandAnalytics,
-  } = useTerminal(undefined, undefined, themePerformance);
-  const [showCustomizationManager, setShowCustomizationManager] =
-    useState(false);
-  const [showWelcome, setShowWelcome] = useState(true);
-  const [notification, setNotification] = useState<{
-    message: string;
-    type: "info" | "success" | "warning" | "error";
-  } | null>(null);
-
-  const {
-    isActive: isTourActive,
+    backgroundSettings,
+    isTourActive,
     currentStep,
     currentStepIndex,
     totalSteps,
-    progress: tourProgress,
+    tourProgress,
     hasCompletedTour,
     isFirstVisit,
     startTour,
-    nextStep,
+    handleTourNext,
+    handleTourSkip,
+    handleTourDemoCommand,
     prevStep,
-    skipTour,
-  } = useTour();
+    commandInputRef,
+    terminalRef,
+    bottomRef,
+    t,
+  } = useTerminalContext();
 
+  const [hasMinimumLoadingTime, setHasMinimumLoadingTime] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  /** Tracks if customization manager is open (used to gate global keydown) */
+  const isCustomizationOpenRef = useRef(false);
+
+  useEffect(() => { setIsMounted(true); }, []);
+
+  /** Minimum loading delay so the splash screen isn't a flash */
   useEffect(() => {
-    if (
-      isMounted &&
-      !hasCompletedTour &&
-      isFirstVisit &&
-      history.length === 0
-    ) {
-      const timer = setTimeout(() => {
-        startTour();
-      }, 1500);
+    const timer = setTimeout(() => setHasMinimumLoadingTime(true), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  /** Auto-start tour for first-time visitors once history is empty */
+  useEffect(() => {
+    if (isMounted && !hasCompletedTour && isFirstVisit && history.length === 0) {
+      const timer = setTimeout(() => startTour(), 1500);
       return () => clearTimeout(timer);
     }
   }, [isMounted, hasCompletedTour, isFirstVisit, history.length, startTour]);
 
-  const handleTourDemoCommand = (command: string) => {
-    setCurrentInput(command);
-
-    executeCommand(command);
-
-    setTimeout(() => {
-      commandInputRef.current?.focus();
-    }, 100);
-  };
-
-  const handleTourNext = () => {
-    if (currentStepIndex === 3 && history.length > 0) {
-      clearHistory();
-    }
-    nextStep();
-  };
-
-  const handleTourSkip = () => {
-    if (history.length > 0) {
-      clearHistory();
-    }
-
-    setShowWelcome(true);
-    setCurrentInput("");
-    skipTour();
-  };
-
-  const customizationService = CustomizationService.getInstance();
-
-  const DEFAULT_GLITCH_COLORS = useMemo(
-    () => ["#2b4539", "#61dca3", "#61b3dc"],
-    [],
-  );
-
-  const isDefaultGlitchColors = (colors: string[]): boolean => {
-    if (colors.length !== DEFAULT_GLITCH_COLORS.length) return false;
-    return colors.every((c, i) => c === DEFAULT_GLITCH_COLORS[i]);
-  };
-
-  const themeGlitchColors = useMemo((): string[] => {
-    if (!themeConfig?.colors) return DEFAULT_GLITCH_COLORS;
-    const { bg, accent, muted, border } = themeConfig.colors;
-    return [bg, accent, muted || border];
-  }, [DEFAULT_GLITCH_COLORS, themeConfig.colors]);
-
-  const [backgroundSettings, setBackgroundSettings] =
-    useState<BackgroundSettings>({
-      type: "letter-glitch",
-      letterGlitch: {
-        glitchColors: DEFAULT_GLITCH_COLORS,
-        glitchSpeed: 50,
-        centerVignette: false,
-        outerVignette: true,
-        smooth: true,
-        characters:
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝ",
-      },
-    });
-
-  useEffect(() => {
-    if (
-      customizationService &&
-      typeof customizationService.getBackgroundSettings === "function"
-    ) {
-      const settings = customizationService.getBackgroundSettings();
-      setBackgroundSettings(settings);
-    }
-
-    const handleBackgroundUpdate = (event: Event) => {
-      const customEvent = event as CustomEvent<BackgroundSettings>;
-      if (customEvent.detail) {
-        setBackgroundSettings(customEvent.detail);
-      } else {
-        if (
-          customizationService &&
-          typeof customizationService.getBackgroundSettings === "function"
-        ) {
-          const updatedSettings = customizationService.getBackgroundSettings();
-          setBackgroundSettings(updatedSettings);
-        }
-      }
-    };
-
-    window.addEventListener(
-      "background-settings-updated",
-      handleBackgroundUpdate,
-    );
-
-    return () => {
-      window.removeEventListener(
-        "background-settings-updated",
-        handleBackgroundUpdate,
-      );
-    };
-  }, [customizationService]);
-
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const commandInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    customizationService.loadAllCustomFonts();
-    announceMessage("Terminal portfolio loaded", "polite");
-  }, [announceMessage, customizationService]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setHasMinimumLoadingTime(true);
-    }, 800);
-
-    return () => clearTimeout(timer);
-  }, []);
-
+  /** Scroll to bottom whenever history updates */
   useEffect(() => {
     const rafId = requestAnimationFrame(() => {
       if (bottomRef.current && !isReducedMotion) {
@@ -279,41 +112,45 @@ export function Terminal({
       }
     });
     return () => cancelAnimationFrame(rafId);
-  }, [history, isReducedMotion]);
+  }, [history, isReducedMotion, bottomRef]);
 
+  /** Listen for customization panel open/close to gate global keydown */
+  useEffect(() => {
+    const open = () => { isCustomizationOpenRef.current = true; };
+    const close = () => { isCustomizationOpenRef.current = false; };
+    window.addEventListener("terminal:open-customization", open);
+    window.addEventListener("terminal:close-customization", close);
+    return () => {
+      window.removeEventListener("terminal:open-customization", open);
+      window.removeEventListener("terminal:close-customization", close);
+    };
+  }, []);
+
+  /** Global keydown: redirect printable characters to the command input */
+  const setCurrentInput = useTerminalContext().setCurrentInput;
   useEffect(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
       const tagName = target.tagName.toLowerCase();
-
       if (
         tagName === "input" ||
         tagName === "textarea" ||
         tagName === "select" ||
         target.contentEditable === "true" ||
-        e.ctrlKey ||
-        e.altKey ||
-        e.metaKey ||
-        e.key === "Tab" ||
-        e.key === "Escape" ||
-        e.key === "Enter" ||
-        e.key === "ArrowUp" ||
-        e.key === "ArrowDown" ||
-        e.key === "ArrowLeft" ||
-        e.key === "ArrowRight" ||
-        showCustomizationManager
+        e.ctrlKey || e.altKey || e.metaKey ||
+        e.key === "Tab" || e.key === "Escape" || e.key === "Enter" ||
+        e.key === "ArrowUp" || e.key === "ArrowDown" ||
+        e.key === "ArrowLeft" || e.key === "ArrowRight" ||
+        isCustomizationOpenRef.current
       ) {
         return;
       }
 
       if (document.activeElement && document.activeElement !== document.body) {
-        const activeElement = document.activeElement as HTMLElement;
-        if (
-          activeElement.tagName.toLowerCase() !== "body" &&
-          activeElement !== commandInputRef.current
-        ) {
+        const active = document.activeElement as HTMLElement;
+        if (active.tagName.toLowerCase() !== "body" && active !== commandInputRef.current) {
           return;
         }
       }
@@ -331,288 +168,39 @@ export function Terminal({
 
     document.addEventListener("keydown", handleGlobalKeydown);
     return () => document.removeEventListener("keydown", handleGlobalKeydown);
-  }, [showCustomizationManager, setCurrentInput]);
+  }, [commandInputRef, setCurrentInput]);
 
-  const handleWelcomeCommandSelect = useCallback(
-    (command: string) => {
-      setCurrentInput(command);
-
-      return command;
-    },
-    [setCurrentInput],
-  );
-
-  const showNotification = useCallback(
-    (
-      message: string,
-      type: "info" | "success" | "warning" | "error" = "info",
-    ) => {
-      setNotification({ message, type });
-    },
-    [],
-  );
-
+  /** Focus the command input when the user clicks on the terminal background */
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       if (!target) return;
-
       if (
         target.tagName === "BUTTON" ||
         target.tagName === "INPUT" ||
         target.tagName === "A"
-      ) {
-        return;
-      }
-
+      ) return;
       const input = terminalRef.current?.querySelector("input");
-      if (input) {
-        input.focus();
-      }
+      if (input) input.focus();
     };
 
-    const terminal = terminalRef.current;
-    if (terminal) {
-      terminal.addEventListener("click", handleClick);
-      return () => terminal.removeEventListener("click", handleClick);
+    const el = terminalRef.current;
+    if (el) {
+      el.addEventListener("click", handleClick);
+      return () => el.removeEventListener("click", handleClick);
     }
-  }, []);
+  }, [terminalRef]);
 
-  useEffect(() => {
-    if (history.length > 0) {
-      setShowWelcome(false);
-    }
-  }, [history.length]);
+  // ── Loading screens ──────────────────────────────────────────────────
 
-  const handleSubmit = useCallback(
-    async (command: string) => {
-      const output = await executeCommand(command);
-
-      if (output) {
-        if (
-          typeof output.content === "string" &&
-          output.content === "START_GUIDED_TOUR"
-        ) {
-          startTour();
-          addToHistory(command, {
-            ...output,
-            content: "🚀 Starting guided tour...",
-            type: "success",
-          });
-          return;
-        }
-
-        if (
-          typeof output.content === "string" &&
-          output.content === "OPEN_CUSTOMIZATION_MANAGER"
-        ) {
-          setShowCustomizationManager(true);
-          addToHistory(command, {
-            ...output,
-            content: "🎨 Opening customization manager...",
-            type: "success",
-          });
-          showNotification("Customization manager opened!", "success");
-          return;
-        }
-
-        if (
-          typeof output.content === "string" &&
-          output.content.startsWith("CHANGE_THEME:")
-        ) {
-          const themeName = output.content.split(":")[1];
-          console.log(
-            `🎨 Terminal: Attempting to change theme to ${themeName}`,
-          );
-
-          if (typeof changeTheme === "function" && isThemeName(themeName)) {
-            const success = changeTheme(themeName);
-
-            if (success) {
-              onThemeChange?.(themeName);
-              showNotification(`Theme changed to "${themeName}"`, "success");
-              announceMessage(`Theme changed to ${themeName}`, "polite");
-
-              addToHistory(command, {
-                ...output,
-                content: [
-                  `✅ Theme changed to "${themeName}"`,
-                  "💾 Theme preference saved automatically.",
-                  "🎨 Theme applied instantly!",
-                ].join("\n"),
-                type: "success",
-              });
-            } else {
-              const errorMsg =
-                themeError ||
-                `Theme "${themeName}" may not exist or be invalid.`;
-              showNotification(`Failed to change theme: ${errorMsg}`, "error");
-              addToHistory(command, {
-                ...output,
-                content: [
-                  `❌ Failed to change theme to "${themeName}"`,
-                  `🔍 Error: ${errorMsg}`,
-                  "💡 Use 'theme -l' to list available themes.",
-                ].join("\n"),
-                type: "error",
-              });
-            }
-          } else {
-            console.error("changeTheme function not available");
-            showNotification("Theme change function not available", "error");
-          }
-        } else if (
-          typeof output.content === "string" &&
-          output.content.startsWith("CHANGE_FONT:")
-        ) {
-          const fontName = output.content.split(":")[1];
-
-          if (typeof changeFont === "function" && isFontName(fontName)) {
-            changeFont(fontName);
-            onFontChange?.(fontName);
-
-            showNotification(`Font changed to "${fontName}"`, "success");
-            announceMessage(`Font changed to ${fontName}`, "polite");
-
-            addToHistory(command, {
-              ...output,
-              content: [
-                `✅ Font changed to "${fontName}"`,
-                "",
-                `🔤 Applied ${fontConfig?.name || "Unknown"} typeface`,
-                `🔤 Family: ${fontConfig?.family || "Unknown"}`,
-
-                `${fontConfig?.ligatures ? "✨ Font ligatures enabled for enhanced readability" : "📝 Standard font rendering"}`,
-                "💾 Font preference saved automatically",
-                "",
-                "💡 Quick commands:",
-                "   font -l    # List all fonts",
-                "   font -c    # Show current font info",
-                "   customize  # Open customization manager",
-              ].join("\n"),
-              type: "success",
-            });
-          } else {
-            console.error("changeFont function not available");
-            showNotification("Font change function not available", "error");
-          }
-        } else if (
-          typeof output.content === "string" &&
-          output.content === "SHOW_STATUS"
-        ) {
-          const uptime = new Date().toLocaleString();
-          const customThemes = customizationService.getCustomThemes().length;
-          const customFonts = customizationService.getCustomFonts().length;
-
-          const analytics = commandAnalytics || {
-            totalCommands: 0,
-            uniqueCommands: 0,
-            successRate: 100,
-            topCommands: [],
-          };
-
-          const performanceReport = themeHookResult.getPerformanceReport();
-          const currentMetrics = themeHookResult.themeMetrics;
-
-          const statusInfo = [
-            "🖥️  Terminal Portfolio System Status",
-            "═".repeat(60),
-            "",
-            `📊 Status: ${Math.random() > 0.5 ? "🟢 Online" : "🟡 Development"}`,
-            `🎨 Current Theme: ${themeConfig?.name || "Unknown"} (${theme})`,
-            `🔤 Current Font: ${fontConfig?.name || "Unknown"}${fontConfig?.ligatures ? " (ligatures)" : ""}`,
-            `⏰ Session Started: ${uptime}`,
-            `💻 Platform: ${mounted && typeof window !== "undefined" ? window.navigator.platform : "Server"}`,
-            "",
-            "📈 Command Analytics:",
-            `   • Total commands executed: ${analytics.totalCommands}`,
-            `   • Unique commands used: ${analytics.uniqueCommands}`,
-            `   • Success rate: ${analytics.successRate.toFixed(1)}%`,
-            `   • Most used: ${analytics.topCommands[0]?.command || "N/A"}`,
-            "",
-            "⚡ Performance Metrics:",
-            `   • Theme switches: ${performanceReport.totalSwitches}`,
-            `   • Average switch time: ${performanceReport.averageTime.toFixed(1)}ms`,
-            `   • Current theme render: ${currentMetrics.renderTime.toFixed(1)}ms`,
-            `   • Fastest switch: ${performanceReport.fastestSwitch.toFixed(1)}ms`,
-            `   • Most used theme: ${currentMetrics.popularThemes[0]?.theme || theme}`,
-            "",
-            "🎨 Theme System:",
-            `   • ${availableThemes?.length || 0} built-in themes available`,
-            `   • ${customThemes} custom themes created`,
-            "   • Use 'theme -l' to list all themes",
-            "",
-            "🔤 Font System:",
-            `   • ${availableFonts?.length || 0} system fonts available`,
-            `   • ${customFonts} custom fonts uploaded`,
-            "   • Use 'font -l' to list all fonts",
-            "",
-            "⌨️  Enhanced Features:",
-            "   • Smart command suggestions (↑/↓ or Ctrl+R)",
-            "   • Command analytics and favorites",
-            "   • Tab completion with history",
-            "   • Real-time performance monitoring",
-            "",
-            "🎯 Development Progress:",
-            "   ▓▓▓▓▓▓▓▓▓░ 95% Complete",
-            "",
-            "💡 Performance Commands:",
-            "   • 'perf' - Quick performance overview",
-            "   • 'perf --detailed' - Detailed metrics",
-            "   • 'perf --reset' - Reset all metrics",
-          ].join("\n");
-
-          addToHistory(command, {
-            ...output,
-            content: statusInfo,
-            type: "success",
-          });
-        } else {
-          addToHistory(command, output);
-        }
-      }
-
-      setCurrentInput("");
-    },
-    [
-      addToHistory,
-      announceMessage,
-      availableFonts?.length,
-      availableThemes?.length,
-      changeFont,
-      changeTheme,
-      commandAnalytics,
-      customizationService,
-      executeCommand,
-      fontConfig?.family,
-      fontConfig?.ligatures,
-      fontConfig?.name,
-      mounted,
-      onFontChange,
-      onThemeChange,
-      setCurrentInput,
-      showNotification,
-      startTour,
-      theme,
-      themeConfig?.name,
-      themeError,
-      themeHookResult,
-    ],
-  );
-
-  if (!themeHookResult || !fontHookResult) {
+  if (!themeConfig || !fontConfig) {
     return (
       <div
         className="min-h-screen w-full flex items-center justify-center relative overflow-hidden"
-        style={{
-          backgroundColor: "var(--terminal-bg, #0a0a0a)",
-          color: "var(--terminal-text, #e5e5e5)",
-        }}
+        style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
         suppressHydrationWarning={true}
       >
         <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20" />
-
         <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
           <TerminalLoadingProgress
             duration={2000}
@@ -630,27 +218,19 @@ export function Terminal({
     );
   }
 
-  if (!mounted || !themeConfig || !fontConfig || !hasMinimumLoadingTime) {
+  if (!mounted || !hasMinimumLoadingTime) {
     return (
       <div
         className="min-h-screen w-full flex items-center justify-center relative overflow-hidden"
-        style={{
-          backgroundColor: "var(--terminal-bg, #0a0a0a)",
-          color: "var(--terminal-text, #e5e5e5)",
-        }}
+        style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
         suppressHydrationWarning={true}
       >
         <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20" />
-
         <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
           <TerminalLoadingProgress
             duration={3500}
             files={[
-              {
-                path: "src/components/terminal/Terminal.tsx",
-                size: "18.2 KB",
-              },
+              { path: "src/components/terminal/Terminal.tsx", size: "18.2 KB" },
               { path: "src/hooks/useTheme.ts", size: "7.9 KB" },
               { path: "src/hooks/useFont.ts", size: "5.4 KB" },
               { path: "src/hooks/useTerminal.ts", size: "15.6 KB" },
@@ -658,18 +238,9 @@ export function Terminal({
               { path: "src/lib/fonts/fontConfig.ts", size: "6.2 KB" },
               { path: "src/components/ui/LetterGlitch.tsx", size: "8.1 KB" },
               { path: "src/components/ui/ASCIIBanner.tsx", size: "4.3 KB" },
-              {
-                path: "src/components/terminal/CommandInput.tsx",
-                size: "12.4 KB",
-              },
-              {
-                path: "src/lib/commands/commandRegistry.ts",
-                size: "22.1 KB",
-              },
-              {
-                path: "src/hooks/useCommandSuggestions.ts",
-                size: "11.8 KB",
-              },
+              { path: "src/components/terminal/CommandInput.tsx", size: "12.4 KB" },
+              { path: "src/lib/commands/commandRegistry.ts", size: "22.1 KB" },
+              { path: "src/hooks/useCommandSuggestions.ts", size: "11.8 KB" },
               { path: "src/types/terminal.ts", size: "2.9 KB" },
               { path: "package.json", size: "3.4 KB" },
               { path: "next.config.js", size: "1.6 KB" },
@@ -685,6 +256,21 @@ export function Terminal({
     );
   }
 
+  // ── Derived glitch colours ───────────────────────────────────────────
+
+  const DEFAULT_GLITCH_COLORS = ["#2b4539", "#61dca3", "#61b3dc"];
+
+  const isDefaultGlitchColors = (colors: string[]): boolean => {
+    if (colors.length !== DEFAULT_GLITCH_COLORS.length) return false;
+    return colors.every((c, i) => c === DEFAULT_GLITCH_COLORS[i]);
+  };
+
+  const themeGlitchColors = themeConfig?.colors
+    ? [themeConfig.colors.bg, themeConfig.colors.accent, themeConfig.colors.muted || themeConfig.colors.border]
+    : DEFAULT_GLITCH_COLORS;
+
+  // ── Main render ──────────────────────────────────────────────────────
+
   return (
     <>
       <SkipLinks
@@ -699,123 +285,58 @@ export function Terminal({
         <DevelopmentBanner />
         <AccessibilityMenu />
 
-        {backgroundSettings.type === "letter-glitch" &&
-          backgroundSettings.letterGlitch && (
-            <LetterGlitch
-              glitchColors={
-                isDefaultGlitchColors(
-                  backgroundSettings.letterGlitch.glitchColors,
-                )
-                  ? themeGlitchColors
-                  : backgroundSettings.letterGlitch.glitchColors
-              }
-              glitchSpeed={backgroundSettings.letterGlitch.glitchSpeed}
-              centerVignette={backgroundSettings.letterGlitch.centerVignette}
-              outerVignette={backgroundSettings.letterGlitch.outerVignette}
-              smooth={backgroundSettings.letterGlitch.smooth}
-              characters={backgroundSettings.letterGlitch.characters}
-              className="opacity-30 fixed inset-0 z-0"
-            />
-          )}
+        {/* Background animation */}
+        {backgroundSettings.type === "letter-glitch" && backgroundSettings.letterGlitch && (
+          <LetterGlitch
+            glitchColors={
+              isDefaultGlitchColors(backgroundSettings.letterGlitch.glitchColors)
+                ? themeGlitchColors
+                : backgroundSettings.letterGlitch.glitchColors
+            }
+            glitchSpeed={backgroundSettings.letterGlitch.glitchSpeed}
+            centerVignette={backgroundSettings.letterGlitch.centerVignette}
+            outerVignette={backgroundSettings.letterGlitch.outerVignette}
+            smooth={backgroundSettings.letterGlitch.smooth}
+            characters={backgroundSettings.letterGlitch.characters}
+            className="opacity-30 fixed inset-0 z-0"
+          />
+        )}
 
+        {/* Main terminal area */}
         <div
           ref={terminalRef}
           id="main-content"
           className={`min-h-screen w-full pt-4 px-2 pb-4 sm:pt-16 sm:px-6 lg:px-8 cursor-text terminal-container relative z-10 ${!isReducedMotion ? "transition-all duration-300" : ""}`}
           style={{
             backgroundColor: "transparent",
-            color: themeConfig?.colors?.text || "#ffffff",
-            fontFamily: fontConfig?.family || "monospace",
-            fontWeight: fontConfig?.weight || "normal",
-            fontFeatureSettings: fontConfig?.ligatures
-              ? '"liga" 1, "calt" 1'
-              : '"liga" 0, "calt" 0',
+            color: themeConfig?.colors?.text ?? "#ffffff",
+            fontFamily: fontConfig?.family ?? "monospace",
+            fontWeight: fontConfig?.weight ?? "normal",
+            fontFeatureSettings: fontConfig?.ligatures ? '"liga" 1, "calt" 1' : '"liga" 0, "calt" 0',
           }}
           suppressHydrationWarning={true}
           role="main"
           aria-label="Terminal interface"
         >
-          {
-            <div className="relative z-10 w-full max-w-4xl mx-auto space-y-4 sm:space-y-8 mt-2 sm:mt-10">
-              <div className="mb-4 sm:mb-8">
-                <ASCIIBanner />
-              </div>
+          <div className="relative z-10 w-full max-w-4xl mx-auto space-y-4 sm:space-y-8 mt-2 sm:mt-10">
+            {/* Header: ASCII banner + welcome */}
+            <TerminalHeader />
 
-              {showWelcome && history.length === 0 && !isTourActive && (
-                <InteractiveWelcome
-                  onCommandSelect={handleWelcomeCommandSelect}
-                  onDismiss={() => setShowWelcome(false)}
-                  onStartTour={() => {
-                    setShowWelcome(false);
-                    startTour();
-                  }}
-                />
-              )}
+            {/* Command history */}
+            <TerminalHistory history={history} />
 
-              <TerminalHistory history={history} />
+            {/* Input + loading indicator */}
+            <TerminalInputSection />
 
-              {isProcessing && (
-                <CommandLoadingIndicator
-                  command={currentInput}
-                  visible={isProcessing}
-                  messages={[
-                    "Processing command...",
-                    "Executing request...",
-                    "Gathering data...",
-                    "Compiling response...",
-                    "Almost finished...",
-                  ]}
-                />
-              )}
-
-              <div
-                id="command-input"
-                className="sticky bottom-0 py-2 command-input-container"
-                style={{
-                  backgroundColor: "transparent",
-                }}
-                suppressHydrationWarning={true}
-                tabIndex={-1}
-              >
-                <CommandInput
-                  value={currentInput}
-                  onChange={setCurrentInput}
-                  onSubmit={handleSubmit}
-                  onHistoryNavigate={navigateHistory}
-                  isProcessing={isProcessing}
-                  availableCommands={AVAILABLE_COMMANDS as unknown as string[]}
-                  inputRef={commandInputRef}
-                  getCommandSuggestions={getCommandSuggestions}
-                  getFrequentCommands={getFrequentCommands}
-                  showOnEmpty={false}
-                />
-              </div>
-
-              <div ref={bottomRef} />
-            </div>
-          }
-
-          <div
-            id="customization"
-            tabIndex={-1}
-          >
-            <CustomizationButton />
+            {/* Scroll sentinel */}
+            <div ref={bottomRef} />
           </div>
+
+          {/* Customization button + manager + toasts */}
+          <TerminalCustomizationToolbar />
         </div>
-        <CustomizationManager
-          isOpen={showCustomizationManager}
-          onClose={() => setShowCustomizationManager(false)}
-        />
 
-        {notification && (
-          <NotificationToast
-            message={notification.message}
-            type={notification.type}
-            onClose={() => setNotification(null)}
-          />
-        )}
-
-        {}
+        {/* Guided tour overlay */}
         {isTourActive && currentStep && (
           <GuidedTour
             step={currentStep}
@@ -830,5 +351,26 @@ export function Terminal({
         )}
       </MobileTerminal>
     </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Terminal – public export
+// ---------------------------------------------------------------------------
+
+/**
+ * Terminal
+ *
+ * Public entry point. Wraps `TerminalContent` with `TerminalProvider` so
+ * the entire sub-tree has access to the terminal context.
+ *
+ * @param onThemeChange - Callback fired after a successful theme change
+ * @param onFontChange  - Callback fired after a successful font change
+ */
+export function Terminal({ onThemeChange, onFontChange }: TerminalProps): JSX.Element {
+  return (
+    <TerminalProvider onThemeChange={onThemeChange} onFontChange={onFontChange}>
+      <TerminalContent onThemeChange={onThemeChange} onFontChange={onFontChange} />
+    </TerminalProvider>
   );
 }
