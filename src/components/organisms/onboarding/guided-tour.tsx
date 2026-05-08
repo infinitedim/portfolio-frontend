@@ -162,6 +162,23 @@ export const GuidedTour = memo(function GuidedTour({
 
     updateHighlight(true);
 
+    // When the tour highlights the command input, the click that advanced the
+    // step (or fired the "Try it" demo) leaves focus on the dialog button. The
+    // overlay then swallows further clicks, so the user has no way to refocus
+    // the input — and arrow keys (history navigation) silently do nothing.
+    // Steal focus back so keyboard interactions actually land on the input.
+    const focusableInput = document.querySelector<HTMLInputElement>(
+      `${step.target} input:not([disabled])`,
+    );
+    let focusTimer: ReturnType<typeof setTimeout> | undefined;
+    if (focusableInput) {
+      focusTimer = setTimeout(() => {
+        if (document.activeElement !== focusableInput) {
+          focusableInput.focus({ preventScroll: true });
+        }
+      }, 150);
+    }
+
     const handleResize = () => updateHighlight(false);
     const handleScroll = () => updateHighlight(false);
 
@@ -169,6 +186,7 @@ export const GuidedTour = memo(function GuidedTour({
     window.addEventListener("scroll", handleScroll, true);
 
     return () => {
+      if (focusTimer !== undefined) clearTimeout(focusTimer);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll, true);
       const targetElement = document.querySelector(step.target!);
@@ -177,7 +195,7 @@ export const GuidedTour = memo(function GuidedTour({
       }
       hasScrolled = false;
     };
-  }, [step.target]);
+  }, [step.target, stepIndex]);
 
   const handleTryCommand = useCallback(() => {
     if (step.demoCommand && onDemoCommand) {

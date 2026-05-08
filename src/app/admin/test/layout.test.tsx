@@ -25,15 +25,34 @@ vi.mock("next/navigation", () => ({
   usePathname: () => mockPathname(),
 }));
 
-const mockVerifyAuthentication = vi.fn();
+interface MockAuthState {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
 
-vi.mock("@/lib/auth/secure-auth", () => ({
-  SecureAuth: {
-    verifyAuthentication: mockVerifyAuthentication,
-  },
+const mockAuthState: MockAuthState = {
+  isAuthenticated: false,
+  isLoading: false,
+};
+
+vi.mock("@/lib/auth/auth-context", () => ({
+  useAuth: () => ({
+    isAuthenticated: mockAuthState.isAuthenticated,
+    isLoading: mockAuthState.isLoading,
+    user: null,
+    login: vi.fn(),
+    complete2FA: vi.fn(),
+    logout: vi.fn(),
+    refresh: vi.fn(),
+  }),
 }));
 
 import AdminLayout from "../layout";
+
+function setAuthState(next: Partial<MockAuthState>): void {
+  mockAuthState.isAuthenticated = next.isAuthenticated ?? false;
+  mockAuthState.isLoading = next.isLoading ?? false;
+}
 
 describe("AdminLayout", () => {
   beforeEach(() => {
@@ -43,22 +62,23 @@ describe("AdminLayout", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
     mockPush.mockClear();
-    mockVerifyAuthentication.mockClear();
     mockPathname.mockReturnValue("/admin");
+    setAuthState({ isAuthenticated: false, isLoading: false });
   });
 
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  describe("Login Route", () => {
-    it("should render children for login route", () => {
+  describe("Public Routes", () => {
+    it("should render children for the login route without redirecting", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       mockPathname.mockReturnValue("/admin/login");
+      setAuthState({ isAuthenticated: false, isLoading: false });
 
       const { getByText } = render(
         <AdminLayout>
@@ -67,35 +87,58 @@ describe("AdminLayout", () => {
       );
 
       expect(getByText("Login Content")).toBeInTheDocument();
+      expect(mockPush).not.toHaveBeenCalled();
     });
 
-    it("should not verify authentication for login route", () => {
+    it("should render children for the register route without redirecting", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
-      mockPathname.mockReturnValue("/admin/login");
+      mockPathname.mockReturnValue("/admin/register");
+      setAuthState({ isAuthenticated: false, isLoading: false });
 
-      render(
+      const { getByText } = render(
         <AdminLayout>
-          <div>Login Content</div>
+          <div>Register Content</div>
         </AdminLayout>,
       );
 
-      expect(mockVerifyAuthentication).not.toHaveBeenCalled();
+      expect(getByText("Register Content")).toBeInTheDocument();
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+
+    it("should not show the verifying spinner on public routes while auth is loading", () => {
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+
+      mockPathname.mockReturnValue("/admin/register");
+      setAuthState({ isAuthenticated: false, isLoading: true });
+
+      render(
+        <AdminLayout>
+          <div>Register Content</div>
+        </AdminLayout>,
+      );
+
+      expect(
+        screen.queryByText(/Verifying authentication/i),
+      ).not.toBeInTheDocument();
     });
   });
 
   describe("Protected Routes", () => {
-    it("should show loading state while verifying authentication", () => {
+    it("should show loading state while auth context is initialising", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockImplementation(() => new Promise(() => {}));
+      setAuthState({ isAuthenticated: false, isLoading: true });
 
       render(
         <AdminLayout>
@@ -104,16 +147,17 @@ describe("AdminLayout", () => {
       );
 
       expect(screen.getByText(/Verifying authentication/i)).toBeInTheDocument();
+      expect(mockPush).not.toHaveBeenCalled();
     });
 
-    it("should render children when authentication is valid", async () => {
+    it("should render children when authenticated", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockResolvedValue({ isValid: true });
+      setAuthState({ isAuthenticated: true, isLoading: false });
 
       const { getByText } = render(
         <AdminLayout>
@@ -121,19 +165,18 @@ describe("AdminLayout", () => {
         </AdminLayout>,
       );
 
-      await waitFor(() => {
-        expect(getByText("Protected Content")).toBeInTheDocument();
-      });
+      expect(getByText("Protected Content")).toBeInTheDocument();
+      expect(mockPush).not.toHaveBeenCalled();
     });
 
-    it("should redirect to login when authentication is invalid", async () => {
+    it("should redirect to login when auth resolves and user is not authenticated", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockResolvedValue({ isValid: false });
+      setAuthState({ isAuthenticated: false, isLoading: false });
 
       render(
         <AdminLayout>
@@ -146,44 +189,14 @@ describe("AdminLayout", () => {
       });
     });
 
-    it("should redirect to login when authentication verification fails", async () => {
+    it("should not render children when not authenticated", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockRejectedValue(new Error("Auth failed"));
-
-      const consoleErrorSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-
-      render(
-        <AdminLayout>
-          <div>Protected Content</div>
-        </AdminLayout>,
-      );
-
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith("/admin/login");
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-          "Auth verification failed:",
-          expect.any(Error),
-        );
-      });
-
-      consoleErrorSpy.mockRestore();
-    });
-
-    it("should not render children when authentication is invalid", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockResolvedValue({ isValid: false });
+      setAuthState({ isAuthenticated: false, isLoading: false });
 
       const { container } = render(
         <AdminLayout>
@@ -197,17 +210,35 @@ describe("AdminLayout", () => {
 
       expect(container.children.length).toBe(0);
     });
-  });
 
-  describe("Loading State", () => {
-    it("should display loading spinner", () => {
+    it("should not redirect while auth is still loading", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockImplementation(() => new Promise(() => {}));
+      setAuthState({ isAuthenticated: false, isLoading: true });
+
+      render(
+        <AdminLayout>
+          <div>Protected Content</div>
+        </AdminLayout>,
+      );
+
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("Loading State", () => {
+    it("should display loading spinner while auth is loading", () => {
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+
+      mockPathname.mockReturnValue("/admin");
+      setAuthState({ isAuthenticated: false, isLoading: true });
 
       const { container } = render(
         <AdminLayout>
@@ -219,14 +250,14 @@ describe("AdminLayout", () => {
       expect(spinner).toBeTruthy();
     });
 
-    it("should display loading message", () => {
+    it("should display loading message while auth is loading", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockImplementation(() => new Promise(() => {}));
+      setAuthState({ isAuthenticated: false, isLoading: true });
 
       render(
         <AdminLayout>
@@ -237,13 +268,14 @@ describe("AdminLayout", () => {
       expect(screen.getByText(/Verifying authentication/i)).toBeInTheDocument();
     });
 
-    it("should not show loading for login route", () => {
+    it("should not show loading on public routes", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       mockPathname.mockReturnValue("/admin/login");
+      setAuthState({ isAuthenticated: false, isLoading: true });
 
       render(
         <AdminLayout>
@@ -258,14 +290,14 @@ describe("AdminLayout", () => {
   });
 
   describe("Multiple Children", () => {
-    it("should render multiple children when authenticated", async () => {
+    it("should render multiple children when authenticated", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockResolvedValue({ isValid: true });
+      setAuthState({ isAuthenticated: true, isLoading: false });
 
       const { getByText } = render(
         <AdminLayout>
@@ -274,50 +306,31 @@ describe("AdminLayout", () => {
         </AdminLayout>,
       );
 
-      await waitFor(() => {
-        expect(getByText("Child 1")).toBeInTheDocument();
-        expect(getByText("Child 2")).toBeInTheDocument();
-      });
+      expect(getByText("Child 1")).toBeInTheDocument();
+      expect(getByText("Child 2")).toBeInTheDocument();
     });
   });
 
-  describe("Pathname Changes", () => {
-    it("should re-verify authentication when pathname changes", async () => {
+  describe("Edge Cases", () => {
+    it("should render children for public routes even when auth is loading", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
-      mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockResolvedValue({ isValid: true });
+      mockPathname.mockReturnValue("/admin/register");
+      setAuthState({ isAuthenticated: false, isLoading: true });
 
-      const { rerender } = render(
+      const { getByText } = render(
         <AdminLayout>
-          <div>Protected Content</div>
+          <div>Register Content</div>
         </AdminLayout>,
       );
 
-      await waitFor(() => {
-        expect(mockVerifyAuthentication).toHaveBeenCalledTimes(1);
-      });
-
-      mockPathname.mockReturnValue("/admin/dashboard");
-      mockVerifyAuthentication.mockResolvedValue({ isValid: true });
-
-      rerender(
-        <AdminLayout>
-          <div>Protected Content</div>
-        </AdminLayout>,
-      );
-
-      await waitFor(() => {
-        expect(mockVerifyAuthentication).toHaveBeenCalledTimes(2);
-      });
+      expect(getByText("Register Content")).toBeInTheDocument();
     });
-  });
 
-  describe("Edge Cases", () => {
-    it("should handle empty children", async () => {
+    it("should handle empty children on public routes", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -328,40 +341,6 @@ describe("AdminLayout", () => {
       const { container } = render(<AdminLayout>{null}</AdminLayout>);
 
       expect(container).toBeTruthy();
-    });
-
-    it("should handle authentication timeout gracefully", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      mockPathname.mockReturnValue("/admin");
-      mockVerifyAuthentication.mockImplementation(
-        () =>
-          new Promise((_resolve, reject) =>
-            setTimeout(() => reject(new Error("Timeout")), 100),
-          ),
-      );
-
-      const consoleErrorSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-
-      render(
-        <AdminLayout>
-          <div>Protected Content</div>
-        </AdminLayout>,
-      );
-
-      await waitFor(
-        () => {
-          expect(mockPush).toHaveBeenCalledWith("/admin/login");
-        },
-        { timeout: 200 },
-      );
-
-      consoleErrorSpy.mockRestore();
     });
   });
 });

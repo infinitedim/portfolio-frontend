@@ -102,7 +102,7 @@ export function TerminalDropdown({
       {isOpen && (
         <div
           className={`
-            absolute left-0 right-0 z-[100] mt-1 border rounded shadow-2xl overflow-hidden
+            absolute left-0 right-0 z-100 mt-1 border rounded shadow-2xl overflow-hidden
             animate-in fade-in slide-in-from-top-1 duration-200
           `}
           style={{
@@ -116,8 +116,16 @@ export function TerminalDropdown({
               <div
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleSelect(option.value);
+                  }
+                }}
+                tabIndex={0}
                 className={`
                   px-3 py-2 text-sm cursor-pointer transition-colors font-mono
+                  focus:outline-none focus:ring-1
                   ${option.value === value ? "font-bold" : ""}
                 `}
                 style={{

@@ -6,6 +6,15 @@ import { SecureAuth, useSecureAuth } from "../secure-auth";
 const mockFetch = vi.fn();
 globalThis.fetch = mockFetch as unknown as typeof fetch;
 
+// `secure-auth` calls `getApiUrl()` which falls back to
+// `http://localhost:3001` when `NEXT_PUBLIC_API_URL` is unset (the test env).
+// Build assertions against that absolute URL instead of the relative path
+// the production code never actually emits.
+const apiBase =
+  (process.env.NEXT_PUBLIC_API_URL as string | undefined) ??
+  "http://localhost:3001";
+const url = (path: string) => `${apiBase}${path}`;
+
 let mockCookies = "";
 if (typeof document !== "undefined") {
   Object.defineProperty(document, "cookie", {
@@ -120,7 +129,13 @@ describe("SecureAuth", () => {
       }
       mockFetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ user: { id: "1", email: "test@test.com" } }),
+        // The backend returns either `success` or `isValid`; the SDK accepts
+        // both. Reflect that contract in the mock.
+        json: async () => ({
+          success: true,
+          isValid: true,
+          user: { id: "1", email: "test@test.com" },
+        }),
       });
 
       const result = await SecureAuth.verifyAuthentication();
@@ -170,9 +185,12 @@ describe("SecureAuth", () => {
 
       expect(result.success).toBe(true);
       expect(mockFetch).toHaveBeenCalledWith(
-        "/api/auth/login",
+        url("/api/auth/login"),
         expect.objectContaining({
           method: "POST",
+          // `credentials: "include"` is mandatory — without it the browser
+          // would never persist the HttpOnly refresh-token cookie.
+          credentials: "include",
           body: JSON.stringify({
             email: "test@test.com",
             password: "password",
@@ -209,9 +227,11 @@ describe("SecureAuth", () => {
       await SecureAuth.logout();
 
       expect(mockFetch).toHaveBeenCalledWith(
-        "/api/auth/logout",
+        url("/api/auth/logout"),
         expect.objectContaining({
           method: "POST",
+          // Required so the cookie is forwarded to the backend for revocation.
+          credentials: "include",
         }),
       );
     });
@@ -253,7 +273,7 @@ describe("SecureAuth", () => {
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
-          "/api/auth/verify",
+          url("/api/auth/verify"),
           expect.any(Object),
         );
       });

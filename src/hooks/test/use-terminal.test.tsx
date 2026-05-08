@@ -1,9 +1,22 @@
-import { describe, it, expect, vi, beforeEach, afterAll } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook, act, waitFor } from "@testing-library/react";
 import { useTerminal } from "@/hooks/use-terminal";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 declare const Bun: unknown;
+const commandHistoryMock = vi.hoisted(() => ({
+  addCommand: vi.fn(),
+  clearHistory: vi.fn(),
+  history: [] as Array<{
+    command: string;
+    success: boolean;
+    timestamp: Date;
+    category: string;
+    favorite: boolean;
+    frequency: number;
+  }>,
+}));
+
 if (typeof Bun !== "undefined") {
   (vi as unknown as Record<string, unknown>).mock = () => undefined;
 } else if (
@@ -79,10 +92,10 @@ vi.mock("@/lib/commands/commands", () => {
 });
 vi.mock("@/hooks/use-command-history", () => ({
   useCommandHistory: () => ({
-    addCommand: vi.fn(),
+    addCommand: commandHistoryMock.addCommand,
     getSuggestions: () => [],
-    clearHistory: vi.fn(),
-    history: [],
+    clearHistory: commandHistoryMock.clearHistory,
+    history: commandHistoryMock.history,
     analytics: {
       totalCommands: 0,
       uniqueCommands: 0,
@@ -98,6 +111,8 @@ describe("useTerminal", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
+    localStorage.clear();
+    commandHistoryMock.history = [];
   });
 
   it("should return expected shape", () => {
@@ -133,35 +148,81 @@ describe("useTerminal", () => {
     act(() => result.current.setCurrentInput("help"));
     expect(result.current.currentInput).toBe("help");
   });
-});
 
-afterAll(() => {
-  const mockedModules = [
-    "@/lib/commands/skills-commands",
-    "@/lib/commands/roadmap-commands",
-    "@/lib/commands/command-registry",
-    "@/lib/commands/language-commands",
-    "@/lib/commands/customization-commands",
-    "@/lib/commands/demo-commands",
-    "@/lib/commands/github-commands",
-    "@/lib/commands/tech-stack-commands",
-    "@/lib/commands/location-commands",
-    "@/lib/commands/tour-commands",
-    "@/lib/commands/commands",
-    "@/hooks/use-command-history",
-  ];
-  mockedModules.forEach((m) => {
-    try {
-      vi.unmock(m);
-    } catch {
-      console.warn(`Module ${m} was not mocked or could not be unmocked`);
+  it("navigates fallback command history with newest command first", async () => {
+    if (!canRunTests) {
+      expect(true).toBe(true);
+      return;
     }
+
+    const { result } = renderHook(() => useTerminal());
+
+    await waitFor(() => {
+      expect(result.current.executeCommand).toBeDefined();
+    });
+
+    await act(async () => {
+      await result.current.executeCommand("first");
+      await result.current.executeCommand("second");
+      await result.current.executeCommand("third");
+    });
+
+    await waitFor(() => {
+      expect(result.current.commandHistory).toEqual([
+        "first",
+        "second",
+        "third",
+      ]);
+    });
+
+    act(() => {
+      expect(result.current.navigateHistory("up")).toBe("third");
+      expect(result.current.navigateHistory("up")).toBe("second");
+      expect(result.current.navigateHistory("down")).toBe("third");
+      expect(result.current.navigateHistory("down")).toBe("");
+    });
   });
-  try {
-    vi.resetModules();
-  } catch {
-    console.warn(
-      "Failed to reset modules. This may cause issues with other tests.",
-    );
-  }
+
+  it("navigates enhanced command history with newest command first", () => {
+    if (!canRunTests) {
+      expect(true).toBe(true);
+      return;
+    }
+
+    commandHistoryMock.history = [
+      {
+        command: "contact",
+        success: true,
+        timestamp: new Date("2026-01-03"),
+        category: "portfolio",
+        favorite: false,
+        frequency: 1,
+      },
+      {
+        command: "projects",
+        success: true,
+        timestamp: new Date("2026-01-02"),
+        category: "portfolio",
+        favorite: false,
+        frequency: 1,
+      },
+      {
+        command: "help",
+        success: true,
+        timestamp: new Date("2026-01-01"),
+        category: "system",
+        favorite: false,
+        frequency: 1,
+      },
+    ];
+
+    const { result } = renderHook(() => useTerminal());
+
+    act(() => {
+      expect(result.current.navigateHistory("up")).toBe("contact");
+      expect(result.current.navigateHistory("up")).toBe("projects");
+      expect(result.current.navigateHistory("down")).toBe("contact");
+      expect(result.current.navigateHistory("down")).toBe("");
+    });
+  });
 });

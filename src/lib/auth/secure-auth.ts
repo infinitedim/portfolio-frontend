@@ -99,7 +99,6 @@ export class SecureAuth {
     success: boolean;
     error?: string;
     accessToken?: string;
-    refreshToken?: string;
     user?: Record<string, unknown>;
   }> {
     try {
@@ -109,6 +108,7 @@ export class SecureAuth {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+        // Required so the browser persists the HttpOnly refresh cookie.
         credentials: "include",
         body: JSON.stringify({ email, password }),
       });
@@ -119,7 +119,6 @@ export class SecureAuth {
         return {
           success: true,
           accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
           user: data.user,
         };
       } else {
@@ -131,10 +130,7 @@ export class SecureAuth {
     }
   }
 
-  static async logout(
-    accessToken?: string,
-    refreshToken?: string,
-  ): Promise<void> {
+  static async logout(accessToken?: string): Promise<void> {
     try {
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
@@ -148,10 +144,11 @@ export class SecureAuth {
       await fetch(`${getApiUrl()}/api/auth/logout`, {
         method: "POST",
         headers,
+        // Send the refresh cookie so the server can revoke it server-side
+        // and clear it client-side.
         credentials: "include",
         body: JSON.stringify({
           accessToken,
-          refreshToken,
         }),
       });
     } catch (error) {

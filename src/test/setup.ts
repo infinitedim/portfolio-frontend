@@ -163,11 +163,28 @@ global.ResizeObserver = class MockResizeObserver {
   constructor(_callback: ResizeObserverCallback) {}
 } as unknown as typeof ResizeObserver;
 
-global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+// Next.js's `<Link>` uses `new IntersectionObserver(...)` via
+// `next/src/client/use-intersection.tsx`. `vi.fn().mockImplementation` returns
+// a function — usable as `IntersectionObserver(...)` but NOT as
+// `new IntersectionObserver(...)`. We need a real class with the standard
+// `observe`/`unobserve`/`disconnect`/`takeRecords` surface so the constructor
+// call doesn't blow up in tests that render Link components.
+class MockIntersectionObserver {
+  readonly root: Element | Document | null = null;
+  readonly rootMargin: string = "";
+  readonly thresholds: ReadonlyArray<number> = [];
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+  takeRecords = vi.fn(() => [] as IntersectionObserverEntry[]);
+  constructor(
+    _callback: IntersectionObserverCallback,
+    _options?: IntersectionObserverInit,
+  ) {}
+}
+
+global.IntersectionObserver =
+  MockIntersectionObserver as unknown as typeof IntersectionObserver;
 
 if (typeof window !== "undefined") {
   Object.defineProperty(window, "matchMedia", {

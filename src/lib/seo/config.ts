@@ -4,7 +4,7 @@ export const SEO_CONFIG = {
     title: "Terminal Portfolio | Full-Stack Developer",
     description:
       "Interactive developer portfolio with terminal interface. Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
-    url: process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.site",
+    url: process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.vercel.app",
     author: "Dimas Saputra",
     email: "dragdimas9@gmail.com",
     phone: "",
@@ -157,15 +157,15 @@ export const SEO_CONFIG = {
       "@type": "WebSite",
       potentialAction: {
         "@type": "SearchAction",
-        target: "https://infinitedim.site/search?q={search_term_string}",
+        target: "https://infinitedim.vercel.app/search?q={search_term_string}",
         "query-input": "required name=search_term_string",
       },
     },
     organization: {
       "@type": "Organization",
       name: "Terminal Portfolio",
-      url: "https://infinitedim.site",
-      logo: "https://infinitedim.site/logo.png",
+      url: "https://infinitedim.vercel.app",
+      logo: "https://infinitedim.vercel.app/logo.png",
       contactPoint: {
         "@type": "ContactPoint",
         telephone: "",

@@ -14,7 +14,7 @@ export function TerminalLoginForm({
   onLoginSuccess,
   themeConfig,
 }: TerminalLoginFormProps) {
-  const { login } = useAuth();
+  const { login, complete2FA } = useAuth();
   const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,8 +29,15 @@ export function TerminalLoginForm({
   const [isFocused, setIsFocused] = useState(false);
   const [buttonHover, setButtonHover] = useState(false);
 
+  // 2FA state. When a challenge token is set we hide the email/password
+  // form and render a code input instead.
+  const [challengeToken, setChallengeToken] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [useBackupCode, setUseBackupCode] = useState(false);
+
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
+  const codeInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isLoading) return;
@@ -43,12 +50,16 @@ export function TerminalLoginForm({
   }, [isLoading]);
 
   useEffect(() => {
+    if (challengeToken) {
+      codeInputRef.current?.focus();
+      return;
+    }
     if (currentField === "email" && emailInputRef.current) {
       emailInputRef.current.focus();
     } else if (currentField === "password" && passwordInputRef.current) {
       passwordInputRef.current.focus();
     }
-  }, [currentField]);
+  }, [currentField, challengeToken]);
 
   const handleFieldChange = (field: "email" | "password", value: string) => {
     setError(null);
@@ -100,6 +111,13 @@ export function TerminalLoginForm({
     try {
       const result = await login(email.trim(), password);
 
+      if (result.success && result.requires2FA && result.challengeToken) {
+        setChallengeToken(result.challengeToken);
+        setPassword("");
+        setCode("");
+        return;
+      }
+
       if (result.success) {
         setEmail("");
         setPassword("");
@@ -116,6 +134,42 @@ export function TerminalLoginForm({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleTwoFASubmit = async () => {
+    if (!challengeToken || !code.trim() || isLoading) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await complete2FA(
+        challengeToken,
+        code.trim(),
+        useBackupCode,
+      );
+      if (result.success) {
+        setEmail("");
+        setPassword("");
+        setCode("");
+        setChallengeToken(null);
+        setCurrentField("email");
+        onLoginSuccess?.();
+      } else {
+        setError(result.error || "Invalid 2FA code");
+      }
+    } catch (_err) {
+      setError("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancel2FA = () => {
+    setChallengeToken(null);
+    setCode("");
+    setError(null);
+    setCurrentField("password");
   };
 
   const renderInputField = (
@@ -209,6 +263,124 @@ export function TerminalLoginForm({
       </div>
     );
   };
+
+  if (challengeToken) {
+    return (
+      <div className="space-y-6">
+        {error && (
+          <div
+            className="p-3 rounded border text-sm font-mono"
+            style={{
+              backgroundColor: `${themeConfig.colors.error}10`,
+              borderColor: themeConfig.colors.error,
+              color: themeConfig.colors.error,
+            }}
+          >
+            ⚠️ {error}
+          </div>
+        )}
+
+        <div
+          className="p-3 rounded border text-sm font-mono"
+          style={{
+            backgroundColor: `${themeConfig.colors.accent}10`,
+            borderColor: themeConfig.colors.accent,
+            color: themeConfig.colors.text,
+          }}
+        >
+          🔐 Enter the {useBackupCode ? "backup code" : "6-digit code"} from
+          your authenticator app to finish signing in.
+        </div>
+
+        <div className="flex items-center gap-2 w-full">
+          <span
+            className="font-mono text-sm shrink-0"
+            style={{ color: themeConfig.colors.accent }}
+          >
+            {useBackupCode ? "backup" : "code"}@portfolio:~$
+          </span>
+          <input
+            ref={codeInputRef}
+            type="text"
+            inputMode={useBackupCode ? "text" : "numeric"}
+            autoComplete="one-time-code"
+            value={code}
+            disabled={isLoading}
+            onChange={(e) => {
+              setError(null);
+              const next = useBackupCode
+                ? e.target.value.trim()
+                : e.target.value.replace(/\D/g, "").slice(0, 6);
+              setCode(next);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleTwoFASubmit();
+              }
+            }}
+            placeholder={useBackupCode ? "xxxx-xxxx-xxxx" : "123456"}
+            className="flex-1 bg-transparent border-0 outline-none font-mono text-sm tracking-widest"
+            style={{ color: themeConfig.colors.text }}
+            spellCheck={false}
+          />
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleTwoFASubmit}
+            disabled={isLoading || !code.trim()}
+            className="flex-1 p-3 font-mono text-sm transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60"
+            style={{
+              color:
+                !code.trim() || isLoading
+                  ? themeConfig.colors.muted
+                  : themeConfig.colors.accent,
+              backgroundColor:
+                !code.trim() || isLoading
+                  ? `${themeConfig.colors.muted}20`
+                  : `${themeConfig.colors.accent}20`,
+              border: `1px solid ${
+                !code.trim() || isLoading
+                  ? themeConfig.colors.muted
+                  : themeConfig.colors.accent
+              }`,
+            }}
+          >
+            {isLoading ? "⏳ Verifying…" : "🚀 Verify"}
+          </button>
+          <button
+            type="button"
+            onClick={handleCancel2FA}
+            disabled={isLoading}
+            className="p-3 font-mono text-xs"
+            style={{
+              color: themeConfig.colors.muted,
+              border: `1px solid ${themeConfig.colors.border}`,
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            setUseBackupCode((v) => !v);
+            setCode("");
+            setError(null);
+          }}
+          className="text-xs underline opacity-70 hover:opacity-100"
+          style={{ color: themeConfig.colors.accent }}
+        >
+          {useBackupCode
+            ? "Use 6-digit authenticator code instead"
+            : "Lost your device? Use a backup code"}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

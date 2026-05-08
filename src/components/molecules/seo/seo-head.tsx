@@ -29,7 +29,7 @@ export function SEOHead({
     if (typeof window === "undefined") return;
 
     const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.site";
+      process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.vercel.app";
     const fullUrl = url ? `${baseUrl}${url}` : baseUrl;
     const fullImageUrl = image.startsWith("http")
       ? image
@@ -189,7 +189,7 @@ export function ProjectSEO({
     keywords: technologies.join(", "),
     url:
       url ||
-      `https://infinitedim.site/projects/${projectName.toLowerCase().replace(/\s+/g, "-")}`,
+      `https://infinitedim.vercel.app/projects/${projectName.toLowerCase().replace(/\s+/g, "-")}`,
     image: image || "/og-image.png",
   };
 
@@ -227,7 +227,7 @@ export function SkillSEO({
     keywords: [skillName, "development", "programming", ...relatedSkills].join(
       ", ",
     ),
-    url: `https://infinitedim.site/skills/${skillName.toLowerCase()}`,
+    url: `https://infinitedim.vercel.app/skills/${skillName.toLowerCase()}`,
     publisher: {
       "@type": "Organization",
       name: "Terminal Portfolio",

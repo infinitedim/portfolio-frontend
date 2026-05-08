@@ -1,12 +1,23 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import RootLayout, { metadata, viewport } from "../layout";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
   typeof (vi as unknown as Record<string, unknown>).mock !== "function"
 )
   (vi as unknown as Record<string, unknown>).mock = () => undefined;
+
+// `next/font/google` runs at module evaluation time during the Next.js build.
+// In Vitest it isn't transformed, so the imported `JetBrains_Mono` is
+// undefined and the top-level call in `RootLayout` throws
+// "JetBrains_Mono is not a function". Mock it BEFORE importing `RootLayout`.
+vi.mock("next/font/google", () => ({
+  JetBrains_Mono: () => ({
+    variable: "--font-jetbrains-mono",
+    className: "mock-jetbrains-mono",
+    style: { fontFamily: "JetBrains Mono" },
+  }),
+}));
 
 vi.mock("../components/organisms/pwa/pwa-registration", () => ({
   default: () => <div data-testid="pwa-registration">PWA</div>,
@@ -32,6 +43,9 @@ vi.mock(
 vi.mock("../components/monitoring/web-vitals-monitor", () => ({
   WebVitalsMonitor: () => null,
 }));
+
+// Imported AFTER the mocks above so the module evaluates against them.
+import RootLayout, { metadata, viewport } from "../layout";
 
 describe("RootLayout integration", () => {
   it("should export metadata with title and description", () => {

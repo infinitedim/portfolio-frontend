@@ -30,7 +30,7 @@ describe("sitemap.ts", () => {
     it("should use default base URL when env var is not set", async () => {
       const result = await sitemap();
       const firstItem = result[0];
-      expect(firstItem.url).toBe("https://infinitedim.site");
+      expect(firstItem.url).toBe("https://infinitedim.vercel.app");
     });
 
     it("should use NEXT_PUBLIC_BASE_URL when set", async () => {
@@ -45,7 +45,7 @@ describe("sitemap.ts", () => {
     it("should include home page", async () => {
       const result = await sitemap();
       const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.site";
+        process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.vercel.app";
       const homePage = result.find(
         (item: MetadataRoute.Sitemap[number]) =>
           item.url === baseUrl || item.url === `${baseUrl}/`,

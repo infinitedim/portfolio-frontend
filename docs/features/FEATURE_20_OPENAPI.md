@@ -161,7 +161,7 @@ Auto-generate dokumentasi API interaktif dengan Swagger UI yang bisa diakses di 
           contact(
               name = "Dimas Saputra",
               email = "developer@infinitedim.site",
-              url = "https://infinitedim.site"
+              url = "https://infinitedim.vercel.app"
           ),
           license(name = "MIT")
       ),

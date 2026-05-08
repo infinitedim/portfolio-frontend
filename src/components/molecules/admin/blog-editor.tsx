@@ -13,6 +13,8 @@ function getApiUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 }
 
+type BlogStatus = "draft" | "scheduled" | "published";
+
 interface BlogPost {
   id: string;
   title: string;
@@ -22,12 +24,15 @@ interface BlogPost {
   summary: string | null;
   published: boolean;
   tags: string[];
+  /** ISO-8601 timestamp; if set and in the future, post is scheduled. */
+  publishAt: string | null;
+  status?: BlogStatus;
   createdAt: string;
   updatedAt: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface LocalBlogPost extends BlogPost {}
+interface LocalBlogPost extends BlogPost { }
 
 interface BlogEditorProps {
   themeConfig: ThemeConfig;
@@ -42,6 +47,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const [slug, setSlug] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
+  // Datetime-local input value (YYYY-MM-DDTHH:mm). Empty string = no schedule.
+  const [publishAtLocal, setPublishAtLocal] = useState("");
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -68,7 +75,74 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const toLocalPost = (post: BlogPost): LocalBlogPost => ({
     ...post,
     tags: post.tags ?? [],
+    publishAt: post.publishAt ?? null,
   });
+
+  /**
+   * Convert an ISO-8601 timestamp to the `YYYY-MM-DDTHH:mm` shape that
+   * `<input type="datetime-local">` expects, in the user's locale. Returns
+   * an empty string for null/invalid values.
+   */
+  const isoToLocalInput = (iso: string | null): string => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "";
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
+
+  /**
+   * Convert the datetime-local string back to a UTC ISO timestamp.
+   * Returns `null` for empty input.
+   */
+  const localInputToIso = (local: string): string | null => {
+    if (!local) return null;
+    const d = new Date(local);
+    return Number.isNaN(d.getTime()) ? null : d.toISOString();
+  };
+
+  const computeStatus = (
+    published: boolean,
+    publishAt: string | null,
+  ): BlogStatus => {
+    if (publishAt) {
+      const ts = new Date(publishAt).getTime();
+      if (!Number.isNaN(ts) && ts > Date.now()) return "scheduled";
+      return "published";
+    }
+    return published ? "published" : "draft";
+  };
+
+  const loadDraft = useCallback((draft: LocalBlogPost) => {
+    setCurrentPost(draft);
+    setTitle(draft.title);
+    setContent(draft.contentMd || "");
+    setSummary(draft.summary || "");
+    setSlug(draft.slug);
+    setTags(draft.tags);
+    setPublishAtLocal(isoToLocalInput(draft.publishAt));
+    setIsNewPost(false);
+    setError(null);
+
+    if (typeof window !== "undefined") {
+      const key = `admin:blog-draft:${draft.id}`;
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const localDraft: DraftData = JSON.parse(raw);
+
+          if (
+            localDraft.content &&
+            localDraft.content !== (draft.contentMd || "")
+          ) {
+            setShowDraftPrompt(true);
+          }
+        }
+      } catch {
+        console.warn("Failed to check for local draft");
+      }
+    }
+  }, []);
 
   const fetchAvailableTags = useCallback(async () => {
     try {
@@ -116,7 +190,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPost]);
+  }, [currentPost, loadDraft]);
 
   useEffect(() => {
     loadPosts();
@@ -183,7 +257,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       const apiUrl = getApiUrl();
       const isUpdate = currentPost && !isNewPost;
 
-      const body = {
+      const publishAtIso = localInputToIso(publishAtLocal);
+      const body: Record<string, unknown> = {
         title: title.trim(),
         slug: postSlug,
         summary: summary.trim() || null,
@@ -192,6 +267,14 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         published: currentPost?.published ?? false,
         tags,
       };
+      // For PATCH we want to be able to *clear* the schedule explicitly,
+      // hence the difference between "absent" and `null`. POST always
+      // sends the chosen value so the field is unambiguous.
+      if (isUpdate) {
+        body.publishAt = publishAtIso;
+      } else if (publishAtIso) {
+        body.publishAt = publishAtIso;
+      }
 
       const response = await fetch(
         isUpdate
@@ -248,6 +331,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       summary: null,
       tags: [],
       published: false,
+      publishAt: null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -258,39 +342,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setSummary("");
     setSlug("");
     setTags([]);
+    setPublishAtLocal("");
     setIsNewPost(true);
     setError(null);
   };
 
-  const loadDraft = (draft: LocalBlogPost) => {
-    setCurrentPost(draft);
-    setTitle(draft.title);
-    setContent(draft.contentMd || "");
-    setSummary(draft.summary || "");
-    setSlug(draft.slug);
-    setTags(draft.tags);
-    setIsNewPost(false);
-    setError(null);
-
-    if (typeof window !== "undefined") {
-      const key = `admin:blog-draft:${draft.id}`;
-      try {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          const localDraft: DraftData = JSON.parse(raw);
-
-          if (
-            localDraft.content &&
-            localDraft.content !== (draft.contentMd || "")
-          ) {
-            setShowDraftPrompt(true);
-          }
-        }
-      } catch {
-        console.warn("Failed to check for local draft");
-      }
-    }
-  };
 
   const loadLocalDraft = () => {
     if (savedDraft) {
@@ -439,15 +495,23 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
       try {
         const apiUrl = getApiUrl();
-        const body = {
+        const publishAtIso = localInputToIso(publishAtLocal);
+        const body: Record<string, unknown> = {
           title: title.trim(),
           slug: postSlug,
           summary: summary.trim() || null,
           contentMd: content,
           contentHtml: renderMarkdownToHtml(content),
-          published: true,
+          // If a future schedule is set, leave `published` false so the
+          // status pipeline derives "scheduled". Otherwise this is an
+          // immediate publish.
+          published:
+            !publishAtIso || new Date(publishAtIso).getTime() <= Date.now(),
           tags,
         };
+        if (publishAtIso) {
+          body.publishAt = publishAtIso;
+        }
 
         const response = await fetch(`${apiUrl}/api/blog`, {
           method: "POST",
@@ -702,9 +766,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                     <button
                       key={post.id}
                       onClick={() => loadDraft(post)}
-                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${
-                        isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
-                      }`}
+                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
+                        }`}
                       style={{
                         borderColor: isSelected
                           ? themeConfig.colors.accent
@@ -720,16 +783,32 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                       <div className="text-xs opacity-50 mt-1">
                         {new Date(post.updatedAt).toLocaleDateString()}
                       </div>
-                      {post.published ? (
-                        <div
-                          className="text-xs mt-1"
-                          style={{ color: themeConfig.colors.success }}
-                        >
-                          ✅ {t("blogPublished")}
-                        </div>
-                      ) : (
-                        <div className="text-xs mt-1 opacity-50">Draft</div>
-                      )}
+                      {(() => {
+                        const status =
+                          post.status ?? computeStatus(post.published, post.publishAt);
+                        if (status === "scheduled") {
+                          return (
+                            <div
+                              className="text-xs mt-1"
+                              style={{ color: themeConfig.colors.warning }}
+                              title={post.publishAt ?? undefined}
+                            >
+                              ⏱ Scheduled
+                            </div>
+                          );
+                        }
+                        if (status === "published") {
+                          return (
+                            <div
+                              className="text-xs mt-1"
+                              style={{ color: themeConfig.colors.success }}
+                            >
+                              ✅ {t("blogPublished")}
+                            </div>
+                          );
+                        }
+                        return <div className="text-xs mt-1 opacity-50">Draft</div>;
+                      })()}
                     </button>
                   );
                 })
@@ -746,7 +825,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               backgroundColor: themeConfig.colors.bg,
             }}
           >
-            {}
+            { }
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">{t("blogTitle")}</div>
               <input
@@ -768,7 +847,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               />
             </div>
 
-            {}
+            { }
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">Slug (URL path)</div>
               <input
@@ -807,6 +886,52 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 }}
                 placeholder={`${t("blogSummary")}...`}
               />
+            </div>
+
+            <div className="mb-4">
+              <div className="text-xs opacity-70 mb-2">
+                Publish at (leave blank for immediate)
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="datetime-local"
+                  value={publishAtLocal}
+                  onChange={(e) => setPublishAtLocal(e.target.value)}
+                  className="px-3 py-2 text-sm border rounded bg-transparent font-mono"
+                  style={{
+                    borderColor: themeConfig.colors.border,
+                    color: themeConfig.colors.text,
+                  }}
+                />
+                {publishAtLocal && (
+                  <button
+                    type="button"
+                    onClick={() => setPublishAtLocal("")}
+                    className="px-2 py-1 text-xs border rounded transition-colors"
+                    style={{
+                      borderColor: themeConfig.colors.muted,
+                      color: themeConfig.colors.muted,
+                    }}
+                  >
+                    clear
+                  </button>
+                )}
+                {publishAtLocal && (
+                  <span
+                    className="text-xs"
+                    style={{
+                      color:
+                        new Date(publishAtLocal).getTime() > Date.now()
+                          ? themeConfig.colors.warning
+                          : themeConfig.colors.success,
+                    }}
+                  >
+                    {new Date(publishAtLocal).getTime() > Date.now()
+                      ? "Will be scheduled"
+                      : "Will be published immediately"}
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="mb-4">
@@ -888,7 +1013,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         </div>
       </div>
 
-      {}
+      { }
       {showDraftPrompt && hasDraft && (
         <div
           className="fixed bottom-4 right-4 z-50 p-4 border rounded-lg shadow-lg max-w-sm"

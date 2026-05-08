@@ -2,6 +2,7 @@
 
 import { JSX, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ProtectedRoute } from "@/components/molecules/admin/protected-route";
 import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
@@ -233,35 +234,37 @@ export default function AdminDashboardPage(): JSX.Element {
                     </div>
                   </button>
 
-                  <button
-                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105"
+                  <Link
+                    href="/admin/messages"
+                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105 block"
                     style={{
                       backgroundColor: `${themeConfig.colors.accent}10`,
                       border: `1px solid ${themeConfig.colors.accent}`,
                       color: themeConfig.colors.accent,
                     }}
                   >
-                    <div className="text-lg mb-1">⚙️</div>
-                    <div className="font-semibold">Settings</div>
+                    <div className="text-lg mb-1">📬</div>
+                    <div className="font-semibold">Inbox</div>
                     <div className="text-xs opacity-70">
-                      Configure system settings
+                      Read messages from contact form
                     </div>
-                  </button>
+                  </Link>
 
-                  <button
-                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105"
+                  <Link
+                    href="/admin/2fa"
+                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105 block"
                     style={{
                       backgroundColor: `${themeConfig.colors.accent}10`,
                       border: `1px solid ${themeConfig.colors.accent}`,
                       color: themeConfig.colors.accent,
                     }}
                   >
-                    <div className="text-lg mb-1">📊</div>
-                    <div className="font-semibold">Analytics</div>
+                    <div className="text-lg mb-1">🔐</div>
+                    <div className="font-semibold">Two-Factor Auth</div>
                     <div className="text-xs opacity-70">
-                      View site statistics
+                      Manage TOTP &amp; backup codes
                     </div>
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

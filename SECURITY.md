@@ -43,10 +43,20 @@ This project implements the following security measures:
 
 ### Authentication & Authorization
 
-- JWT-based authentication with secure token handling
-- Bcrypt password hashing with appropriate salt rounds
-- Rate limiting on authentication endpoints
-- Session management with secure cookie settings
+- JWT-based access tokens (HS256, 15-minute lifetime, signed with a 256-bit
+  HMAC secret enforced at startup).
+- Refresh tokens are delivered as **HttpOnly, Secure, SameSite=Strict**
+  cookies scoped to `/api/auth`. They are never exposed to JavaScript and
+  cannot be read or written through `document.cookie`, `sessionStorage`,
+  or `localStorage`.
+- Rotating refresh tokens: every successful `/api/auth/refresh` revokes the
+  presented token and issues a new one (single-use, replay-resistant).
+- Bcrypt password hashing with appropriate salt rounds.
+- Rate limiting on authentication endpoints (per IP, per endpoint label).
+- Token issuer/audience validation (`iss`, `aud`) plus required claims
+  (`exp`, `iat`, `sub`) on every verify.
+- Role-based access control on all admin mutations via a centralised
+  `require_admin` helper.
 
 ### Input Validation & Sanitization
 

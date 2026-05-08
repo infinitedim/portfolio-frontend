@@ -125,7 +125,11 @@ describe("AdminDashboardPage", () => {
       }
 
       render(<AdminDashboardPage />);
-      expect(screen.getByText(/Admin Dashboard/i)).toBeInTheDocument();
+      // "Admin Dashboard" appears in both the H1 heading and the footer
+      // instructions, so scope to the heading explicitly.
+      expect(
+        screen.getByRole("heading", { level: 1, name: /Admin Dashboard/i }),
+      ).toBeInTheDocument();
     });
 
     it("should render welcome message with user email", () => {
@@ -198,8 +202,8 @@ describe("AdminDashboardPage", () => {
       render(<AdminDashboardPage />);
       expect(screen.getByText(/Quick Actions/i)).toBeInTheDocument();
       expect(screen.getByText(/Manage Posts/i)).toBeInTheDocument();
-      expect(screen.getByText(/Settings/i)).toBeInTheDocument();
-      expect(screen.getByText(/Analytics/i)).toBeInTheDocument();
+      expect(screen.getByText(/^Inbox$/i)).toBeInTheDocument();
+      expect(screen.getByText(/Two-Factor Auth/i)).toBeInTheDocument();
     });
 
     it("should render navigation buttons", () => {
@@ -231,7 +235,10 @@ describe("AdminDashboardPage", () => {
 
       render(<AdminDashboardPage />);
       expect(
-        screen.getByText(/Admin Dashboard • Press Ctrl+L to logout/i),
+        screen.getByText(/Press Ctrl\+L to logout/i),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/Press Ctrl\+H to go home/i),
       ).toBeInTheDocument();
     });
   });
@@ -329,7 +336,9 @@ describe("AdminDashboardPage", () => {
 
       render(<AdminDashboardPage />);
 
-      expect(screen.getByText(/Admin Dashboard/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { level: 1, name: /Admin Dashboard/i }),
+      ).toBeInTheDocument();
     });
 
     it("should display user role badge", () => {
@@ -353,8 +362,8 @@ describe("AdminDashboardPage", () => {
 
       render(<AdminDashboardPage />);
       expect(screen.getByText(/Manage Posts/i)).toBeInTheDocument();
-      expect(screen.getByText(/Settings/i)).toBeInTheDocument();
-      expect(screen.getByText(/Analytics/i)).toBeInTheDocument();
+      expect(screen.getByText(/^Inbox$/i)).toBeInTheDocument();
+      expect(screen.getByText(/Two-Factor Auth/i)).toBeInTheDocument();
     });
 
     it("should have proper styling for quick action buttons", () => {
@@ -365,15 +374,19 @@ describe("AdminDashboardPage", () => {
 
       render(<AdminDashboardPage />);
 
+      // Manage Posts is still a <button>, while Inbox and Two-Factor Auth are
+      // now Next.js <Link> components rendered as <a>.
       const managePostsButton = screen
         .getByText(/Manage Posts/i)
         .closest("button");
-      const settingsButton = screen.getByText(/Settings/i).closest("button");
-      const analyticsButton = screen.getByText(/Analytics/i).closest("button");
+      const inboxLink = screen.getByText(/^Inbox$/i).closest("a");
+      const twoFactorLink = screen.getByText(/Two-Factor Auth/i).closest("a");
 
       expect(managePostsButton).toBeInTheDocument();
-      expect(settingsButton).toBeInTheDocument();
-      expect(analyticsButton).toBeInTheDocument();
+      expect(inboxLink).toBeInTheDocument();
+      expect(inboxLink).toHaveAttribute("href", "/admin/messages");
+      expect(twoFactorLink).toBeInTheDocument();
+      expect(twoFactorLink).toHaveAttribute("href", "/admin/2fa");
     });
   });
 

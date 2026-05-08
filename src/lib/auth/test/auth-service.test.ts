@@ -93,7 +93,6 @@ describe("AuthService", () => {
     authService = module.authService;
 
     (authService as any).accessToken = null;
-    (authService as any).refreshToken = null;
     (authService as any).user = null;
   });
 

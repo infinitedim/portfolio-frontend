@@ -12,7 +12,21 @@ export interface LoginResponse {
   success: boolean;
   user?: AuthUser;
   accessToken?: string;
-  refreshToken?: string;
+  error?: string;
+  /**
+   * Set when the backend recognized the password but the account has TOTP
+   * 2FA enabled. The caller must collect a 6-digit TOTP (or backup code)
+   * and call `complete2FALogin()` to exchange the challenge for real
+   * tokens. `accessToken` will NOT be set in this case.
+   */
+  requires2FA?: boolean;
+  challengeToken?: string;
+}
+
+export interface Complete2FAResponse {
+  success: boolean;
+  user?: AuthUser;
+  accessToken?: string;
   error?: string;
 }
 
@@ -25,7 +39,6 @@ export interface RegisterResponse {
 export interface RefreshResponse {
   success: boolean;
   accessToken?: string;
-  refreshToken?: string;
   error?: string;
 }
 
@@ -35,23 +48,29 @@ export interface ValidateResponse {
   error?: string;
 }
 
+/**
+ * Client-side auth state. Refresh tokens are now delivered as an HttpOnly
+ * cookie (see backend `auth.rs` -> `build_refresh_cookie`) which JS cannot
+ * read. We only keep the access token in memory and a thin user record in
+ * sessionStorage so the UI can render without flicker on reload.
+ *
+ * On reload we have no access token in memory, so `validate()` will call
+ * `/api/auth/refresh`, which uses the cookie to issue a fresh access token.
+ */
 class AuthService {
   private accessToken: string | null = null;
-
-  private refreshToken: string | null = null;
 
   private user: AuthUser | null = null;
 
   private readonly STORAGE_PREFIX = "__auth_";
-  private readonly REFRESH_TOKEN_KEY = `${this.STORAGE_PREFIX}rt`;
   private readonly USER_KEY = `${this.STORAGE_PREFIX}user`;
+  private readonly LEGACY_REFRESH_KEY = `${this.STORAGE_PREFIX}rt`;
 
   constructor() {
     if (
       typeof window !== "undefined" &&
       typeof sessionStorage !== "undefined"
     ) {
-      this.refreshToken = sessionStorage.getItem(this.REFRESH_TOKEN_KEY);
       const userStr = sessionStorage.getItem(this.USER_KEY);
       if (userStr) {
         try {
@@ -63,6 +82,7 @@ class AuthService {
       }
 
       this.migrateFromLocalStorage();
+      this.purgeLegacyRefreshToken();
     }
   }
 
@@ -76,6 +96,18 @@ class AuthService {
         localStorage.removeItem(key);
       }
     });
+  }
+
+  /**
+   * Older builds stored the refresh token under `__auth_rt` in sessionStorage.
+   * That value is now an HttpOnly cookie and the storage entry is a security
+   * liability — wipe it on every boot.
+   */
+  private purgeLegacyRefreshToken(): void {
+    if (typeof sessionStorage === "undefined") return;
+    if (sessionStorage.getItem(this.LEGACY_REFRESH_KEY)) {
+      sessionStorage.removeItem(this.LEGACY_REFRESH_KEY);
+    }
   }
 
   async login(email: string, password: string): Promise<LoginResponse> {
@@ -93,12 +125,35 @@ class AuthService {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+        // Required so the browser stores the HttpOnly refresh-token cookie
+        // returned by the backend.
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
+        // 2FA challenge: password was correct but the account requires a
+        // second factor. Don't populate the access token yet — the caller
+        // must complete the challenge.
+        if (data.requires2fa || data.requires2FA) {
+          const user: AuthUser | undefined = data.user
+            ? {
+                userId: data.user.userId,
+                email: data.user.email,
+                role: data.user.role as "admin",
+              }
+            : undefined;
+
+          return {
+            success: true,
+            requires2FA: true,
+            challengeToken: data.challengeToken ?? data.challenge_token,
+            user,
+          };
+        }
+
         const user: AuthUser = {
           userId: data.user.userId,
           email: data.user.email,
@@ -106,11 +161,9 @@ class AuthService {
         };
 
         this.accessToken = data.accessToken;
-        this.refreshToken = data.refreshToken;
         this.user = user;
 
         if (typeof sessionStorage !== "undefined") {
-          sessionStorage.setItem(this.REFRESH_TOKEN_KEY, data.refreshToken);
           sessionStorage.setItem(this.USER_KEY, JSON.stringify(user));
         }
 
@@ -118,7 +171,6 @@ class AuthService {
           success: true,
           user,
           accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
         };
       } else {
         return {
@@ -134,14 +186,70 @@ class AuthService {
     }
   }
 
-  async refresh(): Promise<RefreshResponse> {
-    if (!this.refreshToken) {
+  /**
+   * Exchange a 2FA challenge token + 6-digit TOTP (or backup code) for a
+   * real access/refresh-cookie pair. Mirrors `login()` in terms of state
+   * mutations on success.
+   */
+  async complete2FALogin(
+    challengeToken: string,
+    code: string,
+    isBackupCode = false,
+  ): Promise<Complete2FAResponse> {
+    if (typeof window === "undefined") {
       return {
         success: false,
-        error: "No refresh token available",
+        error: "2FA challenge can only be completed on the client side",
       };
     }
 
+    try {
+      const response = await fetch(`${getApiUrl()}/api/auth/2fa/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          challengeToken,
+          code,
+          isBackupCode,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success && data.user && data.accessToken) {
+        const user: AuthUser = {
+          userId: data.user.userId,
+          email: data.user.email,
+          role: data.user.role as "admin",
+        };
+
+        this.accessToken = data.accessToken;
+        this.user = user;
+
+        if (typeof sessionStorage !== "undefined") {
+          sessionStorage.setItem(this.USER_KEY, JSON.stringify(user));
+        }
+
+        return { success: true, user, accessToken: data.accessToken };
+      }
+
+      return {
+        success: false,
+        error: data.error ?? "Invalid or expired 2FA code",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Network error",
+      };
+    }
+  }
+
+  async refresh(): Promise<RefreshResponse> {
     if (typeof window === "undefined") {
       return {
         success: false,
@@ -156,23 +264,20 @@ class AuthService {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ refreshToken: this.refreshToken }),
+        // The refresh token lives in an HttpOnly cookie. We don't (and can't)
+        // read it from JS — the browser attaches it because of `credentials`.
+        credentials: "include",
+        body: "{}",
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
         this.accessToken = data.accessToken;
-        this.refreshToken = data.refreshToken;
-
-        if (typeof sessionStorage !== "undefined") {
-          sessionStorage.setItem(this.REFRESH_TOKEN_KEY, data.refreshToken);
-        }
 
         return {
           success: true,
           accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
         };
       } else {
         this.clearTokens();
@@ -242,10 +347,7 @@ class AuthService {
 
   async logout(): Promise<boolean> {
     try {
-      if (
-        typeof window !== "undefined" &&
-        (this.accessToken || this.refreshToken)
-      ) {
+      if (typeof window !== "undefined") {
         await fetch(`${getApiUrl()}/api/auth/logout`, {
           method: "POST",
           headers: {
@@ -255,9 +357,11 @@ class AuthService {
               Authorization: `Bearer ${this.accessToken}`,
             }),
           },
+          // Send the cookie so the server can revoke it server-side and the
+          // response can clear it client-side.
+          credentials: "include",
           body: JSON.stringify({
             accessToken: this.accessToken,
-            refreshToken: this.refreshToken,
           }),
         });
       }
@@ -270,28 +374,25 @@ class AuthService {
   }
 
   async validate(): Promise<ValidateResponse> {
-    if (!this.accessToken) {
-      if (this.refreshToken) {
-        const refreshResult = await this.refresh();
-        if (!refreshResult.success) {
-          return {
-            success: false,
-            error: "No valid token available",
-          };
-        }
-      } else {
-        return {
-          success: false,
-          error: "No access token available",
-        };
-      }
-    }
-
     if (typeof window === "undefined") {
       return {
         success: false,
         error: "Token validation is only available on the client side",
       };
+    }
+
+    // No access token in memory (e.g. after a hard reload). Try the cookie
+    // first — `/api/auth/refresh` reads the HttpOnly cookie and mints a new
+    // access token if the session is still valid.
+    if (!this.accessToken) {
+      const refreshResult = await this.refresh();
+      if (!refreshResult.success) {
+        this.clearTokens();
+        return {
+          success: false,
+          error: "No valid session",
+        };
+      }
     }
 
     try {
@@ -324,6 +425,8 @@ class AuthService {
           user,
         };
       } else {
+        // Access token rejected — try one refresh round-trip via the cookie
+        // before declaring the session dead.
         const refreshResult = await this.refresh();
         if (refreshResult.success) {
           return this.validate();
@@ -358,12 +461,11 @@ class AuthService {
 
   private clearTokens(): void {
     this.accessToken = null;
-    this.refreshToken = null;
     this.user = null;
 
     if (typeof window !== "undefined") {
       if (typeof sessionStorage !== "undefined") {
-        sessionStorage.removeItem(this.REFRESH_TOKEN_KEY);
+        sessionStorage.removeItem(this.LEGACY_REFRESH_KEY);
         sessionStorage.removeItem(this.USER_KEY);
       }
       if (typeof localStorage !== "undefined") {
@@ -375,11 +477,10 @@ class AuthService {
   }
 
   async initialize(): Promise<boolean> {
-    if (this.accessToken && this.user) {
-      const validation = await this.validate();
-      return validation.success;
-    }
-    return false;
+    // Always run validate() — even with no in-memory access token, the
+    // HttpOnly refresh cookie may still be present and valid.
+    const validation = await this.validate();
+    return validation.success;
   }
 }
 

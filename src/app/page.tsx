@@ -103,7 +103,7 @@ export default function HomePage(): JSX.Element {
             name: "Terminal Portfolio",
             description:
               "Interactive developer portfolio with terminal interface",
-            url: "https://infinitedim.site",
+            url: "https://infinitedim.vercel.app",
             mainEntity: {
               "@type": "Person",
               name: "Dimas Saputra",
@@ -118,7 +118,7 @@ export default function HomePage(): JSX.Element {
                   "@type": "ListItem",
                   position: 1,
                   name: "Home",
-                  item: "https://infinitedim.site",
+                  item: "https://infinitedim.vercel.app",
                 },
               ],
             },

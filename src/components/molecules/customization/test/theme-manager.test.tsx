@@ -80,7 +80,6 @@ if (typeof window !== "undefined") {
 if (typeof document !== "undefined") {
   // Only override style.setProperty if it doesn't exist or we want to mock it specifically
   // instead of replacing the entire documentElement
-  const originalSetProperty = document.documentElement.style.setProperty;
   document.documentElement.style.setProperty = vi.fn();
 }
 
@@ -284,7 +283,7 @@ describe("ThemeManager", () => {
 
       const filterDropdown = screen.getByText("All Sources").closest("button");
       fireEvent.click(filterDropdown!);
-      
+
       const customOption = screen.getByRole("option", { name: /Custom/ });
       fireEvent.click(customOption);
 
@@ -307,7 +306,7 @@ describe("ThemeManager", () => {
 
       const sortDropdown = screen.getByText("Sort by Name").closest("button");
       fireEvent.click(sortDropdown!);
-      
+
       const nameOption = screen.getAllByRole("option", { name: /Sort by Name/ })[0];
       fireEvent.click(nameOption);
 

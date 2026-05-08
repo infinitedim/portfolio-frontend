@@ -4,7 +4,7 @@ import { useState, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { CustomizationService } from "@/lib/services/customization-service";
 import { ThemeEditor } from "./theme-editor";
-import { TerminalDropdown, type DropdownOption } from "@/components/atoms/terminal/terminal-dropdown";
+import { TerminalDropdown } from "@/components/atoms/terminal/terminal-dropdown";
 import type { CustomTheme } from "@/types/customization";
 import { ThemeName } from "@/types/theme";
 

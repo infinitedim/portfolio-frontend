@@ -198,6 +198,38 @@ export function useTerminal(
 
   const parserRef = useRef<CommandParser | null>(null);
   const isMountedRef = useRef(false);
+  const currentInputRef = useRef(currentInput);
+  const historyIndexRef = useRef(historyIndex);
+  const historyDraftRef = useRef("");
+  const lastHistoryNavigationValueRef = useRef<string | null>(null);
+
+  currentInputRef.current = currentInput;
+  historyIndexRef.current = historyIndex;
+
+  const resetHistoryNavigation = useCallback(() => {
+    historyIndexRef.current = -1;
+    historyDraftRef.current = "";
+    lastHistoryNavigationValueRef.current = null;
+    setHistoryIndex(-1);
+  }, []);
+
+  const updateCurrentInput = useCallback(
+    (value: string | ((prev: string) => string)) => {
+      setCurrentInput((prev) => {
+        const next = typeof value === "function" ? value(prev) : value;
+
+        if (
+          historyIndexRef.current !== -1 &&
+          lastHistoryNavigationValueRef.current !== next
+        ) {
+          resetHistoryNavigation();
+        }
+
+        return next;
+      });
+    },
+    [resetHistoryNavigation],
+  );
 
   useEffect(() => {
     setIsClient(true);
@@ -577,9 +609,35 @@ export function useTerminal(
   const commandHistoryRef = useRef(commandHistory);
   commandHistoryRef.current = commandHistory;
 
+  const getNavigableHistory = useCallback(() => {
+    const successfulAdvancedCommands = advancedHistoryRef.current
+      .filter((entry) => entry.success)
+      .map((entry) => entry.command.trim())
+      .filter(Boolean);
+
+    const fallbackCommands = commandHistoryRef.current
+      .slice()
+      .reverse()
+      .map((command) => command.trim())
+      .filter(Boolean);
+
+    const source =
+      successfulAdvancedCommands.length > 0
+        ? successfulAdvancedCommands
+        : fallbackCommands;
+
+    const seen = new Set<string>();
+    return source.filter((command) => {
+      if (seen.has(command)) return false;
+      seen.add(command);
+      return true;
+    });
+  }, []);
+
   const executeCommand = useCallback(
     async (input: string): Promise<CommandOutput | null> => {
       setLastError(null);
+      resetHistoryNavigation();
 
       if (!parserRef.current || !isMountedRef.current) {
         const errorMsg = "Terminal not ready";
@@ -673,7 +731,7 @@ export function useTerminal(
         }
       }
     },
-    [addToAdvancedHistory],
+    [addToAdvancedHistory, resetHistoryNavigation],
   );
 
   const addToHistory = useCallback(
@@ -693,60 +751,51 @@ export function useTerminal(
 
   const navigateHistory = useCallback(
     (direction: "up" | "down") => {
-      if (advancedHistory.length === 0) {
-        if (commandHistory.length === 0) return "";
+      const recentCommands = getNavigableHistory();
+      if (recentCommands.length === 0) return currentInputRef.current;
 
-        if (direction === "up") {
-          const newIndex =
-            historyIndex === -1
-              ? commandHistory.length - 1
-              : Math.max(0, historyIndex - 1);
-          setHistoryIndex(newIndex);
-          return commandHistory[newIndex] || "";
-        } else {
-          const newIndex =
-            historyIndex === -1
-              ? -1
-              : Math.min(commandHistory.length - 1, historyIndex + 1);
-          if (newIndex === commandHistory.length - 1) {
-            setHistoryIndex(-1);
-            return "";
-          } else {
-            setHistoryIndex(newIndex);
-            return commandHistory[newIndex] || "";
-          }
-        }
-      }
-
-      const recentCommands = advancedHistory
-        .filter((entry) => entry.success)
-        .slice(0, 50)
-        .map((entry) => entry.command);
-
-      if (recentCommands.length === 0) return "";
+      const currentIndex = historyIndexRef.current;
 
       if (direction === "up") {
-        const newIndex =
-          historyIndex === -1
-            ? recentCommands.length - 1
-            : Math.max(0, historyIndex - 1);
-        setHistoryIndex(newIndex);
-        return recentCommands[newIndex] || "";
-      } else {
-        const newIndex =
-          historyIndex === -1
-            ? -1
-            : Math.min(recentCommands.length - 1, historyIndex + 1);
-        if (newIndex === recentCommands.length - 1) {
-          setHistoryIndex(-1);
-          return "";
-        } else {
-          setHistoryIndex(newIndex);
-          return recentCommands[newIndex] || "";
+        if (currentIndex === -1) {
+          historyDraftRef.current = currentInputRef.current;
         }
+
+        const newIndex =
+          currentIndex === -1
+            ? 0
+            : Math.min(recentCommands.length - 1, currentIndex + 1);
+        historyIndexRef.current = newIndex;
+        setHistoryIndex(newIndex);
+
+        const nextValue = recentCommands[newIndex] || "";
+        lastHistoryNavigationValueRef.current = nextValue;
+        return nextValue;
       }
+
+      if (currentIndex === -1) {
+        return currentInputRef.current;
+      }
+
+      const newIndex = currentIndex - 1;
+      if (newIndex < 0) {
+        historyIndexRef.current = -1;
+        setHistoryIndex(-1);
+
+        const draft = historyDraftRef.current;
+        historyDraftRef.current = "";
+        lastHistoryNavigationValueRef.current = draft;
+        return draft;
+      }
+
+      historyIndexRef.current = newIndex;
+      setHistoryIndex(newIndex);
+
+      const nextValue = recentCommands[newIndex] || "";
+      lastHistoryNavigationValueRef.current = nextValue;
+      return nextValue;
     },
-    [commandHistory, historyIndex, advancedHistory],
+    [getNavigableHistory],
   );
 
   const clearHistory = useCallback(() => {
@@ -754,7 +803,7 @@ export function useTerminal(
 
     setHistory([]);
     setCommandHistory([]);
-    setHistoryIndex(-1);
+    resetHistoryNavigation();
     setLastError(null);
 
     clearAdvancedHistory();
@@ -764,7 +813,7 @@ export function useTerminal(
     } catch (error) {
       console.warn("Failed to clear command history from localStorage:", error);
     }
-  }, [clearAdvancedHistory]);
+  }, [clearAdvancedHistory, resetHistoryNavigation]);
 
   const clearError = useCallback(() => {
     setLastError(null);
@@ -814,7 +863,7 @@ export function useTerminal(
   return {
     history,
     currentInput,
-    setCurrentInput,
+    setCurrentInput: updateCurrentInput,
     isProcessing,
     executeCommand,
     addToHistory,

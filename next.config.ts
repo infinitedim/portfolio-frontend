@@ -42,11 +42,15 @@ const nextConfig = {
     minimumCacheTTL: 86400,
     dangerouslyAllowSVG: false,
     contentDispositionType: "inline",
+    // Pin remote image hosts: a wildcard `**` lets any HTTPS host be proxied
+    // through `next/image`, which is a footgun (SSRF-flavoured + ghost
+    // credit-card abuse vector for paid Image Optimization plans).
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
+      { protocol: "https", hostname: "infinitedim.site" },
+      { protocol: "https", hostname: "*.infinitedim.site" },
+      { protocol: "https", hostname: "avatars.githubusercontent.com" },
+      { protocol: "https", hostname: "raw.githubusercontent.com" },
+      { protocol: "https", hostname: "github.com" },
     ],
   },
   compress: !isDev,

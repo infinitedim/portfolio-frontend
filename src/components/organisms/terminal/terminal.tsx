@@ -22,7 +22,7 @@ import {
   useState,
   useEffect,
   useRef,
-  useCallback,
+
   type JSX,
 } from "react";
 import { TerminalProvider, useTerminalContext } from "@/lib/context/terminal-context";
@@ -55,6 +55,7 @@ interface TerminalProps {
  * Internal component that consumes TerminalContext.
  * Handles DOM side-effects and assembles the visible page regions.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.Element | null {
   const {
     themeConfig,

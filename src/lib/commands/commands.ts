@@ -54,7 +54,7 @@ Examples:
       "   Name: Full-Stack Developer",
       "   Email: developer@portfolio.com",
       "   Location: Global Remote",
-      "   Portfolio: https://infinitedim.site",
+      "   Portfolio: https://infinitedim.vercel.app",
       "",
       "🎯 PROFESSIONAL SUMMARY",
       "   Passionate full-stack developer with expertise in modern web",
@@ -156,7 +156,7 @@ Examples:
       {
         platform: "Portfolio",
         icon: "🌐",
-        url: "https://infinitedim.site",
+        url: "https://infinitedim.vercel.app",
         description: "This interactive terminal portfolio",
       },
     ];
@@ -300,7 +300,7 @@ Examples:
 │  📧 Email:     mailto:dragdimas9@gmail.com        │
 │  💼 LinkedIn:  https://linkedin.com/in/infinitedim      │
 │  🐦 Twitter:   https://twitter.com/yourblooo          │
-│  📞 Schedule:  https://infinitedim.site/schedule         │
+│  📞 Schedule:  https://infinitedim.vercel.app/schedule         │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 

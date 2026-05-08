@@ -46,6 +46,7 @@ vi.mock("@/hooks/use-theme", () => ({
 const mockLogout = vi.fn();
 const mockLogin = vi.fn();
 const mockRefresh = vi.fn();
+const mockComplete2FA = vi.fn();
 const mockUser = {
   userId: "test-user-id",
   email: "admin@example.com",
@@ -60,6 +61,7 @@ vi.mock("@/lib/auth/auth-context", () => ({
     logout: mockLogout,
     login: mockLogin,
     refresh: mockRefresh,
+    complete2FA: mockComplete2FA,
   })),
 }));
 
@@ -161,7 +163,11 @@ describe("AdminLoginPage", () => {
       }
 
       render(<AdminLoginPage />);
-      expect(screen.getByText(/← Back/i)).toBeInTheDocument();
+      // The footer instructions also contain "← Back", so match the
+      // standalone button by its accessible name.
+      expect(
+        screen.getByRole("button", { name: /^← Back$/i }),
+      ).toBeInTheDocument();
     });
 
     it("should render terminal window decorations", () => {
@@ -198,7 +204,7 @@ describe("AdminLoginPage", () => {
       }
 
       render(<AdminLoginPage />);
-      const backButton = screen.getByText(/← Back/i);
+      const backButton = screen.getByRole("button", { name: /^← Back$/i });
       fireEvent.click(backButton);
 
       expect(mockPush).toHaveBeenCalledWith("/");
@@ -230,6 +236,7 @@ describe("AdminLoginPage", () => {
         logout: mockLogout,
         login: mockLogin,
         refresh: mockRefresh,
+        complete2FA: mockComplete2FA,
       });
 
       render(<AdminLoginPage />);
@@ -250,6 +257,7 @@ describe("AdminLoginPage", () => {
         logout: mockLogout,
         login: mockLogin,
         refresh: mockRefresh,
+        complete2FA: mockComplete2FA,
       });
 
       const { container } = render(<AdminLoginPage />);
@@ -290,7 +298,7 @@ describe("AdminLoginPage", () => {
       }
 
       render(<AdminLoginPage />);
-      const backButton = screen.getByText(/← Back/i);
+      const backButton = screen.getByRole("button", { name: /^← Back$/i });
 
       fireEvent.mouseEnter(backButton);
 
@@ -316,6 +324,7 @@ describe("AdminLoginPage", () => {
         logout: mockLogout,
         login: mockLogin,
         refresh: mockRefresh,
+        complete2FA: mockComplete2FA,
       });
 
       render(<AdminLoginPage />);
@@ -353,7 +362,7 @@ describe("AdminLoginPage", () => {
       }
 
       render(<AdminLoginPage />);
-      const backButton = screen.getByText(/← Back/i);
+      const backButton = screen.getByRole("button", { name: /^← Back$/i });
       expect(backButton).toBeInTheDocument();
     });
   });

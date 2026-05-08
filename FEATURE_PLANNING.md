@@ -1,1221 +1,316 @@
-# 📋 Feature Planning — Portfolio Project
+# Feature Planning — Portfolio Project
 
-> **Dibuat:** 20 Februari 2026  
-> **Stack saat ini:** Next.js 16 · React 19 · TypeScript · Tailwind CSS · Radix UI · Rust (Axum) · PostgreSQL · SQLx · JWT  
+> **Diupdate:** Mei 2026
+> **Stack saat ini:** Next.js 16 · React 19 · TypeScript · Tailwind CSS · Radix UI · Rust (Axum) · PostgreSQL · SQLx · JWT
 > **Arsitektur:** Next.js App Router (Frontend) + Axum REST API (Backend) + PostgreSQL + Loki/Promtail/Grafana (Logging)
 
 ---
 
-## 📖 Daftar Isi
+## Daftar Isi
 
-1. [Analisa State Saat Ini](#-analisa-state-saat-ini)
-2. [Fitur Kecil (Quick Wins)](#-fitur-kecil--quick-wins)
-3. [Fitur Menengah](#-fitur-menengah)
-4. [Fitur Besar](#-fitur-besar)
-5. [Fitur Game Changer](#-fitur-game-changer)
-6. [Prioritas & Timeline](#-prioritas--timeline)
-7. [Catatan Teknis](#-catatan-teknis)
-
----
-
-## 🔍 Analisa State Saat Ini
-
-### ✅ Yang Sudah Ada
-
-| Fitur                                          | Frontend                | Backend                         |
-| ---------------------------------------------- | ----------------------- | ------------------------------- |
-| Terminal-style interface                       | ✅ Lengkap              | —                               |
-| Blog system (CRUD)                             | ✅ Page + list          | ✅ REST API + HTML sanitization |
-| Auth (JWT + refresh)                           | ✅ Admin login/register | ✅ bcrypt + token rotation      |
-| Portfolio sections (skills/projects/exp/about) | ✅ Static data          | ✅ DB-backed + fallback         |
-| Admin dashboard                                | ✅ Login page           | ✅ CRUD endpoints               |
-| GitHub integration                             | ✅ github-service.ts    | — (frontend only)               |
-| i18n (multi-language)                          | ✅ hooks/utils          | —                               |
-| PWA support                                    | ✅ sw.js + manifest     | —                               |
-| Logging stack                                  | ✅ pino                 | ✅ Loki/Promtail/Grafana        |
-| Theme (dark/light)                             | ✅ next-themes          | —                               |
-| Tours/Onboarding                               | ✅ components           | —                               |
-| SEO (sitemap/robots/OG)                        | ✅ Lengkap              | —                               |
-| Terminal commands                              | ✅ ~15 commands         | —                               |
-| Health check                                   | —                       | ✅ /health, /health/detailed    |
-
-### ⚠️ Gap yang Teridentifikasi
-
-- Blog belum punya **tags, search, komentar, read time, RSS feed**
-- Tidak ada **contact/message form** yang terkoneksi ke backend
-- Auth tidak punya **2FA, session management, atau audit log yang persisten**
-- Tidak ada **analytics** nyata untuk visitor
-- Terminal commands tidak tersimpan ke server (full client-side)
-- Tidak ada endpoint **search** di backend
-- Tidak ada **file upload** untuk gambar blog
-- Portfolio sections masih **manual update** via API, belum ada rich editor
+1. [Analisa State Saat Ini](#analisa-state-saat-ini)
+2. [Status Per Sprint](#status-per-sprint)
+3. [Sprint 1 — Quick Wins (Done)](#sprint-1--quick-wins-done)
+4. [Sprint 2 — Core Features (Aktif)](#sprint-2--core-features-aktif)
+5. [Sprint 3 — Power Features](#sprint-3--power-features)
+6. [Sprint 4 — Game Changers](#sprint-4--game-changers)
+7. [Catatan Teknis](#catatan-teknis)
 
 ---
 
-## 🟢 Fitur Kecil — Quick Wins
+## Analisa State Saat Ini
 
-> Estimasi implementasi: **1–3 hari per fitur**. Impact langsung, risiko rendah.
+### Yang Sudah Ada
 
----
+| Fitur                                          | Frontend                | Backend                                                 |
+| ---------------------------------------------- | ----------------------- | ------------------------------------------------------- |
+| Terminal-style interface                       | Lengkap                 | —                                                       |
+| Blog system (CRUD)                             | Page + list + detail    | REST API + HTML sanitization                            |
+| Blog tags (denormalized `TEXT[]`)              | TagFilter + TagChip     | `?tag=` filter + `GET /api/blog/tags`                   |
+| Blog search (basic ILIKE on title/summary)     | Search form di list     | `?search=` filter di `BlogListQuery`                    |
+| Reading time                                   | Tampil di list & detail | Column `reading_time_minutes` + `calculate_reading_time` |
+| Blog view counter                              | Tampil di detail        | Auto-increment di `GET /api/blog/:slug`                 |
+| RSS feed                                       | Link di header & layout | `GET /api/rss`                                          |
+| Auth (JWT + refresh via HttpOnly cookie)       | Admin login/register    | bcrypt + token rotation + tower-governor rate limit     |
+| Portfolio sections (skills/projects/exp/about) | Static + dynamic data   | DB-backed + fallback                                    |
+| Image upload                                   | (belum diintegrasikan)  | `POST/DELETE /api/upload/image` (multipart)             |
+| Admin dashboard                                | Login + register page   | CRUD endpoints                                          |
+| Giscus comments                                | `<GiscusComments>`      | — (third-party widget)                                  |
+| Copy code button                               | `<CopyCodeButton>`      | —                                                       |
+| Share buttons                                  | `<ShareButtons>`        | —                                                       |
+| Scroll progress bar                            | `<ScrollProgress>`      | —                                                       |
+| Table of contents                              | `<TableOfContents>`     | —                                                       |
+| Back to top                                    | `<BackToTop>`           | —                                                       |
+| Keyboard shortcut modal                        | `Ctrl+?` opens panel    | —                                                       |
+| Command history persistence                    | `localStorage` (500 entries, with analytics) | —                                          |
+| GitHub integration (frontend-direct)           | `github-service.ts`     | — (FE hits GitHub API langsung)                         |
+| i18n (multi-language UI)                       | hooks/utils             | —                                                       |
+| PWA support                                    | sw.js + manifest        | —                                                       |
+| Logging stack                                  | pino                    | Loki/Promtail/Grafana + structured tracing              |
+| Theme (dark/light)                             | next-themes             | —                                                       |
+| Tours/Onboarding                               | components              | —                                                       |
+| SEO (sitemap/robots/OG)                        | Lengkap                 | —                                                       |
+| Terminal commands (~15)                        | command-registry        | —                                                       |
+| Health check                                   | —                       | `/health`, `/health/detailed`, `/health/database`, `/health/redis`, `/health/ready` |
+| Roadmap.sh proxy                               | —                       | `/api/roadmap/*`                                        |
+| Client log ingestion                           | pino transport          | `POST /api/logs` (rate-limited, redacted)               |
 
-### 1. Reading Time Estimator pada Blog Post
+### Gap yang Masih Ada
 
-**Deskripsi:** Kalkulasi estimasi waktu baca berdasarkan jumlah kata konten Markdown.
+- Belum ada **rich text editor** untuk admin blog (saat ini textarea biasa) (#14).
+- Belum ada **integrasi image upload ke editor** (endpoint backend siap, FE belum pakai) (#17).
+- Belum ada **analytics dashboard** real (#21).
+- Belum ada **Spotify**, **GitHub stats proxy backend**, **blog series**, **versioning**, **i18n content** (#22, #23, #24, #25, #26).
+- Game changers: AI assistant, live playground, newsletter, presence, full CLI, headless CMS (#27–#32).
 
-**Frontend (`portfolio-frontend`):**
-
-- Tambah fungsi utilitas `calculateReadingTime(markdown: string): string` di `src/lib/utils/`
-- Tampilkan badge "5 min read" pada blog list (`src/app/blog/page.tsx`) dan detail post
-
-**Backend (`portfolio-backend`):**
-
-- Tambah field `reading_time_minutes: Option<i32>` di model `BlogPost` (computed, tidak disimpan)
-- Atau hitung di frontend saja dari `content_md` yang sudah ada
-
-**Effort:** FE: 2 jam · BE: 0 jam
-
----
-
-### 2. Copy Code Button pada Blog Post
-
-**Deskripsi:** Tombol copy clipboard muncul saat hover di setiap code block dalam blog.
-
-**Frontend:**
-
-- Buat komponen `CodeBlock` yang wraps `<pre><code>` dan inject button "Copy"
-- Gunakan `navigator.clipboard.writeText()`
-- Pasang sebagai custom renderer di Markdown parser
-
-**Backend:** Tidak perlu perubahan.
-
-**Effort:** FE: 3 jam · BE: 0 jam
-
----
-
-### 3. Social Share Buttons untuk Blog Post
-
-**Deskripsi:** Tombol share ke Twitter/X, LinkedIn, dan "Copy link" di halaman blog detail.
-
-**Frontend:**
-
-- Buat komponen `ShareButtons` di `src/components/molecules/blog/`
-- Gunakan Web Share API sebagai primary, fallback ke direct URL share
-- Tambahkan ke layout blog `[slug]/page.tsx`
-
-**Backend:** Tidak perlu perubahan.
-
-**Effort:** FE: 2 jam · BE: 0 jam
+> Catatan: blog tag saat ini pakai `TEXT[]` denormalized (lebih simpel). Search pakai ILIKE basic — tidak pakai `tsvector` full-text search. Keduanya bisa ditingkatkan ke join table + tsvector kalau diperlukan, tapi sudah berfungsi untuk skala saat ini.
 
 ---
 
-### 4. Blog Post View Counter
+## Status Per Sprint
 
-**Deskripsi:** Tracking jumlah view per artikel, ditampilkan di list dan detail.
+| Sprint   | Tema                  | Status      |
+| -------- | --------------------- | ----------- |
+| Sprint 1 | Polish & Discovery    | **DONE** (10/10 quick wins selesai) |
+| Sprint 2 | Core Portfolio Features | **DONE** (5/5 fitur prioritas selesai) |
+| Sprint 3 | Power Features        | Belum mulai |
+| Sprint 4 | Game Changers         | Belum mulai |
 
-**Frontend:**
+---
 
-- Fire-and-forget POST ke `/api/blog/:slug/view` saat halaman dimuat
-- Tampilkan view count di header post
+## Sprint 1 — Quick Wins (Done)
+
+> Semua item di sprint ini sudah selesai. Bagian ini disimpan sebagai referensi historis dan bukti konformitas.
+
+| #  | Fitur                       | Status | Lokasi                                                                            |
+| -- | --------------------------- | ------ | --------------------------------------------------------------------------------- |
+| 1  | Reading time estimator      | DONE   | BE: `src/db/models.rs` (`reading_time_minutes`), `src/routes/blog.rs::calculate_reading_time` · FE: `src/app/blog/page.tsx`, `src/app/blog/[slug]/page.tsx` |
+| 2  | Copy code button            | DONE   | `src/components/molecules/blog/copy-code-button.tsx`                              |
+| 3  | Social share buttons        | DONE   | `src/components/molecules/blog/share-buttons.tsx`                                 |
+| 4  | Blog view counter           | DONE   | BE auto-increment di `GET /api/blog/:slug` (`src/routes/blog.rs:319`); FE display `viewCount` |
+| 5  | Scroll progress bar         | DONE   | `src/components/molecules/blog/scroll-progress.tsx`                               |
+| 6  | Keyboard shortcut modal     | DONE   | Panel + `Ctrl+?` shortcut via `src/hooks/use-terminal-shortcuts.ts` + `terminal-features-integration.tsx` |
+| 7  | Command history persistence | DONE   | `src/hooks/use-command-history.ts` — localStorage key `-terminal-history`, max 500 entries, with analytics |
+| 8  | Table of Contents           | DONE   | `src/components/molecules/blog/table-of-contents.tsx`                             |
+| 9  | RSS Feed                    | DONE   | BE `GET /api/rss` di `src/routes/rss.rs`; FE link di blog list & layout           |
+| 10 | Back to top                 | DONE   | `src/components/molecules/blog/back-to-top.tsx`                                   |
+
+---
+
+## Sprint 2 — Core Features (Done)
+
+Sprint 2 fokus pada fitur produktif yang langsung dipakai recruiter/visitor: contact flow, scheduling, 2FA, dan dokumentasi API.
+
+> Semua 5 prioritas sudah landed. Bagian di bawah disimpan sebagai referensi
+> bukti konformitas: ringkasan implementasi + lokasi kode aktual ada di
+> tabel di bawah.
+
+| #  | Fitur                       | Status | Lokasi                                                                                                |
+| -- | --------------------------- | ------ | ----------------------------------------------------------------------------------------------------- |
+| 11 | Contact form + storage      | DONE   | BE: `src/routes/contact.rs::submit_contact_message`, `src/db/mod.rs` (table `contact_messages`), email boundary di `src/email.rs` · FE: `src/app/contact/page.tsx`, `src/lib/services/contact-service.ts` |
+| 19 | Admin messages inbox        | DONE   | BE: `list_messages` / `get_message` / `update_message` / `delete_message` di `src/routes/contact.rs` · FE: `src/app/admin/messages/page.tsx`, `src/lib/services/admin-messages-service.ts` |
+| 15 | Blog scheduling (`publishAt`) | DONE | BE: kolom `publish_at` di `blog_posts`, `BlogPost::status()` di `src/db/models.rs`, public-list filter di `src/routes/blog.rs::fetch_blog_list` · FE: datetime picker + status badge di `src/components/molecules/admin/blog-editor.tsx` |
+| 16 | TOTP 2FA admin login        | DONE   | BE: `src/routes/twofa.rs` (setup/verify/disable/login challenge + status), challenge-token integration di `src/routes/auth.rs::login` · FE: `src/lib/auth/auth-service.ts::complete2FALogin`, `src/components/molecules/admin/terminal-login-form.tsx` (challenge step), `src/app/admin/2fa/page.tsx`, `src/lib/services/twofa-service.ts` |
+| 20 | OpenAPI / Swagger docs      | DONE   | BE: `src/openapi.rs` + `#[utoipa::path]` annotations di handler auth/blog/portfolio/contact/twofa/health/rss, mount Swagger UI di `src/lib.rs` (`/api/docs`, raw spec di `/api/docs/openapi.json`); guarded oleh env `ENABLE_SWAGGER_UI` (default `true`) |
+
+### Bukti konformitas singkat
+
+- `cargo test --lib` hijau (48 tests) setelah seluruh Sprint 2 mendarat.
+- `cargo clippy --all-targets -- -D warnings` clean.
+- `curl /api/docs/openapi.json` mengembalikan 23 paths dan 39 schemas dengan tag `Authentication`, `Two-Factor Auth`, `Blog`, `Portfolio`, `Contact`, `Health`, `RSS`.
+- Frontend `tsc --noEmit` clean; `qrcode.react` ditambahkan sebagai dep eksklusif untuk halaman admin 2FA.
+
+### Detail lama (untuk konteks histor[is], tetap valid)
+
+### Priority 1 — Contact Form + Message Storage (#11)
 
 **Backend:**
 
-- Tambah kolom `view_count: i64` di tabel `blog_posts`
-- Endpoint `POST /api/blog/:slug/view` — increment counter (no auth diperlukan)
-- Endpoint `GET /api/blog/:slug` sudah return data, tambahkan `view_count` di response
-
-**Migration SQL:**
-
-```sql
-ALTER TABLE blog_posts ADD COLUMN view_count BIGINT NOT NULL DEFAULT 0;
-```
-
-**Effort:** FE: 2 jam · BE: 3 jam
-
----
-
-### 5. Scroll Progress Bar
-
-**Deskripsi:** Progress bar tipis di bagian atas halaman yang menunjukkan progress scroll artikel.
+- Tabel `contact_messages` (name, email, subject, message, ip, read, created_at).
+- `POST /api/contact` dengan validasi input + rate limit per IP via `tower-governor`.
+- Email delivery via boundary trait (SMTP/Resend), agar bisa diganti tanpa rewrite handler.
+- Sanitisasi pesan masuk (HTML stripping) sebelum simpan.
 
 **Frontend:**
 
-- Buat hook `useScrollProgress()` yang return persentase 0–100
-- Render sebagai sticky `<div>` dengan `width: ${progress}%` di layout blog
-- Gunakan CSS `transition` smooth
+- `src/app/contact/page.tsx` dengan form validation lokal.
+- Toast feedback (Sonner sudah tersedia).
+- Optional: command terminal `contact` untuk navigasi.
 
-**Backend:** Tidak perlu perubahan.
+**Acceptance:** Visitor bisa kirim pesan, pesan tersimpan ke DB, optional email notif terkirim.
 
-**Effort:** FE: 1.5 jam · BE: 0 jam
-
----
-
-### 6. Keyboard Shortcut Cheatsheet Modal
-
-**Deskripsi:** Modal yang muncul ketika user menekan `?` atau `Ctrl+/`, menampilkan semua shortcut terminal yang tersedia.
-
-**Frontend:**
-
-- Buat komponen `ShortcutModal` di `src/components/molecules/terminal/`
-- Extend `use-terminal-shortcuts.ts` untuk expose daftar shortcut
-- Gunakan `@radix-ui/react-dialog` yang sudah ada
-
-**Backend:** Tidak perlu perubahan.
-
-**Effort:** FE: 2 jam · BE: 0 jam
-
----
-
-### 7. Command History Persistence (localStorage)
-
-**Deskripsi:** History command terminal tersimpan di `localStorage` agar persisten antar sesi (saat ini sudah ada `use-command-history.ts` tapi kemungkinan in-memory).
-
-**Frontend:**
-
-- Extend `use-command-history.ts` untuk sync ke `localStorage` dengan key `terminal:history`
-- Batasi maksimal 100 entry terakhir
-- Clear on logout admin
-
-**Backend:** Tidak perlu perubahan.
-
-**Effort:** FE: 2 jam · BE: 0 jam
-
----
-
-### 8. Table of Contents Auto-Generated untuk Blog
-
-**Deskripsi:** Sidebar atau in-page ToC yang auto-extract dari heading H2/H3 di konten blog.
-
-**Frontend:**
-
-- Buat fungsi `extractHeadings(html: string)` dari `content_html`
-- Buat komponen `TableOfContents` dengan anchor links
-- Sticky sidebar di `lg:` breakpoint
-
-**Backend:** Tidak perlu perubahan.
-
-**Effort:** FE: 3 jam · BE: 0 jam
-
----
-
-### 9. RSS Feed untuk Blog
-
-**Deskripsi:** Endpoint `/api/rss` yang menghasilkan RSS 2.0 XML dari published blog posts.
-
-**Frontend:**
-
-- Tambahkan `<link rel="alternate" type="application/rss+xml">` di `layout.tsx`
+### Priority 2 — Admin Messages Inbox (#19, depends on #11)
 
 **Backend:**
 
-- Tambah route `GET /api/rss` yang query published posts dan generate XML response
-- Content-Type: `application/rss+xml`
-- Cukup ~50 baris Rust
-
-**Effort:** FE: 30 menit · BE: 2 jam
-
----
-
-### 10. Tombol "Back to Top"
-
-**Deskripsi:** Floating button yang muncul setelah scroll 400px, klik untuk smooth scroll ke atas.
+- `GET /api/admin/messages` (paginated, admin auth).
+- `PATCH /api/admin/messages/:id` mark read/unread.
+- `DELETE /api/admin/messages/:id`.
 
 **Frontend:**
 
-- Hook `useScrollPosition()` untuk detect posisi
-- Komponen `BackToTopButton` dengan animasi fade-in/out dari Tailwind
+- Halaman inbox di area admin yang aktif (bukan `/admin/dashboard` legacy yang sudah dihapus).
+- Tabel list + detail panel + bulk actions (mark read, delete).
 
-**Backend:** Tidak perlu perubahan.
+**Acceptance:** Admin bisa melihat, baca, mark read, dan hapus pesan kontak.
 
-**Effort:** FE: 1 jam · BE: 0 jam
-
----
-
-## 🟡 Fitur Menengah
-
-> Estimasi implementasi: **3–14 hari per fitur**. Membutuhkan koordinasi FE + BE.
-
-📁 **Detail planning untuk setiap fitur menengah tersedia di [`docs/features/`](docs/features/):**
-
-| #   | Fitur                | Detail Spec                                                                | Prioritas |
-| --- | -------------------- | -------------------------------------------------------------------------- | --------- |
-| 11  | Contact Form + Email | [FEATURE_11_CONTACT_FORM.md](docs/features/FEATURE_11_CONTACT_FORM.md)     | 🟡 Sedang |
-| 12  | Blog Tags & Kategori | [FEATURE_12_BLOG_TAGS.md](docs/features/FEATURE_12_BLOG_TAGS.md)           | 🔴 Tinggi |
-| 13  | Full-Text Search     | [FEATURE_13_SEARCH.md](docs/features/FEATURE_13_SEARCH.md)                 | 🔴 Tinggi |
-| 14  | Rich Text Editor     | [FEATURE_14_RICH_EDITOR.md](docs/features/FEATURE_14_RICH_EDITOR.md)       | 🔴 Tinggi |
-| 15  | Blog Scheduling      | [FEATURE_15_SCHEDULING.md](docs/features/FEATURE_15_SCHEDULING.md)         | 🟡 Sedang |
-| 16  | 2FA Admin Login      | [FEATURE_16_2FA.md](docs/features/FEATURE_16_2FA.md)                       | 🔴 Tinggi |
-| 17  | Image Upload         | [FEATURE_17_IMAGE_UPLOAD.md](docs/features/FEATURE_17_IMAGE_UPLOAD.md)     | 🔴 Tinggi |
-| 18  | Giscus Comments      | [FEATURE_18_GISCUS.md](docs/features/FEATURE_18_GISCUS.md)                 | 🟡 Sedang |
-| 19  | Messages Inbox       | [FEATURE_19_MESSAGES_INBOX.md](docs/features/FEATURE_19_MESSAGES_INBOX.md) | 🟡 Sedang |
-| 20  | OpenAPI/Swagger      | [FEATURE_20_OPENAPI.md](docs/features/FEATURE_20_OPENAPI.md)               | 🟡 Sedang |
-
-> Setiap file berisi: **subtask checklist**, **file mapping**, **API contract**, dan **acceptance criteria**.
-
----
-
-### 11. Contact / Message Form dengan Email
-
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_11_CONTACT_FORM.md)**
-
-**Deskripsi:** Form kontak yang mengirim pesan ke inbox developer via email. Ini adalah fitur penting yang biasanya dicari recruiter/client di portfolio.
-
-**Frontend:**
-
-- Buat halaman `src/app/contact/page.tsx`
-- Form dengan fields: nama, email, subject, pesan
-- Validasi Zod + react-hook-form (sudah ada dependensinya)
-- Success/error state dengan Sonner toast
-- Tambah command `contact` di terminal untuk navigate ke halaman ini
+### Priority 3 — Blog Scheduling (#15)
 
 **Backend:**
 
-- Tambah crate `lettre` untuk SMTP email
-- Endpoint `POST /api/contact` — validasi input, rate limit (5/jam per IP), kirim email
-- Config: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `CONTACT_EMAIL` di `.env`
-- Simpan pesan ke tabel `contact_messages` (untuk arsip admin)
-
-```sql
-CREATE TABLE contact_messages (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(100) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  subject VARCHAR(255),
-  message TEXT NOT NULL,
-  ip_address VARCHAR(45),
-  read BOOLEAN NOT NULL DEFAULT false,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
-
-**Effort:** FE: 1 hari · BE: 2 hari
-
----
-
-### 12. Blog Tags & Kategori
-
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_12_BLOG_TAGS.md)**
-
-**Deskripsi:** Tag system untuk blog posts agar bisa difilter berdasarkan topik.
+- Tambah kolom `publish_at TIMESTAMPTZ NULL` di `blog_posts`.
+- Update `CreateBlogRequest` / `UpdateBlogRequest` untuk menerima `publishAt`.
+- Public list filter: `published = true OR (publish_at IS NOT NULL AND publish_at <= now())`.
+- Status derivation: `draft | scheduled | published` di response.
+- MVP: tidak perlu background scheduler — query-time derivation sudah cukup.
 
 **Frontend:**
 
-- Tampilkan tag chips pada blog list dan detail
-- Filter UI — klik tag untuk filter posts
-- URL-based filter `?tag=rust`
+- Date/time picker di form admin blog.
+- Badge "Scheduled" / "Draft" / "Published" di list admin.
+
+**Acceptance:** Admin bisa set `publishAt` ke masa depan, post otomatis tampil ke public setelah waktu lewat.
+
+### Priority 4 — 2FA Admin Login (#16)
 
 **Backend:**
 
-```sql
-CREATE TABLE blog_tags (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(50) UNIQUE NOT NULL,
-  slug VARCHAR(50) UNIQUE NOT NULL
-);
-
-CREATE TABLE blog_post_tags (
-  post_id UUID REFERENCES blog_posts(id) ON DELETE CASCADE,
-  tag_id UUID REFERENCES blog_tags(id) ON DELETE CASCADE,
-  PRIMARY KEY (post_id, tag_id)
-);
-```
-
-- Update `BlogListQuery` untuk support `?tag=slug`
-- Update `CreateBlogRequest` / `UpdateBlogRequest` untuk include `tags: Vec<String>`
-- Endpoint `GET /api/blog/tags` untuk list semua tag
-
-**Effort:** FE: 2 hari · BE: 2 hari
-
----
-
-### 13. Full-Text Search untuk Blog & Projects
-
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_13_SEARCH.md)**
-
-**Deskripsi:** Search bar yang bisa mencari artikel blog berdasarkan judul, konten, tag, dan juga mencari di daftar projects.
+- Crate `totp-rs` (latest).
+- Kolom baru di `admin_users`: `totp_secret TEXT`, `totp_enabled BOOLEAN DEFAULT false`, `totp_backup_codes TEXT[]`.
+- Endpoint `POST /api/auth/2fa/setup` — generate secret, return otpauth URI + backup codes.
+- Endpoint `POST /api/auth/2fa/verify` — verify TOTP, enable 2FA.
+- Endpoint `POST /api/auth/2fa/disable` (require password + TOTP).
+- Modifikasi login: kalau `totp_enabled`, return `requires2fa: true` + temporary challenge token, JANGAN issue access/refresh sebelum TOTP verified.
 
 **Frontend:**
 
-- Komponen `SearchModal` dengan keyboard shortcut `Ctrl+K`
-- Debounced input dengan `use-debounced-value.ts` (sudah ada)
-- Tampilkan hasil blog + projects dalam satu modal (à la Command Palette)
-- Gunakan `cmdk` yang sudah ada di dependencies
+- Step kedua di login flow: input 6-digit kode.
+- Setup screen di admin settings (QR code via `qrcode` lib + secret + backup codes).
+
+**Acceptance:** Admin bisa enable/disable 2FA, login flow memaksa TOTP kalau enabled, backup codes bisa dipakai sekali.
+
+### Priority 5 — OpenAPI / Swagger Docs (#20)
 
 **Backend:**
 
-- Endpoint `GET /api/search?q=keyword&type=blog|project|all`
-- Gunakan PostgreSQL full-text search dengan `tsvector` dan `tsquery`:
+- Crate `utoipa` + `utoipa-swagger-ui` (atau `utoipa-redoc`).
+- Annotate `auth`, `blog`, `portfolio`, `upload`, `contact`, `admin/messages`, `health`.
+- Mount `/api/docs` di development; di production guard via env flag atau auth.
+- Schema export ke `openapi.json` untuk konsumsi tooling.
 
-```sql
-ALTER TABLE blog_posts ADD COLUMN search_vector TSVECTOR;
-CREATE INDEX blog_posts_fts_idx ON blog_posts USING GIN(search_vector);
-```
-
-- Atau bisa gunakan `ILIKE` sebagai solusi sederhana awal
-
-**Effort:** FE: 2 hari · BE: 2 hari
+**Acceptance:** `/api/docs` menampilkan Swagger UI dengan semua endpoint utama, request/response schema, dan auth requirement yang akurat.
 
 ---
 
-### 14. Admin: Rich Text / Markdown Editor
+## Sprint 3 — Power Features
 
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_14_RICH_EDITOR.md)**
+> Direncanakan setelah Sprint 2 selesai.
 
-**Deskripsi:** Editor WYSIWYG/Markdown untuk membuat blog post di admin dashboard, menggantikan textarea biasa.
+| #  | Fitur                                | Effort (FE/BE)         |
+| -- | ------------------------------------ | ---------------------- |
+| 14 | Rich text editor admin blog          | 3 hari · 0 hari        |
+| 17 | Image upload integrated to editor    | 2 hari · 0 hari (BE siap) |
+| 21 | Real-time visitor analytics          | 5 hari · 8 hari        |
+| 22 | Spotify Now Playing widget           | 2 hari · 3 hari        |
+| 23 | Blog series / collections            | 3 hari · 3 hari        |
+| 24 | Portfolio versioning & audit history | 4 hari · 4 hari        |
+| 25 | Multi-language blog content          | 3 hari · 3 hari        |
+| 26 | GitHub stats proxy backend           | 4 hari · 2 hari        |
 
-**Frontend:**
-
-- Integrasikan editor seperti `@uiw/react-md-editor` atau `@tiptap/react`
-- Preview live split-view (Markdown kiri, HTML preview kanan)
-- Toolbar: bold, italic, heading, code, link, image URL
-- Auto-save draft ke localStorage
-
-**Backend:** Tidak perlu perubahan di endpoint, hanya menerima `content_md` seperti sekarang.
-
-**Effort:** FE: 3 hari · BE: 0 hari
-
----
-
-### 15. Blog Post Scheduling
-
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_15_SCHEDULING.md)**
-
-**Deskripsi:** Admin bisa menjadwalkan artikel untuk publish otomatis di waktu tertentu.
-
-**Frontend:**
-
-- Tambah `DateTimePicker` di form create/edit post
-- Field `publish_at` — jika diisi dan published=false, status tampil "Scheduled"
-
-**Backend:**
-
-```sql
-ALTER TABLE blog_posts ADD COLUMN publish_at TIMESTAMPTZ;
-```
-
-- Tambah background task dengan `tokio::spawn` — setiap menit check posts dengan `publish_at <= NOW()` dan `published = false`, lalu set `published = true`
-- Tampilkan status `scheduled` di API response
-
-**Effort:** FE: 1 hari · BE: 2 hari
+Catatan: `tsvector` full-text upgrade (#13 advanced) bisa masuk ke sprint ini jika search basic ILIKE sudah tidak cukup.
 
 ---
 
-### 16. 2FA (TOTP) untuk Admin Login
+## Sprint 4 — Game Changers
 
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_16_2FA.md)**
+> Roadmap jangka panjang. Akan direvisi ulang setelah Sprint 2/3 selesai.
 
-**Deskripsi:** Two-Factor Authentication menggunakan TOTP agar admin login lebih aman.
-
-**Frontend:**
-
-- Flow tambahan setelah login: input 6-digit TOTP code
-- QR code setup page dengan secret
-- Backup codes display
-
-**Backend:**
-
-- Tambah crate `totp-rs`
-- Kolom baru di `admin_users`: `totp_secret`, `totp_enabled`, `totp_backup_codes`
-- Endpoint `POST /api/auth/2fa/setup` — generate secret + QR code
-- Endpoint `POST /api/auth/2fa/verify` — verify TOTP code
-- Modifikasi login flow: return `requires_2fa: true` jika enabled
-
-**Effort:** FE: 2 hari · BE: 3 hari
+| #  | Fitur                                  | Effort (FE/BE) |
+| -- | -------------------------------------- | -------------- |
+| 27 | AI Portfolio Assistant (RAG + LLM)     | 5 · 14 hari    |
+| 28 | Live coding / demo environment         | 7 · 14 hari    |
+| 29 | Newsletter & email subscription system | 5 · 10 hari    |
+| 30 | Real-time visitor presence (WebSocket) | 4 · 5 hari     |
+| 31 | Full CLI experience (pipe, alias, etc) | 14 · 3 hari    |
+| 32 | Headless Portfolio CMS mode            | 3 · 14 hari    |
 
 ---
 
-### 17. Image Upload untuk Blog
-
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_17_IMAGE_UPLOAD.md)**
-
-**Deskripsi:** Upload gambar langsung dari admin editor, tersimpan di server atau object storage.
-
-**Frontend:**
-
-- Drag-and-drop / click-to-upload di editor
-- Preview thumbnail setelah upload
-- Insert URL otomatis ke Markdown
-
-**Backend:**
-
-- Tambah crate `multer` atau gunakan `axum::extract::Multipart`
-- Endpoint `POST /api/upload/image` (auth required)
-- Simpan ke folder `/public/uploads/` atau integrasi S3-compatible (MinIO)
-- Return URL untuk diinsert ke konten
-
-**Effort:** FE: 2 hari · BE: 2 hari
-
----
-
-### 18. Giscus / GitHub Discussions Comments
-
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_18_GISCUS.md)**
-
-**Deskripsi:** Sistem komentar di blog menggunakan GitHub Discussions via Giscus — zero backend cost, login via GitHub.
-
-**Frontend:**
-
-- Install `giscus` embed di halaman blog detail `[slug]/page.tsx`
-- Config repo, category, theme sync dengan dark/light mode
-- Lazy load di bawah artikel
-
-**Backend:** Tidak perlu perubahan (Giscus adalah third-party widget).
-
-**Effort:** FE: 3 jam · BE: 0 jam  
-_(Mudah namun impact besar — interaktivitas komunitas)_
-
----
-
-### 19. Admin: Contact Messages Inbox
-
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_19_MESSAGES_INBOX.md)**
-
-**Deskripsi:** Halaman di admin dashboard untuk melihat dan mengelola pesan dari contact form (terhubung dengan fitur #11).
-
-**Frontend:**
-
-- Tabel pesan dengan: nama, email, subject, waktu, status (read/unread)
-- Detail panel untuk baca pesan penuh
-- Bulk actions: delete, mark as read
-
-**Backend:**
-
-- Endpoint `GET /api/admin/messages` (auth required) — paginated list
-- Endpoint `PATCH /api/admin/messages/:id` — update status read
-- Endpoint `DELETE /api/admin/messages/:id`
-
-**Effort:** FE: 2 hari · BE: 1 hari _(depends on #11)_
-
----
-
-### 20. OpenAPI / Swagger Dokumentasi
-
-> 📄 **[Lihat detail spec →](docs/features/FEATURE_20_OPENAPI.md)**
-
-**Deskripsi:** Dokumentasi API otomatis yang bisa diakses di `/api/docs`.
-
-**Frontend:**
-
-- Tidak perlu
-
-**Backend:**
-
-- Tambah crate `utoipa` + `utoipa-swagger-ui`
-- Anotasi `#[utoipa::path(...)]` ke setiap route handler
-- Mount SwaggerUI di `/api/docs`
-
-**Effort:** FE: 0 hari · BE: 3 hari
-
----
-
-## 🔴 Fitur Besar
-
-> Estimasi implementasi: **2–6 minggu**. Signifikan secara arsitektur.
-
----
-
-### 21. Real-time Visitor Analytics Dashboard
-
-**Deskripsi:** Dashboard analytics nyata dengan data visitor, page views, referrer, device, country — ditampilkan di admin panel tanpa third-party.
-
-**Frontend:**
-
-- Halaman `/admin/dashboard/analytics`
-- Charts dengan Recharts (sudah ada di dependencies): Line chart untuk daily views, Pie chart device/browser, Bar chart top pages
-- Date range picker
-- Real-time counter via polling atau SSE
-
-**Backend:**
-
-- Middleware baru di Axum untuk track setiap request
-- Tabel `analytics_events`:
-
-```sql
-CREATE TABLE analytics_events (
-  id BIGSERIAL PRIMARY KEY,
-  path VARCHAR(500) NOT NULL,
-  referrer VARCHAR(500),
-  user_agent TEXT,
-  country_code CHAR(2),
-  device_type VARCHAR(20),
-  session_id VARCHAR(64),
-  duration_ms INTEGER,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
--- Partition by month for performance
-```
-
-- Endpoint `GET /api/admin/analytics?from=&to=&group_by=day|week|month`
-- IP geolocation menggunakan MaxMind GeoLite2 (offline database)
-- Exclude bot traffic berdasarkan User-Agent pattern
-
-**Effort:** FE: 5 hari · BE: 8 hari
-
----
-
-### 22. Spotify "Now Playing" Widget
-
-**Deskripsi:** Widget real-time yang menampilkan lagu yang sedang diputar (atau lagu terakhir) dari Spotify. Fitur ini disebut di ROADMAP lama tapi belum ada di backend saat ini.
-
-**Frontend:**
-
-- Komponen `NowPlaying` di corner halaman utama atau terminal footer
-- Animasi "sound waves" jika sedang playing
-- Fallback "Not currently playing" jika idle
-
-**Backend:**
-
-- Tambah route group `/api/spotify`
-- OAuth2 flow dengan Spotify API (client credentials + refresh token)
-- Cache response 30 detik karena Spotify rate limit
-- Endpoint `GET /api/spotify/now-playing`
-- Store `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN` di env
-
-**Effort:** FE: 2 hari · BE: 3 hari
-
----
-
-### 23. Blog Series / Collections
-
-**Deskripsi:** Kelompokkan artikel blog menjadi "series" (contoh: "Belajar Rust — Part 1, 2, 3"). Reader bisa navigate antar artikel dalam satu series.
-
-**Frontend:**
-
-- Banner "Part of series: X" di atas konten
-- Navigator prev/next dalam series
-- Halaman series listing `/blog/series/[slug]`
-
-**Backend:**
-
-```sql
-CREATE TABLE blog_series (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title VARCHAR(255) NOT NULL,
-  slug VARCHAR(255) UNIQUE NOT NULL,
-  description TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-ALTER TABLE blog_posts ADD COLUMN series_id UUID REFERENCES blog_series(id);
-ALTER TABLE blog_posts ADD COLUMN series_order INTEGER;
-```
-
-- Endpoint `GET /api/blog/series` — list series
-- Endpoint `GET /api/blog/series/:slug` — posts dalam series (ordered)
-
-**Effort:** FE: 3 hari · BE: 3 hari
-
----
-
-### 24. Portfolio Content Versioning & Audit History
-
-**Deskripsi:** Setiap perubahan pada portfolio sections (skills, projects, dsb) disimpan sebagai versi, bisa di-rollback.
-
-**Frontend:**
-
-- Panel "Version History" di admin untuk setiap section
-- Diff viewer untuk perbandingan antar versi
-- Tombol "Restore" untuk rollback
-
-**Backend:**
-
-```sql
-CREATE TABLE portfolio_versions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  section_key VARCHAR(50) NOT NULL,
-  content JSONB NOT NULL,
-  changed_by VARCHAR(255),
-  change_note TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
-
-- Setiap PATCH `/api/portfolio` auto-create version entry
-- Endpoint `GET /api/portfolio/:section/versions`
-- Endpoint `POST /api/portfolio/:section/restore/:version_id`
-
-**Effort:** FE: 4 hari · BE: 4 hari
-
----
-
-### 25. Multi-Language Blog Posts (i18n Content)
-
-**Deskripsi:** Artikel blog bisa ditulis dalam beberapa bahasa (ID/EN). Frontend sudah punya i18n hooks, ini extend ke content.
-
-**Frontend:**
-
-- Language switcher di halaman blog (sudah ada pattern dari `use-i18n.ts`)
-- Fallback ke EN jika terjemahan tidak tersedia
-- Indikator bahasa mana yang tersedia
-
-**Backend:**
-
-```sql
-ALTER TABLE blog_posts ADD COLUMN locale VARCHAR(5) NOT NULL DEFAULT 'en';
--- Atau alternatif: tabel terpisah untuk translations
-CREATE TABLE blog_post_translations (
-  post_id UUID REFERENCES blog_posts(id) ON DELETE CASCADE,
-  locale VARCHAR(5) NOT NULL,
-  title VARCHAR(500) NOT NULL,
-  summary TEXT,
-  content_md TEXT,
-  content_html TEXT,
-  PRIMARY KEY (post_id, locale)
-);
-```
-
-- Update list/get endpoints untuk support `?lang=id|en`
-
-**Effort:** FE: 3 hari · BE: 3 hari
-
----
-
-### 26. GitHub Contribution Graph & Stats Integration
-
-**Deskripsi:** Tampilkan GitHub contribution graph, pinned repos dengan stats live, dan activity feed — jauh lebih kaya dari yang ada sekarang.
-
-**Frontend:**
-
-- Komponen `GitHubStats` dengan contribution calendar (SVG-based)
-- Pinned repos cards dengan star/fork/language badges
-- "Streak" counter hari berturut-turut berkontribusi
-
-**Backend:**
-
-- Proxy endpoint `GET /api/github/stats?username=X` untuk menghindari CORS + cache
-- Cache 1 jam agar tidak kena rate limit GitHub API
-- Support GitHub PAT via `GITHUB_TOKEN` env
-
-**Effort:** FE: 4 hari · BE: 2 hari
-
----
-
-## 🚀 Fitur Game Changer
-
-> Estimasi implementasi: **1–3 bulan**. Mengubah fundamental cara portfolio ini bekerja.
-
----
-
-### 27. AI Portfolio Assistant (Chat dengan LLM)
-
-**Deskripsi:** Chatbot AI yang bisa menjawab pertanyaan tentang developer ini — proyek, pengalaman, skill, ketersediaan. Recruiter atau client bisa "interview" AI versi kamu. **Fitur paling diferensiatif di antara semua portfolio developer.**
-
-**User Experience:**
-
-```
-User: "Apa pengalaman kamu dengan Rust?"
-AI:   "Saya telah menggunakan Rust selama 2 tahun, terutama untuk backend API
-       dengan Axum framework. Salah satu proyek terbesar adalah portfolio ini
-       sendiri yang dibangun dengan Axum + PostgreSQL..."
-```
-
-**Frontend:**
-
-- Command `chat` di terminal untuk membuka AI chat mode
-- Atau halaman `/chat` dengan interface chat klasik
-- Streaming response dengan SSE (text-by-text)
-- Context-aware: tahu tentang skills, projects, blog posts
-
-**Backend:**
-
-- Integrasikan OpenAI API atau Anthropic Claude
-- Build "knowledge base" dari portfolio data (RAG — Retrieval Augmented Generation):
-  - Portfolio sections sebagai context
-  - Blog posts sebagai knowledge
-  - GitHub repos sebagai evidence
-- Endpoint `POST /api/ai/chat` dengan streaming support
-- Rate limit ketat: 10 req/jam per IP, 5 pesan per conversation
-- Fallback response jika AI down
-
-**Arsitektur RAG Sederhana:**
-
-```
-User Query
-    ↓
-Embedding Generation (ada-002)
-    ↓
-Vector Similarity Search (pgvector atau in-memory)
-    ↓
-Context Assembly (top-k relevant chunks)
-    ↓
-LLM Completion (GPT-4o / Claude Sonnet)
-    ↓
-Streaming Response
-```
-
-**Backend Dependencies baru:**
-
-```toml
-reqwest = { version = "0.12", features = ["json", "stream"] }
-tiktoken-rs = "0.5"
-pgvector = "0.4"  # jika pakai pgvector extension
-```
-
-**Effort:** FE: 5 hari · BE: 14 hari  
-**Impact:** Sangat tinggi — portfolio yang bisa "ngobrol" akan diingat selamanya
-
----
-
-### 28. Live Coding / Demo Environment
-
-**Deskripsi:** Playground interaktif di dalam portfolio di mana visitor bisa langsung mencoba kode. Mirip CodeSandbox tapi embedded, menampilkan skill secara demonstratif.
-
-**User Experience:**
-
-```
-Command: playground rust
-→ Membuka in-browser Rust playground
-→ Visitor bisa edit, run, dan lihat output langsung
-```
-
-**Frontend:**
-
-- Embed `@monaco-editor/react` sebagai code editor
-- Kirim kode ke backend untuk di-execute
-- Tampilkan stdout/stderr dengan syntax highlight
-- "Example snippets" yang showcasing skill
-
-**Backend:**
-
-- Gunakan Docker container sebagai sandboxed executor
-- Endpoint `POST /api/playground/run` — terima kode + bahasa, return output
-- Timeout 10 detik, memory limit 128MB per execution
-- Support languages: Rust, JavaScript/TypeScript, Python (via Docker images)
-- Queue execution dengan `tokio::sync::mpsc`
-
-**Security:** Semua execution di sandbox container, tidak ada network access, read-only filesystem.
-
-**Effort:** FE: 7 hari · BE: 14 hari  
-**Impact:** Sangat tinggi — "show don't tell" yang literal
-
----
-
-### 29. Newsletter & Email Subscription System
-
-**Deskripsi:** Sistem newsletter lengkap — visitor subscribe, dapat email saat blog post baru, admin bisa kirim broadcast.
-
-**User Experience:**
-
-- Subscribe form dengan double opt-in (konfirmasi via email)
-- Unsubscribe link di setiap email
-- Admin bisa lihat subscribers dan kirim blast
-
-**Frontend:**
-
-- Komponen `NewsletterForm` di halaman blog
-- Command `subscribe` di terminal
-- Halaman `/admin/newsletter` untuk compose & send
-
-**Backend:**
-
-```sql
-CREATE TABLE newsletter_subscribers (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email VARCHAR(255) UNIQUE NOT NULL,
-  confirmed BOOLEAN NOT NULL DEFAULT false,
-  confirmation_token VARCHAR(64) UNIQUE,
-  unsubscribe_token VARCHAR(64) UNIQUE NOT NULL,
-  subscribed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  confirmed_at TIMESTAMPTZ
-);
-
-CREATE TABLE newsletter_campaigns (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  subject VARCHAR(500) NOT NULL,
-  content_html TEXT NOT NULL,
-  sent_at TIMESTAMPTZ,
-  recipient_count INTEGER,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
-
-- Auto-send digest saat blog post baru dipublish (via tokio background task)
-- Endpoint `POST /api/newsletter/subscribe`
-- Endpoint `GET /api/newsletter/confirm/:token`
-- Endpoint `GET /api/newsletter/unsubscribe/:token`
-- Endpoint `POST /api/admin/newsletter/send` (broadcast)
-
-**Effort:** FE: 5 hari · BE: 10 hari
-
----
-
-### 30. Real-Time Collaboration Viewer (Visitor Presence)
-
-**Deskripsi:** Tampilkan secara real-time berapa banyak orang sedang online di portfolio, di halaman mana, lengkap dengan indikator "live". Menggunakan WebSocket.
-
-**User Experience:**
-
-- Terminal menampilkan: `[live] 3 people are viewing this portfolio right now`
-- Atau badge live di pojok berisi `● 5 online`
-- Admin bisa lihat heatmap real-time di dashboard
-
-**Frontend:**
-
-- WebSocket client dengan reconnect logic
-- `usePresence()` hook
-- Animasi subtle dot indicator
-
-**Backend:**
-
-- WebSocket server dengan `axum::extract::WebSocketUpgrade`
-- In-memory presence store per path: `Arc<RwLock<HashMap<String, HashSet<SessionId>>>>`
-- Broadcast count update ke semua connected clients
-- Cleanup pada disconnect
-
-**Effort:** FE: 4 hari · BE: 5 hari  
-**Impact:** Tinggi — memberikan sense of community dan validasi sosial
-
----
-
-### 31. Command Terminal sebagai Full CLI Experience
-
-**Deskripsi:** Transformasi terminal menjadi lebih dari sekedar interface — jadikan benar-benar seperti shell dengan piping, chaining commands, scripting sederhana, dan plugin system.
-
-**Fitur Baru:**
-
-```bash
-# Piping
-projects | grep rust | sort --by-stars
-
-# Command chaining
-skills && experience && contact
-
-# Script/alias persisten
-alias mystack="skills | grep -v entry"
-
-# Interaktif prompt
-new-contact
-  > Name: John
-  > Email: john@email.com
-  > ✓ Message sent!
-
-# Plugin commands dari remote
-load-plugin github.com/user/terminal-plugin
-```
-
-**Frontend:**
-
-- Extend `command-parser.ts` untuk mendukung pipe operator `|`
-- Shell-like grammar dengan lexer sederhana
-- Plugin registry: load command JSON dari URL
-- Command autocomplete berbasis fuzzy matching (extend `use-command-suggestions.ts`)
-- Vi-mode keybindings (optional)
-
-**Backend:**
-
-- Endpoint `GET /api/terminal/plugins` — registry plugin commands
-- Endpoint `POST /api/terminal/session` — server-side session state (optional)
-
-**Effort:** FE: 14 hari · BE: 3 hari  
-**Impact:** Sangat tinggi — portfolio yang memang "hidup" sebagai terminal
-
----
-
-### 32. Headless Portfolio CMS Mode
-
-**Deskripsi:** Jadikan backend sebagai CMS yang bisa di-consume oleh frontend lain (mobile app, widget, dsb). Expose portfolio data sebagai public API dengan GraphQL atau REST standar yang lebih kaya.
-
-**User Experience (Developer):**
-
-- Dokumentasi API publik
-- API key untuk third-party consumer
-- Webhook untuk event: new post, portfolio update
-
-**Backend:**
-
-- Public read-only endpoints: `GET /api/v1/public/...` tanpa auth
-- Webhook system: subscribe URL mendapat POST saat ada perubahan
-- API key management untuk external consumer
-- Rate limit terpisah untuk public vs authenticated
-- GraphQL layer menggunakan `async-graphql` crate (optional, replace REST)
-
-**Database additions:**
-
-```sql
-CREATE TABLE api_keys (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(100) NOT NULL,
-  key_hash VARCHAR(64) UNIQUE NOT NULL,
-  scopes TEXT[] NOT NULL DEFAULT '{}',
-  last_used_at TIMESTAMPTZ,
-  expires_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE TABLE webhooks (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  url TEXT NOT NULL,
-  events TEXT[] NOT NULL,
-  secret VARCHAR(64) NOT NULL,
-  active BOOLEAN NOT NULL DEFAULT true,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
-
-**Effort:** FE: 3 hari (docs UI) · BE: 14 hari  
-**Impact:** Tinggi — membuka ekosistem dan fleksibilitas maksimal
-
----
-
-## 📊 Prioritas & Timeline
-
-### Matriks Impact vs Effort
-
-```
-HIGH IMPACT
-    │
-    │  #18 Giscus         #27 AI Chat ▓▓▓
-    │  (easy win!)         #31 Full CLI ▓▓▓
-    │                      #28 Playground ▓▓▓
-    │
-    │  #9 RSS Feed        #11 Contact Form
-    │  #4 View Counter    #22 Spotify
-    │  #13 Search         #21 Analytics ▓▓
-    │  #12 Tags           #23 Series
-    │
-    │  #1 Read Time       #30 Presence
-    │  #2 Copy Code       #29 Newsletter ▓
-    │  #6 Shortcuts
-LOW IMPACT
-    └────────────────────────────────────────
-       LOW EFFORT                    HIGH EFFORT
-```
-
----
-
-### Rekomendasi Sprint Plan
-
-#### Sprint 1 — "Polish & Discovery" (Minggu 1-2)
-
-Fokus: Quick wins yang langsung terasa oleh pengunjung.
-
-| #   | Fitur                   | Target   |
-| --- | ----------------------- | -------- |
-| 1   | Reading time estimator  | Hari 1   |
-| 2   | Copy code button        | Hari 1   |
-| 8   | Table of Contents blog  | Hari 2   |
-| 9   | RSS Feed                | Hari 2-3 |
-| 18  | Giscus comments         | Hari 3   |
-| 4   | Blog view counter       | Hari 4-5 |
-| 7   | Command history persist | Hari 5   |
-| 6   | Keyboard shortcut modal | Hari 6   |
-| 3   | Social share buttons    | Hari 7   |
-| 10  | Back to top             | Hari 7   |
-| 5   | Scroll progress bar     | Hari 7   |
-
-#### Sprint 2 — "Content & Discovery" (Minggu 3-5)
-
-Fokus: Fitur yang memperkaya konten dan discoverability.
-
-| #   | Fitur                  | Target     |
-| --- | ---------------------- | ---------- |
-| 12  | Blog tags & kategori   | Minggu 3   |
-| 13  | Full-text search       | Minggu 3-4 |
-| 11  | Contact form + email   | Minggu 4   |
-| 14  | Rich text editor admin | Minggu 4-5 |
-| 20  | OpenAPI docs           | Minggu 5   |
-
-#### Sprint 3 — "Power Features" (Bulan 2)
-
-Fokus: Fitur yang membedakan dengan portfolio lain.
-
-| #   | Fitur                    | Target     |
-| --- | ------------------------ | ---------- |
-| 22  | Spotify Now Playing      | Minggu 1-2 |
-| 26  | GitHub stats integration | Minggu 2-3 |
-| 15  | Blog scheduling          | Minggu 3   |
-| 16  | 2FA admin                | Minggu 3-4 |
-| 17  | Image upload             | Minggu 4   |
-| 21  | Analytics dashboard      | Minggu 4+  |
-
-#### Sprint 4 — "Game Changers" (Bulan 3+)
-
-Fokus: Fitur yang benar-benar membuat portofolio ini unik.
-
-| #   | Fitur                  | Target    |
-| --- | ---------------------- | --------- |
-| 27  | AI Portfolio Assistant | Bulan 3   |
-| 31  | Full CLI experience    | Bulan 3-4 |
-| 30  | Real-time presence     | Bulan 4   |
-| 29  | Newsletter system      | Bulan 4-5 |
-| 28  | Live playground        | Bulan 5-6 |
-
----
-
-## 🔧 Catatan Teknis
+## Catatan Teknis
 
 ### Backend (Rust/Axum)
 
-**Dependencies baru yang akan dibutuhkan:**
+**Dependencies yang akan dibutuhkan untuk Sprint 2:**
 
 ```toml
-# Email
-lettre = { version = "0.11", features = ["tokio1-native-tls"] }
+# Sprint 2 Priority 1 — email delivery boundary
+# Pilih salah satu (atau dua sekaligus via trait):
+lettre = { version = "0.11", features = ["tokio1-rustls-tls"] }
+# atau pakai HTTP-based provider (Resend/SendGrid) via reqwest yang sudah ada
 
-# Spotify + external API calls
-reqwest = { version = "0.12", features = ["json", "stream"] }
+# Sprint 2 Priority 4 — TOTP
+totp-rs = { version = "5", features = ["gen_secret"] }
 
-# OpenAPI docs
-utoipa = { version = "4", features = ["axum_extras"] }
-utoipa-swagger-ui = { version = "7", features = ["axum"] }
-
-# TOTP (2FA)
-totp-rs = "5"
-
-# GraphQL (opsional untuk #32)
-async-graphql = "7"
-async-graphql-axum = "7"
-
-# AI / streaming
-eventsource-stream = "0.2"  # untuk SSE parsing
-
-# Multipart upload
-axum-multipart = "0.1"
+# Sprint 2 Priority 5 — OpenAPI
+utoipa = { version = "5", features = ["axum_extras", "chrono", "uuid"] }
+utoipa-swagger-ui = { version = "8", features = ["axum"] }
 ```
 
-**Migration pattern:**
+**Migration pattern:** Saat ini migrations dijalankan inline di `src/db/mod.rs::run_migrations`. Untuk Sprint 2 tetap pakai pattern ini (sudah punya retry & multi-statement support via `sqlx::raw_sql`). Migrasi ke folder `migrations/` + `sqlx migrate run` bisa dilakukan terpisah ketika jumlah migrasi sudah lebih dari 20.
 
-- Setiap fitur baru yang membutuhkan skema DB harus dibuatkan file migration SQL di `migrations/` folder
-- Gunakan `sqlx migrate run` sebagai bagian dari startup
+**Rate limiting:** Sudah pakai `tower-governor` dengan `SmartIpKeyExtractor` (parses `X-Forwarded-For`). Endpoint baru di Sprint 2 (`/api/contact`, admin endpoints) sebaiknya pakai layer governor terpisah dengan budget yang sesuai konteks.
 
-**Rekomendasi Database Indexes:**
+**Index recommendations untuk Sprint 2:**
 
 ```sql
--- Untuk search
-CREATE INDEX blog_posts_title_idx ON blog_posts USING GIN(to_tsvector('english', title));
-CREATE INDEX blog_posts_published_idx ON blog_posts (published, created_at DESC);
+-- Untuk contact_messages
+CREATE INDEX contact_messages_created_at_idx ON contact_messages (created_at DESC);
+CREATE INDEX contact_messages_read_idx ON contact_messages (read, created_at DESC);
 
--- Untuk analytics
-CREATE INDEX analytics_events_path_date_idx ON analytics_events (path, created_at);
-CREATE INDEX analytics_events_created_at_idx ON analytics_events (created_at DESC);
+-- Untuk blog scheduling
+CREATE INDEX blog_posts_publish_at_idx ON blog_posts (publish_at) WHERE publish_at IS NOT NULL;
 ```
 
 ### Frontend (Next.js/React)
 
 **Pattern yang harus diikuti:**
 
-- Semua server-side data fetching via `lib/services/` atau API Route Handlers di `app/api/`
-- Client-side state dengan TanStack Query (sudah ada)
-- Form validation dengan Zod + react-hook-form (sudah ada)
-- Toast notifications via Sonner (sudah ada)
-- Komponen baru mengikuti Atomic Design yang sudah ada: `atoms/` → `molecules/` → `organisms/`
+- Server-side data fetching via Server Components / `lib/services/`. **TanStack Query sudah dihapus** dari deps — gunakan native `fetch` atau React 19 `use()` hook.
+- Form validation dengan Zod + react-hook-form (sudah tersedia).
+- Toast notifications via Sonner (sudah tersedia).
+- Komponen baru mengikuti Atomic Design: `atoms/` → `molecules/` → `organisms/`.
+- Auth state via HttpOnly cookies — TIDAK PERNAH simpan refresh token di sessionStorage/localStorage. Pakai `credentials: "include"` di setiap fetch ke endpoint admin.
 
-**Environment variables baru:**
-3 |
-| 16| 2FA admin | Minggu 3-4 |
-| 17| Image upload | Minggu 4 |
-| 21| Analytics dashboard | Minggu 4+ |
-
-#### Sprint 4 — "Game Changers" (Bulan 3+)
-
-Fokus: Fitur yang benar-benar membuat portofolio ini unik.
-
-| #   | Fitur                  | Target    |
-| --- | ---------------------- | --------- |
-| 27  | AI Portfolio Assistant | Bulan 3   |
-| 31  | Full CLI experience    | Bulan 3-4 |
-| 30  | Real-time presence     | Bulan 4   |
-| 29  | Newsletter system      | Bulan 4-5 |
-| 28  | Live playground        | Bulan 5-6 |
-
----
-
-## 🔧 Catatan Teknis
-
-### Backend (Rust/Axum)
-
-**Dependencies baru yang akan dibutuhkan:**
-
-```toml
-# Email
-lettre = { version = "0.11", features = ["tokio1-native-tls"] }
-
-# Spotify + external API calls
-reqwest = { version = "0.12", features = ["json", "stream"] }
-
-# OpenAPI docs
-utoipa = { version = "4", features = ["axum_extras"] }
-utoipa-swagger-ui = { version = "7", features = ["axum"] }
-
-# TOTP (2FA)
-totp-rs = "5"
-
-# GraphQL (opsional untuk #32)
-async-graphql = "7"
-async-graphql-axum = "7"
-
-# AI / streaming
-eventsource-stream = "0.2"  # untuk SSE parsing
-
-# Multipart upload
-axum-multipart = "0.1"
-```
-
-**Migration pattern:**
-
-- Setiap fitur baru yang membutuhkan skema DB harus dibuatkan file migration SQL di `migrations/` folder
-- Gunakan `sqlx migrate run` sebagai bagian dari startup
-
-**Rekomendasi Database Indexes:**
-
-```sql
--- Untuk search
-CREATE INDEX blog_posts_title_idx ON blog_posts USING GIN(to_tsvector('english', title));
-CREATE INDEX blog_posts_published_idx ON blog_posts (published, created_at DESC);
-
--- Untuk analytics
-CREATE INDEX analytics_events_path_date_idx ON analytics_events (path, created_at);
-CREATE INDEX analytics_events_created_at_idx ON analytics_events (created_at DESC);
-```
-
-### Frontend (Next.js/React)
-
-**Pattern yang harus diikuti:**
-
-- Semua server-side data fetching via `lib/services/` atau API Route Handlers di `app/api/`
-- Client-side state dengan TanStack Query (sudah ada)
-- Form validation dengan Zod + react-hook-form (sudah ada)
-- Toast notifications via Sonner (sudah ada)
-- Komponen baru mengikuti Atomic Design yang sudah ada: `atoms/` → `molecules/` → `organisms/`
-
-**Environment variables baru:**
+**Environment variables yang akan dibutuhkan untuk Sprint 2:**
 
 ```env
-# Contact/Email
+# Contact form (#11) — pilih satu transport:
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your@email.com
 SMTP_PASSWORD=app-password
 CONTACT_EMAIL=your@email.com
+# atau
+RESEND_API_KEY=re_xxx
+RESEND_FROM=noreply@yourdomain.com
 
-# Spotify
-SPOTIFY_CLIENT_ID=xxx
-SPOTIFY_CLIENT_SECRET=xxx
-SPOTIFY_REFRESH_TOKEN=xxx
+# 2FA (#16)
+TOTP_ISSUER=infinitedim.site
 
-# OpenAI (fitur AI)
-OPENAI_API_KEY=sk-xxx
-
-# Newsletter
-NEWSLETTER_FROM_EMAIL=newsletter@yourdomain.com
+# OpenAPI (#20)
+ENABLE_API_DOCS=true   # set false di production jika tidak ingin public
 ```
 
 ### DevOps / Infrastructure
 
-- Pertimbangkan **Redis** untuk caching (disebutkan di ROADMAP lama tapi tidak ada di Cargo.toml saat ini)
-- **CDN** untuk assets statis (gambar blog, resume PDF)
-- **pgvector** PostgreSQL extension jika implement AI embeddings
-- Docker Compose update untuk include services baru (Redis, MinIO untuk storage)
+- Redis sudah ada di `docker-compose.yml` tapi belum dipakai backend. Dependency `redis` perlu ditambahkan di `Cargo.toml` ketika fitur caching benar-benar dibutuhkan (Sprint 3+).
+- CDN untuk uploads bisa dipertimbangkan ketika folder `/uploads/` mulai membesar (>1GB).
+- pgvector extension dibutuhkan kalau implementasi AI assistant (#27).
 
 ---
 
-## 📌 Kesimpulan
+## Kesimpulan
 
-Portfolio ini sudah memiliki **fondasi teknis yang sangat solid** — Rust backend yang cepat dan aman, terminal interface yang unik, infrastruktur logging yang mature, dan arsitektur frontend yang bersih.
+Sprint 1 sudah selesai sepenuhnya. Sprint 2 adalah fokus aktif berikutnya, dengan 5 fitur prioritas (contact form, inbox, scheduling, 2FA, OpenAPI) yang mencakup gap fungsional terbesar di portfolio saat ini.
 
-**Fokus utama yang direkomendasikan:**
-
-1. **Jangka pendek (1-2 minggu):** Sprint 1 Quick Wins — akan langsung terasa perbedaannya bagi pengunjung
-2. **Jangka menengah (1 bulan):** Contact form, blog tags, search — melengkapi kebutuhan dasar portfolio profesional
-3. **Jangka panjang (3+ bulan):** AI Assistant — ini adalah **satu fitur yang akan membuat portfolio ini benar-benar tak terlupakan**
-
-> "Your portfolio should be the best demo of your skills. A portfolio with an AI that knows everything about you is not just impressive — it's your 24/7 recruiter."
+Setelah Sprint 2 selesai, portfolio ini akan punya: contact flow yang nyata, admin operasional dengan inbox + scheduling, akun admin yang aman (2FA), dan dokumentasi API yang bisa dipakai consumer eksternal — fondasi yang siap untuk Sprint 3 (analytics, Spotify, GitHub proxy) dan Sprint 4 (AI assistant, presence, newsletter).

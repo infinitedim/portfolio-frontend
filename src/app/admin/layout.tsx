@@ -1,11 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { SecureAuth } from "../../lib/auth/secure-auth";
+import { useAuth } from "@/lib/auth/auth-context";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
+}
+
+/**
+ * Admin pages that don't require an authenticated session. Any path not in
+ * this set is gated behind `useAuth().isAuthenticated`.
+ *
+ * `/admin/register` is included so the very first admin user can create an
+ * account when no session yet exists. The backend separately enforces the
+ * "registration is closed once an admin exists" rule, so leaving this open
+ * here is safe.
+ */
+const PUBLIC_ADMIN_PATHS: ReadonlySet<string> = new Set([
+  "/admin/login",
+  "/admin/register",
+]);
+
+function isPublicPath(pathname: string | null): boolean {
+  if (!pathname) return false;
+  return PUBLIC_ADMIN_PATHS.has(pathname);
 }
 
 export default function AdminLayout({
@@ -13,32 +32,23 @@ export default function AdminLayout({
 }: AdminLayoutProps): React.JSX.Element {
   const router = useRouter();
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const { isAuthenticated, isLoading } = useAuth();
+
+  const publicPath = isPublicPath(pathname);
 
   useEffect(() => {
-    if (pathname === "/admin/login") {
-      setIsAuthenticated(true);
-      return;
+    if (publicPath) return;
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.push("/admin/login");
     }
+  }, [publicPath, isAuthenticated, isLoading, router]);
 
-    const verifyAuth = async (): Promise<void> => {
-      try {
-        const result = await SecureAuth.verifyAuthentication();
-        if (result.isValid) {
-          setIsAuthenticated(true);
-        } else {
-          router.push("/admin/login");
-        }
-      } catch (error) {
-        console.error("Auth verification failed:", error);
-        router.push("/admin/login");
-      }
-    };
+  if (publicPath) {
+    return <>{children}</>;
+  }
 
-    verifyAuth();
-  }, [router, pathname]);
-
-  if (isAuthenticated === null && pathname !== "/admin/login") {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -49,7 +59,7 @@ export default function AdminLayout({
     );
   }
 
-  if (isAuthenticated || pathname === "/admin/login") {
+  if (isAuthenticated) {
     return <>{children}</>;
   }
 

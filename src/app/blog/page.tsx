@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata, Route } from "next";
 import Link from "next/link";
 import {
   TagFilter,
@@ -126,11 +126,15 @@ export default async function BlogPage({
   ]);
   const totalPages = Math.ceil(total / pageSize);
 
+  // typedRoutes only knows about static literal paths, so dynamic query
+  // strings need an explicit cast. We type this as `Route` so consumers get
+  // proper completion when used with `<Link href>` instead of the `never`
+  // hack that silenced *all* type errors at the call site.
   const buildUrl = (overrides: {
     page?: number;
     search?: string;
     tag?: string;
-  }): never => {
+  }): Route => {
     const p = new URLSearchParams();
     const newPage = overrides.page ?? page;
     const newSearch = "search" in overrides ? overrides.search : search;
@@ -139,7 +143,7 @@ export default async function BlogPage({
     if (newSearch) p.set("search", newSearch);
     if (newTag) p.set("tag", newTag);
     const qs = p.toString();
-    return `/blog${qs ? `?${qs}` : ""}` as never;
+    return (qs ? `/blog?${qs}` : "/blog") as Route;
   };
 
   return (

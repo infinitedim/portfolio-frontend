@@ -234,18 +234,35 @@ export function TerminalProvider({
   );
 
   const handleTourDemoCommand = useCallback(
-    (command: string) => {
+    async (command: string) => {
+      // Show the command in the input briefly so the user can see what the
+      // tour is running for them.
       setCurrentInput(command);
-      executeCommand(command);
-      setTimeout(() => commandInputRef.current?.focus(), 100);
+      const output = await executeCommand(command);
+
+      // Mirror the regular submit pipeline so the demo command shows up in
+      // the visible terminal history. Without this the user reaches the
+      // "history" step with an apparently empty terminal and has nothing to
+      // recall via the arrow keys.
+      if (output) {
+        addToHistory(command, output);
+      }
+
+      // Reset the input and refocus so the next interaction (typing or arrow
+      // navigation) actually lands on the input element.
+      setCurrentInput("");
+      setTimeout(() => commandInputRef.current?.focus(), 50);
     },
-    [executeCommand, setCurrentInput],
+    [executeCommand, addToHistory, setCurrentInput],
   );
 
+  // Note: we deliberately do NOT clear the command history when stepping past
+  // the "history" step. Users need their demo commands to remain available
+  // both to actually exercise the history-navigation step and so that
+  // pressing the Back button returns them to a usable state.
   const handleTourNext = useCallback(() => {
-    if (currentStepIndex === 3 && history.length > 0) clearHistory();
     nextStep();
-  }, [currentStepIndex, history.length, clearHistory, nextStep]);
+  }, [nextStep]);
 
   const handleTourSkip = useCallback(() => {
     if (history.length > 0) clearHistory();

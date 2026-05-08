@@ -411,6 +411,78 @@ describe("GuidedTour", () => {
     });
   });
 
+  describe("Focus Management", () => {
+    it("focuses the inner input when the highlighted target contains one", async () => {
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      if (typeof document === "undefined") {
+        expect(true).toBe(true);
+        return;
+      }
+
+      // Replace the default test target with a container that has a real
+      // input child, mimicking the production `#command-input` markup.
+      const existing = document.getElementById("test-target");
+      if (existing && existing.parentNode) {
+        existing.parentNode.removeChild(existing);
+      }
+
+      const container = document.createElement("div");
+      container.id = "test-target";
+      container.getBoundingClientRect = () =>
+        ({
+          top: 100,
+          left: 100,
+          width: 200,
+          height: 50,
+          bottom: 150,
+          right: 300,
+          x: 100,
+          y: 100,
+          toJSON: () => ({}),
+        }) as DOMRect;
+      container.scrollIntoView = vi.fn();
+
+      const input = document.createElement("input");
+      input.type = "text";
+      const focusSpy = vi.fn();
+      Object.defineProperty(input, "focus", {
+        value: focusSpy,
+        writable: true,
+      });
+
+      container.appendChild(input);
+      document.body.appendChild(container);
+
+      vi.useFakeTimers();
+      try {
+        render(
+          <GuidedTour
+            step={{
+              ...mockStep,
+              target: "#test-target",
+            }}
+            stepIndex={3}
+            totalSteps={7}
+            progress={50}
+            onNext={vi.fn()}
+            onPrev={vi.fn()}
+            onSkip={vi.fn()}
+          />,
+        );
+
+        // Advance the auto-focus timer
+        vi.advanceTimersByTime(200);
+
+        expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true });
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+  });
+
   describe("Demo Command", () => {
     it("should display demo command button when provided", () => {
       if (!canRunTests) {

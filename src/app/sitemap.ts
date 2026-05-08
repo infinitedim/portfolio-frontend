@@ -15,7 +15,7 @@ interface BlogPostItem {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.site";
+    process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.vercel.app";
   const currentDate = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
