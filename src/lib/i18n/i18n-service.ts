@@ -176,6 +176,28 @@ export interface TranslationKeys {
   logsWarning: string;
   logsErrorLevel: string;
   logsDebug: string;
+
+  navHome: string;
+  navProjects: string;
+  navBlog: string;
+  navContact: string;
+  navRoadmap: string;
+  navTerminal: string;
+  landingHeroTitle: string;
+  landingHeroTagline: string;
+  landingCtaProjects: string;
+  landingCtaContact: string;
+  landingCtaTerminal: string;
+  landingAboutTitle: string;
+  landingSkillsTitle: string;
+  landingBlogTitle: string;
+  landingProjectsTitle: string;
+  gateLevelBandit: string;
+  gateLevelNatas: string;
+  gateLevelBehemoth: string;
+  gateSubmit: string;
+  gateHint: string;
+  gateProgress: string;
 }
 
 const translations: Record<string, TranslationKeys> = {
@@ -347,6 +369,29 @@ const translations: Record<string, TranslationKeys> = {
     logsWarning: "Warning",
     logsErrorLevel: "Error",
     logsDebug: "Debug",
+
+    navHome: "Home",
+    navProjects: "Projects",
+    navBlog: "Blog",
+    navContact: "Contact",
+    navRoadmap: "Roadmap",
+    navTerminal: "Terminal",
+    landingHeroTitle: "Dimas Saputra",
+    landingHeroTagline:
+      "Full-stack developer building modern web apps with React, Next.js, and TypeScript.",
+    landingCtaProjects: "View Projects",
+    landingCtaContact: "Get in Touch",
+    landingCtaTerminal: "Unlock Terminal",
+    landingAboutTitle: "About",
+    landingSkillsTitle: "Skills",
+    landingBlogTitle: "Blog",
+    landingProjectsTitle: "Projects",
+    gateLevelBandit: "Bandit",
+    gateLevelNatas: "Natas",
+    gateLevelBehemoth: "Behemoth",
+    gateSubmit: "Submit",
+    gateHint: "Hint",
+    gateProgress: "Progress",
   },
 
   id_ID: {
@@ -517,6 +562,29 @@ const translations: Record<string, TranslationKeys> = {
     logsWarning: "Peringatan",
     logsErrorLevel: "Kesalahan",
     logsDebug: "Debug",
+
+    navHome: "Beranda",
+    navProjects: "Proyek",
+    navBlog: "Blog",
+    navContact: "Kontak",
+    navRoadmap: "Roadmap",
+    navTerminal: "Terminal",
+    landingHeroTitle: "Dimas Saputra",
+    landingHeroTagline:
+      "Full-stack developer yang membangun aplikasi web modern dengan React, Next.js, dan TypeScript.",
+    landingCtaProjects: "Lihat Proyek",
+    landingCtaContact: "Hubungi Saya",
+    landingCtaTerminal: "Buka Terminal",
+    landingAboutTitle: "Tentang",
+    landingSkillsTitle: "Keahlian",
+    landingBlogTitle: "Blog",
+    landingProjectsTitle: "Proyek",
+    gateLevelBandit: "Bandit",
+    gateLevelNatas: "Natas",
+    gateLevelBehemoth: "Behemoth",
+    gateSubmit: "Kirim",
+    gateHint: "Petunjuk",
+    gateProgress: "Progres",
   },
 
   es_ES: {
@@ -687,6 +755,29 @@ const translations: Record<string, TranslationKeys> = {
     logsWarning: "Advertencia",
     logsErrorLevel: "Error",
     logsDebug: "Depuración",
+
+    navHome: "Inicio",
+    navProjects: "Proyectos",
+    navBlog: "Blog",
+    navContact: "Contacto",
+    navRoadmap: "Roadmap",
+    navTerminal: "Terminal",
+    landingHeroTitle: "Dimas Saputra",
+    landingHeroTagline:
+      "Desarrollador full-stack que construye aplicaciones web modernas con React, Next.js y TypeScript.",
+    landingCtaProjects: "Ver Proyectos",
+    landingCtaContact: "Contactar",
+    landingCtaTerminal: "Desbloquear Terminal",
+    landingAboutTitle: "Acerca de",
+    landingSkillsTitle: "Habilidades",
+    landingBlogTitle: "Blog",
+    landingProjectsTitle: "Proyectos",
+    gateLevelBandit: "Bandit",
+    gateLevelNatas: "Natas",
+    gateLevelBehemoth: "Behemoth",
+    gateSubmit: "Enviar",
+    gateHint: "Pista",
+    gateProgress: "Progreso",
   },
 };
 

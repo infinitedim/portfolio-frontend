@@ -1,17 +1,21 @@
 import { test, expect } from "@playwright/test";
 
-// Guard: Playwright Test's test.describe() throws when invoked outside its
-// runner. Bun's test runner picks up *.spec.ts files, so we skip the
-// definitions entirely when a Playwright worker ID is absent.
 const isPlaywright =
   typeof process !== "undefined" &&
   (process.env.PLAYWRIGHT_WORKER_ID !== undefined ||
     process.env.TEST_WORKER_INDEX !== undefined);
 
 if (isPlaywright) {
-  test.describe("Home page", () => {
-    test("should load and show main content", async ({ page }) => {
-      await page.goto("/");
+  test.describe("Terminal page", () => {
+    test("should load terminal route when gate bypassed or unlocked", async ({
+      page,
+    }) => {
+      test.skip(
+        process.env.NEXT_PUBLIC_GATE_ENABLED !== "false",
+        "Gate enabled — /terminal redirects without cookie; use gate e2e instead",
+      );
+
+      await page.goto("/terminal");
       await expect(page).toHaveTitle(
         /Terminal Portfolio|Full-Stack Developer/i,
       );
@@ -20,12 +24,13 @@ if (isPlaywright) {
       });
     });
 
-    test("should have terminal or loading state", async ({ page }) => {
+    test("landing at / should not be the terminal", async ({ page }) => {
       await page.goto("/");
+      await expect(page).toHaveTitle(/Dimas Saputra|Full-Stack Developer/i);
       const terminalOrLoading = page.locator(
-        '[data-testid="terminal"], [data-testid="terminal-loading-progress"], [id="main-content"]',
+        '[data-testid="terminal"], [data-testid="terminal-client"]',
       );
-      await expect(terminalOrLoading.first()).toBeVisible({ timeout: 15000 });
+      await expect(terminalOrLoading).toHaveCount(0);
     });
   });
 }

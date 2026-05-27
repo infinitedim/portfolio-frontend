@@ -118,7 +118,47 @@ function getCORSHeaders(
     : {};
 }
 
+export function isGateEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_GATE_ENABLED !== "false";
+}
+
+export function hasGateBypass(request: NextRequest): boolean {
+  const secret = process.env.GATE_BYPASS_SECRET;
+  if (!secret) return false;
+  return request.headers.get("x-gate-bypass") === secret;
+}
+
+export function hasGateCookie(request: NextRequest): boolean {
+  return Boolean(request.cookies.get("portfolio_gate")?.value);
+}
+
+export function resolveGateRedirect(request: NextRequest): NextResponse | null {
+  if (!isGateEnabled()) return null;
+  if (hasGateBypass(request)) return null;
+
+  const { pathname } = request.nextUrl;
+
+  if (pathname === "/terminal" || pathname.startsWith("/terminal/")) {
+    if (!hasGateCookie(request)) {
+      return NextResponse.redirect(new URL("/gate", request.url));
+    }
+  }
+
+  if (pathname === "/gate" || pathname.startsWith("/gate/")) {
+    if (hasGateCookie(request)) {
+      return NextResponse.redirect(new URL("/terminal", request.url));
+    }
+  }
+
+  return null;
+}
+
 export function proxy(request: NextRequest): NextResponse {
+  const gateRedirect = resolveGateRedirect(request);
+  if (gateRedirect) {
+    return gateRedirect;
+  }
+
   const isDevelopment = process.env.NODE_ENV === "development";
 
   // Generate nonce in both dev and prod so layouts can attach it consistently.

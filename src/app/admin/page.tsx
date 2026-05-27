@@ -219,8 +219,9 @@ export default function AdminDashboardPage(): JSX.Element {
                   ⚡ Quick Actions
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <button
-                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105"
+                  <Link
+                    href="/admin/blog"
+                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105 block"
                     style={{
                       backgroundColor: `${themeConfig.colors.accent}10`,
                       border: `1px solid ${themeConfig.colors.accent}`,
@@ -232,7 +233,7 @@ export default function AdminDashboardPage(): JSX.Element {
                     <div className="text-xs opacity-70">
                       Create and edit blog posts
                     </div>
-                  </button>
+                  </Link>
 
                   <Link
                     href="/admin/messages"

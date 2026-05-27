@@ -9,9 +9,7 @@ import { MarkdownEditor } from "./markdown-editor";
 import { ImageUploadButton, ImageDropZone } from "./image-upload-button";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 
-function getApiUrl(): string {
-  return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-}
+import { getApiUrl } from "@/lib/api/get-api-url";
 
 type BlogStatus = "draft" | "scheduled" | "published";
 

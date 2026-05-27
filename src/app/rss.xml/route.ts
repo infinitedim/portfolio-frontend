@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
-
-function getBackendUrl(): string {
-  return (
-    process.env.BACKEND_URL ??
-    process.env.NEXT_PUBLIC_API_URL ??
-    "http://localhost:3001"
-  );
-}
+import { getServerApiUrl } from "@/lib/api/get-api-url";
+import { getSiteUrl } from "@/lib/api/get-site-url";
 
 function escapeXml(text: string): string {
   return text
@@ -29,7 +23,7 @@ interface BlogPostItem {
 }
 
 export async function GET(): Promise<NextResponse> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = getSiteUrl();
   const siteTitle = process.env.NEXT_PUBLIC_SITE_TITLE ?? "Portfolio Blog";
   const siteDescription =
     process.env.NEXT_PUBLIC_SITE_DESCRIPTION ?? "Latest articles and insights";
@@ -37,7 +31,7 @@ export async function GET(): Promise<NextResponse> {
   let posts: BlogPostItem[] = [];
 
   try {
-    const backendUrl = getBackendUrl();
+    const backendUrl = getServerApiUrl();
     const response = await fetch(
       `${backendUrl}/api/blog?published=true&pageSize=50&sort=updated`,
       { next: { revalidate: 3600 } },

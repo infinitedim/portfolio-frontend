@@ -31,11 +31,11 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.vercel.app",
   ),
   title: {
-    default: "Terminal Portfolio | Full-Stack Developer",
-    template: "%s | Terminal Portfolio",
+    default: "Dimas Saputra | Full-Stack Developer",
+    template: "%s | Dimas Saputra",
   },
   description:
-    "Interactive developer portfolio with terminal interface. Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies. Explore projects, skills, and experience through an innovative terminal interface.",
+    "Full-stack developer portfolio — projects, blog, and interactive terminal. React, Next.js, TypeScript, and modern web technologies.",
   keywords: [
     "full-stack developer",
     "react developer",
@@ -66,10 +66,10 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "/",
-    siteName: "Terminal Portfolio",
-    title: "Terminal Portfolio | Full-Stack Developer",
+    siteName: "Dimas Saputra",
+    title: "Dimas Saputra | Full-Stack Developer",
     description:
-      "Interactive developer portfolio with terminal interface. Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
+      "Full-stack developer portfolio — projects, blog, and interactive terminal.",
     images: [
       {
         url: "/og-image.png",
@@ -84,9 +84,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@yourblooo",
     creator: "@yourblooo",
-    title: "Terminal Portfolio | Full-Stack Developer",
+    title: "Dimas Saputra | Full-Stack Developer",
     description:
-      "Interactive developer portfolio with terminal interface. Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
+      "Full-stack developer portfolio — projects, blog, and interactive terminal.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -205,10 +205,10 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: "Terminal Portfolio",
+              name: "Dimas Saputra Portfolio",
               url: "https://infinitedim.vercel.app",
               description:
-                "Interactive developer portfolio with terminal interface",
+                "Full-stack developer portfolio — projects, blog, and interactive terminal.",
               author: {
                 "@type": "Person",
                 name: "Dimas Saputra",

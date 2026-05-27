@@ -94,6 +94,14 @@ const getTourCommands = async () => {
   }
 };
 
+const getBlogCommands = async () => {
+  try {
+    return await import("@/lib/commands/blog-commands");
+  } catch {
+    return null;
+  }
+};
+
 const getMiscCommands = async () => {
   try {
     return await import("@/lib/commands/commands");
@@ -136,6 +144,7 @@ const ALL_COMMANDS = [
   "tech-stack",
   "resume",
   "social",
+  "blog",
   "shortcuts",
   "easter-eggs",
   "tour",
@@ -236,6 +245,26 @@ export function useTerminal(
   }, []);
 
   useEffect(() => {
+    if (!isClient || typeof window === "undefined") return;
+    if (!sessionStorage.getItem("gate_just_unlocked")) return;
+
+    setHistory([
+      {
+        input: "",
+        output: {
+          type: "info",
+          content:
+            "bandit33 / natas34 / behemoth8 — choose your fighter. Type `help`.",
+          timestamp: new Date(),
+          id: generateId(),
+        },
+        timestamp: new Date(),
+      },
+    ]);
+    sessionStorage.removeItem("gate_just_unlocked");
+  }, [isClient]);
+
+  useEffect(() => {
     isMountedRef.current = true;
 
     const initializeParser = async () => {
@@ -259,6 +288,7 @@ export function useTerminal(
         techCmds,
         locationCmds,
         tourCmds,
+        blogCmds,
       ] = await Promise.allSettled([
         getMiscCommands(),
         getCustomizationCommands(),
@@ -267,7 +297,11 @@ export function useTerminal(
         getTechStackCommands(),
         getLocationCommands(),
         getTourCommands(),
+        getBlogCommands(),
       ]);
+
+      const blog = blogCmds.status === "fulfilled" ? blogCmds.value : null;
+      if (blog?.blogCommand) parser.register(blog.blogCommand);
 
       const misc = miscCmds.status === "fulfilled" ? miscCmds.value : null;
       if (misc) {

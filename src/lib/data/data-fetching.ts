@@ -1,15 +1,12 @@
 import { cache } from "react";
 
+import { getApiUrl, getServerApiUrl } from "@/lib/api/get-api-url";
+
 function getBackendUrl(): string {
   if (typeof window === "undefined") {
-    return (
-      process.env.BACKEND_URL ??
-      process.env.NEXT_PUBLIC_API_URL ??
-      "http://localhost:3001"
-    );
+    return getServerApiUrl();
   }
-
-  return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+  return getApiUrl();
 }
 
 interface GitHubRepository {

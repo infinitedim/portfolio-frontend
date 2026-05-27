@@ -3,7 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import type { ThemeConfig } from "@/types/theme";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { getApiUrl } from "@/lib/api/get-api-url";
+
+const API_URL = getApiUrl();
 
 interface ErrorHandlerProps {
   themeConfig: ThemeConfig;

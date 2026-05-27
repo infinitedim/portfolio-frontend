@@ -9,6 +9,7 @@ import {
   type RoadmapStreak,
   type RoadmapProgress,
 } from "@/lib/data/data-fetching";
+import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
 export const revalidate = 300;
 
@@ -241,7 +242,8 @@ async function RoadmapContent(): Promise<JSX.Element> {
 
 export default function RoadmapPage(): JSX.Element {
   return (
-    <div className="min-h-screen bg-neutral-950 px-4 py-10">
+    <StandardPageLayout>
+    <div className="min-h-screen px-4 py-10">
       <div className="mx-auto max-w-4xl">
         <Suspense
           fallback={
@@ -254,5 +256,6 @@ export default function RoadmapPage(): JSX.Element {
         </Suspense>
       </div>
     </div>
+    </StandardPageLayout>
   );
 }

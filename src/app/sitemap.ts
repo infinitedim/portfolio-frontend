@@ -1,11 +1,9 @@
 import { MetadataRoute } from "next";
+import { getServerApiUrl } from "@/lib/api/get-api-url";
+import { getSiteUrl } from "@/lib/api/get-site-url";
 
 function getBackendUrl(): string {
-  return (
-    process.env.BACKEND_URL ??
-    process.env.NEXT_PUBLIC_API_URL ??
-    "http://localhost:3001"
-  );
+  return getServerApiUrl();
 }
 
 interface BlogPostItem {
@@ -14,8 +12,7 @@ interface BlogPostItem {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.vercel.app";
+  const baseUrl = getSiteUrl();
   const currentDate = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [

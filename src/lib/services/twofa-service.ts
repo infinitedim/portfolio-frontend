@@ -32,12 +32,10 @@ export interface TwoFAStatus {
   backupCodesRemaining: number;
 }
 
+import { getApiUrl } from "@/lib/api/get-api-url";
+
 function getApiBase(): string {
-  return (
-    process.env.NEXT_PUBLIC_API_URL ??
-    process.env.BACKEND_URL ??
-    "http://localhost:3001"
-  );
+  return getApiUrl();
 }
 
 async function getAuthToken(): Promise<string | null> {

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useI18n } from "../useI18n";
+import { useI18n } from "../use-i18n";
 import { i18n } from "@/lib/i18n/i18n-service";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 

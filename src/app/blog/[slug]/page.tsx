@@ -9,12 +9,11 @@ import { TableOfContents } from "@/components/molecules/blog/table-of-contents";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 import { GiscusComments } from "@/components/molecules/blog/giscus-comments-dynamic";
 
+import { getServerApiUrl } from "@/lib/api/get-api-url";
+import { StandardPageLayout } from "@/components/layout/standard-page-layout";
+
 function getBackendUrl(): string {
-  return (
-    process.env.BACKEND_URL ??
-    process.env.NEXT_PUBLIC_API_URL ??
-    "http://localhost:3001"
-  );
+  return getServerApiUrl();
 }
 
 interface BlogPost {
@@ -118,11 +117,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
+    <StandardPageLayout>
     <div className="min-h-screen bg-gray-950 text-gray-100">
-      { }
       <ScrollProgress />
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         <nav className="mb-8">
           <Link
             href="/blog"
@@ -241,11 +240,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             ← Back to Blog
           </Link>
         </footer>
-      </main>
+      </div>
 
-      { }
       <BackToTop />
     </div>
+    </StandardPageLayout>
   );
 }
 

@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import { proxy } from "../../proxy";
+import {
+  proxy,
+  resolveGateRedirect,
+  isGateEnabled,
+  hasGateCookie,
+  hasGateBypass,
+} from "../../proxy";
 import { NextRequest, NextResponse } from "next/server";
 
 describe("proxy", () => {
@@ -354,6 +360,78 @@ describe("proxy", () => {
       if (originalOrigins) {
         process.env.ALLOWED_ORIGINS = originalOrigins;
       }
+    });
+  });
+
+  describe("gate redirects", () => {
+    const originalGateEnv = process.env.NEXT_PUBLIC_GATE_ENABLED;
+    const originalBypass = process.env.GATE_BYPASS_SECRET;
+
+    afterEach(() => {
+      if (originalGateEnv === undefined) {
+        delete process.env.NEXT_PUBLIC_GATE_ENABLED;
+      } else {
+        process.env.NEXT_PUBLIC_GATE_ENABLED = originalGateEnv;
+      }
+      if (originalBypass === undefined) {
+        delete process.env.GATE_BYPASS_SECRET;
+      } else {
+        process.env.GATE_BYPASS_SECRET = originalBypass;
+      }
+    });
+
+    it("isGateEnabled defaults to true", () => {
+      delete process.env.NEXT_PUBLIC_GATE_ENABLED;
+      expect(isGateEnabled()).toBe(true);
+    });
+
+    it("isGateEnabled false when env is false", () => {
+      process.env.NEXT_PUBLIC_GATE_ENABLED = "false";
+      expect(isGateEnabled()).toBe(false);
+    });
+
+    it("redirects /terminal to /gate without cookie", () => {
+      process.env.NEXT_PUBLIC_GATE_ENABLED = "true";
+      const request = new NextRequest("http://127.0.0.1:3000/terminal");
+      const redirect = resolveGateRedirect(request);
+      expect(redirect?.status).toBe(307);
+      expect(redirect?.headers.get("location")).toContain("/gate");
+    });
+
+    it("allows /terminal with portfolio_gate cookie", () => {
+      process.env.NEXT_PUBLIC_GATE_ENABLED = "true";
+      const request = new NextRequest("http://127.0.0.1:3000/terminal");
+      request.cookies.set("portfolio_gate", "test-token");
+      expect(resolveGateRedirect(request)).toBeNull();
+    });
+
+    it("redirects /gate to /terminal when unlocked cookie present", () => {
+      process.env.NEXT_PUBLIC_GATE_ENABLED = "true";
+      const request = new NextRequest("http://127.0.0.1:3000/gate/1");
+      request.cookies.set("portfolio_gate", "test-token");
+      const redirect = resolveGateRedirect(request);
+      expect(redirect?.headers.get("location")).toContain("/terminal");
+    });
+
+    it("hasGateBypass true with matching header", () => {
+      process.env.GATE_BYPASS_SECRET = "dev-bypass";
+      const request = new NextRequest("http://127.0.0.1:3000/terminal");
+      request.headers.set("x-gate-bypass", "dev-bypass");
+      expect(hasGateBypass(request)).toBe(true);
+      expect(resolveGateRedirect(request)).toBeNull();
+    });
+
+    it("hasGateCookie detects portfolio_gate", () => {
+      const request = new NextRequest("http://127.0.0.1:3000/");
+      expect(hasGateCookie(request)).toBe(false);
+      request.cookies.set("portfolio_gate", "x");
+      expect(hasGateCookie(request)).toBe(true);
+    });
+
+    it("skips gate when disabled", () => {
+      process.env.NEXT_PUBLIC_GATE_ENABLED = "false";
+      const request = new NextRequest("http://127.0.0.1:3000/terminal");
+      expect(resolveGateRedirect(request)).toBeNull();
     });
   });
 

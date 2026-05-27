@@ -1,10 +1,12 @@
+import { SOCIAL_LINKS } from "@/lib/data/social-links";
+
 export const SEO_CONFIG = {
   site: {
-    name: "Terminal Portfolio",
-    title: "Terminal Portfolio | Full-Stack Developer",
+    name: "Dimas Saputra",
+    title: "Dimas Saputra | Full-Stack Developer",
     description:
-      "Interactive developer portfolio with terminal interface. Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
-    url: process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.vercel.app",
+      "Full-stack developer portfolio — projects, blog, and interactive terminal experience.",
+    url: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
     author: "Dimas Saputra",
     email: "dragdimas9@gmail.com",
     phone: "",
@@ -12,9 +14,14 @@ export const SEO_CONFIG = {
   },
 
   social: {
-    twitter: "@yourblooo",
-    github: "https://github.com/infinitedim",
-    linkedin: "https://linkedin.com/in/infinitedim",
+    twitter:
+      SOCIAL_LINKS.find((l) => l.icon === "twitter")?.handle ?? "@yourblooo",
+    github:
+      SOCIAL_LINKS.find((l) => l.icon === "github")?.url ??
+      "https://github.com/infinitedim",
+    linkedin:
+      SOCIAL_LINKS.find((l) => l.icon === "linkedin")?.url ??
+      "https://linkedin.com/in/infinitedim",
     instagram: "",
     youtube: "",
   },

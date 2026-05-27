@@ -7,6 +7,7 @@ import {
 } from "@/lib/data/data-fetching";
 import { ProjectCard } from "@/components/molecules/projects/project-card";
 import { ProjectsLoading } from "@/components/organisms/projects/projects-loading";
+import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";
@@ -60,7 +61,8 @@ export default async function ProjectsPage(): Promise<JSX.Element> {
   ]);
 
   return (
-    <main className="min-h-screen bg-terminal-bg text-terminal-text">
+    <StandardPageLayout>
+    <div className="min-h-screen bg-terminal-bg text-terminal-text">
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
@@ -179,7 +181,8 @@ export default async function ProjectsPage(): Promise<JSX.Element> {
           }),
         }}
       />
-    </main>
+    </div>
+    </StandardPageLayout>
   );
 }
 

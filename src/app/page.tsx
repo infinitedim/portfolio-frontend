@@ -1,32 +1,30 @@
 import { Metadata } from "next";
-import { StaticContent } from "../components/organisms/shared/static-content";
 import { type JSX, Suspense } from "react";
-import { TerminalLoadingProgress } from "../components/molecules/terminal/terminal-loading-progress";
-import { HomeTerminalHeader } from "../components/molecules/shared/home-terminal-header";
-import { TerminalClient } from "../components/layout/terminal-client";
+import { HeroSection } from "@/components/organisms/landing/hero-section";
+import { AboutSection } from "@/components/organisms/landing/about-section";
+import { FeaturedProjects } from "@/components/organisms/landing/featured-projects";
+import { SkillsGrid } from "@/components/organisms/landing/skills-grid";
+import { LatestPosts } from "@/components/organisms/landing/latest-posts";
+import { TerminalCta } from "@/components/organisms/landing/terminal-cta";
+import { StandardPageLayout } from "@/components/layout/standard-page-layout";
+import { getSiteUrl } from "@/lib/api/get-site-url";
 
 export const metadata: Metadata = {
-  title: "Terminal Portfolio | Full-Stack Developer",
+  title: "Dimas Saputra | Full-Stack Developer",
   description:
-    "Interactive developer portfolio with terminal interface. Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies. Explore projects, skills, and experience through an innovative terminal interface.",
+    "Full-stack developer portfolio — projects, blog, and interactive terminal.",
   keywords: [
     "full-stack developer",
     "react developer",
     "nextjs developer",
     "typescript developer",
     "web developer portfolio",
-    "terminal portfolio",
-    "interactive portfolio",
     "modern web development",
-    "frontend developer",
-    "backend developer",
-    "javascript developer",
-    "node.js developer",
   ],
   openGraph: {
-    title: "Terminal Portfolio | Full-Stack Developer",
+    title: "Dimas Saputra | Full-Stack Developer",
     description:
-      "Interactive developer portfolio with terminal interface. Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
+      "Full-stack developer portfolio — projects, blog, and interactive terminal.",
     type: "website",
     url: "/",
     images: [
@@ -34,15 +32,15 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Terminal Portfolio - Interactive Developer Portfolio",
+        alt: "Dimas Saputra - Full-Stack Developer Portfolio",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Terminal Portfolio | Full-Stack Developer",
+    title: "Dimas Saputra | Full-Stack Developer",
     description:
-      "Interactive developer portfolio with terminal interface. Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
+      "Full-stack developer portfolio — projects, blog, and interactive terminal.",
     images: ["/og-image.png"],
   },
   alternates: {
@@ -51,80 +49,62 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage(): JSX.Element {
-  return (
-    <>
-      <div className="sr-only">
-        <h1>Terminal Portfolio - Full-Stack Developer</h1>
-        <p>
-          Interactive developer portfolio showcasing React, Next.js, TypeScript,
-          and modern web development projects.
-        </p>
-        <nav>
-          <ul>
-            <li>
-              <a href="/projects">Projects</a>
-            </li>
-            <li>
-              <a href="/skills">Skills</a>
-            </li>
-            <li>
-              <a href="/about">About</a>
-            </li>
-            <li>
-              <a href="/contact">Contact</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+  const siteUrl = getSiteUrl();
 
-      <main
-        id="main-content"
-        className="relative"
-      >
-        <HomeTerminalHeader />
-        <StaticContent />
-        <Suspense
-          fallback={
-            <div className="min-h-screen w-full flex items-center justify-center bg-black text-white">
-              <TerminalLoadingProgress />
-            </div>
-          }
-        >
-          <TerminalClient />
-        </Suspense>
-      </main>
+  return (
+    <StandardPageLayout>
+      <HeroSection />
+
+      <Suspense fallback={null}>
+        <AboutSection />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <FeaturedProjects />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <SkillsGrid />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <LatestPosts />
+      </Suspense>
+
+      <TerminalCta />
 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: "Terminal Portfolio",
+            "@type": "Person",
+            name: "Dimas Saputra",
+            url: siteUrl,
+            jobTitle: "Full-Stack Developer",
             description:
-              "Interactive developer portfolio with terminal interface",
-            url: "https://infinitedim.vercel.app",
-            mainEntity: {
-              "@type": "Person",
-              name: "Dimas Saputra",
-              jobTitle: "Full-Stack Developer",
-              description:
-                "Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies",
-            },
-            breadcrumb: {
-              "@type": "BreadcrumbList",
-              itemListElement: [
-                {
-                  "@type": "ListItem",
-                  position: 1,
-                  name: "Home",
-                  item: "https://infinitedim.vercel.app",
-                },
-              ],
-            },
+              "Full-stack developer specializing in React, Next.js, TypeScript, and modern web technologies.",
+            sameAs: [
+              "https://github.com/infinitedim",
+              "https://linkedin.com/in/infinitedim",
+              "https://twitter.com/yourblooo",
+            ],
           }),
         }}
       />
-    </>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Dimas Saputra Portfolio",
+            url: siteUrl,
+            description:
+              "Full-stack developer portfolio — projects, blog, and interactive terminal.",
+          }),
+        }}
+      />
+    </StandardPageLayout>
   );
 }

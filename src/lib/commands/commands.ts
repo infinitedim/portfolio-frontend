@@ -1,6 +1,16 @@
 import type { Command, CommandOutput } from "@/types/terminal";
 import { ArgumentParser } from "@/lib/utils/arg-parser";
 import { generateId } from "@/lib/utils/utils";
+import { SOCIAL_LINKS } from "@/lib/data/social-links";
+import { getSiteUrl } from "@/lib/api/get-site-url";
+
+const SOCIAL_ICONS: Record<string, string> = {
+  github: "🐙",
+  linkedin: "💼",
+  twitter: "🐦",
+  devto: "📝",
+  stackoverflow: "📚",
+};
 
 export const resumeCommand: Command = {
   name: "resume",
@@ -123,41 +133,19 @@ Examples:
     }
 
     const socialLinks = [
-      {
-        platform: "GitHub",
-        icon: "🐙",
-        url: "https://github.com/infinitedim",
-        description: "Open source projects and contributions",
-      },
-      {
-        platform: "LinkedIn",
-        icon: "💼",
-        url: "https://linkedin.com/in/infinitedim",
-        description: "Professional network and experience",
-      },
-      {
-        platform: "Twitter",
-        icon: "🐦",
-        url: "https://twitter.com/infinitedim",
-        description: "Tech thoughts and industry insights",
-      },
-      {
-        platform: "Dev.to",
-        icon: "📝",
-        url: "https://dev.to/infinitedim",
-        description: "Technical articles and tutorials",
-      },
-      {
-        platform: "Stack Overflow",
-        icon: "📚",
-        url: "https://stackoverflow.com/users/infinitedim",
-        description: "Community contributions and reputation",
-      },
+      ...SOCIAL_LINKS.map((link) => ({
+        platform: link.platform,
+        icon: SOCIAL_ICONS[link.icon] ?? "🔗",
+        url: link.url,
+        description: link.handle
+          ? `${link.handle} on ${link.platform}`
+          : link.platform,
+      })),
       {
         platform: "Portfolio",
         icon: "🌐",
-        url: "https://infinitedim.vercel.app",
-        description: "This interactive terminal portfolio",
+        url: getSiteUrl(),
+        description: "Standard portfolio site",
       },
     ];
 

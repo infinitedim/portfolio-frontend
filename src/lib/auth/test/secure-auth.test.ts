@@ -7,12 +7,10 @@ const mockFetch = vi.fn();
 globalThis.fetch = mockFetch as unknown as typeof fetch;
 
 // `secure-auth` calls `getApiUrl()` which falls back to
-// `http://localhost:3001` when `NEXT_PUBLIC_API_URL` is unset (the test env).
-// Build assertions against that absolute URL instead of the relative path
-// the production code never actually emits.
+// `http://localhost:8080` when env vars are unset (the test env).
 const apiBase =
   (process.env.NEXT_PUBLIC_API_URL as string | undefined) ??
-  "http://localhost:3001";
+  "http://localhost:8080";
 const url = (path: string) => `${apiBase}${path}`;
 
 let mockCookies = "";

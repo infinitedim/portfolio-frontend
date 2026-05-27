@@ -6,12 +6,11 @@ import {
 } from "@/components/molecules/blog/tag-filter";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 
+import { getServerApiUrl } from "@/lib/api/get-api-url";
+import { StandardPageLayout } from "@/components/layout/standard-page-layout";
+
 function getBackendUrl(): string {
-  return (
-    process.env.BACKEND_URL ??
-    process.env.NEXT_PUBLIC_API_URL ??
-    "http://localhost:3001"
-  );
+  return getServerApiUrl();
 }
 
 interface BlogPostItem {
@@ -147,8 +146,9 @@ export default async function BlogPage({
   };
 
   return (
+    <StandardPageLayout>
     <div className="min-h-screen bg-gray-950 text-gray-100">
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         <header className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-4xl font-bold text-green-400">Blog</h1>
@@ -305,8 +305,9 @@ export default async function BlogPage({
             )}
           </nav>
         )}
-      </main>
+      </div>
     </div>
+    </StandardPageLayout>
   );
 }
 

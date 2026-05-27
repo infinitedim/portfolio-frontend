@@ -1,8 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-
-function getApiUrl(): string {
-  return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-}
+import { getApiUrl } from "@/lib/api/get-api-url";
 
 export interface AuthConfig {
   secure?: boolean;

@@ -149,7 +149,7 @@ describe("ErrorHandler", () => {
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
-          "http://localhost:3001/health",
+          "http://localhost:8080/health",
           expect.any(Object),
         );
       });
@@ -176,7 +176,7 @@ describe("ErrorHandler", () => {
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
-          "http://localhost:3001/health/database",
+          "http://localhost:8080/health/database",
           expect.any(Object),
         );
       });
@@ -203,7 +203,7 @@ describe("ErrorHandler", () => {
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
-          "http://localhost:3001/health/redis",
+          "http://localhost:8080/health/redis",
           expect.any(Object),
         );
       });
@@ -492,7 +492,7 @@ describe("ErrorHandler", () => {
       fireEvent.click(dashboardButton);
 
       expect(mockOpen).toHaveBeenCalledWith(
-        "http://localhost:3001/health",
+        "http://localhost:8080/health",
         "_blank",
       );
     });

@@ -31,12 +31,10 @@ export interface ContactFailure {
 
 export type ContactResult = ContactSuccess | ContactFailure;
 
+import { getApiUrl } from "@/lib/api/get-api-url";
+
 function getApiBase(): string {
-  return (
-    process.env.NEXT_PUBLIC_API_URL ??
-    process.env.BACKEND_URL ??
-    "http://localhost:3001"
-  );
+  return getApiUrl();
 }
 
 export async function submitContactMessage(

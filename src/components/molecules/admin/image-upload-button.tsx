@@ -3,9 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { authService } from "@/lib/auth/auth-service";
 
-function getApiUrl(): string {
-  return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-}
+import { getApiUrl } from "@/lib/api/get-api-url";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];

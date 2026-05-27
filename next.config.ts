@@ -10,18 +10,7 @@ const nextConfig = {
     serverActions: { bodySizeLimit: "2mb" },
     typedEnv: true,
     optimizePackageImports: [
-      "@radix-ui/react-accordion",
-      "@radix-ui/react-alert-dialog",
-      "@radix-ui/react-avatar",
-      "@radix-ui/react-checkbox",
       "@radix-ui/react-dialog",
-      "@radix-ui/react-dropdown-menu",
-      "@radix-ui/react-icons",
-      "@radix-ui/react-popover",
-      "@radix-ui/react-select",
-      "@radix-ui/react-tabs",
-      "@radix-ui/react-toast",
-      "@radix-ui/react-tooltip",
       "recharts",
     ],
   },
@@ -151,11 +140,6 @@ const nextConfig = {
     : async () => [
         {
           source: "/home",
-          destination: "/",
-          permanent: true,
-        },
-        {
-          source: "/terminal",
           destination: "/",
           permanent: true,
         },

@@ -4,6 +4,14 @@
 
 Welcome to the most epic way to showcase your skills! This isn't just another portfolio website - it's a full-blown terminal experience with enterprise-grade logging and monitoring that'll make visitors go "Whoa, this is actually pretty cool!" 😎
 
+## Dual entry (landing + gated terminal)
+
+- **`/`** — Standard portfolio landing (SEO-friendly)
+- **`/terminal`** — Interactive terminal (gated via `/gate` puzzles)
+- **`/blog`, `/projects`, `/contact`** — Shared public routes (no duplication)
+
+Copy `.env.example` → `.env.local`. Set `NEXT_PUBLIC_GATE_ENABLED=true`. For dev bypass, set server-only `GATE_BYPASS_SECRET` and send header `X-Gate-Bypass`. See [docs/dual-ui-gate.md](./docs/dual-ui-gate.md).
+
 [![Next.js Badge](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Rust Badge](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![TypeScript Badge](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)

@@ -236,6 +236,21 @@ Catatan: `tsvector` full-text upgrade (#13 advanced) bisa masuk ke sprint ini ji
 
 ---
 
+## Sprint 5 — Dual UI + Terminal Gate (Done)
+
+| Item | Status |
+|------|--------|
+| Standard landing at `/` | Done |
+| Terminal moved to `/terminal` (gated) | Done |
+| Gate puzzles L1–L3 + backend `/api/gate/*` | Done |
+| Shared routes unchanged (blog/share/RSS) | Done |
+| `.env.example` both repos | Done |
+| Blog draft slug leak fix | Done |
+
+Docs: [docs/dual-ui-gate.md](./docs/dual-ui-gate.md)
+
+---
+
 ## Catatan Teknis
 
 ### Backend (Rust/Axum)
