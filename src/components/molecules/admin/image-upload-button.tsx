@@ -15,6 +15,27 @@ interface UploadResponse {
   mimeType: string;
 }
 
+export async function uploadBlogImage(file: File): Promise<string | null> {
+  if (!ACCEPTED_TYPES.includes(file.type)) return null;
+  if (file.size > MAX_FILE_SIZE) return null;
+
+  const token = authService.getAccessToken();
+  if (!token) return null;
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch(`${getApiUrl()}/api/upload/image`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+
+  if (!response.ok) return null;
+  const data: UploadResponse = await response.json();
+  return data.url;
+}
+
 interface ImageUploadButtonProps {
   onUploadComplete: (url: string) => void;
   disabled?: boolean;

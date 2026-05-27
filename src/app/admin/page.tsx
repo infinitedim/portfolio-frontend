@@ -3,10 +3,12 @@
 import { JSX, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import type { Route } from "next";
 import { ProtectedRoute } from "@/components/molecules/admin/protected-route";
 import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/lib/auth/auth-context";
+import { getApiUrl } from "@/lib/api/get-api-url";
 
 export default function AdminDashboardPage(): JSX.Element {
   const { themeConfig } = useTheme();
@@ -266,6 +268,92 @@ export default function AdminDashboardPage(): JSX.Element {
                       Manage TOTP &amp; backup codes
                     </div>
                   </Link>
+
+                  <Link
+                    href={"/admin/portfolio" as Route}
+                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105 block"
+                    style={{
+                      backgroundColor: `${themeConfig.colors.accent}10`,
+                      border: `1px solid ${themeConfig.colors.accent}`,
+                      color: themeConfig.colors.accent,
+                    }}
+                  >
+                    <div className="text-lg mb-1">📁</div>
+                    <div className="font-semibold">Portfolio History</div>
+                    <div className="text-xs opacity-70">
+                      View and restore section versions
+                    </div>
+                  </Link>
+
+                  <Link
+                    href={"/admin/newsletter" as Route}
+                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105 block"
+                    style={{
+                      backgroundColor: `${themeConfig.colors.accent}10`,
+                      border: `1px solid ${themeConfig.colors.accent}`,
+                      color: themeConfig.colors.accent,
+                    }}
+                  >
+                    <div className="text-lg mb-1">📧</div>
+                    <div className="font-semibold">Newsletter</div>
+                    <div className="text-xs opacity-70">
+                      Subscribers and broadcast
+                    </div>
+                  </Link>
+
+                  <Link
+                    href={"/admin/cms" as Route}
+                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105 block"
+                    style={{
+                      backgroundColor: `${themeConfig.colors.accent}10`,
+                      border: `1px solid ${themeConfig.colors.accent}`,
+                      color: themeConfig.colors.accent,
+                    }}
+                  >
+                    <div className="text-lg mb-1">🔑</div>
+                    <div className="font-semibold">Headless CMS</div>
+                    <div className="text-xs opacity-70">
+                      API key docs and endpoints
+                    </div>
+                  </Link>
+
+                  {process.env.NEXT_PUBLIC_GRAFANA_URL ? (
+                    <a
+                      href={process.env.NEXT_PUBLIC_GRAFANA_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 text-left rounded transition-all duration-200 hover:scale-105 block"
+                      style={{
+                        backgroundColor: `${themeConfig.colors.accent}10`,
+                        border: `1px solid ${themeConfig.colors.accent}`,
+                        color: themeConfig.colors.accent,
+                      }}
+                    >
+                      <div className="text-lg mb-1">📈</div>
+                      <div className="font-semibold">Grafana</div>
+                      <div className="text-xs opacity-70">
+                        Open analytics dashboards
+                      </div>
+                    </a>
+                  ) : null}
+
+                  <a
+                    href={`${getApiUrl()}/api/docs`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105 block"
+                    style={{
+                      backgroundColor: `${themeConfig.colors.accent}10`,
+                      border: `1px solid ${themeConfig.colors.accent}`,
+                      color: themeConfig.colors.accent,
+                    }}
+                  >
+                    <div className="text-lg mb-1">📖</div>
+                    <div className="font-semibold">API Docs</div>
+                    <div className="text-xs opacity-70">
+                      Open Swagger UI (new tab)
+                    </div>
+                  </a>
                 </div>
               </div>
             </div>

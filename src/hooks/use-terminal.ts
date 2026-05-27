@@ -109,6 +109,30 @@ const getMiscCommands = async () => {
     return null;
   }
 };
+
+const getSpotifyCommands = async () => {
+  try {
+    return await import("@/lib/commands/spotify-commands");
+  } catch {
+    return null;
+  }
+};
+
+const getPlaygroundCommands = async () => {
+  try {
+    return await import("@/lib/commands/playground-commands");
+  } catch {
+    return null;
+  }
+};
+
+const getAiCommands = async () => {
+  try {
+    return await import("@/lib/commands/ai-commands");
+  } catch {
+    return null;
+  }
+};
 import type { CommandOutput, TerminalHistory } from "@/types/terminal";
 
 const STORAGE_KEYS = {
@@ -141,6 +165,9 @@ const ALL_COMMANDS = [
   "language",
   "demo",
   "github",
+  "spotify",
+  "playground",
+  "ask",
   "tech-stack",
   "resume",
   "social",
@@ -289,6 +316,9 @@ export function useTerminal(
         locationCmds,
         tourCmds,
         blogCmds,
+        spotifyCmds,
+        playgroundCmds,
+        aiCmds,
       ] = await Promise.allSettled([
         getMiscCommands(),
         getCustomizationCommands(),
@@ -298,6 +328,9 @@ export function useTerminal(
         getLocationCommands(),
         getTourCommands(),
         getBlogCommands(),
+        getSpotifyCommands(),
+        getPlaygroundCommands(),
+        getAiCommands(),
       ]);
 
       const blog = blogCmds.status === "fulfilled" ? blogCmds.value : null;
@@ -579,6 +612,18 @@ export function useTerminal(
 
       const gh = githubCmds.status === "fulfilled" ? githubCmds.value : null;
       if (gh?.githubCommand) parser.register(gh.githubCommand);
+
+      const spotify =
+        spotifyCmds.status === "fulfilled" ? spotifyCmds.value : null;
+      if (spotify?.spotifyCommand) parser.register(spotify.spotifyCommand);
+
+      const playground =
+        playgroundCmds.status === "fulfilled" ? playgroundCmds.value : null;
+      if (playground?.playgroundCommand)
+        parser.register(playground.playgroundCommand);
+
+      const ai = aiCmds.status === "fulfilled" ? aiCmds.value : null;
+      if (ai?.askCommand) parser.register(ai.askCommand);
 
       const tech = techCmds.status === "fulfilled" ? techCmds.value : null;
       if (tech?.techStackCommand) parser.register(tech.techStackCommand);

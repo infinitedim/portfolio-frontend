@@ -7,6 +7,18 @@ export interface ParsedArgs {
 }
 
 export class ArgumentParser {
+  static parseArgv(args: string[]): ParsedArgs {
+    if (args.length === 0) {
+      return {
+        command: "",
+        flags: [],
+        longFlags: [],
+        positional: [],
+      };
+    }
+    return this.parse(`_ ${args.join(" ")}`.trim());
+  }
+
   static parse(input: string): ParsedArgs {
     const parts = input.trim().split(/\s+/);
     const command = parts[0] || "";

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   maskPII,
   maskPIIString,
@@ -139,6 +139,9 @@ describe("Logger Utils", () => {
 
   describe("generateCorrelationId", () => {
     it("should generate unique IDs", () => {
+      vi.mocked(crypto.randomUUID)
+        .mockReturnValueOnce("test-uuid-aaaa")
+        .mockReturnValueOnce("test-uuid-bbbb");
       const id1 = generateCorrelationId();
       const id2 = generateCorrelationId();
       expect(id1).not.toBe(id2);

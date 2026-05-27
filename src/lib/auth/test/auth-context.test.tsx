@@ -1,15 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
-import { AuthProvider, useAuth } from "../auth-context";
 import { useState } from "react";
 
-const mockInitialize = vi.fn();
-const mockGetCurrentUser = vi.fn();
-const mockIsAuthenticated = vi.fn();
-const mockLogin = vi.fn();
-const mockLogout = vi.fn();
-const mockRefresh = vi.fn();
+const {
+  mockInitialize,
+  mockGetCurrentUser,
+  mockIsAuthenticated,
+  mockLogin,
+  mockLogout,
+  mockRefresh,
+} = vi.hoisted(() => ({
+  mockInitialize: vi.fn(),
+  mockGetCurrentUser: vi.fn(),
+  mockIsAuthenticated: vi.fn(),
+  mockLogin: vi.fn(),
+  mockLogout: vi.fn(),
+  mockRefresh: vi.fn(),
+}));
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
@@ -17,36 +25,24 @@ if (
 )
   (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("@/lib/auth/auth-service", () => {
-  let actual: any = {};
-  try {
-    if (typeof require !== "undefined") {
-      actual = require("@/lib/auth/auth-service");
-    }
-  } catch (e) {
-    console.error(e);
+vi.mock("@/lib/auth/auth-service", () => ({
+  authService: {
+    initialize: mockInitialize,
+    getCurrentUser: mockGetCurrentUser,
+    isAuthenticated: mockIsAuthenticated,
+    login: mockLogin,
+    logout: mockLogout,
+    refresh: mockRefresh,
+  },
+}));
 
-    actual = {};
-  }
-  return {
-    ...actual,
-    authService: {
-      initialize: mockInitialize,
-      getCurrentUser: mockGetCurrentUser,
-      isAuthenticated: mockIsAuthenticated,
-      login: mockLogin,
-      logout: mockLogout,
-      refresh: mockRefresh,
-    },
-  };
-});
+import { AuthProvider, useAuth } from "../auth-context";
 
 describe("AuthProvider", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    vi.useFakeTimers();
     mockInitialize.mockResolvedValue(false);
     mockGetCurrentUser.mockReturnValue(null);
     mockIsAuthenticated.mockReturnValue(false);
@@ -56,7 +52,7 @@ describe("AuthProvider", () => {
   });
 
   afterEach(() => {
-    vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
   describe("Rendering", () => {
@@ -281,6 +277,7 @@ describe("AuthProvider", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.useFakeTimers({ shouldAdvanceTime: true });
       const mockUser = { id: "1", email: "test@test.com" };
       mockRefresh.mockResolvedValue({ success: true });
       mockGetCurrentUser.mockReturnValue(mockUser);
@@ -306,6 +303,7 @@ describe("AuthProvider", () => {
       await waitFor(() => {
         expect(mockRefresh).toHaveBeenCalled();
       });
+      vi.useRealTimers();
     });
   });
 

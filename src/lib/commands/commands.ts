@@ -17,7 +17,7 @@ export const resumeCommand: Command = {
   description: "View or download resume",
   aliases: ["cv"],
   async execute(args: string[]): Promise<CommandOutput> {
-    const parsed = ArgumentParser.parse(args.join(" "));
+    const parsed = ArgumentParser.parseArgv(args);
 
     if (ArgumentParser.hasFlag(parsed, "h", "help")) {
       return {
@@ -111,7 +111,7 @@ export const socialCommand: Command = {
   description: "View social media links",
   aliases: ["links", "connect"],
   async execute(args: string[]): Promise<CommandOutput> {
-    const parsed = ArgumentParser.parse(args.join(" "));
+    const parsed = ArgumentParser.parseArgv(args);
 
     if (ArgumentParser.hasFlag(parsed, "h", "help")) {
       return {
@@ -195,48 +195,26 @@ export const shortcutsCommand: Command = {
   description: "Show keyboard shortcuts",
   aliases: ["keys", "hotkeys", "kb"],
   async execute(): Promise<CommandOutput> {
-    const shortcuts = [
-      "⌨️  KEYBOARD SHORTCUTS",
-      "═".repeat(60),
-      "",
-      "🔧 COMMAND SHORTCUTS",
-      "   Tab               - Auto-complete command",
-      "   ↑ / ↓             - Navigate command history",
-      "   Ctrl + L          - Clear terminal",
-      "   Ctrl + C          - Cancel current command",
-      "   Ctrl + A          - Move cursor to beginning",
-      "   Ctrl + E          - Move cursor to end",
-      "   Ctrl + U          - Clear current line",
-      "",
-      "🎨 THEME SHORTCUTS",
-      "   Ctrl + T          - Open theme selector",
-      "   Ctrl + Shift + T  - Random theme",
-      "   Alt + 1-9         - Quick theme switch",
-      "",
-      "📱 NAVIGATION SHORTCUTS",
-      "   Ctrl + Home       - Go to top",
-      "   Ctrl + End        - Go to bottom",
-      "   Page Up/Down      - Scroll terminal",
-      "   Ctrl + F          - Find in terminal",
-      "",
-      "♿ ACCESSIBILITY SHORTCUTS",
-      "   Alt + A           - Open accessibility menu",
-      "   Ctrl + +/-        - Zoom in/out",
-      "   Ctrl + 0          - Reset zoom",
-      "   F6                - Cycle through regions",
-      "",
-      "🚀 QUICK COMMANDS",
-      "   Ctrl + Shift + H  - Show help",
-      "   Ctrl + Shift + P  - Show projects",
-      "   Ctrl + Shift + S  - Show skills",
-      "   Ctrl + Shift + C  - Show contact",
-      "",
-      "💡 Pro tip: Most shortcuts work in all modern browsers!",
-    ].join("\n");
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("terminal:open-shortcuts"));
+    }
 
     return {
       type: "success",
-      content: shortcuts,
+      content: [
+        "⌨️  KEYBOARD SHORTCUTS",
+        "═".repeat(40),
+        "",
+        "Opening shortcuts panel…",
+        "Press Ctrl+? anytime to reopen.",
+        "",
+        "Quick reference:",
+        "  Ctrl+L   Clear terminal",
+        "  Ctrl+H   Help",
+        "  Ctrl+R   Command history",
+        "  Ctrl+?   This panel",
+        "  Ctrl+T   Cycle theme",
+      ].join("\n"),
       timestamp: new Date(),
       id: generateId(),
     };
@@ -248,7 +226,7 @@ export const enhancedContactCommand: Command = {
   description: "Contact information and form",
   aliases: ["reach", "email"],
   async execute(args: string[]): Promise<CommandOutput> {
-    const parsed = ArgumentParser.parse(args.join(" "));
+    const parsed = ArgumentParser.parseArgv(args);
 
     if (ArgumentParser.hasFlag(parsed, "h", "help")) {
       return {

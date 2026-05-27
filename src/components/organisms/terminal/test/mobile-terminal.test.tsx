@@ -27,13 +27,13 @@ vi.mock("@/hooks/use-theme", () => ({
   }),
 }));
 
-const mockIsMobile = true;
+const mockIsMobile = { current: true };
 const mockIsVirtualKeyboardOpen = false;
 const mockOrientation = "portrait";
 
 vi.mock("@/hooks/use-mobile", () => ({
   useMobile: () => ({
-    isMobile: mockIsMobile,
+    isMobile: mockIsMobile.current,
     isVirtualKeyboardOpen: mockIsVirtualKeyboardOpen,
     orientation: mockOrientation,
   }),
@@ -58,6 +58,7 @@ describe("MobileTerminal", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
+    mockIsMobile.current = true;
     localStorageMock.getItem.mockReturnValue(null);
   });
 
@@ -68,11 +69,7 @@ describe("MobileTerminal", () => {
         return;
       }
 
-      vi.mocked(require("@/hooks/use-mobile").useMobile).mockReturnValue({
-        isMobile: false,
-        isVirtualKeyboardOpen: false,
-        orientation: "portrait",
-      });
+      mockIsMobile.current = false;
 
       const { getByText } = render(
         <MobileTerminal>
@@ -118,7 +115,8 @@ describe("MobileTerminal", () => {
         expect(true).toBe(true);
         return;
       }
-      localStorageMock.getItem.mockReturnValue(null);
+      localStorageMock.getItem.mockImplementation(((key: string) =>
+        key === "mobile-hint-dismissed" ? "true" : null) as typeof localStorageMock.getItem);
 
       const { container } = render(
         <MobileTerminal>

@@ -4,6 +4,10 @@ import {
   TagFilter,
   type TagWithCount,
 } from "@/components/molecules/blog/tag-filter";
+import { SeriesFilter } from "@/components/molecules/blog/series-filter";
+import { BlogLocaleSwitcher } from "@/components/molecules/blog/locale-switcher";
+import { listPublicSeries } from "@/lib/services/series-service";
+import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 
 import { getServerApiUrl } from "@/lib/api/get-api-url";
@@ -54,6 +58,8 @@ async function getBlogPosts(
   pageSize = 10,
   search?: string,
   tag?: string,
+  series?: string,
+  locale?: string,
 ): Promise<BlogListResponse> {
   try {
     const backendUrl = getBackendUrl();
@@ -64,6 +70,8 @@ async function getBlogPosts(
     });
     if (search) params.set("search", search);
     if (tag) params.set("tag", tag);
+    if (series) params.set("series", series);
+    if (locale && locale !== DEFAULT_BLOG_LOCALE) params.set("locale", locale);
 
     const response = await fetch(
       `${backendUrl}/api/blog?${params.toString()}`,
@@ -111,18 +119,28 @@ async function getAvailableTags(): Promise<TagWithCount[]> {
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; search?: string; tag?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    search?: string;
+    tag?: string;
+    series?: string;
+    locale?: string;
+  }>;
 }) {
   const params = await searchParams;
   const page = parseInt(params.page || "1", 10);
   const pageSize = 10;
   const search = params.search?.trim() || undefined;
   const tag = params.tag?.trim() || undefined;
+  const series = params.series?.trim() || undefined;
+  const locale = params.locale?.trim() || DEFAULT_BLOG_LOCALE;
 
-  const [{ items: posts, total }, availableTags] = await Promise.all([
-    getBlogPosts(page, pageSize, search, tag),
-    getAvailableTags(),
-  ]);
+  const [{ items: posts, total }, availableTags, seriesList] =
+    await Promise.all([
+      getBlogPosts(page, pageSize, search, tag, series, locale),
+      getAvailableTags(),
+      listPublicSeries(),
+    ]);
   const totalPages = Math.ceil(total / pageSize);
 
   // typedRoutes only knows about static literal paths, so dynamic query
@@ -133,14 +151,22 @@ export default async function BlogPage({
     page?: number;
     search?: string;
     tag?: string;
+    series?: string;
+    locale?: string;
   }): Route => {
     const p = new URLSearchParams();
     const newPage = overrides.page ?? page;
     const newSearch = "search" in overrides ? overrides.search : search;
     const newTag = "tag" in overrides ? overrides.tag : tag;
+    const newSeries = "series" in overrides ? overrides.series : series;
+    const newLocale = "locale" in overrides ? overrides.locale : locale;
     if (newPage > 1) p.set("page", String(newPage));
     if (newSearch) p.set("search", newSearch);
     if (newTag) p.set("tag", newTag);
+    if (newSeries) p.set("series", newSeries);
+    if (newLocale && newLocale !== DEFAULT_BLOG_LOCALE) {
+      p.set("locale", newLocale);
+    }
     const qs = p.toString();
     return (qs ? `/blog?${qs}` : "/blog") as Route;
   };
@@ -163,6 +189,8 @@ export default async function BlogPage({
             Latest articles, tutorials, and insights.
           </p>
 
+          <BlogLocaleSwitcher className="mb-4" />
+
           <form
             method="GET"
             action="/blog"
@@ -182,21 +210,46 @@ export default async function BlogPage({
                 value={tag}
               />
             )}
+            {series && (
+              <input
+                type="hidden"
+                name="series"
+                value={series}
+              />
+            )}
+            {locale !== DEFAULT_BLOG_LOCALE && (
+              <input
+                type="hidden"
+                name="locale"
+                value={locale}
+              />
+            )}
             <button
               type="submit"
               className="px-4 py-2 bg-green-400/10 border border-green-400/40 text-green-400 rounded text-sm hover:bg-green-400/20 transition-colors"
             >
               Search
             </button>
-            {(search || tag) && (
+            {(search || tag || series) && (
               <Link
-                href="/blog"
+                href={buildUrl({
+                  page: 1,
+                  search: undefined,
+                  tag: undefined,
+                  series: undefined,
+                })}
                 className="px-4 py-2 border border-gray-700 text-gray-400 rounded text-sm hover:border-gray-500 transition-colors"
               >
                 Clear
               </Link>
             )}
           </form>
+
+          <SeriesFilter
+            series={seriesList}
+            activeSeries={series}
+            search={search}
+          />
 
           {availableTags.length > 0 && (
             <TagFilter
@@ -209,14 +262,24 @@ export default async function BlogPage({
 
         {posts.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
-            {search || tag ? (
+            {search || tag || series ? (
               <p>
                 No posts found for{" "}
                 {search && <span>&ldquo;{search}&rdquo;</span>}
-                {search && tag && " in "}
-                {tag && <span className="text-green-400">#{tag}</span>}.{" "}
+                {search && (tag || series) && " in "}
+                {tag && <span className="text-green-400">#{tag}</span>}
+                {tag && series && " in "}
+                {series && (
+                  <span className="text-green-400">series:{series}</span>
+                )}
+                .{" "}
                 <Link
-                  href="/blog"
+                  href={buildUrl({
+                    page: 1,
+                    search: undefined,
+                    tag: undefined,
+                    series: undefined,
+                  })}
                   className="text-green-400 hover:underline"
                 >
                   View all posts

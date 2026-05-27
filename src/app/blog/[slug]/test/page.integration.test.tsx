@@ -17,6 +17,18 @@ vi.mock("next/navigation", () => ({
   notFound: vi.fn(function notFoundImpl() {
     throw new Error("NOT_FOUND");
   }),
+  usePathname: () => "/blog/test-post",
+  useSearchParams: () => new URLSearchParams(),
+}));
+
+vi.mock("@/components/layout/standard-page-layout", () => ({
+  StandardPageLayout: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+}));
+
+vi.mock("@/components/molecules/blog/locale-switcher", () => ({
+  BlogLocaleSwitcher: () => null,
 }));
 
 const _origFetch = (globalThis as Record<string, unknown>).fetch;
@@ -46,7 +58,10 @@ describe("BlogPostPage integration", () => {
     vi.mocked(fetch).mockResolvedValueOnce({ ok: false } as Response);
 
     const params = Promise.resolve({ slug: "nonexistent" });
-    await expect(BlogPostPage({ params })).rejects.toThrow("NOT_FOUND");
+    const searchParams = Promise.resolve({});
+    await expect(BlogPostPage({ params, searchParams })).rejects.toThrow(
+      "NOT_FOUND",
+    );
     expect(notFound).toHaveBeenCalled();
   });
 
@@ -65,13 +80,17 @@ describe("BlogPostPage integration", () => {
         contentHtml: "<p>Content</p>",
         contentMd: null,
         published: true,
+        tags: [],
+        readingTimeMinutes: 3,
+        viewCount: 0,
         createdAt: "2024-01-01T00:00:00Z",
         updatedAt: "2024-01-01T00:00:00Z",
       }),
     } as Response);
 
     const params = Promise.resolve({ slug: "test-post" });
-    const content = await BlogPostPage({ params });
+    const searchParams = Promise.resolve({});
+    const content = await BlogPostPage({ params, searchParams });
     render(content);
 
     expect(screen.getByText("Test Post")).toBeInTheDocument();

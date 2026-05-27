@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { LanguageSwitcher } from "@/components/molecules/shared/language-switcher";
+import { VisitorPresenceBadge } from "@/components/molecules/presence/visitor-presence-badge";
 
 const NAV_LINKS = [
   { key: "navHome" as const, href: "/" },
@@ -20,7 +21,7 @@ interface SiteNavProps {
 
 export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
   const pathname = usePathname();
-  const activePath = currentPath ?? pathname;
+  const activePath = currentPath ?? pathname ?? "";
   const { t } = useI18n();
 
   return (
@@ -61,6 +62,7 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
         </ul>
 
         <div className="flex items-center gap-2">
+          <VisitorPresenceBadge />
           <LanguageSwitcher
             variant="dropdown"
             showFlags={false}

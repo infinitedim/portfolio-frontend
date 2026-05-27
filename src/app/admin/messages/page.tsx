@@ -10,6 +10,8 @@ import {
   listMessages,
   markMessageRead,
   deleteMessage,
+  bulkMarkMessagesRead,
+  bulkDeleteMessages,
   type AdminContactMessage,
   type AdminMessagesListResponse,
 } from "@/lib/services/admin-messages-service";
@@ -41,6 +43,7 @@ function MessagesInbox(): JSX.Element {
   const [page, setPage] = useState(1);
   const [unreadOnly, setUnreadOnly] = useState(false);
   const [selected, setSelected] = useState<AdminContactMessage | null>(null);
+  const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -119,6 +122,11 @@ function MessagesInbox(): JSX.Element {
     try {
       await deleteMessage(msg.id);
       setSelected((s) => (s && s.id === msg.id ? null : s));
+      setCheckedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(msg.id);
+        return next;
+      });
       setData((prev) =>
         prev
           ? {
@@ -132,6 +140,54 @@ function MessagesInbox(): JSX.Element {
       toast.success("Message deleted");
     } catch {
       toast.error("Failed to delete message");
+    }
+  };
+
+  const toggleChecked = (id: string) => {
+    setCheckedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (!data) return;
+    if (checkedIds.size === data.items.length) {
+      setCheckedIds(new Set());
+    } else {
+      setCheckedIds(new Set(data.items.map((m) => m.id)));
+    }
+  };
+
+  const handleBulkMarkRead = async () => {
+    const ids = Array.from(checkedIds);
+    if (ids.length === 0) return;
+    try {
+      await bulkMarkMessagesRead(ids);
+      toast.success(`Marked ${ids.length} message(s) as read`);
+      setCheckedIds(new Set());
+      await refresh();
+    } catch {
+      toast.error("Bulk mark read failed");
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    const ids = Array.from(checkedIds);
+    if (ids.length === 0) return;
+    if (!confirm(`Delete ${ids.length} selected message(s)? This cannot be undone.`)) {
+      return;
+    }
+    try {
+      await bulkDeleteMessages(ids);
+      toast.success(`Deleted ${ids.length} message(s)`);
+      setCheckedIds(new Set());
+      setSelected(null);
+      await refresh();
+    } catch {
+      toast.error("Bulk delete failed");
     }
   };
 
@@ -202,11 +258,49 @@ function MessagesInbox(): JSX.Element {
             </div>
           </div>
 
+          {checkedIds.size > 0 && (
+            <div
+              className="mb-4 flex flex-wrap items-center gap-3 text-xs font-mono p-3 rounded"
+              style={{
+                border: `1px solid ${themeConfig.colors.border}`,
+                backgroundColor: `${themeConfig.colors.accent}10`,
+              }}
+            >
+              <span>{checkedIds.size} selected</span>
+              <button
+                onClick={handleBulkMarkRead}
+                className="px-3 py-1 rounded"
+                style={{ border: `1px solid ${themeConfig.colors.border}` }}
+              >
+                mark read
+              </button>
+              <button
+                onClick={handleBulkDelete}
+                className="px-3 py-1 rounded"
+                style={{
+                  border: `1px solid ${themeConfig.colors.error}`,
+                  color: themeConfig.colors.error,
+                }}
+              >
+                delete selected
+              </button>
+              <button
+                onClick={() => setCheckedIds(new Set())}
+                className="px-3 py-1 rounded opacity-70"
+              >
+                clear selection
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <MessageList
               data={data}
               loading={loading}
               selectedId={selected?.id ?? null}
+              checkedIds={checkedIds}
+              onToggleChecked={toggleChecked}
+              onToggleSelectAll={toggleSelectAll}
               onSelect={handleSelect}
             />
             <MessageDetail
@@ -249,11 +343,17 @@ function MessageList({
   data,
   loading,
   selectedId,
+  checkedIds,
+  onToggleChecked,
+  onToggleSelectAll,
   onSelect,
 }: {
   data: AdminMessagesListResponse | null;
   loading: boolean;
   selectedId: string | null;
+  checkedIds: Set<string>;
+  onToggleChecked: (id: string) => void;
+  onToggleSelectAll: () => void;
   onSelect: (msg: AdminContactMessage) => void;
 }): JSX.Element {
   const { themeConfig } = useTheme();
@@ -282,14 +382,41 @@ function MessageList({
           no messages.
         </p>
       ) : (
-        <ul className="divide-y" style={{ borderColor: themeConfig.colors.border }}>
+        <>
+          <div
+            className="flex items-center gap-2 p-3 border-b text-xs"
+            style={{ borderColor: themeConfig.colors.border }}
+          >
+            <input
+              type="checkbox"
+              checked={
+                data.items.length > 0 &&
+                checkedIds.size === data.items.length
+              }
+              onChange={onToggleSelectAll}
+              aria-label="Select all messages on this page"
+            />
+            <span style={{ color: themeConfig.colors.muted }}>
+              select all on page
+            </span>
+          </div>
+          <ul className="divide-y" style={{ borderColor: themeConfig.colors.border }}>
           {data.items.map((msg) => {
             const isSelected = msg.id === selectedId;
             return (
-              <li key={msg.id}>
+              <li key={msg.id} className="flex items-stretch">
+                <label className="flex items-center px-3 shrink-0 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={checkedIds.has(msg.id)}
+                    onChange={() => onToggleChecked(msg.id)}
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label={`Select message from ${msg.name}`}
+                  />
+                </label>
                 <button
                   onClick={() => onSelect(msg)}
-                  className="w-full text-left p-3 transition-colors"
+                  className="flex-1 text-left p-3 transition-colors"
                   style={{
                     backgroundColor: isSelected
                       ? `${themeConfig.colors.accent}15`
@@ -347,6 +474,7 @@ function MessageList({
             );
           })}
         </ul>
+        </>
       )}
     </div>
   );

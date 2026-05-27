@@ -30,26 +30,33 @@ describe("GitHubService", () => {
 
     originalFetch = globalThis.fetch;
 
-    mockFetch = vi.fn().mockImplementation(
-      async () =>
-        ({
+    mockFetch = vi.fn(async (url: string) => {
+      const path = typeof url === "string" ? url : String(url);
+      if (path.includes("/user/")) {
+        return {
           ok: true,
           json: async () => ({
             login: "infinitedim",
-            id: 1,
-            avatar_url: "",
             name: "Dimas",
+            avatarUrl: "",
             bio: null,
-            public_repos: 0,
+            publicRepos: 0,
             followers: 0,
             following: 0,
-            created_at: "",
-            updated_at: "",
+            htmlUrl: "https://github.com/infinitedim",
+            createdAt: "2020-01-01T00:00:00Z",
           }),
           status: 200,
           statusText: "OK",
-        }) as unknown as Response,
-    );
+        } as unknown as Response;
+      }
+      return {
+        ok: true,
+        json: async () => ({}),
+        status: 200,
+        statusText: "OK",
+      } as unknown as Response;
+    });
 
     globalThis.fetch = mockFetch as any;
   });
@@ -99,7 +106,7 @@ describe("GitHubService", () => {
 
     expect(stats.size).toBeGreaterThan(0);
 
-    svc.clearCacheForEndpoint("/users/infinitedim");
+    svc.clearCacheForEndpoint("/user/infinitedim");
     const stats2 = svc.getCacheStats();
     expect(stats2.size).toBe(0);
 

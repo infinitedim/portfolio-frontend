@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ImportExportManager } from "../import-export-manager";
@@ -54,50 +54,18 @@ vi.mock("@/lib/services/customization-service", () => ({
 global.URL.createObjectURL = vi.fn(() => "blob:mock-url");
 global.URL.revokeObjectURL = vi.fn();
 
-const mockCreateElement = vi.fn((tag: string) => {
-  if (tag === "a") {
-    return {
-      href: "",
-      download: "",
-      click: vi.fn(),
-      appendChild: vi.fn(),
-      removeChild: vi.fn(),
-    };
-  }
-  if (typeof document !== "undefined" && document.createElement) {
-    return document.createElement(tag);
-  }
-  return { tagName: tag } as any;
-});
-
-if (typeof document !== "undefined") {
-  Object.defineProperty(document, "createElement", {
-    value: mockCreateElement,
-    writable: true,
-    configurable: true,
-  });
-
-  Object.defineProperty(document, "body", {
-    value: {
-      appendChild: vi.fn(),
-      removeChild: vi.fn(),
-    },
-    writable: true,
-    configurable: true,
-  });
-}
-
 global.Blob = class Blob {
   constructor(
-    public parts: any[],
-    public options: any,
+    public parts: unknown[],
+    public options: unknown,
   ) {}
-} as any;
+} as unknown as typeof Blob;
 
 global.confirm = vi.fn(() => true);
 
 describe("ImportExportManager", () => {
   const mockOnUpdate = vi.fn();
+  let createElementSpy: ReturnType<typeof vi.spyOn> | undefined;
 
   beforeEach(() => {
     if (!canRunTests) return;
@@ -105,6 +73,22 @@ describe("ImportExportManager", () => {
     vi.clearAllMocks();
     mockGetCustomThemes.mockReturnValue([]);
     mockGetCustomFonts.mockReturnValue([]);
+
+    const originalCreateElement = document.createElement.bind(document);
+    createElementSpy = vi
+      .spyOn(document, "createElement")
+      .mockImplementation((tag: string, options?: ElementCreationOptions) => {
+        if (tag === "a") {
+          const anchor = originalCreateElement("a");
+          anchor.click = vi.fn();
+          return anchor;
+        }
+        return originalCreateElement(tag, options);
+      });
+  });
+
+  afterEach(() => {
+    createElementSpy?.mockRestore();
   });
 
   describe("Rendering", () => {

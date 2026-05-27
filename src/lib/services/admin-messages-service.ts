@@ -112,3 +112,29 @@ export async function deleteMessage(id: string): Promise<void> {
     throw new Error(`Failed to delete message: ${res.status}`);
   }
 }
+
+export async function bulkMarkMessagesRead(
+  ids: string[],
+): Promise<{ affected: number }> {
+  const res = await authedFetch("/api/admin/messages/bulk", {
+    method: "PATCH",
+    body: JSON.stringify({ ids }),
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to bulk mark read: ${res.status}`);
+  }
+  return res.json() as Promise<{ affected: number }>;
+}
+
+export async function bulkDeleteMessages(
+  ids: string[],
+): Promise<{ affected: number }> {
+  const res = await authedFetch("/api/admin/messages/bulk", {
+    method: "DELETE",
+    body: JSON.stringify({ ids }),
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to bulk delete: ${res.status}`);
+  }
+  return res.json() as Promise<{ affected: number }>;
+}

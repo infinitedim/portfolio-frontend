@@ -18,17 +18,18 @@ export default function GateLevel2Page(): JSX.Element {
       .then((s) => {
         if (s.unlocked) {
           router.replace("/terminal");
-          return;
+          return undefined;
         }
         if (s.currentLevel < 2) {
           router.replace("/gate/1");
-          return;
+          return undefined;
         }
         if (s.currentLevel > 2) {
           router.replace(gateLevelRoute(s.currentLevel));
-          return;
+          return undefined;
         }
         setStatus(s);
+        return undefined;
       })
       .catch(() => router.replace("/gate/1"));
   }, [router]);

@@ -22,6 +22,7 @@ import {
   useState,
   useEffect,
   useRef,
+  useCallback,
 
   type JSX,
 } from "react";
@@ -37,6 +38,10 @@ import { GuidedTour } from "@/components/organisms/onboarding/guided-tour";
 import { DevelopmentBanner } from "@/components/molecules/shared/development-banner";
 import { AccessibilityMenu } from "@/components/molecules/accessibility/accessibility-menu";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
+import { useTerminalShortcuts } from "@/hooks/use-terminal-shortcuts";
+import { KeyboardShortcut } from "@/components/molecules/terminal/keyboard-shortcuts";
+import { HistorySearchPanel } from "@/components/molecules/terminal/history-search-panel";
+import type { ThemeName } from "@/types/theme";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -80,12 +85,63 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
     terminalRef,
     bottomRef,
     t,
+    clearHistory,
+    handleSubmit,
+    changeTheme,
+    availableThemes,
+    theme,
   } = useTerminalContext();
 
   const [hasMinimumLoadingTime, setHasMinimumLoadingTime] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   /** Tracks if customization manager is open (used to gate global keydown) */
   const isCustomizationOpenRef = useRef(false);
+
+  const cycleTheme = useCallback(() => {
+    if (!availableThemes?.length) return;
+    const idx = availableThemes.indexOf(theme);
+    const nextIndex = idx >= 0 ? (idx + 1) % availableThemes.length : 0;
+    changeTheme(availableThemes[nextIndex] as ThemeName);
+  }, [availableThemes, theme, changeTheme]);
+
+  const { shortcuts, updateShortcutKeys } = useTerminalShortcuts({
+    onClear: clearHistory,
+    onHelp: () => handleSubmit("help"),
+    onThemeToggle: cycleTheme,
+    onHistoryOpen: () => setHistoryOpen(true),
+    onShortcutsOpen: () => setShortcutsOpen(true),
+    onCommandExecute: (command) => handleSubmit(command),
+  });
+
+  useEffect(() => {
+    const openShortcuts = () => setShortcutsOpen(true);
+    const openHistory = () => setHistoryOpen(true);
+    window.addEventListener("terminal:open-shortcuts", openShortcuts);
+    window.addEventListener("terminal:open-history", openHistory);
+    return () => {
+      window.removeEventListener("terminal:open-shortcuts", openShortcuts);
+      window.removeEventListener("terminal:open-history", openHistory);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (shortcutsOpen) {
+        setShortcutsOpen(false);
+        e.preventDefault();
+        e.stopPropagation();
+      } else if (historyOpen) {
+        setHistoryOpen(false);
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [shortcutsOpen, historyOpen]);
 
   useEffect(() => { setIsMounted(true); }, []);
 
@@ -350,6 +406,22 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
             onDemoCommand={handleTourDemoCommand}
           />
         )}
+
+        <KeyboardShortcut
+          isOpen={shortcutsOpen}
+          onClose={() => setShortcutsOpen(false)}
+          shortcuts={shortcuts}
+          onShortcutChange={updateShortcutKeys}
+        />
+
+        <HistorySearchPanel
+          isOpen={historyOpen}
+          onClose={() => setHistoryOpen(false)}
+          onSelectCommand={(command) => {
+            setHistoryOpen(false);
+            handleSubmit(command);
+          }}
+        />
       </MobileTerminal>
     </>
   );

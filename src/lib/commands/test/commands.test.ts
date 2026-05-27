@@ -91,7 +91,7 @@ describe("commands.ts", () => {
       const result = await resumeCommand.execute(["--download"]);
 
       expect(result.type).toBe("success");
-      expect(result.content).toContain("download started");
+      expect(result.content).toContain("Resume download started");
       if (typeof document !== "undefined") {
         expect(mockCreateElement).toHaveBeenCalledWith("a");
       }

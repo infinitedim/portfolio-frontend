@@ -11,6 +11,9 @@ import { GiscusComments } from "@/components/molecules/blog/giscus-comments-dyna
 
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
+import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
+import { BlogLocaleSwitcher } from "@/components/molecules/blog/locale-switcher";
+import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
 
 function getBackendUrl(): string {
   return getServerApiUrl();
@@ -33,14 +36,22 @@ interface BlogPost {
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ locale?: string }>;
 }
 
-async function getBlogPost(slug: string): Promise<BlogPost | null> {
+async function getBlogPost(
+  slug: string,
+  locale: string = DEFAULT_BLOG_LOCALE,
+): Promise<BlogPost | null> {
   try {
     const backendUrl = getBackendUrl();
-    const response = await fetch(`${backendUrl}/api/blog/${slug}`, {
-      next: { revalidate: 3600 },
-    });
+    const params = new URLSearchParams({ locale });
+    const response = await fetch(
+      `${backendUrl}/api/blog/${slug}?${params.toString()}`,
+      {
+        next: { revalidate: 3600 },
+      },
+    );
 
     if (response.ok) {
       return await response.json();
@@ -54,9 +65,12 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getBlogPost(slug);
+  const { locale: localeParam } = await searchParams;
+  const locale = localeParam?.trim() || DEFAULT_BLOG_LOCALE;
+  const post = await getBlogPost(slug, locale);
 
   if (!post) {
     return {
@@ -104,9 +118,14 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return [];
 }
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+export default async function BlogPostPage({
+  params,
+  searchParams,
+}: BlogPostPageProps) {
   const { slug } = await params;
-  const post = await getBlogPost(slug);
+  const { locale: localeParam } = await searchParams;
+  const locale = localeParam?.trim() || DEFAULT_BLOG_LOCALE;
+  const post = await getBlogPost(slug, locale);
 
   if (!post) {
     notFound();
@@ -116,30 +135,34 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
+  const contentHtml = post.contentHtml
+    ? addHeadingIdsToHtml(post.contentHtml)
+    : null;
+
   return (
     <StandardPageLayout>
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <ScrollProgress />
 
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <nav className="mb-8">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <nav className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href="/blog"
             className="text-green-400 hover:text-green-300 transition-colors"
           >
             ← Back to Blog
           </Link>
+          <BlogLocaleSwitcher slug={slug} />
         </nav>
 
-        { }
-        {post.contentHtml && (
-          <TableOfContents
-            contentHtml={post.contentHtml}
-            className="mb-8 lg:hidden"
-          />
+        {contentHtml && (
+          <div className="lg:hidden mb-8">
+            <TableOfContents contentHtml={contentHtml} />
+          </div>
         )}
 
-        <article className="prose prose-invert prose-green max-w-none">
+        <div className="lg:grid lg:grid-cols-[1fr_240px] lg:gap-8 lg:items-start">
+          <article className="prose prose-invert prose-green max-w-none min-w-0">
           <header className="mb-8 not-prose">
             <h1 className="text-4xl font-bold text-green-400 mb-4">
               {post.title}
@@ -191,9 +214,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </header>
 
           <div className="border-t border-gray-800 pt-8">
-            {post.contentHtml ? (
+            {contentHtml ? (
               <div
-                dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+                dangerouslySetInnerHTML={{ __html: contentHtml }}
                 className="prose prose-invert prose-green max-w-none
                   prose-headings:text-green-400
                   prose-a:text-green-400
@@ -220,13 +243,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <CopyCodeButton />
         </article>
 
-        { }        <section className="mt-12 pt-8 border-t border-gray-800">
+        {contentHtml && (
+          <aside className="hidden lg:block lg:sticky lg:top-24">
+            <TableOfContents contentHtml={contentHtml} className="mb-0" />
+          </aside>
+        )}
+        </div>
+
+        <section className="mt-12 pt-8 border-t border-gray-800 max-w-4xl">
           <h2 className="text-xl font-semibold text-gray-100 mb-6">Comments</h2>
           <GiscusComments slug={post.slug} />
         </section>
 
-        <footer className="mt-12 pt-8 border-t border-gray-800 space-y-6">
-          { }
+        <footer className="mt-12 pt-8 border-t border-gray-800 space-y-6 max-w-4xl">
           <ShareButtons
             title={post.title}
             slug={post.slug}

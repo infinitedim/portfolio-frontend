@@ -15,9 +15,10 @@ export default function GateIndexPage(): JSX.Element {
       .then((status) => {
         if (status.unlocked) {
           router.replace("/terminal");
-          return;
+          return undefined;
         }
         router.replace(gateLevelRoute(status.currentLevel));
+        return undefined;
       })
       .catch(() => {
         router.replace("/gate/1");

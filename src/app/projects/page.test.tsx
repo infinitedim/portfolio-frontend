@@ -26,6 +26,14 @@ const mockProjects = [
 
 const mockFeaturedProjects = [mockProjects[0]];
 
+vi.mock("@/components/layout/standard-page-layout", () => ({
+  StandardPageLayout: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="standard-page-layout">
+      <main>{children}</main>
+    </div>
+  ),
+}));
+
 vi.mock("@/lib/data/data-fetching", () => ({
   getProjectsData: vi.fn(() => Promise.resolve(mockProjects)),
   getFeaturedProjects: vi.fn(() => Promise.resolve(mockFeaturedProjects)),
@@ -127,8 +135,8 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByText } = render(await ProjectsPage());
-      expect(getByText(/projects/i)).toBeInTheDocument();
+      const { getByRole } = render(await ProjectsPage());
+      expect(getByRole("heading", { level: 1, name: /projects/i })).toBeInTheDocument();
     });
 
     it("should render project count in description", async () => {
@@ -169,9 +177,9 @@ describe("ProjectsPage", () => {
 
       const { getByText } = render(await ProjectsPage());
       expect(getByText(/Total Projects/i)).toBeInTheDocument();
-      expect(getByText(/Featured/i)).toBeInTheDocument();
-      expect(getByText(/Technologies/i)).toBeInTheDocument();
-      expect(getByText(/Completed/i)).toBeInTheDocument();
+      expect(getByText("Featured", { exact: true })).toBeInTheDocument();
+      expect(getByText("Technologies", { exact: true })).toBeInTheDocument();
+      expect(getByText("Completed", { exact: true })).toBeInTheDocument();
     });
 
     it("should render Suspense boundary", async () => {
@@ -210,7 +218,7 @@ describe("ProjectsPage", () => {
       );
       const itemListScript = Array.from(scripts).find((script) => {
         const content = script.textContent || "";
-        return content.includes('"@type": "ItemList"');
+        return content.includes('"@type":"ItemList"');
       });
 
       expect(itemListScript).toBeTruthy();

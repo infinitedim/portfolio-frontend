@@ -17,7 +17,11 @@ vi.mock("next/server", () => ({
       this.url = url;
       this.method = (options.method as string) || "GET";
       this._headers = new Map((options.headers as [string, string][]) || []);
-      this.nextUrl = { pathname: (options.pathname as string) || "/" };
+      const parsed = new URL(url);
+      this.nextUrl = {
+        pathname:
+          (options.pathname as string) || parsed.pathname || "/",
+      };
       this._cookies = new Map((options.cookies as [string, unknown][]) || []);
       this.geo = (options.geo as { country?: string; region?: string }) || {
         country: "US",
@@ -35,7 +39,16 @@ vi.mock("next/server", () => ({
 
     get cookies() {
       return {
-        get: (name: string) => this._cookies.get(name) || null,
+        get: (name: string) => {
+          const entry = this._cookies.get(name);
+          if (entry && typeof entry === "object" && "value" in entry) {
+            return entry as { value: string };
+          }
+          if (typeof entry === "string") {
+            return { value: entry };
+          }
+          return entry ?? null;
+        },
         set: (
           name: string,
           value: unknown,
@@ -52,6 +65,19 @@ vi.mock("next/server", () => ({
       headers: {
         set: vi.fn(),
         get: vi.fn(),
+        entries: () => [],
+      },
+      cookies: {
+        set: vi.fn(),
+        get: vi.fn(),
+      },
+    }),
+    redirect: (url: URL | string, status = 307) => ({
+      status,
+      headers: {
+        get: (name: string) =>
+          name.toLowerCase() === "location" ? String(url) : null,
+        set: vi.fn(),
         entries: () => [],
       },
       cookies: {
@@ -80,18 +106,39 @@ Object.defineProperty(global, "crypto", {
   writable: true,
 });
 
-vi.mock("@/lib/logger", () => ({
-  logger: {
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-    http: vi.fn(),
-  },
-  logSecurity: vi.fn(),
-  logPerformance: vi.fn(),
-  logAPICall: vi.fn(),
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+  useSearchParams: () => new URLSearchParams(),
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+    prefetch: vi.fn(),
+  }),
+  notFound: vi.fn(() => {
+    throw new Error("NOT_FOUND");
+  }),
+  redirect: vi.fn(),
 }));
+
+vi.mock("@/lib/logger", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/logger")>();
+  return {
+    ...actual,
+    logger: {
+      warn: vi.fn(),
+      error: vi.fn(),
+      info: vi.fn(),
+      debug: vi.fn(),
+      http: vi.fn(),
+    },
+    logSecurity: vi.fn(),
+    logPerformance: vi.fn(),
+    logAPICall: vi.fn(),
+  };
+});
 
 vi.mock("@/lib/security/csp", () => ({
   generateNonce: vi.fn(() => "test-nonce"),

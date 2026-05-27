@@ -22,9 +22,9 @@ export default function GateLevel1Page(): JSX.Element {
         }
         if (s.currentLevel > 1) {
           router.replace(gateLevelRoute(s.currentLevel));
-          return;
+          setStatus(s);
         }
-        setStatus(s);
+        return;
       })
       .catch(() =>
         setStatus({ unlocked: false, currentLevel: 1, completedLevels: [] }),

@@ -330,3 +330,25 @@ export function isValidLocale(localeCode: string): boolean {
   const normalizedCode = localeCode.replace("-", "_");
   return !!ALL_LOCALES[normalizedCode];
 }
+
+/** Blog post content locales (BCP-47 short codes, extensible). */
+export interface BlogContentLocale {
+  code: string;
+  label: string;
+  flag: string;
+}
+
+export const BLOG_CONTENT_LOCALES: BlogContentLocale[] = [
+  { code: "en", label: "English", flag: "🇺🇸" },
+  { code: "id", label: "Bahasa Indonesia", flag: "🇮🇩" },
+];
+
+export const DEFAULT_BLOG_LOCALE = "en";
+
+export function isValidBlogLocale(code: string): boolean {
+  return BLOG_CONTENT_LOCALES.some((locale) => locale.code === code);
+}
+
+export function getBlogContentLocale(code: string): BlogContentLocale | undefined {
+  return BLOG_CONTENT_LOCALES.find((locale) => locale.code === code);
+}

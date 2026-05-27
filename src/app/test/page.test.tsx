@@ -113,7 +113,7 @@ describe("HomePage", () => {
         'script[type="application/ld+json"]',
       );
       const personScript = Array.from(scripts).find((script) =>
-        (script.textContent || "").includes('"@type": "Person"'),
+        (script.textContent || "").includes('"@type":"Person"'),
       );
       expect(personScript).toBeTruthy();
     });

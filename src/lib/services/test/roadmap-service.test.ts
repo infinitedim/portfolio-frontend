@@ -1,111 +1,69 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
-const validApiResponse = {
-  done: { total: 10 },
-  learning: {
-    total: 1,
-    roadmaps: [
-      {
-        title: "Frontend Basics",
-        id: "frontend",
-        done: 1,
-        skipped: 0,
-        learning: 0,
-        total: 1,
-        updatedAt: new Date().toISOString(),
-      },
-    ],
-    bestPractices: [
-      {
-        title: "Best Practices",
-        id: "best",
-        done: 0,
-        total: 1,
-        updatedAt: new Date().toISOString(),
-      },
-    ],
-  },
-  streak: { count: 5 },
+const dashboardResponse = {
+  username: "testuser",
+  progresses: [
+    {
+      resourceId: "frontend",
+      resourceTitle: "Frontend Basics",
+      resourceType: "roadmap",
+      done: 1,
+      total: 2,
+      learning: 0,
+    },
+  ],
+};
+
+const streakResponse = {
+  lastVisitAt: new Date().toISOString(),
+  count: 5,
 };
 
 describe("RoadmapService", () => {
   let RoadmapService: typeof import("@/lib/services/roadmap-service").RoadmapService;
+  let originalWindow: Window & typeof globalThis;
 
   beforeEach(async () => {
-    const isolateModules =
-      typeof vi !== "undefined" &&
-      (vi as { isolateModules?: (fn: () => Promise<void>) => Promise<void> })
-        .isolateModules;
-    if (isolateModules) {
-      await isolateModules(async () => {
-        if (vi.unmock) vi.unmock("@/lib/services/roadmap-service");
-        if (vi.doUnmock) vi.doUnmock("@/lib/services/roadmap-service");
-
-        if (vi.importActual) {
-          const module = await vi.importActual<
-            typeof import("@/lib/services/roadmap-service")
-          >("@/lib/services/roadmap-service");
-          RoadmapService = module.RoadmapService;
-        } else {
-          const module = await import("@/lib/services/roadmap-service");
-          RoadmapService = module.RoadmapService;
-        }
-      });
-    } else {
-      if (typeof vi !== "undefined") {
-        if (vi.unmock) vi.unmock("@/lib/services/roadmap-service");
-        if (vi.doUnmock) vi.doUnmock("@/lib/services/roadmap-service");
-        if (vi.resetModules) vi.resetModules();
-      }
-
-      let module;
-      if (typeof vi !== "undefined" && vi.importActual) {
-        module = await vi.importActual<
-          typeof import("@/lib/services/roadmap-service")
-        >("@/lib/services/roadmap-service");
-      } else {
-        if (typeof require !== "undefined" && require.cache) {
-          try {
-            const modulePath =
-              require.resolve("@/lib/services/roadmap-service");
-            delete require.cache[modulePath];
-          } catch (e) {
-            throw new Error(
-              'Failed to resolve module "@/lib/services/roadmap-service"',
-              { cause: e },
-            );
-          }
-        }
-        module = await import("@/lib/services/roadmap-service");
-      }
-      RoadmapService = module.RoadmapService;
-    }
-
-    (RoadmapService as any).instance = undefined;
-
-    Object.defineProperty(globalThis, "fetch", {
-      value: vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(validApiResponse),
-        }),
-      ) as any,
-      writable: true,
+    originalWindow = globalThis.window;
+    Object.defineProperty(globalThis, "window", {
+      value: undefined,
       configurable: true,
+      writable: true,
     });
 
-    if (typeof window === "undefined") {
-      Object.defineProperty(globalThis, "window", {
-        value: {} as any,
-        writable: true,
-        configurable: true,
-      });
-    }
+    Object.defineProperty(globalThis, "fetch", {
+      value: vi.fn((url: string) => {
+        if (String(url).includes("dashboard")) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve(dashboardResponse),
+          });
+        }
+        if (String(url).includes("streak")) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve(streakResponse),
+          });
+        }
+        return Promise.resolve({ ok: false, json: () => Promise.resolve(null) });
+      }),
+      configurable: true,
+      writable: true,
+    });
+
+    const module = await import("@/lib/services/roadmap-service");
+    RoadmapService = module.RoadmapService;
+    (RoadmapService as unknown as { instance?: unknown }).instance = undefined;
   });
 
   afterEach(() => {
+    Object.defineProperty(globalThis, "window", {
+      value: originalWindow,
+      configurable: true,
+      writable: true,
+    });
     if (RoadmapService) {
-      (RoadmapService as any).instance = undefined;
+      (RoadmapService as unknown as { instance?: unknown }).instance = undefined;
     }
     vi.clearAllMocks();
   });
@@ -115,14 +73,8 @@ describe("RoadmapService", () => {
       expect(true).toBe(true);
       return;
     }
-    (RoadmapService as any).instance = undefined;
+
     const svc = RoadmapService.getInstance();
-
-    if (!svc) {
-      expect(true).toBe(true);
-      return;
-    }
-
     await svc.initialize();
 
     const progress = await svc.getUserProgress();
@@ -135,30 +87,20 @@ describe("RoadmapService", () => {
       expect(true).toBe(true);
       return;
     }
-    (RoadmapService as any).instance = undefined;
+
     const svc = RoadmapService.getInstance();
-
-    if (!svc) {
-      expect(true).toBe(true);
-      return;
-    }
-
     await svc.initialize();
 
     const cat = await svc.getCategoryProgress("frontend");
     expect(cat).not.toBeNull();
 
-    if (cat && cat.id === "c1" && cat.name === "Cat") {
-      expect(cat).not.toBeNull();
-      return;
-    }
-
-    if (cat && cat.skills && cat.skills.length > 0) {
+    if (cat && cat.skills.length > 0) {
       const skill = cat.skills[0];
       const updated = await svc.updateSkillProgress(skill.id, {
+        skillId: skill.id,
         status: "in-progress",
         progress: 50,
-      } as any);
+      });
       expect(updated).toBe(true);
 
       const fetchedSkill = await svc.getSkill(skill.id);
@@ -166,8 +108,6 @@ describe("RoadmapService", () => {
       if (fetchedSkill) {
         expect(fetchedSkill.status).toBe("in-progress");
       }
-    } else {
-      expect(cat).not.toBeNull();
     }
   });
 });

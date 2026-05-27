@@ -42,9 +42,11 @@ describe("ClientLogger", () => {
 
   describe("Basic Logging", () => {
     it("should log info messages", () => {
-      const spy = vi
-        .spyOn(process.stdout, "write")
-        .mockImplementation(() => true);
+      const spy = vi.spyOn(
+        (logger as unknown as { pino: { info: (...args: unknown[]) => void } })
+          .pino,
+        "info",
+      );
       logger.info("Test message", { component: "test" });
       expect(spy).toHaveBeenCalled();
     });
@@ -61,9 +63,11 @@ describe("ClientLogger", () => {
     });
 
     it("should log warnings", () => {
-      const spy = vi
-        .spyOn(process.stdout, "write")
-        .mockImplementation(() => true);
+      const spy = vi.spyOn(
+        (logger as unknown as { pino: { warn: (...args: unknown[]) => void } })
+          .pino,
+        "warn",
+      );
       logger.warn("Warning message");
       expect(spy).toHaveBeenCalled();
     });
@@ -77,9 +81,11 @@ describe("ClientLogger", () => {
 
   describe("User Actions", () => {
     it("should log user actions", () => {
-      const spy = vi
-        .spyOn(process.stdout, "write")
-        .mockImplementation(() => true);
+      const spy = vi.spyOn(
+        (logger as unknown as { pino: { info: (...args: unknown[]) => void } })
+          .pino,
+        "info",
+      );
       logger.logUserAction("click", { buttonId: "submit" });
       expect(spy).toHaveBeenCalled();
     });
@@ -93,9 +99,11 @@ describe("ClientLogger", () => {
     });
 
     it("should warn on slow performance", () => {
-      const spy = vi
-        .spyOn(process.stdout, "write")
-        .mockImplementation(() => true);
+      const spy = vi.spyOn(
+        (logger as unknown as { pino: { warn: (...args: unknown[]) => void } })
+          .pino,
+        "warn",
+      );
       logger.logPerformance("api_call", 2000, { endpoint: "/api/slow" });
       expect(spy).toHaveBeenCalled();
     });
@@ -125,9 +133,11 @@ describe("ClientLogger", () => {
     });
 
     it("should warn on client errors", () => {
-      const spy = vi
-        .spyOn(process.stdout, "write")
-        .mockImplementation(() => true);
+      const spy = vi.spyOn(
+        (logger as unknown as { pino: { warn: (...args: unknown[]) => void } })
+          .pino,
+        "warn",
+      );
       logger.logApiCall("POST", "/api/users", 400, 100);
       expect(spy).toHaveBeenCalled();
     });

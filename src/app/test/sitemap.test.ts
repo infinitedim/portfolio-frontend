@@ -28,9 +28,11 @@ describe("sitemap.ts", () => {
     });
 
     it("should use default base URL when env var is not set", async () => {
+      delete process.env.NEXT_PUBLIC_BASE_URL;
+      delete process.env.NEXT_PUBLIC_SITE_URL;
       const result = await sitemap();
       const firstItem = result[0];
-      expect(firstItem.url).toBe("https://infinitedim.vercel.app");
+      expect(firstItem.url).toBe("http://localhost:3000");
     });
 
     it("should use NEXT_PUBLIC_BASE_URL when set", async () => {
@@ -43,9 +45,13 @@ describe("sitemap.ts", () => {
 
   describe("Static Routes", () => {
     it("should include home page", async () => {
+      delete process.env.NEXT_PUBLIC_BASE_URL;
+      delete process.env.NEXT_PUBLIC_SITE_URL;
       const result = await sitemap();
       const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.vercel.app";
+        process.env.NEXT_PUBLIC_BASE_URL ||
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        "http://localhost:3000";
       const homePage = result.find(
         (item: MetadataRoute.Sitemap[number]) =>
           item.url === baseUrl || item.url === `${baseUrl}/`,

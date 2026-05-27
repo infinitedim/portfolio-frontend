@@ -5,9 +5,18 @@ import type { ThemeConfig } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { authService } from "@/lib/auth/auth-service";
 import { useDraftAutosave, type DraftData } from "@/hooks/use-draft-autosave";
-import { MarkdownEditor } from "./markdown-editor";
-import { ImageUploadButton, ImageDropZone } from "./image-upload-button";
+import { TiptapEditor } from "./tiptap-editor";
+import { ImageUploadButton, ImageDropZone, uploadBlogImage } from "./image-upload-button";
+import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
+import {
+  BLOG_CONTENT_LOCALES,
+  DEFAULT_BLOG_LOCALE,
+} from "@/lib/i18n/locales";
+import {
+  listAdminSeries,
+  type BlogSeriesSummary,
+} from "@/lib/services/series-service";
 
 import { getApiUrl } from "@/lib/api/get-api-url";
 
@@ -25,6 +34,9 @@ interface BlogPost {
   /** ISO-8601 timestamp; if set and in the future, post is scheduled. */
   publishAt: string | null;
   status?: BlogStatus;
+  locale?: string;
+  seriesId?: string | null;
+  seriesOrder?: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -47,6 +59,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const [tagInput, setTagInput] = useState("");
   // Datetime-local input value (YYYY-MM-DDTHH:mm). Empty string = no schedule.
   const [publishAtLocal, setPublishAtLocal] = useState("");
+  const [locale, setLocale] = useState(DEFAULT_BLOG_LOCALE);
+  const [seriesId, setSeriesId] = useState<string>("");
+  const [seriesOrder, setSeriesOrder] = useState<string>("");
+  const [availableSeries, setAvailableSeries] = useState<BlogSeriesSummary[]>([]);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -74,6 +90,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     ...post,
     tags: post.tags ?? [],
     publishAt: post.publishAt ?? null,
+    locale: post.locale ?? DEFAULT_BLOG_LOCALE,
+    seriesId: post.seriesId ?? null,
+    seriesOrder: post.seriesOrder ?? null,
   });
 
   /**
@@ -111,14 +130,30 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     return published ? "published" : "draft";
   };
 
+  const resolveEditorHtml = (post: LocalBlogPost): string => {
+    if (post.contentHtml) return post.contentHtml;
+    if (post.contentMd) {
+      return post.contentMd
+        .split(/\n\n+/)
+        .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+        .join("");
+    }
+    return "<p></p>";
+  };
+
   const loadDraft = useCallback((draft: LocalBlogPost) => {
     setCurrentPost(draft);
     setTitle(draft.title);
-    setContent(draft.contentMd || "");
+    setContent(resolveEditorHtml(draft));
     setSummary(draft.summary || "");
     setSlug(draft.slug);
     setTags(draft.tags);
     setPublishAtLocal(isoToLocalInput(draft.publishAt));
+    setLocale(draft.locale ?? DEFAULT_BLOG_LOCALE);
+    setSeriesId(draft.seriesId ?? "");
+    setSeriesOrder(
+      draft.seriesOrder != null ? String(draft.seriesOrder) : "",
+    );
     setIsNewPost(false);
     setError(null);
 
@@ -131,7 +166,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
           if (
             localDraft.content &&
-            localDraft.content !== (draft.contentMd || "")
+            localDraft.content !== resolveEditorHtml(draft)
           ) {
             setShowDraftPrompt(true);
           }
@@ -190,10 +225,20 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   }, [currentPost, loadDraft]);
 
+  const fetchAvailableSeries = useCallback(async () => {
+    try {
+      const data = await listAdminSeries();
+      setAvailableSeries(data);
+    } catch {
+      console.warn("Failed to fetch blog series");
+    }
+  }, []);
+
   useEffect(() => {
     loadPosts();
     fetchAvailableTags();
-  }, [loadPosts, fetchAvailableTags]);
+    fetchAvailableSeries();
+  }, [loadPosts, fetchAvailableTags, fetchAvailableSeries]);
 
   useEffect(() => {
     if (title || content || summary) {
@@ -256,14 +301,18 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       const isUpdate = currentPost && !isNewPost;
 
       const publishAtIso = localInputToIso(publishAtLocal);
+      const htmlContent = addHeadingIdsToHtml(content);
       const body: Record<string, unknown> = {
         title: title.trim(),
         slug: postSlug,
         summary: summary.trim() || null,
-        contentMd: content,
-        contentHtml: renderMarkdownToHtml(content),
+        contentMd: null,
+        contentHtml: htmlContent,
         published: currentPost?.published ?? false,
         tags,
+        locale,
+        seriesId: seriesId || null,
+        seriesOrder: seriesOrder ? parseInt(seriesOrder, 10) : null,
       };
       // For PATCH we want to be able to *clear* the schedule explicitly,
       // hence the difference between "absent" and `null`. POST always
@@ -274,9 +323,14 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         body.publishAt = publishAtIso;
       }
 
+      const localeQuery =
+        isUpdate && currentPost.locale
+          ? `?locale=${encodeURIComponent(currentPost.locale)}`
+          : "";
+
       const response = await fetch(
         isUpdate
-          ? `${apiUrl}/api/blog/${currentPost.slug}`
+          ? `${apiUrl}/api/blog/${currentPost.slug}${localeQuery}`
           : `${apiUrl}/api/blog`,
         {
           method: isUpdate ? "PATCH" : "POST",
@@ -324,23 +378,29 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       id: `new-${Date.now()}`,
       title: t("blogUntitled"),
       slug: "",
-      contentMd: "# New Blog Post\n\nStart writing here...",
-      contentHtml: null,
+      contentMd: null,
+      contentHtml: "<p></p>",
       summary: null,
       tags: [],
       published: false,
       publishAt: null,
+      locale: DEFAULT_BLOG_LOCALE,
+      seriesId: null,
+      seriesOrder: null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
     setCurrentPost(newDraft);
     setTitle(newDraft.title);
-    setContent(newDraft.contentMd || "");
+    setContent(newDraft.contentHtml || "<p></p>");
     setSummary("");
     setSlug("");
     setTags([]);
     setPublishAtLocal("");
+    setLocale(DEFAULT_BLOG_LOCALE);
+    setSeriesId("");
+    setSeriesOrder("");
     setIsNewPost(true);
     setError(null);
   };
@@ -380,7 +440,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
     try {
       const response = await fetch(
-        `${getApiUrl()}/api/blog/${currentPost.slug}`,
+        `${getApiUrl()}/api/blog/${currentPost.slug}?locale=${encodeURIComponent(currentPost.locale ?? DEFAULT_BLOG_LOCALE)}`,
         {
           method: "DELETE",
           headers: {
@@ -461,8 +521,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   };
 
   const handleImageUpload = useCallback((url: string) => {
-    const imageMarkdown = `\n![image](${url})\n`;
-    setContent((prev) => prev + imageMarkdown);
+    setContent((prev) => `${prev}<p><img src="${url}" alt="image" /></p>`);
   }, []);
 
   const togglePublish = async () => {
@@ -498,14 +557,17 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           title: title.trim(),
           slug: postSlug,
           summary: summary.trim() || null,
-          contentMd: content,
-          contentHtml: renderMarkdownToHtml(content),
+          contentMd: null,
+          contentHtml: addHeadingIdsToHtml(content),
           // If a future schedule is set, leave `published` false so the
           // status pipeline derives "scheduled". Otherwise this is an
           // immediate publish.
           published:
             !publishAtIso || new Date(publishAtIso).getTime() <= Date.now(),
           tags,
+          locale,
+          seriesId: seriesId || null,
+          seriesOrder: seriesOrder ? parseInt(seriesOrder, 10) : null,
         };
         if (publishAtIso) {
           body.publishAt = publishAtIso;
@@ -547,7 +609,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
     try {
       const response = await fetch(
-        `${getApiUrl()}/api/blog/${currentPost.slug}`,
+        `${getApiUrl()}/api/blog/${currentPost.slug}?locale=${encodeURIComponent(currentPost.locale ?? DEFAULT_BLOG_LOCALE)}`,
         {
           method: "PATCH",
           headers: {
@@ -578,18 +640,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const renderMarkdownToHtml = (markdown: string): string => {
-    return markdown
-      .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-      .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-      .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-      .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
-      .replace(/\*(.*?)\*/gim, "<em>$1</em>")
-      .replace(/```(\w+)?\n([\s\S]*?)```/gim, "<pre><code>$2</code></pre>")
-      .replace(/`([^`]+)`/gim, "<code>$1</code>")
-      .replace(/\n/gim, "<br>");
   };
 
   if (isLoading) {
@@ -886,6 +936,63 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               />
             </div>
 
+            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <div className="text-xs opacity-70 mb-2">Content locale</div>
+                <select
+                  value={locale}
+                  onChange={(e) => setLocale(e.target.value)}
+                  disabled={!isNewPost && !!currentPost}
+                  className="w-full px-3 py-2 text-sm border rounded bg-transparent font-mono"
+                  style={{
+                    borderColor: themeConfig.colors.border,
+                    color: themeConfig.colors.text,
+                  }}
+                >
+                  {BLOG_CONTENT_LOCALES.map((loc) => (
+                    <option key={loc.code} value={loc.code}>
+                      {loc.flag} {loc.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <div className="text-xs opacity-70 mb-2">Series</div>
+                <select
+                  value={seriesId}
+                  onChange={(e) => setSeriesId(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border rounded bg-transparent font-mono"
+                  style={{
+                    borderColor: themeConfig.colors.border,
+                    color: themeConfig.colors.text,
+                  }}
+                >
+                  <option value="">None</option>
+                  {availableSeries.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <div className="text-xs opacity-70 mb-2">Series order</div>
+                <input
+                  type="number"
+                  min={1}
+                  value={seriesOrder}
+                  onChange={(e) => setSeriesOrder(e.target.value)}
+                  disabled={!seriesId}
+                  className="w-full px-3 py-2 text-sm border rounded bg-transparent font-mono"
+                  style={{
+                    borderColor: themeConfig.colors.border,
+                    color: themeConfig.colors.text,
+                  }}
+                  placeholder="1"
+                />
+              </div>
+            </div>
+
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">
                 Publish at (leave blank for immediate)
@@ -997,13 +1104,13 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 />
               </div>
               <ImageDropZone onUploadComplete={handleImageUpload}>
-                <MarkdownEditor
+                <TiptapEditor
                   value={content}
                   onChange={setContent}
-                  height={500}
-                  previewMode="live"
-                  onSave={saveDraft}
-                  placeholder="Write your content in Markdown..."
+                  themeConfig={themeConfig}
+                  placeholder="Write your post…"
+                  onImageUpload={uploadBlogImage}
+                  minHeight="500px"
                 />
               </ImageDropZone>
             </div>

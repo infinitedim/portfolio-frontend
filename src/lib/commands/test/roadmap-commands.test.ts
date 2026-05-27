@@ -165,9 +165,13 @@ describe("roadmap-commands.ts", () => {
         expect(true).toBe(true);
         return;
       }
+      vi.resetModules();
       roadmapServiceInstance = null;
+      const { roadmapCommand: freshRoadmapCommand } = await import(
+        "../roadmap-commands"
+      );
 
-      const result = await roadmapCommand.execute([]);
+      const result = await freshRoadmapCommand.execute([]);
 
       expect(result.type).toBe("error");
       expect(result.content).toContain("not available");

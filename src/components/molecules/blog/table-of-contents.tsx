@@ -6,9 +6,32 @@ interface Heading {
 
 function extractHeadings(html: string): Heading[] {
   const headings: Heading[] = [];
+  const withIds = /<h([23])[^>]*\bid="([^"]+)"/i.test(html)
+    ? html
+    : html.replace(
+        /<h([23])([^>]*)>([\s\S]*?)<\/h\1>/gi,
+        (match, level, attrs, inner) => {
+          const text = inner.replace(/<[^>]+>/g, "").trim();
+          const id =
+            text
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/\s+/g, "-")
+              .replace(/-+/g, "-") || `section-${headings.length + 1}`;
+          headings.push({
+            level: parseInt(level, 10),
+            id,
+            text,
+          });
+          return `<h${level}${attrs} id="${id}">${inner}</h${level}>`;
+        },
+      );
+
+  if (headings.length > 0) return headings;
+
   const re = /<h([23])[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h\1>/gi;
   let match: RegExpExecArray | null;
-  while ((match = re.exec(html)) !== null) {
+  while ((match = re.exec(withIds)) !== null) {
     headings.push({
       level: parseInt(match[1], 10),
       id: match[2],

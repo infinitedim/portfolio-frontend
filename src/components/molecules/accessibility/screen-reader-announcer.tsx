@@ -27,6 +27,7 @@ export function ScreenReaderAnnouncer({
   return (
     <div
       ref={announcerRef}
+      role="status"
       aria-live={priority}
       aria-atomic="true"
       className="sr-only"

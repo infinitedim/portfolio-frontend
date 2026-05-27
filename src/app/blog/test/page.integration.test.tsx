@@ -2,6 +2,21 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import BlogPage from "../page";
 
+vi.mock("@/components/layout/standard-page-layout", () => ({
+  StandardPageLayout: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+}));
+
+vi.mock("@/components/molecules/blog/locale-switcher", () => ({
+  BlogLocaleSwitcher: () => null,
+}));
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/blog",
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 const _vi = vi as unknown as Record<string, unknown>;
 if (typeof _vi.stubGlobal !== "function")
   _vi.stubGlobal = (name: string, value: unknown) => {
@@ -10,6 +25,36 @@ if (typeof _vi.stubGlobal !== "function")
 if (typeof _vi.mocked !== "function") _vi.mocked = (fn: unknown) => fn;
 
 const _origFetch = (globalThis as Record<string, unknown>).fetch;
+
+function mockBlogFetch(options: {
+  posts?: {
+    items: unknown[];
+    page?: number;
+    pageSize?: number;
+    total?: number;
+  };
+}) {
+  const posts = options.posts ?? {
+    items: [],
+    page: 1,
+    pageSize: 10,
+    total: 0,
+  };
+
+  vi.mocked(fetch).mockImplementation(async (input: RequestInfo | URL) => {
+    const url = String(input);
+    if (url.includes("/api/blog/series")) {
+      return { ok: true, json: async () => [] } as Response;
+    }
+    if (url.includes("/api/blog/tags")) {
+      return { ok: true, json: async () => [] } as Response;
+    }
+    if (url.includes("/api/blog")) {
+      return { ok: true, json: async () => posts } as Response;
+    }
+    return { ok: false } as Response;
+  });
+}
 
 describe("BlogPage integration", () => {
   beforeEach(() => {
@@ -30,15 +75,7 @@ describe("BlogPage integration", () => {
       expect(true).toBe(true);
       return;
     }
-    vi.mocked(fetch).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        items: [],
-        page: 1,
-        pageSize: 10,
-        total: 0,
-      }),
-    } as Response);
+    mockBlogFetch({ posts: { items: [], page: 1, pageSize: 10, total: 0 } });
 
     const searchParams = Promise.resolve({});
     const content = await BlogPage({ searchParams });
@@ -53,9 +90,8 @@ describe("BlogPage integration", () => {
       expect(true).toBe(true);
       return;
     }
-    vi.mocked(fetch).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+    mockBlogFetch({
+      posts: {
         items: [
           {
             id: "1",
@@ -64,6 +100,7 @@ describe("BlogPage integration", () => {
             summary: "Summary",
             published: true,
             tags: [],
+            readingTimeMinutes: 5,
             createdAt: "2024-01-01T00:00:00Z",
             updatedAt: "2024-01-01T00:00:00Z",
           },
@@ -71,8 +108,8 @@ describe("BlogPage integration", () => {
         page: 1,
         pageSize: 10,
         total: 1,
-      }),
-    } as Response);
+      },
+    });
 
     const searchParams = Promise.resolve({});
     const content = await BlogPage({ searchParams });

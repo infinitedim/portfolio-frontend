@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { ScreenReaderAnnouncer } from "../screen-reader-announcer";
 
@@ -67,11 +67,10 @@ describe("ScreenReaderAnnouncer", () => {
 
       expect(announcer.textContent).toBe("");
 
-      vi.advanceTimersByTime(100);
-
-      await waitFor(() => {
-        expect(announcer.textContent).toBe("Test message");
+      await act(async () => {
+        vi.advanceTimersByTime(100);
       });
+      expect(announcer.textContent).toBe("Test message");
     });
 
     it("should clear and re-announce when message changes", async () => {
@@ -85,25 +84,19 @@ describe("ScreenReaderAnnouncer", () => {
       );
       const announcer = screen.getByRole("status", { hidden: true });
 
-      vi.advanceTimersByTime(100);
-      await waitFor(
-        () => {
-          expect(announcer.textContent).toBe("First message");
-        },
-        { timeout: 1000 },
-      );
+      await act(async () => {
+        vi.advanceTimersByTime(100);
+      });
+      expect(announcer.textContent).toBe("First message");
 
       rerender(<ScreenReaderAnnouncer message="Second message" />);
 
       expect(announcer.textContent).toBe("");
 
-      vi.advanceTimersByTime(100);
-      await waitFor(
-        () => {
-          expect(announcer.textContent).toBe("Second message");
-        },
-        { timeout: 1000 },
-      );
+      await act(async () => {
+        vi.advanceTimersByTime(100);
+      });
+      expect(announcer.textContent).toBe("Second message");
     });
 
     it("should handle empty message", () => {

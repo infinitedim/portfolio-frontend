@@ -7,7 +7,6 @@ import {
   getExperienceData,
   getAboutData,
   getFeaturedProjects,
-  getAnalyticsData,
   getGitHubData,
   invalidateCache,
   checkDataHealth,
@@ -166,45 +165,34 @@ describe("data-fetching.ts", () => {
     });
   });
 
-  describe("getAnalyticsData", () => {
-    it("should return analytics data", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await getAnalyticsData();
-
-      expect(result).toHaveProperty("pageViews");
-      expect(result).toHaveProperty("uniqueVisitors");
-      expect(result).toHaveProperty("topProjects");
-      expect(result).toHaveProperty("topSkills");
-    });
-  });
-
   describe("getGitHubData", () => {
-    it("should return GitHub data", async () => {
+    it("should return GitHub data via backend proxy", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
       mockFetch.mockResolvedValue({
         ok: true,
-        json: async () => [
-          {
-            name: "repo1",
-            description: "Description",
-            stargazers_count: 10,
-            forks_count: 5,
-            language: "TypeScript",
-            updated_at: new Date().toISOString(),
-          },
-        ],
+        json: async () => ({
+          profile: { followers: 1, following: 2, publicRepos: 3 },
+          repositories: [
+            {
+              name: "repo1",
+              description: "Description",
+              stars: 10,
+              forks: 5,
+              language: "TypeScript",
+              updatedAt: new Date().toISOString(),
+            },
+          ],
+        }),
       });
 
       const result = await getGitHubData();
 
       expect(result).toHaveProperty("repositories");
       expect(result).toHaveProperty("profile");
+      expect(result.repositories[0]?.name).toBe("repo1");
     });
 
     it("should return empty data on error", async () => {

@@ -9,21 +9,6 @@ function getBackendUrl(): string {
   return getApiUrl();
 }
 
-interface GitHubRepository {
-  name: string;
-  description: string | null;
-  stargazers_count: number;
-  forks_count: number;
-  language: string | null;
-  updated_at: string;
-}
-
-interface GitHubUser {
-  followers: number;
-  following: number;
-  public_repos: number;
-}
-
 export interface PortfolioData {
   skills: SkillCategory[];
   projects: Project[];
@@ -127,39 +112,6 @@ const STATIC_PROJECTS: Project[] = [
     featured: false,
   },
 ];
-
-async function fetchWithCache<T>(
-  url: string,
-  options: RequestInit & { cacheTime?: number } = {},
-): Promise<T> {
-  const { cacheTime: _cacheTime, ...fetchOptions } = options;
-
-  try {
-    const response = await fetch(url, {
-      ...fetchOptions,
-    });
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error("Not Found");
-      }
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    return data as T;
-  } catch (error) {
-    console.error("Fetch error occurred", {
-      url,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      component: "SSRDataFetching",
-      operation: "safeFetch",
-    });
-    throw error;
-  }
-}
 
 export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   const backendUrl = getBackendUrl();
@@ -314,26 +266,6 @@ export const getFeaturedProjects = cache(async (): Promise<Project[]> => {
   return projects.filter((project) => project.featured);
 });
 
-export const getAnalyticsData = cache(
-  async (): Promise<{
-    pageViews: number;
-    uniqueVisitors: number;
-    topProjects: string[];
-    topSkills: string[];
-  }> => {
-    return {
-      pageViews: 15420,
-      uniqueVisitors: 8342,
-      topProjects: [
-        "terminal-portfolio",
-        "ecommerce-platform",
-        "task-management",
-      ],
-      topSkills: ["React", "Next.js", "TypeScript", "Node.js"],
-    };
-  },
-);
-
 export const getGitHubData = cache(
   async (): Promise<{
     repositories: Array<{
@@ -351,54 +283,48 @@ export const getGitHubData = cache(
     };
   }> => {
     const username = process.env.GH_USERNAME || "infinitedim";
-    const token = process.env.GH_TOKEN;
+    const backendUrl = getBackendUrl();
 
     try {
-      const headers: Record<string, string> = {
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": "Terminal-Portfolio",
-      };
+      const response = await fetch(
+        `${backendUrl}/api/github/stats/${encodeURIComponent(username)}`,
+        { next: { revalidate: 1800 } },
+      );
 
-      if (token) {
-        headers["Authorization"] = `token ${token}`;
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
       }
 
-      const [reposResponse, userResponse] = await Promise.all([
-        fetchWithCache(
-          `https://api.github.com/users/${username}/repos?sort=updated&per_page=10`,
-          {
-            headers,
-            cacheTime: 1000 * 60 * 30,
-          },
-        ),
-        fetchWithCache(`https://api.github.com/users/${username}`, {
-          headers,
-          cacheTime: 1000 * 60 * 60,
-        }),
-      ]);
-
-      const repositories = (reposResponse as GitHubRepository[]).map(
-        (repo) => ({
+      const stats = await response.json();
+      const repositories = (stats.repositories ?? []).map(
+        (repo: {
+          name: string;
+          description: string | null;
+          stars: number;
+          forks: number;
+          language: string | null;
+          updatedAt: string;
+        }) => ({
           name: repo.name,
           description: repo.description || "",
-          stars: repo.stargazers_count,
-          forks: repo.forks_count,
+          stars: repo.stars,
+          forks: repo.forks,
           language: repo.language || "Unknown",
-          updated: repo.updated_at,
+          updated: repo.updatedAt,
         }),
       );
 
-      const profile = {
-        followers: (userResponse as GitHubUser).followers,
-        following: (userResponse as GitHubUser).following,
-        publicRepos: (userResponse as GitHubUser).public_repos,
+      return {
+        repositories,
+        profile: {
+          followers: stats.profile?.followers ?? 0,
+          following: stats.profile?.following ?? 0,
+          publicRepos: stats.profile?.publicRepos ?? 0,
+        },
       };
-
-      return { repositories, profile };
     } catch (error) {
-      console.error("Failed to fetch GitHub data", {
+      console.error("Failed to fetch GitHub data via backend proxy", {
         error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
         component: "SSRDataFetching",
         operation: "getGitHubData",
       });
@@ -575,16 +501,17 @@ export async function checkDataHealth(): Promise<{
   lastCheck: string;
 }> {
   const backendUrl = getBackendUrl();
+  const username = process.env.GH_USERNAME || "infinitedim";
 
   try {
     const [apiCheck, githubCheck] = await Promise.allSettled([
       fetch(`${backendUrl}/api/portfolio?section=about`),
-      getGitHubData(),
+      fetch(`${backendUrl}/api/github/stats/${encodeURIComponent(username)}`),
     ]);
 
     return {
       api: apiCheck.status === "fulfilled" && apiCheck.value.ok,
-      github: githubCheck.status === "fulfilled",
+      github: githubCheck.status === "fulfilled" && githubCheck.value.ok,
       lastCheck: new Date().toISOString(),
     };
   } catch {
