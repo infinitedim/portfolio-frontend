@@ -9,10 +9,7 @@ const nextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: "2mb" },
     typedEnv: true,
-    optimizePackageImports: [
-      "@radix-ui/react-dialog",
-      "recharts",
-    ],
+    optimizePackageImports: ["@radix-ui/react-dialog", "recharts"],
   },
   turbopack: {
     resolveAlias: {
@@ -35,8 +32,8 @@ const nextConfig = {
     // through `next/image`, which is a footgun (SSRF-flavoured + ghost
     // credit-card abuse vector for paid Image Optimization plans).
     remotePatterns: [
-      { protocol: "https", hostname: "infinitedim.site" },
-      { protocol: "https", hostname: "*.infinitedim.site" },
+      { protocol: "https", hostname: "infinitedim.vercel.app" },
+      { protocol: "https", hostname: "*.infinitedim.vercel.app" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
       { protocol: "https", hostname: "raw.githubusercontent.com" },
       { protocol: "https", hostname: "github.com" },

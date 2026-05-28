@@ -6,25 +6,24 @@ vi.mock("next", () => ({
   Metadata: {},
 }));
 
-vi.mock("@/components/organisms/shared/static-content", () => ({
-  StaticContent: () => <div data-testid="static-content">Static Content</div>,
+vi.mock("next/headers", () => ({
+  cookies: vi.fn(async () => ({
+    get: (name: string) =>
+      name === "portfolio_gate" ? { value: "test-token" } : undefined,
+  })),
 }));
 
-vi.mock("@/components/molecules/terminal/terminal-loading-progress", () => ({
-  TerminalLoadingProgress: () => (
-    <div data-testid="terminal-loading-progress">Loading...</div>
+vi.mock("@/components/organisms/gate/terminal-locked-teaser", () => ({
+  TerminalLockedTeaser: () => (
+    <div data-testid="terminal-locked">Terminal locked</div>
   ),
 }));
 
-vi.mock("@/components/molecules/shared/home-terminal-header", () => ({
-  HomeTerminalHeader: () => (
-    <div data-testid="home-terminal-header">Header</div>
-  ),
-}));
-
-vi.mock("@/components/layout/terminal-client", () => ({
-  TerminalClient: () => (
-    <div data-testid="terminal-client">Terminal Client</div>
+vi.mock("@/components/organisms/gate/terminal-unlocked-content", () => ({
+  TerminalUnlockedContent: () => (
+    <main id="main-content" data-testid="terminal-unlocked">
+      <div data-testid="terminal-client">Terminal Client</div>
+    </main>
   ),
 }));
 
@@ -35,6 +34,7 @@ describe("TerminalPage", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
+    delete process.env.NEXT_PUBLIC_GATE_ENABLED;
   });
 
   describe("Metadata", () => {
@@ -48,24 +48,31 @@ describe("TerminalPage", () => {
   });
 
   describe("Component Rendering", () => {
-    it("should render terminal client", () => {
+    it("should render terminal client when unlocked", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
-      const { getByTestId } = render(<TerminalPage />);
+      const jsx = await TerminalPage();
+      const { getByTestId } = render(jsx);
       expect(getByTestId("terminal-client")).toBeInTheDocument();
     });
 
-    it("should render main content landmark", () => {
+    it("should render locked teaser when gate enabled and no cookie", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
-      const { container } = render(<TerminalPage />);
-      expect(container.querySelector("main#main-content")).toBeTruthy();
+      const { cookies } = await import("next/headers");
+      vi.mocked(cookies).mockResolvedValueOnce({
+        get: () => undefined,
+      } as Awaited<ReturnType<typeof cookies>>);
+
+      const jsx = await TerminalPage();
+      const { getByTestId } = render(jsx);
+      expect(getByTestId("terminal-locked")).toBeInTheDocument();
     });
   });
 });

@@ -6,62 +6,29 @@ export interface GateStatus {
   completedLevels: number[];
 }
 
-export interface VerifyRequest {
+export interface LoginRequest {
   level: number;
-  answer: string;
-  meta?: Record<string, unknown>;
+  username: string;
+  password: string;
 }
 
-export interface VerifyResponse {
+export interface LoginResponse {
   passed: boolean;
   nextLevel?: number;
   attempts?: number;
   hint?: string;
 }
 
-export interface StubRequest {
-  content: string;
-}
-
-export interface StubResponse {
-  md5: string;
-  suggestedFilename: string;
-}
-
-export interface ManifestRequest {
-  filename: string;
-  signature: string;
-}
-
-export interface TriggerRequest {
-  filename: string;
-}
-
-export interface TriggerResponse {
-  token: string;
-  message: string;
-}
-
-export interface CrashRequest {
-  input: string;
-}
-
-export interface CrashResponse {
-  eipOffset: number;
-  message: string;
-}
-
-export interface RunRequest {
-  payload: string;
-}
-
-export interface RunResponse {
-  password: string;
+export interface CompleteLevel3Response {
+  passed: boolean;
 }
 
 export interface UnlockResponse {
   unlocked: boolean;
 }
+
+export const GATE_L1_USERNAME = "yourbloo0";
+export const GATE_L2_USERNAME = "yourbloo1";
 
 export function gateLevelRoute(level: number): Route {
   switch (level) {

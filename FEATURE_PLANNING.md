@@ -23,48 +23,48 @@
 
 ### Yang Sudah Ada
 
-| Fitur                                          | Frontend                | Backend                                                 |
-| ---------------------------------------------- | ----------------------- | ------------------------------------------------------- |
-| Standard landing (`/`)                         | Hero, sections, SiteNav | —                                                       |
-| Terminal-style interface (`/terminal`, gated)  | Lengkap + gate redirect | `GET/POST /api/gate/*` (8 endpoints)                    |
-| Terminal gate (OTW-style puzzles L1–L3)        | `/gate`, `/gate/1-3`    | Session store, verify/unlock, rate limit                |
-| Blog system (CRUD)                             | Page + list + detail + `/admin/blog` | REST API + HTML sanitization                 |
-| Blog tags (denormalized `TEXT[]`)              | TagFilter + TagChip     | `?tag=` filter + `GET /api/blog/tags`                   |
-| Blog search (basic ILIKE on title/summary)     | Search form di list     | `?search=` filter di `BlogListQuery`                    |
-| Reading time                                   | Tampil di list & detail | Column `reading_time_minutes` + `calculate_reading_time` |
-| Blog view counter                              | Tampil di detail        | Auto-increment di `GET /api/blog/:slug`                 |
-| Blog scheduling (`publishAt`)                  | Datetime picker + badges | Query-time filter + `BlogPost::status()`               |
-| RSS feed                                       | Link di header & layout | `GET /api/rss`                                          |
-| Auth (JWT + refresh via HttpOnly cookie)       | Admin login/register    | bcrypt + token rotation + tower-governor rate limit     |
-| TOTP 2FA admin                                 | Setup + login challenge | `src/routes/twofa.rs` + auth challenge flow             |
-| Contact form + admin inbox                     | `/contact`, `/admin/messages` | `POST /api/contact`, CRUD `/api/admin/messages`   |
-| Portfolio sections (skills/projects/exp/about) | Static + dynamic data   | DB-backed + fallback                                    |
-| TipTap WYSIWYG blog editor + image upload      | `TiptapEditor` + upload   | `POST/DELETE /api/upload/image`                         |
-| Blog series / locale content                   | `/blog/series`, locale UI | Series + i18n APIs                                      |
-| Portfolio version history                      | `/admin/portfolio`        | Snapshots + restore API                                 |
-| Keyboard shortcut modal + history panel        | Wired in `terminal.tsx`   | —                                                       |
-| Table of contents (desktop sidebar)            | Sticky sidebar + heading IDs | —                                                    |
-| Admin inbox bulk actions                       | Checkbox toolbar          | `PATCH/DELETE /api/admin/messages/bulk`                 |
-| Visitor analytics (Grafana)                    | Pageview beacon + admin link | Prometheus `/metrics`, pageview API                  |
-| GitHub stats proxy                             | `github-service.ts` → BE  | `/api/github/*`                                         |
-| Spotify Now Playing                            | Footer widget + command   | `/api/spotify/now-playing`                              |
-| Live playground                                | `/playground` Sandpack    | Snippets API optional                                   |
-| Newsletter                                     | Footer + admin broadcast  | Subscribe/confirm/broadcast                             |
-| Headless CMS                                   | `/admin/cms` docs         | `/api/v1/content/*` + API keys                          |
-| AI assistant (Gemini)                          | Chat widget + `ask` cmd   | `/api/ai/chat` SSE                                      |
-| Visitor presence                               | Nav badge                 | `WS /ws/presence`                                       |
-| Full CLI (pipe, chains)                        | `command-parser.ts`       | —                                                       |
-| i18n (multi-language UI)                       | hooks/utils             | —                                                       |
-| PWA support                                    | sw.js + manifest        | —                                                       |
-| Logging stack                                  | pino                    | Loki/Promtail/Grafana + structured tracing              |
-| Theme (dark/light)                             | next-themes             | —                                                       |
-| Tours/Onboarding                               | components              | —                                                       |
-| SEO (sitemap/robots/OG)                        | Lengkap                 | —                                                       |
-| Terminal commands (~15 + `blog`)               | command-registry        | —                                                       |
-| OpenAPI / Swagger                              | Admin link to `/api/docs` | Full spec (upload, gate, logs, roadmap)               |
-| Health check                                   | —                       | `/health`, `/health/detailed`, `/health/database`, `/health/redis`, `/health/ready` |
-| Roadmap.sh proxy                               | `/roadmap` page         | `/api/roadmap/*`                                        |
-| Client log ingestion                           | pino transport          | `POST /api/logs` (rate-limited, redacted)               |
+| Fitur                                          | Frontend                             | Backend                                                                             |
+| ---------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------- |
+| Standard landing (`/`)                         | Hero, sections, SiteNav              | —                                                                                   |
+| Terminal-style interface (`/terminal`, gated)  | Lengkap + gate redirect              | `GET/POST /api/gate/*` (8 endpoints)                                                |
+| Terminal gate (OTW-style puzzles L1–L3)        | `/gate`, `/gate/1-3`                 | Session store, verify/unlock, rate limit                                            |
+| Blog system (CRUD)                             | Page + list + detail + `/admin/blog` | REST API + HTML sanitization                                                        |
+| Blog tags (denormalized `TEXT[]`)              | TagFilter + TagChip                  | `?tag=` filter + `GET /api/blog/tags`                                               |
+| Blog search (basic ILIKE on title/summary)     | Search form di list                  | `?search=` filter di `BlogListQuery`                                                |
+| Reading time                                   | Tampil di list & detail              | Column `reading_time_minutes` + `calculate_reading_time`                            |
+| Blog view counter                              | Tampil di detail                     | Auto-increment di `GET /api/blog/:slug`                                             |
+| Blog scheduling (`publishAt`)                  | Datetime picker + badges             | Query-time filter + `BlogPost::status()`                                            |
+| RSS feed                                       | Link di header & layout              | `GET /api/rss`                                                                      |
+| Auth (JWT + refresh via HttpOnly cookie)       | Admin login/register                 | bcrypt + token rotation + tower-governor rate limit                                 |
+| TOTP 2FA admin                                 | Setup + login challenge              | `src/routes/twofa.rs` + auth challenge flow                                         |
+| Contact form + admin inbox                     | `/contact`, `/admin/messages`        | `POST /api/contact`, CRUD `/api/admin/messages`                                     |
+| Portfolio sections (skills/projects/exp/about) | Static + dynamic data                | DB-backed + fallback                                                                |
+| TipTap WYSIWYG blog editor + image upload      | `TiptapEditor` + upload              | `POST/DELETE /api/upload/image`                                                     |
+| Blog series / locale content                   | `/blog/series`, locale UI            | Series + i18n APIs                                                                  |
+| Portfolio version history                      | `/admin/portfolio`                   | Snapshots + restore API                                                             |
+| Keyboard shortcut modal + history panel        | Wired in `terminal.tsx`              | —                                                                                   |
+| Table of contents (desktop sidebar)            | Sticky sidebar + heading IDs         | —                                                                                   |
+| Admin inbox bulk actions                       | Checkbox toolbar                     | `PATCH/DELETE /api/admin/messages/bulk`                                             |
+| Visitor analytics (Grafana)                    | Pageview beacon + admin link         | Prometheus `/metrics`, pageview API                                                 |
+| GitHub stats proxy                             | `github-service.ts` → BE             | `/api/github/*`                                                                     |
+| Spotify Now Playing                            | Footer widget + command              | `/api/spotify/now-playing`                                                          |
+| Live playground                                | `/playground` Sandpack               | Snippets API optional                                                               |
+| Newsletter                                     | Footer + admin broadcast             | Subscribe/confirm/broadcast                                                         |
+| Headless CMS                                   | `/admin/cms` docs                    | `/api/v1/content/*` + API keys                                                      |
+| AI assistant (Gemini)                          | Chat widget + `ask` cmd              | `/api/ai/chat` SSE                                                                  |
+| Visitor presence                               | Nav badge                            | `WS /ws/presence`                                                                   |
+| Full CLI (pipe, chains)                        | `command-parser.ts`                  | —                                                                                   |
+| i18n (multi-language UI)                       | hooks/utils                          | —                                                                                   |
+| PWA support                                    | sw.js + manifest                     | —                                                                                   |
+| Logging stack                                  | pino                                 | Loki/Promtail/Grafana + structured tracing                                          |
+| Theme (dark/light)                             | next-themes                          | —                                                                                   |
+| Tours/Onboarding                               | components                           | —                                                                                   |
+| SEO (sitemap/robots/OG)                        | Lengkap                              | —                                                                                   |
+| Terminal commands (~15 + `blog`)               | command-registry                     | —                                                                                   |
+| OpenAPI / Swagger                              | Admin link to `/api/docs`            | Full spec (upload, gate, logs, roadmap)                                             |
+| Health check                                   | —                                    | `/health`, `/health/detailed`, `/health/database`, `/health/redis`, `/health/ready` |
+| Roadmap.sh proxy                               | `/roadmap` page                      | `/api/roadmap/*`                                                                    |
+| Client log ingestion                           | pino transport                       | `POST /api/logs` (rate-limited, redacted)                                           |
 
 ### Gap yang Masih Ada
 
@@ -80,13 +80,13 @@
 
 ## Status Per Sprint
 
-| Sprint   | Tema                  | Status      |
-| -------- | --------------------- | ----------- |
-| Sprint 1 | Polish & Discovery    | **DONE** (10/10) |
-| Sprint 2 | Core Portfolio Features | **DONE** (5/5 + bulk inbox) |
-| Sprint 3 | Power Features        | **DONE** (#14 TipTap, #17–#26) |
-| Sprint 4 | Game Changers         | **DONE** (#27–#32) |
-| Sprint 5 | Dual UI + Terminal Gate | **DONE** (14/14) |
+| Sprint   | Tema                    | Status                         |
+| -------- | ----------------------- | ------------------------------ |
+| Sprint 1 | Polish & Discovery      | **DONE** (10/10)               |
+| Sprint 2 | Core Portfolio Features | **DONE** (5/5 + bulk inbox)    |
+| Sprint 3 | Power Features          | **DONE** (#14 TipTap, #17–#26) |
+| Sprint 4 | Game Changers           | **DONE** (#27–#32)             |
+| Sprint 5 | Dual UI + Terminal Gate | **DONE** (14/14)               |
 
 ---
 
@@ -94,18 +94,18 @@
 
 > Semua item di sprint ini sudah selesai. Bagian ini disimpan sebagai referensi historis dan bukti konformitas.
 
-| #  | Fitur                       | Status | Lokasi                                                                            |
-| -- | --------------------------- | ------ | --------------------------------------------------------------------------------- |
-| 1  | Reading time estimator      | DONE   | BE: `src/db/models.rs` (`reading_time_minutes`), `src/routes/blog.rs::calculate_reading_time` · FE: `src/app/blog/page.tsx`, `src/app/blog/[slug]/page.tsx` |
-| 2  | Copy code button            | DONE   | `src/components/molecules/blog/copy-code-button.tsx`                              |
-| 3  | Social share buttons        | DONE   | `src/components/molecules/blog/share-buttons.tsx`                                 |
-| 4  | Blog view counter           | DONE   | BE auto-increment di `GET /api/blog/:slug` (`src/routes/blog.rs:319`); FE display `viewCount` |
-| 5  | Scroll progress bar         | DONE   | `src/components/molecules/blog/scroll-progress.tsx`                               |
-| 6  | Keyboard shortcut modal     | DONE   | `terminal.tsx` + `HistorySearchPanel`; `Ctrl+?`, `Ctrl+R` |
-| 7  | Command history persistence | DONE   | `src/hooks/use-command-history.ts` — localStorage key `-terminal-history`, max 500 entries, with analytics |
-| 8  | Table of Contents           | DONE   | `src/components/molecules/blog/table-of-contents.tsx`                             |
-| 9  | RSS Feed                    | DONE   | BE `GET /api/rss` di `src/routes/rss.rs`; FE link di blog list & layout           |
-| 10 | Back to top                 | DONE   | `src/components/molecules/blog/back-to-top.tsx`                                   |
+| #   | Fitur                       | Status | Lokasi                                                                                                                                                      |
+| --- | --------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Reading time estimator      | DONE   | BE: `src/db/models.rs` (`reading_time_minutes`), `src/routes/blog.rs::calculate_reading_time` · FE: `src/app/blog/page.tsx`, `src/app/blog/[slug]/page.tsx` |
+| 2   | Copy code button            | DONE   | `src/components/molecules/blog/copy-code-button.tsx`                                                                                                        |
+| 3   | Social share buttons        | DONE   | `src/components/molecules/blog/share-buttons.tsx`                                                                                                           |
+| 4   | Blog view counter           | DONE   | BE auto-increment di `GET /api/blog/:slug` (`src/routes/blog.rs:319`); FE display `viewCount`                                                               |
+| 5   | Scroll progress bar         | DONE   | `src/components/molecules/blog/scroll-progress.tsx`                                                                                                         |
+| 6   | Keyboard shortcut modal     | DONE   | `terminal.tsx` + `HistorySearchPanel`; `Ctrl+?`, `Ctrl+R`                                                                                                   |
+| 7   | Command history persistence | DONE   | `src/hooks/use-command-history.ts` — localStorage key `-terminal-history`, max 500 entries, with analytics                                                  |
+| 8   | Table of Contents           | DONE   | `src/components/molecules/blog/table-of-contents.tsx`                                                                                                       |
+| 9   | RSS Feed                    | DONE   | BE `GET /api/rss` di `src/routes/rss.rs`; FE link di blog list & layout                                                                                     |
+| 10  | Back to top                 | DONE   | `src/components/molecules/blog/back-to-top.tsx`                                                                                                             |
 
 ---
 
@@ -117,13 +117,13 @@ Sprint 2 fokus pada fitur produktif yang langsung dipakai recruiter/visitor: con
 > bukti konformitas: ringkasan implementasi + lokasi kode aktual ada di
 > tabel di bawah.
 
-| #  | Fitur                       | Status | Lokasi                                                                                                |
-| -- | --------------------------- | ------ | ----------------------------------------------------------------------------------------------------- |
-| 11 | Contact form + storage      | DONE   | BE: `src/routes/contact.rs::submit_contact_message`, `src/db/mod.rs` (table `contact_messages`), email boundary di `src/email.rs` · FE: `src/app/contact/page.tsx`, `src/lib/services/contact-service.ts` |
-| 19 | Admin messages inbox        | DONE   | BE: `list_messages` / `get_message` / `update_message` / `delete_message` di `src/routes/contact.rs` · FE: `src/app/admin/messages/page.tsx`, `src/lib/services/admin-messages-service.ts` |
-| 15 | Blog scheduling (`publishAt`) | DONE | BE: kolom `publish_at` di `blog_posts`, `BlogPost::status()` di `src/db/models.rs`, public-list filter di `src/routes/blog.rs::fetch_blog_list` · FE: datetime picker + status badge di `src/components/molecules/admin/blog-editor.tsx` |
-| 16 | TOTP 2FA admin login        | DONE   | BE: `src/routes/twofa.rs` (setup/verify/disable/login challenge + status), challenge-token integration di `src/routes/auth.rs::login` · FE: `src/lib/auth/auth-service.ts::complete2FALogin`, `src/components/molecules/admin/terminal-login-form.tsx` (challenge step), `src/app/admin/2fa/page.tsx`, `src/lib/services/twofa-service.ts` |
-| 20 | OpenAPI / Swagger docs      | DONE   | BE: `src/openapi.rs` + `#[utoipa::path]` annotations di handler auth/blog/portfolio/contact/twofa/health/rss, mount Swagger UI di `src/lib.rs` (`/api/docs`, raw spec di `/api/docs/openapi.json`); guarded oleh env `ENABLE_SWAGGER_UI` (default `true`) |
+| #   | Fitur                         | Status | Lokasi                                                                                                                                                                                                                                                                                                                                     |
+| --- | ----------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 11  | Contact form + storage        | DONE   | BE: `src/routes/contact.rs::submit_contact_message`, `src/db/mod.rs` (table `contact_messages`), email boundary di `src/email.rs` · FE: `src/app/contact/page.tsx`, `src/lib/services/contact-service.ts`                                                                                                                                  |
+| 19  | Admin messages inbox          | DONE   | BE: `list_messages` / `get_message` / `update_message` / `delete_message` di `src/routes/contact.rs` · FE: `src/app/admin/messages/page.tsx`, `src/lib/services/admin-messages-service.ts`                                                                                                                                                 |
+| 15  | Blog scheduling (`publishAt`) | DONE   | BE: kolom `publish_at` di `blog_posts`, `BlogPost::status()` di `src/db/models.rs`, public-list filter di `src/routes/blog.rs::fetch_blog_list` · FE: datetime picker + status badge di `src/components/molecules/admin/blog-editor.tsx`                                                                                                   |
+| 16  | TOTP 2FA admin login          | DONE   | BE: `src/routes/twofa.rs` (setup/verify/disable/login challenge + status), challenge-token integration di `src/routes/auth.rs::login` · FE: `src/lib/auth/auth-service.ts::complete2FALogin`, `src/components/molecules/admin/terminal-login-form.tsx` (challenge step), `src/app/admin/2fa/page.tsx`, `src/lib/services/twofa-service.ts` |
+| 20  | OpenAPI / Swagger docs        | DONE   | BE: `src/openapi.rs` + `#[utoipa::path]` annotations di handler auth/blog/portfolio/contact/twofa/health/rss, mount Swagger UI di `src/lib.rs` (`/api/docs`, raw spec di `/api/docs/openapi.json`); guarded oleh env `ENABLE_SWAGGER_UI` (default `true`)                                                                                  |
 
 ### Bukti konformitas singkat
 
@@ -218,16 +218,16 @@ Sprint 2 fokus pada fitur produktif yang langsung dipakai recruiter/visitor: con
 
 > Sprint 2 & 5 selesai. Dua item Sprint 3 sudah mulai mendarat di codebase.
 
-| #  | Fitur                                | Status | Lokasi |
-| -- | ------------------------------------ | ------ | ------ |
-| 14 | Rich text editor admin blog (TipTap) | DONE   | `tiptap-editor.tsx`, `blog-editor.tsx` |
-| 17 | Image upload integrated to editor    | DONE   | `image-upload-button.tsx` |
-| 21 | Visitor analytics (Grafana)          | DONE   | `pageview-beacon.tsx`, `metrics.rs`, Grafana dashboard |
-| 22 | Spotify Now Playing                  | DONE   | `spotify-widget.tsx`, `routes/spotify.rs` |
-| 23 | Blog series / collections            | DONE   | `series-service.ts`, `/blog/series/[slug]` |
-| 24 | Portfolio versioning                 | DONE   | `/admin/portfolio`, `portfolio_versions` table |
-| 25 | Multi-language blog content          | DONE   | `locales.ts`, locale switcher, `?locale=` |
-| 26 | GitHub stats proxy backend           | DONE   | `routes/github.rs`, proxy in `github-service.ts` |
+| #   | Fitur                                | Status | Lokasi                                                 |
+| --- | ------------------------------------ | ------ | ------------------------------------------------------ |
+| 14  | Rich text editor admin blog (TipTap) | DONE   | `tiptap-editor.tsx`, `blog-editor.tsx`                 |
+| 17  | Image upload integrated to editor    | DONE   | `image-upload-button.tsx`                              |
+| 21  | Visitor analytics (Grafana)          | DONE   | `pageview-beacon.tsx`, `metrics.rs`, Grafana dashboard |
+| 22  | Spotify Now Playing                  | DONE   | `spotify-widget.tsx`, `routes/spotify.rs`              |
+| 23  | Blog series / collections            | DONE   | `series-service.ts`, `/blog/series/[slug]`             |
+| 24  | Portfolio versioning                 | DONE   | `/admin/portfolio`, `portfolio_versions` table         |
+| 25  | Multi-language blog content          | DONE   | `locales.ts`, locale switcher, `?locale=`              |
+| 26  | GitHub stats proxy backend           | DONE   | `routes/github.rs`, proxy in `github-service.ts`       |
 
 Catatan: `tsvector` full-text upgrade (#13 advanced) bisa masuk ke sprint ini jika search basic ILIKE sudah tidak cukup.
 
@@ -235,14 +235,14 @@ Catatan: `tsvector` full-text upgrade (#13 advanced) bisa masuk ke sprint ini ji
 
 ## Sprint 4 — Game Changers (Done)
 
-| #  | Fitur                                  | Status | Lokasi |
-| -- | -------------------------------------- | ------ | ------ |
-| 27 | AI Portfolio Assistant (Gemini)        | DONE   | `ai-chat-widget.tsx`, `routes/ai.rs` |
-| 28 | Live coding / demo environment         | DONE   | `/playground`, Sandpack |
-| 29 | Newsletter & email subscription        | DONE   | `/admin/newsletter`, `routes/newsletter.rs` |
-| 30 | Real-time visitor presence             | DONE   | `visitor-presence-badge.tsx`, `WS /ws/presence` |
-| 31 | Full CLI experience (pipe, alias, etc) | DONE   | `command-parser.ts` pipe + `&&`/`;` |
-| 32 | Headless Portfolio CMS mode            | DONE   | `/admin/cms`, `/api/v1/content/*` |
+| #   | Fitur                                  | Status | Lokasi                                          |
+| --- | -------------------------------------- | ------ | ----------------------------------------------- |
+| 27  | AI Portfolio Assistant (Gemini)        | DONE   | `ai-chat-widget.tsx`, `routes/ai.rs`            |
+| 28  | Live coding / demo environment         | DONE   | `/playground`, Sandpack                         |
+| 29  | Newsletter & email subscription        | DONE   | `/admin/newsletter`, `routes/newsletter.rs`     |
+| 30  | Real-time visitor presence             | DONE   | `visitor-presence-badge.tsx`, `WS /ws/presence` |
+| 31  | Full CLI experience (pipe, alias, etc) | DONE   | `command-parser.ts` pipe + `&&`/`;`             |
+| 32  | Headless Portfolio CMS mode            | DONE   | `/admin/cms`, `/api/v1/content/*`               |
 
 ---
 
@@ -250,22 +250,22 @@ Catatan: `tsvector` full-text upgrade (#13 advanced) bisa masuk ke sprint ini ji
 
 Verifikasi codebase Mei 2026 — frontend + backend.
 
-| # | Item | FE | BE | Lokasi |
-|---|------|----|----|--------|
-| 1 | Standard landing at `/` | Done | — | `src/app/page.tsx`, `src/components/organisms/landing/*`, `StandardPageLayout` |
-| 2 | Terminal at `/terminal` (noindex) | Done | — | `src/app/terminal/page.tsx` |
-| 3 | Gate guard (proxy, cookie, bypass) | Done | — | `src/proxy.ts`, `src/proxy/test/proxy.test.ts` |
-| 4 | Gate puzzles L1–L3 UI | Done | — | `src/app/gate/page.tsx`, `/gate/1-3`, `src/components/organisms/gate/*` |
-| 5 | Gate API (status/verify/unlock + challenges) | — | Done | `src/routes/gate.rs`, 8 routes di `src/lib.rs` |
-| 6 | SiteNav + SiteFooter + shared pages | Done | — | `src/components/layout/site-nav.tsx`, `site-footer.tsx`; blog/projects/contact/roadmap wrapped |
-| 7 | Canonical social links | Done | — | `src/lib/data/social-links.ts` |
-| 8 | URL helpers (`getApiUrl`, `getSiteUrl`) | Done | — | `src/lib/api/get-api-url.ts`, `get-site-url.ts` |
-| 9 | `.env.example` both repos | Done | Done | `portfolio-frontend/.env.example`, `portfolio-backend/.env.example` |
-| 10 | Blog draft slug leak fix | — | Done | `src/routes/blog.rs` — public `get_post` + admin bypass |
-| 11 | Admin blog page + terminal `blog` command | Done | — | `src/app/admin/blog/page.tsx`, `src/lib/commands/blog-commands.ts` |
-| 12 | Orphan cleanup + unused Radix prune | Done | — | ~22 files removed; 26 `@radix-ui/*` packages dropped |
-| 13 | SEO (sitemap/robots) dual-route aware | Done | — | `src/app/sitemap.ts`, `src/app/robots.ts` |
-| 14 | E2E specs | Done | — | `e2e/landing.spec.ts`, `e2e/gate.spec.ts` |
+| #   | Item                                         | FE   | BE   | Lokasi                                                                                         |
+| --- | -------------------------------------------- | ---- | ---- | ---------------------------------------------------------------------------------------------- |
+| 1   | Standard landing at `/`                      | Done | —    | `src/app/page.tsx`, `src/components/organisms/landing/*`, `StandardPageLayout`                 |
+| 2   | Terminal at `/terminal` (noindex)            | Done | —    | `src/app/terminal/page.tsx`                                                                    |
+| 3   | Gate guard (proxy, cookie, bypass)           | Done | —    | `src/proxy.ts`, `src/proxy/test/proxy.test.ts`                                                 |
+| 4   | Gate puzzles L1–L3 UI                        | Done | —    | `src/app/gate/page.tsx`, `/gate/1-3`, `src/components/organisms/gate/*`                        |
+| 5   | Gate API (status/verify/unlock + challenges) | —    | Done | `src/routes/gate.rs`, 8 routes di `src/lib.rs`                                                 |
+| 6   | SiteNav + SiteFooter + shared pages          | Done | —    | `src/components/layout/site-nav.tsx`, `site-footer.tsx`; blog/projects/contact/roadmap wrapped |
+| 7   | Canonical social links                       | Done | —    | `src/lib/data/social-links.ts`                                                                 |
+| 8   | URL helpers (`getApiUrl`, `getSiteUrl`)      | Done | —    | `src/lib/api/get-api-url.ts`, `get-site-url.ts`                                                |
+| 9   | `.env.example` both repos                    | Done | Done | `portfolio-frontend/.env.example`, `portfolio-backend/.env.example`                            |
+| 10  | Blog draft slug leak fix                     | —    | Done | `src/routes/blog.rs` — public `get_post` + admin bypass                                        |
+| 11  | Admin blog page + terminal `blog` command    | Done | —    | `src/app/admin/blog/page.tsx`, `src/lib/commands/blog-commands.ts`                             |
+| 12  | Orphan cleanup + unused Radix prune          | Done | —    | ~22 files removed; 26 `@radix-ui/*` packages dropped                                           |
+| 13  | SEO (sitemap/robots) dual-route aware        | Done | —    | `src/app/sitemap.ts`, `src/app/robots.ts`                                                      |
+| 14  | E2E specs                                    | Done | —    | `e2e/landing.spec.ts`, `e2e/gate.spec.ts`                                                      |
 
 Docs: [docs/dual-ui-gate.md](./docs/dual-ui-gate.md) · [docs/dual-ui-gate-implementation-checklist.md](./docs/dual-ui-gate-implementation-checklist.md)
 
@@ -330,7 +330,7 @@ RESEND_API_KEY=re_xxx
 RESEND_FROM=noreply@yourdomain.com
 
 # 2FA (#16)
-TOTP_ISSUER=infinitedim.site
+TOTP_ISSUER=infinitedim.vercel.app
 
 # OpenAPI (#20)
 ENABLE_API_DOCS=true   # set false di production jika tidak ingin public

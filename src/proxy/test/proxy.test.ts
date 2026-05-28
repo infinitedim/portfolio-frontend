@@ -390,12 +390,10 @@ describe("proxy", () => {
       expect(isGateEnabled()).toBe(false);
     });
 
-    it("redirects /terminal to /gate without cookie", () => {
+    it("allows /terminal without unlock cookie (locked teaser)", () => {
       process.env.NEXT_PUBLIC_GATE_ENABLED = "true";
       const request = new NextRequest("http://127.0.0.1:3000/terminal");
-      const redirect = resolveGateRedirect(request);
-      expect(redirect?.status).toBe(307);
-      expect(redirect?.headers.get("location")).toContain("/gate");
+      expect(resolveGateRedirect(request)).toBeNull();
     });
 
     it("allows /terminal with portfolio_gate cookie", () => {

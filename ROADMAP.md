@@ -1,7 +1,7 @@
 # Portfolio Project Roadmap
 
 > **Last Updated:** December 2024  
-> **Project:** Terminal Portfolio - infinitedim.site  
+> **Project:** Terminal Portfolio - infinitedim.vercel.app  
 > **Tech Stack:** Next.js 15+, NestJS 11, tRPC 11, Prisma 7, React 19, TypeScript 5.9+
 
 ---
@@ -492,7 +492,7 @@
 ## 📞 Contact
 
 - **Project Lead:** Dimas Saputra
-- **Email:** <developer@infinitedim.site>
+- **Email:** <developer@infinitedim.vercel.app>
 - **GitHub:** [@infinitedim](https://github.com/infinitedim)
 
 ---

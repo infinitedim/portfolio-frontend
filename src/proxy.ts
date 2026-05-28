@@ -53,7 +53,7 @@ function generateNonce(): string {
 
 function buildCsp(nonce: string, isDev: boolean): string {
   const apiOrigin =
-    process.env.NEXT_PUBLIC_API_URL || "https://api.infinitedim.site";
+    process.env.NEXT_PUBLIC_API_URL || "https://api.infinitedim.vercel.app";
 
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
@@ -137,12 +137,6 @@ export function resolveGateRedirect(request: NextRequest): NextResponse | null {
   if (hasGateBypass(request)) return null;
 
   const { pathname } = request.nextUrl;
-
-  if (pathname === "/terminal" || pathname.startsWith("/terminal/")) {
-    if (!hasGateCookie(request)) {
-      return NextResponse.redirect(new URL("/gate", request.url));
-    }
-  }
 
   if (pathname === "/gate" || pathname.startsWith("/gate/")) {
     if (hasGateCookie(request)) {

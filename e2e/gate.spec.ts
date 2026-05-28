@@ -6,17 +6,17 @@ const isPlaywright =
     process.env.TEST_WORKER_INDEX !== undefined);
 
 if (isPlaywright) {
-  test.describe("Gate redirects", () => {
-    test("should redirect /terminal to /gate without unlock cookie", async ({
-      page,
-    }) => {
+  test.describe("Gate", () => {
+    test("shows locked terminal without unlock cookie", async ({ page }) => {
       test.skip(
         process.env.NEXT_PUBLIC_GATE_ENABLED === "false",
         "Gate disabled in this environment",
       );
 
       await page.goto("/terminal");
-      await expect(page).toHaveURL(/\/gate/, { timeout: 10000 });
+      await expect(page.getByText("Terminal locked")).toBeVisible({
+        timeout: 10000,
+      });
     });
   });
 }

@@ -5,9 +5,9 @@ import { type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 
 const LEVELS = [
-  { level: 1, key: "gateLevelBandit" as const, href: "/gate/1" },
-  { level: 2, key: "gateLevelNatas" as const, href: "/gate/2" },
-  { level: 3, key: "gateLevelBehemoth" as const, href: "/gate/3" },
+  { level: 1, key: "gateLevel1" as const, href: "/gate/1" },
+  { level: 2, key: "gateLevel2" as const, href: "/gate/2" },
+  { level: 3, key: "gateLevel3" as const, href: "/gate/3" },
 ] as const;
 
 interface GateProgressProps {

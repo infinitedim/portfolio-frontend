@@ -1,18 +1,10 @@
 import { getApiUrl } from "@/lib/api/get-api-url";
 import type {
-  CrashRequest,
-  CrashResponse,
+  CompleteLevel3Response,
   GateStatus,
-  ManifestRequest,
-  RunRequest,
-  RunResponse,
-  StubRequest,
-  StubResponse,
-  TriggerRequest,
-  TriggerResponse,
+  LoginRequest,
+  LoginResponse,
   UnlockResponse,
-  VerifyRequest,
-  VerifyResponse,
 } from "./types";
 
 async function gateFetch<T>(
@@ -43,10 +35,17 @@ export const gateClient = {
     return gateFetch<GateStatus>("/api/gate/status");
   },
 
-  verify(body: VerifyRequest): Promise<VerifyResponse> {
-    return gateFetch<VerifyResponse>("/api/gate/verify", {
+  login(body: LoginRequest): Promise<LoginResponse> {
+    return gateFetch<LoginResponse>("/api/gate/login", {
       method: "POST",
       body: JSON.stringify(body),
+    });
+  },
+
+  completeLevel3(): Promise<CompleteLevel3Response> {
+    return gateFetch<CompleteLevel3Response>("/api/gate/complete/3", {
+      method: "POST",
+      body: JSON.stringify({}),
     });
   },
 
@@ -54,41 +53,6 @@ export const gateClient = {
     return gateFetch<UnlockResponse>("/api/gate/unlock", {
       method: "POST",
       body: JSON.stringify({}),
-    });
-  },
-
-  l2Stub(body: StubRequest): Promise<StubResponse> {
-    return gateFetch<StubResponse>("/api/gate/challenge/2/stub", {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-  },
-
-  l2Manifest(body: ManifestRequest): Promise<{ stored: boolean }> {
-    return gateFetch<{ stored: boolean }>("/api/gate/challenge/2/manifest", {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-  },
-
-  l2Trigger(body: TriggerRequest): Promise<TriggerResponse> {
-    return gateFetch<TriggerResponse>("/api/gate/challenge/2/trigger", {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-  },
-
-  l3Crash(body: CrashRequest): Promise<CrashResponse> {
-    return gateFetch<CrashResponse>("/api/gate/challenge/3/crash", {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-  },
-
-  l3Run(body: RunRequest): Promise<RunResponse> {
-    return gateFetch<RunResponse>("/api/gate/challenge/3/run", {
-      method: "POST",
-      body: JSON.stringify(body),
     });
   },
 };

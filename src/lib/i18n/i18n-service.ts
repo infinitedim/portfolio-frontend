@@ -192,9 +192,9 @@ export interface TranslationKeys {
   landingSkillsTitle: string;
   landingBlogTitle: string;
   landingProjectsTitle: string;
-  gateLevelBandit: string;
-  gateLevelNatas: string;
-  gateLevelBehemoth: string;
+  gateLevel1: string;
+  gateLevel2: string;
+  gateLevel3: string;
   gateSubmit: string;
   gateHint: string;
   gateProgress: string;
@@ -386,9 +386,9 @@ const translations: Record<string, TranslationKeys> = {
     landingSkillsTitle: "Skills",
     landingBlogTitle: "Blog",
     landingProjectsTitle: "Projects",
-    gateLevelBandit: "Bandit",
-    gateLevelNatas: "Natas",
-    gateLevelBehemoth: "Behemoth",
+    gateLevel1: "Level 1",
+    gateLevel2: "Level 2",
+    gateLevel3: "Level 3",
     gateSubmit: "Submit",
     gateHint: "Hint",
     gateProgress: "Progress",
@@ -579,9 +579,9 @@ const translations: Record<string, TranslationKeys> = {
     landingSkillsTitle: "Keahlian",
     landingBlogTitle: "Blog",
     landingProjectsTitle: "Proyek",
-    gateLevelBandit: "Bandit",
-    gateLevelNatas: "Natas",
-    gateLevelBehemoth: "Behemoth",
+    gateLevel1: "Level 1",
+    gateLevel2: "Level 2",
+    gateLevel3: "Level 3",
     gateSubmit: "Kirim",
     gateHint: "Petunjuk",
     gateProgress: "Progres",
@@ -772,9 +772,9 @@ const translations: Record<string, TranslationKeys> = {
     landingSkillsTitle: "Habilidades",
     landingBlogTitle: "Blog",
     landingProjectsTitle: "Proyectos",
-    gateLevelBandit: "Bandit",
-    gateLevelNatas: "Natas",
-    gateLevelBehemoth: "Behemoth",
+    gateLevel1: "Level 1",
+    gateLevel2: "Level 2",
+    gateLevel3: "Level 3",
     gateSubmit: "Enviar",
     gateHint: "Pista",
     gateProgress: "Progreso",

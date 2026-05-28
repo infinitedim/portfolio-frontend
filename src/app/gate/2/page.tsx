@@ -6,7 +6,7 @@ import { gateClient } from "@/lib/gate/gate-client";
 import type { GateStatus } from "@/lib/gate/types";
 import { gateLevelRoute } from "@/lib/gate/types";
 import { GateProgress } from "@/components/molecules/gate/gate-progress";
-import { PharUploadSimulator } from "@/components/organisms/gate/phar-upload-simulator";
+import { NatasLoginForm } from "@/components/organisms/gate/natas-login-form";
 
 export default function GateLevel2Page(): JSX.Element {
   const router = useRouter();
@@ -41,7 +41,7 @@ export default function GateLevel2Page(): JSX.Element {
   };
 
   if (!status) {
-    return <p className="text-neutral-500">Loading Natas challenge...</p>;
+    return <p className="text-neutral-500">Loading gate...</p>;
   }
 
   return (
@@ -50,9 +50,9 @@ export default function GateLevel2Page(): JSX.Element {
         <p className="text-xs uppercase tracking-widest text-neutral-600">
           Level 2
         </p>
-        <h1 className="mt-2 text-xl text-green-400">Natas 33</h1>
+        <h1 className="mt-2 text-xl text-green-400">Natas 3</h1>
         <p className="mt-2 text-xs text-neutral-500">
-          Phar upload, md5 chain, and phar:// deserialization.
+          Find the hidden directory. Read users.txt for the password.
         </p>
       </header>
 
@@ -61,7 +61,11 @@ export default function GateLevel2Page(): JSX.Element {
         completedLevels={status.completedLevels}
       />
 
-      <PharUploadSimulator onPassed={handlePassed} />
+      <NatasLoginForm
+        level={2}
+        hint="There is nothing on this page. Try exploring hidden paths."
+        onPassed={handlePassed}
+      />
     </>
   );
 }

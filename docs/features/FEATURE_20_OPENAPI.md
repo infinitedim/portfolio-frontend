@@ -160,14 +160,14 @@ Auto-generate dokumentasi API interaktif dengan Swagger UI yang bisa diakses di 
           description = "REST API for the Portfolio application. Built with Rust + Axum.",
           contact(
               name = "Dimas Saputra",
-              email = "developer@infinitedim.site",
+              email = "developer@infinitedim.vercel.app",
               url = "https://infinitedim.vercel.app"
           ),
           license(name = "MIT")
       ),
       servers(
           (url = "http://localhost:3001", description = "Local development"),
-          (url = "https://api.infinitedim.site", description = "Production")
+          (url = "https://api.infinitedim.vercel.app", description = "Production")
       ),
       tags(
           (name = "Authentication", description = "Admin authentication endpoints"),

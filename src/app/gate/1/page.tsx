@@ -6,7 +6,7 @@ import { gateClient } from "@/lib/gate/gate-client";
 import type { GateStatus } from "@/lib/gate/types";
 import { gateLevelRoute } from "@/lib/gate/types";
 import { GateProgress } from "@/components/molecules/gate/gate-progress";
-import { UppercaseShell } from "@/components/organisms/gate/uppercase-shell";
+import { NatasLoginForm } from "@/components/organisms/gate/natas-login-form";
 
 export default function GateLevel1Page(): JSX.Element {
   const router = useRouter();
@@ -22,9 +22,9 @@ export default function GateLevel1Page(): JSX.Element {
         }
         if (s.currentLevel > 1) {
           router.replace(gateLevelRoute(s.currentLevel));
-          setStatus(s);
+          return;
         }
-        return;
+        setStatus(s);
       })
       .catch(() =>
         setStatus({ unlocked: false, currentLevel: 1, completedLevels: [] }),
@@ -38,7 +38,7 @@ export default function GateLevel1Page(): JSX.Element {
   };
 
   if (!status) {
-    return <p className="text-neutral-500">Initializing Bandit shell...</p>;
+    return <p className="text-neutral-500">Loading gate...</p>;
   }
 
   return (
@@ -47,9 +47,9 @@ export default function GateLevel1Page(): JSX.Element {
         <p className="text-xs uppercase tracking-widest text-neutral-600">
           Level 1
         </p>
-        <h1 className="mt-2 text-xl text-green-400">Bandit 32 → 33</h1>
+        <h1 className="mt-2 text-xl text-green-400">Natas 0</h1>
         <p className="mt-2 text-xs text-neutral-500">
-          Escape the uppercase shell. Read the password file.
+          Log in with the credentials below.
         </p>
       </header>
 
@@ -58,7 +58,7 @@ export default function GateLevel1Page(): JSX.Element {
         completedLevels={status.completedLevels}
       />
 
-      <UppercaseShell onPassed={handlePassed} />
+      <NatasLoginForm level={1} showCredentials onPassed={handlePassed} />
     </>
   );
 }
