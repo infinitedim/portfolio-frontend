@@ -38,7 +38,9 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 describe("TerminalContext", () => {
   // 1. Guard: throw outside provider
   it("throws when used outside a TerminalProvider", () => {
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     expect(() => renderHook(() => useTerminalContext())).toThrow(
       "useTerminalContext() must be used within a <TerminalProvider>",

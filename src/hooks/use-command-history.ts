@@ -94,16 +94,7 @@ export function useCommandHistory({
 
       const cmd = command.toLowerCase().trim().split(" ")[0];
 
-      if (
-        [
-          "about",
-          "skills",
-          "projects",
-          "experience",
-          "education",
-          "resume",
-        ].includes(cmd)
-      ) {
+      if (["about", "skills", "projects", "resume"].includes(cmd)) {
         return "portfolio";
       }
 

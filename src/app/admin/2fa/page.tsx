@@ -176,9 +176,9 @@ export default function AdminTwoFactorPage(): JSX.Element {
                   className="text-sm"
                   style={{ color: themeConfig.colors.muted }}
                 >
-                  Add a second factor (TOTP) to admin sign-in. After
-                  enrollment, every login asks for a 6-digit code from your
-                  authenticator app.
+                  Add a second factor (TOTP) to admin sign-in. After enrollment,
+                  every login asks for a 6-digit code from your authenticator
+                  app.
                 </p>
               </div>
 
@@ -284,8 +284,8 @@ export default function AdminTwoFactorPage(): JSX.Element {
                       className="text-sm"
                       style={{ color: themeConfig.colors.muted }}
                     >
-                      Future logins will require a 6-digit TOTP code after
-                      your password.
+                      Future logins will require a 6-digit TOTP code after your
+                      password.
                     </p>
                   </div>
 
@@ -303,8 +303,8 @@ export default function AdminTwoFactorPage(): JSX.Element {
                       className="text-xs"
                       style={{ color: themeConfig.colors.muted }}
                     >
-                      Confirm with your password and a current TOTP/backup
-                      code to turn 2FA off and wipe enrollment data.
+                      Confirm with your password and a current TOTP/backup code
+                      to turn 2FA off and wipe enrollment data.
                     </p>
 
                     <input
@@ -357,9 +357,7 @@ export default function AdminTwoFactorPage(): JSX.Element {
                     <button
                       onClick={handleDisable}
                       disabled={
-                        busy ||
-                        !disablePassword.trim() ||
-                        !disableCode.trim()
+                        busy || !disablePassword.trim() || !disableCode.trim()
                       }
                       className="px-4 py-2 font-mono text-sm rounded disabled:opacity-60 disabled:cursor-not-allowed"
                       style={{
@@ -420,8 +418,8 @@ function SetupPanel({
           className="text-xs"
           style={{ color: themeConfig.colors.muted }}
         >
-          Use Google Authenticator, 1Password, Authy, or any RFC-6238 TOTP
-          app. If you can't scan, use the manual key below.
+          Use Google Authenticator, 1Password, Authy, or any RFC-6238 TOTP app.
+          If you can't scan, use the manual key below.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 items-start">
@@ -508,9 +506,7 @@ function SetupPanel({
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() =>
-              onCopy(data.backupCodes.join("\n"), "Backup codes")
-            }
+            onClick={() => onCopy(data.backupCodes.join("\n"), "Backup codes")}
             className="text-xs underline"
             style={{ color: themeConfig.colors.accent }}
           >

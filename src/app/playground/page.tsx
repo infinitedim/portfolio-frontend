@@ -41,7 +41,9 @@ function PlaygroundInner() {
   const searchParams = useSearchParams();
   const snippetId = searchParams.get("id") ?? undefined;
   const [title, setTitle] = useState("Live Demo");
-  const [language, setLanguage] = useState<"react" | "vanilla" | "vue" | "angular">("react");
+  const [language, setLanguage] = useState<
+    "react" | "vanilla" | "vue" | "angular"
+  >("react");
   const [code, setCode] = useState(DEFAULT_CODE);
   const [loading, setLoading] = useState(!!snippetId);
 

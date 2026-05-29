@@ -101,21 +101,21 @@ export const metadata: Metadata = {
     },
   },
   ...(process.env.GOOGLE_SITE_VERIFICATION ||
-    process.env.YANDEX_VERIFICATION ||
-    process.env.YAHOO_VERIFICATION
+  process.env.YANDEX_VERIFICATION ||
+  process.env.YAHOO_VERIFICATION
     ? {
-      verification: {
-        ...(process.env.GOOGLE_SITE_VERIFICATION
-          ? { google: process.env.GOOGLE_SITE_VERIFICATION }
-          : {}),
-        ...(process.env.YANDEX_VERIFICATION
-          ? { yandex: process.env.YANDEX_VERIFICATION }
-          : {}),
-        ...(process.env.YAHOO_VERIFICATION
-          ? { yahoo: process.env.YAHOO_VERIFICATION }
-          : {}),
-      },
-    }
+        verification: {
+          ...(process.env.GOOGLE_SITE_VERIFICATION
+            ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+            : {}),
+          ...(process.env.YANDEX_VERIFICATION
+            ? { yandex: process.env.YANDEX_VERIFICATION }
+            : {}),
+          ...(process.env.YAHOO_VERIFICATION
+            ? { yahoo: process.env.YAHOO_VERIFICATION }
+            : {}),
+        },
+      }
     : {}),
   alternates: {
     canonical: "/",
@@ -130,18 +130,6 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Portfolio Terminal",
-    startupImage: [
-      {
-        url: "/icons/apple-splash-2048-2732.png",
-        media:
-          "(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)",
-      },
-      {
-        url: "/icons/apple-splash-1668-2388.png",
-        media:
-          "(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)",
-      },
-    ],
   },
   other: {
     "msapplication-TileColor": "#000000",

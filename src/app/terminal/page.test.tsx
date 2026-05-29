@@ -21,7 +21,10 @@ vi.mock("@/components/organisms/gate/terminal-locked-teaser", () => ({
 
 vi.mock("@/components/organisms/gate/terminal-unlocked-content", () => ({
   TerminalUnlockedContent: () => (
-    <main id="main-content" data-testid="terminal-unlocked">
+    <main
+      id="main-content"
+      data-testid="terminal-unlocked"
+    >
       <div data-testid="terminal-client">Terminal Client</div>
     </main>
   ),

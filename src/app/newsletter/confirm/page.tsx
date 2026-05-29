@@ -42,11 +42,12 @@ function ConfirmContent() {
       {status === "loading" && (
         <p className="text-gray-400">Confirming your subscription…</p>
       )}
-      {status === "success" && (
-        <p className="text-gray-300">{message}</p>
-      )}
+      {status === "success" && <p className="text-gray-300">{message}</p>}
       {status === "error" && (
-        <p className="text-red-400" role="alert">
+        <p
+          className="text-red-400"
+          role="alert"
+        >
           {message}
         </p>
       )}

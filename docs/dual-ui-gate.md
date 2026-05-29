@@ -4,13 +4,13 @@ Architecture and operations guide for the dual-entry portfolio.
 
 ## Routes
 
-| Route | Access | Purpose |
-|-------|--------|---------|
-| `/` | Public | Standard landing (hero, projects, blog preview) |
-| `/terminal` | Gated | Interactive terminal portfolio |
-| `/gate`, `/gate/1-3` | Public (puzzles) | OverTheWire-style challenges |
-| `/blog`, `/projects`, `/contact`, `/roadmap` | Public | Shared content (single source) |
-| `/admin/*` | Auth | Admin dashboard |
+| Route                                        | Access           | Purpose                                         |
+| -------------------------------------------- | ---------------- | ----------------------------------------------- |
+| `/`                                          | Public           | Standard landing (hero, projects, blog preview) |
+| `/terminal`                                  | Gated            | Interactive terminal portfolio                  |
+| `/gate`, `/gate/1-3`                         | Public (puzzles) | OverTheWire-style challenges                    |
+| `/blog`, `/projects`, `/contact`, `/roadmap` | Public           | Shared content (single source)                  |
+| `/admin/*`                                   | Auth             | Admin dashboard                                 |
 
 ## Gate flow
 
@@ -52,10 +52,10 @@ See `.env.example` in both repos for full lists.
 
 ## References
 
-| Level | Inspiration |
-|-------|-------------|
-| 1 | [Natas 0](https://overthewire.org/wargames/natas/natas0.html) — static credentials |
-| 2 | [Natas 3](https://overthewire.org/wargames/natas/natas3.html) — hidden `/s3cr3t/` directory |
-| 3 | [Natas 5+](https://overthewire.org/wargames/natas/) — Referer header check |
+| Level | Inspiration                                                                                 |
+| ----- | ------------------------------------------------------------------------------------------- |
+| 1     | [Natas 0](https://overthewire.org/wargames/natas/natas0.html) — static credentials          |
+| 2     | [Natas 3](https://overthewire.org/wargames/natas/natas3.html) — hidden `/s3cr3t/` directory |
+| 3     | [Natas 5+](https://overthewire.org/wargames/natas/) — Referer header check                  |
 
 Implementation checklist: [dual-ui-gate-implementation-checklist.md](./dual-ui-gate-implementation-checklist.md)

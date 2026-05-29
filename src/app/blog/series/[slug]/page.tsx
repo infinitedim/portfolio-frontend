@@ -89,7 +89,11 @@ export default async function BlogSeriesPage({ params }: SeriesPageProps) {
                   {(post.tags?.length ?? 0) > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {post.tags.map((tag) => (
-                        <TagChip key={tag} name={tag} size="sm" />
+                        <TagChip
+                          key={tag}
+                          name={tag}
+                          size="sm"
+                        />
                       ))}
                     </div>
                   )}

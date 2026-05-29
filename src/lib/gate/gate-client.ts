@@ -7,10 +7,7 @@ import type {
   UnlockResponse,
 } from "./types";
 
-async function gateFetch<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<T> {
+async function gateFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${getApiUrl()}${path}`, {
     credentials: "include",
     headers: {

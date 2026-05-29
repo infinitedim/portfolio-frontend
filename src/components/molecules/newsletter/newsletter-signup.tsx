@@ -15,7 +15,9 @@ export function NewsletterSignup() {
     setLoading(true);
     try {
       const result = await subscribeNewsletter(email.trim());
-      toast.success(result.message || "Check your inbox to confirm subscription.");
+      toast.success(
+        result.message || "Check your inbox to confirm subscription.",
+      );
       setEmail("");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Subscription failed");
@@ -29,7 +31,10 @@ export function NewsletterSignup() {
       onSubmit={(e) => void handleSubmit(e)}
       className="flex w-full max-w-md flex-col gap-2 sm:flex-row"
     >
-      <label htmlFor="newsletter-email" className="sr-only">
+      <label
+        htmlFor="newsletter-email"
+        className="sr-only"
+      >
         Email for newsletter
       </label>
       <input

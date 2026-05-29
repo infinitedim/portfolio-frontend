@@ -18,15 +18,11 @@
 
 "use client";
 
+import { useState, useEffect, useRef, useCallback, type JSX } from "react";
 import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-
-  type JSX,
-} from "react";
-import { TerminalProvider, useTerminalContext } from "@/lib/context/terminal-context";
+  TerminalProvider,
+  useTerminalContext,
+} from "@/lib/context/terminal-context";
 import { TerminalHeader } from "./terminal-header";
 import { TerminalInputSection } from "./terminal-input-section";
 import { TerminalCustomizationToolbar } from "./terminal-customization-toolbar";
@@ -61,7 +57,10 @@ interface TerminalProps {
  * Handles DOM side-effects and assembles the visible page regions.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.Element | null {
+function TerminalContent({
+  onThemeChange,
+  onFontChange,
+}: TerminalProps): JSX.Element | null {
   const {
     themeConfig,
     fontConfig,
@@ -143,7 +142,9 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
     return () => document.removeEventListener("keydown", handleEscape);
   }, [shortcutsOpen, historyOpen]);
 
-  useEffect(() => { setIsMounted(true); }, []);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   /** Minimum loading delay so the splash screen isn't a flash */
   useEffect(() => {
@@ -153,7 +154,12 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
 
   /** Auto-start tour for first-time visitors once history is empty */
   useEffect(() => {
-    if (isMounted && !hasCompletedTour && isFirstVisit && history.length === 0) {
+    if (
+      isMounted &&
+      !hasCompletedTour &&
+      isFirstVisit &&
+      history.length === 0
+    ) {
       const timer = setTimeout(() => startTour(), 1500);
       return () => clearTimeout(timer);
     }
@@ -173,8 +179,12 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
 
   /** Listen for customization panel open/close to gate global keydown */
   useEffect(() => {
-    const open = () => { isCustomizationOpenRef.current = true; };
-    const close = () => { isCustomizationOpenRef.current = false; };
+    const open = () => {
+      isCustomizationOpenRef.current = true;
+    };
+    const close = () => {
+      isCustomizationOpenRef.current = false;
+    };
     window.addEventListener("terminal:open-customization", open);
     window.addEventListener("terminal:close-customization", close);
     return () => {
@@ -196,10 +206,16 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
         tagName === "textarea" ||
         tagName === "select" ||
         target.contentEditable === "true" ||
-        e.ctrlKey || e.altKey || e.metaKey ||
-        e.key === "Tab" || e.key === "Escape" || e.key === "Enter" ||
-        e.key === "ArrowUp" || e.key === "ArrowDown" ||
-        e.key === "ArrowLeft" || e.key === "ArrowRight" ||
+        e.ctrlKey ||
+        e.altKey ||
+        e.metaKey ||
+        e.key === "Tab" ||
+        e.key === "Escape" ||
+        e.key === "Enter" ||
+        e.key === "ArrowUp" ||
+        e.key === "ArrowDown" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowRight" ||
         isCustomizationOpenRef.current
       ) {
         return;
@@ -207,7 +223,10 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
 
       if (document.activeElement && document.activeElement !== document.body) {
         const active = document.activeElement as HTMLElement;
-        if (active.tagName.toLowerCase() !== "body" && active !== commandInputRef.current) {
+        if (
+          active.tagName.toLowerCase() !== "body" &&
+          active !== commandInputRef.current
+        ) {
           return;
         }
       }
@@ -236,7 +255,8 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
         target.tagName === "BUTTON" ||
         target.tagName === "INPUT" ||
         target.tagName === "A"
-      ) return;
+      )
+        return;
       const input = terminalRef.current?.querySelector("input");
       if (input) input.focus();
     };
@@ -254,7 +274,10 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
     return (
       <div
         className="min-h-screen w-full flex items-center justify-center relative overflow-hidden"
-        style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
+        style={{
+          backgroundColor: "var(--terminal-bg, #0a0a0a)",
+          color: "var(--terminal-text, #e5e5e5)",
+        }}
         suppressHydrationWarning={true}
       >
         <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
@@ -279,7 +302,10 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
     return (
       <div
         className="min-h-screen w-full flex items-center justify-center relative overflow-hidden"
-        style={{ backgroundColor: "var(--terminal-bg, #0a0a0a)", color: "var(--terminal-text, #e5e5e5)" }}
+        style={{
+          backgroundColor: "var(--terminal-bg, #0a0a0a)",
+          color: "var(--terminal-text, #e5e5e5)",
+        }}
         suppressHydrationWarning={true}
       >
         <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-black to-gray-800" />
@@ -295,7 +321,10 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
               { path: "src/lib/fonts/fontConfig.ts", size: "6.2 KB" },
               { path: "src/components/ui/LetterGlitch.tsx", size: "8.1 KB" },
               { path: "src/components/ui/ASCIIBanner.tsx", size: "4.3 KB" },
-              { path: "src/components/terminal/CommandInput.tsx", size: "12.4 KB" },
+              {
+                path: "src/components/terminal/CommandInput.tsx",
+                size: "12.4 KB",
+              },
               { path: "src/lib/commands/commandRegistry.ts", size: "22.1 KB" },
               { path: "src/hooks/useCommandSuggestions.ts", size: "11.8 KB" },
               { path: "src/types/terminal.ts", size: "2.9 KB" },
@@ -323,7 +352,11 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
   };
 
   const themeGlitchColors = themeConfig?.colors
-    ? [themeConfig.colors.bg, themeConfig.colors.accent, themeConfig.colors.muted || themeConfig.colors.border]
+    ? [
+        themeConfig.colors.bg,
+        themeConfig.colors.accent,
+        themeConfig.colors.muted || themeConfig.colors.border,
+      ]
     : DEFAULT_GLITCH_COLORS;
 
   // ── Main render ──────────────────────────────────────────────────────
@@ -343,21 +376,24 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
         <AccessibilityMenu />
 
         {/* Background animation */}
-        {backgroundSettings.type === "letter-glitch" && backgroundSettings.letterGlitch && (
-          <LetterGlitch
-            glitchColors={
-              isDefaultGlitchColors(backgroundSettings.letterGlitch.glitchColors)
-                ? themeGlitchColors
-                : backgroundSettings.letterGlitch.glitchColors
-            }
-            glitchSpeed={backgroundSettings.letterGlitch.glitchSpeed}
-            centerVignette={backgroundSettings.letterGlitch.centerVignette}
-            outerVignette={backgroundSettings.letterGlitch.outerVignette}
-            smooth={backgroundSettings.letterGlitch.smooth}
-            characters={backgroundSettings.letterGlitch.characters}
-            className="opacity-30 fixed inset-0 z-0"
-          />
-        )}
+        {backgroundSettings.type === "letter-glitch" &&
+          backgroundSettings.letterGlitch && (
+            <LetterGlitch
+              glitchColors={
+                isDefaultGlitchColors(
+                  backgroundSettings.letterGlitch.glitchColors,
+                )
+                  ? themeGlitchColors
+                  : backgroundSettings.letterGlitch.glitchColors
+              }
+              glitchSpeed={backgroundSettings.letterGlitch.glitchSpeed}
+              centerVignette={backgroundSettings.letterGlitch.centerVignette}
+              outerVignette={backgroundSettings.letterGlitch.outerVignette}
+              smooth={backgroundSettings.letterGlitch.smooth}
+              characters={backgroundSettings.letterGlitch.characters}
+              className="opacity-30 fixed inset-0 z-0"
+            />
+          )}
 
         {/* Main terminal area */}
         <div
@@ -369,7 +405,9 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
             color: themeConfig?.colors?.text ?? "#ffffff",
             fontFamily: fontConfig?.family ?? "monospace",
             fontWeight: fontConfig?.weight ?? "normal",
-            fontFeatureSettings: fontConfig?.ligatures ? '"liga" 1, "calt" 1' : '"liga" 0, "calt" 0',
+            fontFeatureSettings: fontConfig?.ligatures
+              ? '"liga" 1, "calt" 1'
+              : '"liga" 0, "calt" 0',
           }}
           suppressHydrationWarning={true}
           role="main"
@@ -440,10 +478,19 @@ function TerminalContent({ onThemeChange, onFontChange }: TerminalProps): JSX.El
  * @param onThemeChange - Callback fired after a successful theme change
  * @param onFontChange  - Callback fired after a successful font change
  */
-export function Terminal({ onThemeChange, onFontChange }: TerminalProps): JSX.Element {
+export function Terminal({
+  onThemeChange,
+  onFontChange,
+}: TerminalProps): JSX.Element {
   return (
-    <TerminalProvider onThemeChange={onThemeChange} onFontChange={onFontChange}>
-      <TerminalContent onThemeChange={onThemeChange} onFontChange={onFontChange} />
+    <TerminalProvider
+      onThemeChange={onThemeChange}
+      onFontChange={onFontChange}
+    >
+      <TerminalContent
+        onThemeChange={onThemeChange}
+        onFontChange={onFontChange}
+      />
     </TerminalProvider>
   );
 }

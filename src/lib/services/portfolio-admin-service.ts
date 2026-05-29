@@ -26,7 +26,10 @@ function apiBase(): string {
   return getApiUrl();
 }
 
-async function authedFetch(path: string, init?: RequestInit): Promise<Response> {
+async function authedFetch(
+  path: string,
+  init?: RequestInit,
+): Promise<Response> {
   let token = authService.getAccessToken();
   if (!token) {
     const refreshed = await authService.refresh();

@@ -86,10 +86,7 @@ export function useHistory({
       const cmd = command.toLowerCase().split(" ")[0];
 
       if (["theme", "font", "customize"].includes(cmd)) return "customization";
-      if (
-        ["skills", "projects", "about", "experience", "education"].includes(cmd)
-      )
-        return "portfolio";
+      if (["skills", "projects", "about"].includes(cmd)) return "portfolio";
       if (["help", "clear", "status", "alias"].includes(cmd)) return "system";
       if (["roadmap", "progress"].includes(cmd)) return "development";
 

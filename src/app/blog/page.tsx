@@ -173,106 +173,64 @@ export default async function BlogPage({
 
   return (
     <StandardPageLayout>
-    <div className="min-h-screen bg-gray-950 text-gray-100">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <header className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-4xl font-bold text-green-400">Blog</h1>
-            <a
-              href="/rss.xml"
-              className="text-xs text-gray-500 hover:text-orange-400 transition-colors border border-gray-700 hover:border-orange-400 px-2 py-1 rounded"
-            >
-              RSS
-            </a>
-          </div>
-          <p className="text-gray-400 mb-6">
-            Latest articles, tutorials, and insights.
-          </p>
-
-          <BlogLocaleSwitcher className="mb-4" />
-
-          <form
-            method="GET"
-            action="/blog"
-            className="flex gap-2 mb-4"
-          >
-            <input
-              type="text"
-              name="search"
-              defaultValue={search ?? ""}
-              placeholder="Search posts..."
-              className="flex-1 bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-green-400"
-            />
-            {tag && (
-              <input
-                type="hidden"
-                name="tag"
-                value={tag}
-              />
-            )}
-            {series && (
-              <input
-                type="hidden"
-                name="series"
-                value={series}
-              />
-            )}
-            {locale !== DEFAULT_BLOG_LOCALE && (
-              <input
-                type="hidden"
-                name="locale"
-                value={locale}
-              />
-            )}
-            <button
-              type="submit"
-              className="px-4 py-2 bg-green-400/10 border border-green-400/40 text-green-400 rounded text-sm hover:bg-green-400/20 transition-colors"
-            >
-              Search
-            </button>
-            {(search || tag || series) && (
-              <Link
-                href={buildUrl({
-                  page: 1,
-                  search: undefined,
-                  tag: undefined,
-                  series: undefined,
-                })}
-                className="px-4 py-2 border border-gray-700 text-gray-400 rounded text-sm hover:border-gray-500 transition-colors"
+      <div className="min-h-screen bg-gray-950 text-gray-100">
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <header className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-4xl font-bold text-green-400">Blog</h1>
+              <a
+                href="/rss.xml"
+                className="text-xs text-gray-500 hover:text-orange-400 transition-colors border border-gray-700 hover:border-orange-400 px-2 py-1 rounded"
               >
-                Clear
-              </Link>
-            )}
-          </form>
+                RSS
+              </a>
+            </div>
+            <p className="text-gray-400 mb-6">
+              Latest articles, tutorials, and insights.
+            </p>
 
-          <SeriesFilter
-            series={seriesList}
-            activeSeries={series}
-            search={search}
-          />
+            <BlogLocaleSwitcher className="mb-4" />
 
-          {availableTags.length > 0 && (
-            <TagFilter
-              tags={availableTags}
-              activeTag={tag}
-              searchParam={search}
-            />
-          )}
-        </header>
-
-        {posts.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            {search || tag || series ? (
-              <p>
-                No posts found for{" "}
-                {search && <span>&ldquo;{search}&rdquo;</span>}
-                {search && (tag || series) && " in "}
-                {tag && <span className="text-green-400">#{tag}</span>}
-                {tag && series && " in "}
-                {series && (
-                  <span className="text-green-400">series:{series}</span>
-                )}
-                .{" "}
+            <form
+              method="GET"
+              action="/blog"
+              className="flex gap-2 mb-4"
+            >
+              <input
+                type="text"
+                name="search"
+                defaultValue={search ?? ""}
+                placeholder="Search posts..."
+                className="flex-1 bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-green-400"
+              />
+              {tag && (
+                <input
+                  type="hidden"
+                  name="tag"
+                  value={tag}
+                />
+              )}
+              {series && (
+                <input
+                  type="hidden"
+                  name="series"
+                  value={series}
+                />
+              )}
+              {locale !== DEFAULT_BLOG_LOCALE && (
+                <input
+                  type="hidden"
+                  name="locale"
+                  value={locale}
+                />
+              )}
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-400/10 border border-green-400/40 text-green-400 rounded text-sm hover:bg-green-400/20 transition-colors"
+              >
+                Search
+              </button>
+              {(search || tag || series) && (
                 <Link
                   href={buildUrl({
                     page: 1,
@@ -280,96 +238,138 @@ export default async function BlogPage({
                     tag: undefined,
                     series: undefined,
                   })}
-                  className="text-green-400 hover:underline"
+                  className="px-4 py-2 border border-gray-700 text-gray-400 rounded text-sm hover:border-gray-500 transition-colors"
                 >
-                  View all posts
+                  Clear
                 </Link>
-              </p>
-            ) : (
-              <p>No blog posts yet. Check back soon!</p>
-            )}
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {posts.map((post) => (
-              <article
-                key={post.id}
-                className="border border-gray-800 rounded-lg p-6 hover:border-green-400/50 transition-colors"
-              >
-                <Link href={`/blog/${post.slug}`}>
-                  <h2 className="text-2xl font-semibold text-green-400 hover:text-green-300 mb-2">
-                    {post.title}
-                  </h2>
-                </Link>
-                {post.summary && (
-                  <p className="text-gray-400 mb-3">{post.summary}</p>
-                )}
-                {(post.tags?.length ?? 0) > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {post.tags!.map((t) => (
-                      <Link
-                        key={t}
-                        href={buildUrl({ tag: t, page: 1 })}
-                      >
-                        <TagChip
-                          name={t}
-                          size="sm"
-                          active={t === tag}
-                        />
-                      </Link>
-                    ))}
-                  </div>
-                )}
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center gap-3">
-                    <time dateTime={post.createdAt}>
-                      {new Date(post.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </time>
-                    {post.readingTimeMinutes > 0 && (
-                      <span>{post.readingTimeMinutes} min read</span>
-                    )}
-                  </div>
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="text-green-400 hover:text-green-300"
-                  >
-                    Read more →
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
+              )}
+            </form>
 
-        {totalPages > 1 && (
-          <nav className="mt-12 flex justify-center gap-2">
-            {page > 1 && (
-              <Link
-                href={buildUrl({ page: page - 1 })}
-                className="px-4 py-2 border border-gray-700 rounded hover:border-green-400 transition-colors"
-              >
-                ← Previous
-              </Link>
+            <SeriesFilter
+              series={seriesList}
+              activeSeries={series}
+              search={search}
+            />
+
+            {availableTags.length > 0 && (
+              <TagFilter
+                tags={availableTags}
+                activeTag={tag}
+                searchParam={search}
+              />
             )}
-            <span className="px-4 py-2 text-gray-500">
-              Page {page} of {totalPages}
-            </span>
-            {page < totalPages && (
-              <Link
-                href={buildUrl({ page: page + 1 })}
-                className="px-4 py-2 border border-gray-700 rounded hover:border-green-400 transition-colors"
-              >
-                Next →
-              </Link>
-            )}
-          </nav>
-        )}
+          </header>
+
+          {posts.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              {search || tag || series ? (
+                <p>
+                  No posts found for{" "}
+                  {search && <span>&ldquo;{search}&rdquo;</span>}
+                  {search && (tag || series) && " in "}
+                  {tag && <span className="text-green-400">#{tag}</span>}
+                  {tag && series && " in "}
+                  {series && (
+                    <span className="text-green-400">series:{series}</span>
+                  )}
+                  .{" "}
+                  <Link
+                    href={buildUrl({
+                      page: 1,
+                      search: undefined,
+                      tag: undefined,
+                      series: undefined,
+                    })}
+                    className="text-green-400 hover:underline"
+                  >
+                    View all posts
+                  </Link>
+                </p>
+              ) : (
+                <p>No blog posts yet. Check back soon!</p>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-8">
+              {posts.map((post) => (
+                <article
+                  key={post.id}
+                  className="border border-gray-800 rounded-lg p-6 hover:border-green-400/50 transition-colors"
+                >
+                  <Link href={`/blog/${post.slug}`}>
+                    <h2 className="text-2xl font-semibold text-green-400 hover:text-green-300 mb-2">
+                      {post.title}
+                    </h2>
+                  </Link>
+                  {post.summary && (
+                    <p className="text-gray-400 mb-3">{post.summary}</p>
+                  )}
+                  {(post.tags?.length ?? 0) > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {post.tags!.map((t) => (
+                        <Link
+                          key={t}
+                          href={buildUrl({ tag: t, page: 1 })}
+                        >
+                          <TagChip
+                            name={t}
+                            size="sm"
+                            active={t === tag}
+                          />
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between text-sm text-gray-500">
+                    <div className="flex items-center gap-3">
+                      <time dateTime={post.createdAt}>
+                        {new Date(post.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </time>
+                      {post.readingTimeMinutes > 0 && (
+                        <span>{post.readingTimeMinutes} min read</span>
+                      )}
+                    </div>
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="text-green-400 hover:text-green-300"
+                    >
+                      Read more →
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+
+          {totalPages > 1 && (
+            <nav className="mt-12 flex justify-center gap-2">
+              {page > 1 && (
+                <Link
+                  href={buildUrl({ page: page - 1 })}
+                  className="px-4 py-2 border border-gray-700 rounded hover:border-green-400 transition-colors"
+                >
+                  ← Previous
+                </Link>
+              )}
+              <span className="px-4 py-2 text-gray-500">
+                Page {page} of {totalPages}
+              </span>
+              {page < totalPages && (
+                <Link
+                  href={buildUrl({ page: page + 1 })}
+                  className="px-4 py-2 border border-gray-700 rounded hover:border-green-400 transition-colors"
+                >
+                  Next →
+                </Link>
+              )}
+            </nav>
+          )}
+        </div>
       </div>
-    </div>
     </StandardPageLayout>
   );
 }

@@ -46,7 +46,10 @@ import { useTour } from "@/hooks/use-tour";
 import { CustomizationService } from "@/lib/services/customization-service";
 import { isThemeName } from "@/types/theme";
 import { isFontName } from "@/types/font";
-import type { TerminalContextType, TerminalNotification } from "@/types/terminal-context";
+import type {
+  TerminalContextType,
+  TerminalNotification,
+} from "@/types/terminal-context";
 import type { BackgroundSettings } from "@/types/customization";
 
 // ---------------------------------------------------------------------------
@@ -166,10 +169,11 @@ export function TerminalProvider({
 
   // ── Local UI state ─────────────────────────────────────────────────────
   const [showWelcome, setShowWelcome] = useState(true);
-  const [notification, setNotification] = useState<TerminalNotification | null>(null);
-  const [backgroundSettings, setBackgroundSettings] = useState<BackgroundSettings>(
-    DEFAULT_BACKGROUND_SETTINGS,
+  const [notification, setNotification] = useState<TerminalNotification | null>(
+    null,
   );
+  const [backgroundSettings, setBackgroundSettings] =
+    useState<BackgroundSettings>(DEFAULT_BACKGROUND_SETTINGS);
 
   // ── Refs exposed to children ───────────────────────────────────────────
   const commandInputRef = useRef<HTMLInputElement | null>(null);
@@ -202,13 +206,22 @@ export function TerminalProvider({
       const customEvent = event as CustomEvent<BackgroundSettings>;
       if (customEvent.detail) {
         setBackgroundSettings(customEvent.detail);
-      } else if (typeof customizationService.getBackgroundSettings === "function") {
+      } else if (
+        typeof customizationService.getBackgroundSettings === "function"
+      ) {
         setBackgroundSettings(customizationService.getBackgroundSettings());
       }
     };
 
-    window.addEventListener("background-settings-updated", handleBackgroundUpdate);
-    return () => window.removeEventListener("background-settings-updated", handleBackgroundUpdate);
+    window.addEventListener(
+      "background-settings-updated",
+      handleBackgroundUpdate,
+    );
+    return () =>
+      window.removeEventListener(
+        "background-settings-updated",
+        handleBackgroundUpdate,
+      );
   }, []);
 
   // ── Handlers ───────────────────────────────────────────────────────────
@@ -344,7 +357,8 @@ export function TerminalProvider({
               type: "success",
             });
           } else {
-            const errorMsg = themeError ?? `Theme "${themeName}" may not exist or be invalid.`;
+            const errorMsg =
+              themeError ?? `Theme "${themeName}" may not exist or be invalid.`;
             showNotification(`Failed to change theme: ${errorMsg}`, "error");
             addToHistory(command, {
               ...output,
@@ -463,7 +477,11 @@ export function TerminalProvider({
           "   ▓▓▓▓▓▓▓▓▓░ 95% Complete",
         ].join("\n");
 
-        addToHistory(command, { ...output, content: statusInfo, type: "success" });
+        addToHistory(command, {
+          ...output,
+          content: statusInfo,
+          type: "success",
+        });
         setCurrentInput("");
         return;
       }

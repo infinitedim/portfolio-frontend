@@ -36,9 +36,9 @@ describe("referer-check", () => {
   });
 
   it("rejects invalid referer", () => {
-    expect(isValidTerminalReferer("https://infinitedim.vercel.app/gate/3")).toBe(
-      false,
-    );
+    expect(
+      isValidTerminalReferer("https://infinitedim.vercel.app/gate/3"),
+    ).toBe(false);
     expect(isValidTerminalReferer(null)).toBe(false);
   });
 });

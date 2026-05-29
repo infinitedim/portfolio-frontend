@@ -47,7 +47,6 @@
 | Admin inbox bulk actions                       | Checkbox toolbar                     | `PATCH/DELETE /api/admin/messages/bulk`                                             |
 | Visitor analytics (Grafana)                    | Pageview beacon + admin link         | Prometheus `/metrics`, pageview API                                                 |
 | GitHub stats proxy                             | `github-service.ts` → BE             | `/api/github/*`                                                                     |
-| Spotify Now Playing                            | Footer widget + command              | `/api/spotify/now-playing`                                                          |
 | Live playground                                | `/playground` Sandpack               | Snippets API optional                                                               |
 | Newsletter                                     | Footer + admin broadcast             | Subscribe/confirm/broadcast                                                         |
 | Headless CMS                                   | `/admin/cms` docs                    | `/api/v1/content/*` + API keys                                                      |
@@ -218,16 +217,16 @@ Sprint 2 fokus pada fitur produktif yang langsung dipakai recruiter/visitor: con
 
 > Sprint 2 & 5 selesai. Dua item Sprint 3 sudah mulai mendarat di codebase.
 
-| #   | Fitur                                | Status | Lokasi                                                 |
-| --- | ------------------------------------ | ------ | ------------------------------------------------------ |
-| 14  | Rich text editor admin blog (TipTap) | DONE   | `tiptap-editor.tsx`, `blog-editor.tsx`                 |
-| 17  | Image upload integrated to editor    | DONE   | `image-upload-button.tsx`                              |
-| 21  | Visitor analytics (Grafana)          | DONE   | `pageview-beacon.tsx`, `metrics.rs`, Grafana dashboard |
-| 22  | Spotify Now Playing                  | DONE   | `spotify-widget.tsx`, `routes/spotify.rs`              |
-| 23  | Blog series / collections            | DONE   | `series-service.ts`, `/blog/series/[slug]`             |
-| 24  | Portfolio versioning                 | DONE   | `/admin/portfolio`, `portfolio_versions` table         |
-| 25  | Multi-language blog content          | DONE   | `locales.ts`, locale switcher, `?locale=`              |
-| 26  | GitHub stats proxy backend           | DONE   | `routes/github.rs`, proxy in `github-service.ts`       |
+| #   | Fitur                                | Status  | Lokasi                                                  |
+| --- | ------------------------------------ | ------- | ------------------------------------------------------- |
+| 14  | Rich text editor admin blog (TipTap) | DONE    | `tiptap-editor.tsx`, `blog-editor.tsx`                  |
+| 17  | Image upload integrated to editor    | DONE    | `image-upload-button.tsx`                               |
+| 21  | Visitor analytics (Grafana)          | DONE    | `pageview-beacon.tsx`, `metrics.rs`, Grafana dashboard  |
+| 22  | Spotify now playing                  | RETIRED | Removed from backend + frontend (May 2026); not planned |
+| 23  | Blog series / collections            | DONE    | `series-service.ts`, `/blog/series/[slug]`              |
+| 24  | Portfolio versioning                 | DONE    | `/admin/portfolio`, `portfolio_versions` table          |
+| 25  | Multi-language blog content          | DONE    | `locales.ts`, locale switcher, `?locale=`               |
+| 26  | GitHub stats proxy backend           | DONE    | `routes/github.rs`, proxy in `github-service.ts`        |
 
 Catatan: `tsvector` full-text upgrade (#13 advanced) bisa masuk ke sprint ini jika search basic ILIKE sudah tidak cukup.
 
@@ -350,4 +349,4 @@ Semua sprint (1–5) dan fitur #6–#32 dari master plan sudah diimplementasi (M
 
 **Verifikasi:** `cargo test --lib` (135 tests), `bun run type-check`, docs di `docs/features/FEATURE_21`–`FEATURE_32`.
 
-**Setup production:** isi env vars di `.env.example` (Spotify, Gemini, Grafana URL, CMS keys, gate answers).
+**Setup production:** isi env vars di `.env.example` (Gemini, Grafana URL, CMS keys, gate answers).

@@ -25,6 +25,7 @@ export default function GateLevel1Page(): JSX.Element {
           return;
         }
         setStatus(s);
+        return undefined;
       })
       .catch(() =>
         setStatus({ unlocked: false, currentLevel: 1, completedLevels: [] }),
@@ -58,7 +59,11 @@ export default function GateLevel1Page(): JSX.Element {
         completedLevels={status.completedLevels}
       />
 
-      <NatasLoginForm level={1} showCredentials onPassed={handlePassed} />
+      <NatasLoginForm
+        level={1}
+        showCredentials
+        onPassed={handlePassed}
+      />
     </>
   );
 }

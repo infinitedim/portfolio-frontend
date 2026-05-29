@@ -6,13 +6,14 @@ import { useI18n } from "@/hooks/use-i18n";
 import { authService } from "@/lib/auth/auth-service";
 import { useDraftAutosave, type DraftData } from "@/hooks/use-draft-autosave";
 import { TiptapEditor } from "./tiptap-editor";
-import { ImageUploadButton, ImageDropZone, uploadBlogImage } from "./image-upload-button";
+import {
+  ImageUploadButton,
+  ImageDropZone,
+  uploadBlogImage,
+} from "./image-upload-button";
 import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
-import {
-  BLOG_CONTENT_LOCALES,
-  DEFAULT_BLOG_LOCALE,
-} from "@/lib/i18n/locales";
+import { BLOG_CONTENT_LOCALES, DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
 import {
   listAdminSeries,
   type BlogSeriesSummary,
@@ -42,7 +43,7 @@ interface BlogPost {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface LocalBlogPost extends BlogPost { }
+interface LocalBlogPost extends BlogPost {}
 
 interface BlogEditorProps {
   themeConfig: ThemeConfig;
@@ -62,7 +63,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const [locale, setLocale] = useState(DEFAULT_BLOG_LOCALE);
   const [seriesId, setSeriesId] = useState<string>("");
   const [seriesOrder, setSeriesOrder] = useState<string>("");
-  const [availableSeries, setAvailableSeries] = useState<BlogSeriesSummary[]>([]);
+  const [availableSeries, setAvailableSeries] = useState<BlogSeriesSummary[]>(
+    [],
+  );
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -151,9 +154,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setPublishAtLocal(isoToLocalInput(draft.publishAt));
     setLocale(draft.locale ?? DEFAULT_BLOG_LOCALE);
     setSeriesId(draft.seriesId ?? "");
-    setSeriesOrder(
-      draft.seriesOrder != null ? String(draft.seriesOrder) : "",
-    );
+    setSeriesOrder(draft.seriesOrder != null ? String(draft.seriesOrder) : "");
     setIsNewPost(false);
     setError(null);
 
@@ -404,7 +405,6 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setIsNewPost(true);
     setError(null);
   };
-
 
   const loadLocalDraft = () => {
     if (savedDraft) {
@@ -814,8 +814,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                     <button
                       key={post.id}
                       onClick={() => loadDraft(post)}
-                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
-                        }`}
+                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${
+                        isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
+                      }`}
                       style={{
                         borderColor: isSelected
                           ? themeConfig.colors.accent
@@ -833,7 +834,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                       </div>
                       {(() => {
                         const status =
-                          post.status ?? computeStatus(post.published, post.publishAt);
+                          post.status ??
+                          computeStatus(post.published, post.publishAt);
                         if (status === "scheduled") {
                           return (
                             <div
@@ -855,7 +857,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                             </div>
                           );
                         }
-                        return <div className="text-xs mt-1 opacity-50">Draft</div>;
+                        return (
+                          <div className="text-xs mt-1 opacity-50">Draft</div>
+                        );
                       })()}
                     </button>
                   );
@@ -873,7 +877,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               backgroundColor: themeConfig.colors.bg,
             }}
           >
-            { }
+            {}
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">{t("blogTitle")}</div>
               <input
@@ -895,7 +899,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               />
             </div>
 
-            { }
+            {}
             <div className="mb-4">
               <div className="text-xs opacity-70 mb-2">Slug (URL path)</div>
               <input
@@ -950,7 +954,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   }}
                 >
                   {BLOG_CONTENT_LOCALES.map((loc) => (
-                    <option key={loc.code} value={loc.code}>
+                    <option
+                      key={loc.code}
+                      value={loc.code}
+                    >
                       {loc.flag} {loc.label}
                     </option>
                   ))}
@@ -969,7 +976,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 >
                   <option value="">None</option>
                   {availableSeries.map((s) => (
-                    <option key={s.id} value={s.id}>
+                    <option
+                      key={s.id}
+                      value={s.id}
+                    >
                       {s.title}
                     </option>
                   ))}
@@ -1118,7 +1128,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         </div>
       </div>
 
-      { }
+      {}
       {showDraftPrompt && hasDraft && (
         <div
           className="fixed bottom-4 right-4 z-50 p-4 border rounded-lg shadow-lg max-w-sm"

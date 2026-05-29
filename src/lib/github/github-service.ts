@@ -135,7 +135,10 @@ export class GitHubService {
     return data as T;
   }
 
-  private mapRepoSummary(repo: GitHubRepoSummary, username: string): GitHubRepo {
+  private mapRepoSummary(
+    repo: GitHubRepoSummary,
+    username: string,
+  ): GitHubRepo {
     return {
       id: 0,
       name: repo.name,
@@ -196,7 +199,9 @@ export class GitHubService {
 
   async getRepo(owner: string, repo: string): Promise<GitHubRepo> {
     const repos = await this.getUserRepos(owner);
-    const found = repos.find((r) => r.name.toLowerCase() === repo.toLowerCase());
+    const found = repos.find(
+      (r) => r.name.toLowerCase() === repo.toLowerCase(),
+    );
     if (!found) {
       throw new Error(`Repository ${owner}/${repo} not found`);
     }
@@ -256,7 +261,9 @@ export class GitHubService {
     _page: number = 1,
     _perPage: number = 100,
   ): Promise<GitHubRepo[]> {
-    throw new Error("Starred repos are not available via the backend GitHub proxy");
+    throw new Error(
+      "Starred repos are not available via the backend GitHub proxy",
+    );
   }
 
   async getUserGists(

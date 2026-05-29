@@ -27,9 +27,7 @@ vi.mock("@/components/organisms/landing/about-section", () => ({
 }));
 
 vi.mock("@/components/organisms/landing/featured-projects", () => ({
-  FeaturedProjects: () => (
-    <div data-testid="featured-projects">Projects</div>
-  ),
+  FeaturedProjects: () => <div data-testid="featured-projects">Projects</div>,
 }));
 
 vi.mock("@/components/organisms/landing/skills-grid", () => ({

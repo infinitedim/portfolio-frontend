@@ -62,7 +62,7 @@ This project implements the following security measures:
 
 - Input validation on all user-provided data
 - XSS protection through content sanitization
-- SQL injection prevention via parameterized queries (Prisma ORM)
+- SQL injection prevention via parameterized queries (SQLx on the Rust/Axum backend)
 - CSRF protection on state-changing operations
 
 ### Infrastructure Security
@@ -85,7 +85,7 @@ This project implements the following security measures:
 - The main portfolio website and API
 - Authentication and session management
 - Data handling and storage
-- Third-party integrations (GitHub, Spotify APIs)
+- Third-party integrations (GitHub API)
 
 ### Out of Scope
 

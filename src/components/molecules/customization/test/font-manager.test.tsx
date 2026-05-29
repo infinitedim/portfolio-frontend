@@ -153,11 +153,7 @@ describe("FontManager", () => {
   });
 
   const renderWithProviders = (ui: React.ReactElement) => {
-    return render(
-      <AccessibilityProvider>
-        {ui}
-      </AccessibilityProvider>
-    );
+    return render(<AccessibilityProvider>{ui}</AccessibilityProvider>);
   };
 
   afterEach(() => {
@@ -365,7 +361,7 @@ describe("FontManager", () => {
 
       const filterDropdown = screen.getByText("All Sources").closest("button");
       fireEvent.click(filterDropdown!);
-      
+
       const customOption = screen.getByRole("option", { name: /Custom/ });
       fireEvent.click(customOption);
 

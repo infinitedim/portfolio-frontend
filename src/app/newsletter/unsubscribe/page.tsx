@@ -38,7 +38,10 @@ function UnsubscribeContent() {
       {done ? (
         <p className="text-gray-300">{message}</p>
       ) : (
-        <form onSubmit={(e) => void handleUnsubscribe(e)} className="space-y-4">
+        <form
+          onSubmit={(e) => void handleUnsubscribe(e)}
+          className="space-y-4"
+        >
           <p className="text-sm text-gray-400">
             Enter your unsubscribe token from the newsletter email, or use the
             link provided in the message.

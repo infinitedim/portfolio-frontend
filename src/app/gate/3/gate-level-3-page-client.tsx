@@ -40,6 +40,9 @@ export function GateLevel3PageClient({
   }
 
   return (
-    <GateLevel3Client status={status} refererGranted={refererGranted} />
+    <GateLevel3Client
+      status={status}
+      refererGranted={refererGranted}
+    />
   );
 }

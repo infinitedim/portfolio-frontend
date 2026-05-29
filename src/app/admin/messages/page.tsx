@@ -84,7 +84,9 @@ function MessagesInbox(): JSX.Element {
           prev
             ? {
                 ...prev,
-                items: prev.items.map((m) => (m.id === updated.id ? updated : m)),
+                items: prev.items.map((m) =>
+                  m.id === updated.id ? updated : m,
+                ),
                 unread: Math.max(0, prev.unread - 1),
               }
             : prev,
@@ -103,9 +105,7 @@ function MessagesInbox(): JSX.Element {
         prev
           ? {
               ...prev,
-              items: prev.items.map((m) =>
-                m.id === updated.id ? updated : m,
-              ),
+              items: prev.items.map((m) => (m.id === updated.id ? updated : m)),
               unread: prev.unread + (updated.read ? -1 : 1),
             }
           : prev,
@@ -177,7 +177,11 @@ function MessagesInbox(): JSX.Element {
   const handleBulkDelete = async () => {
     const ids = Array.from(checkedIds);
     if (ids.length === 0) return;
-    if (!confirm(`Delete ${ids.length} selected message(s)? This cannot be undone.`)) {
+    if (
+      !confirm(
+        `Delete ${ids.length} selected message(s)? This cannot be undone.`,
+      )
+    ) {
       return;
     }
     try {
@@ -390,8 +394,7 @@ function MessageList({
             <input
               type="checkbox"
               checked={
-                data.items.length > 0 &&
-                checkedIds.size === data.items.length
+                data.items.length > 0 && checkedIds.size === data.items.length
               }
               onChange={onToggleSelectAll}
               aria-label="Select all messages on this page"
@@ -400,80 +403,86 @@ function MessageList({
               select all on page
             </span>
           </div>
-          <ul className="divide-y" style={{ borderColor: themeConfig.colors.border }}>
-          {data.items.map((msg) => {
-            const isSelected = msg.id === selectedId;
-            return (
-              <li key={msg.id} className="flex items-stretch">
-                <label className="flex items-center px-3 shrink-0 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={checkedIds.has(msg.id)}
-                    onChange={() => onToggleChecked(msg.id)}
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label={`Select message from ${msg.name}`}
-                  />
-                </label>
-                <button
-                  onClick={() => onSelect(msg)}
-                  className="flex-1 text-left p-3 transition-colors"
-                  style={{
-                    backgroundColor: isSelected
-                      ? `${themeConfig.colors.accent}15`
-                      : "transparent",
-                    borderLeft: `3px solid ${
-                      isSelected
-                        ? themeConfig.colors.accent
-                        : msg.read
-                          ? "transparent"
-                          : themeConfig.colors.warning
-                    }`,
-                  }}
+          <ul
+            className="divide-y"
+            style={{ borderColor: themeConfig.colors.border }}
+          >
+            {data.items.map((msg) => {
+              const isSelected = msg.id === selectedId;
+              return (
+                <li
+                  key={msg.id}
+                  className="flex items-stretch"
                 >
-                  <div className="flex justify-between items-start mb-1">
-                    <span
-                      style={{
-                        color: msg.read
-                          ? themeConfig.colors.text
-                          : themeConfig.colors.accent,
-                        fontWeight: msg.read ? "normal" : "bold",
-                      }}
-                    >
-                      {msg.name}
-                    </span>
-                    <span
-                      className="text-xs"
+                  <label className="flex items-center px-3 shrink-0 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={checkedIds.has(msg.id)}
+                      onChange={() => onToggleChecked(msg.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`Select message from ${msg.name}`}
+                    />
+                  </label>
+                  <button
+                    onClick={() => onSelect(msg)}
+                    className="flex-1 text-left p-3 transition-colors"
+                    style={{
+                      backgroundColor: isSelected
+                        ? `${themeConfig.colors.accent}15`
+                        : "transparent",
+                      borderLeft: `3px solid ${
+                        isSelected
+                          ? themeConfig.colors.accent
+                          : msg.read
+                            ? "transparent"
+                            : themeConfig.colors.warning
+                      }`,
+                    }}
+                  >
+                    <div className="flex justify-between items-start mb-1">
+                      <span
+                        style={{
+                          color: msg.read
+                            ? themeConfig.colors.text
+                            : themeConfig.colors.accent,
+                          fontWeight: msg.read ? "normal" : "bold",
+                        }}
+                      >
+                        {msg.name}
+                      </span>
+                      <span
+                        className="text-xs"
+                        style={{ color: themeConfig.colors.muted }}
+                      >
+                        {formatDate(msg.createdAt)}
+                      </span>
+                    </div>
+                    <div
+                      className="text-xs mb-1"
                       style={{ color: themeConfig.colors.muted }}
                     >
-                      {formatDate(msg.createdAt)}
-                    </span>
-                  </div>
-                  <div
-                    className="text-xs mb-1"
-                    style={{ color: themeConfig.colors.muted }}
-                  >
-                    {msg.email}
-                  </div>
-                  {msg.subject && (
-                    <div className="text-xs mb-1 truncate">
-                      <span style={{ color: themeConfig.colors.muted }}>
-                        re:{" "}
-                      </span>
-                      {msg.subject}
+                      {msg.email}
                     </div>
-                  )}
-                  <div
-                    className="text-xs truncate"
-                    style={{ color: themeConfig.colors.muted }}
-                  >
-                    {msg.message.slice(0, 120)}
-                    {msg.message.length > 120 ? "..." : ""}
-                  </div>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                    {msg.subject && (
+                      <div className="text-xs mb-1 truncate">
+                        <span style={{ color: themeConfig.colors.muted }}>
+                          re:{" "}
+                        </span>
+                        {msg.subject}
+                      </div>
+                    )}
+                    <div
+                      className="text-xs truncate"
+                      style={{ color: themeConfig.colors.muted }}
+                    >
+                      {msg.message.slice(0, 120)}
+                      {msg.message.length > 120 ? "..." : ""}
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </>
       )}
     </div>
@@ -515,7 +524,10 @@ function MessageDetail({
         minHeight: "400px",
       }}
     >
-      <header className="mb-4 pb-3 border-b" style={{ borderColor: themeConfig.colors.border }}>
+      <header
+        className="mb-4 pb-3 border-b"
+        style={{ borderColor: themeConfig.colors.border }}
+      >
         <div className="flex items-center justify-between mb-2">
           <h2
             className="text-lg font-bold"

@@ -40,8 +40,6 @@ const AVAILABLE_COMMANDS = [
   "about",
   "contact",
   "projects",
-  "experience",
-  "education",
   "roadmap",
   "progress",
   "theme",

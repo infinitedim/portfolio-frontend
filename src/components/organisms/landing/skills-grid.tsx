@@ -37,7 +37,11 @@ export async function SkillsGrid(): Promise<JSX.Element | null> {
                     className="flex items-center justify-between font-mono text-xs"
                   >
                     <span className="text-neutral-300">{skill.name}</span>
-                    <span className={LEVEL_COLORS[skill.level] ?? "text-neutral-500"}>
+                    <span
+                      className={
+                        LEVEL_COLORS[skill.level] ?? "text-neutral-500"
+                      }
+                    >
                       {skill.level}
                     </span>
                   </li>

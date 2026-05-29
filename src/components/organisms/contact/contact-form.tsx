@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  type FormEvent,
-  type JSX,
-} from "react";
+import { useState, useEffect, useRef, type FormEvent, type JSX } from "react";
 import { toast } from "sonner";
 import {
   submitContactMessage,

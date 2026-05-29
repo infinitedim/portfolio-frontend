@@ -58,7 +58,8 @@ export function TerminalDropdown({
     };
   }, [isOpen]);
 
-  const selectedOption = options.find((opt) => opt.value === value) || options[0];
+  const selectedOption =
+    options.find((opt) => opt.value === value) || options[0];
 
   const handleSelect = (optionValue: string) => {
     onChange(optionValue);

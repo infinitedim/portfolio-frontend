@@ -243,19 +243,19 @@ async function RoadmapContent(): Promise<JSX.Element> {
 export default function RoadmapPage(): JSX.Element {
   return (
     <StandardPageLayout>
-    <div className="min-h-screen px-4 py-10">
-      <div className="mx-auto max-w-4xl">
-        <Suspense
-          fallback={
-            <div className="font-mono text-sm text-neutral-400 animate-pulse">
-              Loading roadmap data…
-            </div>
-          }
-        >
-          <RoadmapContent />
-        </Suspense>
+      <div className="min-h-screen px-4 py-10">
+        <div className="mx-auto max-w-4xl">
+          <Suspense
+            fallback={
+              <div className="font-mono text-sm text-neutral-400 animate-pulse">
+                Loading roadmap data…
+              </div>
+            }
+          >
+            <RoadmapContent />
+          </Suspense>
+        </div>
       </div>
-    </div>
     </StandardPageLayout>
   );
 }

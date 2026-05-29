@@ -18,12 +18,12 @@ export default defineConfig({
       ".cache",
       "e2e",
     ],
-    pool: "threads",
-
-    testTimeout: 5000,
-    hookTimeout: 5000,
-    maxConcurrency: 10,
-
+    pool: "forks",
+    maxWorkers: 2,
+    isolate: true,
+    testTimeout: 10000,
+    hookTimeout: 10000,
+    maxConcurrency: 4,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],

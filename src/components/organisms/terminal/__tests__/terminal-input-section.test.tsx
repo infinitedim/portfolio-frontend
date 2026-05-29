@@ -49,11 +49,9 @@ describe("TerminalInputSection", () => {
   it("reflects typed text", () => {
     renderWithProvider();
 
-    const input = (
-      screen.queryByRole("textbox") ??
+    const input = (screen.queryByRole("textbox") ??
       screen.queryByRole("combobox") ??
-      document.querySelector("input")
-    ) as HTMLInputElement | null;
+      document.querySelector("input")) as HTMLInputElement | null;
 
     expect(input).toBeTruthy();
     if (!input) return;
@@ -68,7 +66,7 @@ describe("TerminalInputSection", () => {
 
     expect(
       screen.queryByText(/Processing command/i) ??
-      screen.queryByRole("progressbar"),
+        screen.queryByRole("progressbar"),
     ).toBeNull();
   });
 

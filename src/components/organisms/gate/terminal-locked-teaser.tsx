@@ -14,7 +14,10 @@ export function TerminalLockedTeaser(): JSX.Element {
           Complete the gate puzzles to access the interactive terminal.
         </p>
         <p className="mt-6 text-xs text-neutral-600">
-          <Link href="/gate" className="underline hover:text-green-400">
+          <Link
+            href="/gate"
+            className="underline hover:text-green-400"
+          >
             Return to gate
           </Link>
         </p>

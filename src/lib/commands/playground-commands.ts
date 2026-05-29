@@ -7,7 +7,9 @@ export const playgroundCommand: Command = {
   aliases: ["sandpack", "demo-code"],
   async execute(args: string[]): Promise<CommandOutput> {
     const id = args[0]?.trim();
-    const path = id ? `/playground?id=${encodeURIComponent(id)}` : "/playground";
+    const path = id
+      ? `/playground?id=${encodeURIComponent(id)}`
+      : "/playground";
 
     if (typeof window !== "undefined") {
       window.open(path, "_blank", "noopener,noreferrer");

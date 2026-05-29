@@ -40,7 +40,10 @@ export function VisitorPresenceBadge() {
             totalConnections?: number;
             count?: number;
           };
-          if (msg.type === "welcome" && typeof msg.totalConnections === "number") {
+          if (
+            msg.type === "welcome" &&
+            typeof msg.totalConnections === "number"
+          ) {
             setCount(msg.totalConnections);
           }
           if (msg.type === "roomCount" && typeof msg.count === "number") {

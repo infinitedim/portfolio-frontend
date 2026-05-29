@@ -116,7 +116,9 @@ describe("MobileTerminal", () => {
         return;
       }
       localStorageMock.getItem.mockImplementation(((key: string) =>
-        key === "mobile-hint-dismissed" ? "true" : null) as typeof localStorageMock.getItem);
+        key === "mobile-hint-dismissed"
+          ? "true"
+          : null) as typeof localStorageMock.getItem);
 
       const { container } = render(
         <MobileTerminal>

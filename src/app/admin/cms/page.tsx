@@ -10,7 +10,8 @@ const CMS_ENDPOINTS = [
   {
     method: "GET",
     path: "/api/v1/content/blog",
-    description: "List published blog posts (optional ?locale=en&page=1&pageSize=20)",
+    description:
+      "List published blog posts (optional ?locale=en&page=1&pageSize=20)",
     scope: "read",
   },
   {
@@ -85,13 +86,20 @@ export default function AdminCmsPage() {
               </h2>
               <p className="mb-3 text-sm opacity-80">
                 Enable the headless CMS in the backend by setting{" "}
-                <code className="rounded bg-black/30 px-1">HEADLESS_CMS_ENABLED=true</code>{" "}
-                in <code className="rounded bg-black/30 px-1">portfolio-backend/.env</code>.
-                All requests require the{" "}
-                <code className="rounded bg-black/30 px-1">X-Api-Key</code> header.
+                <code className="rounded bg-black/30 px-1">
+                  HEADLESS_CMS_ENABLED=true
+                </code>{" "}
+                in{" "}
+                <code className="rounded bg-black/30 px-1">
+                  portfolio-backend/.env
+                </code>
+                . All requests require the{" "}
+                <code className="rounded bg-black/30 px-1">X-Api-Key</code>{" "}
+                header.
               </p>
               <p className="text-sm opacity-80">
-                API keys are stored hashed in the <code className="rounded bg-black/30 px-1">api_keys</code>{" "}
+                API keys are stored hashed in the{" "}
+                <code className="rounded bg-black/30 px-1">api_keys</code>{" "}
                 table. Create keys via SQL (replace values):
               </p>
               <pre
@@ -101,7 +109,7 @@ export default function AdminCmsPage() {
                   border: `1px solid ${themeConfig.colors.border}`,
                 }}
               >
-{`INSERT INTO api_keys (name, key_hash, scope)
+                {`INSERT INTO api_keys (name, key_hash, scope)
 VALUES (
   'My CMS client',
   encode(digest('your-secret-key-here', 'sha256'), 'hex'),
@@ -144,7 +152,9 @@ VALUES (
                       </code>
                       <span
                         className="rounded px-2 py-0.5 text-xs opacity-70"
-                        style={{ border: `1px solid ${themeConfig.colors.border}` }}
+                        style={{
+                          border: `1px solid ${themeConfig.colors.border}`,
+                        }}
                       >
                         scope: {ep.scope}
                       </span>
@@ -172,7 +182,7 @@ VALUES (
                   border: `1px solid ${themeConfig.colors.border}`,
                 }}
               >
-{`curl -H "X-Api-Key: your-secret-key-here" \\
+                {`curl -H "X-Api-Key: your-secret-key-here" \\
   "${apiUrl}/api/v1/content/blog?locale=en&pageSize=5"`}
               </pre>
             </section>

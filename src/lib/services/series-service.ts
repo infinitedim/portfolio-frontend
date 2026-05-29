@@ -34,7 +34,10 @@ function apiBase(): string {
   return getApiUrl();
 }
 
-async function authedFetch(path: string, init?: RequestInit): Promise<Response> {
+async function authedFetch(
+  path: string,
+  init?: RequestInit,
+): Promise<Response> {
   let token = authService.getAccessToken();
   if (!token) {
     const refreshed = await authService.refresh();
@@ -64,7 +67,9 @@ export async function listPublicSeries(): Promise<BlogSeriesSummary[]> {
   return response.json();
 }
 
-export async function getPublicSeries(slug: string): Promise<BlogSeriesDetail | null> {
+export async function getPublicSeries(
+  slug: string,
+): Promise<BlogSeriesDetail | null> {
   const response = await fetch(`${apiBase()}/api/blog/series/${slug}`, {
     next: { revalidate: 3600 },
   });

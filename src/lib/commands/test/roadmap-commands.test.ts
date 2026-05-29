@@ -167,9 +167,8 @@ describe("roadmap-commands.ts", () => {
       }
       vi.resetModules();
       roadmapServiceInstance = null;
-      const { roadmapCommand: freshRoadmapCommand } = await import(
-        "../roadmap-commands"
-      );
+      const { roadmapCommand: freshRoadmapCommand } =
+        await import("../roadmap-commands");
 
       const result = await freshRoadmapCommand.execute([]);
 

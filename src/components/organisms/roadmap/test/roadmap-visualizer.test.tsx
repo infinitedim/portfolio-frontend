@@ -101,7 +101,7 @@ describe("RoadmapVisualizer", () => {
       }
       render(<RoadmapVisualizer roadmapData={mockRoadmapData} />);
 
-      expect(screen.getByText("Grid")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /grid/i })).toBeInTheDocument();
     });
 
     it("should display view mode buttons", () => {
@@ -111,9 +111,11 @@ describe("RoadmapVisualizer", () => {
       }
       render(<RoadmapVisualizer roadmapData={mockRoadmapData} />);
 
-      expect(screen.getByText("Grid")).toBeInTheDocument();
-      expect(screen.getByText("List")).toBeInTheDocument();
-      expect(screen.getByText("Progress")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /grid/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /list/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /progress/i }),
+      ).toBeInTheDocument();
     });
 
     it("should display filter buttons", () => {
@@ -137,7 +139,7 @@ describe("RoadmapVisualizer", () => {
       }
       render(<RoadmapVisualizer roadmapData={mockRoadmapData} />);
 
-      const listButton = screen.getByText("List");
+      const listButton = screen.getByRole("button", { name: /list/i });
       fireEvent.click(listButton);
 
       expect(screen.getByTestId("skill-card")).toBeInTheDocument();
@@ -150,7 +152,9 @@ describe("RoadmapVisualizer", () => {
       }
       render(<RoadmapVisualizer roadmapData={mockRoadmapData} />);
 
-      const progressButton = screen.getByText("Progress");
+      const progressButton = screen.getByRole("button", {
+        name: /^.*progress$/i,
+      });
       fireEvent.click(progressButton);
 
       expect(screen.getByTestId("progress-bar")).toBeInTheDocument();

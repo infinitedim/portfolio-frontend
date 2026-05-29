@@ -1,9 +1,8 @@
 import { expect } from "vitest";
 
+/** True when jsdom document/window are available (Vitest + Bun runner). */
 export const canRunTests =
-  typeof document !== "undefined" &&
-  typeof window !== "undefined" &&
-  typeof Bun === "undefined";
+  typeof document !== "undefined" && typeof window !== "undefined";
 
 export function ensureDocumentBody(): void {
   if (!canRunTests) {

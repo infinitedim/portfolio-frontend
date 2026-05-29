@@ -29,7 +29,9 @@ export default function AdminPortfolioPage() {
       const data = await listPortfolioVersions(section);
       setVersions(data);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to load versions");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to load versions",
+      );
       setVersions([]);
     } finally {
       setLoading(false);
@@ -41,7 +43,11 @@ export default function AdminPortfolioPage() {
   }, [loadVersions]);
 
   const handleRestore = async (versionId: string) => {
-    if (!confirm("Restore this version? Current content will be snapshotted first.")) {
+    if (
+      !confirm(
+        "Restore this version? Current content will be snapshotted first.",
+      )
+    ) {
       return;
     }
     setRestoring(versionId);
@@ -135,7 +141,9 @@ export default function AdminPortfolioPage() {
                       style={{ borderColor: themeConfig.colors.border }}
                     >
                       <div>
-                        <p className="font-mono text-sm">{version.sectionKey}</p>
+                        <p className="font-mono text-sm">
+                          {version.sectionKey}
+                        </p>
                         <p className="text-xs opacity-60">
                           {new Date(version.createdAt).toLocaleString()}
                         </p>

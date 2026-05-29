@@ -10,9 +10,9 @@ Welcome to the most epic way to showcase your skills! This isn't just another po
 - **`/terminal`** — Interactive terminal (gated via `/gate` puzzles)
 - **`/blog`, `/projects`, `/contact`** — Shared public routes (no duplication)
 
-Copy `.env.example` → `.env.local`. Set `NEXT_PUBLIC_GATE_ENABLED=true`. For dev bypass, set server-only `GATE_BYPASS_SECRET` and send header `X-Gate-Bypass`. See [docs/dual-ui-gate.md](./docs/dual-ui-gate.md).
+Copy `.env.example` → `.env.local`. Set `NEXT_PUBLIC_GATE_ENABLED=true`. For dev bypass, set server-only `GATE_BYPASS_SECRET` and send header `X-Gate-Bypass`. See [docs/dual-ui-gate.md](./docs/dual-ui-gate.md). Feature status: [FEATURE_PLANNING.md](./FEATURE_PLANNING.md).
 
-[![Next.js Badge](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Next.js Badge](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Rust Badge](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![TypeScript Badge](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS Badge](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -28,10 +28,9 @@ This release brings **blazing-fast performance**, **enterprise-grade logging**, 
 - ⚡ **Bun Runtime** - Lightning-fast JavaScript runtime and package manager
 - 📊 **Comprehensive Logging** - Loki + Grafana for log aggregation & monitoring
 - 📈 **Real-time Dashboards** - Application, errors, performance, and security metrics
-- 🎨 **Modern UI** - Built with Next.js 15 App Router and Tailwind CSS
+- 🎨 **Modern UI** - Built with Next.js 16 App Router and Tailwind CSS v4
 - 🔔 **Smart Alerting** - Automated alerts for errors, performance, and security
-- 🎵 **Spotify Integration** - Show what you're listening to
-- 📁 **File-based Logging** - Structured logging with rotation and retention
+  - 📁 **File-based Logging** - Structured logging with rotation and retention
 
 ## 🎭 What's This All About?
 
@@ -112,12 +111,6 @@ Your terminal works everywhere:
 - 🔄 **Real-time API Integration**: Live data from roadmap.sh API
 - � **Automatic Fallback**: Graceful degradation if API is unavailable
 
-### 🎵 Spotify Integration
-
-- 🎧 **Now Playing**: Show what you're jamming to
-- 🔄 **Real-time Updates**: Auto-refresh currently playing
-- 🎨 **Album Art**: Beautiful display of current track
-
 ## 🛠️ Tech Stack Hall of Fame
 
 We only use the good stuff around here:
@@ -126,7 +119,7 @@ We only use the good stuff around here:
 
 | Technology          | Why It's Awesome                                 | Version |
 | ------------------- | ------------------------------------------------ | ------- |
-| 🚀 **Next.js**      | The React framework that makes everything better | 15+     |
+| 🚀 **Next.js**      | The React framework that makes everything better | 16.x    |
 | 📘 **TypeScript**   | Because `any` is not a type strategy             | 5.9+    |
 | 🎨 **Tailwind CSS** | Utility-first CSS that sparks joy                | 4.1+    |
 | 🧩 **shadcn/ui**    | Components so beautiful they make you cry        | Latest  |
@@ -134,14 +127,15 @@ We only use the good stuff around here:
 
 ### ⚙️ Backend
 
-| Technology      | Why It's Awesome                       | Version |
-| --------------- | -------------------------------------- | ------- |
-| 🦀 **Rust**     | Blazing-fast, memory-safe backend      | 1.75+   |
-| 🚀 **Axum**     | Ergonomic and modular web framework    | Latest  |
-| 📝 **Tracing**  | Powerful structured logging            | Latest  |
-| 📊 **Loki**     | Scalable log aggregation system        | Latest  |
-| 🔍 **Promtail** | Log collection agent                   | Latest  |
-| 📈 **Grafana**  | Beautiful dashboards and visualization | Latest  |
+| Technology      | Why It's Awesome                           | Version |
+| --------------- | ------------------------------------------ | ------- |
+| 🦀 **Rust**     | Blazing-fast, memory-safe backend          | 1.75+   |
+| 🚀 **Axum**     | Ergonomic and modular web framework        | 0.8     |
+| 🗄️ **SQLx**     | Async PostgreSQL with compile-time helpers | 0.8     |
+| 📝 **Tracing**  | Powerful structured logging                | Latest  |
+| 📊 **Loki**     | Scalable log aggregation system            | Latest  |
+| 🔍 **Promtail** | Log collection agent                       | Latest  |
+| 📈 **Grafana**  | Beautiful dashboards and visualization     | Latest  |
 
 ### 🏗️ Infrastructure
 
@@ -297,7 +291,6 @@ Your new superpowers:
 | `contact`      | How to reach the legend                    | 📞 Networking     |
 | `resume`       | The formal stuff                           | 📄 Professional   |
 | `roadmap`      | Your journey to greatness                  | 🗺️ Inspiring      |
-| `now-playing`  | What's on Spotify                          | 🎵 Vibes          |
 | `customize`    | Make it YOURS                              | 🎨 Fun            |
 | `clear`        | Clean slate                                | 🧹 Utility        |
 | `theme matrix` | Enter the Matrix                           | 🕶️ Epic           |
@@ -333,11 +326,6 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 # 📝 Logging
 NEXT_PUBLIC_LOG_LEVEL="info"           # trace|debug|info|warn|error
 NEXT_PUBLIC_LOG_API_URL="/api/logs"    # Log ingestion endpoint
-
-# 🎵 Spotify Integration (Optional)
-SPOTIFY_CLIENT_ID="your-spotify-client-id"
-SPOTIFY_CLIENT_SECRET="your-spotify-client-secret"
-SPOTIFY_REDIRECT_URI="http://localhost:3000/api/spotify/callback"
 
 # 🛣️ Roadmap.sh Integration (Optional)
 NEXT_PUBLIC_ROADMAP_AUTH_TOKEN="your-roadmap-token"
@@ -420,13 +408,13 @@ PORT="8080"
 bun test                    # ~14 seconds for full suite! ⚡
 bun test --watch            # Watch mode
 
-# Comprehensive tests with Vitest (for CI/CD)
-bun test:vitest         # ~700 seconds but 100% compatibility
-bun test:coverage       # With coverage reports
+# Comprehensive tests with Vitest (CI uses this)
+bun run test              # vitest run
+bun run test:coverage     # With coverage reports (88% thresholds)
 
-# E2E tests with Playwright
-bun test:e2e            # Full E2E test suite
-bun test:e2e:ui         # Interactive UI mode
+# E2E tests with Playwright (CI sets NEXT_PUBLIC_GATE_ENABLED=false)
+bun run test:e2e
+bun run test:e2e:ui       # Interactive UI mode
 ```
 
 **⚡ Performance Note**: We use **Bun test** for local development (50x faster!) and **Vitest** for comprehensive CI/CD testing. Some advanced mocking features (vi.mock) are currently disabled in Bun but work in Vitest.
@@ -435,8 +423,10 @@ bun test:e2e:ui         # Interactive UI mode
 
 ```bash
 cd portfolio-backend
-cargo test                  # Run Rust tests
-cargo test -- --nocapture   # With output
+cargo test --all-features
+TEST_DATABASE_URL=postgres://portfolio:portfolio@localhost:5432/portfolio_test \
+  cargo test --all-features   # DB integration tests (CI)
+cargo test -- --nocapture
 ```
 
 ## 🤝 Join the Revolution

@@ -136,7 +136,9 @@ describe("ProjectsPage", () => {
       }
 
       const { getByRole } = render(await ProjectsPage());
-      expect(getByRole("heading", { level: 1, name: /projects/i })).toBeInTheDocument();
+      expect(
+        getByRole("heading", { level: 1, name: /projects/i }),
+      ).toBeInTheDocument();
     });
 
     it("should render project count in description", async () => {

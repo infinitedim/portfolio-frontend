@@ -234,12 +234,8 @@ describe("AdminDashboardPage", () => {
       }
 
       render(<AdminDashboardPage />);
-      expect(
-        screen.getByText(/Press Ctrl\+L to logout/i),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/Press Ctrl\+H to go home/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/Press Ctrl\+L to logout/i)).toBeInTheDocument();
+      expect(screen.getByText(/Press Ctrl\+H to go home/i)).toBeInTheDocument();
     });
   });
 

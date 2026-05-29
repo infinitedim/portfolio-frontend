@@ -78,7 +78,11 @@ export function AiChatWidget() {
         className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-green-400/40 bg-neutral-950 text-green-400 shadow-lg transition-transform hover:scale-105"
         aria-label={open ? "Close AI assistant" : "Open AI assistant"}
       >
-        {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
+        {open ? (
+          <X className="h-5 w-5" />
+        ) : (
+          <MessageCircle className="h-5 w-5" />
+        )}
       </button>
 
       {open && (
@@ -107,11 +111,15 @@ export function AiChatWidget() {
                     : "mr-6 bg-neutral-900 text-neutral-300"
                 }`}
               >
-                {msg.content || (streaming && i === messages.length - 1 ? "…" : "")}
+                {msg.content ||
+                  (streaming && i === messages.length - 1 ? "…" : "")}
               </div>
             ))}
             {error && (
-              <p className="text-xs text-red-400" role="alert">
+              <p
+                className="text-xs text-red-400"
+                role="alert"
+              >
                 {error}
               </p>
             )}

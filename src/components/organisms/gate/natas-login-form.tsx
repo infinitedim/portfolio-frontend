@@ -3,10 +3,7 @@
 import { useState, type FormEvent, type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { gateClient } from "@/lib/gate/gate-client";
-import {
-  GATE_L1_USERNAME,
-  GATE_L2_USERNAME,
-} from "@/lib/gate/types";
+import { GATE_L1_USERNAME, GATE_L2_USERNAME } from "@/lib/gate/types";
 
 interface NatasLoginFormProps {
   level: 1 | 2;
@@ -75,9 +72,7 @@ export function NatasLoginForm({
         </div>
       )}
 
-      {hint && (
-        <p className="font-mono text-xs text-neutral-500">{hint}</p>
-      )}
+      {hint && <p className="font-mono text-xs text-neutral-500">{hint}</p>}
 
       <form
         onSubmit={handleSubmit}

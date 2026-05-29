@@ -33,7 +33,11 @@ function BlogLocaleSwitcherInner({
       params.set("locale", locale);
     }
     const qs = params.toString();
-    const base = slug ? `/blog/${slug}` : pathname === "/blog" ? "/blog" : pathname;
+    const base = slug
+      ? `/blog/${slug}`
+      : pathname === "/blog"
+        ? "/blog"
+        : pathname;
     return qs ? `${base}?${qs}` : base;
   };
 

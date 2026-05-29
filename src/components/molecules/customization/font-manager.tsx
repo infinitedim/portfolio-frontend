@@ -282,9 +282,7 @@ export function FontManager({
             <TerminalDropdown
               value={filterSource}
               onChange={(value) =>
-                setFilterSource(
-                  value as "all" | "system" | "google" | "custom",
-                )
+                setFilterSource(value as "all" | "system" | "google" | "custom")
               }
               options={[
                 { label: "All Sources", value: "all" },

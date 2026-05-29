@@ -28,7 +28,10 @@ function apiBase(): string {
   return getApiUrl();
 }
 
-async function authedFetch(path: string, init?: RequestInit): Promise<Response> {
+async function authedFetch(
+  path: string,
+  init?: RequestInit,
+): Promise<Response> {
   let token = authService.getAccessToken();
   if (!token) {
     const refreshed = await authService.refresh();
@@ -50,7 +53,9 @@ async function authedFetch(path: string, init?: RequestInit): Promise<Response> 
   });
 }
 
-export async function subscribeNewsletter(email: string): Promise<SubscribeResponse> {
+export async function subscribeNewsletter(
+  email: string,
+): Promise<SubscribeResponse> {
   const response = await fetch(`${apiBase()}/api/newsletter/subscribe`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -63,7 +68,9 @@ export async function subscribeNewsletter(email: string): Promise<SubscribeRespo
   return data;
 }
 
-export async function confirmNewsletter(token: string): Promise<SubscribeResponse> {
+export async function confirmNewsletter(
+  token: string,
+): Promise<SubscribeResponse> {
   const response = await fetch(
     `${apiBase()}/api/newsletter/confirm?token=${encodeURIComponent(token)}`,
     { headers: { Accept: "application/json" } },
@@ -75,7 +82,9 @@ export async function confirmNewsletter(token: string): Promise<SubscribeRespons
   return data;
 }
 
-export async function unsubscribeNewsletter(token: string): Promise<SubscribeResponse> {
+export async function unsubscribeNewsletter(
+  token: string,
+): Promise<SubscribeResponse> {
   const response = await fetch(`${apiBase()}/api/newsletter/unsubscribe`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },

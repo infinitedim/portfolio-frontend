@@ -120,8 +120,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       return {
         success: false,
-        error:
-          error instanceof Error ? error.message : "2FA challenge failed",
+        error: error instanceof Error ? error.message : "2FA challenge failed",
       };
     }
   };

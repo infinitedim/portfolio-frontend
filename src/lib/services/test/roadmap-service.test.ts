@@ -45,7 +45,10 @@ describe("RoadmapService", () => {
             json: () => Promise.resolve(streakResponse),
           });
         }
-        return Promise.resolve({ ok: false, json: () => Promise.resolve(null) });
+        return Promise.resolve({
+          ok: false,
+          json: () => Promise.resolve(null),
+        });
       }),
       configurable: true,
       writable: true,
@@ -63,7 +66,8 @@ describe("RoadmapService", () => {
       writable: true,
     });
     if (RoadmapService) {
-      (RoadmapService as unknown as { instance?: unknown }).instance = undefined;
+      (RoadmapService as unknown as { instance?: unknown }).instance =
+        undefined;
     }
     vi.clearAllMocks();
   });

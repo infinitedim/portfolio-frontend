@@ -28,7 +28,9 @@ export default function AdminNewsletterPage() {
       setSubscribers(data.items);
       setTotal(data.total);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to load subscribers");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to load subscribers",
+      );
     } finally {
       setLoading(false);
     }
@@ -109,7 +111,10 @@ export default function AdminNewsletterPage() {
               >
                 Broadcast
               </h2>
-              <form onSubmit={(e) => void handleBroadcast(e)} className="space-y-3">
+              <form
+                onSubmit={(e) => void handleBroadcast(e)}
+                className="space-y-3"
+              >
                 <input
                   type="text"
                   value={subject}
@@ -157,7 +162,10 @@ export default function AdminNewsletterPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
                     <thead>
-                      <tr className="border-b opacity-60" style={{ borderColor: themeConfig.colors.border }}>
+                      <tr
+                        className="border-b opacity-60"
+                        style={{ borderColor: themeConfig.colors.border }}
+                      >
                         <th className="py-2 pr-4">Email</th>
                         <th className="py-2 pr-4">Status</th>
                         <th className="py-2">Subscribed</th>
@@ -173,11 +181,15 @@ export default function AdminNewsletterPage() {
                           <td className="py-2 pr-4 font-mono">{sub.email}</td>
                           <td className="py-2 pr-4">
                             {sub.confirmed ? (
-                              <span style={{ color: themeConfig.colors.success }}>
+                              <span
+                                style={{ color: themeConfig.colors.success }}
+                              >
                                 Confirmed
                               </span>
                             ) : (
-                              <span style={{ color: themeConfig.colors.warning }}>
+                              <span
+                                style={{ color: themeConfig.colors.warning }}
+                              >
                                 Pending
                               </span>
                             )}

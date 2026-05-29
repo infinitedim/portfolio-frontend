@@ -48,13 +48,20 @@ export function TerminalCustomizationToolbar(): JSX.Element {
   useEffect(() => {
     const handleOpenEvent = () => setIsOpen(true);
     window.addEventListener("terminal:open-customization", handleOpenEvent);
-    return () => window.removeEventListener("terminal:open-customization", handleOpenEvent);
+    return () =>
+      window.removeEventListener(
+        "terminal:open-customization",
+        handleOpenEvent,
+      );
   }, []);
 
   return (
     <>
       {/* Floating customization button */}
-      <div id="customization" tabIndex={-1}>
+      <div
+        id="customization"
+        tabIndex={-1}
+      >
         <CustomizationButton />
       </div>
 

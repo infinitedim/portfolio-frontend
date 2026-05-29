@@ -1,8 +1,9 @@
 # Portfolio Project Roadmap
 
-> **Last Updated:** December 2024  
-> **Project:** Terminal Portfolio - infinitedim.vercel.app  
-> **Tech Stack:** Next.js 15+, NestJS 11, tRPC 11, Prisma 7, React 19, TypeScript 5.9+
+> **Last Updated:** May 2026  
+> **Project:** Terminal Portfolio — infinitedim.vercel.app  
+> **Tech Stack:** Next.js 16, React 19, TypeScript 5.9+, Rust/Axum, SQLx, PostgreSQL, Tailwind CSS v4, Bun  
+> **Authoritative status:** See [FEATURE_PLANNING.md](./FEATURE_PLANNING.md) for completed features and sprint history.
 
 ---
 
@@ -23,20 +24,20 @@
 
 ### ✅ Completed Features
 
-- [x] Terminal-style portfolio interface
-- [x] NestJS backend with tRPC integration
-- [x] JWT authentication with refresh token rotation
-- [x] Redis caching with Upstash
-- [x] Prisma ORM with PostgreSQL
-- [x] Rate limiting (Redis + in-memory fallback)
-- [x] CSP security headers with violation reporting
+- [x] Dual-entry UI: standard landing (`/`) + gated terminal (`/terminal`)
+- [x] Rust/Axum backend with REST API (SQLx + PostgreSQL)
+- [x] JWT authentication with refresh token rotation (HttpOnly cookies)
+- [x] Rate limiting (tower-governor + in-memory governors)
+- [x] CSP security headers via Next.js proxy
 - [x] PWA support with offline capabilities
-- [x] Spotify integration (Now Playing)
-- [x] GitHub integration
-- [x] Blog system foundation
-- [x] Admin authentication system
-- [x] i18n support
-- [x] Docker deployment configuration
+- [x] GitHub integration (backend proxy)
+- [x] Blog system (i18n, series, scheduling, RSS, tags)
+- [x] Admin authentication + TOTP 2FA
+- [x] i18n support (English default + toggle)
+- [x] Docker Compose stack (Postgres, Loki, Grafana, Prometheus)
+- [x] OpenAPI / Swagger UI, analytics, AI assistant, newsletter, headless CMS
+
+> Historical quarterly plans below may reference superseded stacks (NestJS/tRPC/Prisma). Treat [FEATURE_PLANNING.md](./FEATURE_PLANNING.md) as the source of truth for what is shipped.
 
 ### 🔧 Recently Fixed
 

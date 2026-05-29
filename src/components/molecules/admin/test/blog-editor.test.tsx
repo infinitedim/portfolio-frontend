@@ -140,9 +140,15 @@ describe("BlogEditor", () => {
         return;
       }
       await renderLoadedEditor();
-      expect(screen.getByRole("button", { name: /New Post/ })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /Save Draft/ })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /Publish/ })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /New Post/ }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Save Draft/ }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Publish/ }),
+      ).toBeInTheDocument();
     });
 
     it("should render draft list", async () => {

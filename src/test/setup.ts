@@ -19,8 +19,7 @@ vi.mock("next/server", () => ({
       this._headers = new Map((options.headers as [string, string][]) || []);
       const parsed = new URL(url);
       this.nextUrl = {
-        pathname:
-          (options.pathname as string) || parsed.pathname || "/",
+        pathname: (options.pathname as string) || parsed.pathname || "/",
       };
       this._cookies = new Map((options.cookies as [string, unknown][]) || []);
       this.geo = (options.geo as { country?: string; region?: string }) || {

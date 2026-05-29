@@ -159,9 +159,7 @@ export class CommandParser {
       };
     }
 
-    const pipeArgs = pipedInput
-      ? pipedInput.split(/\s+/).filter(Boolean)
-      : [];
+    const pipeArgs = pipedInput ? pipedInput.split(/\s+/).filter(Boolean) : [];
     const mergedArgs = [...pipeArgs, ...args];
 
     try {

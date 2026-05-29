@@ -110,14 +110,6 @@ const getMiscCommands = async () => {
   }
 };
 
-const getSpotifyCommands = async () => {
-  try {
-    return await import("@/lib/commands/spotify-commands");
-  } catch {
-    return null;
-  }
-};
-
 const getPlaygroundCommands = async () => {
   try {
     return await import("@/lib/commands/playground-commands");
@@ -157,15 +149,12 @@ const ALL_COMMANDS = [
   "about",
   "contact",
   "projects",
-  "experience",
-  "education",
   "roadmap",
   "theme",
   "font",
   "language",
   "demo",
   "github",
-  "spotify",
   "playground",
   "ask",
   "tech-stack",
@@ -316,7 +305,6 @@ export function useTerminal(
         locationCmds,
         tourCmds,
         blogCmds,
-        spotifyCmds,
         playgroundCmds,
         aiCmds,
       ] = await Promise.allSettled([
@@ -328,7 +316,6 @@ export function useTerminal(
         getLocationCommands(),
         getTourCommands(),
         getBlogCommands(),
-        getSpotifyCommands(),
         getPlaygroundCommands(),
         getAiCommands(),
       ]);
@@ -612,10 +599,6 @@ export function useTerminal(
 
       const gh = githubCmds.status === "fulfilled" ? githubCmds.value : null;
       if (gh?.githubCommand) parser.register(gh.githubCommand);
-
-      const spotify =
-        spotifyCmds.status === "fulfilled" ? spotifyCmds.value : null;
-      if (spotify?.spotifyCommand) parser.register(spotify.spotifyCommand);
 
       const playground =
         playgroundCmds.status === "fulfilled" ? playgroundCmds.value : null;

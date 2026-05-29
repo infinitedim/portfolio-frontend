@@ -1,65 +1,97 @@
-// Service Worker for PWA
-// Minimal service worker for frontend-only application
+// Service Worker for PWA — network-first HTML, cache-first static assets.
 
-const CACHE_NAME = "portfolio-v1";
-const urlsToCache = ["/", "/offline"];
+const CACHE_NAME = "portfolio-v2";
+const OFFLINE_URL = "/offline";
+const STATIC_PREFIXES = ["/_next/static/", "/icons/", "/theme-init.js"];
 
-// Install event - cache resources
+const urlsToCache = [OFFLINE_URL];
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("[SW] Opened cache");
       return cache.addAll(urlsToCache).catch((err) => {
         console.warn("[SW] Cache addAll failed:", err);
       });
     }),
   );
-  // Force the waiting service worker to become the active service worker
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log("[SW] Deleting old cache:", cacheName);
             return caches.delete(cacheName);
           }
         }),
       );
     }),
   );
-  // Claim clients immediately
   return self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+function isStaticAsset(url) {
+  return STATIC_PREFIXES.some((prefix) => url.pathname.startsWith(prefix));
+}
+
+function isApiRequest(url) {
+  return url.pathname.startsWith("/api/");
+}
+
 self.addEventListener("fetch", (event) => {
-  // Only handle GET requests
   if (event.request.method !== "GET") {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Return cached version or fetch from network
-      return (
-        response ||
-        fetch(event.request).catch(() => {
-          // If both fail, return offline page for navigation requests
-          if (event.request.mode === "navigate") {
-            return caches.match("/offline");
+  const url = new URL(event.request.url);
+
+  if (isApiRequest(url)) {
+    return;
+  }
+
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches
+              .open(CACHE_NAME)
+              .then((cache) => cache.put(event.request, copy));
           }
+          return response;
         })
-      );
-    }),
+        .catch(() => caches.match(OFFLINE_URL)),
+    );
+    return;
+  }
+
+  if (isStaticAsset(url)) {
+    event.respondWith(
+      caches.match(event.request).then(
+        (cached) =>
+          cached ||
+          fetch(event.request).then((response) => {
+            if (response && response.status === 200) {
+              const copy = response.clone();
+              caches
+                .open(CACHE_NAME)
+                .then((cache) => cache.put(event.request, copy));
+            }
+            return response;
+          }),
+      ),
+    );
+    return;
+  }
+
+  event.respondWith(
+    fetch(event.request).catch(() => caches.match(event.request)),
   );
 });
 
-// Message event - handle messages from the app
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();

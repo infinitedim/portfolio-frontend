@@ -131,11 +131,7 @@ describe("ThemeManager", () => {
   });
 
   const renderWithProviders = (ui: React.ReactElement) => {
-    return render(
-      <AccessibilityProvider>
-        {ui}
-      </AccessibilityProvider>
-    );
+    return render(<AccessibilityProvider>{ui}</AccessibilityProvider>);
   };
 
   describe("Rendering", () => {
@@ -307,7 +303,9 @@ describe("ThemeManager", () => {
       const sortDropdown = screen.getByText("Sort by Name").closest("button");
       fireEvent.click(sortDropdown!);
 
-      const nameOption = screen.getAllByRole("option", { name: /Sort by Name/ })[0];
+      const nameOption = screen.getAllByRole("option", {
+        name: /Sort by Name/,
+      })[0];
       fireEvent.click(nameOption);
 
       const themeCards = screen.getAllByText(/Theme/);

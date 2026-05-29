@@ -21,8 +21,6 @@ const DEFAULT_ALIASES: Record<string, string> = {
   info: "about",
   contact: "contact",
   proj: "projects",
-  exp: "experience",
-  edu: "education",
   road: "roadmap",
 
   custom: "customize",
