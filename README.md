@@ -10,7 +10,7 @@ Welcome to the most epic way to showcase your skills! This isn't just another po
 - **`/terminal`** — Interactive terminal (gated via `/gate` puzzles)
 - **`/blog`, `/projects`, `/contact`** — Shared public routes (no duplication)
 
-Copy `.env.example` → `.env.local`. Set `NEXT_PUBLIC_GATE_ENABLED=true`. For dev bypass, set server-only `GATE_BYPASS_SECRET` and send header `X-Gate-Bypass`. See [docs/dual-ui-gate.md](./docs/dual-ui-gate.md). Feature status: [FEATURE_PLANNING.md](./FEATURE_PLANNING.md).
+Copy `.env.example` → `.env.development` for local dev. Set `NEXT_PUBLIC_GATE_ENABLED=true`. For dev bypass, set server-only `GATE_BYPASS_SECRET` and send header `X-Gate-Bypass`. See [docs/dual-ui-gate.md](./docs/dual-ui-gate.md). Production: upload `.env` to Vercel or set env in dashboard. Feature status: [FEATURE_PLANNING.md](./FEATURE_PLANNING.md).
 
 [![Next.js Badge](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Rust Badge](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
@@ -246,14 +246,15 @@ docker-compose -f docker-compose.logging.yml up -d
 **Step 4**: Configure environment! 🔐
 
 ```bash
-# Frontend (.env.local in portfolio-frontend/)
+# Frontend (portfolio-frontend/.env.development)
 cd ../portfolio-frontend
-cp .env.example .env.local
-# Edit with your values
+cp .env.example .env.development
+# Edit with your local values
 
-# Backend (optional .env in portfolio-backend/)
+# Backend (portfolio-backend/.env.development)
 cd ../portfolio-backend
-# Set ENVIRONMENT=development, LOG_LEVEL=debug if needed
+cp .env.example .env.development
+# Edit with your local values
 ```
 
 **Step 5**: Fire it up! 🔥
@@ -316,7 +317,7 @@ theme retro      # Vintage vibes
 
 ## ⚙️ Environment Variables
 
-### Frontend (`portfolio-frontend/.env.local`)
+### Frontend (`portfolio-frontend/.env.development` — local; `.env` — Vercel production)
 
 ```env
 # 🌐 App Config
@@ -340,7 +341,7 @@ SENTRY_DSN="your-sentry-dsn"
 SENTRY_ENVIRONMENT="development"
 ```
 
-### Backend (`portfolio-backend/.env` - Optional)
+### Backend (`portfolio-backend/.env.development` — local; `.env` — GCP production)
 
 ```env
 # 🦀 Backend Config

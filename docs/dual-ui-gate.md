@@ -30,13 +30,13 @@ flowchart LR
 
 ## Environment
 
-**Frontend** (`portfolio-frontend/.env.local`):
+**Frontend** (local: `portfolio-frontend/.env.development`; production: `.env` on Vercel):
 
 - `NEXT_PUBLIC_GATE_ENABLED=true` — set `false` to disable gate (emergency)
 - `GATE_BYPASS_SECRET` — server-only; send header `X-Gate-Bypass: <secret>` in dev
 - `NEXT_PUBLIC_BASE_URL` + optional server `SITE_URL` — must match backend `SITE_URL`/`FRONTEND_ORIGIN` for level 3 Referer validation
 
-**Backend** (`portfolio-backend/.env`):
+**Backend** (local: `portfolio-backend/.env.development`; production: `.env` on GCP or platform env vars):
 
 - `GATE_L1_ANSWER=yourbloo0` — level 1 password
 - `GATE_L2_ANSWER` — level 2 password (also served in `/s3cr3t/users.txt`)
