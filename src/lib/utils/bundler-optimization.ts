@@ -1,32 +1,5 @@
-export const preloadCriticalResources = () => {
-  const fonts = ["/fonts/fira-code.woff2", "/fonts/cascadia-code.woff2"];
-
-  fonts.forEach((font) => {
-    const link = document.createElement("link");
-    link.rel = "preload";
-    link.href = font;
-    link.as = "font";
-    link.type = "font/woff2";
-    link.crossOrigin = "anonymous";
-    document.head.appendChild(link);
-  });
-};
-
 export const prefetchResources = () => {
-  if (
-    typeof document === "undefined" ||
-    typeof document.createElement !== "function"
-  ) {
-    return;
-  }
-  const themes = ["dracula", "hacker", "cyberpunk"];
-
-  themes.forEach((theme) => {
-    const link = document.createElement("link");
-    link.rel = "prefetch";
-    link.href = `/themes/${theme}.json`;
-    document.head.appendChild(link);
-  });
+  // Theme configs ship in JS bundles; Next.js handles link prefetch for routes.
 };
 
 export const optimizeImageLoading = () => {
@@ -78,13 +51,6 @@ export const markUnusedExports = () => {
 };
 
 export const SplittingStrategies = {
-  byRoute: () => ({
-    home: () => import("@/app/page"),
-    terminal: () => import("@/components/organisms/terminal/terminal"),
-    customization: () =>
-      import("@/components/organisms/customization/customization-manager"),
-  }),
-
   byFeature: () => ({
     themes: () => import("@/lib/themes/theme-config"),
     commands: () => import("@/lib/commands/command-registry"),
@@ -92,7 +58,6 @@ export const SplittingStrategies = {
   }),
 
   bySize: () => ({
-    charts: () => import("recharts"),
     icons: () => import("lucide-react"),
     ui: () => import("@radix-ui/react-dialog"),
   }),
@@ -192,24 +157,21 @@ export const optimizeMemoryUsage = () => {
 };
 
 export const initBundleOptimizations = () => {
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      preloadCriticalResources();
-      addResourceHints();
-      optimizeImageLoading();
-      optimizeThirdParty();
-      optimizeMemoryUsage();
-
-      if (process.env.NODE_ENV === "development") {
-        setTimeout(analyzeBundleSize, 2000);
-      }
-    });
-  } else {
-    preloadCriticalResources();
+  const run = () => {
     addResourceHints();
     optimizeImageLoading();
     optimizeThirdParty();
     optimizeMemoryUsage();
+
+    if (process.env.NODE_ENV === "development") {
+      setTimeout(analyzeBundleSize, 2000);
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
   }
 
   setTimeout(prefetchResources, 3000);

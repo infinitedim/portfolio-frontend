@@ -1,0 +1,92 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" } },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({service=\"frontend\"} |= \"LCP\" | json | value > 2500 [5m]))",
+          "legendFormat": "Poor LCP events",
+          "refId": "A"
+        }
+      ],
+      "title": "Poor LCP (>2.5s) — 5m",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "targets": [
+        {
+          "expr": "sum(count_over_time({service=\"frontend\"} |= \"INP\" | json | value > 200 [5m]))",
+          "legendFormat": "Poor INP events",
+          "refId": "A"
+        }
+      ],
+      "title": "Poor INP (>200ms) — 5m",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "loki" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "targets": [
+        {
+          "expr": "sum(count_over_time({service=\"frontend\"} |= \"CLS\" | json | value > 0.1 [5m]))",
+          "legendFormat": "Poor CLS events",
+          "refId": "A"
+        }
+      ],
+      "title": "Poor CLS (>0.1) — 5m",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "targets": [
+        {
+          "expr": "topk(10, sum by (route) (count_over_time({service=\"frontend\", component=\"web-vitals\"} | json | rating=\"poor\" [1h])))",
+          "legendFormat": "{{route}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Poor CWV by route (1h)",
+      "type": "barchart"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["portfolio", "web-vitals", "frontend"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Portfolio Frontend — Core Web Vitals",
+  "uid": "portfolio-frontend-cwv",
+  "version": 1
+}

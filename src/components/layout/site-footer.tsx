@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { type JSX } from "react";
+import { Suspense, type JSX } from "react";
 import { SOCIAL_LINKS } from "@/lib/data/social-links";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 import { NewsletterSignup } from "@/components/molecules/newsletter/newsletter-signup";
+import { CopyrightYear } from "./copyright-year";
 
 export function SiteFooter(): JSX.Element {
   const siteUrl = getSiteUrl();
-  const year = new Date().getFullYear();
 
   return (
     <footer
@@ -44,7 +44,13 @@ export function SiteFooter(): JSX.Element {
             RSS
           </Link>
           <span aria-hidden="true">·</span>
-          <span>© {year} Dimas Saputra</span>
+          <span>
+            ©{" "}
+            <Suspense fallback="2026">
+              <CopyrightYear />
+            </Suspense>{" "}
+            Dimas Saputra
+          </span>
         </div>
       </div>
       <p className="sr-only">{siteUrl}</p>

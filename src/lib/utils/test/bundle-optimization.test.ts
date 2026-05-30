@@ -8,7 +8,6 @@ import {
   afterAll,
 } from "vitest";
 import {
-  preloadCriticalResources,
   prefetchResources,
   optimizeImageLoading,
   dynamicImportWithRetry,
@@ -106,72 +105,15 @@ describe("bundleOptimization", () => {
     Object.keys = originalObjectKeys;
   });
 
-  describe("preloadCriticalResources function", () => {
-    it("should be defined and exportable", () => {
-      expect(preloadCriticalResources).toBeDefined();
-      expect(typeof preloadCriticalResources).toBe("function");
-    });
-
-    it("should create link elements for fonts", () => {
-      preloadCriticalResources();
-
-      expect(mockDocument.createElement).toHaveBeenCalledWith("link");
-      expect(mockDocument.createElement).toHaveBeenCalledTimes(2);
-      expect(mockDocument.head.appendChild).toHaveBeenCalledTimes(2);
-    });
-
-    it("should set correct attributes for preload links", () => {
-      const mockLink = {
-        rel: "",
-        href: "",
-        as: "",
-        type: "",
-        crossOrigin: "",
-      };
-
-      mockDocument.createElement.mockReturnValue(mockLink);
-
-      preloadCriticalResources();
-
-      expect(mockLink.rel).toBe("preload");
-      expect(mockLink.as).toBe("font");
-      expect(mockLink.type).toBe("font/woff2");
-      expect(mockLink.crossOrigin).toBe("anonymous");
-    });
-
-    it("should handle multiple font files", () => {
-      preloadCriticalResources();
-
-      expect(mockDocument.createElement).toHaveBeenCalledTimes(2);
-      expect(mockDocument.head.appendChild).toHaveBeenCalledTimes(2);
-    });
-  });
-
   describe("prefetchResources function", () => {
     it("should be defined and exportable", () => {
       expect(prefetchResources).toBeDefined();
       expect(typeof prefetchResources).toBe("function");
     });
 
-    it("should create prefetch links for themes", () => {
+    it("should be a safe no-op when themes are bundled in JS", () => {
       prefetchResources();
-
-      expect(mockDocument.createElement).toHaveBeenCalledWith("link");
-      expect(mockDocument.createElement).toHaveBeenCalledTimes(3);
-      expect(mockDocument.head.appendChild).toHaveBeenCalledTimes(3);
-    });
-
-    it("should set correct attributes for prefetch links", () => {
-      const mockLink = {
-        rel: "",
-        href: "",
-      };
-
-      mockDocument.createElement.mockReturnValue(mockLink);
-
-      prefetchResources();
-
-      expect(mockLink.rel).toBe("prefetch");
+      expect(mockDocument.createElement).not.toHaveBeenCalled();
     });
   });
 
@@ -308,11 +250,6 @@ describe("SplittingStrategies object", () => {
     expect(typeof SplittingStrategies).toBe("object");
   });
 
-  it("should have byRoute method", () => {
-    expect(SplittingStrategies.byRoute).toBeDefined();
-    expect(typeof SplittingStrategies.byRoute).toBe("function");
-  });
-
   it("should have byFeature method", () => {
     expect(SplittingStrategies.byFeature).toBeDefined();
     expect(typeof SplittingStrategies.byFeature).toBe("function");
@@ -321,15 +258,6 @@ describe("SplittingStrategies object", () => {
   it("should have bySize method", () => {
     expect(SplittingStrategies.bySize).toBeDefined();
     expect(typeof SplittingStrategies.bySize).toBe("function");
-  });
-
-  it("should return route-based imports", () => {
-    const routes = SplittingStrategies.byRoute();
-
-    expect(routes).toHaveProperty("home");
-    expect(routes).toHaveProperty("terminal");
-    expect(routes).toHaveProperty("customization");
-    expect(typeof routes.home).toBe("function");
   });
 
   it("should return feature-based imports", () => {
@@ -344,10 +272,9 @@ describe("SplittingStrategies object", () => {
   it("should return size-based imports", () => {
     const sizes = SplittingStrategies.bySize();
 
-    expect(sizes).toHaveProperty("charts");
     expect(sizes).toHaveProperty("icons");
     expect(sizes).toHaveProperty("ui");
-    expect(typeof sizes.charts).toBe("function");
+    expect(typeof sizes.icons).toBe("function");
   });
 });
 
@@ -472,15 +399,6 @@ describe("initBundleOptimizations function", () => {
 });
 
 describe("error handling and edge cases", () => {
-  it("should handle missing document gracefully", () => {
-    const originalDocument = global.document;
-    (global as any).document = undefined;
-
-    expect(() => preloadCriticalResources()).toThrow();
-
-    global.document = originalDocument;
-  });
-
   it("should handle missing performance API", () => {
     const originalPerformance = global.performance;
     (global as any).performance = undefined;

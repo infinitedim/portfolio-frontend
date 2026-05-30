@@ -892,6 +892,10 @@ export class I18nService {
 
 export const i18n = I18nService.getInstance();
 
+export function getTranslationsForLocale(locale: string): TranslationKeys {
+  return translations[locale] ?? translations[DEFAULT_LOCALE];
+}
+
 export const t = (key: keyof TranslationKeys): string => i18n.t(key);
 
 export const tWithFallback = (

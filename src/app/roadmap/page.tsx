@@ -11,8 +11,6 @@ import {
 } from "@/lib/data/data-fetching";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
-export const revalidate = 300;
-
 export const metadata: Metadata = {
   title: "Roadmap Progress | Portfolio",
   description:
@@ -192,7 +190,8 @@ function EmptyState(): JSX.Element {
       <div className="mb-2 text-3xl">🔌</div>
       <div className="text-sm">
         Backend unreachable — check{" "}
-        <code className="text-neutral-200">ROADMAP_AUTH_TOKEN</code> in{" "}
+        <code className="text-neutral-200">ROADMAP_EMAIL</code> /{" "}
+        <code className="text-neutral-200">ROADMAP_PASSWORD</code> in{" "}
         <code className="text-neutral-200">portfolio-backend/.env</code>
       </div>
     </div>

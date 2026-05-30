@@ -11,6 +11,7 @@ interface OptimizedImageProps {
   height?: number;
   fill?: boolean;
   priority?: boolean;
+  preload?: boolean;
   className?: string;
   sizes?: string;
 }
@@ -41,6 +42,7 @@ export function OptimizedImage({
   height = 300,
   fill = false,
   priority = false,
+  preload = false,
   className,
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
 }: OptimizedImageProps): JSX.Element {
@@ -78,6 +80,7 @@ export function OptimizedImage({
         height={!fill ? height : undefined}
         fill={fill}
         priority={priority}
+        preload={preload || priority}
         sizes={sizes}
         className={cn(
           "duration-700 ease-in-out",

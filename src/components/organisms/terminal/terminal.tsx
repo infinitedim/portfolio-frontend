@@ -56,7 +56,7 @@ interface TerminalProps {
  * Internal component that consumes TerminalContext.
  * Handles DOM side-effects and assembles the visible page regions.
  */
- 
+
 function TerminalContent({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onThemeChange,

@@ -23,9 +23,9 @@ flowchart LR
 1. User visits `/terminal` → locked teaser if no `portfolio_gate` cookie
 2. User completes 3 NATAS-style puzzles:
    - **L1:** Login `yourbloo0` / `yourbloo0`
-   - **L2:** Find `/s3cr3t/users.txt` → login `yourbloo1` + password from file
+   - **L2:** Complete L1, then find `/s3cr3t/users.txt` → login `yourbloo1` + password from file
    - **L3:** Set `Referer: {siteUrl}/terminal` (navigate from `/terminal` teaser) → Enter Terminal
-3. Backend validates via `/api/gate/login` and `/api/gate/complete/3`; issues cookie via `/api/gate/unlock`
+3. Backend validates L1/L2 via `/api/gate/login`, enforces Referer on `/api/gate/complete/3`, and issues signed cookie via `/api/gate/unlock`
 4. Full terminal loads; welcome message shown once
 
 ## Environment
@@ -34,7 +34,7 @@ flowchart LR
 
 - `NEXT_PUBLIC_GATE_ENABLED=true` — set `false` to disable gate (emergency)
 - `GATE_BYPASS_SECRET` — server-only; send header `X-Gate-Bypass: <secret>` in dev
-- `NEXT_PUBLIC_BASE_URL` — used for Referer validation on level 3
+- `NEXT_PUBLIC_BASE_URL` + optional server `SITE_URL` — must match backend `SITE_URL`/`FRONTEND_ORIGIN` for level 3 Referer validation
 
 **Backend** (`portfolio-backend/.env`):
 

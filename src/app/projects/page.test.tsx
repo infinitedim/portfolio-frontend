@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 if (
@@ -57,7 +57,7 @@ vi.mock("@/components/organisms/projects/projects-loading", () => ({
   ProjectsLoading: () => <div data-testid="projects-loading">Loading...</div>,
 }));
 
-import ProjectsPage, { generateMetadata } from "./page";
+import ProjectsPage, { metadata as projectsMetadata } from "./page";
 
 describe("ProjectsPage", () => {
   beforeEach(() => {
@@ -68,42 +68,41 @@ describe("ProjectsPage", () => {
     vi.clearAllMocks();
   });
 
-  describe("Metadata Generation", () => {
-    it("should generate metadata with correct title", async () => {
-      const metadata = await generateMetadata();
-      expect(metadata.title).toBe("Projects | Terminal Portfolio");
+  describe("Metadata", () => {
+    it("should have correct title", () => {
+      expect(projectsMetadata.title).toBe("Projects | Terminal Portfolio");
     });
 
-    it("should generate metadata with project count in description", async () => {
-      const metadata = await generateMetadata();
-      expect(metadata.description).toMatch(/\d+/);
-      expect(metadata.description).toContain("web development projects");
+    it("should describe web development projects", () => {
+      expect(projectsMetadata.description).toContain(
+        "web development projects",
+      );
     });
 
-    it("should include keywords from projects", async () => {
-      const metadata = await generateMetadata();
-      expect(metadata.keywords).toContain("web development projects");
-      expect(metadata.keywords).toContain("react projects");
+    it("should include keywords", () => {
+      expect(projectsMetadata.keywords).toContain("web development projects");
+      expect(projectsMetadata.keywords).toContain("react projects");
     });
 
-    it("should have Open Graph configuration", async () => {
-      const metadata = await generateMetadata();
-      expect(metadata.openGraph).toBeDefined();
-      expect(metadata.openGraph?.title).toBe("Projects | Terminal Portfolio");
-      expect((metadata.openGraph as { type?: string })?.type).toBe("website");
+    it("should have Open Graph configuration", () => {
+      expect(projectsMetadata.openGraph).toBeDefined();
+      expect(projectsMetadata.openGraph?.title).toBe(
+        "Projects | Terminal Portfolio",
+      );
+      expect((projectsMetadata.openGraph as { type?: string })?.type).toBe(
+        "website",
+      );
     });
 
-    it("should have Twitter Card configuration", async () => {
-      const metadata = await generateMetadata();
-      expect(metadata.twitter).toBeDefined();
-      expect((metadata.twitter as { card?: string })?.card).toBe(
+    it("should have Twitter Card configuration", () => {
+      expect(projectsMetadata.twitter).toBeDefined();
+      expect((projectsMetadata.twitter as { card?: string })?.card).toBe(
         "summary_large_image",
       );
     });
 
-    it("should have canonical URL", async () => {
-      const metadata = await generateMetadata();
-      expect(metadata.alternates?.canonical).toBe("/projects");
+    it("should have canonical URL", () => {
+      expect(projectsMetadata.alternates?.canonical).toBe("/projects");
     });
   });
 
@@ -114,7 +113,7 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { container } = render(await ProjectsPage());
+      const { container } = render(<ProjectsPage />);
       expect(container).toBeTruthy();
     });
 
@@ -124,7 +123,7 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { container } = render(await ProjectsPage());
+      const { container } = render(<ProjectsPage />);
       const mainElement = container.querySelector("main");
       expect(mainElement).toBeTruthy();
     });
@@ -135,10 +134,12 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByRole } = render(await ProjectsPage());
-      expect(
-        getByRole("heading", { level: 1, name: /projects/i }),
-      ).toBeInTheDocument();
+      const { getByRole } = render(<ProjectsPage />);
+      await waitFor(() => {
+        expect(
+          getByRole("heading", { level: 1, name: /projects/i }),
+        ).toBeInTheDocument();
+      });
     });
 
     it("should render project count in description", async () => {
@@ -147,8 +148,10 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByText } = render(await ProjectsPage());
-      expect(getByText(/1 web development projects/i)).toBeInTheDocument();
+      const { getByText } = render(<ProjectsPage />);
+      await waitFor(() => {
+        expect(getByText(/1 web development projects/i)).toBeInTheDocument();
+      });
     });
 
     it("should render featured projects section when available", async () => {
@@ -157,8 +160,10 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByText } = render(await ProjectsPage());
-      expect(getByText(/Featured Projects/i)).toBeInTheDocument();
+      const { getByText } = render(<ProjectsPage />);
+      await waitFor(() => {
+        expect(getByText(/Featured Projects/i)).toBeInTheDocument();
+      });
     });
 
     it("should render all projects section", async () => {
@@ -167,8 +172,10 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByText } = render(await ProjectsPage());
-      expect(getByText(/All Projects/i)).toBeInTheDocument();
+      const { getByText } = render(<ProjectsPage />);
+      await waitFor(() => {
+        expect(getByText(/All Projects/i)).toBeInTheDocument();
+      });
     });
 
     it("should render project statistics", async () => {
@@ -177,11 +184,13 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByText } = render(await ProjectsPage());
-      expect(getByText(/Total Projects/i)).toBeInTheDocument();
-      expect(getByText("Featured", { exact: true })).toBeInTheDocument();
-      expect(getByText("Technologies", { exact: true })).toBeInTheDocument();
-      expect(getByText("Completed", { exact: true })).toBeInTheDocument();
+      const { getByText } = render(<ProjectsPage />);
+      await waitFor(() => {
+        expect(getByText(/Total Projects/i)).toBeInTheDocument();
+        expect(getByText("Featured", { exact: true })).toBeInTheDocument();
+        expect(getByText("Technologies", { exact: true })).toBeInTheDocument();
+        expect(getByText("Completed", { exact: true })).toBeInTheDocument();
+      });
     });
 
     it("should render Suspense boundary", async () => {
@@ -190,7 +199,7 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { container } = render(await ProjectsPage());
+      const { container } = render(<ProjectsPage />);
 
       expect(container).toBeTruthy();
     });
@@ -201,11 +210,13 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { container } = render(await ProjectsPage());
-      const scripts = container.querySelectorAll(
-        'script[type="application/ld+json"]',
-      );
-      expect(scripts.length).toBeGreaterThan(0);
+      const { container } = render(<ProjectsPage />);
+      await waitFor(() => {
+        const scripts = container.querySelectorAll(
+          'script[type="application/ld+json"]',
+        );
+        expect(scripts.length).toBeGreaterThan(0);
+      });
     });
 
     it("should include ItemList schema in structured data", async () => {
@@ -214,16 +225,18 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { container } = render(await ProjectsPage());
-      const scripts = container.querySelectorAll(
-        'script[type="application/ld+json"]',
-      );
-      const itemListScript = Array.from(scripts).find((script) => {
-        const content = script.textContent || "";
-        return content.includes('"@type":"ItemList"');
-      });
+      const { container } = render(<ProjectsPage />);
+      await waitFor(() => {
+        const scripts = container.querySelectorAll(
+          'script[type="application/ld+json"]',
+        );
+        const itemListScript = Array.from(scripts).find((script) => {
+          const content = script.textContent || "";
+          return content.includes('"@type":"ItemList"');
+        });
 
-      expect(itemListScript).toBeTruthy();
+        expect(itemListScript).toBeTruthy();
+      });
     });
   });
 });

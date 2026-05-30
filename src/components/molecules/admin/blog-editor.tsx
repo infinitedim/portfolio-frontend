@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import dynamic from "next/dynamic";
 import type { ThemeConfig } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { authService } from "@/lib/auth/auth-service";
 import { useDraftAutosave, type DraftData } from "@/hooks/use-draft-autosave";
-import { TiptapEditor } from "./tiptap-editor";
 import {
   ImageUploadButton,
   ImageDropZone,
@@ -20,6 +20,17 @@ import {
 } from "@/lib/services/series-service";
 
 import { getApiUrl } from "@/lib/api/get-api-url";
+
+const TiptapEditor = dynamic(
+  () =>
+    import("./tiptap-editor").then((mod) => ({ default: mod.TiptapEditor })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-[320px] animate-pulse rounded border border-neutral-700 bg-neutral-900/60" />
+    ),
+  },
+);
 
 type BlogStatus = "draft" | "scheduled" | "published";
 

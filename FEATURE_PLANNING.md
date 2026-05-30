@@ -15,7 +15,8 @@
 5. [Sprint 3 — Power Features](#sprint-3--power-features)
 6. [Sprint 4 — Game Changers](#sprint-4--game-changers)
 7. [Sprint 5 — Dual UI + Terminal Gate (Done)](#sprint-5--dual-ui--terminal-gate-done)
-8. [Catatan Teknis](#catatan-teknis)
+8. [Backlog — Performance & Core Web Vitals](#backlog--performance--core-web-vitals)
+9. [Catatan Teknis](#catatan-teknis)
 
 ---
 
@@ -64,12 +65,19 @@
 | Health check                                   | —                                    | `/health`, `/health/detailed`, `/health/database`, `/health/redis`, `/health/ready` |
 | Roadmap.sh proxy                               | `/roadmap` page                      | `/api/roadmap/*`                                                                    |
 | Client log ingestion                           | pino transport                       | `POST /api/logs` (rate-limited, redacted)                                           |
+| Image optimization (AVIF/WebP, `next/image`)   | `optimized-image.tsx`                | `next.config.ts` `images.formats`, remotePatterns                                   |
+| Font loading (`display: swap`)                 | `next/font` di root layout           | `src/app/layout.tsx` (`JetBrains_Mono`, `display: "swap"`)                          |
+| Prefetch / preload helpers                     | Theme JSON prefetch, font preload    | `src/lib/utils/bundler-optimization.ts`                                             |
+| Core Web Vitals RUM + thresholds               | `WebVitalsMonitor` di layout         | `src/lib/logger/web-vitals.ts` (LCP/INP/CLS/FCP/TTFB → pino/Loki)                   |
+| Bundle analysis (dev)                          | `ANALYZE=true bun run build`         | `@next/bundle-analyzer` di `next.config.ts`                                         |
 
 ### Gap yang Masih Ada
 
 - **Optional:** `tsvector` full-text search upgrade (#13) jika blog >100 posts.
 - **Ops:** CMS API key admin CRUD UI (saat ini docs + SQL template).
 - **Ops:** Redis-backed presence / GitHub cache di production scale.
+- **Performance:** RSC lebih luas di route non-interaktif; budget bundle `<100KB` initial + CI gate belum ada (lihat [Backlog — Performance & Core Web Vitals](#backlog--performance--core-web-vitals)).
+- **Performance:** CWV sudah dimonitor (RUM), tapi belum ada sprint optimisasi aktif untuk menjamin LCP/INP/CLS di semua route utama.
 
 > Semua gap checklist master plan (Sprint 1–5, #14–#32) sudah ditutup Mei 2026. Lihat `docs/features/FEATURE_21`–`FEATURE_32`.
 
@@ -267,6 +275,36 @@ Verifikasi codebase Mei 2026 — frontend + backend.
 | 14  | E2E specs                                    | Done | —    | `e2e/landing.spec.ts`, `e2e/gate.spec.ts`                                                      |
 
 Docs: [docs/dual-ui-gate.md](./docs/dual-ui-gate.md) · [docs/dual-ui-gate-implementation-checklist.md](./docs/dual-ui-gate-implementation-checklist.md)
+
+---
+
+## Backlog — Performance & Core Web Vitals
+
+> Sprint performance Mei 2026 — lihat [docs/features/FEATURE_33_PERFORMANCE.md](./docs/features/FEATURE_33_PERFORMANCE.md) dan [docs/performance/BASELINE.md](./docs/performance/BASELINE.md).
+
+### Frontend performance
+
+| Item                                | Status      | Lokasi / catatan                                                  |
+| ----------------------------------- | ----------- | ----------------------------------------------------------------- |
+| Image optimization pipeline         | **DONE**    | `next.config.ts`, `optimized-image.tsx`, `project-card-image.tsx` |
+| Font loading (`font-display: swap`) | **DONE**    | `src/app/layout.tsx` — `next/font/google`                         |
+| Prefetch / resource hints           | **DONE**    | `bundler-optimization.ts` wired via `client-only-components.tsx`  |
+| PPR / `cacheComponents`             | **DONE**    | `next.config.ts`; cached blog di `cached-blog-fetch.ts`           |
+| React Server Components             | **PARTIAL** | Hero/projects server-side; terminal/admin/playground client-heavy |
+| Bundle size per-route CI            | **DONE**    | `transferwise/actions-next-bundle-analyzer` + `perf:analyze`      |
+| Dynamic heavy deps                  | **DONE**    | Sandpack, TipTap, deferred AiChat                                 |
+
+### Core Web Vitals optimization
+
+| Item                                   | Status        | Lokasi / catatan                                      |
+| -------------------------------------- | ------------- | ----------------------------------------------------- |
+| Dual RUM (Loki + Vercel)               | **DONE**      | `web-vitals.ts` + `@vercel/speed-insights`            |
+| Threshold LCP/INP/CLS + route field    | **DONE**      | `web-vitals.ts`; Grafana `grafana-cwv-dashboard.json` |
+| Lighthouse CI                          | **DONE**      | `lighthouserc.js`, CI job `perf`                      |
+| Landing LCP (server hero + OG preload) | **DONE**      | `hero-section.tsx`, `page.tsx`                        |
+| FID                                    | **N/A → INP** | `web-vitals` v5                                       |
+
+**Acceptance:** Monitor via Lighthouse CI (warn) + Loki/Grafana + Vercel Speed Insights; tune thresholds in `BASELINE.md` after production data.
 
 ---
 

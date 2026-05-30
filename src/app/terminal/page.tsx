@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { cookies } from "next/headers";
-import { type JSX } from "react";
+import { Suspense, type JSX } from "react";
+import { getGateUnlockedFromBackend } from "@/lib/gate/gate-server";
 import { TerminalLockedTeaser } from "../../components/organisms/gate/terminal-locked-teaser";
 import { TerminalUnlockedContent } from "../../components/organisms/gate/terminal-unlocked-content";
 
@@ -40,13 +41,25 @@ function isGateEnabled(): boolean {
   return process.env.NEXT_PUBLIC_GATE_ENABLED !== "false";
 }
 
-export default async function TerminalPage(): Promise<JSX.Element> {
+async function TerminalGateContent(): Promise<JSX.Element> {
   const cookieStore = await cookies();
-  const unlocked = Boolean(cookieStore.get("portfolio_gate")?.value);
+  const unlocked = await getGateUnlockedFromBackend(cookieStore.toString());
 
-  if (isGateEnabled() && !unlocked) {
+  if (!unlocked) {
     return <TerminalLockedTeaser />;
   }
 
   return <TerminalUnlockedContent />;
+}
+
+export default function TerminalPage(): JSX.Element {
+  if (!isGateEnabled()) {
+    return <TerminalUnlockedContent />;
+  }
+
+  return (
+    <Suspense fallback={<TerminalLockedTeaser />}>
+      <TerminalGateContent />
+    </Suspense>
+  );
 }

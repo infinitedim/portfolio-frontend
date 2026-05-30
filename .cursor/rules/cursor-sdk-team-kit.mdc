@@ -1,0 +1,44 @@
+---
+description: Wajib pakai Cursor SDK skill + Cursor Team Kit skills/MCP di setiap chat frontend
+alwaysApply: true
+---
+
+# Cursor SDK + Team Kit — wajib di setiap chat
+
+Di workspace `portfolio-frontend`, agent **harus** memanfaatkan plugin **Cursor SDK** dan **Cursor Team Kit** secara proaktif — bukan hanya mengandalkan memori model.
+
+## Awal setiap chat
+
+Sebelum merespons atau mengubah kode:
+
+1. **Cursor SDK** — baca skill `cursor-sdk` jika topik menyentuh automasi, `@cursor/sdk`, `Agent.create` / `Agent.prompt`, CI bot, atau integrasi agent di luar IDE.
+2. **Cursor Team Kit** — pilih skill yang relevan (baca `SKILL.md`-nya dulu, lalu ikuti workflow-nya):
+
+| Situasi | Skill Team Kit |
+| --- | --- |
+| Sebelum klaim selesai / fix / passing | `verify-this` |
+| Setelah edit TypeScript/Next.js | `check-compiler-errors` (selaras dengan rule verifikasi Next.js) |
+| Debug UI / verifikasi browser | `control-ui` atau `run-smoke-tests` |
+| CI/PR gagal | `fix-ci`, `loop-on-ci`, `ci-investigator` |
+| PR review / ship | `review-and-ship`, `get-pr-comments` |
+| Refactor besar selesai | `thermo-nuclear-code-quality-review` (via Task) |
+
+3. **MCP** — jika task butuh docs/library/API eksternal atau verifikasi runtime:
+   - Baca schema tool di folder MCP **sebelum** `CallMcpTool`.
+   - Next.js / React / Playwright: `plugin-context7-plugin-context7` (`resolve-library-id` → `query-docs`).
+   - E2E / UI smoke: `user-microsoft/playwright-mcp` atau skill `run-smoke-tests`.
+   - Svelte (jika ada): `plugin-svelte-svelte`.
+
+Jangan skip langkah di atas hanya karena task terlihat kecil.
+
+## Selama implementasi
+
+- Prefer **Task subagent** Team Kit (`ci-investigator`, `code-reviewer`, `run-smoke-tests`, dll.) untuk investigasi paralel atau verifikasi berat — jangan improvisasi tanpa skill.
+- Untuk klaim behavioral ("proxy jalan", "gate aman", "header CSP ada"): jalankan bukti lokal (terminal, e2e, atau `verify-this`) — jangan asumsikan.
+- Jika MCP tool gagal karena auth/unavailable, laporkan blocker dan lanjutkan alternatif terdekat; jangan pura-pura sudah diverifikasi.
+
+## Sebelum mengakhiri chat
+
+- Klaim selesai hanya setelah bukti terminal/test (rule `nextjs-completion-verification` tetap berlaku untuk perubahan kode).
+- Ringkas skill/MCP/subagent yang dipakai dan hasilnya (pass/fail/blocker).
+- Jangan tulis "fixed" / "verified" tanpa output command atau artifact verifikasi.

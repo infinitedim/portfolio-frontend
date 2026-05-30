@@ -89,5 +89,3 @@ ${items}
     },
   });
 }
-
-export const revalidate = 3600;

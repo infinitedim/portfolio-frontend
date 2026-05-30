@@ -2,7 +2,7 @@ import { type JSX, type ReactNode } from "react";
 import { SiteNav } from "./site-nav";
 import { SiteFooter } from "./site-footer";
 import { PageviewBeacon } from "./pageview-beacon";
-import { AiChatWidget } from "@/components/molecules/ai/ai-chat-widget";
+import { DeferredAiChatWidget } from "./deferred-ai-chat-widget";
 
 interface StandardPageLayoutProps {
   children: ReactNode;
@@ -23,7 +23,7 @@ export function StandardPageLayout({
         {children}
       </main>
       <SiteFooter />
-      <AiChatWidget />
+      <DeferredAiChatWidget />
     </div>
   );
 }

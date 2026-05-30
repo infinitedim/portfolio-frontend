@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 import { getPublicSeries } from "@/lib/services/series-service";
+
+const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
 
 interface SeriesPageProps {
   params: Promise<{ slug: string }>;
@@ -13,6 +16,9 @@ export async function generateMetadata({
   params,
 }: SeriesPageProps): Promise<Metadata> {
   const { slug } = await params;
+  if (slug === BUILD_PLACEHOLDER_SLUG) {
+    return { title: "Series | Blog" };
+  }
   const series = await getPublicSeries(slug);
   if (!series) {
     return { title: "Series Not Found | Blog" };
@@ -23,8 +29,16 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogSeriesPage({ params }: SeriesPageProps) {
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  return [{ slug: BUILD_PLACEHOLDER_SLUG }];
+}
+
+async function BlogSeriesContent({ params }: SeriesPageProps) {
   const { slug } = await params;
+  if (slug === BUILD_PLACEHOLDER_SLUG) {
+    notFound();
+  }
+
   const series = await getPublicSeries(slug);
 
   if (!series) {
@@ -107,4 +121,20 @@ export default async function BlogSeriesPage({ params }: SeriesPageProps) {
   );
 }
 
-export const revalidate = 3600;
+function BlogSeriesSkeleton() {
+  return (
+    <StandardPageLayout>
+      <div className="container mx-auto max-w-4xl px-4 py-8">
+        <p className="text-gray-400">Loading series…</p>
+      </div>
+    </StandardPageLayout>
+  );
+}
+
+export default function BlogSeriesPage(props: SeriesPageProps) {
+  return (
+    <Suspense fallback={<BlogSeriesSkeleton />}>
+      <BlogSeriesContent {...props} />
+    </Suspense>
+  );
+}

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
 import { ScrollProgress } from "@/components/molecules/blog/scroll-progress";
 import { BackToTop } from "@/components/molecules/blog/back-to-top";
 import { CopyCodeButton } from "@/components/molecules/blog/copy-code-button";
@@ -14,6 +15,9 @@ import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { BlogLocaleSwitcher } from "@/components/molecules/blog/locale-switcher";
 import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
+import { getCachedBlogPost } from "@/lib/services/cached-blog-fetch";
+
+const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
 
 function getBackendUrl(): string {
   return getServerApiUrl();
@@ -43,24 +47,7 @@ async function getBlogPost(
   slug: string,
   locale: string = DEFAULT_BLOG_LOCALE,
 ): Promise<BlogPost | null> {
-  try {
-    const backendUrl = getBackendUrl();
-    const params = new URLSearchParams({ locale });
-    const response = await fetch(
-      `${backendUrl}/api/blog/${slug}?${params.toString()}`,
-      {
-        next: { revalidate: 3600 },
-      },
-    );
-
-    if (response.ok) {
-      return await response.json();
-    }
-  } catch (error) {
-    console.error("Failed to fetch blog post:", error);
-  }
-
-  return null;
+  return getCachedBlogPost(slug, locale);
 }
 
 export async function generateMetadata({
@@ -107,22 +94,37 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 
     if (response.ok) {
       const data = await response.json();
-      return (data.items || []).map((post: { slug: string }) => ({
+      const slugs = (data.items || []).map((post: { slug: string }) => ({
         slug: post.slug,
       }));
+      if (slugs.length > 0) {
+        return slugs;
+      }
     }
   } catch (error) {
     console.error("Failed to generate static params:", error);
   }
 
-  return [];
+  // cacheComponents requires at least one param for build-time validation
+  return [{ slug: BUILD_PLACEHOLDER_SLUG }];
 }
 
-export default async function BlogPostPage({
-  params,
-  searchParams,
-}: BlogPostPageProps) {
+function BlogPostSkeleton() {
+  return (
+    <StandardPageLayout>
+      <div className="container mx-auto max-w-6xl px-4 py-8">
+        <p className="text-gray-400">Loading post…</p>
+      </div>
+    </StandardPageLayout>
+  );
+}
+
+async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
   const { slug } = await params;
+  if (slug === BUILD_PLACEHOLDER_SLUG) {
+    notFound();
+  }
+
   const { locale: localeParam } = await searchParams;
   const locale = localeParam?.trim() || DEFAULT_BLOG_LOCALE;
   const post = await getBlogPost(slug, locale);
@@ -282,4 +284,10 @@ export default async function BlogPostPage({
   );
 }
 
-export const revalidate = 3600;
+export default function BlogPostPage(props: BlogPostPageProps) {
+  return (
+    <Suspense fallback={<BlogPostSkeleton />}>
+      <BlogPostContent {...props} />
+    </Suspense>
+  );
+}

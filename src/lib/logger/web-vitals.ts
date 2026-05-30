@@ -35,6 +35,26 @@ const THRESHOLDS = {
   },
 };
 
+const vitalsStore: {
+  metrics: Record<string, number>;
+  ratings: Record<string, string>;
+} = {
+  metrics: {},
+  ratings: {},
+};
+
+function getRoutePathname(): string {
+  if (typeof window === "undefined") {
+    return "/";
+  }
+
+  try {
+    return new URL(window.location.href).pathname;
+  } catch {
+    return window.location.pathname;
+  }
+}
+
 function getRating(
   name: string,
   value: number,
@@ -58,36 +78,46 @@ function getRating(
 
 function reportMetric(metric: Metric): void {
   const { name, value, rating, id, navigationType } = metric;
-
+  const route = getRoutePathname();
   const ourRating = getRating(name, value);
+  const resolvedRating = rating || ourRating;
+  const isTimingMetric = name !== "CLS";
 
-  clientLogger.logPerformance(
-    name,
-    value,
-    {
-      rating: rating || ourRating,
-      metricId: id,
-      navigationType,
-      url: window.location.href,
-      timestamp: Date.now(),
-    },
+  vitalsStore.metrics[name] = value;
+  vitalsStore.ratings[name] = resolvedRating;
+
+  clientLogger.info(
+    `Web Vital: ${name} = ${value}${isTimingMetric ? "ms" : ""} (${resolvedRating})`,
     {
       component: "web-vitals",
       action: "metric-collected",
     },
+    {
+      metricName: name,
+      value,
+      unit: isTimingMetric ? "ms" : "score",
+      rating: resolvedRating,
+      metricId: id,
+      navigationType,
+      url: window.location.href,
+      route,
+      pathname: route,
+    },
   );
 
-  if (rating === "poor" || ourRating === "poor") {
+  if (resolvedRating === "poor") {
     clientLogger.warn(
       `Poor Web Vital detected: ${name} = ${value}`,
       {
         component: "web-vitals",
         url: window.location.href,
+        route,
       },
       {
         metricName: name,
         value,
-        rating: rating || ourRating,
+        rating: resolvedRating,
+        route,
         threshold: THRESHOLDS[name as keyof typeof THRESHOLDS],
       },
     );
@@ -140,8 +170,8 @@ export function getWebVitalsSummary(): {
   ratings: Record<string, string>;
 } {
   return {
-    metrics: {},
-    ratings: {},
+    metrics: { ...vitalsStore.metrics },
+    ratings: { ...vitalsStore.ratings },
   };
 }
 

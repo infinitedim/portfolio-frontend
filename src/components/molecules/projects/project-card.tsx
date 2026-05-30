@@ -1,8 +1,6 @@
-"use client";
-
 import { memo, JSX, Suspense } from "react";
 import { Project } from "@/lib/data/data-fetching";
-import { OptimizedImage } from "@/components/molecules/shared/optimized-image";
+import { ProjectCardImage } from "@/components/molecules/projects/project-card-image";
 import { ImageErrorBoundary } from "@/components/organisms/error/image-error-boundary";
 
 interface ProjectCardProps {
@@ -11,7 +9,7 @@ interface ProjectCardProps {
 }
 
 const ProjectImageLoader = () => (
-  <div className="h-48 bg-terminal-muted/10 animate-pulse" />
+  <div className="h-48 animate-pulse bg-terminal-muted/10" />
 );
 
 export const ProjectCard = memo(function ProjectCard({
@@ -28,43 +26,39 @@ export const ProjectCard = memo(function ProjectCard({
     planned: { color: "text-blue-400", icon: "📋", label: "Planned" },
   };
 
-  const status = statusConfig[project.status];
+  const status = statusConfig[project.status] ?? statusConfig.completed;
 
   return (
     <article
       className={`
-        group relative bg-terminal-bg border border-terminal-border rounded-lg overflow-hidden
+        group relative overflow-hidden rounded-lg border border-terminal-border bg-terminal-bg
         transition-all duration-300 hover:border-terminal-accent hover:shadow-lg
         ${featured ? "ring-2 ring-terminal-accent ring-opacity-20" : ""}
       `}
       itemScope
       itemType="https://schema.org/CreativeWork"
     >
-      {}
       {featured && (
-        <div className="absolute top-4 right-4 z-10">
-          <span className="bg-terminal-accent text-terminal-bg px-2 py-1 text-xs font-bold rounded">
+        <div className="absolute right-4 top-4 z-10">
+          <span className="rounded bg-terminal-accent px-2 py-1 text-xs font-bold text-terminal-bg">
             ⭐ FEATURED
           </span>
         </div>
       )}
 
-      {}
-      <div className="relative h-48 bg-terminal-muted/10 overflow-hidden">
+      <div className="relative h-48 overflow-hidden bg-terminal-muted/10">
         <Suspense fallback={<ProjectImageLoader />}>
           <ImageErrorBoundary>
             {project.imageUrl ? (
-              <OptimizedImage
+              <ProjectCardImage
                 src={project.imageUrl}
                 alt={`Screenshot of ${project.name}`}
-                fill
-                priority={featured}
-                className="w-full h-full"
+                featured={featured}
               />
             ) : (
-              <div className="flex items-center justify-center h-full text-terminal-muted">
+              <div className="flex h-full items-center justify-center text-terminal-muted">
                 <div className="text-center">
-                  <div className="text-4xl mb-2">🚀</div>
+                  <div className="mb-2 text-4xl">🚀</div>
                   <div className="text-sm">Project Preview</div>
                 </div>
               </div>
@@ -72,10 +66,9 @@ export const ProjectCard = memo(function ProjectCard({
           </ImageErrorBoundary>
         </Suspense>
 
-        {}
-        <div className="absolute bottom-2 right-2 bg-terminal-bg/80 backdrop-blur-sm px-2 py-1 rounded">
+        <div className="absolute bottom-2 right-2 rounded bg-terminal-bg/80 px-2 py-1 backdrop-blur-sm">
           <span
-            className={`${status.color} text-sm font-mono flex items-center gap-1`}
+            className={`${status.color} flex items-center gap-1 font-mono text-sm`}
           >
             <span>{status.icon}</span>
             <span>{status.label}</span>
@@ -83,55 +76,51 @@ export const ProjectCard = memo(function ProjectCard({
         </div>
       </div>
 
-      {}
       <div className="p-6">
-        {}
         <div className="mb-4">
           <h3
-            className="text-xl font-bold text-terminal-text group-hover:text-terminal-accent transition-colors mb-2"
+            className="mb-2 text-xl font-bold text-terminal-text transition-colors group-hover:text-terminal-accent"
             itemProp="name"
           >
             {project.name}
           </h3>
           <p
-            className="text-terminal-muted text-sm leading-relaxed"
+            className="text-sm leading-relaxed text-terminal-muted"
             itemProp="description"
           >
             {project.description}
           </p>
         </div>
 
-        {}
         <div className="mb-4">
-          <div className="text-xs text-terminal-muted mb-2 font-mono">
+          <div className="mb-2 font-mono text-xs text-terminal-muted">
             TECH STACK:
           </div>
           <div className="flex flex-wrap gap-2">
             {project.technologies.slice(0, 4).map((tech) => (
               <span
                 key={tech}
-                className="px-2 py-1 text-xs bg-terminal-accent/10 text-terminal-accent rounded border border-terminal-accent/20 font-mono"
+                className="rounded border border-terminal-accent/20 bg-terminal-accent/10 px-2 py-1 font-mono text-xs text-terminal-accent"
                 itemProp="programmingLanguage"
               >
                 {tech}
               </span>
             ))}
             {project.technologies.length > 4 && (
-              <span className="px-2 py-1 text-xs text-terminal-muted border border-terminal-border rounded">
+              <span className="rounded border border-terminal-border px-2 py-1 text-xs text-terminal-muted">
                 +{project.technologies.length - 4} more
               </span>
             )}
           </div>
         </div>
 
-        {}
         <div className="flex gap-4">
           {project.demoUrl && (
             <a
               href={project.demoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-terminal-accent text-terminal-bg px-4 py-2 rounded text-sm font-medium text-center hover:bg-terminal-accent/90 transition-colors"
+              className="flex-1 rounded bg-terminal-accent px-4 py-2 text-center text-sm font-medium text-terminal-bg transition-colors hover:bg-terminal-accent/90"
               aria-label={`View live demo of ${project.name}`}
             >
               🌐 Live Demo
@@ -142,7 +131,7 @@ export const ProjectCard = memo(function ProjectCard({
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 border border-terminal-border text-terminal-text px-4 py-2 rounded text-sm font-medium text-center hover:border-terminal-accent hover:text-terminal-accent transition-colors"
+              className="flex-1 rounded border border-terminal-border px-4 py-2 text-center text-sm font-medium text-terminal-text transition-colors hover:border-terminal-accent hover:text-terminal-accent"
               aria-label={`View source code of ${project.name}`}
             >
               💻 Code
@@ -150,7 +139,6 @@ export const ProjectCard = memo(function ProjectCard({
           )}
         </div>
 
-        {}
         <meta
           itemProp="url"
           content={project.demoUrl || project.githubUrl}

@@ -1,6 +1,7 @@
 const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig = {
+  cacheComponents: true,
   reactStrictMode: true,
   reactCompiler: !isDev,
   typedRoutes: true,
@@ -9,7 +10,14 @@ const nextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: "2mb" },
     typedEnv: true,
-    optimizePackageImports: ["@radix-ui/react-dialog", "recharts"],
+    optimizePackageImports: [
+      "@radix-ui/react-dialog",
+      "lucide-react",
+      "@tiptap/react",
+      "@tiptap/starter-kit",
+      "date-fns",
+      "@giscus/react",
+    ],
   },
   turbopack: {
     resolveAlias: {

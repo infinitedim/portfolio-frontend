@@ -203,7 +203,7 @@ export const getProjectsData = cache(
 
       if (response.ok) {
         const data = await response.json();
-        const projects = data.data ?? STATIC_PROJECTS;
+        const projects = normalizeProjects(data.data ?? STATIC_PROJECTS);
         return limit ? projects.slice(0, limit) : projects;
       }
     } catch (error) {
@@ -212,9 +212,34 @@ export const getProjectsData = cache(
       });
     }
 
-    return limit ? STATIC_PROJECTS.slice(0, limit) : STATIC_PROJECTS;
+    return limit
+      ? normalizeProjects(STATIC_PROJECTS).slice(0, limit)
+      : normalizeProjects(STATIC_PROJECTS);
   },
 );
+
+function normalizeProjectStatus(status: unknown): Project["status"] {
+  const value = String(status ?? "completed").toLowerCase();
+  const map: Record<string, Project["status"]> = {
+    active: "completed",
+    completed: "completed",
+    "in-progress": "in-progress",
+    in_progress: "in-progress",
+    planned: "planned",
+  };
+  return map[value] ?? "completed";
+}
+
+function normalizeProject(project: Project): Project {
+  return {
+    ...project,
+    status: normalizeProjectStatus(project.status),
+  };
+}
+
+function normalizeProjects(projects: Project[]): Project[] {
+  return projects.map(normalizeProject);
+}
 
 export const getExperienceData = cache(async (): Promise<Experience[]> => {
   const backendUrl = getBackendUrl();

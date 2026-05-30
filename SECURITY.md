@@ -63,12 +63,12 @@ This project implements the following security measures:
 - Input validation on all user-provided data
 - XSS protection through content sanitization
 - SQL injection prevention via parameterized queries (SQLx on the Rust/Axum backend)
-- CSRF protection on state-changing operations
+- CSRF risk reduced via SameSite=Strict refresh cookies + backend CORS allowlist (no separate CSRF token layer).
 
 ### Infrastructure Security
 
 - HTTPS enforcement in production
-- Security headers (CSP, HSTS, X-Frame-Options, etc.)
+- Security headers via Next.js proxy (`src/proxy.ts`) and `next.config.ts` (HSTS, X-Frame-Options, etc.).
 - Environment variable protection for sensitive data
 - Regular dependency updates and vulnerability scanning
 

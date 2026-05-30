@@ -10,7 +10,12 @@ vi.mock("next/headers", () => ({
   cookies: vi.fn(async () => ({
     get: (name: string) =>
       name === "portfolio_gate" ? { value: "test-token" } : undefined,
+    toString: (): string => "portfolio_gate=test-token",
   })),
+}));
+
+vi.mock("@/lib/gate/gate-server", () => ({
+  getGateUnlockedFromBackend: vi.fn(async () => true),
 }));
 
 vi.mock("@/components/organisms/gate/terminal-locked-teaser", () => ({
@@ -69,9 +74,14 @@ describe("TerminalPage", () => {
       }
 
       const { cookies } = await import("next/headers");
+      const { getGateUnlockedFromBackend } =
+        await import("@/lib/gate/gate-server");
+
       vi.mocked(cookies).mockResolvedValueOnce({
         get: () => undefined,
+        toString: (): string => "",
       } as Awaited<ReturnType<typeof cookies>>);
+      vi.mocked(getGateUnlockedFromBackend).mockResolvedValueOnce(false);
 
       const jsx = await TerminalPage();
       const { getByTestId } = render(jsx);

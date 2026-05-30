@@ -144,6 +144,12 @@ export function resolveGateRedirect(request: NextRequest): NextResponse | null {
     }
   }
 
+  if (pathname === "/terminal" || pathname.startsWith("/terminal/")) {
+    if (!hasGateCookie(request)) {
+      return NextResponse.redirect(new URL("/gate", request.url));
+    }
+  }
+
   return null;
 }
 

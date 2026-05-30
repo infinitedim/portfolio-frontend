@@ -328,8 +328,8 @@ NEXT_PUBLIC_LOG_LEVEL="info"           # trace|debug|info|warn|error
 NEXT_PUBLIC_LOG_API_URL="/api/logs"    # Log ingestion endpoint
 
 # 🛣️ Roadmap.sh Integration (Optional)
-NEXT_PUBLIC_ROADMAP_AUTH_TOKEN="your-roadmap-token"
-NEXT_PUBLIC_ROADMAP_USER_ID="your-user-id"
+# ROADMAP_EMAIL and ROADMAP_PASSWORD are configured server-side in portfolio-backend
+# NEXT_PUBLIC_ROADMAP_* secrets are not used
 
 # 📊 Analytics (Optional)
 NEXT_PUBLIC_GA_ID="G-XXXXXXXXXX"

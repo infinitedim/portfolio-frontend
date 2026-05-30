@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import type { JSX, ReactNode } from "react";
-import { AuthProvider } from "../lib/auth";
 import { AccessibilityProvider } from "../components/organisms/accessibility/accessibility-provider";
 import { ScreenReaderAnnouncer } from "../components/molecules/accessibility/screen-reader-announcer";
 import { ClientOnlyComponents } from "../components/layout/client-only-components";
@@ -102,7 +101,7 @@ export const metadata: Metadata = {
   },
   ...(process.env.GOOGLE_SITE_VERIFICATION ||
   process.env.YANDEX_VERIFICATION ||
-  process.env.YAHOO_VERIFICATION
+  process.env.BING_VERIFICATION
     ? {
         verification: {
           ...(process.env.GOOGLE_SITE_VERIFICATION
@@ -111,8 +110,8 @@ export const metadata: Metadata = {
           ...(process.env.YANDEX_VERIFICATION
             ? { yandex: process.env.YANDEX_VERIFICATION }
             : {}),
-          ...(process.env.YAHOO_VERIFICATION
-            ? { yahoo: process.env.YAHOO_VERIFICATION }
+          ...(process.env.BING_VERIFICATION
+            ? { yahoo: process.env.BING_VERIFICATION }
             : {}),
         },
       }
@@ -215,12 +214,10 @@ export default function RootLayout({
       </head>
       <body className={"antialiased bg-background text-foreground"}>
         <ClientOnlyComponents />
-        <AuthProvider>
-          <AccessibilityProvider>
-            <ScreenReaderAnnouncer message="Terminal Portfolio" />
-            {children}
-          </AccessibilityProvider>
-        </AuthProvider>
+        <AccessibilityProvider>
+          <ScreenReaderAnnouncer message="Terminal Portfolio" />
+          {children}
+        </AccessibilityProvider>
       </body>
     </html>
   );

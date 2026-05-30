@@ -1,5 +1,6 @@
 import type { Metadata, Route } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import {
   TagFilter,
   type TagWithCount,
@@ -12,6 +13,7 @@ import { TagChip } from "@/components/atoms/shared/tag-chip";
 
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
+import { getCachedBlogList } from "@/lib/services/cached-blog-fetch";
 
 function getBackendUrl(): string {
   return getServerApiUrl();
@@ -61,6 +63,12 @@ async function getBlogPosts(
   series?: string,
   locale?: string,
 ): Promise<BlogListResponse> {
+  const resolvedLocale = locale ?? DEFAULT_BLOG_LOCALE;
+
+  if (!search && !tag && !series && page === 1) {
+    return getCachedBlogList(page, pageSize, resolvedLocale);
+  }
+
   try {
     const backendUrl = getBackendUrl();
     const params = new URLSearchParams({
@@ -116,7 +124,7 @@ async function getAvailableTags(): Promise<TagWithCount[]> {
   return [];
 }
 
-export default async function BlogPage({
+async function BlogPageContent({
   searchParams,
 }: {
   searchParams: Promise<{
@@ -374,4 +382,28 @@ export default async function BlogPage({
   );
 }
 
-export const revalidate = 3600;
+function BlogListSkeleton() {
+  return (
+    <StandardPageLayout>
+      <div className="container mx-auto px-4 py-8">
+        <p className="text-gray-400">Loading blog…</p>
+      </div>
+    </StandardPageLayout>
+  );
+}
+
+export default function BlogPage(props: {
+  searchParams: Promise<{
+    page?: string;
+    search?: string;
+    tag?: string;
+    series?: string;
+    locale?: string;
+  }>;
+}) {
+  return (
+    <Suspense fallback={<BlogListSkeleton />}>
+      <BlogPageContent {...props} />
+    </Suspense>
+  );
+}
