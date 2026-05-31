@@ -147,19 +147,14 @@ class ClientLogger {
     this.buffer.logs = [];
 
     try {
-      const { encryptedFetchRaw } =
-        await import("@/lib/crypto/encrypted-fetch");
-      const response = await encryptedFetchRaw(
-        clientConfig.apiEndpoint || "/api/logs",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ logs: logsToSend }),
-          keepalive: true,
+      const response = await fetch(clientConfig.apiEndpoint || "/api/logs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ logs: logsToSend }),
+        keepalive: true,
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to send logs: ${response.status}`);

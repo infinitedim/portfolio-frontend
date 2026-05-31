@@ -2,13 +2,14 @@ import { Metadata } from "next";
 import { headers } from "next/headers";
 import { JSX, Suspense } from "react";
 import {
-  getRoadmapDashboard,
+  getRoadmapDashboardWithError,
   getRoadmapStreak,
   getRoadmapTeams,
   getRoadmapFavourites,
   type RoadmapDashboard,
   type RoadmapStreak,
   type RoadmapProgress,
+  type RoadmapFetchError,
 } from "@/lib/data/data-fetching";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
@@ -185,31 +186,81 @@ function DashboardSection({
   );
 }
 
-function EmptyState(): JSX.Element {
+function roadmapEmptyMessage(error: RoadmapFetchError | null): JSX.Element {
+  const msg = error?.message ?? "";
   const isProduction = process.env.NODE_ENV === "production";
 
+  if (msg.includes("ROADMAP_EMAIL/PASSWORD not configured")) {
+    return (
+      <>
+        Roadmap credentials missing — set{" "}
+        <code className="text-neutral-200">ROADMAP_EMAIL</code> /{" "}
+        <code className="text-neutral-200">ROADMAP_PASSWORD</code> in Cloud Run
+        Secret Manager, then redeploy the backend service.
+      </>
+    );
+  }
+
+  if (
+    msg.includes("roadmap.sh") ||
+    msg.includes("login request failed")
+  ) {
+    return (
+      <>
+        Cloud Run cannot reach{" "}
+        <code className="text-neutral-200">roadmap.sh</code> (outbound internet
+        blocked). Run{" "}
+        <code className="text-neutral-200">
+          gcloud run services update portfolio-backend --region=asia-southeast2
+          --vpc-egress=private-ranges-only
+        </code>{" "}
+        then verify{" "}
+        <code className="text-neutral-200">/api/roadmap/dashboard</code> returns
+        200.
+      </>
+    );
+  }
+
+  if (error?.status === 502 || error?.status === 504) {
+    return (
+      <>
+        Roadmap proxy error ({error.status}) — backend is up (pageview works)
+        but upstream failed. Check Cloud Run logs and roadmap credentials.
+      </>
+    );
+  }
+
+  return (
+    <>
+      Could not load roadmap data
+      {msg ? (
+        <>
+          {" "}
+          — <span className="text-neutral-300">{msg}</span>
+        </>
+      ) : null}
+      {isProduction ? (
+        <>
+          {" "}
+          Confirm{" "}
+          <code className="text-neutral-200">BACKEND_URL</code> on Vercel
+          Production matches Cloud Run.
+        </>
+      ) : (
+        <>
+          {" "}
+          Check <code className="text-neutral-200">portfolio-backend/.env</code>.
+        </>
+      )}
+    </>
+  );
+}
+
+function EmptyState({ error }: { error: RoadmapFetchError | null }): JSX.Element {
   return (
     <div className="rounded-lg border border-dashed border-neutral-700 p-10 text-center font-mono text-neutral-400">
       <div className="mb-2 text-3xl">🔌</div>
-      <div className="text-sm">
-        Backend unreachable — check{" "}
-        <code className="text-neutral-200">ROADMAP_EMAIL</code> /{" "}
-        <code className="text-neutral-200">ROADMAP_PASSWORD</code>{" "}
-        {isProduction ? (
-          <>
-            in Cloud Run secrets (Secret Manager → service env mapping) and
-            confirm{" "}
-            <code className="text-neutral-200">BACKEND_URL</code> /{" "}
-            <code className="text-neutral-200">NEXT_PUBLIC_API_URL</code> on
-            Vercel Production
-          </>
-        ) : (
-          <>
-            in{" "}
-            <code className="text-neutral-200">portfolio-backend/.env</code>
-          </>
-        )}
-      </div>
+      <div className="text-sm">{roadmapEmptyMessage(error)}</div>
     </div>
   );
 }
@@ -218,14 +269,15 @@ async function RoadmapContent(): Promise<JSX.Element> {
   // Request-time data (roadmap.sh proxy); avoids build-time SSG timeout with cacheComponents.
   await headers();
 
-  const [dashboard, streak, teams, favourites] = await Promise.all([
-    getRoadmapDashboard(),
+  const [dashboardResult, streak, teams, favourites] = await Promise.all([
+    getRoadmapDashboardWithError(),
     getRoadmapStreak(),
     getRoadmapTeams(),
     getRoadmapFavourites(),
   ]);
 
-  if (!dashboard) return <EmptyState />;
+  const dashboard = dashboardResult.data;
+  if (!dashboard) return <EmptyState error={dashboardResult.error} />;
 
   return (
     <div className="space-y-6">

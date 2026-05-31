@@ -437,6 +437,11 @@ export interface RoadmapFavourites {
 
 const ROADMAP_FETCH_TIMEOUT_MS = 15_000;
 
+export interface RoadmapFetchError {
+  status?: number;
+  message: string;
+}
+
 async function fetchRoadmapBackend(
   path: string,
   revalidateSeconds: number,
@@ -464,11 +469,44 @@ async function fetchRoadmapBackend(
   }
 }
 
+async function parseRoadmapError(response: Response): Promise<RoadmapFetchError> {
+  try {
+    const body = (await response.json()) as { error?: unknown };
+    if (typeof body.error === "string" && body.error.trim()) {
+      return { status: response.status, message: body.error };
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return {
+    status: response.status,
+    message: `Backend returned HTTP ${response.status}`,
+  };
+}
+
+export async function getRoadmapDashboardWithError(): Promise<{
+  data: RoadmapDashboard | null;
+  error: RoadmapFetchError | null;
+}> {
+  const response = await fetchRoadmapBackend("/api/roadmap/dashboard", 300);
+  if (!response) {
+    return {
+      data: null,
+      error: {
+        message: `Request timed out after ${ROADMAP_FETCH_TIMEOUT_MS / 1000}s — check BACKEND_URL on Vercel`,
+      },
+    };
+  }
+  if (!response.ok) {
+    return { data: null, error: await parseRoadmapError(response) };
+  }
+  return { data: (await response.json()) as RoadmapDashboard, error: null };
+}
+
 export const getRoadmapDashboard = cache(
   async (): Promise<RoadmapDashboard | null> => {
-    const response = await fetchRoadmapBackend("/api/roadmap/dashboard", 300);
-    if (!response?.ok) return null;
-    return (await response.json()) as RoadmapDashboard;
+    const { data } = await getRoadmapDashboardWithError();
+    return data;
   },
 );
 

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerLogger } from "@/lib/logger/server-logger";
 import type { LogEntry } from "@/lib/logger/types";
-import { withEncryption } from "@/lib/crypto/with-encryption";
-
 const logger = createServerLogger("api/logs");
 
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -284,7 +282,8 @@ async function postHandler(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-export const POST = withEncryption(postHandler);
+// Plain JSON over HTTPS — crypto sessions are in-memory and break on Vercel serverless.
+export const POST = postHandler;
 
 export async function OPTIONS(): Promise<NextResponse> {
   return new NextResponse(null, {
