@@ -62,11 +62,12 @@ describe("proxy", () => {
       expect(result).toHaveProperty("headers");
     });
 
-    it("sets CSP without strict-dynamic so /_next/static scripts are allowed", () => {
+    it("sets CSP with strict-dynamic for Next.js nonce auto-application", () => {
       const result = proxy(mockRequest);
       const csp = result.headers.get("content-security-policy") ?? "";
-      expect(csp).not.toContain("strict-dynamic");
+      expect(csp).toContain("strict-dynamic");
       expect(csp).toContain("script-src 'self'");
+      expect(csp).toContain("https://vercel.live");
     });
 
     it("normalizes API origin for connect-src", () => {

@@ -48,7 +48,8 @@ const edgeLogger = {
 };
 
 function generateNonce(): string {
-  return crypto.randomUUID().replace(/-/g, "");
+  // Next.js parses nonce from CSP request header (base64-shaped token).
+  return btoa(crypto.randomUUID());
 }
 
 /** Origin only — no trailing slash; upgrade http→https for connect-src. */
@@ -71,11 +72,13 @@ function buildCsp(nonce: string, isDev: boolean): string {
 
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
-    // No strict-dynamic: it disables 'self' and blocks /_next/static/*.js without per-chunk nonces.
+    // strict-dynamic + nonce on request CSP: Next.js auto-nonces framework scripts/chunks.
     "script-src": [
       "'self'",
       `'nonce-${nonce}'`,
+      "'strict-dynamic'",
       "https://va.vercel-scripts.com",
+      "https://vercel.live",
       ...(isDev ? ["'unsafe-eval'"] : []),
     ],
     "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
@@ -94,9 +97,10 @@ function buildCsp(nonce: string, isDev: boolean): string {
       "https://giscus.app",
       "https://api.github.com",
       "https://vitals.vercel-insights.com",
+      "https://vercel.live",
       ...(isDev ? ["ws:", "wss:"] : []),
     ],
-    "frame-src": ["'self'", "https://giscus.app"],
+    "frame-src": ["'self'", "https://giscus.app", "https://vercel.live"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],
@@ -113,12 +117,9 @@ function buildCsp(nonce: string, isDev: boolean): string {
     .join("; ");
 }
 
-function getSecurityHeaders(
-  nonce: string,
-  isDev: boolean,
-): Record<string, string> {
+function getSecurityHeaders(csp: string): Record<string, string> {
   return {
-    "Content-Security-Policy": buildCsp(nonce, isDev),
+    "Content-Security-Policy": csp,
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin",
@@ -183,8 +184,10 @@ export function proxy(request: NextRequest): NextResponse {
 
   // Forward nonce + request id to downstream Server Components via request headers.
   const requestHeaders = new Headers(request.headers);
+  const csp = buildCsp(nonce, isDevelopment);
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("x-request-id", requestId);
+  requestHeaders.set("Content-Security-Policy", csp);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
 
@@ -192,7 +195,7 @@ export function proxy(request: NextRequest): NextResponse {
   response.headers.set("X-Request-ID", requestId);
 
   // Security headers (apply CSP in all environments — fail loud during dev).
-  const securityHeaders = getSecurityHeaders(nonce, isDevelopment);
+  const securityHeaders = getSecurityHeaders(csp);
   for (const [key, value] of Object.entries(securityHeaders)) {
     response.headers.set(key, value);
   }

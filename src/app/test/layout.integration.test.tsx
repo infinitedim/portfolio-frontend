@@ -44,6 +44,15 @@ vi.mock("../components/monitoring/web-vitals-monitor", () => ({
   WebVitalsMonitor: () => null,
 }));
 
+vi.mock("@/components/layout/theme-init-script", () => ({
+  ThemeInitScript: () => (
+    <script
+      src="/theme-init.js"
+      data-testid="theme-init"
+    />
+  ),
+}));
+
 // Imported AFTER the mocks above so the module evaluates against them.
 import RootLayout, { metadata, viewport } from "../layout";
 
