@@ -62,6 +62,23 @@ describe("proxy", () => {
       expect(result).toHaveProperty("headers");
     });
 
+    it("sets CSP without strict-dynamic so /_next/static scripts are allowed", () => {
+      const result = proxy(mockRequest);
+      const csp = result.headers.get("content-security-policy") ?? "";
+      expect(csp).not.toContain("strict-dynamic");
+      expect(csp).toContain("script-src 'self'");
+    });
+
+    it("normalizes API origin for connect-src", () => {
+      process.env.NEXT_PUBLIC_API_URL =
+        "http://example.run.app/";
+      const result = proxy(mockRequest);
+      const csp = result.headers.get("content-security-policy") ?? "";
+      expect(csp).toContain("https://example.run.app");
+      expect(csp).not.toContain("http://example.run.app");
+      delete process.env.NEXT_PUBLIC_API_URL;
+    });
+
     it("should handle security configuration", () => {
       const result = proxy(mockRequest);
       expect(result).toBeDefined();

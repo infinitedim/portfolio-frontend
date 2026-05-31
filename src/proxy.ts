@@ -51,16 +51,31 @@ function generateNonce(): string {
   return crypto.randomUUID().replace(/-/g, "");
 }
 
+/** Origin only — no trailing slash; upgrade http→https for connect-src. */
+export function normalizeApiOrigin(raw: string | undefined): string {
+  const fallback = "https://api.infinitedim.vercel.app";
+  if (!raw?.trim()) return fallback;
+  try {
+    const parsed = new URL(raw.trim());
+    if (parsed.protocol === "http:") {
+      parsed.protocol = "https:";
+    }
+    return parsed.origin;
+  } catch {
+    return raw.trim().replace(/\/+$/, "");
+  }
+}
+
 function buildCsp(nonce: string, isDev: boolean): string {
-  const apiOrigin =
-    process.env.NEXT_PUBLIC_API_URL || "https://api.infinitedim.vercel.app";
+  const apiOrigin = normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL);
 
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
+    // No strict-dynamic: it disables 'self' and blocks /_next/static/*.js without per-chunk nonces.
     "script-src": [
       "'self'",
       `'nonce-${nonce}'`,
-      "'strict-dynamic'",
+      "https://va.vercel-scripts.com",
       ...(isDev ? ["'unsafe-eval'"] : []),
     ],
     "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
@@ -78,6 +93,7 @@ function buildCsp(nonce: string, isDev: boolean): string {
       apiOrigin,
       "https://giscus.app",
       "https://api.github.com",
+      "https://vitals.vercel-insights.com",
       ...(isDev ? ["ws:", "wss:"] : []),
     ],
     "frame-src": ["'self'", "https://giscus.app"],
