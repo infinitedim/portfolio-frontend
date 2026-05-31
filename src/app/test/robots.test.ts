@@ -66,6 +66,7 @@ describe("robots.ts", () => {
       expect(universalRule?.disallow).toContain("/api/");
       expect(universalRule?.disallow).toContain("/admin/");
       expect(universalRule?.disallow).toContain("/private/");
+      expect(universalRule?.disallow).toContain("/s3cr3t/");
       expect(universalRule?.disallow).toContain("/_next/");
     });
 

@@ -22,6 +22,7 @@ export default function robots(): MetadataRoute.Robots {
           "/api/",
           "/admin/",
           "/private/",
+          "/s3cr3t/",
           "/gate",
           "/gate/",
           "/terminal",
