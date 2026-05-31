@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
-import { Suspense, type JSX, type ReactNode } from "react";
+import { type JSX, type ReactNode } from "react";
 import "./globals.css";
 import { ThemeInitScript } from "@/components/layout/theme-init-script";
 import { AccessibilityProvider } from "../components/organisms/accessibility/accessibility-provider";
@@ -211,9 +211,7 @@ export default function RootLayout({
           }}
         />
 
-        <Suspense fallback={null}>
-          <ThemeInitScript />
-        </Suspense>
+        <ThemeInitScript />
       </head>
       <body className={"antialiased bg-background text-foreground"}>
         <ClientOnlyComponents />

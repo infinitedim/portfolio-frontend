@@ -186,14 +186,29 @@ function DashboardSection({
 }
 
 function EmptyState(): JSX.Element {
+  const isProduction = process.env.NODE_ENV === "production";
+
   return (
     <div className="rounded-lg border border-dashed border-neutral-700 p-10 text-center font-mono text-neutral-400">
       <div className="mb-2 text-3xl">🔌</div>
       <div className="text-sm">
         Backend unreachable — check{" "}
         <code className="text-neutral-200">ROADMAP_EMAIL</code> /{" "}
-        <code className="text-neutral-200">ROADMAP_PASSWORD</code> in{" "}
-        <code className="text-neutral-200">portfolio-backend/.env</code>
+        <code className="text-neutral-200">ROADMAP_PASSWORD</code>{" "}
+        {isProduction ? (
+          <>
+            in Cloud Run secrets (Secret Manager → service env mapping) and
+            confirm{" "}
+            <code className="text-neutral-200">BACKEND_URL</code> /{" "}
+            <code className="text-neutral-200">NEXT_PUBLIC_API_URL</code> on
+            Vercel Production
+          </>
+        ) : (
+          <>
+            in{" "}
+            <code className="text-neutral-200">portfolio-backend/.env</code>
+          </>
+        )}
       </div>
     </div>
   );

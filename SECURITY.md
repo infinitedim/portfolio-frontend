@@ -69,8 +69,31 @@ This project implements the following security measures:
 
 - HTTPS enforcement in production
 - Security headers via Next.js proxy (`src/proxy.ts`) and `next.config.ts` (HSTS, X-Frame-Options, etc.).
+- **Content-Security-Policy (PPR):** Production uses `script-src 'self' 'unsafe-inline'` (no `strict-dynamic` / per-request nonce) so Next.js PPR static shell scripts under `/_next/static/` are not blocked. Tight `connect-src` still limits API calls to `NEXT_PUBLIC_API_URL`.
 - Environment variable protection for sensitive data
 - Regular dependency updates and vulnerability scanning
+
+### Vercel production deploy verification
+
+After changing `BACKEND_URL`, `NEXT_PUBLIC_API_URL`, or CSP-related code, redeploy **Production** (not Preview only) and verify:
+
+```bash
+# connect-src must list the current Cloud Run host (843865911939), not legacy 1086149692502
+curl -sI https://infinitedim.vercel.app/roadmap | grep -i content-security-policy
+
+# roadmap proxy should respond within 15s (502 if ROADMAP_* secrets missing)
+curl -m 15 https://portfolio-backend-843865911939.asia-southeast2.run.app/api/roadmap/dashboard
+```
+
+Required Production env vars on Vercel:
+
+```env
+BACKEND_URL=https://portfolio-backend-843865911939.asia-southeast2.run.app
+NEXT_PUBLIC_API_URL=https://portfolio-backend-843865911939.asia-southeast2.run.app
+NEXT_PUBLIC_BASE_URL=https://infinitedim.vercel.app
+```
+
+E2E checks live in `e2e/security-headers.spec.ts` (CSP shape, stale backend host, chunk script load).
 
 ### Monitoring & Logging
 

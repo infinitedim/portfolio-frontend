@@ -47,11 +47,6 @@ const edgeLogger = {
   },
 };
 
-function generateNonce(): string {
-  // Next.js parses nonce from CSP request header (base64-shaped token).
-  return btoa(crypto.randomUUID());
-}
-
 /** Origin only — no trailing slash; upgrade http→https for connect-src. */
 export function normalizeApiOrigin(raw: string | undefined): string {
   const fallback = "https://api.infinitedim.vercel.app";
@@ -67,16 +62,15 @@ export function normalizeApiOrigin(raw: string | undefined): string {
   }
 }
 
-function buildCsp(nonce: string, isDev: boolean): string {
+function buildCsp(isDev: boolean): string {
   const apiOrigin = normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL);
 
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
-    // strict-dynamic + nonce on request CSP: Next.js auto-nonces framework scripts/chunks.
+    // PPR static shell ships nonce-less /_next/static scripts — avoid strict-dynamic.
     "script-src": [
       "'self'",
-      `'nonce-${nonce}'`,
-      "'strict-dynamic'",
+      "'unsafe-inline'",
       "https://va.vercel-scripts.com",
       "https://vercel.live",
       ...(isDev ? ["'unsafe-eval'"] : []),
@@ -177,21 +171,14 @@ export function proxy(request: NextRequest): NextResponse {
   }
 
   const isDevelopment = process.env.NODE_ENV === "development";
-
-  // Generate nonce in both dev and prod so layouts can attach it consistently.
-  const nonce = generateNonce();
   const requestId = crypto.randomUUID();
+  const csp = buildCsp(isDevelopment);
 
-  // Forward nonce + request id to downstream Server Components via request headers.
   const requestHeaders = new Headers(request.headers);
-  const csp = buildCsp(nonce, isDevelopment);
-  requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("x-request-id", requestId);
-  requestHeaders.set("Content-Security-Policy", csp);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
 
-  response.headers.set("x-nonce", nonce);
   response.headers.set("X-Request-ID", requestId);
 
   // Security headers (apply CSP in all environments — fail loud during dev).
