@@ -56,7 +56,8 @@ class ClientLogger {
     this.pino = pino({
       level: clientConfig.level,
       browser: {
-        asObject: true,
+        // asObject logs raw objects — Next.js dev overlay treats them as "Console Error" with `{}`.
+        asObject: clientConfig.environment !== "development",
         serialize: true,
       },
     });
@@ -382,7 +383,10 @@ class ClientLogger {
       metadata,
     };
 
-    this.pino[level](entry);
+    this.pino[level](
+      { metricName, value, unit: "ms", ...context, ...metadata },
+      message,
+    );
     this.addToBuffer(entry);
   }
 

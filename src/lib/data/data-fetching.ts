@@ -435,7 +435,7 @@ export interface RoadmapFavourites {
   weeklySubscriptions: string[];
 }
 
-const ROADMAP_FETCH_TIMEOUT_MS = 15_000;
+const ROADMAP_FETCH_TIMEOUT_MS = 20_000;
 
 export interface RoadmapFetchError {
   status?: number;
@@ -459,10 +459,14 @@ async function fetchRoadmapBackend(
       signal: controller.signal,
     });
   } catch (error) {
-    console.error("Failed to fetch roadmap backend", {
-      path,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    const detail =
+      error instanceof Error
+        ? `${error.name}: ${error.message}`
+        : String(error);
+    // AbortError = client timeout; upstream 502 still surfaces via getRoadmapDashboardWithError.
+    if (process.env.NODE_ENV === "development") {
+      console.warn(`Roadmap fetch failed (${path}): ${detail}`);
+    }
     return null;
   } finally {
     clearTimeout(timeoutId);

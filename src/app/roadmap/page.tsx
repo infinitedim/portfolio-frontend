@@ -269,15 +269,15 @@ async function RoadmapContent(): Promise<JSX.Element> {
   // Request-time data (roadmap.sh proxy); avoids build-time SSG timeout with cacheComponents.
   await headers();
 
-  const [dashboardResult, streak, teams, favourites] = await Promise.all([
-    getRoadmapDashboardWithError(),
+  const dashboardResult = await getRoadmapDashboardWithError();
+  const dashboard = dashboardResult.data;
+  if (!dashboard) return <EmptyState error={dashboardResult.error} />;
+
+  const [streak, teams, favourites] = await Promise.all([
     getRoadmapStreak(),
     getRoadmapTeams(),
     getRoadmapFavourites(),
   ]);
-
-  const dashboard = dashboardResult.data;
-  if (!dashboard) return <EmptyState error={dashboardResult.error} />;
 
   return (
     <div className="space-y-6">
