@@ -8,7 +8,7 @@ Architecture and operations guide for the dual-entry portfolio.
 | -------------------------------------------- | ---------------- | ----------------------------------------------- |
 | `/`                                          | Public           | Standard landing (hero, projects, blog preview) |
 | `/terminal`                                  | Gated            | Interactive terminal portfolio                  |
-| `/gate`, `/gate/1-3`                         | Public (puzzles) | OverTheWire-style challenges                    |
+| `/gate`, `/gate/1-3`                         | Public (puzzles) | NATAS-style web challenges                    |
 | `/blog`, `/projects`, `/contact`, `/roadmap` | Public           | Shared content (single source)                  |
 | `/admin/*`                                   | Auth             | Admin dashboard                                 |
 

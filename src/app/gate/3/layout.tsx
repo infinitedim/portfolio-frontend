@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { type JSX, type ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Gate — Behemoth",
+  title: "Gate — Natas 5",
   robots: { index: false, follow: false },
 };
 

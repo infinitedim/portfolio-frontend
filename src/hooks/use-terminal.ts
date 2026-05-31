@@ -270,7 +270,7 @@ export function useTerminal(
         output: {
           type: "info",
           content:
-            "bandit33 / natas34 / behemoth8 — choose your fighter. Type `help`.",
+            "Natas 0 → 3 → 5 cleared. Welcome to the terminal. Type `help`.",
           timestamp: new Date(),
           id: generateId(),
         },
