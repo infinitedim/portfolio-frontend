@@ -27,8 +27,8 @@ export interface UnlockResponse {
   unlocked: boolean;
 }
 
-export const GATE_L1_USERNAME = "yourbloo0";
-export const GATE_L2_USERNAME = "yourbloo1";
+export const GATE_L1_USERNAME = "yourblooo0";
+export const GATE_L2_USERNAME = "yourblooo1";
 
 export function gateLevelRoute(level: number): Route {
   switch (level) {

@@ -53,13 +53,19 @@ class ClientLogger {
       retryDelay: 1000,
     };
 
+    const isDev = clientConfig.environment === "development";
+
     this.pino = pino({
       level: clientConfig.level,
-      browser: {
-        // asObject logs raw objects — Next.js dev overlay treats them as "Console Error" with `{}`.
-        asObject: clientConfig.environment !== "development",
-        serialize: true,
-      },
+      browser: isDev
+        ? {
+            // Dev: skip browser console — pino object logs trigger Next.js "Console Error" overlay ({})
+            disabled: true,
+          }
+        : {
+            asObject: true,
+            serialize: true,
+          },
     });
 
     this.buffer = {
@@ -361,15 +367,21 @@ class ClientLogger {
   ): void {
     if (!this.enabled) return;
 
-    let level: LogLevel = "debug" as LogLevel;
-    let message = `Performance: ${metricName} = ${value}ms`;
+    const unit =
+      typeof metadata?.unit === "string" ? metadata.unit : "ms";
+    const unitSuffix = unit === "ms" ? "ms" : "";
 
-    if (value > PERFORMANCE_THRESHOLDS.critical) {
-      level = "error" as LogLevel;
-      message = `Critical performance issue: ${metricName} = ${value}ms`;
-    } else if (value > PERFORMANCE_THRESHOLDS.slow) {
-      level = "warn" as LogLevel;
-      message = `Slow performance: ${metricName} = ${value}ms`;
+    let level: LogLevel = "debug" as LogLevel;
+    let message = `Performance: ${metricName} = ${value}${unitSuffix}`;
+
+    if (unit === "ms") {
+      if (value > PERFORMANCE_THRESHOLDS.critical) {
+        level = "error" as LogLevel;
+        message = `Critical performance issue: ${metricName} = ${value}ms`;
+      } else if (value > PERFORMANCE_THRESHOLDS.slow) {
+        level = "warn" as LogLevel;
+        message = `Slow performance: ${metricName} = ${value}ms`;
+      }
     }
 
     const entry: PerformanceLog = {

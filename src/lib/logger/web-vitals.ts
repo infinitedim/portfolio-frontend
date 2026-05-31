@@ -82,46 +82,35 @@ function reportMetric(metric: Metric): void {
   const ourRating = getRating(name, value);
   const resolvedRating = rating || ourRating;
   const isTimingMetric = name !== "CLS";
+  const unit = isTimingMetric ? "ms" : "score";
 
   vitalsStore.metrics[name] = value;
   vitalsStore.ratings[name] = resolvedRating;
 
-  clientLogger.info(
-    `Web Vital: ${name} = ${value}${isTimingMetric ? "ms" : ""} (${resolvedRating})`,
-    {
-      component: "web-vitals",
-      action: "metric-collected",
-    },
-    {
-      metricName: name,
-      value,
-      unit: isTimingMetric ? "ms" : "score",
-      rating: resolvedRating,
-      metricId: id,
-      navigationType,
-      url: window.location.href,
-      route,
-      pathname: route,
-    },
-  );
+  const vitalsContext = {
+    component: "web-vitals",
+    action: "metric-collected",
+    url: window.location.href,
+    route,
+  };
 
-  if (resolvedRating === "poor") {
-    clientLogger.warn(
-      `Poor Web Vital detected: ${name} = ${value}`,
-      {
-        component: "web-vitals",
-        url: window.location.href,
-        route,
-      },
-      {
-        metricName: name,
-        value,
-        rating: resolvedRating,
-        route,
-        threshold: THRESHOLDS[name as keyof typeof THRESHOLDS],
-      },
-    );
-  }
+  const vitalsMetadata = {
+    metricName: name,
+    value,
+    unit,
+    rating: resolvedRating,
+    metricId: id,
+    navigationType,
+    pathname: route,
+    threshold: THRESHOLDS[name as keyof typeof THRESHOLDS],
+  };
+
+  clientLogger.logPerformance(
+    name,
+    value,
+    vitalsMetadata,
+    vitalsContext,
+  );
 }
 
 export function initWebVitals(): void {

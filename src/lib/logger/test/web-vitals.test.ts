@@ -24,14 +24,12 @@ vi.mock("web-vitals", () => ({
 
 const mockLogPerformance = vi.fn();
 const mockDebug = vi.fn();
-const mockWarn = vi.fn();
 const mockError = vi.fn();
 
 vi.mock("../client-logger", () => ({
   default: {
     logPerformance: (...args: unknown[]) => mockLogPerformance(...args),
     debug: (...args: unknown[]) => mockDebug(...args),
-    warn: (...args: unknown[]) => mockWarn(...args),
     error: (...args: unknown[]) => mockError(...args),
   },
 }));

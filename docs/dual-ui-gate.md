@@ -22,8 +22,8 @@ flowchart LR
 
 1. User visits `/terminal` → locked teaser if no `portfolio_gate` cookie
 2. User completes 3 NATAS-style puzzles:
-   - **L1:** Login `yourbloo0` / `yourbloo0`
-   - **L2:** Complete L1, then find `/s3cr3t/users.txt` → login `yourbloo1` + password from file
+   - **L1:** Login `yourblooo0` / `yourblooo0`
+   - **L2:** Complete L1, then find `/s3cr3t/users.txt` → login `yourblooo1` + password from file
    - **L3:** Set `Referer: {siteUrl}/terminal` (navigate from `/terminal` teaser) → Enter Terminal
 3. Backend validates L1/L2 via `/api/gate/login`, enforces Referer on `/api/gate/complete/3`, and issues signed cookie via `/api/gate/unlock`
 4. Full terminal loads; welcome message shown once
@@ -38,7 +38,7 @@ flowchart LR
 
 **Backend** (local: `portfolio-backend/.env.development`; production: `.env` on GCP or platform env vars):
 
-- `GATE_L1_ANSWER=yourbloo0` — level 1 password
+- `GATE_L1_ANSWER=yourblooo0` — level 1 password
 - `GATE_L2_ANSWER` — level 2 password (also served in `/s3cr3t/users.txt`)
 - `GATE_TOKEN_SECRET` — signs `portfolio_gate` JWT (min 32 chars)
 - `SITE_URL` or `FRONTEND_ORIGIN` — site origin for referer hints
