@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { headers } from "next/headers";
 import { JSX, Suspense } from "react";
 import {
   getRoadmapDashboard,
@@ -199,6 +200,9 @@ function EmptyState(): JSX.Element {
 }
 
 async function RoadmapContent(): Promise<JSX.Element> {
+  // Request-time data (roadmap.sh proxy); avoids build-time SSG timeout with cacheComponents.
+  await headers();
+
   const [dashboard, streak, teams, favourites] = await Promise.all([
     getRoadmapDashboard(),
     getRoadmapStreak(),

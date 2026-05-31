@@ -62,12 +62,27 @@ export const clientConfig: LoggerConfig = {
   maskPII: true,
 };
 
+function shouldEnableFileLogging(): boolean {
+  if (getEnvironment() === "development") {
+    return false;
+  }
+  // Vercel and serverless runtimes: read-only FS — use stdout (Vercel logs / Loki).
+  if (process.env.VERCEL === "1") {
+    return false;
+  }
+  // Next.js evaluates API routes during production build in a read-only sandbox.
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    return false;
+  }
+  return process.env.LOG_TO_FILE === "true";
+}
+
 export const serverConfig: LoggerConfig = {
   level: getLogLevel(),
   pretty: getEnvironment() === "development",
   environment: getEnvironment(),
   console: true,
-  file: getEnvironment() !== "development",
+  file: shouldEnableFileLogging(),
   remote: false,
   maskPII: true,
 };

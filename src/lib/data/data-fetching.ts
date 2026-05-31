@@ -435,73 +435,62 @@ export interface RoadmapFavourites {
   weeklySubscriptions: string[];
 }
 
+const ROADMAP_FETCH_TIMEOUT_MS = 15_000;
+
+async function fetchRoadmapBackend(
+  path: string,
+  revalidateSeconds: number,
+): Promise<Response | null> {
+  const backendUrl = getBackendUrl();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    ROADMAP_FETCH_TIMEOUT_MS,
+  );
+
+  try {
+    return await fetch(`${backendUrl}${path}`, {
+      next: { revalidate: revalidateSeconds },
+      signal: controller.signal,
+    });
+  } catch (error) {
+    console.error("Failed to fetch roadmap backend", {
+      path,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export const getRoadmapDashboard = cache(
   async (): Promise<RoadmapDashboard | null> => {
-    const backendUrl = getBackendUrl();
-    try {
-      const response = await fetch(`${backendUrl}/api/roadmap/dashboard`, {
-        next: { revalidate: 300 },
-      });
-      if (!response.ok) return null;
-      return (await response.json()) as RoadmapDashboard;
-    } catch (error) {
-      console.error("Failed to fetch roadmap dashboard", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return null;
-    }
+    const response = await fetchRoadmapBackend("/api/roadmap/dashboard", 300);
+    if (!response?.ok) return null;
+    return (await response.json()) as RoadmapDashboard;
   },
 );
 
 export const getRoadmapStreak = cache(
   async (): Promise<RoadmapStreak | null> => {
-    const backendUrl = getBackendUrl();
-    try {
-      const response = await fetch(`${backendUrl}/api/roadmap/streak`, {
-        next: { revalidate: 300 },
-      });
-      if (!response.ok) return null;
-      return (await response.json()) as RoadmapStreak;
-    } catch (error) {
-      console.error("Failed to fetch roadmap streak", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return null;
-    }
+    const response = await fetchRoadmapBackend("/api/roadmap/streak", 300);
+    if (!response?.ok) return null;
+    return (await response.json()) as RoadmapStreak;
   },
 );
 
 export const getRoadmapTeams = cache(async (): Promise<RoadmapTeam[]> => {
-  const backendUrl = getBackendUrl();
-  try {
-    const response = await fetch(`${backendUrl}/api/roadmap/teams`, {
-      next: { revalidate: 600 },
-    });
-    if (!response.ok) return [];
-    return (await response.json()) as RoadmapTeam[];
-  } catch (error) {
-    console.error("Failed to fetch roadmap teams", {
-      error: error instanceof Error ? error.message : String(error),
-    });
-    return [];
-  }
+  const response = await fetchRoadmapBackend("/api/roadmap/teams", 600);
+  if (!response?.ok) return [];
+  return (await response.json()) as RoadmapTeam[];
 });
 
 export const getRoadmapFavourites = cache(
   async (): Promise<RoadmapFavourites | null> => {
-    const backendUrl = getBackendUrl();
-    try {
-      const response = await fetch(`${backendUrl}/api/roadmap/favourites`, {
-        next: { revalidate: 600 },
-      });
-      if (!response.ok) return null;
-      return (await response.json()) as RoadmapFavourites;
-    } catch (error) {
-      console.error("Failed to fetch roadmap favourites", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return null;
-    }
+    const response = await fetchRoadmapBackend("/api/roadmap/favourites", 600);
+    if (!response?.ok) return null;
+    return (await response.json()) as RoadmapFavourites;
   },
 );
 

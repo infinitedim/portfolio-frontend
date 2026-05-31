@@ -49,7 +49,11 @@ class FileTransport {
   private ensureDirectory(): void {
     const dir = dirname(this.filePath);
     if (!existsSync(dir)) {
-      mkdirSync(dir, { recursive: true });
+      try {
+        mkdirSync(dir, { recursive: true });
+      } catch {
+        // Read-only FS during Vercel build/runtime or CI — file logging disabled.
+      }
     }
   }
 
