@@ -1,4 +1,3 @@
-import { getApiUrl } from "@/lib/api/get-api-url";
 import type {
   CompleteLevel3Response,
   GateStatus,
@@ -8,7 +7,8 @@ import type {
 } from "./types";
 
 async function gateFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${getApiUrl()}${path}`, {
+  // Same-origin BFF — gate session cookies live on the frontend domain.
+  const response = await fetch(path, {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",

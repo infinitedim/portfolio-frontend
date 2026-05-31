@@ -75,7 +75,7 @@
 
 - **Optional:** `tsvector` full-text search upgrade (#13) jika blog >100 posts.
 - **Ops:** CMS API key admin CRUD UI (saat ini docs + SQL template).
-- **Ops:** Redis-backed presence / GitHub cache di production scale.
+- **Ops:** Redis-backed rate limiting + presence when `REDIS_URL` is set on Cloud Run.
 - **Performance:** RSC lebih luas di route non-interaktif; budget bundle `<100KB` initial + CI gate belum ada (lihat [Backlog — Performance & Core Web Vitals](#backlog--performance--core-web-vitals)).
 - **Performance:** CWV sudah dimonitor (RUM), tapi belum ada sprint optimisasi aktif untuk menjamin LCP/INP/CLS di semua route utama.
 
@@ -375,7 +375,7 @@ ENABLE_API_DOCS=true   # set false di production jika tidak ingin public
 
 ### DevOps / Infrastructure
 
-- Redis sudah ada di `docker-compose.yml` tapi belum dipakai backend. Dependency `redis` perlu ditambahkan di `Cargo.toml` ketika fitur caching benar-benar dibutuhkan (Sprint 3+).
+- Redis di ops VM + local `docker-compose.yml`; backend uses it for rate limiting and presence when `REDIS_URL` is set (roadmap/GitHub cache still in-memory).
 - CDN untuk uploads bisa dipertimbangkan ketika folder `/uploads/` mulai membesar (>1GB).
 - pgvector extension dibutuhkan kalau implementasi AI assistant (#27).
 

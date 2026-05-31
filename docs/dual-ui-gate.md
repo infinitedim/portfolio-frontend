@@ -26,6 +26,7 @@ flowchart LR
    - **L2:** Complete L1, then find `/s3cr3t/users.txt` → login `yourblooo1` + password from file
    - **L3:** Set `Referer: {siteUrl}/terminal` (navigate from `/terminal` teaser) → Enter Terminal
 3. Backend validates L1/L2 via `/api/gate/login`, enforces Referer on `/api/gate/complete/3`, and issues signed cookie via `/api/gate/unlock`
+4. Browser calls **same-origin** Next.js routes at `/api/gate/*`, which proxy to Cloud Run and re-home `gate_progress` / `portfolio_gate` cookies on the Vercel domain (cross-origin cookies to `*.run.app` are blocked by browsers).
 4. Full terminal loads; welcome message shown once
 
 ## Environment
