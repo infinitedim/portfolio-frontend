@@ -9,6 +9,7 @@ import { ShareButtons } from "@/components/molecules/blog/share-buttons";
 import { TableOfContents } from "@/components/molecules/blog/table-of-contents";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 import { GiscusComments } from "@/components/molecules/blog/giscus-comments-dynamic";
+import { BlogContent } from "@/components/molecules/blog/blog-content";
 
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
@@ -216,29 +217,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
               </header>
 
               <div className="border-t border-gray-800 pt-8">
-                {contentHtml ? (
-                  <div
-                    dangerouslySetInnerHTML={{ __html: contentHtml }}
-                    className="prose prose-invert prose-green max-w-none
-                  prose-headings:text-green-400
-                  prose-a:text-green-400
-                  prose-strong:text-gray-100
-                  prose-code:text-green-300
-                  prose-code:bg-gray-800
-                  prose-code:px-1
-                  prose-code:rounded
-                  prose-pre:bg-gray-900
-                  prose-pre:border
-                  prose-pre:border-gray-800
-                  prose-pre:relative"
-                  />
-                ) : post.contentMd ? (
-                  <div className="whitespace-pre-wrap font-mono text-sm text-gray-300">
-                    {post.contentMd}
-                  </div>
-                ) : (
-                  <p className="text-gray-500">No content available.</p>
-                )}
+                <BlogContent html={contentHtml} md={post.contentMd} />
               </div>
 
               {}

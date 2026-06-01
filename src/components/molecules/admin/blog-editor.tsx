@@ -11,8 +11,9 @@ import {
   ImageDropZone,
   uploadBlogImage,
 } from "./image-upload-button";
-import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
+import { BlogContent } from "@/components/molecules/blog/blog-content";
+import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { BLOG_CONTENT_LOCALES, DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
 import {
   listAdminSeries,
@@ -63,6 +64,7 @@ interface BlogEditorProps {
 export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const { t } = useI18n();
   const [currentPost, setCurrentPost] = useState<LocalBlogPost | null>(null);
+  const [viewMode, setViewMode] = useState<"edit" | "preview">("edit");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [summary, setSummary] = useState("");
@@ -1118,22 +1120,50 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <div className="text-xs opacity-70">{t("blogContent")}</div>
+                <div className="flex items-center gap-4">
+                  <div className="text-xs opacity-70">{t("blogContent")}</div>
+                  <div className="flex border rounded overflow-hidden" style={{ borderColor: themeConfig.colors.border }}>
+                    <button
+                      onClick={() => setViewMode("edit")}
+                      className={`px-3 py-1 text-xs font-medium transition-colors ${viewMode === "edit" ? "bg-opacity-20" : "bg-transparent opacity-60 hover:opacity-100"}`}
+                      style={{ backgroundColor: viewMode === "edit" ? themeConfig.colors.accent : "transparent", color: viewMode === "edit" ? themeConfig.colors.accent : themeConfig.colors.text }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setViewMode("preview")}
+                      className={`px-3 py-1 text-xs font-medium transition-colors border-l ${viewMode === "preview" ? "bg-opacity-20" : "bg-transparent opacity-60 hover:opacity-100"}`}
+                      style={{ backgroundColor: viewMode === "preview" ? themeConfig.colors.accent : "transparent", color: viewMode === "preview" ? themeConfig.colors.accent : themeConfig.colors.text, borderColor: themeConfig.colors.border }}
+                    >
+                      Preview
+                    </button>
+                  </div>
+                </div>
                 <ImageUploadButton
                   onUploadComplete={handleImageUpload}
-                  disabled={isSaving}
+                  disabled={isSaving || viewMode === "preview"}
                 />
               </div>
-              <ImageDropZone onUploadComplete={handleImageUpload}>
-                <TiptapEditor
-                  value={content}
-                  onChange={setContent}
-                  themeConfig={themeConfig}
-                  placeholder="Write your post…"
-                  onImageUpload={uploadBlogImage}
-                  minHeight="500px"
-                />
-              </ImageDropZone>
+              
+              {viewMode === "edit" ? (
+                <ImageDropZone onUploadComplete={handleImageUpload}>
+                  <TiptapEditor
+                    value={content}
+                    onChange={setContent}
+                    themeConfig={themeConfig}
+                    placeholder="Write your post…"
+                    onImageUpload={uploadBlogImage}
+                    minHeight="500px"
+                  />
+                  <div className="mt-2 text-[10px] opacity-50 font-mono text-center">
+                    💡 Editor supports standard Markdown syntax. Specific React/MDX components will be rendered as plain text.
+                  </div>
+                </ImageDropZone>
+              ) : (
+                <div className="border rounded p-6 min-h-[500px] overflow-y-auto bg-gray-950" style={{ borderColor: themeConfig.colors.border }}>
+                  <BlogContent html={content} />
+                </div>
+              )}
             </div>
           </div>
         </div>

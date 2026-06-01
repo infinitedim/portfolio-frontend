@@ -6,6 +6,7 @@ import { Image } from "@tiptap/extension-image";
 import { Link } from "@tiptap/extension-link";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { Heading } from "@tiptap/extension-heading";
+import { Markdown } from "tiptap-markdown";
 import { useEffect, useCallback } from "react";
 import type { ThemeConfig } from "@/types/theme";
 import { slugifyHeading } from "@/lib/blog/html-headings";
@@ -39,10 +40,11 @@ export function TiptapEditor({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ heading: false }),
-      HeadingWithIds.configure({ levels: [2, 3] }),
+      HeadingWithIds.configure({ levels: [1, 2, 3] }),
       Link.configure({ openOnClick: false }),
       Image.configure({ inline: false }),
       Placeholder.configure({ placeholder }),
+      Markdown,
     ],
     content: value,
     immediatelyRender: false,
@@ -177,7 +179,10 @@ function ToolbarButton({
   return (
     <button
       type="button"
-      onClick={onClick}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        onClick();
+      }}
       className="px-2 py-1 rounded"
       style={{
         backgroundColor: active

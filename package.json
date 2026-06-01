@@ -37,6 +37,7 @@
     "@tiptap/react": "^3.23.6",
     "@tiptap/starter-kit": "^3.23.6",
     "@uiw/react-md-editor": "^4.0.11",
+    "@vercel/speed-insights": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -55,8 +56,8 @@
     "react-resizable-panels": "^4.0.13",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
+    "tiptap-markdown": "^0.9.0",
     "vaul": "^1.1.2",
-    "@vercel/speed-insights": "^1.2.0",
     "web-vitals": "^5.1.0",
     "zod": "^4.2.1"
   },
