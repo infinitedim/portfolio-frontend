@@ -1122,18 +1122,40 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-4">
                   <div className="text-xs opacity-70">{t("blogContent")}</div>
-                  <div className="flex border rounded overflow-hidden" style={{ borderColor: themeConfig.colors.border }}>
+                  <div
+                    className="flex border rounded overflow-hidden"
+                    style={{ borderColor: themeConfig.colors.border }}
+                  >
                     <button
                       onClick={() => setViewMode("edit")}
                       className={`px-3 py-1 text-xs font-medium transition-colors ${viewMode === "edit" ? "bg-opacity-20" : "bg-transparent opacity-60 hover:opacity-100"}`}
-                      style={{ backgroundColor: viewMode === "edit" ? themeConfig.colors.accent : "transparent", color: viewMode === "edit" ? themeConfig.colors.accent : themeConfig.colors.text }}
+                      style={{
+                        backgroundColor:
+                          viewMode === "edit"
+                            ? themeConfig.colors.accent
+                            : "transparent",
+                        color:
+                          viewMode === "edit"
+                            ? themeConfig.colors.accent
+                            : themeConfig.colors.text,
+                      }}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => setViewMode("preview")}
                       className={`px-3 py-1 text-xs font-medium transition-colors border-l ${viewMode === "preview" ? "bg-opacity-20" : "bg-transparent opacity-60 hover:opacity-100"}`}
-                      style={{ backgroundColor: viewMode === "preview" ? themeConfig.colors.accent : "transparent", color: viewMode === "preview" ? themeConfig.colors.accent : themeConfig.colors.text, borderColor: themeConfig.colors.border }}
+                      style={{
+                        backgroundColor:
+                          viewMode === "preview"
+                            ? themeConfig.colors.accent
+                            : "transparent",
+                        color:
+                          viewMode === "preview"
+                            ? themeConfig.colors.accent
+                            : themeConfig.colors.text,
+                        borderColor: themeConfig.colors.border,
+                      }}
                     >
                       Preview
                     </button>
@@ -1144,7 +1166,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   disabled={isSaving || viewMode === "preview"}
                 />
               </div>
-              
+
               {viewMode === "edit" ? (
                 <ImageDropZone onUploadComplete={handleImageUpload}>
                   <TiptapEditor
@@ -1156,11 +1178,15 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                     minHeight="500px"
                   />
                   <div className="mt-2 text-[10px] opacity-50 font-mono text-center">
-                    💡 Editor supports standard Markdown syntax. Specific React/MDX components will be rendered as plain text.
+                    💡 Editor supports standard Markdown syntax. Specific
+                    React/MDX components will be rendered as plain text.
                   </div>
                 </ImageDropZone>
               ) : (
-                <div className="border rounded p-6 min-h-[500px] overflow-y-auto bg-gray-950" style={{ borderColor: themeConfig.colors.border }}>
+                <div
+                  className="border rounded p-6 min-h-[500px] overflow-y-auto bg-gray-950"
+                  style={{ borderColor: themeConfig.colors.border }}
+                >
                   <BlogContent html={content} />
                 </div>
               )}

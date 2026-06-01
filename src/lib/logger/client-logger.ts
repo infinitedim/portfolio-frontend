@@ -367,8 +367,7 @@ class ClientLogger {
   ): void {
     if (!this.enabled) return;
 
-    const unit =
-      typeof metadata?.unit === "string" ? metadata.unit : "ms";
+    const unit = typeof metadata?.unit === "string" ? metadata.unit : "ms";
     const unitSuffix = unit === "ms" ? "ms" : "";
 
     let level: LogLevel = "debug" as LogLevel;

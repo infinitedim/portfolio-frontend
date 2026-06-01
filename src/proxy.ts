@@ -53,7 +53,11 @@ export function normalizeApiOrigin(raw: string | undefined): string {
   if (!raw?.trim()) return fallback;
   try {
     const parsed = new URL(raw.trim());
-    if (parsed.protocol === "http:") {
+    if (
+      parsed.protocol === "http:" &&
+      parsed.hostname !== "localhost" &&
+      parsed.hostname !== "127.0.0.1"
+    ) {
       parsed.protocol = "https:";
     }
     return parsed.origin;

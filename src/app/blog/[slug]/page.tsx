@@ -144,14 +144,14 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
 
   return (
     <StandardPageLayout>
-      <div className="min-h-screen bg-gray-950 text-gray-100">
+      <div className="min-h-screen bg-terminal-bg text-terminal-text">
         <ScrollProgress />
 
         <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <nav className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <nav className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between font-mono">
             <Link
               href="/blog"
-              className="text-green-400 hover:text-green-300 transition-colors"
+              className="text-terminal-accent hover:text-terminal-accent/90 transition-colors"
             >
               ← Back to Blog
             </Link>
@@ -165,13 +165,15 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
           )}
 
           <div className="lg:grid lg:grid-cols-[1fr_240px] lg:gap-8 lg:items-start">
-            <article className="prose prose-invert prose-green max-w-none min-w-0">
+            <article className="prose prose-invert max-w-none min-w-0">
               <header className="mb-8 not-prose">
-                <h1 className="text-4xl font-bold text-green-400 mb-4">
+                <h1 className="text-4xl font-bold text-terminal-accent mb-4">
                   {post.title}
                 </h1>
                 {post.summary && (
-                  <p className="text-xl text-gray-400 mb-4">{post.summary}</p>
+                  <p className="text-xl text-terminal-muted mb-4">
+                    {post.summary}
+                  </p>
                 )}
                 {(post.tags?.length ?? 0) > 0 && (
                   <div className="flex flex-wrap gap-1 mb-4">
@@ -188,7 +190,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                     ))}
                   </div>
                 )}
-                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                <div className="flex flex-wrap items-center gap-4 text-sm text-terminal-muted font-mono">
                   <time dateTime={post.createdAt}>
                     Published:{" "}
                     {new Date(post.createdAt).toLocaleDateString("en-US", {
@@ -216,8 +218,11 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                 </div>
               </header>
 
-              <div className="border-t border-gray-800 pt-8">
-                <BlogContent html={contentHtml} md={post.contentMd} />
+              <div className="border-t border-terminal-border pt-8">
+                <BlogContent
+                  html={contentHtml}
+                  md={post.contentMd}
+                />
               </div>
 
               {}
@@ -234,14 +239,14 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
             )}
           </div>
 
-          <section className="mt-12 pt-8 border-t border-gray-800 max-w-4xl">
-            <h2 className="text-xl font-semibold text-gray-100 mb-6">
+          <section className="mt-12 pt-8 border-t border-terminal-border max-w-4xl">
+            <h2 className="text-xl font-semibold text-terminal-text mb-6">
               Comments
             </h2>
             <GiscusComments slug={post.slug} />
           </section>
 
-          <footer className="mt-12 pt-8 border-t border-gray-800 space-y-6 max-w-4xl">
+          <footer className="mt-12 pt-8 border-t border-terminal-border space-y-6 max-w-4xl font-mono">
             <ShareButtons
               title={post.title}
               slug={post.slug}
@@ -250,7 +255,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
 
             <Link
               href="/blog"
-              className="block text-green-400 hover:text-green-300 transition-colors"
+              className="block text-terminal-accent hover:text-terminal-accent/90 transition-colors"
             >
               ← Back to Blog
             </Link>

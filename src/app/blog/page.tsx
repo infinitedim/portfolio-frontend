@@ -181,19 +181,21 @@ async function BlogPageContent({
 
   return (
     <StandardPageLayout>
-      <div className="min-h-screen bg-gray-950 text-gray-100">
+      <div className="min-h-screen bg-terminal-bg text-terminal-text">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <header className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-4xl font-bold text-green-400">Blog</h1>
+              <h1 className="text-4xl font-bold font-mono text-terminal-accent">
+                <span className="text-terminal-accent opacity-60">~/</span>blog
+              </h1>
               <a
                 href="/rss.xml"
-                className="text-xs text-gray-500 hover:text-orange-400 transition-colors border border-gray-700 hover:border-orange-400 px-2 py-1 rounded"
+                className="text-xs text-terminal-muted hover:text-orange-400 transition-colors border border-terminal-border hover:border-orange-400/50 px-2 py-1 rounded font-mono"
               >
                 RSS
               </a>
             </div>
-            <p className="text-gray-400 mb-6">
+            <p className="text-terminal-muted mb-6">
               Latest articles, tutorials, and insights.
             </p>
 
@@ -209,7 +211,7 @@ async function BlogPageContent({
                 name="search"
                 defaultValue={search ?? ""}
                 placeholder="Search posts..."
-                className="flex-1 bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-green-400"
+                className="flex-1 bg-terminal-bg/50 border border-terminal-border rounded px-3 py-2 text-sm text-terminal-text placeholder-terminal-muted/40 focus:outline-none focus:border-terminal-accent font-mono"
               />
               {tag && (
                 <input
@@ -234,7 +236,7 @@ async function BlogPageContent({
               )}
               <button
                 type="submit"
-                className="px-4 py-2 bg-green-400/10 border border-green-400/40 text-green-400 rounded text-sm hover:bg-green-400/20 transition-colors"
+                className="px-4 py-2 bg-terminal-accent/10 border border-terminal-accent/40 text-terminal-accent rounded text-sm hover:bg-terminal-accent/20 transition-colors font-mono cursor-pointer"
               >
                 Search
               </button>
@@ -246,7 +248,7 @@ async function BlogPageContent({
                     tag: undefined,
                     series: undefined,
                   })}
-                  className="px-4 py-2 border border-gray-700 text-gray-400 rounded text-sm hover:border-gray-500 transition-colors"
+                  className="px-4 py-2 border border-terminal-border text-terminal-muted rounded text-sm hover:border-terminal-muted transition-colors font-mono"
                 >
                   Clear
                 </Link>
@@ -269,16 +271,18 @@ async function BlogPageContent({
           </header>
 
           {posts.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-terminal-muted font-mono">
               {search || tag || series ? (
                 <p>
                   No posts found for{" "}
                   {search && <span>&ldquo;{search}&rdquo;</span>}
                   {search && (tag || series) && " in "}
-                  {tag && <span className="text-green-400">#{tag}</span>}
+                  {tag && <span className="text-terminal-accent">#{tag}</span>}
                   {tag && series && " in "}
                   {series && (
-                    <span className="text-green-400">series:{series}</span>
+                    <span className="text-terminal-accent">
+                      series:{series}
+                    </span>
                   )}
                   .{" "}
                   <Link
@@ -288,7 +292,7 @@ async function BlogPageContent({
                       tag: undefined,
                       series: undefined,
                     })}
-                    className="text-green-400 hover:underline"
+                    className="text-terminal-accent hover:underline"
                   >
                     View all posts
                   </Link>
@@ -302,15 +306,15 @@ async function BlogPageContent({
               {posts.map((post) => (
                 <article
                   key={post.id}
-                  className="border border-gray-800 rounded-lg p-6 hover:border-green-400/50 transition-colors"
+                  className="border border-terminal-border rounded-lg p-6 hover:border-terminal-accent/50 transition-colors"
                 >
                   <Link href={`/blog/${post.slug}`}>
-                    <h2 className="text-2xl font-semibold text-green-400 hover:text-green-300 mb-2">
+                    <h2 className="text-2xl font-semibold text-terminal-accent hover:text-terminal-accent/90 mb-2">
                       {post.title}
                     </h2>
                   </Link>
                   {post.summary && (
-                    <p className="text-gray-400 mb-3">{post.summary}</p>
+                    <p className="text-terminal-muted mb-3">{post.summary}</p>
                   )}
                   {(post.tags?.length ?? 0) > 0 && (
                     <div className="flex flex-wrap gap-1 mb-3">
@@ -320,6 +324,7 @@ async function BlogPageContent({
                           href={buildUrl({ tag: t, page: 1 })}
                         >
                           <TagChip
+                            key={t}
                             name={t}
                             size="sm"
                             active={t === tag}
@@ -328,7 +333,7 @@ async function BlogPageContent({
                       ))}
                     </div>
                   )}
-                  <div className="flex items-center justify-between text-sm text-gray-500">
+                  <div className="flex items-center justify-between text-sm text-terminal-muted">
                     <div className="flex items-center gap-3">
                       <time dateTime={post.createdAt}>
                         {new Date(post.createdAt).toLocaleDateString("en-US", {
@@ -343,7 +348,7 @@ async function BlogPageContent({
                     </div>
                     <Link
                       href={`/blog/${post.slug}`}
-                      className="text-green-400 hover:text-green-300"
+                      className="text-terminal-accent hover:text-terminal-accent/90"
                     >
                       Read more →
                     </Link>
@@ -354,22 +359,22 @@ async function BlogPageContent({
           )}
 
           {totalPages > 1 && (
-            <nav className="mt-12 flex justify-center gap-2">
+            <nav className="mt-12 flex justify-center gap-2 font-mono">
               {page > 1 && (
                 <Link
                   href={buildUrl({ page: page - 1 })}
-                  className="px-4 py-2 border border-gray-700 rounded hover:border-green-400 transition-colors"
+                  className="px-4 py-2 border border-terminal-border rounded hover:border-terminal-accent transition-colors"
                 >
                   ← Previous
                 </Link>
               )}
-              <span className="px-4 py-2 text-gray-500">
+              <span className="px-4 py-2 text-terminal-muted">
                 Page {page} of {totalPages}
               </span>
               {page < totalPages && (
                 <Link
                   href={buildUrl({ page: page + 1 })}
-                  className="px-4 py-2 border border-gray-700 rounded hover:border-green-400 transition-colors"
+                  className="px-4 py-2 border border-terminal-border rounded hover:border-terminal-accent transition-colors"
                 >
                   Next →
                 </Link>

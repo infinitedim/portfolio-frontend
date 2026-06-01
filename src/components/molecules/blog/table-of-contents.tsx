@@ -56,10 +56,10 @@ export function TableOfContents({
 
   return (
     <nav
-      className={`border border-gray-800 rounded-lg p-4 ${className}`}
+      className={`border border-terminal-border rounded-lg p-4 font-mono ${className}`}
       aria-label="Table of contents"
     >
-      <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+      <p className="text-xs font-semibold text-terminal-muted uppercase tracking-widest mb-3">
         Contents
       </p>
       <ol className="space-y-1.5">
@@ -70,7 +70,7 @@ export function TableOfContents({
           >
             <a
               href={`#${h.id}`}
-              className="text-sm text-gray-400 hover:text-green-400 transition-colors line-clamp-1"
+              className="text-sm text-terminal-muted hover:text-terminal-accent transition-colors line-clamp-1"
             >
               {h.text}
             </a>

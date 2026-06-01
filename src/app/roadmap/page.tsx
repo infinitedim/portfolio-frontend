@@ -201,10 +201,7 @@ function roadmapEmptyMessage(error: RoadmapFetchError | null): JSX.Element {
     );
   }
 
-  if (
-    msg.includes("roadmap.sh") ||
-    msg.includes("login request failed")
-  ) {
+  if (msg.includes("roadmap.sh") || msg.includes("login request failed")) {
     return (
       <>
         Cloud Run cannot reach{" "}
@@ -242,21 +239,25 @@ function roadmapEmptyMessage(error: RoadmapFetchError | null): JSX.Element {
       {isProduction ? (
         <>
           {" "}
-          Confirm{" "}
-          <code className="text-neutral-200">BACKEND_URL</code> on Vercel
-          Production matches Cloud Run.
+          Confirm <code className="text-neutral-200">BACKEND_URL</code> on
+          Vercel Production matches Cloud Run.
         </>
       ) : (
         <>
           {" "}
-          Check <code className="text-neutral-200">portfolio-backend/.env</code>.
+          Check <code className="text-neutral-200">portfolio-backend/.env</code>
+          .
         </>
       )}
     </>
   );
 }
 
-function EmptyState({ error }: { error: RoadmapFetchError | null }): JSX.Element {
+function EmptyState({
+  error,
+}: {
+  error: RoadmapFetchError | null;
+}): JSX.Element {
   return (
     <div className="rounded-lg border border-dashed border-neutral-700 p-10 text-center font-mono text-neutral-400">
       <div className="mb-2 text-3xl">🔌</div>

@@ -47,34 +47,34 @@ async function BlogSeriesContent({ params }: SeriesPageProps) {
 
   return (
     <StandardPageLayout>
-      <div className="min-h-screen bg-gray-950 text-gray-100">
+      <div className="min-h-screen bg-terminal-bg text-terminal-text">
         <div className="container mx-auto max-w-4xl px-4 py-8">
-          <nav className="mb-6">
+          <nav className="mb-6 font-mono">
             <Link
               href="/blog"
-              className="text-green-400 transition-colors hover:text-green-300"
+              className="text-terminal-accent transition-colors hover:text-terminal-accent/90"
             >
               ← Back to Blog
             </Link>
           </nav>
 
           <header className="mb-8">
-            <p className="mb-2 text-xs uppercase tracking-wide text-gray-500">
+            <p className="mb-2 text-xs uppercase tracking-wide text-terminal-muted font-mono">
               Series
             </p>
-            <h1 className="mb-3 text-4xl font-bold text-green-400">
+            <h1 className="mb-3 text-4xl font-bold text-terminal-accent">
               {series.title}
             </h1>
             {series.description && (
-              <p className="text-gray-400">{series.description}</p>
+              <p className="text-terminal-muted">{series.description}</p>
             )}
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-terminal-muted font-mono">
               {series.posts.length} post{series.posts.length === 1 ? "" : "s"}
             </p>
           </header>
 
           {series.posts.length === 0 ? (
-            <p className="text-center text-gray-500 py-12">
+            <p className="text-center text-terminal-muted py-12 font-mono">
               No published posts in this series yet.
             </p>
           ) : (
@@ -82,10 +82,10 @@ async function BlogSeriesContent({ params }: SeriesPageProps) {
               {series.posts.map((post, index) => (
                 <li
                   key={post.id}
-                  className="rounded-lg border border-gray-800 p-6 transition-colors hover:border-green-400/50"
+                  className="rounded-lg border border-terminal-border p-6 transition-colors hover:border-terminal-accent/50"
                 >
-                  <div className="mb-2 flex items-center gap-3 text-sm text-gray-500">
-                    <span className="font-mono text-green-400/80">
+                  <div className="mb-2 flex items-center gap-3 text-sm text-terminal-muted font-mono">
+                    <span className="text-terminal-accent/80">
                       Part {post.seriesOrder ?? index + 1}
                     </span>
                     {post.readingTimeMinutes > 0 && (
@@ -93,12 +93,12 @@ async function BlogSeriesContent({ params }: SeriesPageProps) {
                     )}
                   </div>
                   <Link href={`/blog/${post.slug}`}>
-                    <h2 className="mb-2 text-2xl font-semibold text-green-400 hover:text-green-300">
+                    <h2 className="mb-2 text-2xl font-semibold text-terminal-accent hover:text-terminal-accent/90">
                       {post.title}
                     </h2>
                   </Link>
                   {post.summary && (
-                    <p className="mb-3 text-gray-400">{post.summary}</p>
+                    <p className="mb-3 text-terminal-muted">{post.summary}</p>
                   )}
                   {(post.tags?.length ?? 0) > 0 && (
                     <div className="flex flex-wrap gap-1">

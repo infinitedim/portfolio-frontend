@@ -72,8 +72,7 @@ describe("proxy", () => {
     });
 
     it("normalizes API origin for connect-src", () => {
-      process.env.NEXT_PUBLIC_API_URL =
-        "http://example.run.app/";
+      process.env.NEXT_PUBLIC_API_URL = "http://example.run.app/";
       const result = proxy(mockRequest);
       const csp = result.headers.get("content-security-policy") ?? "";
       expect(csp).toContain("https://example.run.app");

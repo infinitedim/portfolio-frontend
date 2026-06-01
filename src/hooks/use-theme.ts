@@ -291,12 +291,17 @@ export function useTheme(): UseThemeReturn {
     ],
   );
 
+  const getValueRef = useRef(getValue);
+  useEffect(() => {
+    getValueRef.current = getValue;
+  }, [getValue]);
+
   useEffect(() => {
     try {
       appliedThemeRef.current = null;
       setState((prev) => ({ ...prev, mounted: true }));
 
-      const savedTheme = getValue();
+      const savedTheme = getValueRef.current();
       if (savedTheme && validateTheme(savedTheme) && themes[savedTheme]) {
         setState((prev) => ({ ...prev, theme: savedTheme as ThemeName }));
       }
@@ -304,7 +309,7 @@ export function useTheme(): UseThemeReturn {
       console.warn("Error initializing theme:", error);
       setState((prev) => ({ ...prev, mounted: true, theme: defaultTheme }));
     }
-  }, [getValue]);
+  }, []);
 
   useEffect(() => {
     try {

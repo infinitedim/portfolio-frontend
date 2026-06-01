@@ -7,7 +7,8 @@ import { Link } from "@tiptap/extension-link";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { Heading } from "@tiptap/extension-heading";
 import { Markdown } from "tiptap-markdown";
-import { useEffect, useCallback } from "react";
+import { DOMParser as PMDOMParser } from "@tiptap/pm/model";
+import { useEffect, useCallback, useMemo } from "react";
 import type { ThemeConfig } from "@/types/theme";
 import { slugifyHeading } from "@/lib/blog/html-headings";
 
@@ -37,15 +38,24 @@ export function TiptapEditor({
   onImageUpload,
   minHeight = "320px",
 }: TiptapEditorProps) {
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({ heading: false }),
+  const extensions = useMemo(
+    () => [
+      StarterKit.configure({ heading: false, link: false }),
       HeadingWithIds.configure({ levels: [1, 2, 3] }),
       Link.configure({ openOnClick: false }),
       Image.configure({ inline: false }),
       Placeholder.configure({ placeholder }),
-      Markdown,
+      Markdown.configure({
+        html: true,
+        transformPastedText: true,
+        breaks: false,
+      }),
     ],
+    [placeholder],
+  );
+
+  const editor = useEditor({
+    extensions,
     content: value,
     immediatelyRender: false,
     onUpdate: ({ editor: ed }) => {
@@ -56,6 +66,16 @@ export function TiptapEditor({
         class: "prose prose-invert max-w-none focus:outline-none px-3 py-2",
         style: `min-height: ${minHeight}; color: ${themeConfig.colors.text}`,
       },
+      handlePaste: (view, event) => {
+        // If clipboard contains HTML (e.g. copy from browser), let Tiptap handle natively.
+        const html = event.clipboardData?.getData("text/html");
+        if (html) return false;
+
+        // For plain text paste, check if it looks like markdown and let
+        // tiptap-markdown's clipboardTextParser handle it (transformPastedText).
+        // We return false so the default pipeline (including tiptap-markdown) runs.
+        return false;
+      },
     },
   });
 
@@ -63,7 +83,20 @@ export function TiptapEditor({
     if (!editor) return;
     const current = editor.getHTML();
     if (value !== current && value !== editor.getText()) {
-      editor.commands.setContent(value, { emitUpdate: false });
+      // IMPORTANT: tiptap-markdown overrides editor.commands.setContent() to
+      // always parse input as markdown. When loading HTML from the database,
+      // this causes double-parsing and content corruption.
+      // We bypass the override by using ProseMirror's DOMParser directly.
+      const element = document.createElement("div");
+      element.innerHTML = value || "";
+      const slice = PMDOMParser.fromSchema(editor.schema).parse(element);
+      const tr = editor.state.tr.replaceWith(
+        0,
+        editor.state.doc.content.size,
+        slice.content,
+      );
+      tr.setMeta("preventUpdate", true);
+      editor.view.dispatch(tr);
     }
   }, [editor, value]);
 

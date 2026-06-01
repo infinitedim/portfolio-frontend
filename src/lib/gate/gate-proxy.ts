@@ -25,9 +25,7 @@ function parseSetCookieValue(setCookie: string): string | null {
   const eq = setCookie.indexOf("=");
   if (eq <= 0) return null;
   const semi = setCookie.indexOf(";", eq);
-  return semi === -1
-    ? setCookie.slice(eq + 1)
-    : setCookie.slice(eq + 1, semi);
+  return semi === -1 ? setCookie.slice(eq + 1) : setCookie.slice(eq + 1, semi);
 }
 
 function parseMaxAge(setCookie: string): number | undefined {

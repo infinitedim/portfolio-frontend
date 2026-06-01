@@ -12,9 +12,9 @@ const tagChipVariants = cva(
         md: "px-3 py-1 text-xs",
       },
       active: {
-        true: "bg-green-400/20 border-green-400 text-green-300",
+        true: "bg-terminal-accent/20 border-terminal-accent text-terminal-accent",
         false:
-          "border-gray-700 text-gray-400 hover:border-green-400/50 hover:text-green-400",
+          "border-terminal-border text-terminal-muted hover:border-terminal-accent/50 hover:text-terminal-accent font-mono",
       },
     },
     defaultVariants: {

@@ -52,7 +52,6 @@ export function CommandInput({
   const [showTabCompletion, setShowTabCompletion] = useState(false);
   const [_tabCompletionIndex, setTabCompletionIndex] = useState(0);
   const [showSuggestions, setShowSuggestions] = useState(showOnEmpty);
-  const [_suggestionTrigger, setSuggestionTrigger] = useState(false);
   const [securityWarning, setSecurityWarning] = useState<string | null>(null);
   const [cursorPosition, setCursorPosition] = useState(0);
   const [cursorIndex, setCursorIndex] = useState(0);
@@ -83,13 +82,6 @@ export function CommandInput({
   }, [isProcessing, actualInputRef]);
 
   useEffect(() => {
-    if (showOnEmpty && value.length === 0) {
-      setShowSuggestions(true);
-      setSuggestionTrigger((prev) => !prev);
-    }
-  }, [showOnEmpty, value.length, getCommandSuggestions]);
-
-  useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (actualInputRef.current) {
         const selectionStart = actualInputRef.current.selectionStart || 0;
@@ -99,7 +91,29 @@ export function CommandInput({
     return () => clearTimeout(timeoutId);
   }, [value, actualInputRef]);
 
+  const prevSuggestionsInputsRef = useRef({
+    value,
+    isProcessing,
+    showTabCompletion,
+    showOnEmpty,
+  });
   useEffect(() => {
+    const prev = prevSuggestionsInputsRef.current;
+    if (
+      prev.value === value &&
+      prev.isProcessing === isProcessing &&
+      prev.showTabCompletion === showTabCompletion &&
+      prev.showOnEmpty === showOnEmpty
+    ) {
+      return;
+    }
+    prevSuggestionsInputsRef.current = {
+      value,
+      isProcessing,
+      showTabCompletion,
+      showOnEmpty,
+    };
+
     const timeoutId = setTimeout(() => {
       const shouldShowSuggestions =
         !isProcessing &&
@@ -107,10 +121,6 @@ export function CommandInput({
         (value.length > 0 || showOnEmpty);
 
       setShowSuggestions(shouldShowSuggestions);
-
-      if (shouldShowSuggestions) {
-        setSuggestionTrigger((prev) => !prev);
-      }
     }, 50);
 
     return () => clearTimeout(timeoutId);
@@ -240,7 +250,6 @@ export function CommandInput({
           handleTabCompletion();
         } else {
           setShowSuggestions(true);
-          setSuggestionTrigger((prev) => !prev);
         }
         break;
 
@@ -266,9 +275,6 @@ export function CommandInput({
         if (e.ctrlKey) {
           e.preventDefault();
           setShowSuggestions(true);
-          if (getFrequentCommands && !value.trim()) {
-            setSuggestionTrigger((prev) => !prev);
-          }
         }
         break;
 
@@ -319,8 +325,6 @@ export function CommandInput({
     const shouldShow = newValue.length > 0 || showOnEmpty;
 
     setShowSuggestions(shouldShow);
-
-    setSuggestionTrigger((prev) => !prev);
   };
 
   const handleInputSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
@@ -331,7 +335,6 @@ export function CommandInput({
   const handleInputFocus = () => {
     if (showOnEmpty || value.length > 0) {
       setShowSuggestions(true);
-      setSuggestionTrigger((prev) => !prev);
     }
   };
 

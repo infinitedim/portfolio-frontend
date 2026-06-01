@@ -24,17 +24,17 @@ Next.js 16 App Router UI for [portfolio-backend](../portfolio-backend) (Rust/Axu
 
 ## Multi-repo map
 
-| Repo | Role | Default port |
-|------|------|----------------|
-| `portfolio-frontend` (this) | UI, edge proxy, gate BFF, PWA, admin | **3000** |
-| `portfolio-backend` | REST + WS, gate validation, DB, proxies | **8080** |
+| Repo                        | Role                                    | Default port |
+| --------------------------- | --------------------------------------- | ------------ |
+| `portfolio-frontend` (this) | UI, edge proxy, gate BFF, PWA, admin    | **3000**     |
+| `portfolio-backend`         | REST + WS, gate validation, DB, proxies | **8080**     |
 
-| Doc | Purpose |
-|-----|---------|
-| `FEATURE_PLANNING.md` | Feature status SSOT (sprints, gaps) |
-| `docs/dual-ui-gate.md` | Gate architecture + env rotation |
-| `docs/features/FEATURE_33_PERFORMANCE.md` | CWV / PPR / Lighthouse sprint |
-| `SECURITY.md` | Disclosure policy + frontend security notes |
+| Doc                                       | Purpose                                     |
+| ----------------------------------------- | ------------------------------------------- |
+| `FEATURE_PLANNING.md`                     | Feature status SSOT (sprints, gaps)         |
+| `docs/dual-ui-gate.md`                    | Gate architecture + env rotation            |
+| `docs/features/FEATURE_33_PERFORMANCE.md` | CWV / PPR / Lighthouse sprint               |
+| `SECURITY.md`                             | Disclosure policy + frontend security notes |
 
 ---
 
@@ -110,17 +110,17 @@ Known Vitest hang: `background-manager.test.tsx` (~16 min) — skip unless user 
 
 ## Public routes & access
 
-| Route | Access | Notes |
-|-------|--------|-------|
-| `/` | Public | Standard landing (RSC hero, deferred sections) |
-| `/projects`, `/blog`, `/blog/[slug]`, `/blog/series/[slug]` | Public | Cached fetch where applicable |
-| `/contact`, `/roadmap`, `/playground` | Public | Roadmap hits backend proxy at request time |
-| `/rss.xml` | Public | Proxies/backend aggregate |
-| `/gate`, `/gate/1`–`3` | Public puzzles | Redirect to `/terminal` if already unlocked |
-| `/s3cr3t`, `/s3cr3t/users.txt` | Public (noindex) | L2 discovery; `users.txt` proxies backend challenge |
-| `/terminal` | **Gated** | `portfolio_gate` cookie; `robots: noindex` |
-| `/admin/*` | Auth | Admin JWT; auth provider scoped to admin layout |
-| `/offline` | PWA | Offline fallback |
+| Route                                                       | Access           | Notes                                               |
+| ----------------------------------------------------------- | ---------------- | --------------------------------------------------- |
+| `/`                                                         | Public           | Standard landing (RSC hero, deferred sections)      |
+| `/projects`, `/blog`, `/blog/[slug]`, `/blog/series/[slug]` | Public           | Cached fetch where applicable                       |
+| `/contact`, `/roadmap`, `/playground`                       | Public           | Roadmap hits backend proxy at request time          |
+| `/rss.xml`                                                  | Public           | Proxies/backend aggregate                           |
+| `/gate`, `/gate/1`–`3`                                      | Public puzzles   | Redirect to `/terminal` if already unlocked         |
+| `/s3cr3t`, `/s3cr3t/users.txt`                              | Public (noindex) | L2 discovery; `users.txt` proxies backend challenge |
+| `/terminal`                                                 | **Gated**        | `portfolio_gate` cookie; `robots: noindex`          |
+| `/admin/*`                                                  | Auth             | Admin JWT; auth provider scoped to admin layout     |
+| `/offline`                                                  | PWA              | Offline fallback                                    |
 
 SEO: `src/app/robots.ts`, `src/app/sitemap.ts` — gate/terminal/admin/s3cr3t disallowed for crawlers.
 
@@ -140,17 +140,17 @@ flowchart LR
   Proxy -->|portfolio_gate| Terminal["/terminal"]
 ```
 
-| Piece | Path | Role |
-|-------|------|------|
-| Edge redirect | `src/proxy.ts` | `resolveGateRedirect`: `/terminal` → `/gate` without cookie; `/gate/*` → `/terminal` when unlocked |
-| Bypass | `GATE_BYPASS_SECRET` | Header `X-Gate-Bypass` skips redirect (dev only) |
-| Browser API | `src/lib/gate/gate-client.ts` | `fetch("/api/gate/...")` same-origin |
-| BFF | `src/app/api/gate/{status,login,complete/3,unlock}/route.ts` | `proxyGateRequest` in `gate-proxy.ts` |
-| Cookie re-home | `gate-proxy.ts` | Copies `gate_progress`, `portfolio_gate` from backend `Set-Cookie` |
-| L2 listing | `src/app/s3cr3t/page.tsx` | NATAS-style index |
-| L2 secret file | `src/app/s3cr3t/users.txt/route.ts` | Proxies `GET /api/gate/challenge/2/users.txt` |
-| L3 Referer | `gate-level-3-client.tsx`, `referer-check.ts` | User must arrive from `/terminal` teaser |
-| UI | `src/components/organisms/gate/*` | Login forms, progress, unlock |
+| Piece          | Path                                                         | Role                                                                                               |
+| -------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Edge redirect  | `src/proxy.ts`                                               | `resolveGateRedirect`: `/terminal` → `/gate` without cookie; `/gate/*` → `/terminal` when unlocked |
+| Bypass         | `GATE_BYPASS_SECRET`                                         | Header `X-Gate-Bypass` skips redirect (dev only)                                                   |
+| Browser API    | `src/lib/gate/gate-client.ts`                                | `fetch("/api/gate/...")` same-origin                                                               |
+| BFF            | `src/app/api/gate/{status,login,complete/3,unlock}/route.ts` | `proxyGateRequest` in `gate-proxy.ts`                                                              |
+| Cookie re-home | `gate-proxy.ts`                                              | Copies `gate_progress`, `portfolio_gate` from backend `Set-Cookie`                                 |
+| L2 listing     | `src/app/s3cr3t/page.tsx`                                    | NATAS-style index                                                                                  |
+| L2 secret file | `src/app/s3cr3t/users.txt/route.ts`                          | Proxies `GET /api/gate/challenge/2/users.txt`                                                      |
+| L3 Referer     | `gate-level-3-client.tsx`, `referer-check.ts`                | User must arrive from `/terminal` teaser                                                           |
+| UI             | `src/components/organisms/gate/*`                            | Login forms, progress, unlock                                                                      |
 
 **L2 player flow:** `/robots.txt` has `Disallow: /s3cr3t/` → browse `/s3cr3t/` → open `users.txt` → login level 2 on `/gate/2`.
 
@@ -178,11 +178,11 @@ Tests: `src/proxy/test/proxy.test.ts`, `e2e/security-headers.spec.ts`.
 
 ## API routes (BFF & server)
 
-| Route | Backend target | Notes |
-|-------|----------------|-------|
-| `GET/POST /api/gate/*` | `/api/gate/*` | Forwards cookies; see `gate-proxy.ts` |
-| `GET /api/roadmap/[endpoint]` | `/api/roadmap/*` | Server-side roadmap proxy |
-| `POST /api/crypto/handshake` | — | Terminal crypto session setup |
+| Route                         | Backend target   | Notes                                 |
+| ----------------------------- | ---------------- | ------------------------------------- |
+| `GET/POST /api/gate/*`        | `/api/gate/*`    | Forwards cookies; see `gate-proxy.ts` |
+| `GET /api/roadmap/[endpoint]` | `/api/roadmap/*` | Server-side roadmap proxy             |
+| `POST /api/crypto/handshake`  | —                | Terminal crypto session setup         |
 
 **Client/server URL helpers:**
 
@@ -227,14 +227,14 @@ Interactive routes (gate, terminal, admin, playground) stay client-heavy or requ
 
 ## Production (Vercel + Cloud Run)
 
-| Variable | Where | Notes |
-|----------|-------|-------|
-| `NEXT_PUBLIC_BASE_URL` | Vercel | Canonical site URL (OG, sitemap) |
-| `SITE_URL` | Vercel server | Must match backend for L3 Referer |
-| `NEXT_PUBLIC_API_URL` | Vercel | **Browser** API origin — often same as public site if API is proxied; prod typically Cloud Run URL |
-| `BACKEND_URL` | Vercel server only | SSR/BFF calls to Rust API (**no trailing slash**) |
-| `GATE_BYPASS_SECRET` | Vercel server only | Never `NEXT_PUBLIC_*` |
-| `NEXT_PUBLIC_GATE_ENABLED` | Vercel | `false` = emergency gate off |
+| Variable                   | Where              | Notes                                                                                              |
+| -------------------------- | ------------------ | -------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_BASE_URL`     | Vercel             | Canonical site URL (OG, sitemap)                                                                   |
+| `SITE_URL`                 | Vercel server      | Must match backend for L3 Referer                                                                  |
+| `NEXT_PUBLIC_API_URL`      | Vercel             | **Browser** API origin — often same as public site if API is proxied; prod typically Cloud Run URL |
+| `BACKEND_URL`              | Vercel server only | SSR/BFF calls to Rust API (**no trailing slash**)                                                  |
+| `GATE_BYPASS_SECRET`       | Vercel server only | Never `NEXT_PUBLIC_*`                                                                              |
+| `NEXT_PUBLIC_GATE_ENABLED` | Vercel             | `false` = emergency gate off                                                                       |
 
 **Common mistakes:**
 
@@ -247,11 +247,11 @@ Interactive routes (gate, terminal, admin, playground) stay client-heavy or requ
 
 ## Testing map
 
-| Layer | Command | Location |
-|-------|---------|----------|
-| Unit | `bun run test` | `src/**/*.test.ts(x)`, colocated `test/` |
-| E2E | `bun run test:e2e` | `e2e/gate.spec.ts`, `landing.spec.ts`, `security-headers.spec.ts`, … |
-| Lint/types | **Required before done** | `bun run lint`, `bun run type-check` |
+| Layer      | Command                  | Location                                                             |
+| ---------- | ------------------------ | -------------------------------------------------------------------- |
+| Unit       | `bun run test`           | `src/**/*.test.ts(x)`, colocated `test/`                             |
+| E2E        | `bun run test:e2e`       | `e2e/gate.spec.ts`, `landing.spec.ts`, `security-headers.spec.ts`, … |
+| Lint/types | **Required before done** | `bun run lint`, `bun run type-check`                                 |
 
 Gate E2E: `/terminal` redirects to `/gate` without `portfolio_gate` cookie.
 
@@ -259,11 +259,11 @@ Gate E2E: `/terminal` redirects to `/gate` without `portfolio_gate` cookie.
 
 ## Verification checklist (this repo)
 
-| Change type | Required |
-|-------------|----------|
-| `.ts`, `.tsx`, Next config | `bun run lint` + `bun run type-check` |
-| Behavioral gate/proxy/CSP | Add/run relevant unit or e2e test; Team Kit `verify-this` when claiming behavior |
-| Backend `.rs` only | Use `portfolio-backend` Rust suite instead |
+| Change type                | Required                                                                         |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| `.ts`, `.tsx`, Next config | `bun run lint` + `bun run type-check`                                            |
+| Behavioral gate/proxy/CSP  | Add/run relevant unit or e2e test; Team Kit `verify-this` when claiming behavior |
+| Backend `.rs` only         | Use `portfolio-backend` Rust suite instead                                       |
 
 Report pass/fail with terminal output — do not claim green without running commands.
 
@@ -273,21 +273,21 @@ Report pass/fail with terminal output — do not claim green without running com
 
 See `.env.example`. Puzzle secrets (`GATE_L1_ANSWER`, `GATE_L2_ANSWER`, `GATE_TOKEN_SECRET`) live on **backend** only.
 
-| Variable | Purpose |
-|----------|---------|
-| `NEXT_PUBLIC_BASE_URL` | Public site origin |
-| `SITE_URL` | Server Referer / canonical checks |
-| `BACKEND_URL` | SSR + route handlers → Rust |
-| `NEXT_PUBLIC_API_URL` | Browser fetch to API |
-| `ALLOWED_ORIGINS` | Proxy CORS allowlist |
-| `NEXT_PUBLIC_GATE_ENABLED` | Gate on/off |
-| `GATE_BYPASS_SECRET` | Dev bypass header |
-| `NEXT_PUBLIC_GISCUS_*` | Blog comments (optional) |
-| `GH_USERNAME` | Default GitHub stats user (token on backend) |
-| `NEXT_PUBLIC_LOG_*` | Client log level + ingest URL |
+| Variable                   | Purpose                                      |
+| -------------------------- | -------------------------------------------- |
+| `NEXT_PUBLIC_BASE_URL`     | Public site origin                           |
+| `SITE_URL`                 | Server Referer / canonical checks            |
+| `BACKEND_URL`              | SSR + route handlers → Rust                  |
+| `NEXT_PUBLIC_API_URL`      | Browser fetch to API                         |
+| `ALLOWED_ORIGINS`          | Proxy CORS allowlist                         |
+| `NEXT_PUBLIC_GATE_ENABLED` | Gate on/off                                  |
+| `GATE_BYPASS_SECRET`       | Dev bypass header                            |
+| `NEXT_PUBLIC_GISCUS_*`     | Blog comments (optional)                     |
+| `GH_USERNAME`              | Default GitHub stats user (token on backend) |
+| `NEXT_PUBLIC_LOG_*`        | Client log level + ingest URL                |
 
 Integrations (Gemini, Resend, CMS, roadmap login): configured on **backend** — see `portfolio-backend/.env.example`.
 
 ---
 
-*Last expanded for agent onboarding — gate BFF, proxy.ts, NATAS L2 robots/s3cr3t, PPR/CWV Feature #33, dual UI. Update when routes or env contracts change.*
+_Last expanded for agent onboarding — gate BFF, proxy.ts, NATAS L2 robots/s3cr3t, PPR/CWV Feature #33, dual UI. Update when routes or env contracts change._

@@ -16,7 +16,7 @@ export function CopyCodeButton() {
       const btn = document.createElement("button");
       btn.textContent = "Copy";
       btn.className =
-        "copy-code-btn absolute top-2 right-2 bg-gray-700/80 hover:bg-gray-600 text-gray-300 text-xs px-2 py-1 rounded transition-colors select-none";
+        "copy-code-btn absolute top-2 right-2 bg-terminal-border/80 hover:bg-terminal-muted text-terminal-text text-xs px-2 py-1 rounded transition-colors select-none font-mono cursor-pointer";
       btn.setAttribute("aria-label", "Copy code");
 
       btn.addEventListener("click", async () => {
@@ -25,13 +25,13 @@ export function CopyCodeButton() {
         try {
           await navigator.clipboard.writeText(text);
           btn.textContent = "Copied!";
-          btn.classList.add("text-green-400");
+          btn.classList.add("text-terminal-accent");
         } catch {
           btn.textContent = "Failed";
         } finally {
           setTimeout(() => {
             btn.textContent = "Copy";
-            btn.classList.remove("text-green-400");
+            btn.classList.remove("text-terminal-accent");
           }, 2000);
         }
       });

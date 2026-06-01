@@ -97,7 +97,7 @@ export class PerformanceMonitor {
       this.metrics = this.metrics.slice(-this.maxMetrics);
     }
 
-    if (value > 100) {
+    if (name !== "memory-usage" && name !== "history-size" && value > 100) {
       console.warn(
         `Slow operation detected: ${name} took ${value.toFixed(2)}ms`,
         metadata,
@@ -105,7 +105,7 @@ export class PerformanceMonitor {
     }
   }
 
-  measureCommand<T>(
+  async measureCommand<T>(
     commandName: string,
     commandFn: () => Promise<T>,
     metadata?: Record<string, unknown>,
@@ -114,22 +114,21 @@ export class PerformanceMonitor {
 
     this.startTiming(`command-${commandName}`, "command");
 
-    return commandFn()
-      .then((result) => {
-        this.endTiming(`command-${commandName}`, "command", {
-          ...metadata,
-          success: true,
-        });
-        return result;
-      })
-      .catch((error) => {
-        this.endTiming(`command-${commandName}`, "command", {
-          ...metadata,
-          success: false,
-          error: (error as Error).message,
-        });
-        throw error;
+    try {
+      const result = await commandFn();
+      this.endTiming(`command-${commandName}`, "command", {
+        ...metadata,
+        success: true,
       });
+      return result;
+    } catch (error) {
+      this.endTiming(`command-${commandName}`, "command", {
+        ...metadata,
+        success: false,
+        error: (error as Error).message,
+      });
+      throw error;
+    }
   }
 
   measureRender(componentName: string, renderFn: () => void): void {

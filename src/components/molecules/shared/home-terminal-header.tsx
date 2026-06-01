@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, JSX } from "react";
+import { useState, useEffect, useMemo, useRef, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { LanguageSwitcher } from "./language-switcher";
@@ -10,28 +10,35 @@ export function HomeTerminalHeader(): JSX.Element {
   const { t } = useI18n();
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const [portfolioMetrics, setPortfolioMetrics] = useState({
+  const STATIC_METRICS = useMemo(
+    () => ({
+      tools: 15,
+      status: "online" as const,
+    }),
+    [],
+  );
+
+  const [dynamicMetrics, setDynamicMetrics] = useState({
     projects: 8,
     skills: 15,
     experience: "5+ years",
     languages: 6,
     frameworks: 10,
-    tools: 15,
-    status: "online",
-    lastUpdate: "00:00",
     commits: 150,
     stars: 25,
+    lastUpdate: "00:00",
   });
+
+  const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     setIsClient(true);
     setCurrentTime(new Date());
+    startTimeRef.current = Date.now();
   }, []);
 
   useEffect(() => {
     if (!isClient) return;
-
-    const startTime = Date.now();
 
     const interval = setInterval(() => {
       const now = new Date();
@@ -50,6 +57,7 @@ export function HomeTerminalHeader(): JSX.Element {
       const baseCommits = 150;
       const baseStars = 25;
 
+      const startTime = startTimeRef.current || Date.now();
       const timeSinceMount = now.getTime() - startTime;
       const timeBasedProjects =
         Math.floor(timeSinceMount / (1000 * 60 * 60 * 24)) + baseProjects;
@@ -78,22 +86,42 @@ export function HomeTerminalHeader(): JSX.Element {
         minute: "2-digit",
       });
 
-      setPortfolioMetrics({
-        projects,
-        skills,
-        experience,
-        languages,
-        frameworks,
-        tools: 15,
-        status: "online",
-        lastUpdate,
-        commits,
-        stars,
+      setDynamicMetrics((prev) => {
+        if (
+          prev.projects === projects &&
+          prev.skills === skills &&
+          prev.experience === experience &&
+          prev.languages === languages &&
+          prev.frameworks === frameworks &&
+          prev.commits === commits &&
+          prev.stars === stars &&
+          prev.lastUpdate === lastUpdate
+        ) {
+          return prev;
+        }
+        return {
+          projects,
+          skills,
+          experience,
+          languages,
+          frameworks,
+          commits,
+          stars,
+          lastUpdate,
+        };
       });
     }, 1000);
 
     return () => clearInterval(interval);
   }, [isClient]);
+
+  const portfolioMetrics = useMemo(
+    () => ({
+      ...STATIC_METRICS,
+      ...dynamicMetrics,
+    }),
+    [STATIC_METRICS, dynamicMetrics],
+  );
 
   const formatTime = (date: Date | null) => {
     if (!date) return "--:--:--";

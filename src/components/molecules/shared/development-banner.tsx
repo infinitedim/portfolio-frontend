@@ -7,17 +7,6 @@ export function DevelopmentBanner(): JSX.Element | null {
   const { themeConfig } = useTheme();
   const [isVisible, setIsVisible] = useState(true);
   const [animationPhase, setAnimationPhase] = useState(0);
-  const [metrics, setMetrics] = useState({
-    developmentProgress: 50,
-    testCoverage: 0,
-    buildStatus: "success" as "success" | "warning" | "error",
-    performanceScore: 98,
-    bundleSize: 245,
-    lastCommit: "2h ago",
-    activeBranches: 3,
-    openIssues: 2,
-  });
-
   const testCoverage = useMemo(() => {
     const totalSourceFiles = 165;
     const totalTestFiles = 44;
@@ -53,13 +42,19 @@ export function DevelopmentBanner(): JSX.Element | null {
     return totalProgress;
   }, [testCoverage]);
 
-  useEffect(() => {
-    setMetrics((prev) => ({
-      ...prev,
+  const metrics = useMemo(
+    () => ({
       developmentProgress,
       testCoverage: testCoverage.totalCoverage,
-    }));
-  }, [testCoverage, developmentProgress]);
+      buildStatus: "success" as const,
+      performanceScore: 98,
+      bundleSize: 245,
+      lastCommit: "2h ago",
+      activeBranches: 3,
+      openIssues: 2,
+    }),
+    [developmentProgress, testCoverage.totalCoverage],
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {

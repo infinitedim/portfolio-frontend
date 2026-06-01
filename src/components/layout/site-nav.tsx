@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { type JSX } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { type JSX, useState } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { LanguageSwitcher } from "@/components/molecules/shared/language-switcher";
 import { VisitorPresenceBadge } from "@/components/molecules/presence/visitor-presence-badge";
+import { TerminalFeaturesModal } from "@/components/molecules/shared/terminal-features-modal";
 
 const NAV_LINKS = [
   { key: "navHome" as const, href: "/" },
@@ -21,8 +22,10 @@ interface SiteNavProps {
 
 export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
   const pathname = usePathname();
+  const router = useRouter();
   const activePath = currentPath ?? pathname ?? "";
   const { t } = useI18n();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur supports-[backdrop-filter]:bg-neutral-950/80">
@@ -66,14 +69,23 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
             showFlags={false}
             className="hidden sm:block"
           />
-          <Link
-            href="/gate"
-            className="rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20"
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
           >
             {t("navTerminal")} →
-          </Link>
+          </button>
         </div>
       </nav>
+
+      <TerminalFeaturesModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onProceed={() => {
+          setIsModalOpen(false);
+          router.push("/gate");
+        }}
+      />
     </header>
   );
 }

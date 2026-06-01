@@ -15,7 +15,10 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push("/admin/login");
+      const t = setTimeout(() => {
+        router.push("/admin/login");
+      }, 0);
+      return () => clearTimeout(t);
     }
   }, [isAuthenticated, isLoading, router]);
 

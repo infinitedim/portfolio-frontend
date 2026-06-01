@@ -34,14 +34,14 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
   const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <span className="text-sm text-gray-500">Share:</span>
+    <div className="flex flex-wrap items-center gap-3 font-mono">
+      <span className="text-sm text-terminal-muted font-mono">Share:</span>
 
       <a
         href={twitterUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-xs px-3 py-1.5 border border-gray-700 rounded hover:border-sky-400 text-gray-400 hover:text-sky-400 transition-colors"
+        className="text-xs px-3 py-1.5 border border-terminal-border rounded hover:border-sky-400/80 text-terminal-muted hover:text-sky-400 transition-colors"
         aria-label="Share on Twitter/X"
       >
         𝕏 Twitter
@@ -51,7 +51,7 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
         href={linkedinUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-xs px-3 py-1.5 border border-gray-700 rounded hover:border-blue-400 text-gray-400 hover:text-blue-400 transition-colors"
+        className="text-xs px-3 py-1.5 border border-terminal-border rounded hover:border-blue-400/80 text-terminal-muted hover:text-blue-400 transition-colors"
         aria-label="Share on LinkedIn"
       >
         LinkedIn
@@ -59,7 +59,7 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
 
       <button
         onClick={handleCopyLink}
-        className="text-xs px-3 py-1.5 border border-gray-700 rounded hover:border-green-400 text-gray-400 hover:text-green-400 transition-colors"
+        className="text-xs px-3 py-1.5 border border-terminal-border rounded hover:border-terminal-accent text-terminal-muted hover:text-terminal-accent transition-colors cursor-pointer"
         aria-label="Copy link"
       >
         {copied ? "✓ Copied!" : "Copy Link"}

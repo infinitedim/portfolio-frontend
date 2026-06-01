@@ -473,7 +473,9 @@ async function fetchRoadmapBackend(
   }
 }
 
-async function parseRoadmapError(response: Response): Promise<RoadmapFetchError> {
+async function parseRoadmapError(
+  response: Response,
+): Promise<RoadmapFetchError> {
   try {
     const body = (await response.json()) as { error?: unknown };
     if (typeof body.error === "string" && body.error.trim()) {

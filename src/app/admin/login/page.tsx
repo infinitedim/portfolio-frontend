@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TerminalLoginForm } from "@/components/molecules/admin/terminal-login-form";
 import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
@@ -13,8 +13,16 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const [isBackHovered, setIsBackHovered] = useState(false);
 
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      const t = setTimeout(() => {
+        router.push("/admin");
+      }, 0);
+      return () => clearTimeout(t);
+    }
+  }, [isLoading, isAuthenticated, router]);
+
   if (!isLoading && isAuthenticated) {
-    router.push("/admin");
     return null;
   }
 

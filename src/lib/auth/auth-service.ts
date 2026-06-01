@@ -1,4 +1,4 @@
-import { getApiUrl } from "@/lib/api/get-api-url";
+import { encryptedFetchRaw } from "@/lib/crypto/encrypted-fetch";
 
 export interface AuthUser {
   userId: string;
@@ -117,14 +117,8 @@ class AuthService {
         };
       }
 
-      const response = await fetch(`${getApiUrl()}/api/auth/login`, {
+      const response = await encryptedFetchRaw("/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        // Required so the browser stores the HttpOnly refresh-token cookie
-        // returned by the backend.
         credentials: "include",
         body: JSON.stringify({ email, password }),
       });
@@ -202,12 +196,8 @@ class AuthService {
     }
 
     try {
-      const response = await fetch(`${getApiUrl()}/api/auth/2fa/login`, {
+      const response = await encryptedFetchRaw("/api/auth/2fa/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
         credentials: "include",
         body: JSON.stringify({
           challengeToken,
@@ -256,14 +246,10 @@ class AuthService {
     }
 
     try {
-      const response = await fetch(`${getApiUrl()}/api/auth/refresh`, {
+      // The refresh token lives in an HttpOnly cookie. We don't (and can't)
+      // read it from JS — the browser attaches it because of `credentials`.
+      const response = await encryptedFetchRaw("/api/auth/refresh", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        // The refresh token lives in an HttpOnly cookie. We don't (and can't)
-        // read it from JS — the browser attaches it because of `credentials`.
         credentials: "include",
         body: "{}",
       });
@@ -307,12 +293,8 @@ class AuthService {
         };
       }
 
-      const response = await fetch(`${getApiUrl()}/api/auth/register`, {
+      const response = await encryptedFetchRaw("/api/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
         body: JSON.stringify({ email, password, firstName, lastName }),
       });
 
@@ -346,17 +328,15 @@ class AuthService {
   async logout(): Promise<boolean> {
     try {
       if (typeof window !== "undefined") {
-        await fetch(`${getApiUrl()}/api/auth/logout`, {
+        // Send the cookie so the server can revoke it server-side and the
+        // response can clear it client-side.
+        await encryptedFetchRaw("/api/auth/logout", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
             ...(this.accessToken && {
               Authorization: `Bearer ${this.accessToken}`,
             }),
           },
-          // Send the cookie so the server can revoke it server-side and the
-          // response can clear it client-side.
           credentials: "include",
           body: JSON.stringify({
             accessToken: this.accessToken,
@@ -394,11 +374,9 @@ class AuthService {
     }
 
     try {
-      const response = await fetch(`${getApiUrl()}/api/auth/verify`, {
+      const response = await encryptedFetchRaw("/api/auth/verify", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
           Authorization: `Bearer ${this.accessToken}`,
         },
       });

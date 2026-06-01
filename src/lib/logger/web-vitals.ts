@@ -105,12 +105,7 @@ function reportMetric(metric: Metric): void {
     threshold: THRESHOLDS[name as keyof typeof THRESHOLDS],
   };
 
-  clientLogger.logPerformance(
-    name,
-    value,
-    vitalsMetadata,
-    vitalsContext,
-  );
+  clientLogger.logPerformance(name, value, vitalsMetadata, vitalsContext);
 }
 
 export function initWebVitals(): void {

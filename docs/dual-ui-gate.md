@@ -8,7 +8,7 @@ Architecture and operations guide for the dual-entry portfolio.
 | -------------------------------------------- | ---------------- | ----------------------------------------------- |
 | `/`                                          | Public           | Standard landing (hero, projects, blog preview) |
 | `/terminal`                                  | Gated            | Interactive terminal portfolio                  |
-| `/gate`, `/gate/1-3`                         | Public (puzzles) | NATAS-style web challenges                    |
+| `/gate`, `/gate/1-3`                         | Public (puzzles) | NATAS-style web challenges                      |
 | `/blog`, `/projects`, `/contact`, `/roadmap` | Public           | Shared content (single source)                  |
 | `/admin/*`                                   | Auth             | Admin dashboard                                 |
 
@@ -27,7 +27,7 @@ flowchart LR
    - **L3:** Set `Referer: {siteUrl}/terminal` (navigate from `/terminal` teaser) → Enter Terminal
 3. Backend validates L1/L2 via `/api/gate/login`, enforces Referer on `/api/gate/complete/3`, and issues signed cookie via `/api/gate/unlock`
 4. Browser calls **same-origin** Next.js routes at `/api/gate/*`, which proxy to Cloud Run and re-home `gate_progress` / `portfolio_gate` cookies on the Vercel domain (cross-origin cookies to `*.run.app` are blocked by browsers).
-4. Full terminal loads; welcome message shown once
+5. Full terminal loads; welcome message shown once
 
 ## Environment
 

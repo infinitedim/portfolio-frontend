@@ -134,6 +134,7 @@ const SAFE_RESPONSE_HEADERS = [
   "cache-control",
   "x-request-id",
   "x-response-time",
+  "set-cookie",
 ];
 
 function extractSafeHeaders(headers: Headers): Record<string, string> {

@@ -31,7 +31,10 @@ export function AdminLayoutInner({
     if (publicPath) return;
     if (isLoading) return;
     if (!isAuthenticated) {
-      router.push("/admin/login");
+      const t = setTimeout(() => {
+        router.push("/admin/login");
+      }, 0);
+      return () => clearTimeout(t);
     }
   }, [publicPath, isAuthenticated, isLoading, router]);
 

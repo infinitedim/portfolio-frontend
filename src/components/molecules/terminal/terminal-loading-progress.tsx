@@ -69,8 +69,18 @@ export function TerminalLoadingProgress({
   const [completionTime, setCompletionTime] = useState<number | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  const onCompleteRef = useRef(onComplete);
   useEffect(() => {
-    if (!mounted) return;
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  const filesSerialized = JSON.stringify(files);
+
+  const hasInitializedRef = useRef(false);
+
+  useEffect(() => {
+    if (!mounted || hasInitializedRef.current) return;
+    hasInitializedRef.current = true;
 
     const initialFiles: LoadingFile[] = files.map((file) => {
       const fileData = typeof file === "string" ? { path: file } : file;
@@ -89,7 +99,8 @@ export function TerminalLoadingProgress({
         setSystemInfo("🔧 Initializing terminal environment...");
       }
     }
-  }, [files, autoStart, showSystemInfo, mounted]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filesSerialized, autoStart, showSystemInfo, mounted]);
 
   useEffect(() => {
     if (!startTime || isComplete) return;
@@ -105,7 +116,7 @@ export function TerminalLoadingProgress({
         if (showSystemInfo) {
           setSystemInfo("🎉 Terminal initialization complete!");
         }
-        onComplete?.();
+        onCompleteRef.current?.();
         clearInterval(interval);
         return;
       }
@@ -159,7 +170,8 @@ export function TerminalLoadingProgress({
     }, fileLoadDuration);
 
     return () => clearInterval(interval);
-  }, [startTime, duration, files, isComplete, onComplete, showSystemInfo]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startTime, duration, filesSerialized, isComplete, showSystemInfo]);
 
   useEffect(() => {
     if (currentFileIndex >= 0 && scrollContainerRef.current) {
