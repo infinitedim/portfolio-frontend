@@ -5,7 +5,7 @@ import {
   isGateEnabled,
   hasGateCookie,
   hasGateBypass,
-} from "../../proxy";
+} from "./proxy";
 import { NextRequest, NextResponse } from "next/server";
 
 describe("proxy", () => {
@@ -454,14 +454,14 @@ describe("proxy", () => {
 
   describe("proxy configuration", () => {
     it("should have proper config export", async () => {
-      const { config } = await import("../../proxy");
+      const { config } = await import("./proxy");
       expect(config).toBeDefined();
       expect(config.matcher).toBeDefined();
       expect(Array.isArray(config.matcher)).toBe(true);
     });
 
     it("should have proper matcher configuration", async () => {
-      const { config } = await import("../../proxy");
+      const { config } = await import("./proxy");
       expect(config.matcher[0]).toContain("_next/static");
       expect(config.matcher[0]).toContain("_next/image");
       expect(config.matcher[0]).toContain("favicon.ico");

@@ -9,7 +9,7 @@ import {
   useTimerManager,
   useIntervalManager,
   safeDOMManipulation,
-} from "../utils/hooks-utils";
+} from "../hooks-utils";
 
 interface LocalStorageResult<T> {
   getValue: () => T;

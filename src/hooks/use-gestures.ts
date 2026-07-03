@@ -1,5 +1,5 @@
 import { useRef, useCallback, useState, useMemo } from "react";
-import { useTimerManager, useMountRef } from "./utils/hooks-utils";
+import { useTimerManager, useMountRef } from "./hooks-utils";
 
 export interface GestureConfig {
   swipeThreshold: number;

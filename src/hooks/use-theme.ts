@@ -12,7 +12,7 @@ import {
   safeDOMManipulation,
   useLocalStorage,
   useMountRef,
-} from "./utils/hooks-utils";
+} from "./hooks-utils";
 import { PerformanceMonitor } from "@/lib/performance/performance-monitor";
 
 const STORAGE_KEY = "terminal-theme" as const;

@@ -4,7 +4,7 @@ import {
   useMountRef,
   generateId,
   withErrorHandling,
-} from "./utils/hooks-utils";
+} from "./hooks-utils";
 
 export interface AnimationConfig {
   duration: number;

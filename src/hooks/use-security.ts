@@ -3,7 +3,7 @@ import {
   useIntervalManager,
   useMountRef,
   useTimerManager,
-} from "./utils/hooks-utils";
+} from "./hooks-utils";
 
 interface SecurityState {
   isRateLimited: boolean;

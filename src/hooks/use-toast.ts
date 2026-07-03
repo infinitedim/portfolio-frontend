@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useMountRef } from "./utils/hooks-utils";
+import { useMountRef } from "./hooks-utils";
 
 export type ToastActionElement = React.ReactElement;
 export interface ToastProps {
