@@ -12,7 +12,7 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
   async execute() {
     const commands = getCommands();
     const helpText = [
-      "🔧 Available Commands:",
+      "Available Commands:",
       "═".repeat(50),
       "",
       ...commands.map((cmd) => {
@@ -21,24 +21,24 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
         const aliases = cmd.aliases ? ` (${cmd.aliases.join(", ")})` : "";
 
         if (cmd.name === "skills") {
-          return `  🗺️ ${name} - ${desc}${aliases}`;
+          return `  • ${name} - ${desc}${aliases}`;
         }
         if (cmd.name === "progress") {
-          return `  📊 ${name} - ${desc}${aliases}`;
+          return `  • ${name} - ${desc}${aliases}`;
         }
         if (cmd.name === "theme") {
-          return `  🎨 ${name} - ${desc}${aliases}`;
+          return `  • ${name} - ${desc}${aliases}`;
         }
         if (cmd.name === "font") {
-          return `  🔤 ${name} - ${desc}${aliases}`;
+          return `  • ${name} - ${desc}${aliases}`;
         }
         if (cmd.name === "pwa") {
-          return `  📱 ${name} - ${desc}${aliases}`;
+          return `  • ${name} - ${desc}${aliases}`;
         }
-        return `  📝 ${name} - ${desc}${aliases}`;
+        return `  • ${name} - ${desc}${aliases}`;
       }),
       "",
-      "🎯 Featured Commands:",
+      "Featured Commands:",
       "  skills overview               - View roadmap.sh progress overview",
       "  skills list frontend          - List frontend skills",
       "  skills update react completed - Mark skill as completed",
@@ -56,18 +56,18 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
       "  tech-stack list               - Show technology stack",
       "  location                      - Show current location & time",
       "",
-      "🚩 Command-Line Arguments:",
+      "Command-Line Arguments:",
       "  theme -l, --list              - Show theme list",
       "  theme -p, --preview <name>    - Preview theme colors",
       "  theme -c, --current           - Show current theme info",
       "  font -l, --list               - Show font list",
       "",
-      "🔗 Integration:",
+      "Integration:",
       "  • Connected to https://roadmap.sh/u/infinitedim",
       "  • Skills data synced from roadmap.sh",
       "  • Local progress tracking with cloud sync",
       "",
-      "💡 Tips:",
+      "Tips:",
       "  • Use arrow keys (↑/↓) to navigate command history",
       "  • Commands support aliases (e.g., 'cls' for 'clear')",
       "  • Commands are case-insensitive with typo tolerance",
@@ -92,12 +92,12 @@ export const aboutCommand: Command = {
   async execute() {
     const projectName = "Project";
     const aboutText = [
-      "👋 Hello! I'm a Full-Stack Developer",
+      "Hello! I'm a Full-Stack Developer",
       "",
-      "🚀 Passionate about creating innovative web solutions",
-      "💻 Specialized in React, Next.js, and modern web technologies",
-      "🎨 Love combining technical skills with creative design",
-      "🌟 Always learning and exploring new technologies",
+      "Passionate about creating innovative web solutions",
+      "Specialized in React, Next.js, and modern web technologies",
+      "Love combining technical skills with creative design",
+      "Always learning and exploring new technologies",
       "",
       "This terminal-themed portfolio showcases my skills in:",
       "  • Frontend Development (React, Next.js, TypeScript)",
@@ -105,7 +105,7 @@ export const aboutCommand: Command = {
       "  • DevOps (CI/CD, Performance Optimization)",
       "  • Creative Problem Solving",
       "",
-      "🗺️ My learning journey is tracked on roadmap.sh",
+      "My learning journey is tracked on roadmap.sh",
       "   Use 'skills overview' to see my current progress!",
       "",
       `Type "${projectName}" to see my work or "contact" to get in touch!`,
@@ -126,7 +126,7 @@ export const projectsCommand: Command = {
   aliases: ["portfolio", "work", "proj"],
   async execute() {
     const projectsText = [
-      "🚀 Featured Projects:",
+      "Featured Projects:",
       "",
       "1. Terminal Portfolio (Current)",
       "   • Interactive Linux terminal-themed website",
@@ -154,7 +154,7 @@ export const projectsCommand: Command = {
       "   • Responsive design with animations",
       "   • Sass/SCSS for styling",
       "",
-      "🔗 All projects contribute to my roadmap.sh progress!",
+      "All projects contribute to my roadmap.sh progress!",
       "   Use 'skills overview' to see how they map to my skills.",
       "",
       "Visit my GitHub for more projects and source code!",
@@ -175,16 +175,16 @@ export const contactCommand: Command = {
   aliases: ["reach", "connect", "email"],
   async execute() {
     const contactText = [
-      "📫 Let's Connect!",
+      "Let's Connect!",
       "",
-      "📧 Email: dragdimas9@gmail.com",
-      "💼 LinkedIn: linkedin.com/in/infinitedim",
-      "🐙 GitHub: github.com/infinitedim",
-      "🐦 Twitter: @infinitedim",
-      "🌐 Website: infinitedim.vercel.app",
-      "🗺️ Roadmap: https://roadmap.sh/u/infinitedim",
+      "Email: dragdimas9@gmail.com",
+      "LinkedIn: linkedin.com/in/infinitedim",
+      "GitHub: github.com/infinitedim",
+      "Twitter: @infinitedim",
+      "Website: infinitedim.vercel.app",
+      "Roadmap: https://roadmap.sh/u/infinitedim",
       "",
-      "💬 I'm always open to:",
+      "I'm always open to:",
       "  • Collaboration opportunities",
       "  • Technical discussions",
       "  • Freelance projects",
@@ -299,12 +299,12 @@ export const themeCommand: Command = {
 
       const additionalInfo = [
         "",
-        "💡 Usage Tips:",
+        "Usage Tips:",
         "  • Use 'theme <name>' to switch themes",
         "  • Use 'theme -p <name>' to preview colors",
         "  • Use 'theme -c' to see current theme details",
         "",
-        "🚩 Quick Commands:",
+        "Quick Commands:",
         "  theme dracula    # Switch to dracula",
         "  theme -p hacker  # Preview hacker theme",
         "  theme --current  # Show current theme",
@@ -326,13 +326,13 @@ export const themeCommand: Command = {
 
       const config = themes[currentTheme as ThemeName];
       const currentInfo = [
-        "📍 Current Theme Information",
+        "Current Theme Information",
         "═".repeat(35),
         "",
         `Name: ${config.name}`,
         `ID: ${currentTheme}`,
         "",
-        "🎨 Color Palette:",
+        "Color Palette:",
         `  Background: ${config.colors.bg}`,
         `  Text:       ${config.colors.text}`,
         `  Prompt:     ${config.colors.prompt}`,
@@ -341,8 +341,8 @@ export const themeCommand: Command = {
         `  Accent:     ${config.colors.accent}`,
         `  Border:     ${config.colors.border}`,
         "",
-        "💡 To change theme: theme <name>",
-        "📋 To see all themes: theme -l",
+        "To change theme: theme <name>",
+        "To see all themes: theme -l",
       ].join("\n");
 
       return {
@@ -445,12 +445,12 @@ export const themeCommand: Command = {
       return {
         type: "error",
         content: [
-          `❌ Invalid theme "${requestedTheme}"`,
+          `Invalid theme "${requestedTheme}"`,
           "",
           `Available themes: ${availableThemes.join(", ")}`,
           "",
-          "💡 Use 'theme -l' for a detailed list",
-          "💡 Use 'theme -p <name>' to preview colors",
+          "Use 'theme -l' for a detailed list",
+          "Use 'theme -p <name>' to preview colors",
         ].join("\n"),
         timestamp: new Date(),
         id: generateId(),
@@ -508,28 +508,28 @@ export const fontCommand: Command = {
         const isCurrent = currentFont === font;
         const indicator = isCurrent ? "► " : "  ";
 
-        return `${indicator}${font.padEnd(18)} - ${displayName}${ligatures} ${isCurrent ? "🟢" : ""}`;
+        return `${indicator}${font.padEnd(18)} - ${displayName}${ligatures} ${isCurrent ? " (current)" : ""}`;
       });
 
       return {
         type: "success",
         content: [
-          "🔤 Available Terminal Fonts",
+          "Available Terminal Fonts",
           "═".repeat(40),
           "",
-          `📍 Current Font: ${currentFont}`,
+          `Current Font: ${currentFont}`,
           "",
-          "📋 Font List:",
+          "Font List:",
           "",
           ...fontList,
           "",
           `Total: ${availableFonts.length} fonts available`,
           "",
-          "💡 Usage:",
+          "Usage:",
           "  font <name>        # Switch to font",
           "  font -c            # Show current font info",
           "",
-          "🔤 Fonts with ligatures enhance code readability!",
+          "Fonts with ligatures enhance code readability!",
         ].join("\n"),
         timestamp: new Date(),
         id: generateId(),
@@ -554,15 +554,15 @@ export const fontCommand: Command = {
       return {
         type: "success",
         content: [
-          "📍 Current Font Information",
+          "Current Font Information",
           "═".repeat(30),
           "",
           `Name: ${displayName}`,
           `ID: ${currentFont}`,
-          `Ligatures: ${hasLigatures ? "✅ Enabled" : "❌ Disabled"}`,
+          `Ligatures: ${hasLigatures ? "Enabled" : "Disabled"}`,
           "",
-          "💡 To change font: font <name>",
-          "📋 To see all fonts: font -l",
+          "To change font: font <name>",
+          "To see all fonts: font -l",
         ].join("\n"),
         timestamp: new Date(),
         id: generateId(),
@@ -584,12 +584,12 @@ export const fontCommand: Command = {
       return {
         type: "success",
         content: [
-          "🔤 Terminal Font Manager",
+          "Terminal Font Manager",
           "",
           "Available fonts (optimized with Next.js):",
           ...fontList,
           "",
-          "🚩 Available Flags:",
+          "Available Flags:",
           "  -l, --list     Show detailed font list",
           "  -c, --current  Show current font info",
           "",
@@ -598,7 +598,7 @@ export const fontCommand: Command = {
           "  font fira-code      # Switch to Fira Code",
           "  font -c             # Show current font",
           "",
-          "💡 Fonts with ligatures enhance code readability!",
+          "Fonts with ligatures enhance code readability!",
         ].join("\n"),
         timestamp: new Date(),
         id: generateId(),
@@ -610,11 +610,11 @@ export const fontCommand: Command = {
       return {
         type: "error",
         content: [
-          `❌ Invalid font "${requestedFont}"`,
+          `Invalid font "${requestedFont}"`,
           "",
           `Available fonts: ${availableFonts.join(", ")}`,
           "",
-          "💡 Use 'font -l' for a detailed list",
+          "Use 'font -l' for a detailed list",
           "Example: font fira-code",
         ].join("\n"),
         timestamp: new Date(),
@@ -684,17 +684,17 @@ export const pwaCommand: Command = {
         return {
           type: "info",
           content: [
-            "✅ PWA Already Installed",
+            "PWA Already Installed",
             "═".repeat(30),
             "",
-            "🎉 The app is already installed as a PWA!",
+            "The app is already installed as a PWA!",
             "",
-            "📱 You can:",
+            "You can:",
             "  • Find it in your app drawer/menu",
             "  • Pin it to your taskbar",
             "  • Use it offline",
             "",
-            "💡 Use 'pwa -s' to check detailed status",
+            "Use 'pwa -s' to check detailed status",
           ].join("\n"),
           timestamp: new Date(),
           id: generateId(),
@@ -704,10 +704,10 @@ export const pwaCommand: Command = {
       return {
         type: "success",
         content: [
-          "📱 Install Portfolio PWA",
+          "Install Portfolio PWA",
           "═".repeat(30),
           "",
-          "🚀 To install this portfolio as an app:",
+          "To install this portfolio as an app:",
           "",
           "Chrome/Edge:",
           "  1. Look for install icon (⊕) in address bar",
@@ -723,13 +723,13 @@ export const pwaCommand: Command = {
           "  1. Look for install prompt",
           "  2. Or use 'Add to Home Screen' in menu",
           "",
-          "✨ Benefits:",
+          "Benefits:",
           "  • Faster loading",
           "  • Offline access",
           "  • Native app experience",
           "  • No browser UI",
           "",
-          "💡 An install button may appear automatically!",
+          "An install button may appear automatically!",
         ].join("\n"),
         timestamp: new Date(),
         id: generateId(),
@@ -740,25 +740,25 @@ export const pwaCommand: Command = {
       return {
         type: "info",
         content: [
-          "🔌 Offline Capabilities",
+          "Offline Capabilities",
           "═".repeat(30),
           "",
-          `📡 Connection Status: ${isOnline ? "🟢 Online" : "🔴 Offline"}`,
-          `💾 Service Worker: ${swRegistered ? "🟢 Active" : "🔴 Not Active"}`,
+          `Connection Status: ${isOnline ? "Online" : "Offline"}`,
+          `Service Worker: ${swRegistered ? "Active" : "Not Active"}`,
           "",
-          "🎯 What Works Offline:",
-          "  ✅ Basic terminal interface",
-          "  ✅ All commands and help",
-          "  ✅ Theme and font switching",
-          "  ✅ Static content and projects",
-          "  ✅ Cached resources",
+          "What Works Offline:",
+          "  ✓ Basic terminal interface",
+          "  ✓ All commands and help",
+          "  ✓ Theme and font switching",
+          "  ✓ Static content and projects",
+          "  ✓ Cached resources",
           "",
-          "🌐 Requires Internet:",
-          "  ❌ Real-time data (GitHub)",
-          "  ❌ API calls and live updates",
-          "  ❌ External images/resources",
+          "Requires Internet:",
+          "  ✗ Real-time data (GitHub)",
+          "  ✗ API calls and live updates",
+          "  ✗ External images/resources",
           "",
-          "💡 The app automatically caches content for offline use!",
+          "The app automatically caches content for offline use!",
         ].join("\n"),
         timestamp: new Date(),
         id: generateId(),
@@ -769,33 +769,33 @@ export const pwaCommand: Command = {
       return {
         type: "success",
         content: [
-          "📱 PWA Status Dashboard",
+          "PWA Status Dashboard",
           "═".repeat(30),
           "",
-          "🎯 Installation Status:",
-          `  App Installed: ${isInstalled ? "✅ Yes" : "❌ No"}`,
-          `  Service Worker: ${swSupported ? "✅ Supported" : "❌ Not Supported"}`,
-          `  SW Registered: ${swRegistered ? "✅ Active" : "❌ Inactive"}`,
+          "Installation Status:",
+          `  App Installed: ${isInstalled ? "Yes" : "No"}`,
+          `  Service Worker: ${swSupported ? "Supported" : "Not Supported"}`,
+          `  SW Registered: ${swRegistered ? "Active" : "Inactive"}`,
           "",
-          "🌐 Network Status:",
-          `  Connection: ${isOnline ? "🟢 Online" : "🔴 Offline"}`,
-          `  Offline Ready: ${swRegistered ? "✅ Yes" : "❌ No"}`,
+          "Network Status:",
+          `  Connection: ${isOnline ? "Online" : "Offline"}`,
+          `  Offline Ready: ${swRegistered ? "Yes" : "No"}`,
           "",
-          "🛠️ PWA Features:",
-          "  ✅ Web App Manifest",
-          "  ✅ Service Worker Caching",
-          "  ✅ Offline Fallback Page",
-          "  ✅ App Icons & Shortcuts",
-          "  ✅ Installable",
+          "PWA Features:",
+          "  ✓ Web App Manifest",
+          "  ✓ Service Worker Caching",
+          "  ✓ Offline Fallback Page",
+          "  ✓ App Icons & Shortcuts",
+          "  ✓ Installable",
           "",
-          "📋 Available Commands:",
+          "Available Commands:",
           "  pwa -i, --install    # Installation guide",
           "  pwa -o, --offline    # Offline capabilities info",
           "  pwa -s, --status     # This status page",
           "",
           isInstalled
-            ? "🎉 You're using the PWA! Enjoy the app experience."
-            : "💡 Install the app for the best experience: pwa -i",
+            ? "You're using the PWA! Enjoy the app experience."
+            : "Install the app for the best experience: pwa -i",
         ].join("\n"),
         timestamp: new Date(),
         id: generateId(),
@@ -805,10 +805,10 @@ export const pwaCommand: Command = {
     return {
       type: "info",
       content: [
-        "📱 PWA Quick Status",
+        "PWA Quick Status",
         "",
-        `Status: ${isInstalled ? "📱 Installed" : "🌐 Web Version"}`,
-        `Offline: ${swRegistered ? "✅ Ready" : "❌ Not Ready"}`,
+        `Status: ${isInstalled ? "Installed" : "Web Version"}`,
+        `Offline: ${swRegistered ? "Ready" : "Not Ready"}`,
         "",
         "Use 'pwa -s' for detailed status or 'pwa -i' for install guide",
       ].join("\n"),
@@ -824,49 +824,49 @@ export const aliasCommand: Command = {
   aliases: ["aliases"],
   async execute() {
     const aliasText = [
-      "🔗 Command Aliases",
+      "Command Aliases",
       "═".repeat(30),
       "",
       "Available command aliases:",
       "",
-      "📝 General Commands:",
+      "General Commands:",
       "  help     → h, ?, man, commands",
       "  about    → whoami, info, me",
       "  contact  → reach, connect, email",
       "  projects → portfolio, work, proj",
       "",
-      "🛠️ System Commands:",
+      "System Commands:",
       "  clear    → cls, clr, clean",
       "  status   → info, sys, system",
       "",
-      "🎨 Customization:",
+      "Customization:",
       "  theme    → color, style",
       "  font     → typeface, typography",
       "  pwa      → app, install, offline",
       "",
-      "🗺️ Skills Commands:",
+      "Skills Commands:",
       "  skills   → skill, roadmap, rm",
       "  progress → prog, status-skills",
       "",
-      "🌍 Language Commands:",
+      "Language Commands:",
       "  lang     → language, locale",
       "  langlist → languages, locales",
       "  langinfo → localeinfo",
       "",
-      "🖥️ Interactive Commands:",
+      "Interactive Commands:",
       "  demo     → project-demo, show-demo",
       "  github   → gh, git",
       "  tech-stack → tech, stack, technologies",
       "  location → loc, time, timezone, where",
       "",
-      "🚩 Command-Line Flags:",
+      "Command-Line Flags:",
       "  theme -l, --list              # List themes",
       "  theme -p, --preview <name>    # Preview theme",
       "  theme -c, --current           # Current theme info",
       "  font -l, --list               # List fonts",
       "  font -c, --current            # Current font info",
       "",
-      "💡 You can use any alias instead of the main command!",
+      "You can use any alias instead of the main command!",
       "   Examples: 'cls' = 'clear', 'h' = 'help'",
     ].join("\n");
 

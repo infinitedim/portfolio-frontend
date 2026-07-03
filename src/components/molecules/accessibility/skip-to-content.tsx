@@ -62,7 +62,7 @@ export function SkipToContent({
         onKeyDown={handleSkip}
         aria-label="Skip to main terminal content"
       >
-        ⏭️ Skip to terminal
+        Skip to terminal
       </a>
     );
   }
@@ -80,7 +80,7 @@ export function SkipToContent({
       onKeyDown={handleSkip}
       aria-label="Skip to main terminal content"
     >
-      ⏭️ Skip to terminal
+      Skip to terminal
     </a>
   );
 }

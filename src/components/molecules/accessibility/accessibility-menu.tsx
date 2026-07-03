@@ -4,6 +4,7 @@ import { type JSX, useState, useCallback } from "react";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 import { useTheme } from "@/hooks/use-theme";
 import type { ThemeName } from "@/types/theme";
+import { Check, X } from "lucide-react";
 
 export function AccessibilityMenu(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
@@ -170,7 +171,7 @@ export function AccessibilityMenu(): JSX.Element {
               }}
               aria-label={`${focusMode ? "Disable" : "Enable"} focus mode for better keyboard navigation`}
             >
-              {focusMode ? "✅ Focus Mode On" : "⭕ Focus Mode Off"}
+              {focusMode ? "Focus Mode On" : "Focus Mode Off"}
             </button>
             <p
               className="text-xs mt-1"
@@ -188,19 +189,27 @@ export function AccessibilityMenu(): JSX.Element {
           >
             <div className="flex items-center gap-2">
               <span
-                role="img"
-                aria-label={isHighContrast ? "Enabled" : "Disabled"}
+                aria-hidden="true"
+                className="flex items-center"
               >
-                {isHighContrast ? "✅" : "❌"}
+                {isHighContrast ? (
+                  <Check size={14} className="text-emerald-500" />
+                ) : (
+                  <X size={14} className="text-neutral-500" />
+                )}
               </span>
               <span>High Contrast: {isHighContrast ? "On" : "Off"}</span>
             </div>
             <div className="flex items-center gap-2">
               <span
-                role="img"
-                aria-label={isReducedMotion ? "Enabled" : "Disabled"}
+                aria-hidden="true"
+                className="flex items-center"
               >
-                {isReducedMotion ? "✅" : "❌"}
+                {isReducedMotion ? (
+                  <Check size={14} className="text-emerald-500" />
+                ) : (
+                  <X size={14} className="text-neutral-500" />
+                )}
               </span>
               <span>Reduced Motion: {isReducedMotion ? "On" : "Off"}</span>
             </div>

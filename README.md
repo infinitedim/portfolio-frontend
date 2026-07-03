@@ -1,8 +1,8 @@
-# 🚀 Terminal Portfolio - Where Code Meets Creativity
+# Terminal Portfolio - Where Code Meets Creativity
 
-> _"Why have a boring portfolio when you can have a TERMINAL portfolio?"_ 🤖
+> _"Why have a boring portfolio when you can have a TERMINAL portfolio?"_ 
 
-Welcome to the most epic way to showcase your skills! This isn't just another portfolio website - it's a full-blown terminal experience with enterprise-grade logging and monitoring that'll make visitors go "Whoa, this is actually pretty cool!" 😎
+Welcome to the most epic way to showcase your skills! This isn't just another portfolio website - it's a full-blown terminal experience with enterprise-grade logging and monitoring that'll make visitors go "Whoa, this is actually pretty cool!" 
 
 ## Dual entry (landing + gated terminal)
 
@@ -20,137 +20,137 @@ Copy `.env.example` → `.env.development` for local dev. Set `NEXT_PUBLIC_GATE_
 [![Grafana Badge](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.com/)
 [![Vercel Badge](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
-## 🆕 What's New in v2.0 (Major Update!)
+## What's New in v2.0 (Major Update!)
 
 This release brings **blazing-fast performance**, **enterprise-grade logging**, and **modern architecture**. Here's what changed:
 
-- 🦀 **Rust Backend** - High-performance backend with Axum web framework
-- ⚡ **Bun Runtime** - Lightning-fast JavaScript runtime and package manager
-- 📊 **Comprehensive Logging** - Loki + Grafana for log aggregation & monitoring
-- 📈 **Real-time Dashboards** - Application, errors, performance, and security metrics
-- 🎨 **Modern UI** - Built with Next.js 16 App Router and Tailwind CSS v4
-- 🔔 **Smart Alerting** - Automated alerts for errors, performance, and security
-  - 📁 **File-based Logging** - Structured logging with rotation and retention
+- **Rust Backend** - High-performance backend with Axum web framework
+- **Bun Runtime** - Lightning-fast JavaScript runtime and package manager
+- **Comprehensive Logging** - Loki + Grafana for log aggregation & monitoring
+- **Real-time Dashboards** - Application, errors, performance, and security metrics
+- **Modern UI** - Built with Next.js 16 App Router and Tailwind CSS v4
+- **Smart Alerting** - Automated alerts for errors, performance, and security
+  - **File-based Logging** - Structured logging with rotation and retention
 
-## 🎭 What's This All About?
+## What's This All About?
 
 Imagine if your portfolio had a baby with a terminal emulator, and that baby grew up to be absolutely awesome! That's exactly what this is.
 
 **Terminal Portfolio** transforms the traditional "scroll-through-my-resume" experience into an interactive command-line adventure. Your visitors don't just _read_ about your skills - they _discover_ them by typing commands like a real developer would!
 
-It's like giving your portfolio a personality transplant from "corporate brochure" to "hackerman extraordinaire" 🕶️
+It's like giving your portfolio a personality transplant from "corporate brochure" to "hackerman extraordinaire" 
 
-### 🎯 Why This Rocks
+### Why This Rocks
 
-- **🎪 Memorable**: Nobody forgets the portfolio that made them feel like a hacker
-- **🎮 Interactive**: Visitors actually _engage_ instead of just scrolling
-- **🤓 Geeky Cool**: Appeals to fellow developers and tech enthusiasts
-- **♿ Accessible**: Because cool shouldn't exclude anyone
-- **🎨 Customizable**: Make it uniquely _yours_
-- **🔐 Secure**: Enterprise-grade security out of the box
+- **Memorable**: Nobody forgets the portfolio that made them feel like a hacker
+- **Interactive**: Visitors actually _engage_ instead of just scrolling
+- **Geeky Cool**: Appeals to fellow developers and tech enthusiasts
+- **Accessible**: Because cool shouldn't exclude anyone
+- **Customizable**: Make it uniquely _yours_
+- **Secure**: Enterprise-grade security out of the box
 
 ## ✨ Features That'll Blow Your Mind
 
-### 🖥️ The Terminal Experience
+### The Terminal Experience
 
-- **⚡ Real Command Line Feel**: Complete with that satisfying cursor blink
+- **Real Command Line Feel**: Complete with that satisfying cursor blink
 - **✨ Smart Auto-completion**: Hit `Tab` and watch the magic happen
 - **📜 Command History**: Arrow keys work just like in your favorite terminal
-- **🤝 Typo Forgiveness**: Typed `hlep` instead of `help`? We got you!
+- **Typo Forgiveness**: Typed `hlep` instead of `help`? We got you!
 - **⌨️ Keyboard Shortcuts**: All the `Ctrl+` combos you know and love
-- **🛡️ Input Sanitization**: Protected against XSS and injection attacks
+- **Input Sanitization**: Protected against XSS and injection attacks
 
-### 🔐 Security Fort Knox
+### Security Fort Knox
 
 Because security isn't optional anymore:
 
-- **🔑 JWT Authentication**: Secure token-based auth with refresh tokens
-- **🛡️ CSRF Protection**: Cross-site request forgery prevention
-- **⏱️ Rate Limiting**: Redis-backed with in-memory fallback
-- **🧹 XSS Sanitization**: All inputs sanitized before rendering
-- **📝 Audit Logging**: Every security event tracked
-- **🔒 IP Allowlisting**: Admin access restricted by IP
-- **⏰ Token Blacklisting**: Revoked tokens can't be reused
+- **JWT Authentication**: Secure token-based auth with refresh tokens
+- **CSRF Protection**: Cross-site request forgery prevention
+- **️ Rate Limiting**: Redis-backed with in-memory fallback
+- **XSS Sanitization**: All inputs sanitized before rendering
+- **Audit Logging**: Every security event tracked
+- **IP Allowlisting**: Admin access restricted by IP
+- **Token Blacklisting**: Revoked tokens can't be reused
 
-### 🎨 Theme Paradise
+### Theme Paradise
 
-Choose your fighter! 🥊
+Choose your fighter! 
 
-- 🌿 **Matrix**: _"Welcome to the real world"_
+- **Matrix**: _"Welcome to the real world"_
 - 🌆 **Cyberpunk**: Neon dreams and digital nightmares
-- 🤍 **Minimal**: Clean, crisp, and classy
-- 📺 **Retro**: Vintage vibes with modern functionality
-- 🎭 **Custom**: Build your own masterpiece!
+- **Minimal**: Clean, crisp, and classy
+- **Retro**: Vintage vibes with modern functionality
+- **Custom**: Build your own masterpiece!
 
 **Pro Tip**: The theme editor is so good, you might spend more time customizing than coding! 😅
 
-### ♿ Accessibility Superpowers
+### Accessibility Superpowers
 
 Because awesome should be for everyone:
 
 - 🔊 **Screen Reader Friendly**: Every element speaks up when needed
 - ⌨️ **Keyboard Navigation**: Mouse? What mouse?
-- 🎨 **High Contrast Mode**: Easy on the eyes
+- **High Contrast Mode**: Easy on the eyes
 - 🐌 **Reduced Motion**: Respects your preferences
-- 🔍 **Zoom Friendly**: Scale up without breaking
+- **Zoom Friendly**: Scale up without breaking
 
 ### 📱 Mobile Magic
 
 Your terminal works everywhere:
 
-- 👆 **Touch Optimized**: Tap, swipe, and type with ease
+- **Touch Optimized**: Tap, swipe, and type with ease
 - 📱 **Responsive Design**: Looks great on everything from phones to ultrawide monitors
 - ⌨️ **Virtual Keyboard Support**: Mobile typing that doesn't suck
 
 ### 🛣️ Journey Visualization
 
-- 📊 **Interactive Roadmap**: Your learning journey in beautiful visuals
-- 🎯 **Skills Showcase**: Level up your skill display game
-- 📈 **Progress Tracking**: Show off that growth mindset
-- 🏆 **Achievement Unlocked**: Highlight your wins
-- 🔄 **Real-time API Integration**: Live data from roadmap.sh API
+- **Interactive Roadmap**: Your learning journey in beautiful visuals
+- **Skills Showcase**: Level up your skill display game
+- **Progress Tracking**: Show off that growth mindset
+- **Achievement Unlocked**: Highlight your wins
+- **Real-time API Integration**: Live data from roadmap.sh API
 - � **Automatic Fallback**: Graceful degradation if API is unavailable
 
-## 🛠️ Tech Stack Hall of Fame
+## Tech Stack Hall of Fame
 
 We only use the good stuff around here:
 
-### 🎨 Frontend
+### Frontend
 
 | Technology          | Why It's Awesome                                 | Version |
 | ------------------- | ------------------------------------------------ | ------- |
-| 🚀 **Next.js**      | The React framework that makes everything better | 16.x    |
+| **Next.js**      | The React framework that makes everything better | 16.x    |
 | 📘 **TypeScript**   | Because `any` is not a type strategy             | 5.9+    |
-| 🎨 **Tailwind CSS** | Utility-first CSS that sparks joy                | 4.1+    |
+| **Tailwind CSS** | Utility-first CSS that sparks joy                | 4.1+    |
 | 🧩 **shadcn/ui**    | Components so beautiful they make you cry        | Latest  |
-| 🎭 **Radix UI**     | Accessible primitives for the win                | Latest  |
+| **Radix UI**     | Accessible primitives for the win                | Latest  |
 
-### ⚙️ Backend
+### Backend
 
 | Technology      | Why It's Awesome                           | Version |
 | --------------- | ------------------------------------------ | ------- |
-| 🦀 **Rust**     | Blazing-fast, memory-safe backend          | 1.75+   |
-| 🚀 **Axum**     | Ergonomic and modular web framework        | 0.8     |
+| **Rust**     | Blazing-fast, memory-safe backend          | 1.75+   |
+| **Axum**     | Ergonomic and modular web framework        | 0.8     |
 | 🗄️ **SQLx**     | Async PostgreSQL with compile-time helpers | 0.8     |
-| 📝 **Tracing**  | Powerful structured logging                | Latest  |
-| 📊 **Loki**     | Scalable log aggregation system            | Latest  |
-| 🔍 **Promtail** | Log collection agent                       | Latest  |
-| 📈 **Grafana**  | Beautiful dashboards and visualization     | Latest  |
+| **Tracing**  | Powerful structured logging                | Latest  |
+| **Loki**     | Scalable log aggregation system            | Latest  |
+| **Promtail** | Log collection agent                       | Latest  |
+| **Grafana**  | Beautiful dashboards and visualization     | Latest  |
 
 ### 🏗️ Infrastructure
 
 | Technology    | Why It's Awesome                          | Version |
 | ------------- | ----------------------------------------- | ------- |
-| ⚡ **Bun**    | The fast runtime that makes npm look slow | 1.2+    |
-| 🚀 **Vercel** | Deploy faster than you can say "git push" | -       |
-| 🐳 **Docker** | Containerization for logging stack        | Latest  |
-| 📦 **Cargo**  | Rust package manager and build tool       | Latest  |
+| **Bun**    | The fast runtime that makes npm look slow | 1.2+    |
+| **Vercel** | Deploy faster than you can say "git push" | -       |
+| **Docker** | Containerization for logging stack        | Latest  |
+| **Cargo**  | Rust package manager and build tool       | Latest  |
 
 ## 🏗️ Architecture Overview
 
 ```text
 portfolio/
-├── 📁 portfolio-frontend/             # 🎨 Next.js Frontend
+├── portfolio-frontend/             # Next.js Frontend
 │   ├── src/
 │   │   ├── app/                       # App Router pages
 │   │   ├── components/                # React components
@@ -172,7 +172,7 @@ portfolio/
 │   ├── logs/                          # Frontend log files
 │   └── docs/                          # Documentation
 │
-├── 📁 portfolio-backend/              # 🦀 Rust Backend
+├── portfolio-backend/              # Rust Backend
 │   ├── src/
 │   │   ├── main.rs                    # Entry point
 │   │   ├── lib.rs                     # Library exports
@@ -203,21 +203,21 @@ portfolio/
     └── Environment configs
 ```
 
-## 🚀 Let's Get This Party Started
+## Let's Get This Party Started
 
 ### 🎬 Prerequisites
 
 Before we dive in, make sure you have:
 
-- 📦 **Bun 1.2+** - Fast JavaScript runtime and package manager
-- 🦀 **Rust 1.75+** - For backend development
+- **Bun 1.2+** - Fast JavaScript runtime and package manager
+- **Rust 1.75+** - For backend development
 - 🐙 **Git** - Obviously!
-- 🐳 **Docker & Docker Compose** - For logging stack (Loki, Grafana)
+- **Docker & Docker Compose** - For logging stack (Loki, Grafana)
 - ☕ **Coffee** - Not required but highly recommended
 
-### 🎯 Installation Speedrun
+### Installation Speedrun
 
-**Step 1**: Grab the code! 📥
+**Step 1**: Grab the code! 
 
 ```bash
 git clone https://github.com/infinitedim/portfolio.git
@@ -231,7 +231,7 @@ cd portfolio-frontend
 bun install
 ```
 
-**Step 3**: Set up the backend! 🦀
+**Step 3**: Set up the backend! 
 
 ```bash
 cd ../portfolio-backend
@@ -243,7 +243,7 @@ cargo build --release
 docker-compose -f docker-compose.logging.yml up -d
 ```
 
-**Step 4**: Configure environment! 🔐
+**Step 4**: Configure environment! 
 
 ```bash
 # Frontend (portfolio-frontend/.env.development)
@@ -271,15 +271,15 @@ bun run dev
 
 **Step 6**: Open your browser and navigate to:
 
-- 🌐 Frontend: `http://localhost:3000`
-- 📊 Grafana: `http://localhost:3001` (admin/admin)
-- 🔍 Loki API: `http://localhost:3100`
+- Frontend: `http://localhost:3000`
+- Grafana: `http://localhost:3001` (admin/admin)
+- Loki API: `http://localhost:3100`
 
 **Step 7**: Type `help` and prepare to be amazed! 🤯
 
-## 🎮 How to Play... I Mean, Use
+## How to Play... I Mean, Use
 
-### 🎯 Essential Commands
+### Essential Commands
 
 Your new superpowers:
 
@@ -288,15 +288,15 @@ Your new superpowers:
 | `help`         | Shows all commands                         | 🆘 Essential      |
 | `about`        | Learn about the awesome person behind this | 👋 Personal       |
 | `skills`       | Display your superpowers                   | 💪 Impressive     |
-| `projects`     | Show off your creations                    | 🚀 Portfolio Gold |
+| `projects`     | Show off your creations                    | Portfolio Gold |
 | `contact`      | How to reach the legend                    | 📞 Networking     |
 | `resume`       | The formal stuff                           | 📄 Professional   |
 | `roadmap`      | Your journey to greatness                  | 🗺️ Inspiring      |
-| `customize`    | Make it YOURS                              | 🎨 Fun            |
-| `clear`        | Clean slate                                | 🧹 Utility        |
-| `theme matrix` | Enter the Matrix                           | 🕶️ Epic           |
+| `customize`    | Make it YOURS                              | Fun            |
+| `clear`        | Clean slate                                | Utility        |
+| `theme matrix` | Enter the Matrix                           | Epic           |
 
-### 🎪 Pro Tips & Tricks
+### Pro Tips & Tricks
 
 **🔥 Hot Keys That'll Make You Look Cool:**
 
@@ -306,7 +306,7 @@ Your new superpowers:
 - `Ctrl+C` → Cancel current input (panic button)
 - `Ctrl+A/E` → Jump to start/end of line (efficiency!)
 
-**🎨 Theme Switching Like a DJ:**
+**Theme Switching Like a DJ:**
 
 ```bash
 theme matrix     # Welcome to the real world
@@ -315,16 +315,16 @@ theme minimal    # Less is more
 theme retro      # Vintage vibes
 ```
 
-## ⚙️ Environment Variables
+## Environment Variables
 
 ### Frontend (`portfolio-frontend/.env.development` — local; `.env` — Vercel production)
 
 ```env
-# 🌐 App Config
+# App Config
 NODE_ENV="development"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
-# 📝 Logging
+# Logging
 NEXT_PUBLIC_LOG_LEVEL="info"           # trace|debug|info|warn|error
 NEXT_PUBLIC_LOG_API_URL="/api/logs"    # Log ingestion endpoint
 
@@ -332,11 +332,11 @@ NEXT_PUBLIC_LOG_API_URL="/api/logs"    # Log ingestion endpoint
 # ROADMAP_EMAIL and ROADMAP_PASSWORD are configured server-side in portfolio-backend
 # NEXT_PUBLIC_ROADMAP_* secrets are not used
 
-# 📊 Analytics (Optional)
+# Analytics (Optional)
 NEXT_PUBLIC_GA_ID="G-XXXXXXXXXX"
 NEXT_PUBLIC_ANALYTICS_ENABLED="true"
 
-# 🔐 Monitoring (Optional)
+# Monitoring (Optional)
 SENTRY_DSN="your-sentry-dsn"
 SENTRY_ENVIRONMENT="development"
 ```
@@ -344,17 +344,17 @@ SENTRY_ENVIRONMENT="development"
 ### Backend (`portfolio-backend/.env.development` — local; `.env` — GCP production)
 
 ```env
-# 🦀 Backend Config
+# Backend Config
 ENVIRONMENT="development"              # production|staging|development
 LOG_LEVEL="debug"                      # trace|debug|info|warn|error
 RUST_LOG="info"                        # Rust logging level
 
-# 🌐 Server
+# Server
 HOST="0.0.0.0"
 PORT="8080"
 ```
 
-## 📊 Monitoring & Logging
+## Monitoring & Logging
 
 ### Logging Architecture
 
@@ -398,15 +398,15 @@ PORT="8080"
 - 🚨 High error rate (>5 errors/second)
 - 📉 Service down (no logs for 5 minutes)
 - 🐌 Slow response time (P95 >2s)
-- 🔐 Security events (failed logins, rate limit abuse)
+- Security events (failed logins, rate limit abuse)
 
-## 🧪 Testing
+## Testing
 
 ### Frontend Tests
 
 ```bash
 # Fast tests with Bun (recommended for development)
-bun test                    # ~14 seconds for full suite! ⚡
+bun test                    # ~14 seconds for full suite! 
 bun test --watch            # Watch mode
 
 # Comprehensive tests with Vitest (CI uses this)
@@ -418,7 +418,7 @@ bun run test:e2e
 bun run test:e2e:ui       # Interactive UI mode
 ```
 
-**⚡ Performance Note**: We use **Bun test** for local development (50x faster!) and **Vitest** for comprehensive CI/CD testing. Some advanced mocking features (vi.mock) are currently disabled in Bun but work in Vitest.
+**Performance Note**: We use **Bun test** for local development (50x faster!) and **Vitest** for comprehensive CI/CD testing. Some advanced mocking features (vi.mock) are currently disabled in Bun but work in Vitest.
 
 ### Backend Tests
 
@@ -430,28 +430,28 @@ TEST_DATABASE_URL=postgres://portfolio:portfolio@localhost:5432/portfolio_test \
 cargo test -- --nocapture
 ```
 
-## 🤝 Join the Revolution
+## Join the Revolution
 
 Want to make this even more awesome? We'd love your help!
 
-### 🎯 How to Contribute
+### How to Contribute
 
 1. Fork this bad boy 🍴
 2. Create your feature branch: `git checkout -b feature/mind-blowing-feature`
-3. Code something amazing 💻
-4. Test it thoroughly 🧪
+3. Code something amazing 
+4. Test it thoroughly 
 5. Commit with style: `git commit -m 'feat: add mind-blowing feature'`
 6. Push it: `git push origin feature/mind-blowing-feature`
 7. Open a PR and watch the magic happen ✨
 
 ### 📏 Code Standards
 
-- ✅ TypeScript strict mode
-- ✅ ESLint + Prettier formatting
-- ✅ Conventional commits (feat, fix, docs, etc.)
-- ✅ Tests for new features
-- ✅ No `console.log` in production code
-- ✅ Security-first mindset
+- TypeScript strict mode
+- ESLint + Prettier formatting
+- Conventional commits (feat, fix, docs, etc.)
+- Tests for new features
+- No `console.log` in production code
+- Security-first mindset
 
 ### 🐛 Found a Bug?
 
@@ -462,7 +462,7 @@ Don't panic! Just:
 3. Include screenshots if it helps
 4. Be nice (we're all human!)
 
-## 🚀 Deployment
+## Deployment
 
 ### Vercel (Recommended for Frontend)
 
@@ -508,7 +508,7 @@ The Rust backend can be deployed using Docker:
 - [ ] Set up log retention policies
 - [ ] Configure monitoring alerts
 
-## 🎨 API Reference for Developers
+## API Reference for Developers
 
 ### Backend API Endpoints
 
@@ -550,12 +550,12 @@ CommandRegistry.register({
   description: "Does something awesome",
   usage: "awesome [--super-awesome]",
   execute: async (args, context) => {
-    return "🎉 You are awesome!";
+    return "You are awesome!";
   },
 });
 ```
 
-### 🎨 Theme System
+### Theme System
 
 Create themes that would make Picasso jealous:
 
@@ -568,12 +568,12 @@ const myEpicTheme: Theme = {
     bg: "#000000",
     text: "#00ff00",
     accent: "#ff0080",
-    // Make it pop! 🎨
+    // Make it pop! 
   },
 };
 ```
 
-### 📝 Logging in Your Code
+### Logging in Your Code
 
 ```typescript
 import { clientLogger } from "@/lib/logger";
@@ -598,7 +598,7 @@ try {
 
 ## 📸 Screenshots & Demo
 
-### 🖥️ Desktop Experience
+### Desktop Experience
 
 _Coming soon: Screenshots that'll make you go "I need this!"_
 
@@ -606,11 +606,11 @@ _Coming soon: Screenshots that'll make you go "I need this!"_
 
 _Mobile screenshots that prove responsive design isn't dead_
 
-### 🎨 Theme Gallery
+### Theme Gallery
 
 _A rainbow of themes to choose from_
 
-### 🌐 Live Demo
+### Live Demo
 
 **👉 [Check out the live demo!](https://your-awesome-portfolio.vercel.app) 👈**
 
@@ -626,14 +626,14 @@ See the [LICENSE](LICENSE) file for the boring legal details.
 
 Massive thanks to these amazing projects:
 
-- 🎨 **shadcn/ui** - For components so beautiful they make designers weep
-- 🦀 **Rust Community** - For the amazing language and ecosystem
-- 📊 **Grafana Labs** - For open-source monitoring perfection
-- 🔍 **Loki** - For making log aggregation simple and powerful
-- ⚡ **Bun Team** - For the runtime that makes everything faster
+- **shadcn/ui** - For components so beautiful they make designers weep
+- **Rust Community** - For the amazing language and ecosystem
+- **Grafana Labs** - For open-source monitoring perfection
+- **Loki** - For making log aggregation simple and powerful
+- **Bun Team** - For the runtime that makes everything faster
 - 🌊 **Tailwind CSS** - For making CSS fun again
 - ⚛️ **Next.js Team** - For the framework that just works
-- 🚀 **Vercel** - For deployment that's faster than light
+- **Vercel** - For deployment that's faster than light
 - ☕ **Coffee** - For making all of this possible
 - 🌟 **You** - For checking out this project!
 
@@ -641,25 +641,25 @@ Massive thanks to these amazing projects:
 
 What's coming next? Glad you asked!
 
-- [ ] 🎮 **Game Mode**: Turn your portfolio into an actual game
-- [ ] 🤖 **AI Assistant**: Chat with an AI version of yourself
-- [ ] 🎵 **Sound Effects**: Because everything's better with sound
-- [ ] 📁 **File System**: Simulate a real file system
-- [ ] 🔌 **Plugin System**: Let others extend your terminal
-- [ ] 📊 **Enhanced Analytics**: More detailed visitor insights
-- [ ] 🔐 **Authentication**: Optional user accounts and personalization
-- [x] 🌍 **i18n Support**: 17+ languages with RTL support ✅
-- [x] 📱 **PWA**: Service worker, offline mode, installable ✅
-- [x] 📊 **Logging System**: Loki + Grafana monitoring ✅
-- [x] 🦀 **Rust Backend**: High-performance backend ✅
-- [x] ⚡ **Bun Runtime**: Fast JavaScript runtime ✅
+- [ ] **Game Mode**: Turn your portfolio into an actual game
+- [ ] **AI Assistant**: Chat with an AI version of yourself
+- [ ] **Sound Effects**: Because everything's better with sound
+- [ ] **File System**: Simulate a real file system
+- [ ] **Plugin System**: Let others extend your terminal
+- [ ] **Enhanced Analytics**: More detailed visitor insights
+- [ ] **Authentication**: Optional user accounts and personalization
+- [x] 🌍 **i18n Support**: 17+ languages with RTL support 
+- [x] 📱 **PWA**: Service worker, offline mode, installable 
+- [x] **Logging System**: Loki + Grafana monitoring 
+- [x] **Rust Backend**: High-performance backend 
+- [x] **Bun Runtime**: Fast JavaScript runtime 
 
 ## 🆘 Need Help?
 
 Stuck? Don't worry, we've all been there!
 
-1. 📖 **Check the docs** (you're reading them!)
-2. 🔍 **Search existing issues**
+1. **Check the docs** (you're reading them!)
+2. **Search existing issues**
 3. 💬 **Open a discussion**
 4. 🐛 **Create an issue**
 
@@ -669,7 +669,7 @@ Stuck? Don't worry, we've all been there!
 
 **Built with 💖, ☕, and way too much enthusiasm by [Dimas Saputra](https://github.com/infinitedim)**
 
-_"Code is poetry, and this portfolio is our sonnet"_ 📝
+_"Code is poetry, and this portfolio is our sonnet"_ 
 
 [![Star this repo](https://img.shields.io/github/stars/infinitedim/portfolio?style=social)](https://github.com/infinitedim/portfolio)
 [![Follow me](https://img.shields.io/github/followers/infinitedim?style=social)](https://github.com/infinitedim)

@@ -10,8 +10,8 @@ if (
 )
   (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("@/components/molecules/shared/optimized-image", () => ({
-  OptimizedImage: ({ alt }: { alt: string }) => (
+vi.mock("@/components/molecules/projects/project-card-image", () => ({
+  ProjectCardImage: ({ alt }: { alt: string }) => (
     <div data-testid="optimized-image">{alt}</div>
   ),
 }));
@@ -117,7 +117,7 @@ describe("ProjectCard", () => {
         />,
       );
 
-      expect(screen.getByText("⭐ FEATURED")).toBeInTheDocument();
+      expect(screen.getByText("FEATURED")).toBeInTheDocument();
     });
 
     it("should not render featured badge when featured is false", () => {
@@ -132,7 +132,7 @@ describe("ProjectCard", () => {
         />,
       );
 
-      expect(screen.queryByText("⭐ FEATURED")).not.toBeInTheDocument();
+      expect(screen.queryByText("FEATURED")).not.toBeInTheDocument();
     });
   });
 
@@ -256,7 +256,6 @@ describe("ProjectCard", () => {
 
       render(<ProjectCard project={projectWithoutImage} />);
 
-      expect(screen.getByText("🚀")).toBeInTheDocument();
       expect(screen.getByText("Project Preview")).toBeInTheDocument();
     });
   });

@@ -41,5 +41,3 @@ export function LetterGlitch(props: LetterGlitchProps): JSX.Element {
     );
   }
 }
-
-export default LetterGlitch;

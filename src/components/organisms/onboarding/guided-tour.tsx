@@ -588,10 +588,7 @@ export const GuidedTour = memo(function GuidedTour({
                 }}
               >
                 {isLastStep ? (
-                  <>
-                    <span>Get Started!</span>
-                    <span>🚀</span>
-                  </>
+                  <span>Get Started!</span>
                 ) : (
                   <>
                     <span>Next</span>

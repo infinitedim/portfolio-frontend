@@ -489,5 +489,3 @@ export function PWARegistration() {
     return null;
   }
 }
-
-export default PWARegistration;

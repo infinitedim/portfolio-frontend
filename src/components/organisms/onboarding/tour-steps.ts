@@ -13,7 +13,7 @@ export interface TourStep {
 export const TOUR_STEPS: TourStep[] = [
   {
     id: "welcome",
-    title: "Welcome to Terminal Portfolio! 🚀",
+    title: "Welcome to Terminal Portfolio!",
     content:
       "This isn't your typical portfolio. Here, you explore by typing commands — just like a real developer would. Let me show you around!",
     position: "center",
@@ -26,7 +26,7 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     id: "command-input",
-    title: "The Command Line ⌨️",
+    title: "The Command Line",
     content:
       "This is where the magic happens! Type commands here and press Enter to execute. Try typing 'help' to see all available commands.",
     target: "#command-input",
@@ -37,7 +37,7 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     id: "tab-completion",
-    title: "Smart Auto-Complete 💡",
+    title: "Smart Auto-Complete",
     content:
       "Start typing and press Tab — the terminal will suggest matching commands. Try typing 'sk' and hitting Tab!",
     target: "#command-input",
@@ -48,7 +48,7 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     id: "history",
-    title: "Command History 📜",
+    title: "Command History",
     content:
       "Navigate through your previous commands using arrow keys. After executing a few commands, try pressing the up arrow to recall them!",
     target: "#command-input",
@@ -62,7 +62,7 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     id: "essential-commands",
-    title: "Essential Commands 🎯",
+    title: "Essential Commands",
     content:
       "Here are the commands you'll use most often. Each one reveals something different about me!",
     position: "center",
@@ -76,7 +76,7 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     id: "keyboard-shortcuts",
-    title: "Power User Shortcuts ⚡",
+    title: "Power User Shortcuts",
     content:
       "Master these shortcuts to navigate like a pro! Use these to speed up your workflow.",
     position: "center",
@@ -91,7 +91,7 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     id: "complete",
-    title: "You're All Set! 🎉",
+    title: "You're All Set!",
     content:
       "You now know the basics! Start exploring by typing 'help' to see all available commands. Have fun!",
     position: "center",
@@ -99,7 +99,7 @@ export const TOUR_STEPS: TourStep[] = [
     tips: [
       "Type 'tour' to replay this guide",
       "Type 'help' for all commands",
-      "Enjoy exploring! 🚀",
+      "Enjoy exploring!",
     ],
   },
 ];

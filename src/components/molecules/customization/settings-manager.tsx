@@ -5,6 +5,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { CustomizationService } from "@/lib/services/customization-service";
 import type { CustomizationSettings } from "@/types/customization";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
+import { Settings, Save, RotateCcw } from "lucide-react";
 
 export function SettingsManager(): JSX.Element {
   const { themeConfig, theme } = useTheme();
@@ -64,7 +65,7 @@ export function SettingsManager(): JSX.Element {
               "src/hooks/useTheme.ts",
               "src/components/customization/SettingsManager.tsx",
             ]}
-            completionText="⚙️ Settings loaded!"
+            completionText="Settings loaded!"
           />
         </div>
       </div>
@@ -84,10 +85,10 @@ export function SettingsManager(): JSX.Element {
         <div className="flex items-center justify-between">
           <div>
             <h3
-              className="text-lg font-bold transition-colors duration-300"
+              className="text-lg font-bold transition-colors duration-300 flex items-center gap-1.5"
               style={{ color: themeConfig.colors.accent }}
             >
-              ⚙️ Customization Settings
+              <Settings size={18} /> Customization Settings
             </h3>
             <p
               className="text-sm opacity-75 transition-colors duration-300"
@@ -109,7 +110,9 @@ export function SettingsManager(): JSX.Element {
                     themeConfig.colors.success || themeConfig.colors.accent,
                 }}
               >
-                💾 Save Changes
+                <span className="flex items-center gap-1">
+                  <Save size={14} /> Save Changes
+                </span>
               </button>
             )}
             <button
@@ -121,7 +124,9 @@ export function SettingsManager(): JSX.Element {
                 color: themeConfig.colors.error || "#ff4444",
               }}
             >
-              🔄 Reset to Defaults
+              <span className="flex items-center gap-1">
+                <RotateCcw size={14} /> Reset to Defaults
+              </span>
             </button>
           </div>
         </div>

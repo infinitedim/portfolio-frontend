@@ -333,7 +333,7 @@ function TerminalContent({
               { path: "package.json", size: "3.4 KB" },
               { path: "next.config.js", size: "1.6 KB" },
             ]}
-            completionText="🚀 Terminal Portfolio Ready!"
+            completionText="Terminal Portfolio Ready!"
             autoStart={true}
             showSystemInfo={true}
             showProgressBar={true}

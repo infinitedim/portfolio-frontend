@@ -174,7 +174,7 @@ export const aliasCommand: Command = {
           "  th → theme               f → font",
           "  dark → theme matrix      light → theme terminal",
           "",
-          "💡 Aliases are automatically saved and persist between sessions.",
+          "Aliases are automatically saved and persist between sessions.",
         ].join("\n"),
       };
     }
@@ -196,12 +196,12 @@ export const aliasCommand: Command = {
       return {
         type: "success" as const,
         content: [
-          "🔗 Command Aliases",
+          "Command Aliases",
           "═".repeat(40),
           "",
           ...(defaultAliases.length > 0
             ? [
-                "📋 DEFAULT ALIASES:",
+                "DEFAULT ALIASES:",
                 ...defaultAliases.map(
                   ([alias, cmd]) => `  ${alias.padEnd(8)} → ${cmd}`,
                 ),
@@ -210,7 +210,7 @@ export const aliasCommand: Command = {
             : []),
           ...(customAliases.length > 0
             ? [
-                "⚙️  CUSTOM ALIASES:",
+                "CUSTOM ALIASES:",
                 ...customAliases.map(
                   ([alias, cmd]) => `  ${alias.padEnd(8)} → ${cmd}`,
                 ),
@@ -219,7 +219,7 @@ export const aliasCommand: Command = {
             : []),
           `Total: ${aliasEntries.length} aliases`,
           "",
-          "💡 Use 'alias -h' for help managing aliases.",
+          "Use 'alias -h' for help managing aliases.",
         ].join("\n"),
       };
     }
@@ -238,7 +238,7 @@ export const aliasCommand: Command = {
       return {
         type: "success" as const,
         content: [
-          "⚙️  Custom Aliases",
+          "Custom Aliases",
           "═".repeat(30),
           "",
           ...customAliases.map(
@@ -268,12 +268,12 @@ export const aliasCommand: Command = {
       if (success) {
         return {
           type: "success" as const,
-          content: `✅ Removed alias '${aliasToRemove}'`,
+          content: `Removed alias '${aliasToRemove}'`,
         };
       } else {
         return {
           type: "error" as const,
-          content: `❌ Cannot remove '${aliasToRemove}' (not found or is a default alias)`,
+          content: `Cannot remove '${aliasToRemove}' (not found or is a default alias)`,
         };
       }
     }
@@ -282,7 +282,7 @@ export const aliasCommand: Command = {
       aliasManager.resetToDefaults();
       return {
         type: "success" as const,
-        content: "✅ Aliases reset to defaults. All custom aliases removed.",
+        content: "Aliases reset to defaults. All custom aliases removed.",
       };
     }
 
@@ -295,12 +295,12 @@ export const aliasCommand: Command = {
       if (success) {
         return {
           type: "success" as const,
-          content: `✅ Created alias: '${alias}' → '${command}'`,
+          content: `Created alias: '${alias}' → '${command}'`,
         };
       } else {
         return {
           type: "error" as const,
-          content: `❌ Failed to create alias '${alias}' (invalid or recursive)`,
+          content: `Failed to create alias '${alias}' (invalid or recursive)`,
         };
       }
     }

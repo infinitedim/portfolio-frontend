@@ -10,5 +10,3 @@ export function WebVitalsMonitor(): null {
 
   return null;
 }
-
-export default WebVitalsMonitor;

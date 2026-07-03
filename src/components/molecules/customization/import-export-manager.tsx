@@ -5,6 +5,7 @@ import type React from "react";
 import { useState, useRef, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { CustomizationService } from "@/lib/services/customization-service";
+import { Zap, Info } from "lucide-react";
 
 interface ImportExportManagerProps {
   onUpdate: () => void;
@@ -264,9 +265,9 @@ export function ImportExportManager({
                       }}
                     >
                       {importResult.success > 0 &&
-                        `✅ Successfully imported ${importResult.success} themes`}
+                        `Successfully imported ${importResult.success} themes`}
                       {importResult.errors.length > 0 &&
-                        `❌ ${importResult.errors.length} errors occurred`}
+                        `${importResult.errors.length} errors occurred`}
                     </div>
                     {importResult.errors.length > 0 && (
                       <details className="mt-2">
@@ -297,7 +298,9 @@ export function ImportExportManager({
             className="text-lg font-bold mb-4"
             style={{ color: themeConfig.colors.accent }}
           >
-            🚀 Quick Actions
+            <span className="flex items-center gap-1.5">
+              <Zap size={18} /> Quick Actions
+            </span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
@@ -375,7 +378,9 @@ export function ImportExportManager({
             className="font-medium mb-2"
             style={{ color: themeConfig.colors.accent }}
           >
-            💡 Tips & Best Practices
+            <span className="flex items-center gap-1.5">
+              <Info size={16} /> Tips & Best Practices
+            </span>
           </h4>
           <div className="text-sm space-y-2 opacity-75">
             <div>

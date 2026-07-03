@@ -57,15 +57,15 @@ function listProjects(): CommandOutput {
 
   const projectList = projects
     .map((project, index) => {
-      const demoStatus = project.demoUrl ? "🟢" : "🔴";
-      const featured = project.featured ? "⭐" : "";
-      return `${index + 1}. ${demoStatus} ${project.name} ${featured}\n   📝 ${project.description}\n   🏷️  ${project.technologies.join(", ")}\n   🆔 ${project.id}`;
+      const demoStatus = project.demoUrl ? "(demo)" : "(no demo)";
+      const featured = project.featured ? " [featured]" : "";
+      return `${index + 1}. ${demoStatus} ${project.name}${featured}\n   Description: ${project.description}\n   Technologies: ${project.technologies.join(", ")}\n   ID:           ${project.id}`;
     })
     .join("\n\n");
 
   return {
     type: "success",
-    content: `📋 Available Projects:\n\n${projectList}\n\n💡 Use 'demo open <project-id>' to launch a demo`,
+    content: `Available Projects:\n\n${projectList}\n\nUse 'demo open <project-id>' to launch a demo`,
     timestamp: new Date(),
     id: generateId(),
   };
@@ -109,7 +109,7 @@ function openProject(projectId: string): CommandOutput {
 
   return {
     type: "success",
-    content: `🚀 Opening demo for ${project.name}...`,
+    content: `Opening demo for ${project.name}...`,
     timestamp: new Date(),
     id: generateId(),
   };
@@ -139,14 +139,14 @@ function searchProjects(query: string): CommandOutput {
 
   const resultList = results
     .map((project, index) => {
-      const demoStatus = project.demoUrl ? "🟢" : "🔴";
-      return `${index + 1}. ${demoStatus} ${project.name}\n   📝 ${project.description}\n   🏷️  ${project.technologies.join(", ")}\n   🆔 ${project.id}`;
+      const demoStatus = project.demoUrl ? "(demo)" : "(no demo)";
+      return `${index + 1}. ${demoStatus} ${project.name}\n   Description: ${project.description}\n   Technologies: ${project.technologies.join(", ")}\n   ID:           ${project.id}`;
     })
     .join("\n\n");
 
   return {
     type: "success",
-    content: `🔍 Search Results for '${query}':\n\n${resultList}\n\n💡 Use 'demo open <project-id>' to launch a demo`,
+    content: `Search Results for '${query}':\n\n${resultList}\n\nUse 'demo open <project-id>' to launch a demo`,
     timestamp: new Date(),
     id: generateId(),
   };
@@ -167,7 +167,7 @@ function listTechnologies(): CommandOutput {
 
   return {
     type: "success",
-    content: `🏷️  Technologies used in projects:\n\n${technologies.join(", ")}\n\n💡 Use 'demo search <technology>' to find projects using a specific technology`,
+    content: `Technologies used in projects:\n\n${technologies.join(", ")}\n\nUse 'demo search <technology>' to find projects using a specific technology`,
     timestamp: new Date(),
     id: generateId(),
   };
@@ -186,7 +186,7 @@ function listCategories(): CommandOutput {
 
   return {
     type: "success",
-    content: `📂 Project Categories:\n\n${categoryList}\n\n💡 Use 'demo search <category>' to find projects in a specific category`,
+    content: `Project Categories:\n\n${categoryList}\n\nUse 'demo search <category>' to find projects in a specific category`,
     timestamp: new Date(),
     id: generateId(),
   };
@@ -195,7 +195,7 @@ function listCategories(): CommandOutput {
 function showDemoHelp(): CommandOutput {
   return {
     type: "info",
-    content: `🖥️  Demo Command Help
+    content: `Demo Command Help
 
 Available commands:
 • demo list                    - List all available projects
@@ -210,7 +210,7 @@ Examples:
 • demo search react
 • demo search api
 
-💡 Use 'demo list' to see all available projects with their IDs`,
+Use 'demo list' to see all available projects with their IDs`,
     timestamp: new Date(),
     id: generateId(),
   };

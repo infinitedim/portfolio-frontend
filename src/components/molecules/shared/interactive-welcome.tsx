@@ -61,7 +61,7 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
           className="text-lg font-bold mb-2"
           style={{ color: themeConfig.colors.accent }}
         >
-          🚀 Welcome to My Terminal Portfolio!
+          Welcome to My Terminal Portfolio!
         </div>
         <div
           className="text-sm opacity-75"

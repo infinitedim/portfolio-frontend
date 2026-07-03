@@ -7,6 +7,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { useFont } from "@/hooks/use-font";
 import { CustomizationService } from "@/lib/services/customization-service";
 import { TerminalDropdown } from "@/components/atoms/terminal/terminal-dropdown";
+import { Check, Save, Upload, Loader2, Dices } from "lucide-react";
 import type { CustomFont } from "@/types/customization";
 import type { FontName } from "@/types/font";
 
@@ -266,7 +267,17 @@ export function FontManager({
                   color: themeConfig.colors.success,
                 }}
               >
-                {isUploading ? "⏳ Uploading..." : "📁 Upload"}
+                <span className="flex items-center gap-1">
+                  {isUploading ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" /> Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={14} /> Upload
+                    </>
+                  )}
+                </span>
               </button>
             </div>
 
@@ -337,7 +348,17 @@ export function FontManager({
                   color: themeConfig.colors.bg,
                 }}
               >
-                {isGeneratingRandom ? "⏳ Picking..." : "🎲 Pick Random Font"}
+                <span className="flex items-center gap-1 justify-center">
+                  {isGeneratingRandom ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" /> Picking...
+                    </>
+                  ) : (
+                    <>
+                      <Dices size={14} /> Pick Random Font
+                    </>
+                  )}
+                </span>
               </button>
             </div>
           </div>
@@ -497,7 +518,9 @@ export function FontManager({
                       color: themeConfig.colors.success,
                     }}
                   >
-                    ✅ Apply Font
+                    <span className="flex items-center gap-1">
+                      <Check size={14} /> Apply Font
+                    </span>
                   </button>
                   <button
                     onClick={() => handleSaveFont(selectedFont)}
@@ -509,7 +532,9 @@ export function FontManager({
                     }}
                     title="Save as current font and keep dialog open"
                   >
-                    💾 Save as Current Font
+                    <span className="flex items-center gap-1">
+                      <Save size={14} /> Save as Current Font
+                    </span>
                   </button>
                 </div>
               </div>
@@ -640,7 +665,7 @@ export function FontManager({
                         <span>npm install --save-dev typescript</span>
                       </div>
                       <div style={{ color: themeConfig.colors.success }}>
-                        ✅ Package installed successfully
+                        Package installed successfully
                       </div>
                       <div className="flex items-center gap-2">
                         <span style={{ color: themeConfig.colors.prompt }}>

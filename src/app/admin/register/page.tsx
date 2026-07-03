@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
 import { authService } from "@/lib/auth/auth-service";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminRegisterPage() {
   const { themeConfig } = useTheme();
@@ -194,7 +195,7 @@ export default function AdminRegisterPage() {
                   color: themeConfig.colors.error,
                 }}
               >
-                ⚠️ {error}
+                {error}
               </div>
             )}
 
@@ -329,7 +330,7 @@ export default function AdminRegisterPage() {
                       className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
                       style={{ color: themeConfig.colors.muted }}
                     >
-                      {showPassword ? "👁️" : "👁️‍🗨️"}
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
                 </div>

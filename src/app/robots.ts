@@ -57,6 +57,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Googlebot-Image",
+        // TODO: /avatar.jpg is referenced here but missing from public/ — upload the file or remove this reference
         allow: ["/", "/projects", "/images/", "/og-image.png", "/avatar.jpg"],
         disallow: ["/api/", "/admin/", "/private/", "/_next/", "/sw.js"],
         crawlDelay: 1,

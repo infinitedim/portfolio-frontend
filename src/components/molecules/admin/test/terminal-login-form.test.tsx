@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { TerminalLoginForm } from "../terminal-login-form";
@@ -50,11 +50,6 @@ describe("TerminalLoginForm", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    vi.useFakeTimers();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
   });
 
   describe("Rendering", () => {
@@ -102,7 +97,7 @@ describe("TerminalLoginForm", () => {
         />,
       );
 
-      const submitButton = screen.getByText("Submit");
+      const submitButton = screen.getByRole("button", { name: /Submit/i });
       expect(submitButton).toBeInTheDocument();
     });
 
@@ -176,7 +171,7 @@ describe("TerminalLoginForm", () => {
       const passwordInput = screen.getByPlaceholderText("Enter your password");
       fireEvent.change(passwordInput, { target: { value: "password" } });
 
-      const toggleButton = screen.getByRole("button", { name: /👁️|🙈/ });
+      const toggleButton = screen.getByRole("button", { name: /Toggle password visibility/i });
       expect(toggleButton).toBeInTheDocument();
     });
 
@@ -195,7 +190,7 @@ describe("TerminalLoginForm", () => {
       const passwordInput = screen.getByPlaceholderText("Enter your password");
       fireEvent.change(passwordInput, { target: { value: "password" } });
 
-      const toggleButton = screen.getByRole("button", { name: /👁️|🙈/ });
+      const toggleButton = screen.getByRole("button", { name: /Toggle password visibility/i });
       const initialType = (passwordInput as HTMLInputElement).type;
 
       fireEvent.click(toggleButton);
@@ -288,7 +283,7 @@ describe("TerminalLoginForm", () => {
 
       const emailInput = screen.getByPlaceholderText("Enter your email");
       const passwordInput = screen.getByPlaceholderText("Enter your password");
-      const submitButton = screen.getByText("Submit");
+      const submitButton = screen.getByRole("button", { name: /Submit/i });
 
       fireEvent.change(emailInput, { target: { value: "test@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "password123" } });
@@ -318,7 +313,7 @@ describe("TerminalLoginForm", () => {
 
       const emailInput = screen.getByPlaceholderText("Enter your email");
       const passwordInput = screen.getByPlaceholderText("Enter your password");
-      const submitButton = screen.getByText("Submit");
+      const submitButton = screen.getByRole("button", { name: /Submit/i });
 
       fireEvent.change(emailInput, { target: { value: "test@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "password" } });
@@ -348,7 +343,7 @@ describe("TerminalLoginForm", () => {
 
       const emailInput = screen.getByPlaceholderText("Enter your email");
       const passwordInput = screen.getByPlaceholderText("Enter your password");
-      const submitButton = screen.getByText("Submit");
+      const submitButton = screen.getByRole("button", { name: /Submit/i });
 
       fireEvent.change(emailInput, { target: { value: "test@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "wrong" } });
@@ -380,7 +375,7 @@ describe("TerminalLoginForm", () => {
 
       const emailInput = screen.getByPlaceholderText("Enter your email");
       const passwordInput = screen.getByPlaceholderText("Enter your password");
-      const submitButton = screen.getByText("Submit");
+      const submitButton = screen.getByRole("button", { name: /Submit/i });
 
       fireEvent.change(emailInput, { target: { value: "test@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "password" } });
@@ -403,7 +398,7 @@ describe("TerminalLoginForm", () => {
         />,
       );
 
-      const submitButton = screen.getByText("Submit");
+      const submitButton = screen.getByRole("button", { name: /Submit/i });
       expect(submitButton).toBeDisabled();
     });
   });
@@ -428,7 +423,7 @@ describe("TerminalLoginForm", () => {
 
       const emailInput = screen.getByPlaceholderText("Enter your email");
       const passwordInput = screen.getByPlaceholderText("Enter your password");
-      const submitButton = screen.getByText("Submit");
+      const submitButton = screen.getByRole("button", { name: /Submit/i });
 
       fireEvent.change(emailInput, { target: { value: "test@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "wrong" } });

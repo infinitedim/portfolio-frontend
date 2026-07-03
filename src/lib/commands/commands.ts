@@ -5,11 +5,11 @@ import { SOCIAL_LINKS } from "@/lib/data/social-links";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 
 const SOCIAL_ICONS: Record<string, string> = {
-  github: "🐙",
-  linkedin: "💼",
-  twitter: "🐦",
-  devto: "📝",
-  stackoverflow: "📚",
+  github: "[GitHub]",
+  linkedin: "[LinkedIn]",
+  twitter: "[Twitter]",
+  devto: "[Dev.to]",
+  stackoverflow: "[StackOverflow]",
 };
 
 export const resumeCommand: Command = {
@@ -22,7 +22,7 @@ export const resumeCommand: Command = {
     if (ArgumentParser.hasFlag(parsed, "h", "help")) {
       return {
         type: "info",
-        content: `📄 Resume Command Help
+        content: `Resume Command Help
 
 Usage: resume [options]
 
@@ -57,44 +57,44 @@ Examples:
     }
 
     const resumeContent = [
-      "📄 RESUME",
+      "RESUME",
       "═".repeat(60),
       "",
-      "👤 PERSONAL INFORMATION",
+      "PERSONAL INFORMATION",
       "   Name: Full-Stack Developer",
       "   Email: developer@portfolio.com",
       "   Location: Global Remote",
       "   Portfolio: https://infinitedim.vercel.app",
       "",
-      "🎯 PROFESSIONAL SUMMARY",
+      "PROFESSIONAL SUMMARY",
       "   Passionate full-stack developer with expertise in modern web",
       "   technologies. Specialized in React, Next.js, TypeScript, and",
       "   Node.js. Strong focus on performance, accessibility, and UX.",
       "",
-      "💼 EXPERIENCE",
+      "EXPERIENCE",
       "   Full-Stack Developer (2021 - Present)",
       "   • Developed scalable web applications using React & Next.js",
       "   • Built robust APIs with Rust, Axum, and PostgreSQL (SQLx)",
       "   • Implemented CI/CD pipelines and cloud deployments",
       "   • Optimized applications for performance and accessibility",
       "",
-      "🛠️ TECHNICAL SKILLS",
+      "TECHNICAL SKILLS",
       "   Frontend: React, Next.js, TypeScript, Tailwind CSS",
       "   Backend:  Rust, Axum, PostgreSQL, SQLx",
       "   DevOps:   Docker, AWS, Vercel, CI/CD",
       "   Tools:    Git, Webpack, Vite, ESLint, Prettier",
       "",
-      "🎓 EDUCATION & CERTIFICATIONS",
+      "EDUCATION & CERTIFICATIONS",
       "   • Computer Science Degree",
       "   • AWS Certified Developer",
       "   • React Advanced Patterns Certification",
       "",
-      "🚀 FEATURED PROJECTS",
+      "FEATURED PROJECTS",
       "   Terminal Portfolio - Interactive developer portfolio",
       "   E-Commerce Platform - Full-stack online store",
       "   Task Management App - Collaborative project tool",
       "",
-      "💡 Use 'resume --download' to get PDF version",
+      "Use 'resume --download' to get PDF version",
     ].join("\n");
 
     return {
@@ -143,7 +143,7 @@ Examples:
       })),
       {
         platform: "Portfolio",
-        icon: "🌐",
+        icon: "[Web]",
         url: getSiteUrl(),
         description: "Standard portfolio site",
       },
@@ -159,14 +159,14 @@ Examples:
 
       return {
         type: "success",
-        content: "🚀 Opening all social links in new tabs...",
+        content: "Opening all social links in new tabs...",
         timestamp: new Date(),
         id: generateId(),
       };
     }
 
     const content = [
-      "🔗 SOCIAL LINKS",
+      "SOCIAL LINKS",
       "═".repeat(60),
       "",
       ...socialLinks
@@ -177,8 +177,8 @@ Examples:
           "",
         ])
         .flat(),
-      "💡 Use 'social --open' to open all links in browser",
-      "💡 Click any link above to visit directly",
+      "Use 'social --open' to open all links in browser",
+      "Click any link above to visit directly",
     ].join("\n");
 
     return {
@@ -202,7 +202,7 @@ export const shortcutsCommand: Command = {
     return {
       type: "success",
       content: [
-        "⌨️  KEYBOARD SHORTCUTS",
+        "KEYBOARD SHORTCUTS",
         "═".repeat(40),
         "",
         "Opening shortcuts panel…",
@@ -252,66 +252,66 @@ Examples:
     if (ArgumentParser.hasFlag(parsed, "f", "form")) {
       return {
         type: "success",
-        content: `📝 INTERACTIVE CONTACT FORM
+        content: `INTERACTIVE CONTACT FORM
 ═══════════════════════════════════════════════════════════
 
-🚀 Ready to start a conversation? Let's connect!
+Ready to start a conversation? Let's connect!
 
-📧 Email: dragdimas9@gmail.com
-📱 Response Time: Usually within 24 hours
-🌍 Timezone: Available for global collaboration
+Email: dragdimas9@gmail.com
+Response Time: Usually within 24 hours
+Timezone: Available for global collaboration
 
 ┌─ QUICK CONTACT OPTIONS ─────────────────────────────────┐
 │                                                         │
-│  📧 Email:     mailto:dragdimas9@gmail.com        │
-│  💼 LinkedIn:  https://linkedin.com/in/infinitedim      │
-│  🐦 Twitter:   https://twitter.com/yourblooo          │
-│  📞 Schedule:  https://infinitedim.vercel.app/schedule         │
+│  Email:     mailto:dragdimas9@gmail.com        │
+│  LinkedIn:  https://linkedin.com/in/infinitedim      │
+│  Twitter:   https://twitter.com/yourblooo          │
+│  Schedule:  https://infinitedim.vercel.app/schedule         │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 
-💡 For project inquiries, please include:
+For project inquiries, please include:
    • Project scope and timeline
    • Technology requirements
    • Budget range (if applicable)
    • Preferred communication method
 
-🎯 I specialize in:
+I specialize in:
    • Full-stack web development
    • React/Next.js applications
    • Node.js backend systems
    • DevOps and cloud deployment
    • Performance optimization
 
-Let's build something amazing together! 🚀`,
+Let's build something amazing together!`,
         timestamp: new Date(),
         id: generateId(),
       };
     }
 
     const contactInfo = [
-      "📧 CONTACT INFORMATION",
+      "CONTACT INFORMATION",
       "═".repeat(60),
       "",
-      "👋 Let's connect and build something amazing!",
+      "Let's connect and build something amazing!",
       "",
-      "📧 Email:     dragdimas9@gmail.com",
-      "💼 LinkedIn:  https://linkedin.com/in/infinitedim",
-      "🐦 Twitter:   https://twitter.com/infinitedim",
-      "🐙 GitHub:    https://github.com/infinitedim",
+      "Email:     dragdimas9@gmail.com",
+      "LinkedIn:  https://linkedin.com/in/infinitedim",
+      "Twitter:   https://twitter.com/infinitedim",
+      "GitHub:    https://github.com/infinitedim",
       "",
-      "🌍 Location:  Available for remote work globally",
-      "🕒 Timezone:  Flexible hours for collaboration",
-      "📱 Response:  Usually within 24 hours",
+      "Location:  Available for remote work globally",
+      "Timezone:  Flexible hours for collaboration",
+      "Response:  Usually within 24 hours",
       "",
-      "🚀 SPECIALIZATIONS",
+      "SPECIALIZATIONS",
       "   • Full-stack web development",
       "   • React & Next.js applications",
       "   • Rust / Axum API backends",
       "   • Cloud deployment & DevOps",
       "   • Performance optimization",
       "",
-      "💡 Use 'contact --form' for an interactive contact form",
+      "Use 'contact --form' for an interactive contact form",
     ].join("\n");
 
     return {
@@ -329,43 +329,43 @@ export const easterEggsCommand: Command = {
   aliases: ["eggs", "secrets", "hidden"],
   async execute(): Promise<CommandOutput> {
     const easterEggs = [
-      "🥚 EASTER EGGS & HIDDEN FEATURES",
+      "EASTER EGGS & HIDDEN FEATURES",
       "═".repeat(60),
       "",
-      "🎉 You found the secret commands! Here are some fun discoveries:",
+      "You found the secret commands! Here are some fun discoveries:",
       "",
-      "🎮 FUN COMMANDS",
+      "FUN COMMANDS",
       "   matrix          - Enter the Matrix mode",
       "   konami          - Try the Konami code",
       "   dance           - Make the terminal dance",
       "   fortune         - Get a developer fortune",
       "   weather         - Check the weather in Terminal City",
       "",
-      "🎨 HIDDEN THEMES",
+      "HIDDEN THEMES",
       "   hacker          - Elite hacker theme",
       "   rainbow         - Colorful rainbow theme",
       "   neon            - Neon cyberpunk theme",
       "   vintage         - Retro computing theme",
       "",
-      "🔮 SECRET SHORTCUTS",
+      "SECRET SHORTCUTS",
       "   Type 'sudo rm -rf /' for a surprise",
       "   Try 'ls -la' for hidden files",
       "   Use 'whoami' to discover your identity",
       "   Type 'ps aux' to see running processes",
       "",
-      "🎵 AUDIO EASTER EGGS",
+      "AUDIO EASTER EGGS",
       "   rickroll        - Classic internet culture",
       "   synthwave       - Retro synthwave vibes",
       "   dial-up         - Nostalgic internet sounds",
       "",
-      "🚀 DEVELOPER JOKES",
+      "DEVELOPER JOKES",
       "   joke            - Random programming joke",
       "   xkcd            - Get a random XKCD comic reference",
       "   stackoverflow   - Ask Stack Overflow",
       "",
-      "💡 Some of these might actually work... try them! 😉",
+      "Some of these might actually work... try them!",
       "",
-      "🎯 PRO TIP: Type 'help --secret' for more hidden commands",
+      "PRO TIP: Type 'help --secret' for more hidden commands",
     ].join("\n");
 
     return {

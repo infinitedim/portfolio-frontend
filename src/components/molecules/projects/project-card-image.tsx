@@ -3,6 +3,7 @@
 import { JSX, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils/utils";
+import { Folder } from "lucide-react";
 
 interface ProjectCardImageProps {
   src: string;
@@ -47,8 +48,10 @@ export function ProjectCardImage({
           className,
         )}
       >
-        <div className="text-center">
-          <div className="mb-2 text-4xl">🚀</div>
+        <div className="text-center flex flex-col items-center">
+          <div className="mb-2 text-terminal-muted">
+            <Folder size={36} className="stroke-[1.5]" />
+          </div>
           <div className="text-sm text-terminal-muted">Project Preview</div>
         </div>
       </div>

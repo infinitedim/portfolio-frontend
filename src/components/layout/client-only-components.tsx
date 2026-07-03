@@ -4,12 +4,12 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 
 const PWARegistration = dynamic(
-  () => import("../organisms/pwa/pwa-registration"),
+  () => import("../organisms/pwa/pwa-registration").then((mod) => mod.PWARegistration),
   { ssr: false },
 );
 
 const WebVitalsMonitor = dynamic(
-  () => import("../monitoring/web-vitals-monitor"),
+  () => import("../monitoring/web-vitals-monitor").then((mod) => mod.WebVitalsMonitor),
   { ssr: false },
 );
 

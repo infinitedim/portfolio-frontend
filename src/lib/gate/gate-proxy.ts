@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 
-export const GATE_COOKIE_NAMES = ["gate_progress", "portfolio_gate"] as const;
+const GATE_COOKIE_NAMES = ["gate_progress", "portfolio_gate"] as const;
 
 type GateCookieName = (typeof GATE_COOKIE_NAMES)[number];
 

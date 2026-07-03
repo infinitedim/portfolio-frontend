@@ -309,7 +309,7 @@ export function TerminalProvider({
         startTour();
         addToHistory(command, {
           ...output,
-          content: "🚀 Starting guided tour...",
+          content: "Starting guided tour...",
           type: "success",
         });
         setCurrentInput("");
@@ -325,7 +325,7 @@ export function TerminalProvider({
         window.dispatchEvent(new CustomEvent("terminal:open-customization"));
         addToHistory(command, {
           ...output,
-          content: "🎨 Opening customization manager...",
+          content: "Opening customization manager...",
           type: "success",
         });
         showNotification("Customization manager opened!", "success");
@@ -350,9 +350,9 @@ export function TerminalProvider({
             addToHistory(command, {
               ...output,
               content: [
-                `✅ Theme changed to "${themeName}"`,
-                "💾 Theme preference saved automatically.",
-                "🎨 Theme applied instantly!",
+                `Theme changed to "${themeName}"`,
+                "Theme preference saved automatically.",
+                "Theme applied instantly!",
               ].join("\n"),
               type: "success",
             });
@@ -363,9 +363,9 @@ export function TerminalProvider({
             addToHistory(command, {
               ...output,
               content: [
-                `❌ Failed to change theme to "${themeName}"`,
-                `🔍 Error: ${errorMsg}`,
-                "💡 Use 'theme -l' to list available themes.",
+                `Failed to change theme to "${themeName}"`,
+                `Error: ${errorMsg}`,
+                "Use 'theme -l' to list available themes.",
               ].join("\n"),
               type: "error",
             });
@@ -393,15 +393,14 @@ export function TerminalProvider({
           addToHistory(command, {
             ...output,
             content: [
-              `✅ Font changed to "${fontName}"`,
+              `Font changed to "${fontName}"`,
               "",
-              `🔤 Applied ${fontConfig?.name ?? "Unknown"} typeface`,
-              `🔤 Family: ${fontConfig?.family ?? "Unknown"}`,
-              `${fontConfig?.ligatures ? "✨ Font ligatures enabled for enhanced readability" : "📝 Standard font rendering"}`,
-              "💾 Font preference saved automatically",
+              `Applied ${fontConfig?.name ?? "Unknown"} typeface`,
+              `Family: ${fontConfig?.family ?? "Unknown"}`,
+              `${fontConfig?.ligatures ? "Font ligatures enabled for enhanced readability" : "Standard font rendering"}`,
+              "Font preference saved automatically",
               "",
-              "💡 Quick commands:",
-              "   font -l    # List all fonts",
+              "Use 'font -l' for a detailed list",
               "   font -c    # Show current font info",
               "   customize  # Open customization manager",
             ].join("\n"),
@@ -435,45 +434,45 @@ export function TerminalProvider({
         const currentMetrics = themeMetrics;
 
         const statusInfo = [
-          "🖥️  Terminal Portfolio System Status",
+          "Terminal Portfolio System Status",
           "═".repeat(60),
           "",
-          `📊 Status: ${Math.random() > 0.5 ? "🟢 Online" : "🟡 Development"}`,
-          `🎨 Current Theme: ${themeConfig?.name ?? "Unknown"} (${theme})`,
-          `🔤 Current Font: ${fontConfig?.name ?? "Unknown"}${fontConfig?.ligatures ? " (ligatures)" : ""}`,
-          `⏰ Session Started: ${uptime}`,
-          `💻 Platform: ${mounted && typeof window !== "undefined" ? window.navigator.platform : "Server"}`,
+          `Status: ${Math.random() > 0.5 ? "Online" : "Development"}`,
+          `Theme: ${themeConfig?.name ?? "Unknown"} (${theme})`,
+          `Font: ${fontConfig?.name ?? "Unknown"}${fontConfig?.ligatures ? " (ligatures)" : ""}`,
+          `Session Started: ${uptime}`,
+          `Platform: ${mounted && typeof window !== "undefined" ? window.navigator.platform : "Server"}`,
           "",
-          "📈 Command Analytics:",
+          "Command Analytics:",
           `   • Total commands executed: ${analytics.totalCommands}`,
           `   • Unique commands used: ${analytics.uniqueCommands}`,
           `   • Success rate: ${analytics.successRate.toFixed(1)}%`,
           `   • Most used: ${analytics.topCommands[0]?.command ?? "N/A"}`,
           "",
-          "⚡ Performance Metrics:",
+          "Performance Metrics:",
           `   • Theme switches: ${perfReport.totalSwitches}`,
           `   • Average switch time: ${perfReport.averageTime.toFixed(1)}ms`,
           `   • Current theme render: ${currentMetrics.renderTime.toFixed(1)}ms`,
           `   • Fastest switch: ${perfReport.fastestSwitch.toFixed(1)}ms`,
           `   • Most used theme: ${currentMetrics.popularThemes[0]?.theme ?? theme}`,
           "",
-          "🎨 Theme System:",
+          "Theme System:",
           `   • ${availableThemes?.length ?? 0} built-in themes available`,
           `   • ${customThemes} custom themes created`,
           "   • Use 'theme -l' to list all themes",
           "",
-          "🔤 Font System:",
+          "Font System:",
           `   • ${availableFonts?.length ?? 0} system fonts available`,
           `   • ${customFonts} custom fonts uploaded`,
           "   • Use 'font -l' to list all fonts",
           "",
-          "⌨️  Enhanced Features:",
+          "Enhanced Features:",
           "   • Smart command suggestions (↑/↓ or Ctrl+R)",
           "   • Command analytics and favorites",
           "   • Tab completion with history",
           "   • Real-time performance monitoring",
           "",
-          "🎯 Development Progress:",
+          "Development Progress:",
           "   ▓▓▓▓▓▓▓▓▓░ 95% Complete",
         ].join("\n");
 

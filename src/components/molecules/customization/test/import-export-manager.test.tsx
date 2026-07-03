@@ -38,16 +38,18 @@ const mockGetCustomThemes = vi.fn(() => []);
 const mockGetCustomFonts = vi.fn(() => []);
 const mockResetToDefaults = vi.fn();
 
+const mockCustomizationServiceInstance = {
+  exportThemes: mockExportThemes,
+  importThemes: mockImportThemes,
+  getSettings: mockGetSettings,
+  getCustomThemes: mockGetCustomThemes,
+  getCustomFonts: mockGetCustomFonts,
+  resetToDefaults: mockResetToDefaults,
+};
+
 vi.mock("@/lib/services/customization-service", () => ({
   CustomizationService: {
-    getInstance: () => ({
-      exportThemes: mockExportThemes,
-      importThemes: mockImportThemes,
-      getSettings: mockGetSettings,
-      getCustomThemes: mockGetCustomThemes,
-      getCustomFonts: mockGetCustomFonts,
-      resetToDefaults: mockResetToDefaults,
-    }),
+    getInstance: () => mockCustomizationServiceInstance,
   },
 }));
 
@@ -140,7 +142,7 @@ describe("ImportExportManager", () => {
       }
       render(<ImportExportManager onUpdate={mockOnUpdate} />);
 
-      expect(screen.getByText("🚀 Quick Actions")).toBeInTheDocument();
+      expect(screen.getByText(/Quick Actions/i)).toBeInTheDocument();
     });
 
     it("should show theme count", () => {

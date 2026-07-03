@@ -158,5 +158,3 @@ export function getWebVitalsSummary(): {
     ratings: { ...vitalsStore.ratings },
   };
 }
-
-export default initWebVitals;

@@ -85,20 +85,3 @@ export async function listAdminSeries(): Promise<BlogSeriesSummary[]> {
   }
   return response.json();
 }
-
-export async function createSeries(payload: {
-  title: string;
-  slug: string;
-  description?: string;
-}): Promise<BlogSeriesSummary> {
-  const response = await authedFetch("/api/admin/series", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error ?? "Failed to create series");
-  }
-  return response.json();
-}

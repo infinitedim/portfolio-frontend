@@ -9,6 +9,16 @@ import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/lib/auth/auth-context";
 import { getApiUrl } from "@/lib/api/get-api-url";
+import {
+  FileText,
+  Inbox,
+  ShieldCheck,
+  History,
+  Mail,
+  Key,
+  TrendingUp,
+  BookOpen,
+} from "lucide-react";
 
 export default function AdminDashboardPage(): JSX.Element {
   const { themeConfig } = useTheme();
@@ -117,7 +127,7 @@ export default function AdminDashboardPage(): JSX.Element {
                   className="text-2xl font-bold mb-2"
                   style={{ color: themeConfig.colors.accent }}
                 >
-                  🛠️ Admin Dashboard
+                  Admin Dashboard
                 </h1>
                 <p
                   className="text-sm"
@@ -137,7 +147,7 @@ export default function AdminDashboardPage(): JSX.Element {
                     className="text-lg font-semibold mb-3"
                     style={{ color: themeConfig.colors.accent }}
                   >
-                    👤 User Information
+                    User Information
                   </h3>
                   <div className="space-y-2 text-sm">
                     <div>
@@ -177,7 +187,7 @@ export default function AdminDashboardPage(): JSX.Element {
                     className="text-lg font-semibold mb-3"
                     style={{ color: themeConfig.colors.accent }}
                   >
-                    📊 System Status
+                    System Status
                   </h3>
                   <div className="space-y-2 text-sm">
                     <div>
@@ -218,7 +228,7 @@ export default function AdminDashboardPage(): JSX.Element {
                   className="text-lg font-semibold mb-3"
                   style={{ color: themeConfig.colors.accent }}
                 >
-                  ⚡ Quick Actions
+                  Quick Actions
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Link
@@ -230,7 +240,9 @@ export default function AdminDashboardPage(): JSX.Element {
                       color: themeConfig.colors.accent,
                     }}
                   >
-                    <div className="text-lg mb-1">📝</div>
+                    <div className="text-lg mb-1">
+                      <FileText size={20} />
+                    </div>
                     <div className="font-semibold">Manage Posts</div>
                     <div className="text-xs opacity-70">
                       Create and edit blog posts
@@ -246,7 +258,9 @@ export default function AdminDashboardPage(): JSX.Element {
                       color: themeConfig.colors.accent,
                     }}
                   >
-                    <div className="text-lg mb-1">📬</div>
+                    <div className="text-lg mb-1">
+                      <Inbox size={20} />
+                    </div>
                     <div className="font-semibold">Inbox</div>
                     <div className="text-xs opacity-70">
                       Read messages from contact form
@@ -262,7 +276,9 @@ export default function AdminDashboardPage(): JSX.Element {
                       color: themeConfig.colors.accent,
                     }}
                   >
-                    <div className="text-lg mb-1">🔐</div>
+                    <div className="text-lg mb-1">
+                      <ShieldCheck size={20} />
+                    </div>
                     <div className="font-semibold">Two-Factor Auth</div>
                     <div className="text-xs opacity-70">
                       Manage TOTP &amp; backup codes
@@ -278,7 +294,9 @@ export default function AdminDashboardPage(): JSX.Element {
                       color: themeConfig.colors.accent,
                     }}
                   >
-                    <div className="text-lg mb-1">📁</div>
+                    <div className="text-lg mb-1">
+                      <History size={20} />
+                    </div>
                     <div className="font-semibold">Portfolio History</div>
                     <div className="text-xs opacity-70">
                       View and restore section versions
@@ -294,7 +312,9 @@ export default function AdminDashboardPage(): JSX.Element {
                       color: themeConfig.colors.accent,
                     }}
                   >
-                    <div className="text-lg mb-1">📧</div>
+                    <div className="text-lg mb-1">
+                      <Mail size={20} />
+                    </div>
                     <div className="font-semibold">Newsletter</div>
                     <div className="text-xs opacity-70">
                       Subscribers and broadcast
@@ -310,7 +330,9 @@ export default function AdminDashboardPage(): JSX.Element {
                       color: themeConfig.colors.accent,
                     }}
                   >
-                    <div className="text-lg mb-1">🔑</div>
+                    <div className="text-lg mb-1">
+                      <Key size={20} />
+                    </div>
                     <div className="font-semibold">Headless CMS</div>
                     <div className="text-xs opacity-70">
                       API key docs and endpoints
@@ -329,7 +351,9 @@ export default function AdminDashboardPage(): JSX.Element {
                         color: themeConfig.colors.accent,
                       }}
                     >
-                      <div className="text-lg mb-1">📈</div>
+                      <div className="text-lg mb-1">
+                        <TrendingUp size={20} />
+                      </div>
                       <div className="font-semibold">Grafana</div>
                       <div className="text-xs opacity-70">
                         Open analytics dashboards
@@ -348,7 +372,9 @@ export default function AdminDashboardPage(): JSX.Element {
                       color: themeConfig.colors.accent,
                     }}
                   >
-                    <div className="text-lg mb-1">📖</div>
+                    <div className="text-lg mb-1">
+                      <BookOpen size={20} />
+                    </div>
                     <div className="font-semibold">API Docs</div>
                     <div className="text-xs opacity-70">
                       Open Swagger UI (new tab)

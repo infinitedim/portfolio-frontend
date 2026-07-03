@@ -170,7 +170,7 @@ export default function AdminTwoFactorPage(): JSX.Element {
                   className="text-xl font-bold mb-1"
                   style={{ color: themeConfig.colors.accent }}
                 >
-                  🔐 Two-Factor Authentication
+                  Two-Factor Authentication
                 </h1>
                 <p
                   className="text-sm"
@@ -191,7 +191,7 @@ export default function AdminTwoFactorPage(): JSX.Element {
                     color: themeConfig.colors.error,
                   }}
                 >
-                  ⚠️ {error}
+                  {error}
                 </div>
               )}
 
@@ -236,7 +236,7 @@ export default function AdminTwoFactorPage(): JSX.Element {
                       border: `1px solid ${themeConfig.colors.accent}`,
                     }}
                   >
-                    {busy ? "⏳ Generating…" : "🚀 Start setup"}
+                    {busy ? "Generating…" : "Start setup"}
                   </button>
                 </div>
               )}
@@ -559,7 +559,7 @@ function SetupPanel({
               border: `1px solid ${themeConfig.colors.accent}`,
             }}
           >
-            {busy ? "⏳ Verifying…" : "🚀 Verify and enable"}
+            {busy ? "Verifying…" : "Verify and enable"}
           </button>
           <button
             onClick={onCancel}

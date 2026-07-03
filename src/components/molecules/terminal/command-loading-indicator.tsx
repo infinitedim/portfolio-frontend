@@ -110,5 +110,3 @@ export function CommandLoadingIndicator({
     </div>
   );
 }
-
-export default CommandLoadingIndicator;

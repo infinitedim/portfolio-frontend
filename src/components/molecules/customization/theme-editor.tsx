@@ -3,6 +3,7 @@
 import { useState, useEffect, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import type { CustomTheme } from "@/types/customization";
+import { Eye, EyeOff } from "lucide-react";
 
 interface ThemeEditorProps {
   theme: CustomTheme;
@@ -232,7 +233,17 @@ export function ThemeEditor({
                   : "Click to preview theme in terminal"
               }
             >
-              {previewMode ? "👁️ Live Preview ON" : "👁️ Preview in Terminal"}
+              <span className="flex items-center justify-center gap-1.5">
+                {previewMode ? (
+                  <>
+                    <EyeOff size={16} /> Live Preview ON
+                  </>
+                ) : (
+                  <>
+                    <Eye size={16} /> Preview in Terminal
+                  </>
+                )}
+              </span>
             </button>
           </div>
         </div>
@@ -458,7 +469,7 @@ export function ThemeEditor({
                 <div
                   style={{ color: editedTheme.colors?.success || "#00ff00" }}
                 >
-                  ✅ Available commands: about, projects, contact
+                  Available commands: about, projects, contact
                 </div>
                 <div className="flex items-center gap-2">
                   <span
@@ -484,7 +495,7 @@ export function ThemeEditor({
                   <span>invalid-command</span>
                 </div>
                 <div style={{ color: editedTheme.colors?.error || "#ff0000" }}>
-                  ❌ Command not found. Type 'help' for available commands.
+                  Command not found. Type 'help' for available commands.
                 </div>
                 <div className="flex items-center gap-2">
                   <span
@@ -502,7 +513,7 @@ export function ThemeEditor({
                   <span
                     style={{ color: editedTheme.colors?.accent || "#0066cc" }}
                   >
-                    🗺️ Skills Progress Overview
+                    Skills Progress Overview
                   </span>
                 </div>
                 <div

@@ -113,15 +113,15 @@ export const skillsCommand: Command = {
       const data = await service.getUserProgress();
 
       const overviewText = [
-        "🗺️ Skills Progress Overview",
+        "Skills Progress Overview",
         "═".repeat(60),
         "",
-        `👤 Profile: ${data.username}`,
-        `📊 Overall Progress: ${Math.round(data.totalProgress)}%`,
-        `✅ Completed Skills: ${data.completedSkills}/${data.totalSkills}`,
-        `📅 Last Updated: ${data.lastUpdated.toLocaleDateString()}`,
+        `Profile: ${data.username}`,
+        `Overall Progress: ${Math.round(data.totalProgress)}%`,
+        `Completed Skills: ${data.completedSkills}/${data.totalSkills}`,
+        `Last Updated: ${data.lastUpdated.toLocaleDateString()}`,
         "",
-        "📋 Skill Categories:",
+        "Skill Categories:",
         ...data.categories.map(
           (cat: {
             name: string;
@@ -139,7 +139,7 @@ export const skillsCommand: Command = {
           },
         ),
         "",
-        "💡 Available commands:",
+        "Available commands:",
         "  skills list [category]        - List skills by category",
         "  skills update <skill> <status> - Update skill status",
         "  skills search <query>         - Search skills",
@@ -171,16 +171,16 @@ export const skillsCommand: Command = {
         const data = await service.getUserProgress();
 
         const syncText = [
-          "🔄 Skills Sync Status",
+          "Skills Sync Status",
           "═".repeat(40),
           "",
-          "✅ Successfully synced with roadmap.sh API",
-          `📊 Total Skills: ${data.totalSkills}`,
-          `✅ Completed: ${data.completedSkills}`,
-          `📅 Last Updated: ${data.lastUpdated.toLocaleDateString()}`,
-          `👤 User: ${data.username}`,
+          "Successfully synced with roadmap.sh API",
+          `Total Skills: ${data.totalSkills}`,
+          `Completed: ${data.completedSkills}`,
+          `Last Updated: ${data.lastUpdated.toLocaleDateString()}`,
+          `User: ${data.username}`,
           "",
-          "💡 Data is cached for 5 minutes for better performance",
+          "Data is cached for 5 minutes for better performance",
         ].join("\n");
 
         return {
@@ -224,26 +224,24 @@ export const skillsCommand: Command = {
         }
 
         const skillsText = [
-          `🛠️ ${categoryData.name.toUpperCase()} Skills`,
+          `${categoryData.name.toUpperCase()} Skills`,
           "═".repeat(50),
           "",
           ...categoryData.skills.map((skill: RoadmapSkill) => {
             const statusIcon =
               skill.status === "completed"
-                ? "✅"
+                ? "[✓]"
                 : skill.status === "in-progress"
-                  ? "🔄"
-                  : "⭕";
+                  ? "[~]"
+                  : "[ ]";
             const progressBar =
               "▓".repeat(Math.floor(skill.progress / 10)) +
               "░".repeat(10 - Math.floor(skill.progress / 10));
             const priorityIcon =
               skill.priority === "high"
-                ? "🔥"
-                : skill.priority === "medium"
-                  ? "⭐"
-                  : "💫";
-            return `  ${statusIcon} ${priorityIcon} ${skill.name.padEnd(20)} [${progressBar}] ${skill.progress}%`;
+                ? " [H]"
+                : "";
+            return `  ${statusIcon}${priorityIcon} ${skill.name.padEnd(20)} [${progressBar}] ${skill.progress}%`;
           }),
         ].join("\n");
 
@@ -255,26 +253,24 @@ export const skillsCommand: Command = {
         };
       } else {
         const skillsText = [
-          "🛠️ All Skills by Category",
+          "All Skills by Category",
           "═".repeat(50),
           "",
           ...data.categories.flatMap(
             (cat: { name: string; skills: RoadmapSkill[] }) => [
-              `📁 ${cat.name} (${cat.skills.length} skills):`,
+              `${cat.name} (${cat.skills.length} skills):`,
               ...cat.skills.map((skill: RoadmapSkill) => {
                 const statusIcon =
                   skill.status === "completed"
-                    ? "✅"
+                    ? "[✓]"
                     : skill.status === "in-progress"
-                      ? "🔄"
-                      : "⭕";
+                      ? "[~]"
+                      : "[ ]";
                 const priorityIcon =
                   skill.priority === "high"
-                    ? "🔥"
-                    : skill.priority === "medium"
-                      ? "⭐"
-                      : "💫";
-                return `  ${statusIcon} ${priorityIcon} ${skill.name} (${skill.progress}%)`;
+                    ? " [H]"
+                    : "";
+                return `  ${statusIcon}${priorityIcon} ${skill.name} (${skill.progress}%)`;
               }),
               "",
             ],
@@ -344,11 +340,11 @@ export const skillsCommand: Command = {
         return {
           type: "success",
           content: [
-            `✅ Updated ${skillName} status to "${status}"`,
+            `Updated ${skillName} status to "${status}"`,
             "",
-            `📊 New overall progress: ${Math.round(data.totalProgress)}%`,
-            "💾 Progress saved automatically",
-            "📊 Use 'skills overview' to see updated progress",
+            `New overall progress: ${Math.round(data.totalProgress)}%`,
+            "Progress saved automatically",
+            "Use 'skills overview' to see updated progress",
           ].join("\n"),
           timestamp: new Date(),
           id: generateId(),
@@ -408,23 +404,21 @@ export const skillsCommand: Command = {
       }
 
       const searchText = [
-        `🔍 Search Results for "${query}"`,
+        `Search Results for "${query}"`,
         "═".repeat(50),
         "",
         ...results.map((skill: RoadmapSkill) => {
           const statusIcon =
             skill.status === "completed"
-              ? "✅"
+              ? "[✓]"
               : skill.status === "in-progress"
-                ? "🔄"
-                : "⭕";
+                ? "[~]"
+                : "[ ]";
           const priorityIcon =
             skill.priority === "high"
-              ? "🔥"
-              : skill.priority === "medium"
-                ? "⭐"
-                : "💫";
-          return `  ${statusIcon} ${priorityIcon} ${skill.name} (${skill.category}) - ${skill.progress}%`;
+              ? " [H]"
+              : "";
+          return `  ${statusIcon}${priorityIcon} ${skill.name} (${skill.category}) - ${skill.progress}%`;
         }),
         "",
         `Found ${results.length} skill(s) matching your search.`,
@@ -452,12 +446,12 @@ export const skillsCommand: Command = {
       const data = await service.getUserProgress();
 
       const completedText = [
-        "✅ Completed Skills",
+        "Completed Skills",
         "═".repeat(40),
         "",
         ...completedSkills.map(
           (skill: RoadmapSkill) =>
-            `  ✅ ${skill.name} (${skill.category}) - Recently completed`,
+            `  ✓ ${skill.name} (${skill.category}) - Recently completed`,
         ),
         "",
         `Total: ${completedSkills.length} skills completed`,
@@ -485,7 +479,7 @@ export const skillsCommand: Command = {
       const inProgressSkills = await service.getSkillsByStatus("in-progress");
 
       const progressText = [
-        "🔄 Skills In Progress",
+        "Skills In Progress",
         "═".repeat(40),
         "",
         ...inProgressSkills.map((skill: RoadmapSkill) => {
@@ -494,11 +488,9 @@ export const skillsCommand: Command = {
             "░".repeat(10 - Math.floor(skill.progress / 10));
           const priorityIcon =
             skill.priority === "high"
-              ? "🔥"
-              : skill.priority === "medium"
-                ? "⭐"
-                : "💫";
-          return `  🔄 ${priorityIcon} ${skill.name.padEnd(20)} [${progressBar}] ${skill.progress}%`;
+              ? " [H]"
+              : "";
+          return `  [~]${priorityIcon} ${skill.name.padEnd(20)} [${progressBar}] ${skill.progress}%`;
         }),
         "",
         `Total: ${inProgressSkills.length} skills in progress`,
@@ -535,19 +527,12 @@ export const skillsCommand: Command = {
         .slice(0, 10);
 
       const topText = [
-        "🏆 Top Skills",
+        "Top Skills",
         "═".repeat(30),
         "",
         ...topSkills.map((skill, index) => {
           const rank = index + 1;
-          const medal =
-            rank === 1
-              ? "🥇"
-              : rank === 2
-                ? "🥈"
-                : rank === 3
-                  ? "🥉"
-                  : `${rank}.`;
+          const medal = `${rank}.`;
           return `  ${medal} ${skill.name} (${skill.category}) - ${skill.progress}%`;
         }),
       ].join("\n");
@@ -601,15 +586,15 @@ export const skillsStatCommand: Command = {
     const completed = await service.getSkillsByStatus("completed");
 
     const statText = [
-      "📊 Skills Statistics",
+      "Skills Statistics",
       "═".repeat(30),
       "",
-      `🎯 Overall Progress: ${Math.round(data.totalProgress)}%`,
-      `✅ Completed: ${completed.length} skills`,
-      `🔄 In Progress: ${inProgress.length} skills`,
-      `⭕ Not Started: ${data.totalSkills - completed.length - inProgress.length} skills`,
+      `Overall Progress: ${Math.round(data.totalProgress)}%`,
+      `Completed: ${completed.length} skills`,
+      `In Progress: ${inProgress.length} skills`,
+      `Not Started: ${data.totalSkills - completed.length - inProgress.length} skills`,
       "",
-      "📋 By Category:",
+      "By Category:",
       ...data.categories.map(
         (cat: {
           name: string;
@@ -623,7 +608,7 @@ export const skillsStatCommand: Command = {
         },
       ),
       "",
-      "💡 Use 'skills overview' for detailed view",
+      "Use 'skills overview' for detailed view",
     ].join("\n");
 
     return {

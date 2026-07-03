@@ -1,5 +1,5 @@
 import React from "react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   render,
   screen,
@@ -149,17 +149,13 @@ describe("FontManager", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
     (mockGetCustomFonts as any).mockReturnValue(mockFonts);
-    vi.useFakeTimers();
   });
 
   const renderWithProviders = (ui: React.ReactElement) => {
     return render(<AccessibilityProvider>{ui}</AccessibilityProvider>);
   };
 
-  afterEach(() => {
-    if (!canRunTests) return;
-    vi.useRealTimers();
-  });
+  // no afterEach needed
 
   describe("Rendering", () => {
     it("should render font manager", () => {
@@ -210,7 +206,7 @@ describe("FontManager", () => {
         />,
       );
 
-      expect(screen.getByText(/📁 Upload/)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Upload/i })).toBeInTheDocument();
     });
 
     it("should render filter dropdown", () => {
@@ -242,7 +238,7 @@ describe("FontManager", () => {
         />,
       );
 
-      expect(screen.getByText("Pick Random Font")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Pick Random Font/i })).toBeInTheDocument();
     });
 
     it("should render font list", () => {
@@ -389,7 +385,7 @@ describe("FontManager", () => {
         .closest("div[role='button']");
       fireEvent.click(fontCard!);
 
-      const applyButton = screen.getByText("✅ Apply Font");
+      const applyButton = screen.getByText("Apply Font");
       fireEvent.click(applyButton);
 
       expect(mockChangeFont).toHaveBeenCalled();
@@ -414,7 +410,7 @@ describe("FontManager", () => {
         .closest("div[role='button']");
       fireEvent.click(fontCard!);
 
-      const applyButton = screen.getByText("✅ Apply Font");
+      const applyButton = screen.getByText("Apply Font");
       fireEvent.click(applyButton);
 
       expect(mockSaveSettings).toHaveBeenCalled();
@@ -439,7 +435,7 @@ describe("FontManager", () => {
         .closest("div[role='button']");
       fireEvent.click(fontCard!);
 
-      const saveButton = screen.getByText("💾 Save as Current Font");
+      const saveButton = screen.getByText("Save as Current Font");
       fireEvent.click(saveButton);
 
       expect(mockSaveSettings).toHaveBeenCalled();
@@ -499,7 +495,6 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      vi.useFakeTimers();
       renderWithProviders(
         <FontManager
           fonts={mockFonts}
@@ -510,15 +505,10 @@ describe("FontManager", () => {
 
       (mockGetCustomFonts as any).mockReturnValueOnce([]);
 
-      const randomButton = screen.getByText("🎲 Pick Random Font");
+      const randomButton = screen.getByRole("button", { name: /Pick Random Font/i });
 
       await act(async () => {
         fireEvent.click(randomButton);
-      });
-
-      await act(async () => {
-        vi.advanceTimersByTime(600);
-        await vi.runAllTimersAsync();
       });
 
       await waitFor(
@@ -534,8 +524,6 @@ describe("FontManager", () => {
         },
         { timeout: 5000 },
       );
-
-      vi.useRealTimers();
     }, 15000);
 
     it("should toggle ligatures checkbox", () => {
@@ -568,7 +556,6 @@ describe("FontManager", () => {
         expect(true).toBe(true);
         return;
       }
-      vi.useFakeTimers();
       const mockFile = new File(["font data"], "font.woff", {
         type: "font/woff",
       });
@@ -582,7 +569,7 @@ describe("FontManager", () => {
         />,
       );
 
-      const uploadButton = screen.getByText(/📁 Upload/);
+      const uploadButton = screen.getByRole("button", { name: /Upload/i });
 
       await act(async () => {
         fireEvent.click(uploadButton);
@@ -592,18 +579,10 @@ describe("FontManager", () => {
         'input[type="file"]',
       ) as HTMLInputElement;
       if (fileInput) {
-        Object.defineProperty(fileInput, "files", {
-          value: [mockFile],
-          writable: false,
-        });
-
         await act(async () => {
-          fireEvent.change(fileInput);
-        });
-
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-          await vi.runAllTimersAsync();
+          fireEvent.change(fileInput, {
+            target: { files: [mockFile] },
+          });
         });
       }
 
@@ -614,7 +593,7 @@ describe("FontManager", () => {
         { timeout: 5000 },
       );
 
-      vi.useRealTimers();
+      // no-op
     }, 15000);
   });
 

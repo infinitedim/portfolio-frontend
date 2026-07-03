@@ -509,13 +509,6 @@ export async function getRoadmapDashboardWithError(): Promise<{
   return { data: (await response.json()) as RoadmapDashboard, error: null };
 }
 
-export const getRoadmapDashboard = cache(
-  async (): Promise<RoadmapDashboard | null> => {
-    const { data } = await getRoadmapDashboardWithError();
-    return data;
-  },
-);
-
 export const getRoadmapStreak = cache(
   async (): Promise<RoadmapStreak | null> => {
     const response = await fetchRoadmapBackend("/api/roadmap/streak", 300);

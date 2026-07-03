@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, RefObject } from "react";
+import { useRef, useEffect, useCallback, RefObject } from "react";
 
 export const isClientSide = (): boolean => {
   return typeof window !== "undefined";
@@ -15,16 +15,6 @@ export function useMountRef(): RefObject<boolean> {
   }, []);
 
   return isMountedRef;
-}
-
-export function useClientEffect(
-  effect: () => void | (() => void),
-  deps: React.DependencyList,
-) {
-  useEffect(() => {
-    if (!isClientSide()) return;
-    return effect();
-  }, [deps, effect]);
 }
 
 export function useLocalStorage<T>(
@@ -190,33 +180,6 @@ export function useIntervalManager(): {
   }, [clearAllIntervals]);
 
   return { setInterval, clearInterval, clearAllIntervals };
-}
-
-export function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  delay: number,
-): (...args: Parameters<T>) => void {
-  let timeoutId: NodeJS.Timeout;
-
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func(...args), delay);
-  };
-}
-
-export function throttle<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  delay: number,
-): (...args: Parameters<T>) => void {
-  let lastCall = 0;
-
-  return (...args: Parameters<T>) => {
-    const now = Date.now();
-    if (now - lastCall >= delay) {
-      lastCall = now;
-      func(...args);
-    }
-  };
 }
 
 export function safeDOMManipulation(callback: () => void) {

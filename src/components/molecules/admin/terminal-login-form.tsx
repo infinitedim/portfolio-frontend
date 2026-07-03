@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import type { ThemeConfig } from "@/types/theme";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
+import { Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
 
 interface TerminalLoginFormProps {
   onLoginSuccess?: () => void;
@@ -237,6 +238,7 @@ export function TerminalLoginForm({
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label="Toggle password visibility"
               className={`absolute right-0 top-0 text-xs transition-all duration-200 px-2 py-1 rounded ${showPassword ? "opacity-80" : "opacity-50"} hover:opacity-100 hover:scale-110 active:scale-95`}
               style={{
                 color: themeConfig.colors.muted,
@@ -245,7 +247,7 @@ export function TerminalLoginForm({
                   : "transparent",
               }}
             >
-              {showPassword ? "🙈" : "👁️"}
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           )}
         </div>
@@ -276,7 +278,7 @@ export function TerminalLoginForm({
               color: themeConfig.colors.error,
             }}
           >
-            ⚠️ {error}
+            {error}
           </div>
         )}
 
@@ -348,7 +350,15 @@ export function TerminalLoginForm({
               }`,
             }}
           >
-            {isLoading ? "⏳ Verifying…" : "🚀 Verify"}
+            {isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="animate-spin" size={14} /> Verifying…
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-2">
+                <ArrowRight size={14} /> Verify
+              </span>
+            )}
           </button>
           <button
             type="button"
@@ -393,7 +403,7 @@ export function TerminalLoginForm({
             color: themeConfig.colors.error,
           }}
         >
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
@@ -460,12 +470,12 @@ export function TerminalLoginForm({
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <span className="animate-spin">⏳</span>
+                  <Loader2 className="animate-spin" size={14} />
                   {t("loading")}
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
-                  <span>🚀</span>
+                  <ArrowRight size={14} />
                   {t("submit")}
                 </span>
               )}

@@ -56,7 +56,7 @@ describe("InteractiveWelcome", () => {
       );
 
       expect(
-        screen.getByText("🚀 Welcome to My Terminal Portfolio!"),
+        screen.getByText("Welcome to My Terminal Portfolio!"),
       ).toBeInTheDocument();
     });
 

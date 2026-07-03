@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { SettingsManager } from "../settings-manager";
 
@@ -46,13 +46,15 @@ const mockResetToDefaults = vi.fn(() => {
   });
 });
 
+const mockCustomizationServiceInstance = {
+  getSettings: mockGetSettings,
+  saveSettings: mockSaveSettings,
+  resetToDefaults: mockResetToDefaults,
+};
+
 vi.mock("@/lib/services/customization-service", () => ({
   CustomizationService: {
-    getInstance: () => ({
-      getSettings: mockGetSettings,
-      saveSettings: mockSaveSettings,
-      resetToDefaults: mockResetToDefaults,
-    }),
+    getInstance: () => mockCustomizationServiceInstance,
   },
 }));
 
@@ -85,7 +87,7 @@ describe("SettingsManager", () => {
       }
       render(<SettingsManager />);
 
-      expect(screen.getByText("⚙️ Customization Settings")).toBeInTheDocument();
+      expect(screen.getByText(/Customization Settings/i)).toBeInTheDocument();
     });
 
     it("should show loading state initially", () => {
@@ -137,12 +139,12 @@ describe("SettingsManager", () => {
       }
       render(<SettingsManager />);
 
-      expect(screen.getByText("🔄 Reset to Defaults")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Reset to Defaults/i })).toBeInTheDocument();
     });
   });
 
   describe("Settings Changes", () => {
-    it("should toggle auto-save checkbox", () => {
+    it("should toggle auto-save checkbox", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -152,12 +154,16 @@ describe("SettingsManager", () => {
       const checkbox = screen.getByLabelText("Auto-save Changes");
       const initialChecked = (checkbox as HTMLInputElement).checked;
 
-      fireEvent.click(checkbox);
+      await act(async () => {
+        fireEvent.click(checkbox);
+      });
 
-      expect((checkbox as HTMLInputElement).checked).not.toBe(initialChecked);
+      await waitFor(() => {
+        expect((checkbox as HTMLInputElement).checked).not.toBe(initialChecked);
+      });
     });
 
-    it("should update font size when slider changes", () => {
+    it("should update font size when slider changes", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -165,12 +171,16 @@ describe("SettingsManager", () => {
       render(<SettingsManager />);
 
       const slider = screen.getByLabelText(/Font Size:/);
-      fireEvent.change(slider, { target: { value: "18" } });
+      await act(async () => {
+        fireEvent.change(slider, { target: { value: "18" } });
+      });
 
-      expect(screen.getByText(/Font Size: 18px/)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/Font Size: 18px/)).toBeInTheDocument();
+      });
     });
 
-    it("should auto-save when autoSave is enabled", () => {
+    it("should auto-save when autoSave is enabled", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -185,12 +195,16 @@ describe("SettingsManager", () => {
       render(<SettingsManager />);
 
       const slider = screen.getByLabelText(/Font Size:/);
-      fireEvent.change(slider, { target: { value: "16" } });
+      await act(async () => {
+        fireEvent.change(slider, { target: { value: "16" } });
+      });
 
-      expect(mockSaveSettings).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockSaveSettings).toHaveBeenCalled();
+      });
     });
 
-    it("should show save button when autoSave is disabled and changes are made", () => {
+    it("should show save button when autoSave is disabled and changes are made", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -205,14 +219,18 @@ describe("SettingsManager", () => {
       render(<SettingsManager />);
 
       const slider = screen.getByLabelText(/Font Size:/);
-      fireEvent.change(slider, { target: { value: "16" } });
+      await act(async () => {
+        fireEvent.change(slider, { target: { value: "16" } });
+      });
 
-      expect(screen.getByText("💾 Save Changes")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /Save Changes/i })).toBeInTheDocument();
+      });
     });
   });
 
   describe("Save Functionality", () => {
-    it("should save settings when save button is clicked", () => {
+    it("should save settings when save button is clicked", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -227,28 +245,38 @@ describe("SettingsManager", () => {
       render(<SettingsManager />);
 
       const slider = screen.getByLabelText(/Font Size:/);
-      fireEvent.change(slider, { target: { value: "16" } });
+      await act(async () => {
+        fireEvent.change(slider, { target: { value: "16" } });
+      });
 
-      const saveButton = screen.getByText("💾 Save Changes");
-      fireEvent.click(saveButton);
+      const saveButton = screen.getByRole("button", { name: /Save Changes/i });
+      await act(async () => {
+        fireEvent.click(saveButton);
+      });
 
-      expect(mockSaveSettings).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mockSaveSettings).toHaveBeenCalled();
+      });
     });
   });
 
   describe("Reset Functionality", () => {
-    it("should reset settings when reset button is clicked", () => {
+    it("should reset settings when reset button is clicked", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
       render(<SettingsManager />);
 
-      const resetButton = screen.getByText("🔄 Reset to Defaults");
-      fireEvent.click(resetButton);
+      const resetButton = screen.getByRole("button", { name: /Reset to Defaults/i });
+      await act(async () => {
+        fireEvent.click(resetButton);
+      });
 
-      expect(global.confirm).toHaveBeenCalled();
-      expect(mockResetToDefaults).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(global.confirm).toHaveBeenCalled();
+        expect(mockResetToDefaults).toHaveBeenCalled();
+      });
     });
   });
 });

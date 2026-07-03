@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from "react";
 import { authService } from "@/lib/auth/auth-service";
 
 import { getApiUrl } from "@/lib/api/get-api-url";
+import { Upload } from "lucide-react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -135,7 +136,10 @@ export function ImageUploadButton({
         disabled={disabled || isUploading}
         className="px-3 py-1 text-xs border rounded transition-colors border-gray-600 text-gray-300 hover:border-green-400/50 hover:text-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isUploading ? "⏳ Uploading..." : "🖼️ Upload Image"}
+        <span className="flex items-center justify-center gap-1">
+          <Upload size={12} />
+          {isUploading ? "Uploading..." : "Upload Image"}
+        </span>
       </button>
       {error && <span className="text-xs text-red-400 mt-1">{error}</span>}
     </div>

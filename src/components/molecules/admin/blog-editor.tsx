@@ -21,6 +21,7 @@ import {
 } from "@/lib/services/series-service";
 
 import { getApiUrl } from "@/lib/api/get-api-url";
+import { Plus, Save, Send, Trash, Check, Clock, Info, EyeOff } from "lucide-react";
 
 const TiptapEditor = dynamic(
   () =>
@@ -709,7 +710,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 color: themeConfig.colors.accent,
               }}
             >
-              ✏️ {t("blogNewPost")}
+              <span className="flex items-center gap-1">
+                <Plus size={12} /> {t("blogNewPost")}
+              </span>
             </button>
             <button
               onClick={saveDraft}
@@ -724,7 +727,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   : themeConfig.colors.success,
               }}
             >
-              {isSaving ? `💾 ${t("blogSaving")}` : `💾 ${t("blogSaveDraft")}`}
+              <span className="flex items-center gap-1">
+                <Save size={12} /> {isSaving ? t("blogSaving") : t("blogSaveDraft")}
+              </span>
             </button>
             <button
               onClick={togglePublish}
@@ -739,9 +744,17 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   : themeConfig.colors.accent,
               }}
             >
-              {currentPost?.published
-                ? "📤 Unpublish"
-                : `🚀 ${t("blogPublish")}`}
+              <span className="flex items-center gap-1">
+                {currentPost?.published ? (
+                  <>
+                    <EyeOff size={12} /> Unpublish
+                  </>
+                ) : (
+                  <>
+                    <Send size={12} /> {t("blogPublish")}
+                  </>
+                )}
+              </span>
             </button>
             {currentPost && !isNewPost && (
               <button
@@ -753,7 +766,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   color: themeConfig.colors.error,
                 }}
               >
-                🗑️ Delete
+                <span className="flex items-center gap-1">
+                  <Trash size={12} /> Delete
+                </span>
               </button>
             )}
           </div>
@@ -856,7 +871,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                               style={{ color: themeConfig.colors.warning }}
                               title={post.publishAt ?? undefined}
                             >
-                              ⏱ Scheduled
+                              <span className="flex items-center gap-1">
+                                <Clock size={12} /> Scheduled
+                              </span>
                             </div>
                           );
                         }
@@ -866,7 +883,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                               className="text-xs mt-1"
                               style={{ color: themeConfig.colors.success }}
                             >
-                              ✅ {t("blogPublished")}
+                              <span className="flex items-center gap-1">
+                                <Check size={12} /> {t("blogPublished")}
+                              </span>
                             </div>
                           );
                         }
@@ -1177,8 +1196,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                     onImageUpload={uploadBlogImage}
                     minHeight="500px"
                   />
-                  <div className="mt-2 text-[10px] opacity-50 font-mono text-center">
-                    💡 Editor supports standard Markdown syntax. Specific
+                  <div className="mt-2 text-[10px] opacity-50 font-mono text-center flex items-center justify-center gap-1">
+                    <Info size={10} /> Editor supports standard Markdown syntax. Specific
                     React/MDX components will be rendered as plain text.
                   </div>
                 </ImageDropZone>

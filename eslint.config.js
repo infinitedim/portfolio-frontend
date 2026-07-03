@@ -20,6 +20,7 @@ export default [
       "**/coverage/**",
       "**/generated/**",
       "**/*.js",
+      "**/.agents/**",
     ],
   },
 

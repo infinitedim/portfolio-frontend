@@ -376,7 +376,7 @@ export function useTerminal(
               `Unique Commands: ${stats.uniqueCommands}`,
               `Success Rate: ${stats.successRate.toFixed(1)}%`,
               "",
-              "🔥 Top Commands:",
+              "Top Commands:",
               ...stats.topCommands
                 .slice(0, 5)
                 .map(
@@ -413,12 +413,12 @@ export function useTerminal(
             "═".repeat(40),
             "",
             ...recentHistory.map((entry, index) => {
-              const status = entry.success ? "✅" : "❌";
+              const status = entry.success ? "✓" : "✗";
               const time = entry.timestamp.toLocaleTimeString();
               return `${String(recentHistory.length - index).padStart(3)}. ${status} ${entry.command} (${time})`;
             }),
             "",
-            "💡 Tips:",
+            "Tips:",
             "  history --stats    Show analytics",
             "  history --clear    Clear history",
             "  Ctrl+R            Quick search",
@@ -527,7 +527,7 @@ export function useTerminal(
                     `  ${i + 1}. ${theme}: ${count} switches`,
                 ),
               "",
-              "⚡ System Performance:",
+              "System Performance:",
               `  Total Commands: ${monitor.summary.totalCommands}`,
               `  Average Command Time: ${monitor.summary.averageCommandTime.toFixed(2)}ms`,
               `  Average Render Time: ${monitor.summary.averageRenderTime.toFixed(2)}ms`,
@@ -538,10 +538,10 @@ export function useTerminal(
               }`,
               `  History Size: ${monitor.summary.historySize} items`,
               "",
-              "🚀 Performance Recommendations:",
+              "Performance Recommendations:",
               ...monitor.recommendations.slice(0, 5),
               "",
-              "💡 Commands:",
+              "Commands:",
               "  perf --reset    Reset all metrics",
               "  perf            Quick overview",
             ].join("\n");
@@ -559,13 +559,13 @@ export function useTerminal(
           };
 
           const quickText = [
-            "🎯 Performance Dashboard",
+            "Performance Dashboard",
             "═".repeat(30),
             "",
-            `⚡ Theme Switches: ${themeReport.totalSwitches} (avg: ${themeReport.averageTime.toFixed(1)}ms)`,
-            `📈 Commands Executed: ${monitor.summary.totalCommands}`,
-            `🎨 Current Theme Render: ${currentMetrics.renderTime.toFixed(1)}ms`,
-            `📊 Command Success Rate: ${
+            `Theme Switches: ${themeReport.totalSwitches} (avg: ${themeReport.averageTime.toFixed(1)}ms)`,
+            `Commands Executed: ${monitor.summary.totalCommands}`,
+            `Current Theme Render: ${currentMetrics.renderTime.toFixed(1)}ms`,
+            `Command Success Rate: ${
               monitor.summary.totalCommands > 0
                 ? (
                     ((monitor.summary.totalCommands -
@@ -578,7 +578,7 @@ export function useTerminal(
                 : 100
             }%`,
             "",
-            "💡 Use 'perf --detailed' for more info",
+            "Use 'perf --detailed' for more info",
           ].join("\n");
 
           return {

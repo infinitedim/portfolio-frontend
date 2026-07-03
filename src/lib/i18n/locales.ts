@@ -349,8 +349,3 @@ export function isValidBlogLocale(code: string): boolean {
   return BLOG_CONTENT_LOCALES.some((locale) => locale.code === code);
 }
 
-export function getBlogContentLocale(
-  code: string,
-): BlogContentLocale | undefined {
-  return BLOG_CONTENT_LOCALES.find((locale) => locale.code === code);
-}
