@@ -98,7 +98,7 @@ import { githubCommand } from "../github-commands";
 describe("githubCommand", () => {
   describe("user action", () => {
     it("returns error when no username provided", async () => {
-      const out = await githubCommand.execute(["user"] as any);
+      const out = await githubCommand.execute(["user"]);
       expect(out.type).toBe("error");
       expect(out.content).toContain("provide a username");
     });
@@ -108,7 +108,7 @@ describe("githubCommand", () => {
         expect(true).toBe(true);
         return;
       }
-      const out = await githubCommand.execute(["user", "infinitedim"] as any);
+      const out = await githubCommand.execute(["user", "infinitedim"]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("GitHub User");
       expect(out.content as string).toContain("infinitedim");
@@ -117,7 +117,7 @@ describe("githubCommand", () => {
 
   describe("repos action", () => {
     it("returns error when no username provided", async () => {
-      const out = await githubCommand.execute(["repos"] as any);
+      const out = await githubCommand.execute(["repos"]);
       expect(out.type).toBe("error");
       expect(out.content).toContain("provide a username");
     });
@@ -127,7 +127,7 @@ describe("githubCommand", () => {
         expect(true).toBe(true);
         return;
       }
-      const out = await githubCommand.execute(["repos", "testuser"] as any);
+      const out = await githubCommand.execute(["repos", "testuser"]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("Repositories");
       expect(out.content as string).toContain("r1");
@@ -137,7 +137,7 @@ describe("githubCommand", () => {
 
   describe("repo action", () => {
     it("returns error when username or repo not provided", async () => {
-      const out = await githubCommand.execute(["repo", "user"] as any);
+      const out = await githubCommand.execute(["repo", "user"]);
       expect(out.type).toBe("error");
       expect(out.content).toContain("provide username and repository name");
     });
@@ -151,7 +151,7 @@ describe("githubCommand", () => {
         "repo",
         "user",
         "test-repo",
-      ] as any);
+      ]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("Repository");
       expect(out.content as string).toContain("user/test-repo");
@@ -160,7 +160,7 @@ describe("githubCommand", () => {
 
   describe("commits action", () => {
     it("returns error when params missing", async () => {
-      const out = await githubCommand.execute(["commits"] as any);
+      const out = await githubCommand.execute(["commits"]);
       expect(out.type).toBe("error");
     });
 
@@ -173,7 +173,7 @@ describe("githubCommand", () => {
         "commits",
         "user",
         "repo",
-      ] as any);
+      ]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("commits");
       expect(out.content as string).toContain("Initial commit");
@@ -182,7 +182,7 @@ describe("githubCommand", () => {
 
   describe("languages action", () => {
     it("returns error when params missing", async () => {
-      const out = await githubCommand.execute(["languages"] as any);
+      const out = await githubCommand.execute(["languages"]);
       expect(out.type).toBe("error");
     });
 
@@ -195,7 +195,7 @@ describe("githubCommand", () => {
         "languages",
         "user",
         "repo",
-      ] as any);
+      ]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("Languages");
       expect(out.content as string).toContain("TypeScript");
@@ -204,7 +204,7 @@ describe("githubCommand", () => {
 
   describe("search action", () => {
     it("returns error when no query provided", async () => {
-      const out = await githubCommand.execute(["search"] as any);
+      const out = await githubCommand.execute(["search"]);
       expect(out.type).toBe("error");
       expect(out.content).toContain("provide a search query");
     });
@@ -218,7 +218,7 @@ describe("githubCommand", () => {
         "search",
         "typescript",
         "react",
-      ] as any);
+      ]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("Search results");
     });
@@ -226,7 +226,7 @@ describe("githubCommand", () => {
 
   describe("starred action", () => {
     it("returns error when no username provided", async () => {
-      const out = await githubCommand.execute(["starred"] as any);
+      const out = await githubCommand.execute(["starred"]);
       expect(out.type).toBe("error");
     });
 
@@ -235,7 +235,7 @@ describe("githubCommand", () => {
         expect(true).toBe(true);
         return;
       }
-      const out = await githubCommand.execute(["starred", "testuser"] as any);
+      const out = await githubCommand.execute(["starred", "testuser"]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("Starred");
     });
@@ -243,7 +243,7 @@ describe("githubCommand", () => {
 
   describe("gists action", () => {
     it("returns error when no username provided", async () => {
-      const out = await githubCommand.execute(["gists"] as any);
+      const out = await githubCommand.execute(["gists"]);
       expect(out.type).toBe("error");
     });
 
@@ -252,7 +252,7 @@ describe("githubCommand", () => {
         expect(true).toBe(true);
         return;
       }
-      const out = await githubCommand.execute(["gists", "testuser"] as any);
+      const out = await githubCommand.execute(["gists", "testuser"]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("Gist");
     });
@@ -260,13 +260,13 @@ describe("githubCommand", () => {
 
   describe("cache action", () => {
     it("shows cache stats with status subaction", async () => {
-      const out = await githubCommand.execute(["cache", "status"] as any);
+      const out = await githubCommand.execute(["cache", "status"]);
       expect(out.type).toBe("info");
       expect(out.content as string).toContain("Cache");
     });
 
     it("clears cache when clear action provided", async () => {
-      const out = await githubCommand.execute(["cache", "clear"] as any);
+      const out = await githubCommand.execute(["cache", "clear"]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("cleared");
     });
@@ -274,20 +274,20 @@ describe("githubCommand", () => {
 
   describe("help action", () => {
     it("shows help when help action used", async () => {
-      const out = await githubCommand.execute(["help"] as any);
+      const out = await githubCommand.execute(["help"]);
       expect(out.type).toBe("info");
       expect(out.content as string).toContain("GitHub Command Help");
     });
 
     it("shows help when no action provided", async () => {
-      const out = await githubCommand.execute([] as any);
+      const out = await githubCommand.execute([]);
       expect(out.type).toBe("info");
     });
   });
 
   describe("unknown action", () => {
     it("returns error for unknown action", async () => {
-      const out = await githubCommand.execute(["unknown-action"] as any);
+      const out = await githubCommand.execute(["unknown-action"]);
       expect(out.type).toBe("error");
       expect(out.content as string).toContain("Unknown GitHub action");
     });

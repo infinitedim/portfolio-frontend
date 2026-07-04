@@ -1,17 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { Command } from "@/types/terminal";
 
 describe("commandRegistry", () => {
   let commandRegistry: typeof import("@/lib/commands/command-registry");
-  let createHelpCommand: any;
-  let aboutCommand: any;
-  let projectsCommand: any;
-  let contactCommand: any;
-  let clearCommand: any;
-  let themeCommand: any;
-  let fontCommand: any;
-  let statusCommand: any;
-  let pwaCommand: any;
-  let aliasCommand: any;
+  let createHelpCommand: (getCommands: () => Command[]) => Command;
+  let aboutCommand: Command;
+  let projectsCommand: Command;
+  let contactCommand: Command;
+  let clearCommand: Command;
+  let themeCommand: Command;
+  let fontCommand: Command;
+  let statusCommand: Command;
+  let pwaCommand: Command;
+  let aliasCommand: Command;
 
   beforeEach(async () => {
     if (typeof vi !== "undefined" && vi.unmock) {

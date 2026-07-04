@@ -152,8 +152,12 @@ const _nativeCrypto = globalThis.crypto;
 Object.defineProperty(global, "crypto", {
   value: {
     subtle: _nativeCrypto?.subtle,
-    getRandomValues: <T extends ArrayBufferView>(array: T): T =>
-      _nativeCrypto?.getRandomValues(array) ?? array,
+    getRandomValues: <T extends ArrayBufferView>(array: T): T => {
+      if (_nativeCrypto) {
+        return _nativeCrypto.getRandomValues(array as unknown as Uint8Array) as unknown as T;
+      }
+      return array;
+    },
     randomUUID: vi.fn(() => "test-uuid-12345"),
     randomBytes: vi.fn(() => ({
       toString: () => "test-nonce-base64",

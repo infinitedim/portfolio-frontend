@@ -4,8 +4,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 describe("argParser", () => {
   let ArgumentParser: typeof import("@/lib/utils/arg-parser").ArgumentParser;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let ParsedArgs: typeof import("@/lib/utils/arg-parser").ArgumentParser;
+
 
   beforeEach(async () => {
     if (typeof vi !== "undefined" && vi.unmock) {
@@ -24,7 +23,6 @@ describe("argParser", () => {
       module = await import("@/lib/utils/arg-parser");
     }
     ArgumentParser = module.ArgumentParser;
-    ParsedArgs = module.ArgumentParser as any;
     vi.clearAllMocks();
   });
 

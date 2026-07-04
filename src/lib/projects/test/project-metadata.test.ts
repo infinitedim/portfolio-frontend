@@ -28,7 +28,7 @@ describe("ProjectMetadataService", () => {
       category: "web-app",
       featured: false,
       tags: [],
-    } as any);
+    });
 
     expect(newProj).toHaveProperty("id");
 

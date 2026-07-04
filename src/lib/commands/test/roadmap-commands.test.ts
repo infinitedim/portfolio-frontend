@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { progressCommand, roadmapCommand } from "../roadmap-commands";
+import type { RoadmapService } from "@/lib/services/roadmap-service";
 
 const mockGetUserProgress = vi.fn();
 const mockGetCategoryProgress = vi.fn();
@@ -8,7 +9,7 @@ const mockUpdateSkillProgress = vi.fn();
 const mockGetSkillsByStatus = vi.fn();
 const mockRefreshData = vi.fn();
 
-let roadmapServiceInstance: any = null;
+let roadmapServiceInstance: unknown = null;
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
@@ -18,7 +19,7 @@ if (
 
 vi.mock("@/lib/services/roadmap-service", () => ({
   RoadmapService: {
-    getInstance: () => roadmapServiceInstance,
+    getInstance: () => roadmapServiceInstance as unknown as RoadmapService,
   },
 }));
 

@@ -17,10 +17,10 @@ globalThis.fetch = mockFetch as unknown as typeof fetch;
 
 global.Blob = class Blob {
   size: number;
-  constructor(parts: any[]) {
+  constructor(parts: unknown[]) {
     this.size = JSON.stringify(parts).length;
   }
-} as any;
+} as unknown as typeof Blob;
 
 describe("data-fetching.ts", () => {
   beforeEach(() => {

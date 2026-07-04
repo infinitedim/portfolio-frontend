@@ -30,22 +30,22 @@ import { themesCommand, fontsCommand } from "../customization-commands";
 
 describe("customizationCommands", () => {
   it("themes custom returns info when none", async () => {
-    const out = await themesCommand.execute(["custom"] as any);
+    const out = await themesCommand.execute(["custom"]);
     expect(out.type).toBe("info");
   });
 
   it("themes default returns success", async () => {
-    const out = await themesCommand.execute([] as any);
+    const out = await themesCommand.execute([]);
     expect(out.type).toBe("success");
   });
 
   it("fonts custom returns info when none", async () => {
-    const out = await fontsCommand.execute(["custom"] as any);
+    const out = await fontsCommand.execute(["custom"]);
     expect(out.type).toBe("info");
   });
 
   it("fonts list returns success", async () => {
-    const out = await fontsCommand.execute([] as any);
+    const out = await fontsCommand.execute([]);
     expect(out.type).toBe("success");
   });
 });

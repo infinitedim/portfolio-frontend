@@ -1,14 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
+import type { Command } from "@/types/terminal";
 
 describe("commands.ts", () => {
   let commands: typeof import("../commands");
-  let resumeCommand: any;
-  let socialCommand: any;
-  let shortcutsCommand: any;
-  let enhancedContactCommand: any;
-  let easterEggsCommand: any;
-  let enhancedCommands: any;
+  let resumeCommand: Command;
+  let socialCommand: Command;
+  let shortcutsCommand: Command;
+  let enhancedContactCommand: Command;
+  let easterEggsCommand: Command;
+  let enhancedCommands: Record<string, Command>;
 
   beforeEach(async () => {
     if (typeof vi !== "undefined" && vi.unmock) {
@@ -135,7 +136,7 @@ describe("commands.ts", () => {
         expect(true).toBe(true);
         return;
       }
-      const result = await shortcutsCommand.execute();
+      const result = await shortcutsCommand.execute([]);
 
       expect(result.type).toBe("success");
       expect(result.content).toContain("KEYBOARD SHORTCUTS");
@@ -172,7 +173,7 @@ describe("commands.ts", () => {
         expect(true).toBe(true);
         return;
       }
-      const result = await easterEggsCommand.execute();
+      const result = await easterEggsCommand.execute([]);
 
       expect(result.type).toBe("success");
       expect(result.content).toContain("EASTER EGGS");

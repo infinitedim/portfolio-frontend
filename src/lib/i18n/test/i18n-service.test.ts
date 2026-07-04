@@ -44,7 +44,7 @@ describe("I18nService", () => {
     vi.clearAllMocks();
     localStorageMock.getItem.mockReturnValue(null);
 
-    (I18nService as any).instance = undefined;
+    (I18nService as unknown as { instance: unknown })["instance"] = undefined;
   });
 
   describe("Singleton", () => {
@@ -135,7 +135,7 @@ describe("I18nService", () => {
         return;
       }
       const service = I18nService.getInstance();
-      const translation = service.t("nonexistent" as any);
+      const translation = service.t("nonexistent" as unknown as Parameters<typeof service.t>[0]);
 
       expect(translation).toBe("nonexistent");
     });

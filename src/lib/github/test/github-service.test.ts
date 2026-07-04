@@ -23,7 +23,7 @@ describe("GitHubService", () => {
     }
     GitHubService = module.GitHubService;
 
-    (GitHubService as any).instance = undefined;
+    (GitHubService as unknown as { instance: unknown })["instance"] = undefined;
 
     const svc = GitHubService.getInstance();
     svc.clearCache();
@@ -58,12 +58,12 @@ describe("GitHubService", () => {
       } as unknown as Response;
     });
 
-    globalThis.fetch = mockFetch as any;
+    globalThis.fetch = mockFetch as unknown as typeof fetch;
   });
 
   afterEach(() => {
     if (GitHubService) {
-      (GitHubService as any).instance = undefined;
+      (GitHubService as unknown as { instance: unknown })["instance"] = undefined;
     }
     if (originalFetch) globalThis.fetch = originalFetch;
     vi.clearAllMocks();

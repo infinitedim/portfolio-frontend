@@ -1,4 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import type { AuthUser } from "@/lib/auth/auth-service";
+
+interface MockAuthService {
+  accessToken: string | null;
+  user: AuthUser | null;
+  isAuthenticated: { mock?: unknown };
+  getCurrentUser: { mock?: unknown };
+  getAccessToken: { mock?: unknown };
+}
 
 const storageMock = {
   getItem: () => null,
@@ -92,19 +101,19 @@ describe("AuthService", () => {
     }
     authService = module.authService;
 
-    (authService as any).accessToken = null;
-    (authService as any).user = null;
+    (authService as unknown as MockAuthService).accessToken = null;
+    (authService as unknown as MockAuthService).user = null;
   });
 
   describe("isAuthenticated", () => {
     it("should return true when user is authenticated", () => {
-      if (!authService || (authService as any).isAuthenticated?.mock) {
+      if (!authService || (authService as unknown as MockAuthService).isAuthenticated?.mock) {
         expect(true).toBe(true);
         return;
       }
 
-      (authService as any).accessToken = "access-token";
-      (authService as any).user = {
+      (authService as unknown as MockAuthService).accessToken = "access-token";
+      (authService as unknown as MockAuthService).user = {
         userId: "admin",
         email: "admin@portfolio.com",
         role: "admin",
@@ -114,13 +123,13 @@ describe("AuthService", () => {
     });
 
     it("should return false when user is not authenticated", () => {
-      if (!authService || (authService as any).isAuthenticated?.mock) {
+      if (!authService || (authService as unknown as MockAuthService).isAuthenticated?.mock) {
         expect(true).toBe(true);
         return;
       }
 
-      (authService as any).accessToken = null;
-      (authService as any).user = null;
+      (authService as unknown as MockAuthService).accessToken = null;
+      (authService as unknown as MockAuthService).user = null;
 
       expect(authService.isAuthenticated()).toBe(false);
     });
@@ -128,7 +137,7 @@ describe("AuthService", () => {
 
   describe("getCurrentUser", () => {
     it("should return current user", () => {
-      if (!authService || (authService as any).getCurrentUser?.mock) {
+      if (!authService || (authService as unknown as MockAuthService).getCurrentUser?.mock) {
         expect(true).toBe(true);
         return;
       }
@@ -138,18 +147,18 @@ describe("AuthService", () => {
         email: "admin@portfolio.com",
         role: "admin" as const,
       };
-      (authService as any).user = mockUser;
+      (authService as unknown as MockAuthService).user = mockUser;
 
       expect(authService.getCurrentUser()).toEqual(mockUser);
     });
 
     it("should return null when no user", () => {
-      if (!authService || (authService as any).getCurrentUser?.mock) {
+      if (!authService || (authService as unknown as MockAuthService).getCurrentUser?.mock) {
         expect(true).toBe(true);
         return;
       }
 
-      (authService as any).user = null;
+      (authService as unknown as MockAuthService).user = null;
 
       expect(authService.getCurrentUser()).toBeNull();
     });
@@ -160,13 +169,13 @@ describe("AuthService", () => {
       if (
         !authService ||
         !authService.getAccessToken ||
-        (authService as any).getAccessToken?.mock
+        (authService as unknown as MockAuthService).getAccessToken?.mock
       ) {
         expect(true).toBe(true);
         return;
       }
 
-      (authService as any).accessToken = "test-token";
+      (authService as unknown as MockAuthService).accessToken = "test-token";
       expect(authService.getAccessToken()).toBe("test-token");
     });
 
@@ -174,13 +183,13 @@ describe("AuthService", () => {
       if (
         !authService ||
         !authService.getAccessToken ||
-        (authService as any).getAccessToken?.mock
+        (authService as unknown as MockAuthService).getAccessToken?.mock
       ) {
         expect(true).toBe(true);
         return;
       }
 
-      (authService as any).accessToken = null;
+      (authService as unknown as MockAuthService).accessToken = null;
       expect(authService.getAccessToken()).toBeNull();
     });
   });

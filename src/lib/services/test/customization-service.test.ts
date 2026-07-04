@@ -58,7 +58,7 @@ describe("CustomizationService", () => {
     mockRemove.mockClear();
     localStorageMock.clear();
 
-    (CustomizationService as any).instance = undefined;
+    (CustomizationService as unknown as { instance: unknown })["instance"] = undefined;
   });
 
   it("returns built-in themes plus custom themes via getAllThemes", () => {
@@ -92,7 +92,7 @@ describe("CustomizationService", () => {
         accent: "#0ea5e9",
         border: "#222",
       },
-    } as any);
+    });
 
     expect(saved).toHaveProperty("id");
     expect(saved.name).toBe("My Theme");
@@ -113,7 +113,7 @@ describe("CustomizationService", () => {
   it("manages settings and resetToDefaults", () => {
     const svc = CustomizationService.getInstance();
 
-    svc.saveSettings({ currentTheme: "matrix" } as any);
+    svc.saveSettings({ currentTheme: "matrix" });
 
     const settings = svc.getSettings();
     expect(settings).toHaveProperty("currentTheme");

@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 describe("utils", () => {
   let utils: typeof import("../utils");
-  let cn: any;
-  let generateId: any;
-  let formatTimestamp: any;
+  let cn: typeof import("../utils").cn;
+  let generateId: typeof import("../utils").generateId;
+  let formatTimestamp: typeof import("../utils").formatTimestamp;
 
   beforeEach(async () => {
     if (typeof vi !== "undefined") {

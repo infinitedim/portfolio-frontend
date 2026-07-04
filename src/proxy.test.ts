@@ -371,7 +371,7 @@ describe("proxy", () => {
 
     it("should handle missing environment variables", () => {
       const originalOrigins = process.env.ALLOWED_ORIGINS;
-      delete (process.env as any).ALLOWED_ORIGINS;
+      delete (process.env as Record<string, string | undefined>).ALLOWED_ORIGINS;
 
       expect(() => proxy(mockRequest)).not.toThrow();
 

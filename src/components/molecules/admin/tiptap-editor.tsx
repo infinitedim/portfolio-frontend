@@ -1,6 +1,7 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
+import type { Extensions } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Image } from "@tiptap/extension-image";
 import { Link } from "@tiptap/extension-link";
@@ -30,6 +31,16 @@ const HeadingWithIds = Heading.extend({
   },
 });
 
+interface ChainedEditorCommands {
+  setImage(options: { src: string }): ChainedEditorCommands;
+  toggleBold(): ChainedEditorCommands;
+  toggleItalic(): ChainedEditorCommands;
+  toggleHeading(options: { level: 2 | 3 }): ChainedEditorCommands;
+  toggleBulletList(): ChainedEditorCommands;
+  setLink(options: { href: string }): ChainedEditorCommands;
+  run(): boolean;
+}
+
 export function TiptapEditor({
   value,
   onChange,
@@ -50,7 +61,7 @@ export function TiptapEditor({
         transformPastedText: true,
         breaks: false,
       }),
-    ],
+    ] as unknown as Extensions,
     [placeholder],
   );
 
@@ -110,7 +121,9 @@ export function TiptapEditor({
       if (!file) return;
       const url = await onImageUpload(file);
       if (url) {
-        editor.chain().focus().setImage({ src: url }).run();
+        (
+          editor.chain().focus() as unknown as ChainedEditorCommands
+        ).setImage({ src: url }).run();
       }
     };
     input.click();
@@ -142,20 +155,30 @@ export function TiptapEditor({
         <ToolbarButton
           label="B"
           active={editor.isActive("bold")}
-          onClick={() => editor.chain().focus().toggleBold().run()}
+          onClick={() =>
+            (
+              editor.chain().focus() as unknown as ChainedEditorCommands
+            ).toggleBold().run()
+          }
           themeConfig={themeConfig}
         />
         <ToolbarButton
           label="I"
           active={editor.isActive("italic")}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
+          onClick={() =>
+            (
+              editor.chain().focus() as unknown as ChainedEditorCommands
+            ).toggleItalic().run()
+          }
           themeConfig={themeConfig}
         />
         <ToolbarButton
           label="H2"
           active={editor.isActive("heading", { level: 2 })}
           onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
+            (
+              editor.chain().focus() as unknown as ChainedEditorCommands
+            ).toggleHeading({ level: 2 }).run()
           }
           themeConfig={themeConfig}
         />
@@ -163,14 +186,20 @@ export function TiptapEditor({
           label="H3"
           active={editor.isActive("heading", { level: 3 })}
           onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
+            (
+              editor.chain().focus() as unknown as ChainedEditorCommands
+            ).toggleHeading({ level: 3 }).run()
           }
           themeConfig={themeConfig}
         />
         <ToolbarButton
           label="• List"
           active={editor.isActive("bulletList")}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          onClick={() =>
+            (
+              editor.chain().focus() as unknown as ChainedEditorCommands
+            ).toggleBulletList().run()
+          }
           themeConfig={themeConfig}
         />
         <ToolbarButton
@@ -179,7 +208,9 @@ export function TiptapEditor({
           onClick={() => {
             const url = window.prompt("URL");
             if (url) {
-              editor.chain().focus().setLink({ href: url }).run();
+              (
+                editor.chain().focus() as unknown as ChainedEditorCommands
+              ).setLink({ href: url }).run();
             }
           }}
           themeConfig={themeConfig}

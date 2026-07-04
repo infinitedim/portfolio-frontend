@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useTheme } from "@/hooks/use-theme";
+import type { ThemeName } from "@/types/theme";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 const mockLocalStorage = (() => {
@@ -148,7 +149,7 @@ describe("useTheme", () => {
       const { result } = renderHook(() => useTheme());
 
       act(() => {
-        const success = result.current.changeTheme("invalidThemeName" as any);
+        const success = result.current.changeTheme("invalidThemeName" as unknown as ThemeName);
         expect(success).toBe(false);
       });
     });
@@ -162,7 +163,7 @@ describe("useTheme", () => {
       const { result } = renderHook(() => useTheme());
 
       act(() => {
-        result.current.changeTheme("invalidThemeName" as any);
+        result.current.changeTheme("invalidThemeName" as unknown as ThemeName);
       });
 
       expect(result.current.hasError).toBe(true);
@@ -179,7 +180,7 @@ describe("useTheme", () => {
       const { result } = renderHook(() => useTheme());
 
       act(() => {
-        result.current.changeTheme("invalidThemeName" as any);
+        result.current.changeTheme("invalidThemeName" as unknown as ThemeName);
       });
 
       expect(result.current.hasError).toBe(true);

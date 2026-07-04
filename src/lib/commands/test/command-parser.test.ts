@@ -4,6 +4,7 @@ import {
   splitCommandChain,
   splitPipeChain,
 } from "../command-parser";
+import type { Command, CommandOutput } from "@/types/terminal";
 
 describe("CommandParser", () => {
   it("returns error for empty input", async () => {
@@ -18,11 +19,11 @@ describe("CommandParser", () => {
       name: "echo",
       description: "echo",
       async execute(args: string[]) {
-        return { type: "success", content: args.join(" ") } as any;
+        return { type: "success", content: args.join(" ") } as CommandOutput;
       },
     };
 
-    parser.register(cmd as any);
+    parser.register(cmd as Command);
     const out = await parser.parse("echo hello world");
     expect(out.type).toBe("success");
     expect(out.content).toBe("hello world");
@@ -34,16 +35,16 @@ describe("CommandParser", () => {
       name: "a",
       description: "a",
       async execute() {
-        return { type: "success", content: "A" } as any;
+        return { type: "success", content: "A" } as CommandOutput;
       },
-    } as any);
+    } as Command);
     parser.register({
       name: "b",
       description: "b",
       async execute() {
-        return { type: "success", content: "B" } as any;
+        return { type: "success", content: "B" } as CommandOutput;
       },
-    } as any);
+    } as Command);
 
     const out = await parser.parse("a ; b");
     expect(out.type).toBe("success");
@@ -56,16 +57,16 @@ describe("CommandParser", () => {
       name: "fail",
       description: "fail",
       async execute() {
-        return { type: "error", content: "nope" } as any;
+        return { type: "error", content: "nope" } as CommandOutput;
       },
-    } as any);
+    } as Command);
     parser.register({
       name: "ok",
       description: "ok",
       async execute() {
-        return { type: "success", content: "yes" } as any;
+        return { type: "success", content: "yes" } as CommandOutput;
       },
-    } as any);
+    } as Command);
 
     const out = await parser.parse("fail && ok");
     expect(out.type).toBe("error");
@@ -77,16 +78,16 @@ describe("CommandParser", () => {
       name: "left",
       description: "left",
       async execute() {
-        return { type: "success", content: "piped" } as any;
+        return { type: "success", content: "piped" } as CommandOutput;
       },
-    } as any);
+    } as Command);
     parser.register({
       name: "right",
       description: "right",
       async execute(args: string[]) {
-        return { type: "success", content: args.join(" ") } as any;
+        return { type: "success", content: args.join(" ") } as CommandOutput;
       },
-    } as any);
+    } as Command);
 
     const out = await parser.parse("left | right");
     expect(out.type).toBe("success");

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ThemeDisplay, ThemeDisplayOptions } from "../theme-display";
+import type { ThemeName } from "@/types/theme";
 
 describe("themeDisplay", () => {
   beforeEach(() => {
@@ -36,7 +37,7 @@ describe("themeDisplay", () => {
     it("should accept valid options", () => {
       const options: ThemeDisplayOptions = {
         showCurrent: true,
-        currentTheme: "dark" as any,
+        currentTheme: "dark" as ThemeName,
         compact: false,
         showColors: true,
         columns: 2,
@@ -80,7 +81,7 @@ describe("themeDisplay", () => {
 
     it("should handle showCurrent false", () => {
       const result = ThemeDisplay.generateList({
-        currentTheme: "dark" as any,
+        currentTheme: "dark" as ThemeName,
         showCurrent: false,
       });
       expect(typeof result).toBe("string");
@@ -130,20 +131,20 @@ describe("themeDisplay", () => {
   describe("generateColorPreview method", () => {
     it("should handle valid theme names", () => {
       expect(() =>
-        ThemeDisplay.generateColorPreview("dark" as any),
+        ThemeDisplay.generateColorPreview("dark" as ThemeName),
       ).not.toThrow();
-      const result = ThemeDisplay.generateColorPreview("dark" as any);
+      const result = ThemeDisplay.generateColorPreview("dark" as ThemeName);
       expect(typeof result).toBe("string");
     });
 
     it("should handle invalid theme names", () => {
-      const result = ThemeDisplay.generateColorPreview("nonexistent" as any);
+      const result = ThemeDisplay.generateColorPreview("nonexistent" as unknown as ThemeName);
       expect(typeof result).toBe("string");
     });
 
     it("should return consistent output type", () => {
-      const result1 = ThemeDisplay.generateColorPreview("light" as any);
-      const result2 = ThemeDisplay.generateColorPreview("invalid" as any);
+      const result1 = ThemeDisplay.generateColorPreview("light" as ThemeName);
+      const result2 = ThemeDisplay.generateColorPreview("invalid" as unknown as ThemeName);
 
       expect(typeof result1).toBe("string");
       expect(typeof result2).toBe("string");
@@ -157,7 +158,7 @@ describe("themeDisplay", () => {
     });
 
     it("should handle single theme", () => {
-      const result = ThemeDisplay.generateThemeComparison(["dark"] as any[]);
+      const result = ThemeDisplay.generateThemeComparison(["dark"] as unknown as ThemeName[]);
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
     });
@@ -166,7 +167,7 @@ describe("themeDisplay", () => {
       const result = ThemeDisplay.generateThemeComparison([
         "dark",
         "light",
-      ] as any[]);
+      ] as unknown as ThemeName[]);
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
     });
@@ -174,7 +175,7 @@ describe("themeDisplay", () => {
     it("should handle invalid themes gracefully", () => {
       const result = ThemeDisplay.generateThemeComparison([
         "nonexistent",
-      ] as any[]);
+      ] as unknown as ThemeName[]);
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
     });
@@ -184,7 +185,7 @@ describe("themeDisplay", () => {
         "dark",
         "light",
         "cyberpunk",
-      ] as any[]);
+      ] as unknown as ThemeName[]);
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
     });
@@ -193,7 +194,7 @@ describe("themeDisplay", () => {
   describe("error handling and edge cases", () => {
     it("should handle null current theme", () => {
       const result = ThemeDisplay.generateList({
-        currentTheme: null as any,
+        currentTheme: null as unknown as ThemeName,
         showCurrent: true,
       });
       expect(typeof result).toBe("string");
@@ -211,13 +212,12 @@ describe("themeDisplay", () => {
     });
 
     it("should handle all method calls without throwing", () => {
-      expect(() => ThemeDisplay.generateList()).not.toThrow();
       expect(() =>
-        ThemeDisplay.generateColorPreview("test" as any),
+        ThemeDisplay.generateColorPreview("test" as unknown as ThemeName),
       ).not.toThrow();
       expect(() => ThemeDisplay.generateThemeComparison([])).not.toThrow();
       expect(() =>
-        ThemeDisplay.generateThemeComparison(["test"] as any[]),
+        ThemeDisplay.generateThemeComparison(["test" as unknown as ThemeName] as ThemeName[]),
       ).not.toThrow();
     });
   });
@@ -225,10 +225,10 @@ describe("themeDisplay", () => {
   describe("output formatting", () => {
     it("should return string output for all methods", () => {
       const list = ThemeDisplay.generateList();
-      const preview = ThemeDisplay.generateColorPreview("test" as any);
+      const preview = ThemeDisplay.generateColorPreview("test" as unknown as ThemeName);
       const comparison = ThemeDisplay.generateThemeComparison([
-        "test",
-      ] as any[]);
+        "test" as unknown as ThemeName,
+      ] as ThemeName[]);
 
       expect(typeof list).toBe("string");
       expect(typeof preview).toBe("string");

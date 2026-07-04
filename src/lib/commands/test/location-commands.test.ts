@@ -37,7 +37,7 @@ describe("locationCommands", () => {
       return;
     }
     const cmd = createLocationCommand();
-    const out = await cmd.execute([] as any);
+    const out = await cmd.execute([]);
     expect(out.type).toBe("success");
     expect(out.content as string).toContain("Location Information");
   });
@@ -48,7 +48,7 @@ describe("locationCommands", () => {
       return;
     }
     const cmd = createLocationCommand();
-    const out = await cmd.execute(["time"] as any);
+    const out = await cmd.execute(["time"]);
     expect(out.type).toBe("success");
   });
 });

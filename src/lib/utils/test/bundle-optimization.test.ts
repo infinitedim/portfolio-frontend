@@ -134,7 +134,7 @@ describe("bundleOptimization", () => {
     it("should set loading attribute to lazy for images", () => {
       global.HTMLImageElement = class MockHTMLImageElement {
         loading = "";
-      } as any;
+      } as unknown as typeof HTMLImageElement;
 
       const mockImg = new global.HTMLImageElement();
       mockDocument.querySelectorAll.mockReturnValue([mockImg]);
@@ -223,7 +223,7 @@ describe("bundleOptimization", () => {
 
     it("should handle missing performance API gracefully", () => {
       const originalPerformance = global.performance;
-      (global as any).performance = undefined;
+      (global as unknown as Record<string, unknown>).performance = undefined;
 
       expect(() => analyzeBundleSize()).not.toThrow();
 
@@ -316,7 +316,7 @@ describe("optimizeThirdParty function", () => {
   it("should set defer attribute on scripts", () => {
     global.HTMLScriptElement = class MockHTMLScriptElement {
       defer = false;
-    } as any;
+    } as unknown as typeof HTMLScriptElement;
 
     const mockScript = new global.HTMLScriptElement();
     mockDocument.querySelectorAll.mockReturnValue([mockScript]);
@@ -401,7 +401,7 @@ describe("initBundleOptimizations function", () => {
 describe("error handling and edge cases", () => {
   it("should handle missing performance API", () => {
     const originalPerformance = global.performance;
-    (global as any).performance = undefined;
+    (global as unknown as Record<string, unknown>).performance = undefined;
 
     expect(() => analyzeBundleSize()).not.toThrow();
 
@@ -418,7 +418,7 @@ describe("error handling and edge cases", () => {
       removeItem: vi.fn(),
     };
 
-    (global as any).localStorage = mockLocalStorage;
+    (global as unknown as Record<string, unknown>).localStorage = mockLocalStorage;
 
     Object.keys = vi.fn().mockReturnValue(["temp-test"]);
 

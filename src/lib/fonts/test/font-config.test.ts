@@ -23,7 +23,7 @@ describe("fontConfig", () => {
     expect(fontKeys.length).toBeGreaterThan(0);
 
     for (const key of fontKeys) {
-      const f = (fonts as any)[key];
+      const f = fonts[key as keyof typeof fonts];
       expect(f).toBeDefined();
       expect(f).toHaveProperty("name");
       expect(f).toHaveProperty("family");

@@ -7,6 +7,7 @@ import {
   validateTheme,
   getThemePreview,
 } from "@/lib/themes/theme-config";
+import type { ThemeName } from "@/types/theme";
 
 describe("themeConfig", () => {
   beforeEach(() => {
@@ -223,7 +224,7 @@ describe("themeConfig", () => {
     });
 
     it("should return default theme for invalid theme", () => {
-      const result = getThemeConfig("nonexistent" as any);
+      const result = getThemeConfig("nonexistent" as unknown as ThemeName);
       expect(result).toBeDefined();
       expect(result.name).toBe("Default Dark");
       expect(result.colors).toBeDefined();
@@ -255,7 +256,7 @@ describe("themeConfig", () => {
       expect(themeNames.length).toBeGreaterThan(0);
 
       themeNames.forEach((themeName) => {
-        const result = getThemeConfig(themeName as any);
+        const result = getThemeConfig(themeName as ThemeName);
         expect(result).toBeDefined();
         const originalTheme = themes[themeName as keyof typeof themes];
         if (originalTheme) {
@@ -268,7 +269,7 @@ describe("themeConfig", () => {
       const themeNames = Object.keys(themes);
 
       themeNames.forEach((themeName) => {
-        const result = getThemeConfig(themeName as any);
+        const result = getThemeConfig(themeName as ThemeName);
         expect(result).toHaveProperty("name");
         expect(result).toHaveProperty("colors");
         expect(result).toHaveProperty("description");
@@ -327,8 +328,8 @@ describe("themeConfig", () => {
     });
 
     it("should handle null and undefined", () => {
-      expect(validateTheme(null as any)).toBe(false);
-      expect(validateTheme(undefined as any)).toBe(false);
+      expect(validateTheme(null as unknown as ThemeName)).toBe(false);
+      expect(validateTheme(undefined as unknown as ThemeName)).toBe(false);
     });
   });
 
@@ -349,7 +350,7 @@ describe("themeConfig", () => {
     });
 
     it("should return empty string for invalid theme", () => {
-      const result = getThemePreview("nonexistent" as any);
+      const result = getThemePreview("nonexistent" as unknown as ThemeName);
       expect(result).toBe("");
     });
 
@@ -379,7 +380,7 @@ describe("themeConfig", () => {
 
       if (themeNames.length > 1) {
         themeNames.forEach((themeName) => {
-          const result = getThemePreview(themeName as any);
+          const result = getThemePreview(themeName as ThemeName);
           expect(typeof result).toBe("string");
           expect(result.length).toBeGreaterThan(0);
           expect(result).toContain("🎨");
@@ -388,7 +389,7 @@ describe("themeConfig", () => {
           expect(result).toContain("Accent:");
         });
       } else {
-        const result = getThemePreview("default" as any);
+        const result = getThemePreview("default" as unknown as ThemeName);
         expect(typeof result).toBe("string");
         expect(result.length).toBeGreaterThan(0);
       }
@@ -548,13 +549,13 @@ describe("themeConfig", () => {
 
   describe("edge cases and error handling", () => {
     it("should handle null theme name in getThemeConfig", () => {
-      const result = getThemeConfig(null as any);
+      const result = getThemeConfig(null as unknown as ThemeName);
       expect(result).toBeDefined();
       expect(result.name).toBe("Default Dark");
     });
 
     it("should handle undefined theme name in getThemeConfig", () => {
-      const result = getThemeConfig(undefined as any);
+      const result = getThemeConfig(undefined as unknown as ThemeName);
       expect(result).toBeDefined();
       expect(result.name).toBe("Default Dark");
     });
@@ -569,12 +570,12 @@ describe("themeConfig", () => {
     });
 
     it("should handle null in getThemePreview", () => {
-      const result = getThemePreview(null as any);
+      const result = getThemePreview(null as unknown as ThemeName);
       expect(result).toBe("");
     });
 
     it("should handle undefined in getThemePreview", () => {
-      const result = getThemePreview(undefined as any);
+      const result = getThemePreview(undefined as unknown as ThemeName);
       expect(result).toBe("");
     });
   });
@@ -594,9 +595,9 @@ describe("themeConfig", () => {
       if (themeNames.length > 1) {
         const validTheme = themeNames[0];
         expect(validateTheme(validTheme)).toBe(true);
-        const config = getThemeConfig(validTheme);
+        const config = getThemeConfig(validTheme as ThemeName);
         expect(config).toBeDefined();
-        const preview = getThemePreview(validTheme);
+        const preview = getThemePreview(validTheme as ThemeName);
         expect(preview).toContain(config.name);
       } else {
         expect(validateTheme("default")).toBe(true);
@@ -612,10 +613,10 @@ describe("themeConfig", () => {
 
       expect(validateTheme("invalid")).toBe(false);
 
-      const config = getThemeConfig("invalid" as any);
+      const config = getThemeConfig("invalid" as unknown as ThemeName);
       expect(config.name).toBe("Default Dark");
 
-      const preview = getThemePreview("invalid" as any);
+      const preview = getThemePreview("invalid" as unknown as ThemeName);
       expect(preview).toBe("");
     });
 
@@ -634,14 +635,14 @@ describe("themeConfig", () => {
         themeNames.forEach((themeName) => {
           expect(validateTheme(themeName)).toBe(true);
 
-          const config = getThemeConfig(themeName as any);
+          const config = getThemeConfig(themeName as ThemeName);
           const originalTheme =
             currentThemes[themeName as keyof typeof currentThemes];
           if (originalTheme) {
             expect(config.name).toBe(originalTheme.name);
           }
 
-          const preview = getThemePreview(themeName as any);
+          const preview = getThemePreview(themeName as ThemeName);
           expect(preview).toContain(config.name);
         });
       } else {
