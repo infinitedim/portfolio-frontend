@@ -37,16 +37,21 @@ export async function getCachedBlogList(
     locale,
   });
 
-  const response = await fetch(
-    `${getServerApiUrl()}/api/blog?${params.toString()}`,
-    { next: { tags: ["blog-list", locale] } },
-  );
+  try {
+    const response = await fetch(
+      `${getServerApiUrl()}/api/blog?${params.toString()}`,
+      { next: { tags: ["blog-list", locale] } },
+    );
 
-  if (!response.ok) {
+    if (!response.ok) {
+      return { items: [], page, pageSize, total: 0 };
+    }
+
+    return (await response.json()) as BlogListResponse;
+  } catch (error) {
+    console.error("Failed to fetch cached blog list:", error);
     return { items: [], page, pageSize, total: 0 };
   }
-
-  return (await response.json()) as BlogListResponse;
 }
 
 export interface CachedBlogPostDetail {
@@ -71,14 +76,19 @@ export async function getCachedBlogPost(
   cacheLife("hours");
 
   const params = new URLSearchParams({ locale });
-  const response = await fetch(
-    `${getServerApiUrl()}/api/blog/${slug}?${params.toString()}`,
-    { next: { tags: ["blog-post", slug, locale] } },
-  );
+  try {
+    const response = await fetch(
+      `${getServerApiUrl()}/api/blog/${slug}?${params.toString()}`,
+      { next: { tags: ["blog-post", slug, locale] } },
+    );
 
-  if (!response.ok) {
+    if (!response.ok) {
+      return null;
+    }
+
+    return (await response.json()) as CachedBlogPostDetail;
+  } catch (error) {
+    console.error(`Failed to fetch cached blog post ${slug}:`, error);
     return null;
   }
-
-  return (await response.json()) as CachedBlogPostDetail;
 }

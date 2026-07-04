@@ -60,21 +60,31 @@ async function authedFetch(
 }
 
 export async function listPublicSeries(): Promise<BlogSeriesSummary[]> {
-  const response = await fetch(`${apiBase()}/api/blog/series`, {
-    next: { revalidate: 3600 },
-  });
-  if (!response.ok) return [];
-  return response.json();
+  try {
+    const response = await fetch(`${apiBase()}/api/blog/series`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) return [];
+    return response.json();
+  } catch (error) {
+    console.error("Failed to list public series:", error);
+    return [];
+  }
 }
 
 export async function getPublicSeries(
   slug: string,
 ): Promise<BlogSeriesDetail | null> {
-  const response = await fetch(`${apiBase()}/api/blog/series/${slug}`, {
-    next: { revalidate: 3600 },
-  });
-  if (!response.ok) return null;
-  return response.json();
+  try {
+    const response = await fetch(`${apiBase()}/api/blog/series/${slug}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) return null;
+    return response.json();
+  } catch (error) {
+    console.error(`Failed to get public series ${slug}:`, error);
+    return null;
+  }
 }
 
 export async function listAdminSeries(): Promise<BlogSeriesSummary[]> {
