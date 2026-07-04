@@ -10,18 +10,18 @@ This skill does exactly one job itself — **STRIDE/DREAD threat modeling** (plu
 
 ## Routing Table (read this first)
 
-| The user wants... | Route to | Why that skill owns it |
-|---|---|---|
-| Vulnerability assessment, pen-test methodology, OWASP Top 10 testing | `../security-pen-testing/` | Ships `vulnerability_scanner.py` + `dependency_auditor.py` with exit-code contracts |
-| Incident triage, SEV classification, forensics, containment | `../incident-response/` | SEV1–SEV4 taxonomy, NIST SP 800-61 phases, `incident_triage.py` |
-| Production outage command (non-security incidents) | `../incident-commander/` | Severity classifier + timeline + postmortem tools |
-| Security monitoring, CVE triage SLAs, compliance checks (SOC 2 etc.), security headers | `../senior-secops/` | `security_scanner.py` + `compliance_checker.py`, CVE SLA table |
-| Hostile/adversarial code review | `../adversarial-reviewer/` | 3-persona review with BLOCK/CONCERNS/CLEAN verdict |
-| Secure code review as part of general review | `../code-reviewer/` | Language dispatch + regression fixtures |
-| Cloud IAM escalation paths, S3 exposure, security groups | `../cloud-security/` | `cloud_posture_check.py` with per-check exit codes |
-| Threat hunting, IOC sweeps, anomaly detection | `../threat-detection/` | z-score anomaly + IOC staleness tooling |
-| Red-team engagement planning, ATT&CK kill chains | `../red-team/` | `engagement_planner.py` with authorization gate |
-| LLM/AI attack surface (prompt injection, poisoning) | `../ai-security/` | ATLAS-mapped `ai_threat_scanner.py` |
+| The user wants...                                                                      | Route to                   | Why that skill owns it                                                              |
+| -------------------------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------------------- |
+| Vulnerability assessment, pen-test methodology, OWASP Top 10 testing                   | `../security-pen-testing/` | Ships `vulnerability_scanner.py` + `dependency_auditor.py` with exit-code contracts |
+| Incident triage, SEV classification, forensics, containment                            | `../incident-response/`    | SEV1–SEV4 taxonomy, NIST SP 800-61 phases, `incident_triage.py`                     |
+| Production outage command (non-security incidents)                                     | `../incident-commander/`   | Severity classifier + timeline + postmortem tools                                   |
+| Security monitoring, CVE triage SLAs, compliance checks (SOC 2 etc.), security headers | `../senior-secops/`        | `security_scanner.py` + `compliance_checker.py`, CVE SLA table                      |
+| Hostile/adversarial code review                                                        | `../adversarial-reviewer/` | 3-persona review with BLOCK/CONCERNS/CLEAN verdict                                  |
+| Secure code review as part of general review                                           | `../code-reviewer/`        | Language dispatch + regression fixtures                                             |
+| Cloud IAM escalation paths, S3 exposure, security groups                               | `../cloud-security/`       | `cloud_posture_check.py` with per-check exit codes                                  |
+| Threat hunting, IOC sweeps, anomaly detection                                          | `../threat-detection/`     | z-score anomaly + IOC staleness tooling                                             |
+| Red-team engagement planning, ATT&CK kill chains                                       | `../red-team/`             | `engagement_planner.py` with authorization gate                                     |
+| LLM/AI attack surface (prompt injection, poisoning)                                    | `../ai-security/`          | ATLAS-mapped `ai_threat_scanner.py`                                                 |
 
 If the request spans lanes (e.g., "secure this new architecture"), do the threat model here first — its output (prioritized threats + mitigations) tells you which siblings to load next. Never bulk-load multiple security skills speculatively.
 
@@ -45,21 +45,21 @@ If the request spans lanes (e.g., "secure this new architecture"), do the threat
 
 ### STRIDE per Element Matrix
 
-| DFD Element | S | T | R | I | D | E |
-|-------------|---|---|---|---|---|---|
-| External Entity | X | | X | | | |
-| Process | X | X | X | X | X | X |
-| Data Store | | X | X | X | X | |
-| Data Flow | | X | | X | X | |
+| DFD Element     | S   | T   | R   | I   | D   | E   |
+| --------------- | --- | --- | --- | --- | --- | --- |
+| External Entity | X   |     | X   |     |     |     |
+| Process         | X   | X   | X   | X   | X   | X   |
+| Data Store      |     | X   | X   | X   | X   |     |
+| Data Flow       |     | X   |     | X   | X   |     |
 
 (S=Spoofing→authn, T=Tampering→integrity, R=Repudiation→audit logs, I=Info Disclosure→encryption/access control, D=DoS→rate limiting/redundancy, E=Elevation→least privilege.)
 
 ## References (load on demand)
 
-| Document | Content |
-|----------|---------|
-| [references/threat-modeling-guide.md](references/threat-modeling-guide.md) | STRIDE methodology, attack trees, DREAD scoring, DFD creation |
+| Document                                                                                     | Content                                                             |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [references/threat-modeling-guide.md](references/threat-modeling-guide.md)                   | STRIDE methodology, attack trees, DREAD scoring, DFD creation       |
 | [references/security-architecture-patterns.md](references/security-architecture-patterns.md) | Zero Trust, defense-in-depth, authentication patterns, API security |
-| [references/cryptography-implementation.md](references/cryptography-implementation.md) | AES-GCM, Ed25519, password hashing (Argon2id), key management |
+| [references/cryptography-implementation.md](references/cryptography-implementation.md)       | AES-GCM, Ed25519, password hashing (Argon2id), key management       |
 
-The architecture and crypto references are kept because no sibling ships them; for *operating* those controls (scanning, compliance, monitoring) still route to `senior-secops`.
+The architecture and crypto references are kept because no sibling ships them; for _operating_ those controls (scanning, compliance, monitoring) still route to `senior-secops`.

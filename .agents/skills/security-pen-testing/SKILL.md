@@ -36,12 +36,12 @@ This skill provides the methodology, checklists, and automation for **offensive 
 
 ### Distinction from Other Security Skills
 
-| Skill | Focus | Approach |
-|-------|-------|----------|
-| **security-pen-testing** (this) | Finding vulnerabilities | Offensive — simulate attacker techniques |
-| senior-secops | Security operations | Defensive — monitoring, incident response, SIEM |
-| senior-security | Security policy | Governance — policies, frameworks, risk registers |
-| skill-security-auditor | CI/CD gates | Automated — pre-merge security checks |
+| Skill                           | Focus                   | Approach                                          |
+| ------------------------------- | ----------------------- | ------------------------------------------------- |
+| **security-pen-testing** (this) | Finding vulnerabilities | Offensive — simulate attacker techniques          |
+| senior-secops                   | Security operations     | Defensive — monitoring, incident response, SIEM   |
+| senior-security                 | Security policy         | Governance — policies, frameworks, risk registers |
+| skill-security-auditor          | CI/CD gates             | Automated — pre-merge security checks             |
 
 ### Prerequisites
 
@@ -63,18 +63,18 @@ python scripts/vulnerability_scanner.py --target api --scope quick --json
 
 ### Quick Reference
 
-| # | Category | Key Tests |
-|---|----------|-----------|
-| A01 | Broken Access Control | IDOR, vertical escalation, CORS, JWT claim manipulation, forced browsing |
-| A02 | Cryptographic Failures | TLS version, password hashing, hardcoded keys, weak PRNG |
-| A03 | Injection | SQLi, NoSQLi, command injection, template injection, XSS |
-| A04 | Insecure Design | Rate limiting, business logic abuse, multi-step flow bypass |
-| A05 | Security Misconfiguration | Default credentials, debug mode, security headers, directory listing |
-| A06 | Vulnerable Components | Dependency audit (npm/pip/go), EOL checks, known CVEs |
-| A07 | Auth Failures | Brute force, session cookie flags, session invalidation, MFA bypass |
-| A08 | Integrity Failures | Unsafe deserialization, SRI checks, CI/CD pipeline integrity |
-| A09 | Logging Failures | Auth event logging, sensitive data in logs, alerting thresholds |
-| A10 | SSRF | Internal IP access, cloud metadata endpoints, DNS rebinding |
+| #   | Category                  | Key Tests                                                                |
+| --- | ------------------------- | ------------------------------------------------------------------------ |
+| A01 | Broken Access Control     | IDOR, vertical escalation, CORS, JWT claim manipulation, forced browsing |
+| A02 | Cryptographic Failures    | TLS version, password hashing, hardcoded keys, weak PRNG                 |
+| A03 | Injection                 | SQLi, NoSQLi, command injection, template injection, XSS                 |
+| A04 | Insecure Design           | Rate limiting, business logic abuse, multi-step flow bypass              |
+| A05 | Security Misconfiguration | Default credentials, debug mode, security headers, directory listing     |
+| A06 | Vulnerable Components     | Dependency audit (npm/pip/go), EOL checks, known CVEs                    |
+| A07 | Auth Failures             | Brute force, session cookie flags, session invalidation, MFA bypass      |
+| A08 | Integrity Failures        | Unsafe deserialization, SRI checks, CI/CD pipeline integrity             |
+| A09 | Logging Failures          | Auth event logging, sensitive data in logs, alerting thresholds          |
+| A10 | SSRF                      | Internal IP access, cloud metadata endpoints, DNS rebinding              |
 
 ```bash
 # Audit dependencies
@@ -101,6 +101,7 @@ See [attack_patterns.md](references/attack_patterns.md) for code patterns and de
 **Ecosystem commands:** `npm audit`, `pip audit`, `govulncheck ./...`, `bundle audit check`
 
 **CVE Triage Workflow:**
+
 1. **Collect** — Run ecosystem audit tools, aggregate findings
 2. **Deduplicate** — Group by CVE ID across direct and transitive deps
 3. **Prioritize** — Critical + exploitable + reachable = fix immediately
@@ -153,13 +154,13 @@ See [attack_patterns.md](references/attack_patterns.md) for complete JWT manipul
 
 ## Web Vulnerability Testing
 
-| Vulnerability | Key Tests |
-|--------------|-----------|
-| **XSS** | Reflected (script/img/svg payloads), Stored (persistent fields), DOM-based (innerHTML + location.hash) |
-| **CSRF** | Replay without token (expect 403), cross-session token replay, check SameSite cookie attribute |
-| **SQL Injection** | Error-based (`' OR 1=1--`), union-based enumeration, time-based blind (`SLEEP(5)`), boolean-based blind |
-| **SSRF** | Internal IPs, cloud metadata endpoints (AWS/GCP/Azure), IPv6/hex/decimal encoding bypasses |
-| **Path Traversal** | `../../../etc/passwd`, URL encoding, double encoding bypasses |
+| Vulnerability      | Key Tests                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------- |
+| **XSS**            | Reflected (script/img/svg payloads), Stored (persistent fields), DOM-based (innerHTML + location.hash)  |
+| **CSRF**           | Replay without token (expect 403), cross-session token replay, check SameSite cookie attribute          |
+| **SQL Injection**  | Error-based (`' OR 1=1--`), union-based enumeration, time-based blind (`SLEEP(5)`), boolean-based blind |
+| **SSRF**           | Internal IPs, cloud metadata endpoints (AWS/GCP/Azure), IPv6/hex/decimal encoding bypasses              |
+| **Path Traversal** | `../../../etc/passwd`, URL encoding, double encoding bypasses                                           |
 
 See [attack_patterns.md](references/attack_patterns.md) for complete test payloads (XSS filter bypasses, context-specific XSS, SQL injection per database engine, SSRF bypass techniques, and DOM-based XSS source/sink pairs).
 
@@ -168,6 +169,7 @@ See [attack_patterns.md](references/attack_patterns.md) for complete test payloa
 ## Infrastructure Security
 
 **Key checks:**
+
 - **Cloud storage:** S3 bucket public access (`aws s3 ls s3://bucket --no-sign-request`), bucket policies, ACLs
 - **HTTP security headers:** HSTS, CSP (no `unsafe-inline`/`unsafe-eval`), X-Content-Type-Options, X-Frame-Options, Referrer-Policy
 - **TLS configuration:** `nmap --script ssl-enum-ciphers -p 443 target.com` or `testssl.sh` — reject TLS 1.0/1.1, RC4, 3DES, export-grade ciphers
@@ -253,18 +255,21 @@ curl -sI https://target.com | grep -iE "(strict-transport|content-security|x-fra
 ### Workflow 2: Full Penetration Test (Multi-Day Assessment)
 
 **Day 1 — Reconnaissance:**
+
 1. Map the attack surface: endpoints, authentication flows, third-party integrations
 2. Run automated OWASP checklist (full scope)
 3. Run dependency audit across all manifests
 4. Run secret scan on full git history
 
 **Day 2 — Manual Testing:**
+
 1. Test authentication and authorization (IDOR, BOLA, BFLA)
 2. Test injection points (SQLi, XSS, SSRF, command injection)
 3. Test business logic flaws
 4. Test API-specific vulnerabilities (GraphQL, rate limiting, mass assignment)
 
 **Day 3 — Infrastructure and Reporting:**
+
 1. Check cloud storage permissions
 2. Verify TLS configuration and security headers
 3. Port scan for unnecessary services
@@ -299,9 +304,9 @@ Automated security checks on every PR: secret scanning (TruffleHog), dependency 
 
 ## Cross-References
 
-| Skill | Relationship |
-|-------|-------------|
-| [senior-secops](../senior-secops/SKILL.md) | Defensive security operations — monitoring, incident response, SIEM configuration |
-| [senior-security](../senior-security/SKILL.md) | Security policy and governance — frameworks, risk registers, compliance |
-| [dependency-auditor](engineering/skills/dependency-auditor/SKILL.md) | Deep supply chain security — SBOMs, license compliance, transitive risk |
-| [code-reviewer](../code-reviewer/SKILL.md) | Code review practices — includes security review checklist |
+| Skill                                                                | Relationship                                                                      |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [senior-secops](../senior-secops/SKILL.md)                           | Defensive security operations — monitoring, incident response, SIEM configuration |
+| [senior-security](../senior-security/SKILL.md)                       | Security policy and governance — frameworks, risk registers, compliance           |
+| [dependency-auditor](engineering/skills/dependency-auditor/SKILL.md) | Deep supply chain security — SBOMs, license compliance, transitive risk           |
+| [code-reviewer](../code-reviewer/SKILL.md)                           | Code review practices — includes security review checklist                        |

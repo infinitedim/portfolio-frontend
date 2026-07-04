@@ -1,4 +1,5 @@
 <!-- Updated: 2026-02-07 -->
+
 # Publisher/Media SEO Strategy Template
 
 ## Industry Characteristics
@@ -38,16 +39,17 @@
 
 ## Schema Recommendations
 
-| Page Type | Schema Types |
-|-----------|-------------|
-| Article | NewsArticle or Article, Person (author), Organization (publisher) |
-| Author Page | Person, ProfilePage |
-| Topic Page | CollectionPage, ItemList |
-| Homepage | WebSite, Organization |
-| Video | VideoObject |
-| Podcast | PodcastEpisode, PodcastSeries |
+| Page Type   | Schema Types                                                      |
+| ----------- | ----------------------------------------------------------------- |
+| Article     | NewsArticle or Article, Person (author), Organization (publisher) |
+| Author Page | Person, ProfilePage                                               |
+| Topic Page  | CollectionPage, ItemList                                          |
+| Homepage    | WebSite, Organization                                             |
+| Video       | VideoObject                                                       |
+| Podcast     | PodcastEpisode, PodcastSeries                                     |
 
 ### NewsArticle Schema Example
+
 ```json
 {
   "@context": "https://schema.org",
@@ -81,6 +83,7 @@
 Publishers face highest E-E-A-T scrutiny.
 
 ### Author Pages Must Include
+
 - Full name and photo
 - Bio and credentials
 - Areas of expertise
@@ -89,6 +92,7 @@ Publishers face highest E-E-A-T scrutiny.
 - Previous articles by this author
 
 ### Editorial Standards
+
 - Clear correction policy
 - Transparent editorial process
 - Fact-checking procedures
@@ -97,18 +101,21 @@ Publishers face highest E-E-A-T scrutiny.
 ## Content Priorities
 
 ### High Priority
+
 1. Breaking news (speed matters)
 2. Evergreen guides on core topics
 3. Author pages with credentials
 4. Topic hubs/pillar pages
 
 ### Medium Priority
+
 1. Opinion/analysis pieces
 2. Video content
 3. Interactive content
 4. Newsletter landing pages
 
 ### GEO Considerations
+
 - Clear, quotable facts in articles
 - Tables for data-heavy content
 - Expert quotes with attribution
@@ -128,17 +135,20 @@ Publishers face highest E-E-A-T scrutiny.
 ## Technical Considerations
 
 ### Core Web Vitals
+
 - Ad placement affects CLS
 - Lazy load ads and images below fold
 - Optimize hero images for LCP
 - Minimize render-blocking resources
 
 ### AMP (if used)
+
 - Consider dropping AMP (no longer required for Top Stories)
 - Ensure canonical setup is correct
 - Monitor performance vs non-AMP
 
 ### Pagination
+
 - Proper pagination for multi-page articles
 - Or infinite scroll with proper indexing
 - Canonical to page 1 or full article

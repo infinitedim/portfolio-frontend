@@ -237,10 +237,7 @@ export const skillsCommand: Command = {
             const progressBar =
               "▓".repeat(Math.floor(skill.progress / 10)) +
               "░".repeat(10 - Math.floor(skill.progress / 10));
-            const priorityIcon =
-              skill.priority === "high"
-                ? " [H]"
-                : "";
+            const priorityIcon = skill.priority === "high" ? " [H]" : "";
             return `  ${statusIcon}${priorityIcon} ${skill.name.padEnd(20)} [${progressBar}] ${skill.progress}%`;
           }),
         ].join("\n");
@@ -266,10 +263,7 @@ export const skillsCommand: Command = {
                     : skill.status === "in-progress"
                       ? "[~]"
                       : "[ ]";
-                const priorityIcon =
-                  skill.priority === "high"
-                    ? " [H]"
-                    : "";
+                const priorityIcon = skill.priority === "high" ? " [H]" : "";
                 return `  ${statusIcon}${priorityIcon} ${skill.name} (${skill.progress}%)`;
               }),
               "",
@@ -414,10 +408,7 @@ export const skillsCommand: Command = {
               : skill.status === "in-progress"
                 ? "[~]"
                 : "[ ]";
-          const priorityIcon =
-            skill.priority === "high"
-              ? " [H]"
-              : "";
+          const priorityIcon = skill.priority === "high" ? " [H]" : "";
           return `  ${statusIcon}${priorityIcon} ${skill.name} (${skill.category}) - ${skill.progress}%`;
         }),
         "",
@@ -486,10 +477,7 @@ export const skillsCommand: Command = {
           const progressBar =
             "▓".repeat(Math.floor(skill.progress / 10)) +
             "░".repeat(10 - Math.floor(skill.progress / 10));
-          const priorityIcon =
-            skill.priority === "high"
-              ? " [H]"
-              : "";
+          const priorityIcon = skill.priority === "high" ? " [H]" : "";
           return `  [~]${priorityIcon} ${skill.name.padEnd(20)} [${progressBar}] ${skill.progress}%`;
         }),
         "",

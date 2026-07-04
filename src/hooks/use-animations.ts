@@ -1,10 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
-import {
-  useMountRef,
-  generateId,
-  withErrorHandling,
-} from "./hooks-utils";
+import { useMountRef, generateId, withErrorHandling } from "./hooks-utils";
 
 export interface AnimationConfig {
   duration: number;

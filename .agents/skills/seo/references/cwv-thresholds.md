@@ -1,15 +1,17 @@
 <!-- Updated: 2026-02-07 -->
+
 # Core Web Vitals Thresholds (February 2026)
 
 ## Current Metrics
 
-| Metric | Good | Needs Improvement | Poor |
-|--------|------|-------------------|------|
-| LCP (Largest Contentful Paint) | ≤2.5s | 2.5s–4.0s | >4.0s |
-| INP (Interaction to Next Paint) | ≤200ms | 200ms–500ms | >500ms |
-| CLS (Cumulative Layout Shift) | ≤0.1 | 0.1–0.25 | >0.25 |
+| Metric                          | Good   | Needs Improvement | Poor   |
+| ------------------------------- | ------ | ----------------- | ------ |
+| LCP (Largest Contentful Paint)  | ≤2.5s  | 2.5s–4.0s         | >4.0s  |
+| INP (Interaction to Next Paint) | ≤200ms | 200ms–500ms       | >500ms |
+| CLS (Cumulative Layout Shift)   | ≤0.1   | 0.1–0.25          | >0.25  |
 
 ## Key Facts
+
 - INP replaced FID (First Input Delay) on **March 12, 2024**. FID was fully removed from all Chrome tools (CrUX API, PageSpeed Insights, Lighthouse) on **September 9, 2024**. INP is the sole interactivity metric.
 - Evaluation uses the **75th percentile** of real user data (field data from CrUX).
 - Google assesses at the **page level** and the **origin level**.
@@ -22,12 +24,12 @@
 
 LCP can now be broken into diagnostic subparts:
 
-| Subpart | What It Measures | Target |
-|---------|------------------|--------|
-| **TTFB** | Time to First Byte (server response) | <800ms |
-| **Resource Load Delay** | Time from TTFB to resource request start | Minimize |
-| **Resource Load Time** | Time to download the LCP resource | Depends on size |
-| **Element Render Delay** | Time from resource loaded to rendered | Minimize |
+| Subpart                  | What It Measures                         | Target          |
+| ------------------------ | ---------------------------------------- | --------------- |
+| **TTFB**                 | Time to First Byte (server response)     | <800ms          |
+| **Resource Load Delay**  | Time from TTFB to resource request start | Minimize        |
+| **Resource Load Time**   | Time to download the LCP resource        | Depends on size |
+| **Element Render Delay** | Time from resource loaded to rendered    | Minimize        |
 
 **Total LCP = TTFB + Resource Load Delay + Resource Load Time + Element Render Delay**
 
@@ -47,11 +49,13 @@ Use this breakdown to identify which phase is causing LCP issues.
 ## Measurement Sources
 
 ### Field Data (Real Users)
+
 - Chrome User Experience Report (CrUX)
 - PageSpeed Insights (uses CrUX data)
 - Search Console Core Web Vitals report
 
 ### Lab Data (Simulated)
+
 - Lighthouse
 - WebPageTest
 - Chrome DevTools
@@ -61,6 +65,7 @@ Use this breakdown to identify which phase is causing LCP issues.
 ## Common Bottlenecks
 
 ### LCP (Largest Contentful Paint)
+
 - Unoptimized hero images (compress, use WebP/AVIF, add preload)
 - Render-blocking CSS/JS (defer, async, critical CSS inlining)
 - Slow server response (TTFB >200ms: use edge CDN, caching)
@@ -68,6 +73,7 @@ Use this breakdown to identify which phase is causing LCP issues.
 - Web font loading delay (use font-display: swap + preload)
 
 ### INP (Interaction to Next Paint)
+
 - Long JavaScript tasks on main thread (break into smaller tasks <50ms)
 - Heavy event handlers (debounce, use requestAnimationFrame)
 - Excessive DOM size (>1,500 elements is concerning)
@@ -76,6 +82,7 @@ Use this breakdown to identify which phase is causing LCP issues.
 - Layout thrashing (multiple forced reflows)
 
 ### CLS (Cumulative Layout Shift)
+
 - Images/iframes without width/height dimensions
 - Dynamically injected content above existing content
 - Web fonts causing layout shift (use font-display: swap + preload)

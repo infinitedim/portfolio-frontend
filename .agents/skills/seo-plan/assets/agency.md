@@ -1,4 +1,5 @@
 <!-- Updated: 2026-02-07 -->
+
 # Agency/Consultancy SEO Strategy Template
 
 ## Industry Characteristics
@@ -46,15 +47,16 @@
 
 ## Schema Recommendations
 
-| Page Type | Schema Types |
-|-----------|-------------|
-| Homepage | Organization, ProfessionalService |
-| Service Page | Service, ProfessionalService |
-| Case Study | Article, Organization (client) |
-| Team Member | Person, ProfilePage |
-| Blog | Article, BlogPosting |
+| Page Type    | Schema Types                      |
+| ------------ | --------------------------------- |
+| Homepage     | Organization, ProfessionalService |
+| Service Page | Service, ProfessionalService      |
+| Case Study   | Article, Organization (client)    |
+| Team Member  | Person, ProfilePage               |
+| Blog         | Article, BlogPosting              |
 
 ### ProfessionalService Schema Example
+
 ```json
 {
   "@context": "https://schema.org",
@@ -91,6 +93,7 @@
 ## E-E-A-T Requirements
 
 ### Team Pages Must Include
+
 - Professional headshots
 - Detailed bios with credentials
 - Industry experience
@@ -99,6 +102,7 @@
 - Social profiles
 
 ### Case Studies Must Include
+
 - Client name (with permission) or industry
 - Challenge/problem statement
 - Approach/methodology
@@ -109,18 +113,21 @@
 ## Content Priorities
 
 ### High Priority
+
 1. Service pages (detailed, specific)
 2. Industry pages (vertical expertise)
 3. 3-5 detailed case studies
 4. Team/leadership pages
 
 ### Medium Priority
+
 1. Methodology/process page
 2. Blog with thought leadership
 3. Comparison content (vs alternatives)
 4. FAQ page
 
 ### Thought Leadership Topics
+
 - Industry trend analysis
 - How-to guides (non-competitive)
 - Original research/surveys
@@ -131,6 +138,7 @@
 ## Content Strategy
 
 ### Service Pages (min 800 words)
+
 - Clear value proposition
 - Methodology overview
 - Deliverables list
@@ -139,6 +147,7 @@
 - CTA to schedule consultation
 
 ### Industry Pages (min 800 words)
+
 - Industry-specific challenges
 - How you solve them differently
 - Relevant case studies
@@ -146,6 +155,7 @@
 - Client logos (with permission)
 
 ### Case Studies (min 1,000 words)
+
 - Executive summary
 - Client background
 - Challenge details

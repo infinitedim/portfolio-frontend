@@ -348,4 +348,3 @@ export const DEFAULT_BLOG_LOCALE = "en";
 export function isValidBlogLocale(code: string): boolean {
   return BLOG_CONTENT_LOCALES.some((locale) => locale.code === code);
 }
-

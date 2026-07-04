@@ -57,7 +57,10 @@ vi.mock("@/components/organisms/projects/projects-loading", () => ({
   ProjectsLoading: () => <div data-testid="projects-loading">Loading...</div>,
 }));
 
-import ProjectsPage, { ProjectsPageContent, metadata as projectsMetadata } from "./page";
+import ProjectsPage, {
+  ProjectsPageContent,
+  metadata as projectsMetadata,
+} from "./page";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
 describe("ProjectsPage", () => {
@@ -110,11 +113,7 @@ describe("ProjectsPage", () => {
   describe("Component Rendering", () => {
     const renderProjectsPage = async () => {
       const ResolvedContent = await ProjectsPageContent();
-      return render(
-        <StandardPageLayout>
-          {ResolvedContent}
-        </StandardPageLayout>
-      );
+      return render(<StandardPageLayout>{ResolvedContent}</StandardPageLayout>);
     };
 
     it("should render without crashing", async () => {

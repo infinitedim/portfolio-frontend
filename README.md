@@ -1,8 +1,8 @@
 # Terminal Portfolio - Where Code Meets Creativity
 
-> _"Why have a boring portfolio when you can have a TERMINAL portfolio?"_ 
+> _"Why have a boring portfolio when you can have a TERMINAL portfolio?"_
 
-Welcome to the most epic way to showcase your skills! This isn't just another portfolio website - it's a full-blown terminal experience with enterprise-grade logging and monitoring that'll make visitors go "Whoa, this is actually pretty cool!" 
+Welcome to the most epic way to showcase your skills! This isn't just another portfolio website - it's a full-blown terminal experience with enterprise-grade logging and monitoring that'll make visitors go "Whoa, this is actually pretty cool!"
 
 ## Dual entry (landing + gated terminal)
 
@@ -38,7 +38,7 @@ Imagine if your portfolio had a baby with a terminal emulator, and that baby gre
 
 **Terminal Portfolio** transforms the traditional "scroll-through-my-resume" experience into an interactive command-line adventure. Your visitors don't just _read_ about your skills - they _discover_ them by typing commands like a real developer would!
 
-It's like giving your portfolio a personality transplant from "corporate brochure" to "hackerman extraordinaire" 
+It's like giving your portfolio a personality transplant from "corporate brochure" to "hackerman extraordinaire"
 
 ### Why This Rocks
 
@@ -74,7 +74,7 @@ Because security isn't optional anymore:
 
 ### Theme Paradise
 
-Choose your fighter! 
+Choose your fighter!
 
 - **Matrix**: _"Welcome to the real world"_
 - 🌆 **Cyberpunk**: Neon dreams and digital nightmares
@@ -117,21 +117,21 @@ We only use the good stuff around here:
 
 ### Frontend
 
-| Technology          | Why It's Awesome                                 | Version |
-| ------------------- | ------------------------------------------------ | ------- |
-| **Next.js**      | The React framework that makes everything better | 16.x    |
-| 📘 **TypeScript**   | Because `any` is not a type strategy             | 5.9+    |
-| **Tailwind CSS** | Utility-first CSS that sparks joy                | 4.1+    |
-| 🧩 **shadcn/ui**    | Components so beautiful they make you cry        | Latest  |
-| **Radix UI**     | Accessible primitives for the win                | Latest  |
+| Technology        | Why It's Awesome                                 | Version |
+| ----------------- | ------------------------------------------------ | ------- |
+| **Next.js**       | The React framework that makes everything better | 16.x    |
+| 📘 **TypeScript** | Because `any` is not a type strategy             | 5.9+    |
+| **Tailwind CSS**  | Utility-first CSS that sparks joy                | 4.1+    |
+| 🧩 **shadcn/ui**  | Components so beautiful they make you cry        | Latest  |
+| **Radix UI**      | Accessible primitives for the win                | Latest  |
 
 ### Backend
 
-| Technology      | Why It's Awesome                           | Version |
-| --------------- | ------------------------------------------ | ------- |
+| Technology   | Why It's Awesome                           | Version |
+| ------------ | ------------------------------------------ | ------- |
 | **Rust**     | Blazing-fast, memory-safe backend          | 1.75+   |
 | **Axum**     | Ergonomic and modular web framework        | 0.8     |
-| 🗄️ **SQLx**     | Async PostgreSQL with compile-time helpers | 0.8     |
+| 🗄️ **SQLx**  | Async PostgreSQL with compile-time helpers | 0.8     |
 | **Tracing**  | Powerful structured logging                | Latest  |
 | **Loki**     | Scalable log aggregation system            | Latest  |
 | **Promtail** | Log collection agent                       | Latest  |
@@ -139,8 +139,8 @@ We only use the good stuff around here:
 
 ### 🏗️ Infrastructure
 
-| Technology    | Why It's Awesome                          | Version |
-| ------------- | ----------------------------------------- | ------- |
+| Technology | Why It's Awesome                          | Version |
+| ---------- | ----------------------------------------- | ------- |
 | **Bun**    | The fast runtime that makes npm look slow | 1.2+    |
 | **Vercel** | Deploy faster than you can say "git push" | -       |
 | **Docker** | Containerization for logging stack        | Latest  |
@@ -217,7 +217,7 @@ Before we dive in, make sure you have:
 
 ### Installation Speedrun
 
-**Step 1**: Grab the code! 
+**Step 1**: Grab the code!
 
 ```bash
 git clone https://github.com/infinitedim/portfolio.git
@@ -231,7 +231,7 @@ cd portfolio-frontend
 bun install
 ```
 
-**Step 3**: Set up the backend! 
+**Step 3**: Set up the backend!
 
 ```bash
 cd ../portfolio-backend
@@ -243,7 +243,7 @@ cargo build --release
 docker-compose -f docker-compose.logging.yml up -d
 ```
 
-**Step 4**: Configure environment! 
+**Step 4**: Configure environment!
 
 ```bash
 # Frontend (portfolio-frontend/.env.development)
@@ -283,18 +283,18 @@ bun run dev
 
 Your new superpowers:
 
-| Command        | What It Does                               | Cool Factor       |
-| -------------- | ------------------------------------------ | ----------------- |
-| `help`         | Shows all commands                         | 🆘 Essential      |
-| `about`        | Learn about the awesome person behind this | 👋 Personal       |
-| `skills`       | Display your superpowers                   | 💪 Impressive     |
-| `projects`     | Show off your creations                    | Portfolio Gold |
-| `contact`      | How to reach the legend                    | 📞 Networking     |
-| `resume`       | The formal stuff                           | 📄 Professional   |
-| `roadmap`      | Your journey to greatness                  | 🗺️ Inspiring      |
-| `customize`    | Make it YOURS                              | Fun            |
-| `clear`        | Clean slate                                | Utility        |
-| `theme matrix` | Enter the Matrix                           | Epic           |
+| Command        | What It Does                               | Cool Factor     |
+| -------------- | ------------------------------------------ | --------------- |
+| `help`         | Shows all commands                         | 🆘 Essential    |
+| `about`        | Learn about the awesome person behind this | 👋 Personal     |
+| `skills`       | Display your superpowers                   | 💪 Impressive   |
+| `projects`     | Show off your creations                    | Portfolio Gold  |
+| `contact`      | How to reach the legend                    | 📞 Networking   |
+| `resume`       | The formal stuff                           | 📄 Professional |
+| `roadmap`      | Your journey to greatness                  | 🗺️ Inspiring    |
+| `customize`    | Make it YOURS                              | Fun             |
+| `clear`        | Clean slate                                | Utility         |
+| `theme matrix` | Enter the Matrix                           | Epic            |
 
 ### Pro Tips & Tricks
 
@@ -406,7 +406,7 @@ PORT="8080"
 
 ```bash
 # Fast tests with Bun (recommended for development)
-bun test                    # ~14 seconds for full suite! 
+bun test                    # ~14 seconds for full suite!
 bun test --watch            # Watch mode
 
 # Comprehensive tests with Vitest (CI uses this)
@@ -438,8 +438,8 @@ Want to make this even more awesome? We'd love your help!
 
 1. Fork this bad boy 🍴
 2. Create your feature branch: `git checkout -b feature/mind-blowing-feature`
-3. Code something amazing 
-4. Test it thoroughly 
+3. Code something amazing
+4. Test it thoroughly
 5. Commit with style: `git commit -m 'feat: add mind-blowing feature'`
 6. Push it: `git push origin feature/mind-blowing-feature`
 7. Open a PR and watch the magic happen ✨
@@ -568,7 +568,7 @@ const myEpicTheme: Theme = {
     bg: "#000000",
     text: "#00ff00",
     accent: "#ff0080",
-    // Make it pop! 
+    // Make it pop!
   },
 };
 ```
@@ -648,11 +648,11 @@ What's coming next? Glad you asked!
 - [ ] **Plugin System**: Let others extend your terminal
 - [ ] **Enhanced Analytics**: More detailed visitor insights
 - [ ] **Authentication**: Optional user accounts and personalization
-- [x] 🌍 **i18n Support**: 17+ languages with RTL support 
-- [x] 📱 **PWA**: Service worker, offline mode, installable 
-- [x] **Logging System**: Loki + Grafana monitoring 
-- [x] **Rust Backend**: High-performance backend 
-- [x] **Bun Runtime**: Fast JavaScript runtime 
+- [x] 🌍 **i18n Support**: 17+ languages with RTL support
+- [x] 📱 **PWA**: Service worker, offline mode, installable
+- [x] **Logging System**: Loki + Grafana monitoring
+- [x] **Rust Backend**: High-performance backend
+- [x] **Bun Runtime**: Fast JavaScript runtime
 
 ## 🆘 Need Help?
 
@@ -669,7 +669,7 @@ Stuck? Don't worry, we've all been there!
 
 **Built with 💖, ☕, and way too much enthusiasm by [Dimas Saputra](https://github.com/infinitedim)**
 
-_"Code is poetry, and this portfolio is our sonnet"_ 
+_"Code is poetry, and this portfolio is our sonnet"_
 
 [![Star this repo](https://img.shields.io/github/stars/infinitedim/portfolio?style=social)](https://github.com/infinitedim/portfolio)
 [![Follow me](https://img.shields.io/github/followers/infinitedim?style=social)](https://github.com/infinitedim)

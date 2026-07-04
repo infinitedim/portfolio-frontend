@@ -99,7 +99,7 @@ export function AccessibilityMenu(): JSX.Element {
 
       {isOpen && (
         <div
-          className="absolute top-full left-0 mt-2 p-4 rounded-lg border backdrop-blur-sm min-w-[280px] shadow-lg transition-all duration-300 animate-in slide-in-from-top"
+          className="absolute top-full left-0 mt-2 p-4 rounded-lg border backdrop-blur-sm min-w-70 shadow-lg transition-all duration-300 animate-in slide-in-from-top"
           style={{
             backgroundColor: `${themeConfig.colors.bg}f0`,
             borderColor: themeConfig.colors.border,
@@ -193,9 +193,15 @@ export function AccessibilityMenu(): JSX.Element {
                 className="flex items-center"
               >
                 {isHighContrast ? (
-                  <Check size={14} className="text-emerald-500" />
+                  <Check
+                    size={14}
+                    className="text-emerald-500"
+                  />
                 ) : (
-                  <X size={14} className="text-neutral-500" />
+                  <X
+                    size={14}
+                    className="text-neutral-500"
+                  />
                 )}
               </span>
               <span>High Contrast: {isHighContrast ? "On" : "Off"}</span>
@@ -206,9 +212,15 @@ export function AccessibilityMenu(): JSX.Element {
                 className="flex items-center"
               >
                 {isReducedMotion ? (
-                  <Check size={14} className="text-emerald-500" />
+                  <Check
+                    size={14}
+                    className="text-emerald-500"
+                  />
                 ) : (
-                  <X size={14} className="text-neutral-500" />
+                  <X
+                    size={14}
+                    className="text-neutral-500"
+                  />
                 )}
               </span>
               <span>Reduced Motion: {isReducedMotion ? "On" : "Off"}</span>

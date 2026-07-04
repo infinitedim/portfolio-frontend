@@ -66,13 +66,17 @@ vi.mock("next/server", () => ({
       entries: () => [string, string][];
     };
     cookies: {
-      set: (name: string, value: string, options?: {
-        path?: string;
-        httpOnly?: boolean;
-        secure?: boolean;
-        sameSite?: string;
-        maxAge?: number;
-      }) => void;
+      set: (
+        name: string,
+        value: string,
+        options?: {
+          path?: string;
+          httpOnly?: boolean;
+          secure?: boolean;
+          sameSite?: string;
+          maxAge?: number;
+        },
+      ) => void;
       get: (name: string) => null;
     };
     status: number;
@@ -88,22 +92,29 @@ vi.mock("next/server", () => ({
         entries: vi.fn(() => Array.from(h.entries())),
       };
       this.cookies = {
-        set: vi.fn((name: string, value: string, options?: {
-          path?: string;
-          httpOnly?: boolean;
-          secure?: boolean;
-          sameSite?: string;
-          maxAge?: number;
-        }) => {
-          let cookieStr = `${name}=${value}`;
-          if (options?.path) cookieStr += `; Path=${options.path}`;
-          if (options?.httpOnly) cookieStr += "; HttpOnly";
-          if (options?.secure) cookieStr += "; Secure";
-          if (options?.sameSite) cookieStr += `; SameSite=${options.sameSite}`;
-          if (options?.maxAge) cookieStr += `; Max-Age=${options.maxAge}`;
-          
-          h.set("set-cookie", cookieStr);
-        }),
+        set: vi.fn(
+          (
+            name: string,
+            value: string,
+            options?: {
+              path?: string;
+              httpOnly?: boolean;
+              secure?: boolean;
+              sameSite?: string;
+              maxAge?: number;
+            },
+          ) => {
+            let cookieStr = `${name}=${value}`;
+            if (options?.path) cookieStr += `; Path=${options.path}`;
+            if (options?.httpOnly) cookieStr += "; HttpOnly";
+            if (options?.secure) cookieStr += "; Secure";
+            if (options?.sameSite)
+              cookieStr += `; SameSite=${options.sameSite}`;
+            if (options?.maxAge) cookieStr += `; Max-Age=${options.maxAge}`;
+
+            h.set("set-cookie", cookieStr);
+          },
+        ),
         get: vi.fn(() => null),
       };
     }
@@ -112,7 +123,10 @@ vi.mock("next/server", () => ({
       return new MockNextResponse();
     }
 
-    static json(body: unknown, init?: { status?: number; headers?: Record<string, string> }) {
+    static json(
+      body: unknown,
+      init?: { status?: number; headers?: Record<string, string> },
+    ) {
       const res = new MockNextResponse(init?.status ?? 200);
       if (init?.headers) {
         Object.entries(init.headers).forEach(([k, v]) => {

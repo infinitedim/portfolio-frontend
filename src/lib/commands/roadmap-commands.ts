@@ -488,9 +488,7 @@ export const progressCommand: Command = {
       "Recent Activity:",
       ...completed
         .slice(-3)
-        .map(
-          (skill: RoadmapSkill) => `  ✓ ${skill.name} - Recently completed`,
-        ),
+        .map((skill: RoadmapSkill) => `  ✓ ${skill.name} - Recently completed`),
       "",
       "Use 'roadmap overview' for detailed view",
     ].join("\n");

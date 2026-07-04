@@ -1,4 +1,5 @@
 <!-- Updated: 2026-02-07 -->
+
 # Generic Business SEO Strategy Template
 
 ## Overview
@@ -36,6 +37,7 @@ This template applies to businesses that don't fit neatly into SaaS, local servi
 ## Universal SEO Principles
 
 ### Every Page Should Have
+
 - Unique title tag (30-60 chars)
 - Unique meta description (120-160 chars)
 - Single H1 matching page intent
@@ -44,27 +46,30 @@ This template applies to businesses that don't fit neatly into SaaS, local servi
 - Clear call-to-action
 
 ### Schema for All Sites
-| Page Type | Schema Types |
-|-----------|-------------|
-| Homepage | Organization, WebSite |
-| About | Organization, AboutPage |
-| Contact | ContactPage |
-| Blog | Article, BlogPosting |
-| FAQ | (FAQPage only for gov/health) |
-| Product/Service | Product or Service |
+
+| Page Type       | Schema Types                  |
+| --------------- | ----------------------------- |
+| Homepage        | Organization, WebSite         |
+| About           | Organization, AboutPage       |
+| Contact         | ContactPage                   |
+| Blog            | Article, BlogPosting          |
+| FAQ             | (FAQPage only for gov/health) |
+| Product/Service | Product or Service            |
 
 ## Content Quality Standards
 
 ### Minimum Word Counts
-| Page Type | Min Words |
-|-----------|-----------|
-| Homepage | 500 |
-| Product/Service | 800 |
-| Blog Post | 1,500 |
-| About Page | 400 |
-| Landing Page | 600 |
+
+| Page Type       | Min Words |
+| --------------- | --------- |
+| Homepage        | 500       |
+| Product/Service | 800       |
+| Blog Post       | 1,500     |
+| About Page      | 400       |
+| Landing Page    | 600       |
 
 ### E-E-A-T Essentials
+
 1. **Experience**: Share real examples and case studies
 2. **Expertise**: Display credentials and qualifications
 3. **Authoritativeness**: Earn mentions and citations
@@ -73,6 +78,7 @@ This template applies to businesses that don't fit neatly into SaaS, local servi
 ## Technical Foundations
 
 ### Must-Haves
+
 - [ ] HTTPS enabled
 - [ ] Mobile-responsive design
 - [ ] robots.txt configured
@@ -81,6 +87,7 @@ This template applies to businesses that don't fit neatly into SaaS, local servi
 - [ ] Core Web Vitals passing (LCP <2.5s, INP <200ms, CLS <0.1)
 
 ### Should-Haves
+
 - [ ] Structured data on key pages
 - [ ] Internal linking strategy
 - [ ] 404 error page optimized
@@ -90,24 +97,28 @@ This template applies to businesses that don't fit neatly into SaaS, local servi
 ## Content Priorities
 
 ### Phase 1: Foundation (weeks 1-4)
+
 1. Homepage optimization
 2. Core product/service pages
 3. About and contact pages
 4. Basic schema implementation
 
 ### Phase 2: Expansion (weeks 5-12)
+
 1. Blog launch (2-4 posts/month)
 2. FAQ page
 3. Additional product/service pages
 4. Internal linking audit
 
 ### Phase 3: Growth (weeks 13-24)
+
 1. Consistent content publishing
 2. Link building outreach
 3. GEO optimization
 4. Performance optimization
 
 ### Phase 4: Authority (months 7-12)
+
 1. Thought leadership content
 2. Original research
 3. PR and media mentions

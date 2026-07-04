@@ -1,4 +1,5 @@
 <!-- Updated: 2026-02-07 -->
+
 # SaaS SEO Strategy Template
 
 ## Industry Characteristics
@@ -57,6 +58,7 @@
 ## Content Priorities
 
 ### High Priority Pages
+
 1. Homepage (value proposition, social proof)
 2. Features overview
 3. Pricing page
@@ -64,26 +66,28 @@
 5. Top 3-5 use case pages
 
 ### Medium Priority Pages
+
 1. Individual feature pages
 2. Industry solution pages
 3. Case studies (2-3 detailed ones)
 4. Comparison pages (vs competitors)
 
 ### Content Marketing Focus
+
 1. Bottom-of-funnel: Comparison guides, ROI calculators
 2. Middle-of-funnel: How-to guides, best practices
 3. Top-of-funnel: Industry trends, educational content
 
 ## Schema Recommendations
 
-| Page Type | Schema Types |
-|-----------|-------------|
-| Homepage | Organization, WebSite, SoftwareApplication |
-| Product/Features | SoftwareApplication, Offer |
-| Pricing | SoftwareApplication, Offer (with pricing) |
-| Blog | Article, BlogPosting |
-| Case Studies | Article, Organization (customer) |
-| Documentation | TechArticle |
+| Page Type        | Schema Types                               |
+| ---------------- | ------------------------------------------ |
+| Homepage         | Organization, WebSite, SoftwareApplication |
+| Product/Features | SoftwareApplication, Offer                 |
+| Pricing          | SoftwareApplication, Offer (with pricing)  |
+| Blog             | Article, BlogPosting                       |
+| Case Studies     | Article, Organization (customer)           |
+| Documentation    | TechArticle                                |
 
 ## Key Metrics to Track
 
@@ -98,12 +102,14 @@
 Comparison pages are among the highest-converting content types for SaaS, with conversion rates of **4-7%** vs. 0.5-1.8% for standard blog content (35.8% of marketers report comparison content performs "better than ever" per Intergrowth November 2025 survey).
 
 **Recommended page types:**
+
 - `/{product}-vs-{competitor}`: Direct 1:1 comparison
 - `/{competitor}-alternative`: Targeting competitor brand searches
 - `/compare/{category}`: Category comparison hub
 - `/best-{category}-tools`: Roundup-style pages
 
 **Best practices:**
+
 - Include structured comparison tables with pricing, features, pros/cons
 - Be factually accurate about competitors: verify claims regularly
 - Include customer testimonials from users who switched
@@ -112,6 +118,7 @@ Comparison pages are among the highest-converting content types for SaaS, with c
 - Cross-reference the `seo-competitor-pages` skill for detailed frameworks
 
 **Legal considerations:**
+
 - Nominative fair use generally permits competitor brand mentions for comparison purposes
 - Do NOT imply endorsement or affiliation
 - Do NOT make false or unverifiable claims about competitor products

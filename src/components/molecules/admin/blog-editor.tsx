@@ -21,7 +21,16 @@ import {
 } from "@/lib/services/series-service";
 
 import { getApiUrl } from "@/lib/api/get-api-url";
-import { Plus, Save, Send, Trash, Check, Clock, Info, EyeOff } from "lucide-react";
+import {
+  Plus,
+  Save,
+  Send,
+  Trash,
+  Check,
+  Clock,
+  Info,
+  EyeOff,
+} from "lucide-react";
 
 const TiptapEditor = dynamic(
   () =>
@@ -29,7 +38,7 @@ const TiptapEditor = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="min-h-[320px] animate-pulse rounded border border-neutral-700 bg-neutral-900/60" />
+      <div className="min-h-80 animate-pulse rounded border border-neutral-700 bg-neutral-900/60" />
     ),
   },
 );
@@ -728,7 +737,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               }}
             >
               <span className="flex items-center gap-1">
-                <Save size={12} /> {isSaving ? t("blogSaving") : t("blogSaveDraft")}
+                <Save size={12} />{" "}
+                {isSaving ? t("blogSaving") : t("blogSaveDraft")}
               </span>
             </button>
             <button
@@ -1197,13 +1207,14 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                     minHeight="500px"
                   />
                   <div className="mt-2 text-[10px] opacity-50 font-mono text-center flex items-center justify-center gap-1">
-                    <Info size={10} /> Editor supports standard Markdown syntax. Specific
-                    React/MDX components will be rendered as plain text.
+                    <Info size={10} /> Editor supports standard Markdown syntax.
+                    Specific React/MDX components will be rendered as plain
+                    text.
                   </div>
                 </ImageDropZone>
               ) : (
                 <div
-                  className="border rounded p-6 min-h-[500px] overflow-y-auto bg-gray-950"
+                  className="border rounded p-6 min-h-125 overflow-y-auto bg-gray-950"
                   style={{ borderColor: themeConfig.colors.border }}
                 >
                   <BlogContent html={content} />

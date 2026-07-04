@@ -21,7 +21,11 @@ test.describe("Landing page", () => {
   test("should have nav links to shared routes", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: /main/i });
-    await expect(nav.getByRole("link", { name: "Projects", exact: true })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Blog", exact: true })).toBeVisible();
+    await expect(
+      nav.getByRole("link", { name: "Projects", exact: true }),
+    ).toBeVisible();
+    await expect(
+      nav.getByRole("link", { name: "Blog", exact: true }),
+    ).toBeVisible();
   });
 });

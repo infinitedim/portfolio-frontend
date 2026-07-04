@@ -372,9 +372,7 @@ describe("AdminDashboardPage", () => {
 
       // Manage Posts is still a <button>, while Inbox and Two-Factor Auth are
       // now Next.js <Link> components rendered as <a>.
-      const managePostsButton = screen
-        .getByText(/Manage Posts/i)
-        .closest("a");
+      const managePostsButton = screen.getByText(/Manage Posts/i).closest("a");
       const inboxLink = screen.getByText(/^Inbox$/i).closest("a");
       const twoFactorLink = screen.getByText(/Two-Factor Auth/i).closest("a");
 

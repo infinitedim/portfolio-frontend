@@ -44,7 +44,11 @@ function StreakCard({ streak }: { streak: RoadmapStreak }): JSX.Element {
   return (
     <div className="rounded-lg border border-neutral-700 bg-neutral-900 p-5 font-mono">
       <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1.5">
-        <Flame size={16} className="text-orange-500" /> Streak
+        <Flame
+          size={16}
+          className="text-orange-500"
+        />{" "}
+        Streak
       </h2>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
@@ -105,16 +109,28 @@ function ProgressRow({ p }: { p: RoadmapProgress }): JSX.Element {
       {}
       <div className="mt-2 flex gap-4 text-xs text-neutral-400">
         <span className="flex items-center gap-1">
-          <CheckCircle2 size={12} className="text-emerald-500" /> <span className="text-neutral-200">{p.done}</span> done
+          <CheckCircle2
+            size={12}
+            className="text-emerald-500"
+          />{" "}
+          <span className="text-neutral-200">{p.done}</span> done
         </span>
         {p.learning > 0 && (
           <span className="flex items-center gap-1">
-            <BookOpen size={12} className="text-sky-500" /> <span className="text-neutral-200">{p.learning}</span> learning
+            <BookOpen
+              size={12}
+              className="text-sky-500"
+            />{" "}
+            <span className="text-neutral-200">{p.learning}</span> learning
           </span>
         )}
         {p.skipped > 0 && (
           <span className="flex items-center gap-1">
-            <SkipForward size={12} className="text-neutral-500" /> <span className="text-neutral-200">{p.skipped}</span> skipped
+            <SkipForward
+              size={12}
+              className="text-neutral-500"
+            />{" "}
+            <span className="text-neutral-200">{p.skipped}</span> skipped
           </span>
         )}
         <span className="ml-auto">

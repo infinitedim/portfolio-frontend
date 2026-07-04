@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 **Tier:** POWERFUL  
 **Category:** Engineering  
-**Domain:** Performance Engineering  
+**Domain:** Performance Engineering
 
 ---
 
@@ -66,6 +66,7 @@ python3 scripts/performance_profiler.py /path/to/project --large-file-threshold-
 ---
 
 ## Node.js Profiling
+
 → See references/profiling-recipes.md for details
 
 ## References

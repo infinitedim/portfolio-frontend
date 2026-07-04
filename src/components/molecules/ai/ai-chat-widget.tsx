@@ -86,7 +86,7 @@ export function AiChatWidget() {
       </button>
 
       {open && (
-        <div className="fixed bottom-20 right-6 z-50 flex h-[420px] w-[min(100vw-3rem,360px)] flex-col overflow-hidden rounded-lg border border-neutral-800 bg-neutral-950 shadow-2xl">
+        <div className="fixed bottom-20 right-6 z-50 flex h-105 w-[min(100vw-3rem,360px)] flex-col overflow-hidden rounded-lg border border-neutral-800 bg-neutral-950 shadow-2xl">
           <header className="border-b border-neutral-800 px-4 py-3">
             <h2 className="font-mono text-sm font-semibold text-green-400">
               Portfolio Assistant

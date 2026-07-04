@@ -352,7 +352,11 @@ export function TerminalLoginForm({
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader2 className="animate-spin" size={14} /> Verifying…
+                <Loader2
+                  className="animate-spin"
+                  size={14}
+                />{" "}
+                Verifying…
               </span>
             ) : (
               <span className="flex items-center justify-center gap-2">
@@ -470,7 +474,10 @@ export function TerminalLoginForm({
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 className="animate-spin" size={14} />
+                  <Loader2
+                    className="animate-spin"
+                    size={14}
+                  />
                   {t("loading")}
                 </span>
               ) : (

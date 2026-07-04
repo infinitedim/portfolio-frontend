@@ -29,7 +29,7 @@ export function TabCompletion({
   return (
     <div
       key={`tab-completion-${theme}`}
-      className="absolute top-full left-0 mt-1 rounded border shadow-lg z-10 min-w-[250px] overflow-hidden transition-all duration-200 ease-out animate-in slide-in-from-top"
+      className="absolute top-full left-0 mt-1 rounded border shadow-lg z-10 min-w-62.5 overflow-hidden transition-all duration-200 ease-out animate-in slide-in-from-top"
       style={{
         backgroundColor: themeConfig.colors.bg,
         borderColor: themeConfig.colors.border,

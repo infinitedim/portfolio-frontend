@@ -270,7 +270,11 @@ export function FontManager({
                 <span className="flex items-center gap-1">
                   {isUploading ? (
                     <>
-                      <Loader2 size={14} className="animate-spin" /> Uploading...
+                      <Loader2
+                        size={14}
+                        className="animate-spin"
+                      />{" "}
+                      Uploading...
                     </>
                   ) : (
                     <>
@@ -351,7 +355,11 @@ export function FontManager({
                 <span className="flex items-center gap-1 justify-center">
                   {isGeneratingRandom ? (
                     <>
-                      <Loader2 size={14} className="animate-spin" /> Picking...
+                      <Loader2
+                        size={14}
+                        className="animate-spin"
+                      />{" "}
+                      Picking...
                     </>
                   ) : (
                     <>

@@ -42,7 +42,11 @@ export const ProjectCard = memo(function ProjectCard({
       {featured && (
         <div className="absolute right-4 top-4 z-10">
           <span className="rounded bg-terminal-accent px-2 py-1 text-xs font-bold text-terminal-bg flex items-center gap-1">
-            <Star size={12} className="fill-current" /> FEATURED
+            <Star
+              size={12}
+              className="fill-current"
+            />{" "}
+            FEATURED
           </span>
         </div>
       )}
@@ -58,9 +62,12 @@ export const ProjectCard = memo(function ProjectCard({
               />
             ) : (
               <div className="flex h-full items-center justify-center text-terminal-muted">
-                 <div className="text-center flex flex-col items-center">
+                <div className="text-center flex flex-col items-center">
                   <div className="mb-2 text-terminal-muted">
-                    <Folder size={36} className="stroke-[1.5]" />
+                    <Folder
+                      size={36}
+                      className="stroke-[1.5]"
+                    />
                   </div>
                   <div className="text-sm">Project Preview</div>
                 </div>
