@@ -218,7 +218,7 @@ function DefaultErrorFallback({
       });
 
     const handleReportIssue = () => {
-      const issueUrl = `https://github.com/infinitedim/portfolio/issues/new?title=Error%20Report:%20${encodeURIComponent(error.message)}&body=${encodeURIComponent(`Error ID: ${errorId}\nMessage: ${error.message}\nStack: ${error.stack || "No stack trace"}`)}`;
+      const issueUrl = `https://github.com/infinitedim/portfolio-frontend/issues/new?title=Error%20Report:%20${encodeURIComponent(error.message)}&body=${encodeURIComponent(`Error ID: ${errorId}\nMessage: ${error.message}\nStack: ${error.stack || "No stack trace"}`)}`;
       window.open(issueUrl, "_blank");
     };
 

@@ -78,7 +78,7 @@ const STATIC_PROJECTS: Project[] = [
       "Interactive terminal-themed developer portfolio with command-line interface",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "React"],
     demoUrl: "https://infinitedim.vercel.app",
-    githubUrl: "https://github.com/infinitedim/portfolio",
+    githubUrl: "https://github.com/infinitedim/portfolio-frontend",
     status: "completed",
     featured: true,
   },

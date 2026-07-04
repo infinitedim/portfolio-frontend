@@ -220,7 +220,7 @@ Before we dive in, make sure you have:
 **Step 1**: Grab the code!
 
 ```bash
-git clone https://github.com/infinitedim/portfolio.git
+git clone https://github.com/infinitedim/portfolio-frontend.git
 cd portfolio
 ```
 
@@ -671,7 +671,7 @@ Stuck? Don't worry, we've all been there!
 
 _"Code is poetry, and this portfolio is our sonnet"_
 
-[![Star this repo](https://img.shields.io/github/stars/infinitedim/portfolio?style=social)](https://github.com/infinitedim/portfolio)
+[![Star this repo](https://img.shields.io/github/stars/infinitedim/portfolio-frontend?style=social)](https://github.com/infinitedim/portfolio-frontend)
 [![Follow me](https://img.shields.io/github/followers/infinitedim?style=social)](https://github.com/infinitedim)
 
 </div>

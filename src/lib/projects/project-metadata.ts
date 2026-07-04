@@ -42,7 +42,7 @@ export const SAMPLE_PROJECTS: ProjectMetadata[] = [
     description:
       "Interactive terminal-style portfolio built with Next.js and React",
     demoUrl: "https://infinitedim.vercel.app",
-    githubUrl: "https://github.com/infinitedim/portfolio",
+    githubUrl: "https://github.com/infinitedim/portfolio-frontend",
     liveUrl: "https://infinitedim.vercel.app",
     technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js"],
     category: "web-app",
