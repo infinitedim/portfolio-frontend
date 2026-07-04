@@ -374,7 +374,7 @@ describe("AdminDashboardPage", () => {
       // now Next.js <Link> components rendered as <a>.
       const managePostsButton = screen
         .getByText(/Manage Posts/i)
-        .closest("button");
+        .closest("a");
       const inboxLink = screen.getByText(/^Inbox$/i).closest("a");
       const twoFactorLink = screen.getByText(/Two-Factor Auth/i).closest("a");
 

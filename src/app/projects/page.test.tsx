@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 if (
@@ -57,7 +57,8 @@ vi.mock("@/components/organisms/projects/projects-loading", () => ({
   ProjectsLoading: () => <div data-testid="projects-loading">Loading...</div>,
 }));
 
-import ProjectsPage, { metadata as projectsMetadata } from "./page";
+import ProjectsPage, { ProjectsPageContent, metadata as projectsMetadata } from "./page";
+import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
 describe("ProjectsPage", () => {
   beforeEach(() => {
@@ -107,13 +108,22 @@ describe("ProjectsPage", () => {
   });
 
   describe("Component Rendering", () => {
+    const renderProjectsPage = async () => {
+      const ResolvedContent = await ProjectsPageContent();
+      return render(
+        <StandardPageLayout>
+          {ResolvedContent}
+        </StandardPageLayout>
+      );
+    };
+
     it("should render without crashing", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
-      const { container } = render(<ProjectsPage />);
+      const { container } = await renderProjectsPage();
       expect(container).toBeTruthy();
     });
 
@@ -123,7 +133,7 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { container } = render(<ProjectsPage />);
+      const { container } = await renderProjectsPage();
       const mainElement = container.querySelector("main");
       expect(mainElement).toBeTruthy();
     });
@@ -134,12 +144,10 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByRole } = render(<ProjectsPage />);
-      await waitFor(() => {
-        expect(
-          getByRole("heading", { level: 1, name: /projects/i }),
-        ).toBeInTheDocument();
-      });
+      const { getByRole } = await renderProjectsPage();
+      expect(
+        getByRole("heading", { level: 1, name: /projects/i }),
+      ).toBeInTheDocument();
     });
 
     it("should render project count in description", async () => {
@@ -148,10 +156,8 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByText } = render(<ProjectsPage />);
-      await waitFor(() => {
-        expect(getByText(/1 web development projects/i)).toBeInTheDocument();
-      });
+      const { getByText } = await renderProjectsPage();
+      expect(getByText(/1 web development projects/i)).toBeInTheDocument();
     });
 
     it("should render featured projects section when available", async () => {
@@ -160,10 +166,8 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByText } = render(<ProjectsPage />);
-      await waitFor(() => {
-        expect(getByText(/Featured Projects/i)).toBeInTheDocument();
-      });
+      const { getByText } = await renderProjectsPage();
+      expect(getByText(/Featured Projects/i)).toBeInTheDocument();
     });
 
     it("should render all projects section", async () => {
@@ -172,10 +176,8 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByText } = render(<ProjectsPage />);
-      await waitFor(() => {
-        expect(getByText(/All Projects/i)).toBeInTheDocument();
-      });
+      const { getByText } = await renderProjectsPage();
+      expect(getByText(/All Projects/i)).toBeInTheDocument();
     });
 
     it("should render project statistics", async () => {
@@ -184,13 +186,11 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { getByText } = render(<ProjectsPage />);
-      await waitFor(() => {
-        expect(getByText(/Total Projects/i)).toBeInTheDocument();
-        expect(getByText("Featured", { exact: true })).toBeInTheDocument();
-        expect(getByText("Technologies", { exact: true })).toBeInTheDocument();
-        expect(getByText("Completed", { exact: true })).toBeInTheDocument();
-      });
+      const { getByText } = await renderProjectsPage();
+      expect(getByText(/Total Projects/i)).toBeInTheDocument();
+      expect(getByText("Featured", { exact: true })).toBeInTheDocument();
+      expect(getByText("Technologies", { exact: true })).toBeInTheDocument();
+      expect(getByText("Completed", { exact: true })).toBeInTheDocument();
     });
 
     it("should render Suspense boundary", async () => {
@@ -200,7 +200,6 @@ describe("ProjectsPage", () => {
       }
 
       const { container } = render(<ProjectsPage />);
-
       expect(container).toBeTruthy();
     });
 
@@ -210,13 +209,11 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { container } = render(<ProjectsPage />);
-      await waitFor(() => {
-        const scripts = container.querySelectorAll(
-          'script[type="application/ld+json"]',
-        );
-        expect(scripts.length).toBeGreaterThan(0);
-      });
+      const { container } = await renderProjectsPage();
+      const scripts = container.querySelectorAll(
+        'script[type="application/ld+json"]',
+      );
+      expect(scripts.length).toBeGreaterThan(0);
     });
 
     it("should include ItemList schema in structured data", async () => {
@@ -225,18 +222,16 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { container } = render(<ProjectsPage />);
-      await waitFor(() => {
-        const scripts = container.querySelectorAll(
-          'script[type="application/ld+json"]',
-        );
-        const itemListScript = Array.from(scripts).find((script) => {
-          const content = script.textContent || "";
-          return content.includes('"@type":"ItemList"');
-        });
-
-        expect(itemListScript).toBeTruthy();
+      const { container } = await renderProjectsPage();
+      const scripts = container.querySelectorAll(
+        'script[type="application/ld+json"]',
+      );
+      const itemListScript = Array.from(scripts).find((script) => {
+        const content = script.textContent || "";
+        return content.includes('"@type":"ItemList"');
       });
+
+      expect(itemListScript).toBeTruthy();
     });
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { useAuth } from "@/lib/auth/auth-context";
 
@@ -101,6 +101,15 @@ describe("AdminLoginPage", () => {
     ensureDocumentBody();
     vi.clearAllMocks();
     mockPush.mockClear();
+    vi.mocked(useAuth).mockReturnValue({
+      isAuthenticated: false,
+      isLoading: false,
+      user: null,
+      logout: mockLogout,
+      login: mockLogin,
+      refresh: mockRefresh,
+      complete2FA: mockComplete2FA,
+    });
   });
 
   describe("Component Rendering", () => {
@@ -223,13 +232,13 @@ describe("AdminLoginPage", () => {
       expect(mockPush).toHaveBeenCalledWith("/admin");
     });
 
-    it("should redirect to admin when already authenticated", () => {
+    it("should redirect to admin when already authenticated", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
-      vi.mocked(useAuth).mockReturnValueOnce({
+      vi.mocked(useAuth).mockReturnValue({
         isAuthenticated: true,
         isLoading: false,
         user: mockUser,
@@ -241,7 +250,9 @@ describe("AdminLoginPage", () => {
 
       render(<AdminLoginPage />);
 
-      expect(mockPush).toHaveBeenCalledWith("/admin");
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith("/admin");
+      });
     });
 
     it("should not render content when already authenticated", () => {
@@ -250,7 +261,7 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      vi.mocked(useAuth).mockReturnValueOnce({
+      vi.mocked(useAuth).mockReturnValue({
         isAuthenticated: true,
         isLoading: false,
         user: mockUser,
@@ -274,8 +285,9 @@ describe("AdminLoginPage", () => {
       }
 
       const { container } = render(<AdminLoginPage />);
-      const mainDiv = container.querySelector("div[style*='background-color']");
+      const mainDiv = container.querySelector("div");
       expect(mainDiv).toBeTruthy();
+      expect(mainDiv?.style.backgroundColor).toBeTruthy();
     });
 
     it("should pass themeConfig to TerminalLoginForm", () => {

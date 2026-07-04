@@ -157,8 +157,9 @@ describe("useTerminal", () => {
 
     const { result } = renderHook(() => useTerminal());
 
-    await waitFor(() => {
-      expect(result.current.executeCommand).toBeDefined();
+    await waitFor(async () => {
+      const output = await result.current.executeCommand("");
+      expect(output?.id).not.toBe("error-not-ready");
     });
 
     await act(async () => {

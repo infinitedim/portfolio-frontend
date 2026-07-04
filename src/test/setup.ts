@@ -59,31 +59,74 @@ vi.mock("next/server", () => ({
     }
   },
 
-  NextResponse: {
-    next: () => ({
-      headers: {
-        set: vi.fn(),
-        get: vi.fn(),
-        entries: () => [],
-      },
-      cookies: {
-        set: vi.fn(),
-        get: vi.fn(),
-      },
-    }),
-    redirect: (url: URL | string, status = 307) => ({
-      status,
-      headers: {
-        get: (name: string) =>
-          name.toLowerCase() === "location" ? String(url) : null,
-        set: vi.fn(),
-        entries: () => [],
-      },
-      cookies: {
-        set: vi.fn(),
-        get: vi.fn(),
-      },
-    }),
+  NextResponse: class MockNextResponse {
+    headers: {
+      get: (name: string) => string | null;
+      set: (name: string, value: string) => void;
+      entries: () => [string, string][];
+    };
+    cookies: {
+      set: (name: string, value: string, options?: {
+        path?: string;
+        httpOnly?: boolean;
+        secure?: boolean;
+        sameSite?: string;
+        maxAge?: number;
+      }) => void;
+      get: (name: string) => null;
+    };
+    status: number;
+
+    constructor(status = 200) {
+      const h = new Map<string, string>();
+      this.status = status;
+      this.headers = {
+        get: vi.fn((name: string) => h.get(name.toLowerCase()) || null),
+        set: vi.fn((name: string, value: string) => {
+          h.set(name.toLowerCase(), value);
+        }),
+        entries: vi.fn(() => Array.from(h.entries())),
+      };
+      this.cookies = {
+        set: vi.fn((name: string, value: string, options?: {
+          path?: string;
+          httpOnly?: boolean;
+          secure?: boolean;
+          sameSite?: string;
+          maxAge?: number;
+        }) => {
+          let cookieStr = `${name}=${value}`;
+          if (options?.path) cookieStr += `; Path=${options.path}`;
+          if (options?.httpOnly) cookieStr += "; HttpOnly";
+          if (options?.secure) cookieStr += "; Secure";
+          if (options?.sameSite) cookieStr += `; SameSite=${options.sameSite}`;
+          if (options?.maxAge) cookieStr += `; Max-Age=${options.maxAge}`;
+          
+          h.set("set-cookie", cookieStr);
+        }),
+        get: vi.fn(() => null),
+      };
+    }
+
+    static next() {
+      return new MockNextResponse();
+    }
+
+    static json(body: unknown, init?: { status?: number; headers?: Record<string, string> }) {
+      const res = new MockNextResponse(init?.status ?? 200);
+      if (init?.headers) {
+        Object.entries(init.headers).forEach(([k, v]) => {
+          res.headers.set(k, v);
+        });
+      }
+      return res;
+    }
+
+    static redirect(url: string | URL, status = 307) {
+      const res = new MockNextResponse(status);
+      res.headers.set("location", String(url));
+      return res;
+    }
   },
 }));
 

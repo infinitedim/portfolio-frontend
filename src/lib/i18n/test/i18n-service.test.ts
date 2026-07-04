@@ -24,7 +24,7 @@ vi.mock("../locales", () => ({
 }));
 
 const localStorageMock = {
-  getItem: vi.fn(() => null),
+  getItem: vi.fn(() => null as string | null),
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
@@ -108,7 +108,7 @@ describe("I18nService", () => {
         expect(true).toBe(true);
         return;
       }
-      localStorageMock.getItem.mockReturnValue(null);
+      localStorageMock.getItem.mockReturnValue("id_ID");
 
       const service = I18nService.getInstance();
       const locale = service.getCurrentLocale();

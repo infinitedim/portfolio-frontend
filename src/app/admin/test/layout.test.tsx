@@ -45,6 +45,7 @@ vi.mock("@/lib/auth/auth-context", () => ({
     logout: vi.fn(),
     refresh: vi.fn(),
   }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 import AdminLayout from "../layout";

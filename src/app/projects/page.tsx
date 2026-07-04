@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   },
 };
 
-async function ProjectsPageContent(): Promise<JSX.Element> {
+export async function ProjectsPageContent(): Promise<JSX.Element> {
   const [allProjects, featuredProjects] = await Promise.all([
     getProjectsData(),
     getFeaturedProjects(),
