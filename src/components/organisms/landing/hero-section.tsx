@@ -10,7 +10,7 @@ export function HeroSection(): JSX.Element {
 
   return (
     <section className="relative overflow-hidden px-4 py-20 sm:py-28">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-900/20 via-neutral-950 to-neutral-950" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-green-900/20 via-neutral-950 to-neutral-950" />
       <StaggerContainer className="relative mx-auto max-w-4xl text-center">
         <FadeIn direction="up" delay={0.1} duration={0.6}>
           <h1 className="font-mono text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
@@ -35,12 +35,6 @@ export function HeroSection(): JSX.Element {
               className="rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white"
             >
               {t("landingCtaContact")}
-            </Link>
-            <Link
-              href="/gate"
-              className="rounded bg-neutral-800 px-5 py-2.5 font-mono text-sm text-neutral-200 transition-colors hover:bg-neutral-700"
-            >
-              {t("landingCtaTerminal")}
             </Link>
           </div>
         </FadeIn>

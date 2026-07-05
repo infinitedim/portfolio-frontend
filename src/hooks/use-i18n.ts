@@ -46,8 +46,11 @@ export function useI18n() {
   }, []);
 
   const getCurrentLocaleConfig = useCallback(() => {
+    if (!mounted) {
+      return i18n.getLocaleInfo(DEFAULT_LOCALE);
+    }
     return i18n.getLocaleInfo(currentLocale);
-  }, [currentLocale]);
+  }, [mounted, currentLocale]);
 
   const localeUtils = useMemo(
     () => ({
@@ -60,6 +63,7 @@ export function useI18n() {
   );
 
   return {
+    mounted,
     currentLocale,
     isRTL,
     t: translate,

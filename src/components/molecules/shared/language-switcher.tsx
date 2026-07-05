@@ -25,6 +25,7 @@ export function LanguageSwitcher({
 }: LanguageSwitcherProps): JSX.Element {
   const { themeConfig } = useTheme();
   const {
+    mounted,
     currentLocale,
     changeLocale,
     getSupportedLocales,
@@ -35,7 +36,9 @@ export function LanguageSwitcher({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const supportedLocales = getSupportedLocales();
-  const currentConfig = getCurrentLocaleConfig();
+  const currentConfig = mounted
+    ? getCurrentLocaleConfig()
+    : supportedLocales.find((l) => l.code === "en_US") || null;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -80,7 +83,8 @@ export function LanguageSwitcher({
         aria-label="Select language"
       >
         {supportedLocales.map((locale) => {
-          const isSelected = locale.code === currentLocale;
+          const isSelected =
+            locale.code === (mounted ? currentLocale : "en_US");
           return (
             <button
               key={locale.code}
@@ -155,6 +159,7 @@ export function LanguageSwitcher({
         <div
           role="listbox"
           aria-label="Available languages"
+          data-lenis-prevent
           className="absolute top-full mt-1 right-0 min-w-48 max-h-64 overflow-y-auto rounded border shadow-lg z-50"
           style={{
             backgroundColor: themeConfig.colors.bg,
@@ -162,7 +167,8 @@ export function LanguageSwitcher({
           }}
         >
           {supportedLocales.map((locale) => {
-            const isSelected = locale.code === currentLocale;
+            const isSelected =
+              locale.code === (mounted ? currentLocale : "en_US");
             return (
               <button
                 key={locale.code}

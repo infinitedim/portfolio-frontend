@@ -28,55 +28,57 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur supports-[backdrop-filter]:bg-neutral-950/80">
-      <nav
-        aria-label="Main navigation"
-        className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
-      >
-        <Link
-          href="/"
-          className="font-mono text-sm font-bold text-green-400 hover:text-green-300"
+    <>
+      <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur supports-[backdrop-filter]:bg-neutral-950/80">
+        <nav
+          aria-label="Main navigation"
+          className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
         >
-          infinitedim
-        </Link>
-
-        <ul className="hidden items-center gap-1 sm:flex">
-          {NAV_LINKS.map(({ key, href }) => {
-            const isActive =
-              href === "/" ? activePath === "/" : activePath.startsWith(href);
-            return (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className={`rounded px-3 py-1.5 font-mono text-xs transition-colors ${
-                    isActive
-                      ? "bg-green-400/10 text-green-400"
-                      : "text-neutral-400 hover:text-neutral-100"
-                  }`}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {t(key)}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-
-        <div className="flex items-center gap-2">
-          <VisitorPresenceBadge />
-          <LanguageSwitcher
-            variant="dropdown"
-            showFlags={false}
-            className="hidden sm:block"
-          />
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
+          <Link
+            href="/"
+            className="font-mono text-sm font-bold text-green-400 hover:text-green-300"
           >
-            {t("navTerminal")} →
-          </button>
-        </div>
-      </nav>
+            infinitedim
+          </Link>
+
+          <ul className="hidden items-center gap-1 sm:flex">
+            {NAV_LINKS.map(({ key, href }) => {
+              const isActive =
+                href === "/" ? activePath === "/" : activePath.startsWith(href);
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className={`rounded px-3 py-1.5 font-mono text-xs transition-colors ${
+                      isActive
+                        ? "bg-green-400/10 text-green-400"
+                        : "text-neutral-400 hover:text-neutral-100"
+                    }`}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {t(key)}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="flex items-center gap-2">
+            <VisitorPresenceBadge />
+            <LanguageSwitcher
+              variant="dropdown"
+              showFlags={false}
+              className="hidden sm:block"
+            />
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
+            >
+              {t("navTerminal")} →
+            </button>
+          </div>
+        </nav>
+      </header>
 
       <TerminalFeaturesModal
         isOpen={isModalOpen}
@@ -86,6 +88,6 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
           router.push("/gate");
         }}
       />
-    </header>
+    </>
   );
 }

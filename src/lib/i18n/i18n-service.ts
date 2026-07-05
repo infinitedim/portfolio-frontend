@@ -187,7 +187,6 @@ export interface TranslationKeys {
   landingHeroTagline: string;
   landingCtaProjects: string;
   landingCtaContact: string;
-  landingCtaTerminal: string;
   landingAboutTitle: string;
   landingSkillsTitle: string;
   landingBlogTitle: string;
@@ -381,7 +380,7 @@ const translations: Record<string, TranslationKeys> = {
     blogUnpublished: "Unpublished",
 
     testingTitle: "Backend Testing",
-    testingSelectService: "Select Service",
+    testingSelectService: "SUnlock Terminalelect Service",
     testingSelectMethod: "Select Method",
     testingParameters: "Parameters",
     testingExecute: "Execute",
@@ -425,7 +424,7 @@ const translations: Record<string, TranslationKeys> = {
       "Full-stack developer building modern web apps with React, Next.js, and TypeScript.",
     landingCtaProjects: "View Projects",
     landingCtaContact: "Get in Touch",
-    landingCtaTerminal: "Unlock Terminal",
+    // landingCtaTerminal: "Unlock Terminal",
     landingAboutTitle: "About",
     landingSkillsTitle: "Skills",
     landingBlogTitle: "Blog",
@@ -662,7 +661,6 @@ const translations: Record<string, TranslationKeys> = {
       "Full-stack developer yang membangun aplikasi web modern dengan React, Next.js, dan TypeScript.",
     landingCtaProjects: "Lihat Proyek",
     landingCtaContact: "Hubungi Saya",
-    landingCtaTerminal: "Buka Terminal",
     landingAboutTitle: "Tentang",
     landingSkillsTitle: "Keahlian",
     landingBlogTitle: "Blog",
@@ -899,7 +897,6 @@ const translations: Record<string, TranslationKeys> = {
       "Desarrollador full-stack que construye aplicaciones web modernas con React, Next.js y TypeScript.",
     landingCtaProjects: "Ver Proyectos",
     landingCtaContact: "Contactar",
-    landingCtaTerminal: "Desbloquear Terminal",
     landingAboutTitle: "Acerca de",
     landingSkillsTitle: "Habilidades",
     landingBlogTitle: "Blog",

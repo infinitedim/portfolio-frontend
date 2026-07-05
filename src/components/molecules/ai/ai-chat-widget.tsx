@@ -96,7 +96,10 @@ export function AiChatWidget() {
             </p>
           </header>
 
-          <div className="flex-1 space-y-3 overflow-y-auto p-4">
+          <div
+            data-lenis-prevent
+            className="flex-1 space-y-3 overflow-y-auto p-4"
+          >
             {messages.length === 0 && (
               <p className="text-xs text-neutral-500">
                 Try: &ldquo;What projects have you built?&rdquo;
