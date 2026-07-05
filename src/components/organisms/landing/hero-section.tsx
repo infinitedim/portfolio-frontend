@@ -1,11 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { type JSX } from "react";
-import { getTranslationsForLocale } from "@/lib/i18n/i18n-service";
-import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+import { useI18n } from "@/hooks/use-i18n";
 import { FadeIn, StaggerContainer } from "@/components/atoms/shared/motion-wrappers";
 
 export function HeroSection(): JSX.Element {
-  const copy = getTranslationsForLocale(DEFAULT_LOCALE);
+  const { t } = useI18n();
 
   return (
     <section className="relative overflow-hidden px-4 py-20 sm:py-28">
@@ -13,12 +14,12 @@ export function HeroSection(): JSX.Element {
       <StaggerContainer className="relative mx-auto max-w-4xl text-center">
         <FadeIn direction="up" delay={0.1} duration={0.6}>
           <h1 className="font-mono text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
-            {copy.landingHeroTitle}
+            {t("landingHeroTitle")}
           </h1>
         </FadeIn>
         <FadeIn direction="up" delay={0.2} duration={0.6}>
           <p className="mx-auto mt-6 max-w-2xl font-mono text-base text-neutral-400 sm:text-lg">
-            {copy.landingHeroTagline}
+            {t("landingHeroTagline")}
           </p>
         </FadeIn>
         <FadeIn direction="up" delay={0.35} duration={0.6}>
@@ -27,19 +28,19 @@ export function HeroSection(): JSX.Element {
               href="/projects"
               className="rounded border border-green-400/40 bg-green-400/10 px-5 py-2.5 font-mono text-sm text-green-400 transition-colors hover:bg-green-400/20"
             >
-              {copy.landingCtaProjects}
+              {t("landingCtaProjects")}
             </Link>
             <Link
               href="/contact"
               className="rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white"
             >
-              {copy.landingCtaContact}
+              {t("landingCtaContact")}
             </Link>
             <Link
               href="/gate"
               className="rounded bg-neutral-800 px-5 py-2.5 font-mono text-sm text-neutral-200 transition-colors hover:bg-neutral-700"
             >
-              {copy.landingCtaTerminal}
+              {t("landingCtaTerminal")}
             </Link>
           </div>
         </FadeIn>

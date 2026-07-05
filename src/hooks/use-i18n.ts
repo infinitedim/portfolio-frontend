@@ -1,23 +1,17 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { i18n, t, type TranslationKeys } from "@/lib/i18n/i18n-service";
+import { i18n, t, type TranslationKeys, getTranslationsForLocale } from "@/lib/i18n/i18n-service";
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 
 export function useI18n() {
-  const [currentLocale, setCurrentLocale] = useState(() => {
-    try {
-      return i18n?.getCurrentLocale() ?? "en";
-    } catch {
-      return "en";
-    }
-  });
-  const [isRTL, setIsRTL] = useState(() => {
-    try {
-      return i18n?.isRTL() ?? false;
-    } catch {
-      return false;
-    }
-  });
+  const [mounted, setMounted] = useState(false);
+  const [currentLocale, setCurrentLocale] = useState(DEFAULT_LOCALE);
+  const [isRTL, setIsRTL] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    setCurrentLocale(i18n.getCurrentLocale());
+    setIsRTL(i18n.isRTL());
+
     const unsubscribe = i18n.subscribe((locale) => {
       setCurrentLocale(locale);
       setIsRTL(i18n.isRTL());
@@ -30,23 +24,33 @@ export function useI18n() {
   }, []);
 
   const translate = useCallback((key: keyof TranslationKeys): string => {
+    if (!mounted) {
+      return getTranslationsForLocale(DEFAULT_LOCALE)[key] ?? key;
+    }
     return t(key);
-  }, []);
+  }, [mounted]);
 
   const translateWithFallback = useCallback(
     (key: keyof TranslationKeys, fallback?: string): string => {
+      if (!mounted) {
+        const val = getTranslationsForLocale(DEFAULT_LOCALE)[key];
+        return val !== undefined ? val : fallback || key;
+      }
       return i18n.tWithFallback(key, fallback);
     },
-    [],
+    [mounted],
   );
 
   const changeLocale = useCallback((localeCode: string): boolean => {
     return i18n.setLocale(localeCode);
   }, []);
 
+  const getCurrentLocaleConfig = useCallback(() => {
+    return i18n.getLocaleInfo(currentLocale);
+  }, [currentLocale]);
+
   const localeUtils = useMemo(
     () => ({
-      getCurrentLocaleConfig: () => i18n.getCurrentLocaleConfig(),
       getSupportedLocales: () => i18n.getSupportedLocales(),
       isLocaleSupported: (localeCode: string) =>
         i18n.isLocaleSupported(localeCode),
@@ -61,6 +65,7 @@ export function useI18n() {
     t: translate,
     tWithFallback: translateWithFallback,
     changeLocale,
+    getCurrentLocaleConfig,
     ...localeUtils,
     i18n,
   };

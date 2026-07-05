@@ -6,6 +6,8 @@ import {
   submitContactMessage,
   type ContactSubmission,
 } from "@/lib/services/contact-service";
+import { useI18n } from "@/hooks/use-i18n";
+import { type TranslationKeys } from "@/lib/i18n/i18n-service";
 
 const MIN_MESSAGE_LEN = 10;
 const MAX_MESSAGE_LEN = 5000;
@@ -38,21 +40,22 @@ function isPlausibleEmail(email: string): boolean {
   return true;
 }
 
-function validate(form: FormState): string | null {
-  if (!form.name.trim()) return "Name is required";
-  if (form.name.length > 100) return "Name is too long";
-  if (!isPlausibleEmail(form.email)) return "Please enter a valid email";
-  if (form.subject.length > 200) return "Subject is too long";
+function validate(form: FormState, t: (key: keyof TranslationKeys) => string): string | null {
+  if (!form.name.trim()) return t("contactValidationNameRequired");
+  if (form.name.length > 100) return t("contactValidationNameTooLong");
+  if (!isPlausibleEmail(form.email)) return t("contactValidationEmailInvalid");
+  if (form.subject.length > 200) return t("contactValidationSubjectTooLong");
   if (form.message.trim().length < MIN_MESSAGE_LEN) {
-    return `Message must be at least ${MIN_MESSAGE_LEN} characters`;
+    return t("contactValidationMessageMin").replace("{min}", String(MIN_MESSAGE_LEN));
   }
   if (form.message.length > MAX_MESSAGE_LEN) {
-    return `Message must be at most ${MAX_MESSAGE_LEN} characters`;
+    return t("contactValidationMessageMax").replace("{max}", String(MAX_MESSAGE_LEN));
   }
   return null;
 }
 
 export function ContactForm(): JSX.Element {
+  const { t } = useI18n();
   const [form, setForm] = useState<FormState>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -69,7 +72,7 @@ export function ContactForm(): JSX.Element {
     e.preventDefault();
     if (submitting) return;
 
-    const error = validate(form);
+    const error = validate(form, t);
     if (error) {
       toast.error(error);
       return;
@@ -90,13 +93,13 @@ export function ContactForm(): JSX.Element {
     if (result.ok) {
       setSubmitted(true);
       setForm(EMPTY);
-      toast.success("Message sent. I'll get back to you soon.");
+      toast.success(t("contactSendSuccess"));
     } else if (result.status === 429) {
-      toast.error("Too many requests. Please slow down and try again later.");
+      toast.error(t("contactSendFailure"));
     } else if (result.status >= 400 && result.status < 500) {
-      toast.error(result.error);
+      toast.error(result.error || t("contactSendFailure"));
     } else {
-      toast.error("Server error. Please try again in a moment.");
+      toast.error(t("contactSendFailure"));
     }
   };
 
@@ -106,27 +109,25 @@ export function ContactForm(): JSX.Element {
     <div className="mx-auto max-w-2xl px-4 py-10">
       <header className="mb-8">
         <h1 className="font-mono text-3xl font-bold text-green-400">
-          Get in touch
+          {t("contactTitle")}
         </h1>
         <p className="mt-2 font-mono text-sm text-neutral-400">
-          Send a message and I will reply via email. All fields except subject
-          are required.
+          {t("contactDesc")}
         </p>
       </header>
 
       {submitted ? (
         <div className="rounded-lg border border-green-500/40 bg-green-500/5 p-6 font-mono text-sm text-green-400">
-          <p className="font-semibold">Message sent.</p>
+          <p className="font-semibold">{t("contactSendSuccess")}</p>
           <p className="mt-2 text-neutral-300">
-            Thanks for reaching out — I review every message and reply within a
-            few days.
+            {t("contactSuccessDesc")}
           </p>
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="mt-4 text-xs text-green-400 underline"
+            className="mt-4 text-xs text-green-400 underline cursor-pointer"
           >
-            Send another
+            {t("contactSendAnother")}
           </button>
         </div>
       ) : (
@@ -136,7 +137,7 @@ export function ContactForm(): JSX.Element {
           noValidate
         >
           <Field
-            label="name"
+            label={t("contactName")}
             required
           >
             <input
@@ -152,7 +153,7 @@ export function ContactForm(): JSX.Element {
           </Field>
 
           <Field
-            label="email"
+            label={t("contactEmail")}
             required
           >
             <input
@@ -166,7 +167,7 @@ export function ContactForm(): JSX.Element {
             />
           </Field>
 
-          <Field label="subject">
+          <Field label={t("contactSubject")}>
             <input
               type="text"
               value={form.subject}
@@ -178,7 +179,7 @@ export function ContactForm(): JSX.Element {
           </Field>
 
           <Field
-            label="message"
+            label={t("contactMessage")}
             required
           >
             <textarea
@@ -190,7 +191,7 @@ export function ContactForm(): JSX.Element {
               disabled={submitting}
             />
             <div className="mt-1 text-right text-xs text-neutral-500">
-              {charsRemaining} chars left
+              {charsRemaining} {t("contactCharsLeft")}
             </div>
           </Field>
 
@@ -200,7 +201,7 @@ export function ContactForm(): JSX.Element {
             style={{ left: "-10000px" }}
           >
             <label>
-              Leave this field empty
+              {t("contactSpamLabel")}
               <input
                 type="text"
                 tabIndex={-1}
@@ -214,9 +215,9 @@ export function ContactForm(): JSX.Element {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded border border-green-400/40 bg-green-400/10 py-2.5 text-green-400 transition-colors hover:bg-green-400/20 disabled:opacity-50"
+            className="w-full rounded border border-green-400/40 bg-green-400/10 py-2.5 text-green-400 transition-colors hover:bg-green-400/20 disabled:opacity-50 cursor-pointer"
           >
-            {submitting ? "Sending..." : "Send message"}
+            {submitting ? t("contactSending") : t("contactSend")}
           </button>
         </form>
       )}

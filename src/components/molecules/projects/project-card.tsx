@@ -5,6 +5,8 @@ import { ImageErrorBoundary } from "@/components/organisms/error/image-error-bou
 import { Star, Folder } from "lucide-react";
 import { HoverCard } from "@/components/atoms/shared/motion-wrappers";
 
+import { useI18n } from "@/hooks/use-i18n";
+
 interface ProjectCardProps {
   project: Project;
   featured?: boolean;
@@ -18,14 +20,16 @@ export const ProjectCard = memo(function ProjectCard({
   project,
   featured = false,
 }: ProjectCardProps): JSX.Element {
+  const { t } = useI18n();
+
   const statusConfig = {
-    completed: { color: "text-green-400", icon: "", label: "Completed" },
+    completed: { color: "text-green-400", icon: "", label: t("projectsCompletedStatus") },
     "in-progress": {
       color: "text-yellow-400",
       icon: "",
-      label: "In Progress",
+      label: t("skillsInProgress"),
     },
-    planned: { color: "text-blue-400", icon: "", label: "Planned" },
+    planned: { color: "text-blue-400", icon: "", label: t("skillsNotStarted") },
   };
 
   const status = statusConfig[project.status] ?? statusConfig.completed;
@@ -50,7 +54,7 @@ export const ProjectCard = memo(function ProjectCard({
               size={12}
               className="fill-current"
             />{" "}
-            FEATURED
+            {t("projectFeatured")}
           </span>
         </div>
       )}
@@ -73,7 +77,7 @@ export const ProjectCard = memo(function ProjectCard({
                       className="stroke-[1.5]"
                     />
                   </div>
-                  <div className="text-sm">Project Preview</div>
+                  <div className="text-sm">{t("projectPreview")}</div>
                 </div>
               </div>
             )}
@@ -108,7 +112,7 @@ export const ProjectCard = memo(function ProjectCard({
 
         <div className="mb-4">
           <div className="mb-2 font-mono text-xs text-terminal-muted">
-            TECH STACK:
+            {t("projectTechStack")}:
           </div>
           <div className="flex flex-wrap gap-2">
             {project.technologies.slice(0, 4).map((tech) => (
@@ -122,7 +126,7 @@ export const ProjectCard = memo(function ProjectCard({
             ))}
             {project.technologies.length > 4 && (
               <span className="rounded border border-terminal-border px-2 py-1 text-xs text-terminal-muted">
-                +{project.technologies.length - 4} more
+                +{project.technologies.length - 4} {t("projectMore")}
               </span>
             )}
           </div>
@@ -137,7 +141,7 @@ export const ProjectCard = memo(function ProjectCard({
               className="flex-1 rounded bg-terminal-accent px-4 py-2 text-center text-sm font-medium text-terminal-bg transition-colors hover:bg-terminal-accent/90"
               aria-label={`View live demo of ${project.name}`}
             >
-              Live Demo
+              {t("projectLiveDemo")}
             </a>
           )}
           {project.githubUrl && (
@@ -148,7 +152,7 @@ export const ProjectCard = memo(function ProjectCard({
               className="flex-1 rounded border border-terminal-border px-4 py-2 text-center text-sm font-medium text-terminal-text transition-colors hover:border-terminal-accent hover:text-terminal-accent"
               aria-label={`View source code of ${project.name}`}
             >
-              Code
+              {t("projectCode")}
             </a>
           )}
         </div>

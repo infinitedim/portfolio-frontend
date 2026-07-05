@@ -198,6 +198,50 @@ export interface TranslationKeys {
   gateSubmit: string;
   gateHint: string;
   gateProgress: string;
+
+  aboutLocation: string;
+  projectsViewAll: string;
+  projectsNone: string;
+  projectFeatured: string;
+  projectPreview: string;
+  projectTechStack: string;
+  projectMore: string;
+  projectLiveDemo: string;
+  projectCode: string;
+  levelBeginner: string;
+  levelIntermediate: string;
+  levelAdvanced: string;
+  levelExpert: string;
+  blogAllPosts: string;
+  blogNoPosts: string;
+  blogVisit: string;
+  blogMinRead: string;
+  landingCtaTerminalGate: string;
+  landingCtaTerminalDesc: string;
+  landingCtaTerminalButton: string;
+  projectsTotalProjects: string;
+  projectsCompletedStatus: string;
+  projectsFeaturedStatus: string;
+  projectsTechnologiesStatus: string;
+  projectsAllProjects: string;
+  contactValidationNameRequired: string;
+  contactValidationNameTooLong: string;
+  contactValidationEmailInvalid: string;
+  contactValidationSubjectTooLong: string;
+  contactValidationMessageMin: string;
+  contactValidationMessageMax: string;
+  contactName: string;
+  contactSubject: string;
+  contactMessage: string;
+  contactWebsite: string;
+  contactSendSuccess: string;
+  contactSendFailure: string;
+  contactDesc: string;
+  contactSuccessDesc: string;
+  contactSendAnother: string;
+  contactSpamLabel: string;
+  contactSending: string;
+  contactCharsLeft: string;
 }
 
 const translations: Record<string, TranslationKeys> = {
@@ -392,6 +436,50 @@ const translations: Record<string, TranslationKeys> = {
     gateSubmit: "Submit",
     gateHint: "Hint",
     gateProgress: "Progress",
+
+    aboutLocation: "Location",
+    projectsViewAll: "View all",
+    projectsNone: "No projects yet.",
+    projectFeatured: "FEATURED",
+    projectPreview: "Project Preview",
+    projectTechStack: "TECH STACK",
+    projectMore: "more",
+    projectLiveDemo: "Live Demo",
+    projectCode: "Code",
+    levelBeginner: "beginner",
+    levelIntermediate: "intermediate",
+    levelAdvanced: "advanced",
+    levelExpert: "expert",
+    blogAllPosts: "All posts",
+    blogNoPosts: "No posts yet.",
+    blogVisit: "Visit the blog",
+    blogMinRead: "min read",
+    landingCtaTerminalGate: "NATAS-style gate",
+    landingCtaTerminalDesc: "Three NATAS-style web puzzles — static login, hidden paths, and a Referer header check — stand between you and the interactive CLI.",
+    landingCtaTerminalButton: "Enter the gate",
+    projectsTotalProjects: "Total Projects",
+    projectsCompletedStatus: "Completed",
+    projectsFeaturedStatus: "Featured",
+    projectsTechnologiesStatus: "Technologies",
+    projectsAllProjects: "All Projects",
+    contactValidationNameRequired: "Name is required",
+    contactValidationNameTooLong: "Name is too long",
+    contactValidationEmailInvalid: "Please enter a valid email",
+    contactValidationSubjectTooLong: "Subject is too long",
+    contactValidationMessageMin: "Message must be at least {min} characters",
+    contactValidationMessageMax: "Message must be at most {max} characters",
+    contactName: "Name",
+    contactSubject: "Subject",
+    contactMessage: "Message",
+    contactWebsite: "Website (Optional)",
+    contactSendSuccess: "Message sent successfully!",
+    contactSendFailure: "Failed to send message.",
+    contactDesc: "Send a message and I will reply via email. All fields except subject are required.",
+    contactSuccessDesc: "Thanks for reaching out — I review every message and reply within a few days.",
+    contactSendAnother: "Send another",
+    contactSpamLabel: "Leave this field empty",
+    contactSending: "Sending...",
+    contactCharsLeft: "chars left",
   },
 
   id_ID: {
@@ -585,6 +673,50 @@ const translations: Record<string, TranslationKeys> = {
     gateSubmit: "Kirim",
     gateHint: "Petunjuk",
     gateProgress: "Progres",
+
+    aboutLocation: "Lokasi",
+    projectsViewAll: "Lihat semua",
+    projectsNone: "Belum ada proyek.",
+    projectFeatured: "UNGGULAN",
+    projectPreview: "Pratinjau Proyek",
+    projectTechStack: "TEKNOLOGI",
+    projectMore: "lagi",
+    projectLiveDemo: "Demo Langsung",
+    projectCode: "Kode",
+    levelBeginner: "pemula",
+    levelIntermediate: "menengah",
+    levelAdvanced: "mahir",
+    levelExpert: "ahli",
+    blogAllPosts: "Semua post",
+    blogNoPosts: "Belum ada post.",
+    blogVisit: "Kunjungi blog",
+    blogMinRead: "menit membaca",
+    landingCtaTerminalGate: "Gerbang gaya NATAS",
+    landingCtaTerminalDesc: "Tiga teka-teki web gaya NATAS — login statis, jalur tersembunyi, dan verifikasi header Referer — berdiri di antara Anda dan CLI interaktif.",
+    landingCtaTerminalButton: "Masuki gerbang",
+    projectsTotalProjects: "Total Proyek",
+    projectsCompletedStatus: "Selesai",
+    projectsFeaturedStatus: "Unggulan",
+    projectsTechnologiesStatus: "Teknologi",
+    projectsAllProjects: "Semua Proyek",
+    contactValidationNameRequired: "Nama wajib diisi",
+    contactValidationNameTooLong: "Nama terlalu panjang",
+    contactValidationEmailInvalid: "Masukkan email yang valid",
+    contactValidationSubjectTooLong: "Subjek terlalu panjang",
+    contactValidationMessageMin: "Pesan minimal harus {min} karakter",
+    contactValidationMessageMax: "Pesan maksimal harus {max} karakter",
+    contactName: "Nama",
+    contactSubject: "Subjek",
+    contactMessage: "Pesan",
+    contactWebsite: "Situs Web (Opsional)",
+    contactSendSuccess: "Pesan berhasil dikirim!",
+    contactSendFailure: "Gagal mengirim pesan.",
+    contactDesc: "Kirim pesan dan saya akan membalas via email. Semua kolom wajib diisi kecuali subjek.",
+    contactSuccessDesc: "Terima kasih telah menghubungi saya — saya meninjau setiap pesan dan membalas dalam beberapa hari.",
+    contactSendAnother: "Kirim lagi",
+    contactSpamLabel: "Biarkan kolom ini kosong",
+    contactSending: "Mengirim...",
+    contactCharsLeft: "karakter tersisa",
   },
 
   es_ES: {
@@ -778,6 +910,50 @@ const translations: Record<string, TranslationKeys> = {
     gateSubmit: "Enviar",
     gateHint: "Pista",
     gateProgress: "Progreso",
+
+    aboutLocation: "Ubicación",
+    projectsViewAll: "Ver todo",
+    projectsNone: "No hay proyectos aún.",
+    projectFeatured: "DESTACADO",
+    projectPreview: "Vista Previa del Proyecto",
+    projectTechStack: "TECNOLOGÍAS",
+    projectMore: "más",
+    projectLiveDemo: "Demo en Vivo",
+    projectCode: "Código",
+    levelBeginner: "principiante",
+    levelIntermediate: "intermedio",
+    levelAdvanced: "avanzado",
+    levelExpert: "experto",
+    blogAllPosts: "Todas las entradas",
+    blogNoPosts: "No hay entradas aún.",
+    blogVisit: "Visitar el blog",
+    blogMinRead: "min de lectura",
+    landingCtaTerminalGate: "Portal estilo NATAS",
+    landingCtaTerminalDesc: "Tres acertijos web estilo NATAS (inicio de sesión estático, rutas ocultas y una verificación de encabezado Referer) se interponen entre usted y la CLI interactiva.",
+    landingCtaTerminalButton: "Entrar al portal",
+    projectsTotalProjects: "Total de Proyectos",
+    projectsCompletedStatus: "Completado",
+    projectsFeaturedStatus: "Destacado",
+    projectsTechnologiesStatus: "Tecnologías",
+    projectsAllProjects: "Todos los Proyectos",
+    contactValidationNameRequired: "El nombre es obligatorio",
+    contactValidationNameTooLong: "El nombre es demasiado largo",
+    contactValidationEmailInvalid: "Por favor ingrese un correo válido",
+    contactValidationSubjectTooLong: "El asunto es demasiado largo",
+    contactValidationMessageMin: "El mensaje debe tener al menos {min} caracteres",
+    contactValidationMessageMax: "El mensaje debe tener como máximo {max} caracteres",
+    contactName: "Nombre",
+    contactSubject: "Asunto",
+    contactMessage: "Mensaje",
+    contactWebsite: "Sitio Web (Opcional)",
+    contactSendSuccess: "¡Mensaje enviado con éxito!",
+    contactSendFailure: "Error al enviar el mensaje.",
+    contactDesc: "Envíe un mensaje y responderé por correo electrónico. Todos los campos excepto el asunto son obligatorios.",
+    contactSuccessDesc: "Gracias por comunicarse conmigo — reviso cada mensaje y respondo dentro de unos días.",
+    contactSendAnother: "Enviar otro",
+    contactSpamLabel: "Deje este campo vacío",
+    contactSending: "Enviando...",
+    contactCharsLeft: "caracteres restantes",
   },
 };
 
