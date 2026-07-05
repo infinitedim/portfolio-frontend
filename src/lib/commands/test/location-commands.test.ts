@@ -22,7 +22,7 @@ vi.mock("@/lib/location/location-service", () => ({
         offset: 0,
         isDST: false,
       }),
-      getWeatherEmoji: () => "☀️",
+      getWeatherEmoji: () => "️",
       formatOffset: () => "+00:00",
     }),
   },

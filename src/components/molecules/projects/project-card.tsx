@@ -3,6 +3,7 @@ import { Project } from "@/lib/data/data-fetching";
 import { ProjectCardImage } from "@/components/molecules/projects/project-card-image";
 import { ImageErrorBoundary } from "@/components/organisms/error/image-error-boundary";
 import { Star, Folder } from "lucide-react";
+import { HoverCard } from "@/components/atoms/shared/motion-wrappers";
 
 interface ProjectCardProps {
   project: Project;
@@ -18,29 +19,32 @@ export const ProjectCard = memo(function ProjectCard({
   featured = false,
 }: ProjectCardProps): JSX.Element {
   const statusConfig = {
-    completed: { color: "text-green-400", icon: "✅", label: "Completed" },
+    completed: { color: "text-green-400", icon: "", label: "Completed" },
     "in-progress": {
       color: "text-yellow-400",
-      icon: "🔄",
+      icon: "",
       label: "In Progress",
     },
-    planned: { color: "text-blue-400", icon: "📋", label: "Planned" },
+    planned: { color: "text-blue-400", icon: "", label: "Planned" },
   };
 
   const status = statusConfig[project.status] ?? statusConfig.completed;
 
   return (
-    <article
+    <HoverCard
       className={`
         group relative overflow-hidden rounded-lg border border-terminal-border bg-terminal-bg
         transition-all duration-300 hover:border-terminal-accent hover:shadow-lg
         ${featured ? "ring-2 ring-terminal-accent ring-opacity-20" : ""}
       `}
-      itemScope
-      itemType="https://schema.org/CreativeWork"
     >
-      {featured && (
-        <div className="absolute right-4 top-4 z-10">
+      <article
+        itemScope
+        itemType="https://schema.org/CreativeWork"
+        className="h-full flex flex-col"
+      >
+        {featured && (
+          <div className="absolute right-4 top-4 z-10">
           <span className="rounded bg-terminal-accent px-2 py-1 text-xs font-bold text-terminal-bg flex items-center gap-1">
             <Star
               size={12}
@@ -133,7 +137,7 @@ export const ProjectCard = memo(function ProjectCard({
               className="flex-1 rounded bg-terminal-accent px-4 py-2 text-center text-sm font-medium text-terminal-bg transition-colors hover:bg-terminal-accent/90"
               aria-label={`View live demo of ${project.name}`}
             >
-              🌐 Live Demo
+              Live Demo
             </a>
           )}
           {project.githubUrl && (
@@ -144,7 +148,7 @@ export const ProjectCard = memo(function ProjectCard({
               className="flex-1 rounded border border-terminal-border px-4 py-2 text-center text-sm font-medium text-terminal-text transition-colors hover:border-terminal-accent hover:text-terminal-accent"
               aria-label={`View source code of ${project.name}`}
             >
-              💻 Code
+              Code
             </a>
           )}
         </div>
@@ -170,5 +174,6 @@ export const ProjectCard = memo(function ProjectCard({
         </div>
       </div>
     </article>
+    </HoverCard>
   );
 });

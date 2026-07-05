@@ -39,15 +39,15 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
   };
 
   const getErrorIcon = () => {
-    return "❌";
+    return "";
   };
 
   const getSuccessIcon = () => {
-    return "✅";
+    return "";
   };
 
   const getWarningIcon = () => {
-    return "⚠️";
+    return "️";
   };
 
   const getInfoIcon = () => {
@@ -97,7 +97,7 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
             {formatContent(output.content)}
             {isError && (
               <div className="mt-2 text-sm opacity-75">
-                💡 Try typing 'help' to see available commands or 'clear' to
+                Try typing 'help' to see available commands or 'clear' to
                 reset the terminal.
               </div>
             )}

@@ -23,7 +23,7 @@ export function CustomizationButton(): JSX.Element {
         aria-label="Open customization manager"
         title="Customize themes and fonts"
       >
-        <span className="text-lg">🎨</span>
+        <span className="text-lg"></span>
       </button>
 
       <CustomizationManager

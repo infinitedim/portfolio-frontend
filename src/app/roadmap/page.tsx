@@ -164,7 +164,7 @@ function DashboardSection({
       {}
       <div className="rounded-lg border border-neutral-700 bg-neutral-900 p-5 font-mono">
         <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-neutral-400">
-          📊 Overall Progress
+          Overall Progress
         </h2>
         <div className="mb-3 flex items-center gap-4">
           <div className="text-5xl font-bold text-white">{overall}%</div>
@@ -277,7 +277,7 @@ function EmptyState({
 }): JSX.Element {
   return (
     <div className="rounded-lg border border-dashed border-neutral-700 p-10 text-center font-mono text-neutral-400">
-      <div className="mb-2 text-3xl">🔌</div>
+      <div className="mb-2 text-3xl"></div>
       <div className="text-sm">{roadmapEmptyMessage(error)}</div>
     </div>
   );

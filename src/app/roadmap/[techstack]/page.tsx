@@ -80,7 +80,7 @@ async function RoadmapDetailContent({ params }: PageProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-neutral-400 font-mono p-5 text-center">
         <div>
-          <div className="text-3xl mb-3">🗺️</div>
+          <div className="text-3xl mb-3">️</div>
           <h1 className="text-white text-lg font-bold">Layout Not Found</h1>
           <p className="text-sm mt-1">We don't have the visual layout structure for "{techstack}" yet.</p>
           <a href="/roadmap" className="mt-4 inline-block text-xs text-sky-500 hover:underline">

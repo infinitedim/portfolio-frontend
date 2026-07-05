@@ -13,7 +13,7 @@ vi.mock("../locales", () => ({
     code,
     name: "Test",
     nativeName: "Test",
-    flag: "🏳️",
+    flag: "️",
     direction: "ltr",
   })),
   isRegionalVariant: vi.fn(() => false),

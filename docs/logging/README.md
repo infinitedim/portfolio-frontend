@@ -24,7 +24,7 @@ The logging system provides comprehensive, structured logging across the full st
 
 ### Frontend Logging
 
-✅ **Client-Side**
+**Client-Side**
 
 - Browser logging with automatic batching
 - PII masking before transmission
@@ -34,7 +34,7 @@ The logging system provides comprehensive, structured logging across the full st
 - Security event logging
 - Automatic context enrichment
 
-✅ **Server-Side**
+**Server-Side**
 
 - Next.js SSR logging
 - API route logging
@@ -44,7 +44,7 @@ The logging system provides comprehensive, structured logging across the full st
 
 ### Backend Logging
 
-✅ **Rust Backend**
+**Rust Backend**
 
 - Structured logging with tracing
 - Request ID propagation
@@ -55,7 +55,7 @@ The logging system provides comprehensive, structured logging across the full st
 
 ### Log Aggregation
 
-✅ **Loki + Promtail**
+**Loki + Promtail**
 
 - Centralized log storage
 - 30-day retention
@@ -63,7 +63,7 @@ The logging system provides comprehensive, structured logging across the full st
 - High-performance queries
 - Automatic log collection
 
-✅ **Grafana**
+**Grafana**
 
 - Pre-built dashboards
 - Real-time log streaming
@@ -305,7 +305,7 @@ Monitor security events:
 
 ### 1. Always Use Structured Logging
 
-✅ Good:
+Good:
 
 ```typescript
 logger.info(
@@ -318,7 +318,7 @@ logger.info(
 );
 ```
 
-❌ Bad:
+Bad:
 
 ```typescript
 console.log("User added product 123 to cart");
@@ -326,7 +326,7 @@ console.log("User added product 123 to cart");
 
 ### 2. Mask PII
 
-✅ Good:
+Good:
 
 ```typescript
 logger.info(
@@ -338,7 +338,7 @@ logger.info(
 );
 ```
 
-❌ Bad:
+Bad:
 
 ```typescript
 logger.info(

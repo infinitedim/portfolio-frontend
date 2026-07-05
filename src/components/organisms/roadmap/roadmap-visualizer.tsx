@@ -80,17 +80,17 @@ export function RoadmapVisualizer({
         <div className="flex gap-2">
           <ViewModeButton
             mode="grid"
-            icon="📋"
+            icon=""
             label="Grid"
           />
           <ViewModeButton
             mode="list"
-            icon="📄"
+            icon=""
             label="List"
           />
           <ViewModeButton
             mode="progress"
-            icon="📊"
+            icon=""
             label="Progress"
           />
         </div>

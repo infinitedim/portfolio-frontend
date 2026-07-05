@@ -366,7 +366,7 @@ export default function AdminTwoFactorPage(): JSX.Element {
                         border: `1px solid ${themeConfig.colors.error}`,
                       }}
                     >
-                      {busy ? "⏳ Disabling…" : "Disable 2FA"}
+                      {busy ? "Disabling…" : "Disable 2FA"}
                     </button>
                   </div>
                 </div>

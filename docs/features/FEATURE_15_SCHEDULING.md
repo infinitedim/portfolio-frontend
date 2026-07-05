@@ -7,7 +7,7 @@
 
 ---
 
-## 📋 Deskripsi
+## Deskripsi
 
 Admin bisa menjadwalkan artikel untuk publish otomatis di waktu tertentu. Artikel dengan `publish_at` di masa depan akan berstatus "Scheduled" dan otomatis berubah menjadi published saat waktunya tiba.
 
@@ -24,7 +24,7 @@ Admin bisa menjadwalkan artikel untuk publish otomatis di waktu tertentu. Artike
 
 ---
 
-## ✅ Subtask Checklist
+## Subtask Checklist
 
 ### Backend (`portfolio-backend`)
 
@@ -162,7 +162,7 @@ Admin bisa menjadwalkan artikel untuk publish otomatis di waktu tertentu. Artike
 
 ---
 
-## 📁 File Mapping
+## File Mapping
 
 | File                                                                     | Aksi          | Deskripsi                           |
 | ------------------------------------------------------------------------ | ------------- | ----------------------------------- |
@@ -176,7 +176,7 @@ Admin bisa menjadwalkan artikel untuk publish otomatis di waktu tertentu. Artike
 
 ---
 
-## 🔌 API Contract
+## API Contract
 
 ### `POST /api/blog` (updated request body)
 
@@ -223,7 +223,7 @@ Posts with `publish_at > NOW()` are **NOT** included.
 
 ---
 
-## ✅ Acceptance Criteria
+## Acceptance Criteria
 
 | #    | Kriteria                                                                    | Cara Verifikasi          |
 | ---- | --------------------------------------------------------------------------- | ------------------------ |
@@ -238,7 +238,7 @@ Posts with `publish_at > NOW()` are **NOT** included.
 
 ---
 
-## 🔧 Technical Notes
+## Technical Notes
 
 ### Scheduler Reliability
 

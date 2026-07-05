@@ -506,7 +506,7 @@ export const GuidedTour = memo(function GuidedTour({
                   className="text-xs font-semibold mb-2"
                   style={{ color: themeConfig.colors.accent }}
                 >
-                  💡 Tips:
+                  Tips:
                 </div>
                 <ul className="space-y-1">
                   {step.tips?.map((tip: string, index: number) => (
@@ -535,7 +535,7 @@ export const GuidedTour = memo(function GuidedTour({
                   color: themeConfig.colors.accent,
                 }}
               >
-                <span>⚡</span>
+                <span></span>
                 <span>Try it:</span>
                 <code className="font-bold bg-black/20 px-2 py-1 rounded">
                   {step.demoCommand}

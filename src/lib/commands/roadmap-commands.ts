@@ -417,14 +417,14 @@ export const roadmapCommand: Command = {
       const inProgressSkills = await service.getSkillsByStatus("in-progress");
 
       const progressText = [
-        "🔄 Skills In Progress",
+        "Skills In Progress",
         "═".repeat(30),
         "",
         ...inProgressSkills.map((skill: RoadmapSkill) => {
           const progressBar =
             "▓".repeat(Math.floor(skill.progress / 10)) +
             "░".repeat(10 - Math.floor(skill.progress / 10));
-          return `  🔄 ${skill.name.padEnd(15)} [${progressBar}] ${skill.progress}%`;
+          return `  ${skill.name.padEnd(15)} [${progressBar}] ${skill.progress}%`;
         }),
         "",
         `Total: ${inProgressSkills.length} skills in progress`,

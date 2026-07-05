@@ -98,7 +98,7 @@ export class EnhancedErrorBoundary extends Component<
       });
 
       if (process.env.NODE_ENV === "development") {
-        console.group(`🚨 Error Boundary: ${error.category}`);
+        console.group(`Error Boundary: ${error.category}`);
         console.error("Error:", error);
         console.error("Component Stack:", errorInfo.componentStack);
         console.error("Error Info:", errorInfo);
@@ -309,7 +309,7 @@ function DefaultErrorFallback({
           className={`p-4 rounded-lg border ${getSeverityColor(error.severity)}`}
         >
           <div className="flex items-center space-x-2">
-            <span className="text-2xl">⚠️</span>
+            <span className="text-2xl">️</span>
             <div>
               <h1 className="text-lg font-semibold">{error.category} Error</h1>
               <p className="text-sm opacity-75">Severity: {error.severity}</p>
@@ -330,7 +330,7 @@ function DefaultErrorFallback({
 
         {error.suggestions.length > 0 && (
           <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-            <h3 className="font-medium text-gray-900 mb-2">💡 Suggestions</h3>
+            <h3 className="font-medium text-gray-900 mb-2">Suggestions</h3>
             <ul className="space-y-1">
               {error.suggestions.map((suggestion, index) => (
                 <li

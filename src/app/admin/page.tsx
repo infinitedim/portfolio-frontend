@@ -93,7 +93,7 @@ export default function AdminDashboardPage(): JSX.Element {
                     border: `1px solid ${themeConfig.colors.accent}`,
                   }}
                 >
-                  🏠 Home
+                  Home
                 </button>
 
                 <button
@@ -116,7 +116,7 @@ export default function AdminDashboardPage(): JSX.Element {
                       : "none",
                   }}
                 >
-                  🚪 Logout
+                  Logout
                 </button>
               </div>
             </div>

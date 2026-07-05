@@ -122,11 +122,11 @@ export function ErrorHandler({
       case "connected":
         return "🟢";
       case "disconnected":
-        return "🔴";
+        return "";
       case "checking":
         return "🟡";
       default:
-        return "⚪";
+        return "";
     }
   };
 
@@ -151,7 +151,7 @@ export function ErrorHandler({
           className="text-lg font-semibold"
           style={{ color: themeConfig.colors.accent }}
         >
-          🔧 Service Status Monitor
+          Service Status Monitor
         </h3>
         <button
           onClick={checkServiceHealth}
@@ -164,7 +164,7 @@ export function ErrorHandler({
             color: themeConfig.colors.bg,
           }}
         >
-          {isChecking ? "🔄 Checking..." : "🔄 Refresh"}
+          {isChecking ? "Checking..." : "Refresh"}
         </button>
       </div>
 
@@ -201,7 +201,7 @@ export function ErrorHandler({
           className="text-sm font-semibold"
           style={{ color: themeConfig.colors.accent }}
         >
-          🔍 Troubleshooting Guide
+          Troubleshooting Guide
         </h4>
         <div className="text-xs space-y-1 opacity-80">
           {serviceStatus.backend === "disconnected" && (
@@ -245,7 +245,7 @@ export function ErrorHandler({
             color: themeConfig.colors.accent,
           }}
         >
-          📊 Health Dashboard
+          Health Dashboard
         </button>
         <button
           onClick={() => window.open(`${API_URL}/health/detailed`, "_blank")}
@@ -255,7 +255,7 @@ export function ErrorHandler({
             color: themeConfig.colors.accent,
           }}
         >
-          🔍 Detailed Health
+          Detailed Health
         </button>
         <button
           onClick={() => window.open(`${API_URL}/health/ready`, "_blank")}
@@ -265,7 +265,7 @@ export function ErrorHandler({
             color: themeConfig.colors.accent,
           }}
         >
-          ✅ Readiness Check
+          Readiness Check
         </button>
       </div>
     </div>

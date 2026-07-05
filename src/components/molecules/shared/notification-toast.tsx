@@ -53,21 +53,21 @@ export function NotificationToast({
         return {
           backgroundColor: colors.success || colors.accent,
           color: colors.bg,
-          icon: "✅",
+          icon: "",
           borderColor: colors.success || colors.accent,
         };
       case "error":
         return {
           backgroundColor: colors.error || "#ff4444",
           color: colors.bg,
-          icon: "❌",
+          icon: "",
           borderColor: colors.error || "#ff4444",
         };
       case "warning":
         return {
           backgroundColor: colors.warning || "#f5a623",
           color: colors.bg,
-          icon: "⚠️",
+          icon: "️",
           borderColor: colors.warning || "#f5a623",
         };
       case "info":

@@ -59,7 +59,7 @@ export function OptimizedImage({
         style={{ width, height }}
       >
         <div className="text-center p-4">
-          <span className="text-4xl">🖼️</span>
+          <span className="text-4xl">️</span>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
             Image not available
           </p>

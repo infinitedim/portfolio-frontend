@@ -1,13 +1,13 @@
 # Feature #13 — Full-Text Search untuk Blog & Projects
 
-> **Prioritas:** 🔴 Tinggi  
+> **Prioritas:** Tinggi  
 > **Estimasi:** FE 2 hari · BE 2 hari  
 > **Dependencies:** #12 Blog Tags (tag filter dipakai di search results)  
 > **Dependants:** Tidak ada
 
 ---
 
-## 📋 Deskripsi
+## Deskripsi
 
 Search bar global dengan shortcut `Ctrl+K` (Command Palette style) yang bisa mencari blog posts dan projects sekaligus. Menggunakan `cmdk` library yang sudah terinstall di project.
 
@@ -27,7 +27,7 @@ Search bar global dengan shortcut `Ctrl+K` (Command Palette style) yang bisa men
 
 ---
 
-## ✅ Subtask Checklist
+## Subtask Checklist
 
 ### Backend (`portfolio-backend`)
 
@@ -133,7 +133,7 @@ Search bar global dengan shortcut `Ctrl+K` (Command Palette style) yang bisa men
 
 ---
 
-## 📁 File Mapping
+## File Mapping
 
 | File                                                                    | Aksi          | Deskripsi                                     |
 | ----------------------------------------------------------------------- | ------------- | --------------------------------------------- |
@@ -148,7 +148,7 @@ Search bar global dengan shortcut `Ctrl+K` (Command Palette style) yang bisa men
 
 ---
 
-## 🔌 API Contract
+## API Contract
 
 ### `GET /api/search?q=rust&type=all&limit=10`
 
@@ -199,7 +199,7 @@ GET /api/search?q=a
 
 ---
 
-## ✅ Acceptance Criteria
+## Acceptance Criteria
 
 | #     | Kriteria                                                                                           | Cara Verifikasi               |
 | ----- | -------------------------------------------------------------------------------------------------- | ----------------------------- |
@@ -216,17 +216,17 @@ GET /api/search?q=a
 
 ---
 
-## 🎨 Design Notes
+## Design Notes
 
 - Modal: centered overlay, max-width 640px, max-height 400px
 - Input: large, autofocus, icon search kiri, clear button kanan
-- Results: grouped `<Command.Group heading="Blog Posts">`, setiap item punya icon kiri (📝 blog, 📂 project)
+- Results: grouped `<Command.Group heading="Blog Posts">`, setiap item punya icon kiri (blog, project)
 - Keyboard shortcut badge di trigger button: `bg-muted text-muted-foreground text-xs px-1.5 py-0.5 rounded`
 - Animation: scale-in on open, fade-out on close (cmdk Dialog handles this)
 
 ---
 
-## 🔧 Technical Notes
+## Technical Notes
 
 ### PostgreSQL Full-Text Search Weights
 

@@ -51,7 +51,7 @@ export function KeyboardShortcut({
   const categories: ShortcutCategory[] = [
     {
       name: "all",
-      icon: "🔧",
+      icon: "",
       shortcuts,
     },
     ...Object.entries(
@@ -74,15 +74,15 @@ export function KeyboardShortcut({
 
   function getCategoryIcon(category: string): string {
     const icons: Record<string, string> = {
-      navigation: "🧭",
-      editing: "✏️",
-      terminal: "💻",
-      system: "⚙️",
-      customization: "🎨",
-      help: "❓",
-      general: "🔧",
+      navigation: "",
+      editing: "️",
+      terminal: "",
+      system: "️",
+      customization: "",
+      help: "",
+      general: "",
     };
-    return icons[category] || "🔧";
+    return icons[category] || "";
   }
 
   const filteredShortcuts = shortcuts.filter((shortcut) => {
@@ -279,7 +279,7 @@ export function KeyboardShortcut({
               }}
               title="Customize shortcut"
             >
-              ✏️
+              ️
             </button>
           )}
 
@@ -419,7 +419,7 @@ export function KeyboardShortcut({
           </div>
           <div className="flex items-center gap-4">
             <span>Esc Close</span>
-            <span>✏️ Customize</span>
+            <span>️ Customize</span>
             <span>▶️ Test</span>
           </div>
         </div>

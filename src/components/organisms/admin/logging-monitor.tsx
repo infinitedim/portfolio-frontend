@@ -266,7 +266,7 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
                   : themeConfig.colors.text,
               }}
             >
-              {autoScroll ? "🔒 Lock" : "🔓 Unlock"}
+              {autoScroll ? "Lock" : "Unlock"}
             </button>
           </div>
         </div>

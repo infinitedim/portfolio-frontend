@@ -255,7 +255,7 @@ export const themeCommand: Command = {
       return {
         type: "success",
         content: [
-          "🎨 Theme Command Help",
+          "Theme Command Help",
           "═".repeat(30),
           "",
           "Usage:",
@@ -360,7 +360,7 @@ export const themeCommand: Command = {
         return {
           type: "error",
           content: [
-            "❌ Preview theme name required",
+            "Preview theme name required",
             "",
             "Usage: theme -p <theme-name>",
             "Example: theme -p dracula",
@@ -376,7 +376,7 @@ export const themeCommand: Command = {
         return {
           type: "error",
           content: [
-            `❌ Theme "${previewTheme}" not found`,
+            `Theme "${previewTheme}" not found`,
             "",
             `Available themes: ${availableThemes.join(", ")}`,
             "",
@@ -414,7 +414,7 @@ export const themeCommand: Command = {
 
       const helpInfo = [
         "",
-        "🚩 Available Flags:",
+        "Available Flags:",
         "  -l, --list     Show detailed theme list",
         "  -c, --current  Show current theme info",
         "  -p, --preview  Preview theme colors",

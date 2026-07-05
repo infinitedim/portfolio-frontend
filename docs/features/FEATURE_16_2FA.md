@@ -1,13 +1,13 @@
 # Feature #16 — 2FA (TOTP) untuk Admin Login
 
-> **Prioritas:** 🔴 Tinggi (security)  
+> **Prioritas:** Tinggi (security)  
 > **Estimasi:** FE 2 hari · BE 3 hari  
 > **Dependencies:** Tidak ada  
 > **Dependants:** Tidak ada
 
 ---
 
-## 📋 Deskripsi
+## Deskripsi
 
 Two-Factor Authentication berbasis TOTP (Time-based One-Time Password) untuk admin login. Setelah setup, setiap login wajib memasukkan kode 6-digit dari authenticator app (Google Authenticator, Authy, dll). Termasuk backup codes untuk recovery.
 
@@ -32,7 +32,7 @@ Two-Factor Authentication berbasis TOTP (Time-based One-Time Password) untuk adm
 
 ---
 
-## ✅ Subtask Checklist
+## Subtask Checklist
 
 ### Backend (`portfolio-backend`)
 
@@ -178,7 +178,7 @@ Two-Factor Authentication berbasis TOTP (Time-based One-Time Password) untuk adm
 
 ---
 
-## 📁 File Mapping
+## File Mapping
 
 | File                                                                         | Aksi          | Deskripsi                                 |
 | ---------------------------------------------------------------------------- | ------------- | ----------------------------------------- |
@@ -195,7 +195,7 @@ Two-Factor Authentication berbasis TOTP (Time-based One-Time Password) untuk adm
 
 ---
 
-## 🔌 API Contract
+## API Contract
 
 ### `POST /api/auth/login` (modified response)
 
@@ -259,7 +259,7 @@ Response 401: { "error": "Invalid code" }
 
 ---
 
-## ✅ Acceptance Criteria
+## Acceptance Criteria
 
 | #     | Kriteria                                                           | Cara Verifikasi    |
 | ----- | ------------------------------------------------------------------ | ------------------ |
@@ -276,7 +276,7 @@ Response 401: { "error": "Invalid code" }
 
 ---
 
-## 🔧 Technical Notes
+## Technical Notes
 
 ### TOTP Parameters
 

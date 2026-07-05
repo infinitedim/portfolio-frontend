@@ -49,13 +49,13 @@ It's like giving your portfolio a personality transplant from "corporate brochur
 - **Customizable**: Make it uniquely _yours_
 - **Secure**: Enterprise-grade security out of the box
 
-## ✨ Features That'll Blow Your Mind
+## Features That'll Blow Your Mind
 
 ### The Terminal Experience
 
 - **Real Command Line Feel**: Complete with that satisfying cursor blink
-- **✨ Smart Auto-completion**: Hit `Tab` and watch the magic happen
-- **📜 Command History**: Arrow keys work just like in your favorite terminal
+- **Smart Auto-completion**: Hit `Tab` and watch the magic happen
+- **Command History**: Arrow keys work just like in your favorite terminal
 - **Typo Forgiveness**: Typed `hlep` instead of `help`? We got you!
 - **⌨️ Keyboard Shortcuts**: All the `Ctrl+` combos you know and love
 - **Input Sanitization**: Protected against XSS and injection attacks
@@ -77,32 +77,30 @@ Because security isn't optional anymore:
 Choose your fighter!
 
 - **Matrix**: _"Welcome to the real world"_
-- 🌆 **Cyberpunk**: Neon dreams and digital nightmares
+- **Cyberpunk**: Neon dreams and digital nightmares
 - **Minimal**: Clean, crisp, and classy
 - **Retro**: Vintage vibes with modern functionality
 - **Custom**: Build your own masterpiece!
 
-**Pro Tip**: The theme editor is so good, you might spend more time customizing than coding! 😅
-
-### Accessibility Superpowers
+**Pro Tip**: The theme editor is so good, you might spend more time customizing than coding! ### Accessibility Superpowers
 
 Because awesome should be for everyone:
 
-- 🔊 **Screen Reader Friendly**: Every element speaks up when needed
+- **Screen Reader Friendly**: Every element speaks up when needed
 - ⌨️ **Keyboard Navigation**: Mouse? What mouse?
 - **High Contrast Mode**: Easy on the eyes
-- 🐌 **Reduced Motion**: Respects your preferences
+- **Reduced Motion**: Respects your preferences
 - **Zoom Friendly**: Scale up without breaking
 
-### 📱 Mobile Magic
+### Mobile Magic
 
 Your terminal works everywhere:
 
 - **Touch Optimized**: Tap, swipe, and type with ease
-- 📱 **Responsive Design**: Looks great on everything from phones to ultrawide monitors
+- **Responsive Design**: Looks great on everything from phones to ultrawide monitors
 - ⌨️ **Virtual Keyboard Support**: Mobile typing that doesn't suck
 
-### 🛣️ Journey Visualization
+### ️ Journey Visualization
 
 - **Interactive Roadmap**: Your learning journey in beautiful visuals
 - **Skills Showcase**: Level up your skill display game
@@ -120,9 +118,9 @@ We only use the good stuff around here:
 | Technology        | Why It's Awesome                                 | Version |
 | ----------------- | ------------------------------------------------ | ------- |
 | **Next.js**       | The React framework that makes everything better | 16.x    |
-| 📘 **TypeScript** | Because `any` is not a type strategy             | 5.9+    |
+| **TypeScript** | Because `any` is not a type strategy             | 5.9+    |
 | **Tailwind CSS**  | Utility-first CSS that sparks joy                | 4.1+    |
-| 🧩 **shadcn/ui**  | Components so beautiful they make you cry        | Latest  |
+| **shadcn/ui**  | Components so beautiful they make you cry        | Latest  |
 | **Radix UI**      | Accessible primitives for the win                | Latest  |
 
 ### Backend
@@ -131,13 +129,13 @@ We only use the good stuff around here:
 | ------------ | ------------------------------------------ | ------- |
 | **Rust**     | Blazing-fast, memory-safe backend          | 1.75+   |
 | **Axum**     | Ergonomic and modular web framework        | 0.8     |
-| 🗄️ **SQLx**  | Async PostgreSQL with compile-time helpers | 0.8     |
+| ️ **SQLx**  | Async PostgreSQL with compile-time helpers | 0.8     |
 | **Tracing**  | Powerful structured logging                | Latest  |
 | **Loki**     | Scalable log aggregation system            | Latest  |
 | **Promtail** | Log collection agent                       | Latest  |
 | **Grafana**  | Beautiful dashboards and visualization     | Latest  |
 
-### 🏗️ Infrastructure
+### ️ Infrastructure
 
 | Technology | Why It's Awesome                          | Version |
 | ---------- | ----------------------------------------- | ------- |
@@ -146,7 +144,7 @@ We only use the good stuff around here:
 | **Docker** | Containerization for logging stack        | Latest  |
 | **Cargo**  | Rust package manager and build tool       | Latest  |
 
-## 🏗️ Architecture Overview
+## ️ Architecture Overview
 
 ```text
 portfolio/
@@ -157,8 +155,7 @@ portfolio/
 │   │   │   ├── atoms/                 # Atomic components
 │   │   │   ├── molecules/             # Molecule components
 │   │   │   ├── organisms/             # Complex components
-│   │   │   │   └── terminal/          # Terminal magic ✨
-│   │   │   └── monitoring/            # Monitoring components
+│   │   │   │   └── terminal/          # Terminal magic │   │   │   └── monitoring/            # Monitoring components
 │   │   ├── lib/
 │   │   │   ├── commands/              # Terminal commands
 │   │   │   ├── logger/                # Client & server logging
@@ -197,7 +194,7 @@ portfolio/
 │   ├── data/                          # Persistent data
 │   └── docker-compose.logging.yml     # Logging stack
 │
-└── 🔧 Shared/
+└── Shared/
     ├── VSCode settings
     ├── .github/workflows/             # CI/CD pipelines
     └── Environment configs
@@ -205,15 +202,15 @@ portfolio/
 
 ## Let's Get This Party Started
 
-### 🎬 Prerequisites
+### Prerequisites
 
 Before we dive in, make sure you have:
 
 - **Bun 1.2+** - Fast JavaScript runtime and package manager
 - **Rust 1.75+** - For backend development
-- 🐙 **Git** - Obviously!
+- **Git** - Obviously!
 - **Docker & Docker Compose** - For logging stack (Loki, Grafana)
-- ☕ **Coffee** - Not required but highly recommended
+- **Coffee** - Not required but highly recommended
 
 ### Installation Speedrun
 
@@ -224,9 +221,7 @@ git clone https://github.com/infinitedim/portfolio-frontend.git
 cd portfolio
 ```
 
-**Step 2**: Install frontend dependencies! ✨
-
-```bash
+**Step 2**: Install frontend dependencies! ```bash
 cd portfolio-frontend
 bun install
 ```
@@ -257,9 +252,7 @@ cp .env.example .env.development
 # Edit with your local values
 ```
 
-**Step 5**: Fire it up! 🔥
-
-```bash
+**Step 5**: Fire it up! ```bash
 # Terminal 1: Start the backend
 cd portfolio-backend
 cargo run
@@ -275,9 +268,7 @@ bun run dev
 - Grafana: `http://localhost:3001` (admin/admin)
 - Loki API: `http://localhost:3100`
 
-**Step 7**: Type `help` and prepare to be amazed! 🤯
-
-## How to Play... I Mean, Use
+**Step 7**: Type `help` and prepare to be amazed! ## How to Play... I Mean, Use
 
 ### Essential Commands
 
@@ -286,19 +277,19 @@ Your new superpowers:
 | Command        | What It Does                               | Cool Factor     |
 | -------------- | ------------------------------------------ | --------------- |
 | `help`         | Shows all commands                         | 🆘 Essential    |
-| `about`        | Learn about the awesome person behind this | 👋 Personal     |
-| `skills`       | Display your superpowers                   | 💪 Impressive   |
+| `about`        | Learn about the awesome person behind this | Personal     |
+| `skills`       | Display your superpowers                   | Impressive   |
 | `projects`     | Show off your creations                    | Portfolio Gold  |
-| `contact`      | How to reach the legend                    | 📞 Networking   |
-| `resume`       | The formal stuff                           | 📄 Professional |
-| `roadmap`      | Your journey to greatness                  | 🗺️ Inspiring    |
+| `contact`      | How to reach the legend                    | Networking   |
+| `resume`       | The formal stuff                           | Professional |
+| `roadmap`      | Your journey to greatness                  | ️ Inspiring    |
 | `customize`    | Make it YOURS                              | Fun             |
 | `clear`        | Clean slate                                | Utility         |
 | `theme matrix` | Enter the Matrix                           | Epic            |
 
 ### Pro Tips & Tricks
 
-**🔥 Hot Keys That'll Make You Look Cool:**
+**Hot Keys That'll Make You Look Cool:**
 
 - `Tab` → Auto-complete like a boss
 - `↑/↓` → Navigate command history like a time traveler
@@ -328,7 +319,7 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 NEXT_PUBLIC_LOG_LEVEL="info"           # trace|debug|info|warn|error
 NEXT_PUBLIC_LOG_API_URL="/api/logs"    # Log ingestion endpoint
 
-# 🛣️ Roadmap.sh Integration (Optional)
+# ️ Roadmap.sh Integration (Optional)
 # ROADMAP_EMAIL and ROADMAP_PASSWORD are configured server-side in portfolio-backend
 # NEXT_PUBLIC_ROADMAP_* secrets are not used
 
@@ -395,9 +386,9 @@ PORT="8080"
 
 ### Alerting
 
-- 🚨 High error rate (>5 errors/second)
-- 📉 Service down (no logs for 5 minutes)
-- 🐌 Slow response time (P95 >2s)
+- High error rate (>5 errors/second)
+- Service down (no logs for 5 minutes)
+- Slow response time (P95 >2s)
 - Security events (failed logins, rate limit abuse)
 
 ## Testing
@@ -436,15 +427,12 @@ Want to make this even more awesome? We'd love your help!
 
 ### How to Contribute
 
-1. Fork this bad boy 🍴
-2. Create your feature branch: `git checkout -b feature/mind-blowing-feature`
+1. Fork this bad boy 2. Create your feature branch: `git checkout -b feature/mind-blowing-feature`
 3. Code something amazing
 4. Test it thoroughly
 5. Commit with style: `git commit -m 'feat: add mind-blowing feature'`
 6. Push it: `git push origin feature/mind-blowing-feature`
-7. Open a PR and watch the magic happen ✨
-
-### 📏 Code Standards
+7. Open a PR and watch the magic happen ### Code Standards
 
 - TypeScript strict mode
 - ESLint + Prettier formatting
@@ -453,7 +441,7 @@ Want to make this even more awesome? We'd love your help!
 - No `console.log` in production code
 - Security-first mindset
 
-### 🐛 Found a Bug?
+### Found a Bug?
 
 Don't panic! Just:
 
@@ -538,7 +526,7 @@ GET /api/blog/:slug
 GET /api/portfolio
 ```
 
-### 🔧 Command System
+### Command System
 
 Want to add your own commands? It's easier than making instant noodles:
 
@@ -596,13 +584,13 @@ try {
 }
 ```
 
-## 📸 Screenshots & Demo
+## Screenshots & Demo
 
 ### Desktop Experience
 
 _Coming soon: Screenshots that'll make you go "I need this!"_
 
-### 📱 Mobile Magic
+### Mobile Magic
 
 _Mobile screenshots that prove responsive design isn't dead_
 
@@ -612,17 +600,15 @@ _A rainbow of themes to choose from_
 
 ### Live Demo
 
-**👉 [Check out the live demo!](https://your-awesome-portfolio.vercel.app) 👈**
+**[Check out the live demo!](https://your-awesome-portfolio.vercel.app) **
 
 _Go ahead, type `help` and start exploring!_
 
-## 📜 License
+## License
 
-This project is licensed under the MIT License - which basically means "do whatever you want with it, just don't blame us if something breaks!" 😄
+This project is licensed under the MIT License - which basically means "do whatever you want with it, just don't blame us if something breaks!" See the [LICENSE](LICENSE) file for the boring legal details.
 
-See the [LICENSE](LICENSE) file for the boring legal details.
-
-## 🙏 Shoutouts & Thanks
+## Shoutouts & Thanks
 
 Massive thanks to these amazing projects:
 
@@ -631,13 +617,13 @@ Massive thanks to these amazing projects:
 - **Grafana Labs** - For open-source monitoring perfection
 - **Loki** - For making log aggregation simple and powerful
 - **Bun Team** - For the runtime that makes everything faster
-- 🌊 **Tailwind CSS** - For making CSS fun again
-- ⚛️ **Next.js Team** - For the framework that just works
+- **Tailwind CSS** - For making CSS fun again
+- ️ **Next.js Team** - For the framework that just works
 - **Vercel** - For deployment that's faster than light
-- ☕ **Coffee** - For making all of this possible
-- 🌟 **You** - For checking out this project!
+- **Coffee** - For making all of this possible
+- **You** - For checking out this project!
 
-## 🗺️ Roadmap to Awesomeness
+## ️ Roadmap to Awesomeness
 
 What's coming next? Glad you asked!
 
@@ -648,8 +634,8 @@ What's coming next? Glad you asked!
 - [ ] **Plugin System**: Let others extend your terminal
 - [ ] **Enhanced Analytics**: More detailed visitor insights
 - [ ] **Authentication**: Optional user accounts and personalization
-- [x] 🌍 **i18n Support**: 17+ languages with RTL support
-- [x] 📱 **PWA**: Service worker, offline mode, installable
+- [x] **i18n Support**: 17+ languages with RTL support
+- [x] **PWA**: Service worker, offline mode, installable
 - [x] **Logging System**: Loki + Grafana monitoring
 - [x] **Rust Backend**: High-performance backend
 - [x] **Bun Runtime**: Fast JavaScript runtime
@@ -660,14 +646,14 @@ Stuck? Don't worry, we've all been there!
 
 1. **Check the docs** (you're reading them!)
 2. **Search existing issues**
-3. 💬 **Open a discussion**
-4. 🐛 **Create an issue**
+3. **Open a discussion**
+4. **Create an issue**
 
 ---
 
 <div align="center">
 
-**Built with 💖, ☕, and way too much enthusiasm by [Dimas Saputra](https://github.com/infinitedim)**
+**Built with , , and way too much enthusiasm by [Dimas Saputra](https://github.com/infinitedim)**
 
 _"Code is poetry, and this portfolio is our sonnet"_
 
@@ -678,4 +664,4 @@ _"Code is poetry, and this portfolio is our sonnet"_
 
 ---
 
-_P.S. If you actually read this entire README, you deserve a cookie! 🍪 Type `cookie` in the terminal for a surprise!_
+_P.S. If you actually read this entire README, you deserve a cookie! Type `cookie` in the terminal for a surprise!_

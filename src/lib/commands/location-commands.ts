@@ -42,19 +42,18 @@ async function getLocationInfo(): Promise<CommandOutput> {
       return {
         type: "error",
         content:
-          "🌍 **Location Unavailable**\n\nUnable to determine your location. Please check your internet connection.",
+          "**Location Unavailable**\n\nUnable to determine your location. Please check your internet connection.",
         timestamp: new Date(),
         id: "location-unavailable",
       };
     }
 
     const timeInfo = locationService.getTimeInfo(location.timezone);
-    const weatherEmoji = locationService.getWeatherEmoji();
     const offsetFormatted = locationService.formatOffset(timeInfo.offset);
 
     return {
       type: "success",
-      content: `🌍 **Location Information**\n\n**📍 Location:**\n  ${location.city}, ${location.region}\n  ${location.country}\n\n**🕐 Time:**\n  ${timeInfo.localTime}\n  ${timeInfo.timezone} (${offsetFormatted})\n  ${timeInfo.isDST ? "DST Active" : "Standard Time"}\n\n**🌐 Coordinates:**\n  ${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}\n\n**🌤️ Weather:** ${weatherEmoji}\n\n**📡 IP:** ${location.ip}`,
+      content: `**Location Information**\n\n**Location:**\n  ${location.city}, ${location.region}\n  ${location.country}\n\n**Time:**\n  ${timeInfo.localTime}\n  ${timeInfo.timezone} (${offsetFormatted})\n  ${timeInfo.isDST ? "DST Active" : "Standard Time"}\n\n**Coordinates:**\n  ${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}\n\n**Condition:**\n\n**IP:** ${location.ip}`,
       timestamp: new Date(),
       id: "location-info",
     };
@@ -79,7 +78,7 @@ async function getTimeInfo(timezone?: string): Promise<CommandOutput> {
 
     return {
       type: "success",
-      content: `🕐 **Time Information**\n\n**Timezone:** ${timeInfo.timezone}\n**Local Time:** ${timeInfo.localTime}\n**UTC Time:** ${timeInfo.utcTime}\n**Offset:** ${offsetFormatted}\n**DST:** ${timeInfo.isDST ? "Active" : "Inactive"}`,
+      content: `**Time Information**\n\n**Timezone:** ${timeInfo.timezone}\n**Local Time:** ${timeInfo.localTime}\n**UTC Time:** ${timeInfo.utcTime}\n**Offset:** ${offsetFormatted}\n**DST:** ${timeInfo.isDST ? "Active" : "Inactive"}`,
       timestamp: new Date(),
       id: "time-info",
     };
@@ -123,7 +122,7 @@ async function getTimezoneInfo(timezone?: string): Promise<CommandOutput> {
 
     return {
       type: "success",
-      content: `🌐 **Timezone Information**\n\n**Current:** ${targetTimezone} (${offsetFormatted})\n**Local Time:** ${timeInfo.localTime}\n**DST:** ${timeInfo.isDST ? "Active" : "Inactive"}\n\n**Other Major Timezones:**\n${timezoneComparisons}`,
+      content: `**Timezone Information**\n\n**Current:** ${targetTimezone} (${offsetFormatted})\n**Local Time:** ${timeInfo.localTime}\n**DST:** ${timeInfo.isDST ? "Active" : "Inactive"}\n\n**Other Major Timezones:**\n${timezoneComparisons}`,
       timestamp: new Date(),
       id: "timezone-info",
     };
@@ -146,20 +145,19 @@ async function getWeatherInfo(): Promise<CommandOutput> {
       return {
         type: "error",
         content:
-          "🌤️ **Weather Unavailable**\n\nUnable to determine your location for weather information.",
+          "**Weather Unavailable**\n\nUnable to determine your location for weather information.",
         timestamp: new Date(),
         id: "weather-unavailable",
       };
     }
 
-    const weatherEmoji = locationService.getWeatherEmoji();
     const now = new Date();
     const hour = now.getHours();
     const isDay = hour >= 6 && hour < 18;
 
     return {
       type: "success",
-      content: `🌤️ **Weather Information**\n\n**Location:** ${location.city}, ${location.country}\n**Condition:** ${weatherEmoji} ${isDay ? "Day" : "Night"}\n**Coordinates:** ${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}\n\n*Note: This is a simplified weather display based on time and season.*`,
+      content: `**Weather Information**\n\n**Location:** ${location.city}, ${location.country}\n**Condition:** ${isDay ? "Day" : "Night"}\n**Coordinates:** ${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}\n\n*Note: This is a simplified weather display based on time and season.*`,
       timestamp: new Date(),
       id: "weather-info",
     };
@@ -177,7 +175,7 @@ function showLocationHelp(): CommandOutput {
   return {
     type: "info",
     content:
-      "🌍 **Location Commands**\n\n**Usage:**\n  location [action] [options]\n\n**Actions:**\n  (no action)   - Show current location and time\n  time [tz]     - Show time information for timezone\n  timezone [tz] - Show timezone comparisons\n  weather       - Show weather information\n  help          - Show this help\n\n**Examples:**\n  location\n  location time\n  location timezone America/New_York\n  location weather\n\n**Aliases:** loc, time, timezone, where",
+      "**Location Commands**\n\n**Usage:**\n  location [action] [options]\n\n**Actions:**\n  (no action)   - Show current location and time\n  time [tz]     - Show time information for timezone\n  timezone [tz] - Show timezone comparisons\n  weather       - Show weather information\n  help          - Show this help\n\n**Examples:**\n  location\n  location time\n  location timezone America/New_York\n  location weather\n\n**Aliases:** loc, time, timezone, where",
     timestamp: new Date(),
     id: "location-help",
   };

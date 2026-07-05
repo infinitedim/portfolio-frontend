@@ -30,25 +30,25 @@ export async function ServerStaticCommands(): Promise<JSX.Element> {
 async function generateHelpOutput(): Promise<string> {
   return `
     <div class="font-mono text-sm whitespace-pre-wrap">
-🔧 Available Commands:
+Available Commands:
 ══════════════════════════════════════════════════════════════
 
-  📝 help        - Show available commands and usage information
-  📝 about       - Learn more about the developer  
-  📝 skills      - View technical skills and roadmap progress
-  📝 projects    - Browse portfolio projects and work examples
-  📝 contact     - Get contact information and social links
-  🎨 theme       - Customize the terminal appearance
-  🔤 font        - Change terminal font family
-  📝 clear       - Clear the terminal screen
+  help        - Show available commands and usage information
+  about       - Learn more about the developer  
+  skills      - View technical skills and roadmap progress
+  projects    - Browse portfolio projects and work examples
+  contact     - Get contact information and social links
+  theme       - Customize the terminal appearance
+  font        - Change terminal font family
+  clear       - Clear the terminal screen
 
-🎯 Featured Commands:
+Featured Commands:
   skills overview               - View roadmap.sh progress overview
   skills list frontend          - List frontend skills
   theme -l                      - List all available themes
   theme matrix                  - Switch to matrix theme
 
-💡 Tips:
+Tips:
   • Use arrow keys (↑/↓) to navigate command history
   • Commands support aliases (e.g., 'cls' for 'clear')
   • Commands are case-insensitive with typo tolerance
@@ -60,12 +60,12 @@ async function generateHelpOutput(): Promise<string> {
 async function generateAboutOutput(): Promise<string> {
   return `
     <div class="font-mono text-sm whitespace-pre-wrap">
-👋 Hello! I'm a Full-Stack Developer
+Hello! I'm a Full-Stack Developer
 
-🚀 Passionate about creating innovative web solutions
-💻 Specialized in React, Next.js, and modern web technologies
-🎨 Love combining technical skills with creative design
-🌟 Always learning and exploring new technologies
+Passionate about creating innovative web solutions
+Specialized in React, Next.js, and modern web technologies
+Love combining technical skills with creative design
+Always learning and exploring new technologies
 
 This terminal-themed portfolio showcases my skills in:
   • Frontend Development (React, Next.js, TypeScript)
@@ -73,7 +73,7 @@ This terminal-themed portfolio showcases my skills in:
   • DevOps (CI/CD, Performance Optimization)
   • Creative Problem Solving
 
-🗺️ My learning journey is tracked on roadmap.sh
+️ My learning journey is tracked on roadmap.sh
    Use 'skills overview' to see my current progress!
 
 Type "projects" to see my work or "contact" to get in touch!
@@ -84,7 +84,7 @@ Type "projects" to see my work or "contact" to get in touch!
 async function generateProjectsOutput(): Promise<string> {
   return `
     <div class="font-mono text-sm whitespace-pre-wrap">
-🚀 Featured Projects:
+Featured Projects:
 
 1. Terminal Portfolio (Current)
    • Interactive Linux terminal-themed website
@@ -111,7 +111,7 @@ async function generateProjectsOutput(): Promise<string> {
    • Responsive design with animations
    • Sass/SCSS for styling
 
-🔗 All projects contribute to my roadmap.sh progress!
+All projects contribute to my roadmap.sh progress!
    Use 'skills overview' to see how they map to my skills.
 
 Visit my GitHub for more projects and source code!

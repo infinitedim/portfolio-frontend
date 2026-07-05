@@ -34,7 +34,7 @@ export const analyzeBundleSize = () => {
 
   if (performanceEntries.length > 0) {
     const navEntry = performanceEntries[0] as PerformanceNavigationTiming;
-    console.log("📊 Bundle Performance Metrics:", {
+    console.log("Bundle Performance Metrics:", {
       loadTime: `${Math.round(navEntry.loadEventEnd - navEntry.fetchStart)}ms`,
       domContentLoaded: `${Math.round(navEntry.domContentLoadedEventEnd - navEntry.fetchStart)}ms`,
       firstPaint: "Check DevTools Performance tab",

@@ -7,7 +7,7 @@
 
 ---
 
-## 📋 Deskripsi
+## Deskripsi
 
 Form kontak yang mengirim pesan ke inbox developer via email SMTP. Pesan juga tersimpan di database sebagai arsip yang bisa dilihat via admin dashboard (#19). Rate limited per IP.
 
@@ -28,7 +28,7 @@ Form kontak yang mengirim pesan ke inbox developer via email SMTP. Pesan juga te
 
 ---
 
-## ✅ Subtask Checklist
+## Subtask Checklist
 
 ### Backend (`portfolio-backend`)
 
@@ -200,7 +200,7 @@ Form kontak yang mengirim pesan ke inbox developer via email SMTP. Pesan juga te
 
 ---
 
-## 📁 File Mapping
+## File Mapping
 
 | File                                                                  | Aksi          | Deskripsi                          |
 | --------------------------------------------------------------------- | ------------- | ---------------------------------- |
@@ -215,7 +215,7 @@ Form kontak yang mengirim pesan ke inbox developer via email SMTP. Pesan juga te
 
 ---
 
-## 🔌 API Contract
+## API Contract
 
 ### `POST /api/contact`
 
@@ -268,7 +268,7 @@ Time: 2026-02-21 10:30:00 UTC
 
 ---
 
-## ✅ Acceptance Criteria
+## Acceptance Criteria
 
 | #     | Kriteria                                                            | Cara Verifikasi               |
 | ----- | ------------------------------------------------------------------- | ----------------------------- |
@@ -285,7 +285,7 @@ Time: 2026-02-21 10:30:00 UTC
 
 ---
 
-## 🔧 Technical Notes
+## Technical Notes
 
 ### Rate Limiting Pattern
 

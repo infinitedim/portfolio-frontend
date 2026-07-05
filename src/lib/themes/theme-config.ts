@@ -358,7 +358,7 @@ export const getThemePreview = (themeName: ThemeName): string => {
   if (!config) return "";
 
   return [
-    `🎨 ${config.name}`,
+    `${config.name}`,
     `Background: ${config.colors.bg}`,
     `Text: ${config.colors.text}`,
     `Accent: ${config.colors.accent}`,

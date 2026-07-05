@@ -50,7 +50,7 @@ Examples:
 
       return {
         type: "success",
-        content: "📥 Resume download started! Check your downloads folder.",
+        content: "Resume download started! Check your downloads folder.",
         timestamp: new Date(),
         id: generateId(),
       };
@@ -116,7 +116,7 @@ export const socialCommand: Command = {
     if (ArgumentParser.hasFlag(parsed, "h", "help")) {
       return {
         type: "info",
-        content: `🔗 Social Command Help
+        content: `Social Command Help
 
 Usage: social [options]
 
@@ -135,7 +135,7 @@ Examples:
     const socialLinks = [
       ...SOCIAL_LINKS.map((link) => ({
         platform: link.platform,
-        icon: SOCIAL_ICONS[link.icon] ?? "🔗",
+        icon: SOCIAL_ICONS[link.icon] ?? "",
         url: link.url,
         description: link.handle
           ? `${link.handle} on ${link.platform}`
@@ -231,7 +231,7 @@ export const enhancedContactCommand: Command = {
     if (ArgumentParser.hasFlag(parsed, "h", "help")) {
       return {
         type: "info",
-        content: `📧 Contact Command Help
+        content: `Contact Command Help
 
 Usage: contact [options]
 

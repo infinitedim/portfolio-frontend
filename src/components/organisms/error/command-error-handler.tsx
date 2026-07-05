@@ -18,7 +18,7 @@ export function CommandErrorHandler({
   return (
     <div className="p-4 rounded border border-red-500/30 bg-red-900/10 font-mono">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-red-400">❌</span>
+        <span className="text-red-400"></span>
         <span className="font-bold text-red-400">Command Error</span>
       </div>
 
@@ -46,7 +46,7 @@ export function CommandErrorHandler({
       </div>
 
       <div className="mt-3 text-xs opacity-75">
-        💡 Try typing 'help' to see available commands or 'clear' to reset the
+        Try typing 'help' to see available commands or 'clear' to reset the
         terminal.
       </div>
     </div>

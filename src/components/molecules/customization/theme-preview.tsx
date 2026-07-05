@@ -57,7 +57,7 @@ export function ThemePreview({
                   color: themeConfig.colors.accent,
                 }}
               >
-                ✏️ Edit
+                ️ Edit
               </button>
             )}
             <button
@@ -69,7 +69,7 @@ export function ThemePreview({
                 color: themeConfig.colors.success,
               }}
             >
-              ✅ Apply
+              Apply
             </button>
           </div>
         </div>
@@ -144,7 +144,7 @@ export function ThemePreview({
                   <span>help</span>
                 </div>
                 <div style={{ color: theme.colors.success }}>
-                  ✅ Available commands: about, projects, contact
+                  Available commands: about, projects, contact
                 </div>
                 <div className="flex items-center gap-2">
                   <span style={{ color: theme.colors.prompt }}>$</span>
@@ -160,7 +160,7 @@ export function ThemePreview({
                   <span>invalid-command</span>
                 </div>
                 <div style={{ color: theme.colors.error }}>
-                  ❌ Command not found. Type 'help' for available commands.
+                  Command not found. Type 'help' for available commands.
                 </div>
                 <div className="flex items-center gap-2">
                   <span style={{ color: theme.colors.prompt }}>$</span>
@@ -170,7 +170,7 @@ export function ThemePreview({
                 </div>
                 <div>
                   <span style={{ color: theme.colors.accent }}>
-                    🗺️ Skills Progress Overview
+                    ️ Skills Progress Overview
                   </span>
                 </div>
               </div>
@@ -196,15 +196,13 @@ export function ThemePreview({
                 Contrast Ratio (Text/Background):
                 <span className="ml-2 font-mono">
                   {}
-                  Good ✅
-                </span>
+                  Good </span>
               </div>
               <div>
                 Color Blind Friendly:
                 <span className="ml-2">
                   {}
-                  Checking... 🔍
-                </span>
+                  Checking... </span>
               </div>
             </div>
           </div>

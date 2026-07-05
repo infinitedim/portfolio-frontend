@@ -45,7 +45,7 @@ export function TabCompletion({
         }}
       >
         <div className="flex items-center gap-2">
-          <span>⚡ Tab completion</span>
+          <span>Tab completion</span>
           <span className="opacity-60">
             • {completions.length} option{completions.length !== 1 ? "s" : ""}
           </span>
@@ -80,8 +80,7 @@ export function TabCompletion({
                 className="text-sm"
                 style={{ color: themeConfig.colors.accent }}
               >
-                ⚡
-              </span>
+                </span>
               <div className="flex-1">
                 <span
                   className="font-mono font-medium"
@@ -119,7 +118,7 @@ export function TabCompletion({
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <span>⚡ Press Tab to complete</span>
+          <span>Press Tab to complete</span>
           <span>•</span>
           <span>Enter to select</span>
         </div>

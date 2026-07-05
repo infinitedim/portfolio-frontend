@@ -183,7 +183,7 @@ export function CommandRelationshipVisualizer({
               className="text-xl font-bold"
               style={{ color: themeConfig.colors.text }}
             >
-              🕸️ Command Relationships
+              ️ Command Relationships
             </h3>
 
             <div className="flex items-center gap-2">
@@ -423,7 +423,7 @@ export function CommandRelationshipVisualizer({
                     className="text-lg font-medium mb-2"
                     style={{ color: themeConfig.colors.text }}
                   >
-                    🚧 Cluster View Coming Soon
+                    Cluster View Coming Soon
                   </div>
                   <div
                     className="text-sm"
@@ -448,7 +448,7 @@ export function CommandRelationshipVisualizer({
               className="text-lg font-bold mb-4"
               style={{ color: themeConfig.colors.text }}
             >
-              📊 Analysis
+              Analysis
             </h4>
 
             <div className="space-y-4 mb-6">
@@ -552,7 +552,7 @@ export function CommandRelationshipVisualizer({
                 className="font-medium mb-3"
                 style={{ color: themeConfig.colors.text }}
               >
-                🎨 Category Legend
+                Category Legend
               </h5>
 
               <div className="space-y-2">
@@ -598,8 +598,7 @@ export function CommandRelationshipVisualizer({
         >
           <div className="flex items-center justify-between">
             <span>
-              🕸️ Interactive relationship mapping • 🔍 Pattern analysis • 📊
-              Usage insights
+              ️ Interactive relationship mapping • Pattern analysis • Usage insights
             </span>
             <span className="text-xs">
               Click nodes to explore relationships

@@ -253,12 +253,12 @@ export function InteractiveCommandHistory({
               className="text-xl font-bold"
               style={{ color: themeConfig.colors.text }}
             >
-              📊 Interactive Command History
+              Interactive Command History
             </h3>
 
             {replayMode && (
               <div className="flex items-center gap-2">
-                <span className="animate-pulse text-red-500">🔴</span>
+                <span className="animate-pulse text-red-500"></span>
                 <span
                   className="text-sm"
                   style={{ color: themeConfig.colors.muted }}
@@ -536,8 +536,7 @@ export function InteractiveCommandHistory({
                     className="text-6xl mb-4 opacity-50"
                     style={{ color: themeConfig.colors.muted }}
                   >
-                    📜
-                  </div>
+                    </div>
                   <p
                     className="text-lg mb-2"
                     style={{ color: themeConfig.colors.muted }}
@@ -567,7 +566,7 @@ export function InteractiveCommandHistory({
                 className="text-lg font-bold mb-4"
                 style={{ color: themeConfig.colors.text }}
               >
-                🔄 Command Patterns
+                Command Patterns
               </h4>
 
               <div className="space-y-3">
@@ -636,7 +635,7 @@ export function InteractiveCommandHistory({
                             color: themeConfig.colors.accent,
                           }}
                         >
-                          🔄 Replay Pattern
+                          Replay Pattern
                         </button>
                       </div>
                     )}
@@ -649,7 +648,7 @@ export function InteractiveCommandHistory({
                   className="font-medium mb-3"
                   style={{ color: themeConfig.colors.text }}
                 >
-                  📈 Quick Stats
+                  Quick Stats
                 </h5>
 
                 <div className="space-y-2 text-sm">
@@ -695,9 +694,9 @@ export function InteractiveCommandHistory({
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <span>📊 Interactive History</span>
-              {enableRealTime && <span>🔄 Real-time updates</span>}
-              {showPatterns && <span>🧠 Pattern recognition</span>}
+              <span>Interactive History</span>
+              {enableRealTime && <span>Real-time updates</span>}
+              {showPatterns && <span>Pattern recognition</span>}
               {enableReplay && <span>▶️ Command replay</span>}
             </div>
 

@@ -836,8 +836,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 className="text-xs opacity-70 hover:opacity-100"
                 title="Refresh posts"
               >
-                🔄
-              </button>
+                </button>
             </div>
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {posts.length === 0 ? (

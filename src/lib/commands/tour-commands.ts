@@ -26,7 +26,7 @@ export const tourCommand: Command = {
 
 export const tourHelpText = `
 ╭─────────────────────────────────────────────────────────────╮
-│  📚 TOUR COMMAND                                            │
+│  TOUR COMMAND                                            │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  Start or restart the interactive guided tour.              │

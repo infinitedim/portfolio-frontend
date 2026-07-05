@@ -256,7 +256,7 @@ export function HistorySearchPanel({
             }
             style={{ color: themeConfig.colors.muted }}
           >
-            {entry.favorite ? "★" : "☆"}
+            {entry.favorite ? "" : ""}
           </button>
 
           <button
@@ -271,7 +271,7 @@ export function HistorySearchPanel({
               color: themeConfig.colors.error || themeConfig.colors.muted,
             }}
           >
-            🗑️
+            ️
           </button>
         </div>
       </div>
@@ -364,7 +364,7 @@ export function HistorySearchPanel({
           className="font-medium mb-3"
           style={{ color: themeConfig.colors.text }}
         >
-          🏆 Top Commands
+          Top Commands
         </h4>
         <div className="space-y-2">
           {analytics.topCommands.slice(0, 5).map((item, index) => (
@@ -401,7 +401,7 @@ export function HistorySearchPanel({
           className="font-medium mb-3"
           style={{ color: themeConfig.colors.text }}
         >
-          📊 Commands by Category
+          Commands by Category
         </h4>
         <div className="space-y-2">
           {Object.entries(analytics.commandsByCategory)
@@ -460,14 +460,14 @@ export function HistorySearchPanel({
               className="text-lg font-semibold"
               style={{ color: themeConfig.colors.text }}
             >
-              🔍 Command History
+              Command History
             </h3>
 
             <div className="flex gap-1">
               {[
-                { id: "search", label: "Search", icon: "🔍" },
+                { id: "search", label: "Search", icon: "" },
                 { id: "favorites", label: "Favorites", icon: "⭐" },
-                { id: "analytics", label: "Analytics", icon: "📊" },
+                { id: "analytics", label: "Analytics", icon: "" },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -504,8 +504,7 @@ export function HistorySearchPanel({
               }}
               title="Export history"
             >
-              📥
-            </button>
+              </button>
 
             <button
               type="button"
@@ -520,7 +519,7 @@ export function HistorySearchPanel({
               }}
               title="Clear history"
             >
-              🗑️
+              ️
             </button>
 
             <button

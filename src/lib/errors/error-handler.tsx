@@ -243,7 +243,7 @@ function DefaultErrorFallback({
                 color: themeConfig.colors.error || themeConfig.colors.accent,
               }}
             >
-              ⚠️
+              ️
             </div>
             <div>
               <h1
@@ -284,7 +284,7 @@ function DefaultErrorFallback({
               className="font-semibold mb-3"
               style={{ color: themeConfig.colors.accent }}
             >
-              💡 Try these solutions:
+              Try these solutions:
             </h3>
             <ul className="space-y-2">
               {suggestions.map((suggestion, index) => (
@@ -313,7 +313,7 @@ function DefaultErrorFallback({
                   color: themeConfig.colors.bg,
                 }}
               >
-                🔄 Try Again ({maxRetries - retryCount} left)
+                Try Again ({maxRetries - retryCount} left)
               </button>
             )}
 
@@ -327,7 +327,7 @@ function DefaultErrorFallback({
                 border: `1px solid ${themeConfig.colors.accent}`,
               }}
             >
-              🔄 Reset Application
+              Reset Application
             </button>
 
             {}
@@ -340,7 +340,7 @@ function DefaultErrorFallback({
                 border: `1px solid ${themeConfig.colors.border}`,
               }}
             >
-              🔄 Reload Page
+              Reload Page
             </button>
 
             {}
@@ -353,7 +353,7 @@ function DefaultErrorFallback({
                 border: `1px solid ${themeConfig.colors.border}`,
               }}
             >
-              📋 Copy Error
+              Copy Error
             </button>
 
             {}
@@ -366,7 +366,7 @@ function DefaultErrorFallback({
                 border: `1px solid ${themeConfig.colors.border}`,
               }}
             >
-              🐛 Report Issue
+              Report Issue
             </button>
           </div>
 
@@ -376,7 +376,7 @@ function DefaultErrorFallback({
               className="cursor-pointer text-sm opacity-75 hover:opacity-100"
               style={{ color: themeConfig.colors.text }}
             >
-              🔍 Debug Information
+              Debug Information
             </summary>
             <div
               className="mt-3 p-4 rounded border font-mono text-xs overflow-auto max-h-40"

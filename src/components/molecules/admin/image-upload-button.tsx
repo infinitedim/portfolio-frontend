@@ -247,7 +247,7 @@ export function ImageDropZone({
       {(isDragging || isUploading) && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-900/80 border-2 border-dashed border-green-400/60 rounded-lg z-10 pointer-events-none">
           <span className="text-sm text-green-400">
-            {isUploading ? "⏳ Uploading..." : "📁 Drop image here"}
+            {isUploading ? "Uploading..." : "Drop image here"}
           </span>
         </div>
       )}

@@ -65,13 +65,13 @@ function listTechnologies(): CommandOutput {
   const techList = Object.entries(categorized)
     .map(([category, techs]) => {
       const techItems = techs.map((tech) => `  • ${tech}`).join("\n");
-      return `📂 ${category}:\n${techItems}`;
+      return `${category}:\n${techItems}`;
     })
     .join("\n\n");
 
   return {
     type: "success",
-    content: `🏷️  Technology Stack:\n\n${techList}\n\n💡 Use 'tech-stack projects <technology>' to see projects using a specific technology`,
+    content: `️  Technology Stack:\n\n${techList}\n\nUse 'tech-stack projects <technology>' to see projects using a specific technology`,
     timestamp: new Date(),
     id: "tech-stack-list",
   };
@@ -113,13 +113,13 @@ function getProjectsByTech(technology: string): CommandOutput {
   const projectList = projects
     .map((project) => {
       const featured = project.featured ? "⭐" : "";
-      return `📦 ${project.name} ${featured}\n   📝 ${project.description}\n   🏷️  ${project.technologies.join(", ")}`;
+      return `${project.name} ${featured}\n   ${project.description}\n   ️  ${project.technologies.join(", ")}`;
     })
     .join("\n\n");
 
   return {
     type: "success",
-    content: `📦 Projects using ${technology}:\n\n${projectList}`,
+    content: `Projects using ${technology}:\n\n${projectList}`,
     timestamp: new Date(),
     id: "tech-stack-projects",
   };
@@ -165,13 +165,13 @@ function getTechStats(): CommandOutput {
   const statsList = sortedTechs
     .map(([tech, count]) => {
       const percentage = ((count / projects.length) * 100).toFixed(1);
-      return `🏷️  ${tech}: ${count} projects (${percentage}%)`;
+      return `️  ${tech}: ${count} projects (${percentage}%)`;
     })
     .join("\n");
 
   return {
     type: "success",
-    content: `📊 Technology Statistics (Top 10):\n\n${statsList}\n\n📈 Total projects: ${projects.length}\n🏷️  Total technologies: ${technologies.length}`,
+    content: `Technology Statistics (Top 10):\n\n${statsList}\n\nTotal projects: ${projects.length}\n️  Total technologies: ${technologies.length}`,
     timestamp: new Date(),
     id: "tech-stack-stats",
   };
@@ -249,7 +249,7 @@ function categorizeTechnologies(): CommandOutput {
 
   return {
     type: "success",
-    content: `📂 Technology Categories:\n\n${categoryList}`,
+    content: `Technology Categories:\n\n${categoryList}`,
     timestamp: new Date(),
     id: "tech-stack-categories",
   };
@@ -298,13 +298,13 @@ function searchTechnologies(query: string): CommandOutput {
   const techList = matchingTechs
     .map((tech) => {
       const projectCount = projectService.getProjectsByTechnology(tech).length;
-      return `🏷️  ${tech} (${projectCount} projects)`;
+      return `️  ${tech} (${projectCount} projects)`;
     })
     .join("\n");
 
   return {
     type: "success",
-    content: `🔍 Technologies matching '${query}':\n\n${techList}`,
+    content: `Technologies matching '${query}':\n\n${techList}`,
     timestamp: new Date(),
     id: "tech-stack-search-results",
   };
@@ -313,7 +313,7 @@ function searchTechnologies(query: string): CommandOutput {
 function showTechStackHelp(): CommandOutput {
   return {
     type: "info",
-    content: `🏷️  Tech Stack Command Help
+    content: `️  Tech Stack Command Help
 
 Available commands:
   tech-stack list                   - List all technologies by category

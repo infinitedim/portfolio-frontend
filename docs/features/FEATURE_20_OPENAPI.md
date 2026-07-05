@@ -7,7 +7,7 @@
 
 ---
 
-## 📋 Deskripsi
+## Deskripsi
 
 Auto-generate dokumentasi API interaktif dengan Swagger UI yang bisa diakses di `/api/docs`. Semua existing routes terdokumentasi dengan request/response schema, authentication requirements, dan contoh. Menggunakan `utoipa` + `utoipa-swagger-ui` crate.
 
@@ -35,7 +35,7 @@ Auto-generate dokumentasi API interaktif dengan Swagger UI yang bisa diakses di 
 
 ---
 
-## ✅ Subtask Checklist
+## Subtask Checklist
 
 ### Backend (`portfolio-backend`)
 
@@ -273,7 +273,7 @@ Auto-generate dokumentasi API interaktif dengan Swagger UI yang bisa diakses di 
 
 ---
 
-## 📁 File Mapping
+## File Mapping
 
 | File                                        | Aksi          | Deskripsi                                                 |
 | ------------------------------------------- | ------------- | --------------------------------------------------------- |
@@ -291,7 +291,7 @@ Auto-generate dokumentasi API interaktif dengan Swagger UI yang bisa diakses di 
 
 ---
 
-## 🔌 API Contract
+## API Contract
 
 ### `GET /api/docs/`
 
@@ -303,14 +303,14 @@ Raw OpenAPI 3.1 JSON spec. Bisa diimport ke Postman, Insomnia, dll.
 
 ---
 
-## ✅ Acceptance Criteria
+## Acceptance Criteria
 
 | #     | Kriteria                                                                                           | Cara Verifikasi               |
 | ----- | -------------------------------------------------------------------------------------------------- | ----------------------------- |
 | AC-1  | Swagger UI aksesibel di `http://localhost:3001/api/docs/`                                          | Browser check                 |
 | AC-2  | Semua endpoint ter-list dan tergroup berdasarkan tag (Auth, Blog, Portfolio, Health, RSS, Logging) | Visual check                  |
 | AC-3  | Request/response schema ter-generate otomatis dari structs                                         | Click endpoint → check schema |
-| AC-4  | Endpoint yang butuh auth: ada lock icon 🔒                                                         | Visual check                  |
+| AC-4  | Endpoint yang butuh auth: ada lock icon | Visual check                  |
 | AC-5  | "Try it out" berfungsi: bisa kirim request langsung dari docs                                      | Test GET /health              |
 | AC-6  | Bearer token bisa diinput via "Authorize" button → locked endpoints bisa di-test                   | Auth test                     |
 | AC-7  | OpenAPI JSON accessible di `/api/docs/openapi.json`                                                | curl test                     |
@@ -320,7 +320,7 @@ Raw OpenAPI 3.1 JSON spec. Bisa diimport ke Postman, Insomnia, dll.
 
 ---
 
-## 🔧 Technical Notes
+## Technical Notes
 
 ### Utoipa Version Compatibility
 
@@ -339,11 +339,7 @@ pub async fn handler(...) -> impl IntoResponse { ... }
 
 ### Common Pitfalls
 
-1. **serde `rename_all = "camelCase"`**: utoipa respects serde attributes, schema akan menampilkan camelCase field names ✅
-2. **Option fields**: utoipa auto-marks sebagai `nullable` ✅
-3. **Vec<T>**: utoipa auto-maps ke array ✅
-4. **DateTime<Utc>**: perlu feature `chrono` di utoipa config ✅
-5. **Custom extractors**: `ConnectInfo<SocketAddr>` tidak perlu documented, skip di annotation
+1. **serde `rename_all = "camelCase"`**: utoipa respects serde attributes, schema akan menampilkan camelCase field names 2. **Option fields**: utoipa auto-marks sebagai `nullable` 3. **Vec<T>**: utoipa auto-maps ke array 4. **DateTime<Utc>**: perlu feature `chrono` di utoipa config 5. **Custom extractors**: `ConnectInfo<SocketAddr>` tidak perlu documented, skip di annotation
 
 ### Incremental Approach
 

@@ -21,14 +21,14 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
     {
       command: "tour",
       description: "Take a guided tour",
-      icon: "🎓",
+      icon: "",
       highlight: true,
     },
-    { command: "help", description: "View all available commands", icon: "❓" },
-    { command: "about", description: "Learn about me", icon: "👨‍💻" },
-    { command: "skills", description: "View my technical skills", icon: "🛠️" },
-    { command: "projects", description: "Explore my projects", icon: "📁" },
-    { command: "contact", description: "Get in touch", icon: "📧" },
+    { command: "help", description: "View all available commands", icon: "" },
+    { command: "about", description: "Learn about me", icon: "‍" },
+    { command: "skills", description: "View my technical skills", icon: "️" },
+    { command: "projects", description: "Explore my projects", icon: "" },
+    { command: "contact", description: "Get in touch", icon: "" },
   ];
 
   const handleCommandClick = (command: string) => {
@@ -135,7 +135,7 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
           className="opacity-60"
           style={{ color: themeConfig.colors.muted }}
         >
-          💡 Tip: Use Tab for auto-completion and ↑↓ for command history
+          Tip: Use Tab for auto-completion and ↑↓ for command history
         </div>
         <button
           onClick={onDismiss}

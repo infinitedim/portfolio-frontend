@@ -53,7 +53,7 @@ export function CustomizationManager({
       setCustomFonts(fonts);
 
       console.log(
-        `📊 Loaded ${themes.length} themes and ${fonts.length} fonts`,
+        `Loaded ${themes.length} themes and ${fonts.length} fonts`,
       );
     } catch (error) {
       console.error("Failed to load customization data:", error);
@@ -72,24 +72,24 @@ export function CustomizationManager({
   const handleThemeUpdate = useCallback(() => {
     const themes = customizationService.getAllThemes();
     setCustomThemes(themes);
-    console.log(`🔄 Updated themes list: ${themes.length} themes`);
+    console.log(`Updated themes list: ${themes.length} themes`);
   }, [customizationService]);
 
   const handleFontUpdate = useCallback(() => {
     const fonts = customizationService.getAllFonts();
     setCustomFonts(fonts);
-    console.log(`🔄 Updated fonts list: ${fonts.length} fonts`);
+    console.log(`Updated fonts list: ${fonts.length} fonts`);
   }, [customizationService]);
 
   const handleThemeApply = useCallback(
     (themeId: string) => {
-      console.log(`🎨 CustomizationManager: Applying theme ${themeId}`);
+      console.log(`CustomizationManager: Applying theme ${themeId}`);
 
       try {
         const success = changeTheme(themeId as ThemeName);
 
         if (success) {
-          console.log(`✅ Successfully applied theme: ${themeId}`);
+          console.log(`Successfully applied theme: ${themeId}`);
           showNotification(
             `Theme "${themeId}" applied successfully!`,
             "success",
@@ -101,7 +101,7 @@ export function CustomizationManager({
             window.location.reload();
           }, 200);
         } else {
-          console.error(`❌ Failed to apply theme: ${themeId}`);
+          console.error(`Failed to apply theme: ${themeId}`);
           showNotification(`Failed to apply theme "${themeId}"`, "error");
         }
       } catch (error) {
@@ -130,29 +130,29 @@ export function CustomizationManager({
   const tabs = [
     {
       id: "themes" as const,
-      label: "🎨 Themes",
+      label: "Themes",
       count: customThemes.filter((t) => t.source === "custom").length,
       description: "Manage color themes",
     },
     {
       id: "fonts" as const,
-      label: "🔤 Fonts",
+      label: "Fonts",
       count: customFonts.filter((f) => f.source === "custom").length,
       description: "Manage fonts and typography",
     },
     {
       id: "backgrounds" as const,
-      label: "🖼️ Backgrounds",
+      label: "️ Backgrounds",
       description: "Customize background effects",
     },
     {
       id: "settings" as const,
-      label: "⚙️ Settings",
+      label: "️ Settings",
       description: "General preferences",
     },
     {
       id: "import-export" as const,
-      label: "📦 Import/Export",
+      label: "Import/Export",
       description: "Backup and restore",
     },
   ];
@@ -178,7 +178,7 @@ export function CustomizationManager({
               className="text-xl font-bold"
               style={{ color: themeConfig.colors.accent }}
             >
-              🎨 Customization Manager
+              Customization Manager
             </h2>
             <p className="text-sm opacity-75">
               Manage themes, fonts, and appearance settings
@@ -257,7 +257,7 @@ export function CustomizationManager({
                     "localStorage/custom-fonts.json",
                     "localStorage/settings.json",
                   ]}
-                  completionText="🎨 Customization data loaded!"
+                  completionText="Customization data loaded!"
                 />
               </div>
             </div>
@@ -321,9 +321,9 @@ export function CustomizationManager({
             <div className="flex items-center gap-2">
               <span>
                 {notification.type === "success"
-                  ? "✅"
+                  ? ""
                   : notification.type === "error"
-                    ? "❌"
+                    ? ""
                     : "ℹ️"}
               </span>
               <span className="text-sm">{notification.message}</span>

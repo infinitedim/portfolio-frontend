@@ -89,7 +89,7 @@ export function PerformanceDashboard({
               className="text-xl font-bold"
               style={{ color: themeConfig.colors.accent }}
             >
-              📊 Performance Dashboard
+              Performance Dashboard
             </h2>
             <p className="text-sm opacity-75 mt-1">
               Monitor app performance and get optimization recommendations
@@ -118,7 +118,7 @@ export function PerformanceDashboard({
                 border: `1px solid ${themeConfig.colors.accent}`,
               }}
             >
-              🔄 Refresh
+              Refresh
             </button>
 
             <button
@@ -170,7 +170,7 @@ export function PerformanceDashboard({
                         : themeConfig.colors.text,
                   }}
                 >
-                  {category === "all" ? "📊 All Metrics" : `📈 ${category}`}
+                  {category === "all" ? "All Metrics" : `${category}`}
                 </button>
               ))}
             </div>
@@ -197,7 +197,7 @@ export function PerformanceDashboard({
                     border: `1px solid ${themeConfig.colors.error || themeConfig.colors.accent}`,
                   }}
                 >
-                  🗑️ Clear Metrics
+                  ️ Clear Metrics
                 </button>
 
                 <button
@@ -220,7 +220,7 @@ export function PerformanceDashboard({
                     border: `1px solid ${themeConfig.colors.accent}`,
                   }}
                 >
-                  💾 Export Data
+                  Export Data
                 </button>
               </div>
             </div>
@@ -314,7 +314,7 @@ export function PerformanceDashboard({
                   className="font-semibold mb-3"
                   style={{ color: themeConfig.colors.accent }}
                 >
-                  💡 Recommendations
+                  Recommendations
                 </h3>
                 <div className="space-y-2">
                   {report.recommendations.map((recommendation, index) => (
@@ -339,7 +339,7 @@ export function PerformanceDashboard({
                 className="font-semibold mb-3"
                 style={{ color: themeConfig.colors.accent }}
               >
-                📈 Metrics ({selectedCategory})
+                Metrics ({selectedCategory})
               </h3>
 
               <div className="overflow-x-auto">

@@ -33,14 +33,14 @@ export function TerminalFeaturesModal({
 
   const content = {
     title: isIndonesian
-      ? "🔑 Fitur Terkunci Terminal"
-      : "🔑 Terminal Features Locked",
+      ? "Fitur Terkunci Terminal"
+      : "Terminal Features Locked",
     subtitle: isIndonesian
       ? "Terminal interaktif dibatasi oleh gerbang tantangan keamanan NATAS-style. Berikut adalah fitur eksklusif yang hanya dapat diakses di mode Terminal CLI:"
       : "The interactive terminal is gated behind a NATAS-style web security challenge. Here are the exclusive features that are only accessible within the CLI Terminal environment:",
     features: [
       {
-        icon: "🗺️",
+        icon: "️",
         title: isIndonesian
           ? "Sinkronisasi Peta Jalan & Skill"
           : "Roadmap.sh & Skills Integration",
@@ -49,7 +49,7 @@ export function TerminalFeaturesModal({
           : "Interactive skills tracking (`skills`), direct synchronization with roadmap.sh profiles, and real-time status updates for your educational path.",
       },
       {
-        icon: "🎨",
+        icon: "",
         title: isIndonesian
           ? "Ubah Tema & Font Berligatur"
           : "Theme & Ligature Typography Customizer",
@@ -58,7 +58,7 @@ export function TerminalFeaturesModal({
           : "Personalize the entire workspace command interface using theme presets (Dracula, Monokai, Hacker, etc.) and coding fonts with ligatures support.",
       },
       {
-        icon: "🎮",
+        icon: "",
         title: isIndonesian
           ? "Live Simulasi Demo Proyek"
           : "Interactive CLI Project Demos",
@@ -67,7 +67,7 @@ export function TerminalFeaturesModal({
           : "Simulate and run live project interactive walkthroughs directly inside the CLI (`demo`) for a hands-on experience.",
       },
       {
-        icon: "🐙",
+        icon: "",
         title: isIndonesian
           ? "Metrik GitHub & Kontribusi Real-time"
           : "Real-time GitHub Metrics Stream",
@@ -76,7 +76,7 @@ export function TerminalFeaturesModal({
           : "Retrieve and stream live GitHub repository info, total contributions, and commit analyses directly within the command prompt.",
       },
       {
-        icon: "📱",
+        icon: "",
         title: isIndonesian
           ? "Dasbor PWA & Mode Offline Mandiri"
           : "Standalone PWA & Connection Dashboard",
@@ -85,7 +85,7 @@ export function TerminalFeaturesModal({
           : "Monitor service workers (`pwa`), verify offline capabilities, and check standalone installation features directly inside the shell environment.",
       },
       {
-        icon: "💻",
+        icon: "",
         title: isIndonesian
           ? "Shell Linux dengan Toleransi Typo"
           : "Robust Linux Shell & History Navigation",

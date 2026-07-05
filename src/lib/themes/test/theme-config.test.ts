@@ -343,7 +343,7 @@ describe("themeConfig", () => {
       const result = getThemePreview("default");
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
-      expect(result).toContain("🎨 Default Dark");
+      expect(result).toContain("Default Dark");
       expect(result).toContain("Background:");
       expect(result).toContain("Text:");
       expect(result).toContain("Accent:");
@@ -356,7 +356,7 @@ describe("themeConfig", () => {
 
     it("should include theme name in preview", () => {
       const result = getThemePreview("matrix");
-      expect(result).toContain("🎨 Matrix");
+      expect(result).toContain("Matrix");
     });
 
     it("should include color information in preview", () => {
@@ -383,7 +383,7 @@ describe("themeConfig", () => {
           const result = getThemePreview(themeName as ThemeName);
           expect(typeof result).toBe("string");
           expect(result.length).toBeGreaterThan(0);
-          expect(result).toContain("🎨");
+          expect(result).toContain("");
           expect(result).toContain("Background:");
           expect(result).toContain("Text:");
           expect(result).toContain("Accent:");
@@ -399,7 +399,7 @@ describe("themeConfig", () => {
       const result = getThemePreview("default");
       const lines = result.split(" | ");
       expect(lines.length).toBeGreaterThanOrEqual(4);
-      expect(lines[0]).toContain("🎨");
+      expect(lines[0]).toContain("");
       expect(lines[1]).toContain("Background:");
       expect(lines[2]).toContain("Text:");
       expect(lines[3]).toContain("Accent:");

@@ -369,7 +369,7 @@ export function useTerminal(
             };
 
             const statsText = [
-              "📊 Command Analytics",
+              "Command Analytics",
               "═".repeat(40),
               "",
               `Total Commands: ${stats.totalCommands}`,
@@ -383,7 +383,7 @@ export function useTerminal(
                   (cmd, i) => `  ${i + 1}. ${cmd.command} (${cmd.count} times)`,
                 ),
               "",
-              "📂 By Category:",
+              "By Category:",
               ...Object.entries(stats.commandsByCategory || {}).map(
                 ([cat, count]) => `  ${cat}: ${count} commands`,
               ),
@@ -409,7 +409,7 @@ export function useTerminal(
           }
 
           const historyText = [
-            "📜 Recent Command History",
+            "Recent Command History",
             "═".repeat(40),
             "",
             ...recentHistory.map((entry, index) => {
@@ -509,16 +509,16 @@ export function useTerminal(
 
           if (hasFlag("detailed")) {
             const detailedText = [
-              "🎯 Performance Dashboard - Detailed View",
+              "Performance Dashboard - Detailed View",
               "═".repeat(50),
               "",
-              "📊 Theme Performance:",
+              "Theme Performance:",
               `  Total Theme Switches: ${themeReport.totalSwitches}`,
               `  Average Switch Time: ${themeReport.averageTime.toFixed(2)}ms`,
               `  Fastest Switch: ${themeReport.fastestSwitch.toFixed(2)}ms`,
               `  Slowest Switch: ${themeReport.slowestSwitch.toFixed(2)}ms`,
               "",
-              "🎨 Theme Usage Statistics:",
+              "Theme Usage Statistics:",
               ...Object.entries(themeReport.themeUsage)
                 .sort(([, a], [, b]) => (b as number) - (a as number))
                 .slice(0, 10)

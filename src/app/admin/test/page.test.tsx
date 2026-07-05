@@ -213,8 +213,8 @@ describe("AdminDashboardPage", () => {
       }
 
       render(<AdminDashboardPage />);
-      expect(screen.getByText(/🏠 Home/i)).toBeInTheDocument();
-      expect(screen.getByText(/🚪 Logout/i)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /home/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
     });
 
     it("should render terminal window decorations", () => {
@@ -247,7 +247,7 @@ describe("AdminDashboardPage", () => {
       }
 
       render(<AdminDashboardPage />);
-      const homeButton = screen.getByText(/🏠 Home/i);
+      const homeButton = screen.getByRole("button", { name: /home/i });
       fireEvent.click(homeButton);
 
       expect(mockPush).toHaveBeenCalledWith("/");
@@ -260,7 +260,7 @@ describe("AdminDashboardPage", () => {
       }
 
       render(<AdminDashboardPage />);
-      const logoutButton = screen.getByText(/🚪 Logout/i);
+      const logoutButton = screen.getByRole("button", { name: /logout/i });
       fireEvent.click(logoutButton);
 
       await waitFor(() => {
@@ -278,7 +278,7 @@ describe("AdminDashboardPage", () => {
       }
 
       render(<AdminDashboardPage />);
-      const logoutButton = screen.getByText(/🚪 Logout/i);
+      const logoutButton = screen.getByRole("button", { name: /logout/i });
 
       fireEvent.mouseEnter(logoutButton);
 

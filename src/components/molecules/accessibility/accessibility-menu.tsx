@@ -93,8 +93,7 @@ export function AccessibilityMenu(): JSX.Element {
           role="img"
           aria-label="Accessibility"
         >
-          ♿
-        </span>
+          </span>
       </button>
 
       {isOpen && (
@@ -242,7 +241,7 @@ export function AccessibilityMenu(): JSX.Element {
               }}
               aria-label="Toggle theme"
             >
-              🎨 Toggle Theme (Current: {theme})
+              Toggle Theme (Current: {theme})
             </button>
 
             <button

@@ -174,7 +174,7 @@ export default function AdminRegisterPage() {
                 className="text-xl font-bold mb-2"
                 style={{ color: themeConfig.colors.accent }}
               >
-                🔐 Admin Registration
+                Admin Registration
               </h1>
               <p
                 className="text-sm"

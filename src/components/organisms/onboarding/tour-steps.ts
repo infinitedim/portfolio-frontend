@@ -17,7 +17,7 @@ export const TOUR_STEPS: TourStep[] = [
     content:
       "This isn't your typical portfolio. Here, you explore by typing commands — just like a real developer would. Let me show you around!",
     position: "center",
-    icon: "👋",
+    icon: "",
     tips: [
       "This tour takes about 1 minute",
       "You can skip anytime with ESC",
@@ -42,7 +42,7 @@ export const TOUR_STEPS: TourStep[] = [
       "Start typing and press Tab — the terminal will suggest matching commands. Try typing 'sk' and hitting Tab!",
     target: "#command-input",
     position: "top",
-    icon: "⚡",
+    icon: "",
     demoCommand: "sk",
     tips: ["Press Tab to auto-complete", "Works with partial matches"],
   },
@@ -53,7 +53,7 @@ export const TOUR_STEPS: TourStep[] = [
       "Navigate through your previous commands using arrow keys. After executing a few commands, try pressing the up arrow to recall them!",
     target: "#command-input",
     position: "top",
-    icon: "📏",
+    icon: "",
     tips: [
       "Execute commands first to build history",
       "Then use ↑ ↓ arrow keys to navigate",
@@ -66,7 +66,7 @@ export const TOUR_STEPS: TourStep[] = [
     content:
       "Here are the commands you'll use most often. Each one reveals something different about me!",
     position: "center",
-    icon: "🎯",
+    icon: "",
     tips: [
       "'about' — Learn who I am",
       "'skills' — See my tech stack",
@@ -80,7 +80,7 @@ export const TOUR_STEPS: TourStep[] = [
     content:
       "Master these shortcuts to navigate like a pro! Use these to speed up your workflow.",
     position: "center",
-    icon: "⚡",
+    icon: "",
     tips: [
       "Type 'clear' — Clear the screen",
       "ESC — Cancel/close popups",
@@ -95,7 +95,7 @@ export const TOUR_STEPS: TourStep[] = [
     content:
       "You now know the basics! Start exploring by typing 'help' to see all available commands. Have fun!",
     position: "center",
-    icon: "🎉",
+    icon: "",
     tips: [
       "Type 'tour' to replay this guide",
       "Type 'help' for all commands",

@@ -54,7 +54,7 @@ const DEFAULT_FILES = [
 export function TerminalLoadingProgress({
   duration = 3000,
   files = DEFAULT_FILES,
-  completionText = "✅ All files loaded successfully!",
+  completionText = "All files loaded successfully!",
   onComplete,
   autoStart = true,
   showSystemInfo = true,
@@ -96,7 +96,7 @@ export function TerminalLoadingProgress({
     if (autoStart) {
       setStartTime(Date.now());
       if (showSystemInfo) {
-        setSystemInfo("🔧 Initializing terminal environment...");
+        setSystemInfo("Initializing terminal environment...");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,7 +114,7 @@ export function TerminalLoadingProgress({
         setGlobalProgress(100);
         setCompletionTime(Date.now());
         if (showSystemInfo) {
-          setSystemInfo("🎉 Terminal initialization complete!");
+          setSystemInfo("Terminal initialization complete!");
         }
         onCompleteRef.current?.();
         clearInterval(interval);
@@ -131,15 +131,15 @@ export function TerminalLoadingProgress({
             : (files[currentIndex] as { path: string }).path;
 
         if (currentFile.includes("theme")) {
-          setSystemInfo("🎨 Loading theme configurations...");
+          setSystemInfo("Loading theme configurations...");
         } else if (currentFile.includes("terminal")) {
-          setSystemInfo("💻 Initializing terminal components...");
+          setSystemInfo("Initializing terminal components...");
         } else if (currentFile.includes("hook")) {
-          setSystemInfo("🔗 Setting up React hooks...");
+          setSystemInfo("Setting up React hooks...");
         } else if (currentFile.includes("command")) {
-          setSystemInfo("⚡ Loading command registry...");
+          setSystemInfo("Loading command registry...");
         } else {
-          setSystemInfo(`📦 Loading ${currentFile.split("/").pop()}...`);
+          setSystemInfo(`Loading ${currentFile.split("/").pop()}...`);
         }
       }
 
@@ -190,7 +190,7 @@ export function TerminalLoadingProgress({
   const getStatusIcon = (status: LoadingFile["status"], loadTime?: number) => {
     switch (status) {
       case "pending":
-        return <span style={{ color: themeConfig.colors.muted }}>⏳</span>;
+        return <span style={{ color: themeConfig.colors.muted }}></span>;
       case "loading":
         return (
           <span
@@ -201,7 +201,7 @@ export function TerminalLoadingProgress({
           </span>
         );
       case "complete": {
-        const icon = loadTime && loadTime < 100 ? "⚡" : "✓";
+        const icon = loadTime && loadTime < 100 ? "" : "✓";
         return (
           <span
             style={{
@@ -219,7 +219,7 @@ export function TerminalLoadingProgress({
           </span>
         );
       default:
-        return <span>⏳</span>;
+        return <span></span>;
     }
   };
 
@@ -253,7 +253,7 @@ export function TerminalLoadingProgress({
       >
         <div className="flex items-center justify-center gap-3 mb-2">
           <span className={isComplete ? "" : "animate-pulse"}>
-            {isComplete ? "�" : "�📦"}
+            {isComplete ? "�" : "�"}
           </span>
           <span className="text-lg font-bold">Terminal Portfolio</span>
         </div>
@@ -359,7 +359,7 @@ export function TerminalLoadingProgress({
               color: themeConfig.colors.success || themeConfig.colors.accent,
             }}
           >
-            <span className="animate-bounce">🎉</span>
+            <span className="animate-bounce"></span>
             <span>{completionText}</span>
           </div>
 
@@ -400,7 +400,7 @@ export function TerminalLoadingProgress({
             className="text-center text-xs mt-4 animate-pulse"
             style={{ color: themeConfig.colors.muted }}
           >
-            🎯 Ready to explore? Press any key to continue...
+            Ready to explore? Press any key to continue...
           </div>
         </div>
       )}

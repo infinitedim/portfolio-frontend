@@ -17,7 +17,7 @@ describe("tour-steps", () => {
         position: "top",
         action: "highlight",
         demoCommand: "test",
-        icon: "🎯",
+        icon: "",
         tips: ["tip1"],
       };
 
@@ -28,7 +28,7 @@ describe("tour-steps", () => {
       expect(step.position).toBe("top");
       expect(step.action).toBe("highlight");
       expect(step.demoCommand).toBe("test");
-      expect(step.icon).toBe("🎯");
+      expect(step.icon).toBe("");
       expect(step.tips).toEqual(["tip1"]);
     });
 
@@ -38,7 +38,7 @@ describe("tour-steps", () => {
         title: "Test",
         content: "Test content",
         position: "center",
-        icon: "🎯",
+        icon: "",
       };
 
       expect(minimalStep.target).toBeUndefined();
@@ -144,9 +144,9 @@ describe("tour-steps", () => {
       });
     });
 
-    it("should have non-empty icons", () => {
+    it("should have string icons", () => {
       TOUR_STEPS.forEach((step) => {
-        expect(step.icon.trim().length).toBeGreaterThan(0);
+        expect(typeof step.icon).toBe("string");
       });
     });
 

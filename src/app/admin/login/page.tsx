@@ -111,7 +111,7 @@ export default function AdminLoginPage() {
                 className="text-xl font-bold mb-2"
                 style={{ color: themeConfig.colors.accent }}
               >
-                🔐 Admin Authentication
+                Admin Authentication
               </h1>
               <p
                 className="text-sm"

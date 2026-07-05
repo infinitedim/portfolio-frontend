@@ -356,13 +356,13 @@ sum by (status) (
 
 ### 1. Always Use Label Filters First
 
-✅ Good:
+Good:
 
 ```logql
 {job="portfolio-backend", level="error"} | json
 ```
 
-❌ Bad:
+Bad:
 
 ```logql
 {} | json | level="error"  # Scans all logs!
@@ -378,13 +378,13 @@ Use smaller time ranges for faster queries:
 
 ### 3. Use Specific Labels
 
-✅ Good:
+Good:
 
 ```logql
 {service="frontend", component="auth", level="error"}
 ```
 
-❌ Bad:
+Bad:
 
 ```logql
 {} |= "auth" |= "error"

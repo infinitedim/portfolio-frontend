@@ -725,7 +725,7 @@ export function FontManager({
         ) : (
           <div className="flex items-center justify-center h-full text-center">
             <div>
-              <div className="text-4xl mb-4">🔤</div>
+              <div className="text-4xl mb-4"></div>
               <h3
                 className="text-lg font-medium mb-2"
                 style={{ color: themeConfig.colors.accent }}

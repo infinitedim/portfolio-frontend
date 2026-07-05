@@ -7,7 +7,7 @@
 
 ---
 
-## 📋 Deskripsi
+## Deskripsi
 
 Sistem komentar di blog menggunakan GitHub Discussions via Giscus widget. Zero backend cost — login via GitHub, data tersimpan di GitHub Discussions. Theme sync otomatis dengan dark/light mode app.
 
@@ -24,7 +24,7 @@ Sistem komentar di blog menggunakan GitHub Discussions via Giscus widget. Zero b
 
 ---
 
-## ✅ Subtask Checklist
+## Subtask Checklist
 
 ### Frontend (`portfolio-frontend`)
 
@@ -103,7 +103,7 @@ Sistem komentar di blog menggunakan GitHub Discussions via Giscus widget. Zero b
 
 ---
 
-## 📁 File Mapping
+## File Mapping
 
 | File                                                                   | Aksi          | Deskripsi              |
 | ---------------------------------------------------------------------- | ------------- | ---------------------- |
@@ -114,13 +114,13 @@ Sistem komentar di blog menggunakan GitHub Discussions via Giscus widget. Zero b
 
 ---
 
-## 🔌 API Contract
+## API Contract
 
 Tidak ada perubahan backend. Giscus berkomunikasi langsung dengan GitHub API via iframe.
 
 ---
 
-## ✅ Acceptance Criteria
+## Acceptance Criteria
 
 | #    | Kriteria                                                     | Cara Verifikasi    |
 | ---- | ------------------------------------------------------------ | ------------------ |
@@ -130,12 +130,12 @@ Tidak ada perubahan backend. Giscus berkomunikasi langsung dengan GitHub API via
 | AC-4 | Tema komentar ikut berganti saat user switch dark/light mode | Toggle theme test  |
 | AC-5 | Widget lazy loaded — tidak memperlambat initial page load    | Network tab check  |
 | AC-6 | Skeleton ditampilkan saat Giscus iframe loading              | Slow network test  |
-| AC-7 | Reactions (👍 ❤️ dll) berfungsi                              | Manual test        |
+| AC-7 | Reactions (️ dll) berfungsi                              | Manual test        |
 | AC-8 | Draft/unpublished posts tidak menampilkan comments           | Preview mode check |
 
 ---
 
-## 🔧 Technical Notes
+## Technical Notes
 
 ### Giscus Mapping Options
 

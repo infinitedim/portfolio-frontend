@@ -44,7 +44,7 @@ export const blogCommand: Command = {
       return {
         type: "info",
         content: [
-          "📰 Blog",
+          "Blog",
           "═".repeat(40),
           "",
           "No posts loaded. Visit the blog in your browser:",
@@ -65,7 +65,7 @@ export const blogCommand: Command = {
     return {
       type: "info",
       content: [
-        "📰 Recent Blog Posts",
+        "Recent Blog Posts",
         "═".repeat(40),
         "",
         ...lines,

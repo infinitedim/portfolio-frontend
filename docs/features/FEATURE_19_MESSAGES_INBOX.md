@@ -7,7 +7,7 @@
 
 ---
 
-## 📋 Deskripsi
+## Deskripsi
 
 Halaman inbox di admin dashboard untuk melihat, membaca, dan mengelola pesan dari contact form (#11). Termasuk fitur mark as read, delete, dan bulk operations.
 
@@ -21,7 +21,7 @@ Halaman inbox di admin dashboard untuk melihat, membaca, dan mengelola pesan dar
 
 ---
 
-## ✅ Subtask Checklist
+## Subtask Checklist
 
 ### Backend (`portfolio-backend`)
 
@@ -130,7 +130,7 @@ Halaman inbox di admin dashboard untuk melihat, membaca, dan mengelola pesan dar
 
 ---
 
-## 📁 File Mapping
+## File Mapping
 
 | File                                                                     | Aksi          | Deskripsi                                         |
 | ------------------------------------------------------------------------ | ------------- | ------------------------------------------------- |
@@ -144,7 +144,7 @@ Halaman inbox di admin dashboard untuk melihat, membaca, dan mengelola pesan dar
 
 ---
 
-## 🔌 API Contract
+## API Contract
 
 ### `GET /api/admin/messages?page=1&limit=20&status=all`
 
@@ -211,7 +211,7 @@ Response: { "deleted": 2 }
 
 ---
 
-## ✅ Acceptance Criteria
+## Acceptance Criteria
 
 | #     | Kriteria                                                         | Cara Verifikasi          |
 | ----- | ---------------------------------------------------------------- | ------------------------ |
@@ -228,7 +228,7 @@ Response: { "deleted": 2 }
 
 ---
 
-## 🎨 Design Notes
+## Design Notes
 
 ### Layout
 
@@ -236,15 +236,15 @@ Response: { "deleted": 2 }
 ┌─────────────────────────────────────────┐
 │ Messages (42)  [All] [Unread (5)] [Read]│
 ├──────────────────────┬──────────────────┤
-│ ☐ 🔵 John Doe       │ From: John Doe   │
+│ John Doe       │ From: John Doe   │
 │   Job Opportunity    │ john@example.com │
 │   2 hours ago        │ Feb 21, 10:30    │
 │──────────────────────│                  │
-│ ☐    Jane Smith      │ Subject:         │
+│ Jane Smith      │ Subject:         │
 │   Collaboration      │ Job Opportunity  │
 │   Yesterday          │                  │
 │──────────────────────│ Hi, I saw your   │
-│ ☐    Bob Wilson      │ portfolio and    │
+│ Bob Wilson      │ portfolio and    │
 │   Bug Report         │ would like to... │
 │   3 days ago         │                  │
 │                      │ [Reply] [Delete] │

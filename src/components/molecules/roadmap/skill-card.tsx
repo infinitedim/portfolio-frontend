@@ -22,13 +22,13 @@ export function SkillCard({
   const getStatusIcon = () => {
     switch (skill.status) {
       case "completed":
-        return "✅";
+        return "";
       case "in-progress":
-        return "🔄";
+        return "";
       case "not-started":
         return "⭕";
       default:
-        return "❓";
+        return "";
     }
   };
 
@@ -48,7 +48,7 @@ export function SkillCard({
   const getPriorityIcon = () => {
     switch (skill.priority) {
       case "high":
-        return "🔴";
+        return "";
       case "medium":
         return "🟡";
       case "low":

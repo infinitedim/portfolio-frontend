@@ -256,7 +256,7 @@ logger.fatal("Out of memory", error, {
 
 ### 1. Use Structured Logging
 
-✅ **Good**:
+**Good**:
 
 ```typescript
 logger.info(
@@ -273,7 +273,7 @@ logger.info(
 );
 ```
 
-❌ **Bad**:
+**Bad**:
 
 ```typescript
 logger.info(`User ${user.id} added product 123 to cart`);
@@ -281,7 +281,7 @@ logger.info(`User ${user.id} added product 123 to cart`);
 
 ### 2. Mask PII
 
-✅ **Good**:
+**Good**:
 
 ```typescript
 import { maskPII } from "@/lib/logger/utils";
@@ -293,7 +293,7 @@ logger.info("User data", {
 });
 ```
 
-❌ **Bad**:
+**Bad**:
 
 ```typescript
 logger.info("User data", {
@@ -323,7 +323,7 @@ logger.info(
 
 ### 4. Log Errors Properly
 
-✅ **Good**:
+**Good**:
 
 ```typescript
 try {
@@ -344,7 +344,7 @@ try {
 }
 ```
 
-❌ **Bad**:
+**Bad**:
 
 ```typescript
 try {

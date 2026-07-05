@@ -17,6 +17,7 @@ const nextConfig = {
       "@tiptap/starter-kit",
       "date-fns",
       "@giscus/react",
+      "framer-motion",
     ],
   },
   turbopack: {

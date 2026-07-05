@@ -210,7 +210,7 @@ export function PWAInstallPrompt({
         </div>
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <div className="text-2xl animate-pulse">📱</div>
+            <div className="text-2xl animate-pulse"></div>
             <div className="flex-1">
               <h2
                 id="pwa-prompt-title"
@@ -283,7 +283,7 @@ export function PWAInstallPrompt({
             style={{}}
           >
             <span>
-              💡 Tip: <span className="font-bold">pwa --install</span>
+              Tip: <span className="font-bold">pwa --install</span>
             </span>
             <span className="text-xs opacity-50">ESC to dismiss</span>
           </div>

@@ -34,7 +34,7 @@ export const themesCommand: Command = {
         return {
           type: "info",
           content: [
-            "📝 No custom themes found",
+            "No custom themes found",
             "",
             "Create custom themes using:",
             "  customize           # Open customization manager",
@@ -48,7 +48,7 @@ export const themesCommand: Command = {
       }
 
       const themeList = [
-        "🎨 Custom Themes",
+        "Custom Themes",
         "═".repeat(40),
         "",
         ...customThemes.map((theme) => {
@@ -60,7 +60,7 @@ export const themesCommand: Command = {
         "",
         `Total: ${customThemes.length} custom themes`,
         "",
-        "💡 Use 'customize' to manage themes",
+        "Use 'customize' to manage themes",
       ].join("\n");
 
       return {
@@ -81,17 +81,17 @@ export const themesCommand: Command = {
     ).length;
 
     const themeList = [
-      "🎨 All Available Themes",
+      "All Available Themes",
       "═".repeat(50),
       "",
-      "📋 Built-in Themes:",
+      "Built-in Themes:",
       ...allThemes
         .filter((t) => t.source === "built-in")
         .map((theme) => `  • ${theme.name} (${theme.id})`),
       "",
       ...(customCount > 0
         ? [
-            "🛠️ Custom Themes:",
+            "️ Custom Themes:",
             ...allThemes
               .filter((t) => t.source === "custom")
               .map((theme) => `  • ${theme.name} (custom)`),
@@ -100,20 +100,20 @@ export const themesCommand: Command = {
         : []),
       ...(importedCount > 0
         ? [
-            "📥 Imported Themes:",
+            "Imported Themes:",
             ...allThemes
               .filter((t) => t.source === "imported")
               .map((theme) => `  • ${theme.name} (imported)`),
             "",
           ]
         : []),
-      "📊 Summary:",
+      "Summary:",
       `  Built-in: ${builtInCount}`,
       `  Custom: ${customCount}`,
       `  Imported: ${importedCount}`,
       `  Total: ${allThemes.length}`,
       "",
-      "💡 Commands:",
+      "Commands:",
       "  themes custom       # Show only custom themes",
       "  customize           # Open theme manager",
       "  theme <name>        # Apply theme",
@@ -143,7 +143,7 @@ export const fontsCommand: Command = {
         return {
           type: "info",
           content: [
-            "📝 No custom fonts found",
+            "No custom fonts found",
             "",
             "Upload custom fonts using:",
             "  customize           # Open customization manager",
@@ -156,7 +156,7 @@ export const fontsCommand: Command = {
       }
 
       const fontList = [
-        "🔤 Custom Fonts",
+        "Custom Fonts",
         "═".repeat(40),
         "",
         ...customFonts.map((font) => {
@@ -167,7 +167,7 @@ export const fontsCommand: Command = {
         "",
         `Total: ${customFonts.length} custom fonts`,
         "",
-        "💡 Use 'customize' to manage fonts",
+        "Use 'customize' to manage fonts",
       ].join("\n");
 
       return {
@@ -184,10 +184,10 @@ export const fontsCommand: Command = {
     const ligaturesCount = allFonts.filter((f) => f.ligatures).length;
 
     const fontList = [
-      "🔤 All Available Fonts",
+      "All Available Fonts",
       "═".repeat(50),
       "",
-      "💻 System Fonts:",
+      "System Fonts:",
       ...allFonts
         .filter((f) => f.source === "system")
         .map(
@@ -196,7 +196,7 @@ export const fontsCommand: Command = {
       "",
       ...(customCount > 0
         ? [
-            "📁 Custom Fonts:",
+            "Custom Fonts:",
             ...allFonts
               .filter((f) => f.source === "custom")
               .map(
@@ -206,13 +206,13 @@ export const fontsCommand: Command = {
             "",
           ]
         : []),
-      "📊 Summary:",
+      "Summary:",
       `  System: ${systemCount}`,
       `  Custom: ${customCount}`,
       `  With Ligatures: ${ligaturesCount}`,
       `  Total: ${allFonts.length}`,
       "",
-      "💡 Commands:",
+      "Commands:",
       "  fonts custom        # Show only custom fonts",
       "  customize           # Open font manager",
       "  font <name>         # Apply font",

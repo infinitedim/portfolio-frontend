@@ -115,7 +115,7 @@ export function DevelopmentBanner(): JSX.Element | null {
               color: themeConfig.colors.accent,
             }}
           >
-            <span className="animate-pulse">⚠</span>
+            <span className="animate-pulse"></span>
             <span className="font-bold">DEV MODE</span>
           </div>
 

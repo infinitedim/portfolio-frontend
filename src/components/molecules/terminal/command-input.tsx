@@ -449,7 +449,7 @@ export function CommandInput({
                 zIndex: 10,
               }}
             >
-              ⚠️ {securityWarning}
+              ️ {securityWarning}
             </div>
           )}
         </div>

@@ -68,7 +68,7 @@ export function RoadmapOverview({
           className={`${compact ? "text-base" : "text-lg"} font-bold`}
           style={{ color: themeConfig.colors.accent }}
         >
-          📊 Roadmap Progress
+          Roadmap Progress
         </h2>
         <div className="text-right">
           <div
@@ -114,7 +114,7 @@ export function RoadmapOverview({
           className="pt-3 border-t text-xs opacity-75"
           style={{ borderColor: themeConfig.colors.border }}
         >
-          <p>🔗 Connected to roadmap.sh/u/infinitedim</p>
+          <p>Connected to roadmap.sh/u/infinitedim</p>
           <p>⏱️ Last updated: {new Date().toLocaleDateString()}</p>
         </div>
       )}

@@ -58,7 +58,7 @@ export function ThemeManager({
     });
 
   const handleApplyTheme = (themeId: string) => {
-    console.log(`🎨 ThemeManager: Applying theme ${themeId}`);
+    console.log(`ThemeManager: Applying theme ${themeId}`);
 
     try {
       const customTheme = customizationService
@@ -70,7 +70,7 @@ export function ThemeManager({
         const body = document.body;
 
         if (!root || !body) {
-          console.error("❌ DOM elements not available");
+          console.error("DOM elements not available");
           return;
         }
 
@@ -163,7 +163,7 @@ export function ThemeManager({
           window.localStorage.setItem("terminal-theme", themeId);
         }
 
-        console.log(`✅ Successfully applied custom theme: ${themeId}`);
+        console.log(`Successfully applied custom theme: ${themeId}`);
 
         if (onApplyTheme) {
           onApplyTheme(themeId);
@@ -172,13 +172,13 @@ export function ThemeManager({
         const success = changeTheme(themeId as ThemeName);
 
         if (success) {
-          console.log(`✅ Successfully applied theme: ${themeId}`);
+          console.log(`Successfully applied theme: ${themeId}`);
 
           if (onApplyTheme) {
             onApplyTheme(themeId);
           }
         } else {
-          console.error(`❌ Failed to apply theme: ${themeId}`);
+          console.error(`Failed to apply theme: ${themeId}`);
         }
       }
     } catch (error) {
@@ -338,7 +338,7 @@ export function ThemeManager({
       <div className="flex-1 overflow-auto p-4">
         {filteredThemes.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-4xl mb-4">🎨</div>
+            <div className="text-4xl mb-4"></div>
             <h3
               className="text-lg font-medium mb-2"
               style={{ color: themeConfig.colors.accent }}
@@ -484,8 +484,7 @@ export function ThemeManager({
                       }}
                       title="Duplicate theme"
                     >
-                      📋
-                    </button>
+                      </button>
 
                     {theme.source === "custom" && (
                       <>
@@ -498,7 +497,7 @@ export function ThemeManager({
                           }}
                           title="Edit theme"
                         >
-                          ✏️
+                          ️
                         </button>
 
                         <button
@@ -510,7 +509,7 @@ export function ThemeManager({
                           }}
                           title="Delete theme"
                         >
-                          🗑️
+                          ️
                         </button>
                       </>
                     )}

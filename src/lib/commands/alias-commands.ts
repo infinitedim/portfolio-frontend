@@ -152,7 +152,7 @@ export const aliasCommand: Command = {
       return {
         type: "success" as const,
         content: [
-          "🔗 Command Alias Manager",
+          "Command Alias Manager",
           "═".repeat(50),
           "",
           "USAGE:",

@@ -584,7 +584,7 @@ export function useSecurityMonitoring() {
         try {
           const metrics = security.getSecurityMetrics();
           if (metrics.blockedRequests > 0 || security.threatAlerts.length > 0) {
-            console.group("🔒 Security Monitoring");
+            console.group("Security Monitoring");
             console.log("Metrics:", metrics);
             console.log("Recent Threats:", security.threatAlerts.slice(-3));
             console.log(

@@ -59,7 +59,7 @@ async function getUserInfo(username: string): Promise<CommandOutput> {
 
     return {
       type: "success",
-      content: `👤 GitHub User: ${user.login}\n📝 ${user.bio || "No bio"}\n📍 \n🔗 ${user.name}\n👥 Followers: ${user.followers}\n👥 Following: ${user.following}\n📦 Public repos: ${user.public_repos}`,
+      content: `GitHub User: ${user.login}\n${user.bio || "No bio"}\n\n${user.name}\nFollowers: ${user.followers}\nFollowing: ${user.following}\nPublic repos: ${user.public_repos}`,
       timestamp: new Date(),
       id: "github-user-info",
     };
@@ -102,7 +102,7 @@ async function getUserRepos(username: string): Promise<CommandOutput> {
         const language = repo.language || "Unknown";
         const stars = repo.stargazers_count;
         const forks = repo.forks_count;
-        return `📦 ${repo.name}\n   📝 ${repo.description || "No description"}\n   🔤 ${language} | ⭐ ${stars} | 🍴 ${forks}\n   🔗 ${repo.html_url}`;
+        return `${repo.name}\n   ${repo.description || "No description"}\n   ${language} | ⭐ ${stars} | ${forks}\n   ${repo.html_url}`;
       })
       .join("\n\n");
 
@@ -113,7 +113,7 @@ async function getUserRepos(username: string): Promise<CommandOutput> {
 
     return {
       type: "success",
-      content: `📦 Repositories for ${username}:\n\n${repoList}${moreText}`,
+      content: `Repositories for ${username}:\n\n${repoList}${moreText}`,
       timestamp: new Date(),
       id: "github-repos-list",
     };
@@ -147,7 +147,7 @@ async function getRepoInfo(
 
     return {
       type: "success",
-      content: `📦 Repository: ${repo.full_name}\n📝 ${repo.description || "No description"}\n🔤 Language: ${repo.language || "Unknown"}\n⭐ Stars: ${repo.stargazers_count}\n🍴 Forks: ${repo.forks_count}\n👀 Watchers: ${repo.watchers_count}\n📅 Created: ${new Date(repo.created_at).toLocaleDateString()}\n🔄 Updated: ${new Date(repo.updated_at).toLocaleDateString()}\n🔗 ${repo.html_url}`,
+      content: `Repository: ${repo.full_name}\n${repo.description || "No description"}\nLanguage: ${repo.language || "Unknown"}\n⭐ Stars: ${repo.stargazers_count}\nForks: ${repo.forks_count}\nWatchers: ${repo.watchers_count}\nCreated: ${new Date(repo.created_at).toLocaleDateString()}\nUpdated: ${new Date(repo.updated_at).toLocaleDateString()}\n${repo.html_url}`,
       timestamp: new Date(),
       id: "github-repo-info",
     };
@@ -192,7 +192,7 @@ async function getRepoCommits(
       .slice(0, 5)
       .map((commit) => {
         const date = new Date(commit.commit.author.date).toLocaleDateString();
-        return `🔨 ${commit.commit.message.split("\n")[0]}\n   👤 ${commit.commit.author.name}\n   📅 ${date}\n   🔗 ${commit.commit}`;
+        return `${commit.commit.message.split("\n")[0]}\n   ${commit.commit.author.name}\n   ${date}\n   ${commit.commit}`;
       })
       .join("\n\n");
 
@@ -203,7 +203,7 @@ async function getRepoCommits(
 
     return {
       type: "success",
-      content: `🔨 Recent commits for ${username}/${repoName}:\n\n${commitList}${moreText}`,
+      content: `Recent commits for ${username}/${repoName}:\n\n${commitList}${moreText}`,
       timestamp: new Date(),
       id: "github-commits-list",
     };
@@ -252,13 +252,13 @@ async function getRepoLanguages(
       .sort(([, a], [, b]) => b - a)
       .map(([language, bytes]) => {
         const percentage = ((bytes / totalBytes) * 100).toFixed(1);
-        return `🔤 ${language}: ${percentage}% (${bytes.toLocaleString()} bytes)`;
+        return `${language}: ${percentage}% (${bytes.toLocaleString()} bytes)`;
       })
       .join("\n");
 
     return {
       type: "success",
-      content: `🔤 Languages used in ${username}/${repoName}:\n\n${languageList}`,
+      content: `Languages used in ${username}/${repoName}:\n\n${languageList}`,
       timestamp: new Date(),
       id: "github-languages",
     };
@@ -300,7 +300,7 @@ async function searchRepos(query: string): Promise<CommandOutput> {
       .map((repo) => {
         const language = repo.language || "Unknown";
         const stars = repo.stargazers_count;
-        return `📦 ${repo.full_name}\n   📝 ${repo.description || "No description"}\n   🔤 ${language} | ⭐ ${stars}\n   🔗 ${repo.html_url}`;
+        return `${repo.full_name}\n   ${repo.description || "No description"}\n   ${language} | ⭐ ${stars}\n   ${repo.html_url}`;
       })
       .join("\n\n");
 
@@ -311,7 +311,7 @@ async function searchRepos(query: string): Promise<CommandOutput> {
 
     return {
       type: "success",
-      content: `🔍 Search results for '${query}':\n\n${repoList}${moreText}`,
+      content: `Search results for '${query}':\n\n${repoList}${moreText}`,
       timestamp: new Date(),
       id: "github-search-results",
     };
@@ -353,7 +353,7 @@ async function getStarredRepos(username: string): Promise<CommandOutput> {
       .map((repo) => {
         const language = repo.language || "Unknown";
         const stars = repo.stargazers_count;
-        return `⭐ ${repo.full_name}\n   📝 ${repo.description || "No description"}\n   🔤 ${language} | ⭐ ${stars}\n   🔗 ${repo.html_url}`;
+        return `⭐ ${repo.full_name}\n   ${repo.description || "No description"}\n   ${language} | ⭐ ${stars}\n   ${repo.html_url}`;
       })
       .join("\n\n");
 
@@ -416,7 +416,7 @@ async function getUserGists(username: string): Promise<CommandOutput> {
           html_url: string;
         }) => {
           const files = Object.keys(gist.files).length;
-          return `📄 ${gist.description || "Untitled gist"}\n   📁 ${files} file(s)\n   📅 ${new Date(gist.created_at).toLocaleDateString()}\n   🔗 ${gist.html_url}`;
+          return `${gist.description || "Untitled gist"}\n   ${files} file(s)\n   ${new Date(gist.created_at).toLocaleDateString()}\n   ${gist.html_url}`;
         },
       )
       .join("\n\n");
@@ -426,7 +426,7 @@ async function getUserGists(username: string): Promise<CommandOutput> {
 
     return {
       type: "success",
-      content: `📄 Gists by ${username}:\n\n${gistList}${moreText}`,
+      content: `Gists by ${username}:\n\n${gistList}${moreText}`,
       timestamp: new Date(),
       id: "github-gists-list",
     };
@@ -456,7 +456,7 @@ function manageCache(action: string): CommandOutput {
       const cacheStatus = githubService.getCacheStats();
       return {
         type: "info",
-        content: `📊 Cache Status:\n   Cached requests: ${cacheStatus.entries}\n   Cache size: ${cacheStatus.size} items`,
+        content: `Cache Status:\n   Cached requests: ${cacheStatus.entries}\n   Cache size: ${cacheStatus.size} items`,
         timestamp: new Date(),
         id: "github-cache-status",
       };
@@ -475,7 +475,7 @@ function manageCache(action: string): CommandOutput {
 function showGitHubHelp(): CommandOutput {
   return {
     type: "info",
-    content: `🐙 GitHub Command Help
+    content: `GitHub Command Help
 
 Available commands:
   github user <username>           - Get user information

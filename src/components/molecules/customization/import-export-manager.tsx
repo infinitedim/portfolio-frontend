@@ -114,7 +114,7 @@ export function ImportExportManager({
             className="text-lg font-bold mb-4"
             style={{ color: themeConfig.colors.accent }}
           >
-            📤 Export
+            Export
           </h3>
           <div className="space-y-4">
             <div
@@ -148,7 +148,7 @@ export function ImportExportManager({
                     color: themeConfig.colors.success,
                   }}
                 >
-                  {isExporting ? "⏳ Exporting..." : "📤 Export Themes"}
+                  {isExporting ? "Exporting..." : "Export Themes"}
                 </button>
               </div>
             </div>
@@ -184,7 +184,7 @@ export function ImportExportManager({
                     color: themeConfig.colors.accent,
                   }}
                 >
-                  📦 Export All
+                  Export All
                 </button>
               </div>
             </div>
@@ -196,7 +196,7 @@ export function ImportExportManager({
             className="text-lg font-bold mb-4"
             style={{ color: themeConfig.colors.accent }}
           >
-            📥 Import
+            Import
           </h3>
           <div className="space-y-4">
             <div
@@ -226,7 +226,7 @@ export function ImportExportManager({
                     color: themeConfig.colors.prompt,
                   }}
                 >
-                  {isImporting ? "⏳ Importing..." : "📁 Choose File"}
+                  {isImporting ? "Importing..." : "Choose File"}
                 </button>
                 <span className="text-sm opacity-75">
                   Supports .json theme files
@@ -325,7 +325,7 @@ export function ImportExportManager({
                 className="font-medium mb-1"
                 style={{ color: themeConfig.colors.error }}
               >
-                🔄 Reset All
+                Reset All
               </div>
               <div className="text-sm opacity-75">
                 Reset all themes, fonts, and settings to defaults
@@ -358,7 +358,7 @@ export function ImportExportManager({
                 className="font-medium mb-1"
                 style={{ color: themeConfig.colors.accent }}
               >
-                📊 Storage Info
+                Storage Info
               </div>
               <div className="text-sm opacity-75">
                 View storage usage and customization statistics

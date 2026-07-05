@@ -290,7 +290,7 @@ export function TerminalLoginForm({
             color: themeConfig.colors.text,
           }}
         >
-          🔐 Enter the {useBackupCode ? "backup code" : "6-digit code"} from
+          Enter the {useBackupCode ? "backup code" : "6-digit code"} from
           your authenticator app to finish signing in.
         </div>
 

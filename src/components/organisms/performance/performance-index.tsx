@@ -64,7 +64,7 @@ export class PerformanceMonitor {
   }
 
   public logMetrics(): void {
-    console.group("⚡ Performance Metrics");
+    console.group("Performance Metrics");
     const metrics = this.getAllMetrics();
     Object.entries(metrics).forEach(([name, data]) => {
       console.log(
@@ -105,7 +105,7 @@ export function PerformanceProfiler({
 
     if (process.env.NODE_ENV === "development" && actualDuration > 16) {
       console.warn(
-        `🐌 Slow render detected: ${id} (${phase}) took ${actualDuration.toFixed(2)}ms`,
+        `Slow render detected: ${id} (${phase}) took ${actualDuration.toFixed(2)}ms`,
       );
     }
   };

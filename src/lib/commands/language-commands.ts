@@ -37,12 +37,12 @@ export const languageCommand: Command = {
       const fallbackConfig = getLocaleConfig(fallbackLocale);
 
       const fallbackMessage = [
-        `🌍 ${t("languageFallback")} ${fallbackConfig?.name} (${fallbackLocale})`,
+        `${t("languageFallback")} ${fallbackConfig?.name} (${fallbackLocale})`,
         "",
-        `📝 ${localeCode} is a regional variant of ${fallbackLocale}`,
-        `🎯 Using ${fallbackConfig?.nativeName} as the primary language`,
+        `${localeCode} is a regional variant of ${fallbackLocale}`,
+        `Using ${fallbackConfig?.nativeName} as the primary language`,
         "",
-        "💡 Regional variants are automatically mapped to their primary language",
+        "Regional variants are automatically mapped to their primary language",
       ].join("\n");
 
       const success = i18n.setLocale(fallbackLocale);
@@ -60,14 +60,14 @@ export const languageCommand: Command = {
 
       if (success) {
         const successMessage = [
-          `✅ ${t("languageChanged")}`,
+          `${t("languageChanged")}`,
           "",
-          `🌍 ${localeConfig.name} (${localeConfig.nativeName})`,
-          `🏳️ ${localeConfig.flag}`,
-          `📝 Code: ${localeConfig.code}`,
-          `📏 Direction: ${localeConfig.direction.toUpperCase()}`,
+          `${localeConfig.name} (${localeConfig.nativeName})`,
+          `️ ${localeConfig.flag}`,
+          `Code: ${localeConfig.code}`,
+          `Direction: ${localeConfig.direction.toUpperCase()}`,
           "",
-          "💡 Language preference saved to localStorage",
+          "Language preference saved to localStorage",
         ].join("\n");
 
         return {
@@ -94,25 +94,25 @@ function showCurrentLanguage() {
   const supportedLocales = i18n.getSupportedLocales();
 
   const currentLanguageInfo = [
-    `🌍 ${t("currentLanguage")}`,
+    `${t("currentLanguage")}`,
     "═".repeat(40),
     "",
-    `🏳️ ${currentConfig?.flag} ${currentConfig?.name}`,
-    `📝 ${currentConfig?.nativeName}`,
-    `🔧 Code: ${currentConfig?.code}`,
-    `📏 Direction: ${currentConfig?.direction.toUpperCase()}`,
+    `️ ${currentConfig?.flag} ${currentConfig?.name}`,
+    `${currentConfig?.nativeName}`,
+    `Code: ${currentConfig?.code}`,
+    `Direction: ${currentConfig?.direction.toUpperCase()}`,
     "",
-    `📋 ${t("availableLanguages")}:`,
+    `${t("availableLanguages")}:`,
     ...supportedLocales.map((locale) => {
       const isCurrent = locale.code === currentLocale;
-      const indicator = isCurrent ? "✅" : "  ";
+      const indicator = isCurrent ? "" : "  ";
       return `${indicator} ${locale.flag} ${locale.name} (${locale.code})`;
     }),
     "",
-    "💡 Usage: lang <locale_id>",
-    "💡 Examples: lang id_ID, lang es_ES, lang fr_FR",
+    "Usage: lang <locale_id>",
+    "Examples: lang id_ID, lang es_ES, lang fr_FR",
     "",
-    "🌐 Regional variants (e.g., en_GB, es_MX) will fall back to their primary language",
+    "Regional variants (e.g., en_GB, es_MX) will fall back to their primary language",
   ].join("\n");
 
   return {
@@ -133,20 +133,20 @@ export const languageListCommand: Command = {
     const currentLocale = i18n.getCurrentLocale();
 
     const languageList = [
-      `🌍 ${t("availableLanguages")}`,
+      `${t("availableLanguages")}`,
       "═".repeat(50),
       "",
       ...supportedLocales.map((locale, index) => {
         const isCurrent = locale.code === currentLocale;
         const indicator = isCurrent
-          ? "✅"
+          ? ""
           : `${(index + 1).toString().padStart(2)}.`;
         const currentMark = isCurrent ? " (Current)" : "";
 
         return `${indicator} ${locale.flag} ${locale.name}${currentMark}`;
       }),
       "",
-      "📝 Regional Variants (fallback to primary language):",
+      "Regional Variants (fallback to primary language):",
       "   🇬🇧 en_GB → 🇺🇸 English (US)",
       "   🇨🇦 en_CA → 🇺🇸 English (US)",
       "   🇦🇺 en_AU → 🇺🇸 English (US)",
@@ -158,8 +158,8 @@ export const languageListCommand: Command = {
       "   🇹🇼 zh_TW → 🇨🇳 Chinese (Simplified)",
       "   🇪🇬 ar_EG → 🇸🇦 Arabic",
       "",
-      "💡 Use 'lang <locale_id>' to change language",
-      "💡 Example: lang id_ID, lang es_ES, lang en_GB",
+      "Use 'lang <locale_id>' to change language",
+      "Example: lang id_ID, lang es_ES, lang en_GB",
     ].join("\n");
 
     return {
@@ -185,18 +185,18 @@ export const languageInfoCommand: Command = {
       const currentConfig = i18n.getCurrentLocaleConfig();
 
       const currentInfo = [
-        `🌍 ${t("currentLanguage")} Information`,
+        `${t("currentLanguage")} Information`,
         "═".repeat(50),
         "",
-        `🏳️ Flag: ${currentConfig?.flag}`,
-        `📝 Name: ${currentConfig?.name}`,
-        `🌐 Native: ${currentConfig?.nativeName}`,
-        `🔧 Code: ${currentConfig?.code}`,
-        `📏 Direction: ${currentConfig?.direction.toUpperCase()}`,
-        `💾 Saved: ${typeof window !== "undefined" ? "Yes" : "No"}`,
-        `📍 Current: ${currentLocale}`,
+        `️ Flag: ${currentConfig?.flag}`,
+        `Name: ${currentConfig?.name}`,
+        `Native: ${currentConfig?.nativeName}`,
+        `Code: ${currentConfig?.code}`,
+        `Direction: ${currentConfig?.direction.toUpperCase()}`,
+        `Saved: ${typeof window !== "undefined" ? "Yes" : "No"}`,
+        `Current: ${currentLocale}`,
         "",
-        "💡 Use 'langinfo <locale_id>' to see info for other languages",
+        "Use 'langinfo <locale_id>' to see info for other languages",
       ].join("\n");
 
       return {
@@ -226,23 +226,23 @@ export const languageInfoCommand: Command = {
       : "";
 
     const languageInfo = [
-      `🌍 Language Information: ${localeConfig.name}`,
+      `Language Information: ${localeConfig.name}`,
       "═".repeat(50),
       "",
-      `🏳️ Flag: ${localeConfig.flag}`,
-      `📝 Name: ${localeConfig.name}`,
-      `🌐 Native: ${localeConfig.nativeName}`,
-      `🔧 Code: ${localeConfig.code}${fallbackInfo}`,
-      `📏 Direction: ${localeConfig.direction.toUpperCase()}`,
-      `📍 Status: ${isCurrent ? "Current" : "Available"}${isRegional ? " (Regional Variant)" : ""}`,
+      `️ Flag: ${localeConfig.flag}`,
+      `Name: ${localeConfig.name}`,
+      `Native: ${localeConfig.nativeName}`,
+      `Code: ${localeConfig.code}${fallbackInfo}`,
+      `Direction: ${localeConfig.direction.toUpperCase()}`,
+      `Status: ${isCurrent ? "Current" : "Available"}${isRegional ? " (Regional Variant)" : ""}`,
       "",
       isRegional
-        ? "💡 This is a regional variant that falls back to its primary language"
+        ? "This is a regional variant that falls back to its primary language"
         : "",
       isRegional
-        ? "💡 Regional variants use the same translations as their primary language"
+        ? "Regional variants use the same translations as their primary language"
         : "",
-      !isCurrent ? "💡 Use 'lang <locale_id>' to switch to this language" : "",
+      !isCurrent ? "Use 'lang <locale_id>' to switch to this language" : "",
     ].join("\n");
 
     return {

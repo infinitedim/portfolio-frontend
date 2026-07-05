@@ -165,19 +165,19 @@ export function CommandSuggestions({
   const getTypeIcon = (type: SuggestionItem["type"]) => {
     switch (type) {
       case "exact":
-        return "⚡";
+        return "";
       case "prefix":
-        return "🔍";
+        return "";
       case "fuzzy":
-        return "📝";
+        return "";
       case "contextual":
-        return "🧠";
+        return "";
       case "recent":
-        return "🕒";
+        return "";
       case "popular":
         return "⭐";
       default:
-        return "💡";
+        return "";
     }
   };
 
@@ -251,7 +251,7 @@ export function CommandSuggestions({
       >
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1">
-            💡{" "}
+            {" "}
             <span className="font-medium">
               {suggestions.length} suggestion
               {suggestions.length !== 1 ? "s" : ""}
@@ -435,9 +435,9 @@ export function CommandSuggestions({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span>💡 Smart suggestions enabled</span>
-            {enableLearning && <span>🧠 Learning from your usage</span>}
-            {enableCache && <span>⚡ Intelligent caching</span>}
+            <span>Smart suggestions enabled</span>
+            {enableLearning && <span>Learning from your usage</span>}
+            {enableCache && <span>Intelligent caching</span>}
           </div>
           <div className="text-xs opacity-60">Ctrl+C to clear cache</div>
         </div>

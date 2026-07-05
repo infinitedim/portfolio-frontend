@@ -51,7 +51,7 @@ export function LazyThemeLoader({
         <div className="w-full max-w-md p-6">
           <TerminalLoadingProgress
             duration={2000}
-            completionText="🎨 Theme loaded successfully!"
+            completionText="Theme loaded successfully!"
             autoStart={true}
           />
         </div>

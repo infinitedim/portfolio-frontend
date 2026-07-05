@@ -75,7 +75,7 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
         >
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className="text-lg">📱</span>
+              <span className="text-lg"></span>
               <div>
                 <div className="font-medium">Mobile Terminal Ready!</div>
                 <div className="text-xs opacity-90 mt-1">

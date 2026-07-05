@@ -31,7 +31,7 @@ export class ImageErrorBoundary extends React.Component<Props, State> {
         this.props.fallback || (
           <div className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 w-full h-full min-h-50">
             <div className="text-center p-4">
-              <span className="text-4xl">🖼️</span>
+              <span className="text-4xl">️</span>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 Failed to load image
               </p>

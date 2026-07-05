@@ -291,7 +291,7 @@ function TerminalContent({
               { path: t("loading"), size: "" },
               { path: t("loading"), size: "" },
             ]}
-            completionText={`🔧 ${t("terminalReady")}!`}
+            completionText={`${t("terminalReady")}!`}
             autoStart={true}
             showSystemInfo={true}
           />
@@ -367,9 +367,9 @@ function TerminalContent({
     <>
       <SkipLinks
         links={[
-          { id: "main-content", label: "Skip to terminal", icon: "💻" },
+          { id: "main-content", label: "Skip to terminal", icon: "" },
           { id: "command-input", label: "Skip to command input", icon: "⌨️" },
-          { id: "customization", label: "Skip to customization", icon: "🎨" },
+          { id: "customization", label: "Skip to customization", icon: "" },
         ]}
       />
 

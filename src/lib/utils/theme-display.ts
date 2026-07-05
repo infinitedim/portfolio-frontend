@@ -25,14 +25,14 @@ export class ThemeDisplay {
     const lines: string[] = [];
 
     if (!compact) {
-      lines.push("🎨 Available Terminal Themes");
+      lines.push("Available Terminal Themes");
       lines.push("═".repeat(50));
       lines.push("");
     }
 
     if (showCurrent && currentTheme) {
       const currentConfig = themes[currentTheme];
-      lines.push(`📍 Current Theme: ${currentConfig.name} (${currentTheme})`);
+      lines.push(`Current Theme: ${currentConfig.name} (${currentTheme})`);
       if (showColors) {
         lines.push(
           `   Colors: bg:${currentConfig.colors.bg} text:${currentConfig.colors.text} accent:${currentConfig.colors.accent}`,
@@ -47,7 +47,7 @@ export class ThemeDisplay {
         .join(", ");
       lines.push(`Themes: ${themeList}`);
     } else {
-      lines.push("📋 Theme List:");
+      lines.push("Theme List:");
       lines.push("");
 
       const themeGroups: string[][] = [];
@@ -66,7 +66,7 @@ export class ThemeDisplay {
             const displayName = config.name.padEnd(20);
 
             if (showColors) {
-              return `${indicator}${name} - ${displayName} ${isCurrent ? "🟢" : "⚪"}`;
+              return `${indicator}${name} - ${displayName} ${isCurrent ? "🟢" : ""}`;
             } else {
               return `${indicator}${name} - ${displayName} ${isCurrent ? "(current)" : ""}`;
             }
@@ -89,7 +89,7 @@ export class ThemeDisplay {
     if (!config) return "";
 
     const lines = [
-      `🎨 ${config.name} Color Preview`,
+      `${config.name} Color Preview`,
       "─".repeat(30),
       "",
       `Background:  ${config.colors.bg}`,
@@ -109,7 +109,7 @@ export class ThemeDisplay {
   static generateThemeComparison(themeNames: ThemeName[]): string {
     if (themeNames.length === 0) return "No themes to compare";
 
-    const lines = ["🔍 Theme Comparison", "═".repeat(50), ""];
+    const lines = ["Theme Comparison", "═".repeat(50), ""];
 
     const maxNameLength = Math.max(...themeNames.map((t) => t.length));
 

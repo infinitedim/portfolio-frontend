@@ -397,7 +397,7 @@ describe("languageCommands", () => {
       it("should mark current language", async () => {
         const result = await languageListCommand.execute([]);
         expect(result.content).toContain("(Current)");
-        expect(result.content).toContain("✅");
+        expect(result.content).toContain("");
       });
 
       it("should show regional variants section", async () => {
@@ -429,7 +429,7 @@ describe("languageCommands", () => {
         expect(content).toContain("English (US)");
 
         const hasIndicator =
-          content.includes("✅") || content.includes("(Current)");
+          content.includes("") || content.includes("(Current)");
         expect(hasIndicator).toBe(true);
       });
     });
@@ -545,7 +545,7 @@ describe("languageCommands", () => {
         expect(
           content.includes("Status:") ||
             content.includes("Current") ||
-            content.includes("📍"),
+            content.includes(""),
         ).toBe(true);
       });
 
