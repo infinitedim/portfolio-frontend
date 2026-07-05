@@ -80,6 +80,7 @@ async function doFetch(
             iv: envelope.iv,
             ciphertext: envelope.ciphertext,
             tag: envelope.tag,
+            hmac: envelope.hmac,
           })
         : undefined,
   });
