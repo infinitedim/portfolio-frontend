@@ -77,7 +77,7 @@ export function TiptapEditor({
         class: "prose prose-invert max-w-none focus:outline-none px-3 py-2",
         style: `min-height: ${minHeight}; color: ${themeConfig.colors.text}`,
       },
-      handlePaste: (view, event) => {
+      handlePaste: (_, event) => {
         // If clipboard contains HTML (e.g. copy from browser), let Tiptap handle natively.
         const html = event.clipboardData?.getData("text/html");
         if (html) return false;

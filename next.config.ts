@@ -6,7 +6,6 @@ const nextConfig = {
   reactCompiler: !isDev,
   typedRoutes: true,
   serverExternalPackages: ["bcryptjs"],
-
   experimental: {
     serverActions: { bodySizeLimit: "2mb" },
     typedEnv: true,
