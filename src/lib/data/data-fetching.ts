@@ -70,48 +70,7 @@ const CACHE_DURATIONS = {
   ABOUT: 1000 * 60 * 60 * 24,
 } as const;
 
-const STATIC_PROJECTS: Project[] = [
-  {
-    id: "terminal-portfolio",
-    name: "Terminal Portfolio",
-    description:
-      "Interactive terminal-themed developer portfolio with command-line interface",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "React"],
-    demoUrl: "https://infinitedim.vercel.app",
-    githubUrl: "https://github.com/infinitedim/portfolio-frontend",
-    status: "completed",
-    featured: true,
-  },
-  {
-    id: "ecommerce-platform",
-    name: "E-Commerce Platform",
-    description:
-      "Full-stack online store with payment integration and real-time inventory",
-    technologies: ["React", "Node.js", "PostgreSQL", "Stripe", "JWT"],
-    githubUrl: "https://github.com/infinitedim/ecommerce",
-    status: "completed",
-    featured: true,
-  },
-  {
-    id: "task-management",
-    name: "Task Management App",
-    description:
-      "Collaborative project management tool with real-time features",
-    technologies: ["React", "Firebase", "Material-UI", "WebSocket"],
-    demoUrl: "https://taskapp-demo.com",
-    status: "completed",
-    featured: false,
-  },
-  {
-    id: "weather-dashboard",
-    name: "Weather Dashboard",
-    description: "Beautiful weather app with forecasts and interactive charts",
-    technologies: ["React", "OpenWeather API", "Chart.js", "Sass"],
-    demoUrl: "https://weather-demo.com",
-    status: "completed",
-    featured: false,
-  },
-];
+
 
 export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   const backendUrl = getBackendUrl();
@@ -140,8 +99,8 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
 
     const projects =
       projectsRes.status === "fulfilled" && projectsRes.value.ok
-        ? ((await projectsRes.value.json()).data ?? STATIC_PROJECTS)
-        : STATIC_PROJECTS;
+        ? ((await projectsRes.value.json()).data ?? [])
+        : [];
 
     const experience =
       experienceRes.status === "fulfilled" && experienceRes.value.ok
@@ -203,7 +162,7 @@ export const getProjectsData = cache(
 
       if (response.ok) {
         const data = await response.json();
-        const projects = normalizeProjects(data.data ?? STATIC_PROJECTS);
+        const projects = normalizeProjects(data.data ?? []);
         return limit ? projects.slice(0, limit) : projects;
       }
     } catch (error) {
@@ -212,9 +171,7 @@ export const getProjectsData = cache(
       });
     }
 
-    return limit
-      ? normalizeProjects(STATIC_PROJECTS).slice(0, limit)
-      : normalizeProjects(STATIC_PROJECTS);
+    return [];
   },
 );
 
@@ -364,7 +321,7 @@ export const getGitHubData = cache(
 function getFallbackPortfolioData(): PortfolioData {
   return {
     skills: [],
-    projects: STATIC_PROJECTS,
+    projects: [],
     experience: [],
     about: getFallbackAboutData(),
     lastUpdated: new Date().toISOString(),

@@ -1,19 +1,24 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { techStackCommand } from "../tech-stack-commands";
-import { ProjectMetadataService, ProjectMetadata } from "@/lib/projects/project-metadata";
+
+const mockProjects = [
+  {
+    id: "p1",
+    name: "P1",
+    description: "d",
+    technologies: ["React", "Node.js"],
+    featured: true,
+    status: "completed" as const,
+  },
+];
+
+vi.mock("@/lib/data/data-fetching", () => ({
+  getProjectsData: vi.fn(async () => mockProjects),
+}));
 
 describe("techStackCommand", () => {
   beforeEach(() => {
-    const svc = ProjectMetadataService.getInstance();
-    svc["projects"] = [
-      {
-        id: "p1",
-        name: "P1",
-        description: "d",
-        technologies: ["React", "Node.js"],
-        featured: true,
-      } as unknown as ProjectMetadata,
-    ];
+    vi.clearAllMocks();
   });
 
   it("list returns success when technologies exist", async () => {

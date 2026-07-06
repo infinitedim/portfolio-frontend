@@ -20,12 +20,6 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
         const desc = cmd.description;
         const aliases = cmd.aliases ? ` (${cmd.aliases.join(", ")})` : "";
 
-        if (cmd.name === "skills") {
-          return `  • ${name} - ${desc}${aliases}`;
-        }
-        if (cmd.name === "progress") {
-          return `  • ${name} - ${desc}${aliases}`;
-        }
         if (cmd.name === "theme") {
           return `  • ${name} - ${desc}${aliases}`;
         }
@@ -39,11 +33,6 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
       }),
       "",
       "Featured Commands:",
-      "  skills overview               - View roadmap.sh progress overview",
-      "  skills list frontend          - List frontend skills",
-      "  skills update react completed - Mark skill as completed",
-      "  skills sync                   - Sync with roadmap.sh",
-      "  progress (prog)               - Quick progress summary",
       "  theme -l                      - List all available themes",
       "  theme dracula                 - Switch to dracula theme",
       "  font fira-code                - Switch to Fira Code font",
@@ -62,18 +51,12 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
       "  theme -c, --current           - Show current theme info",
       "  font -l, --list               - Show font list",
       "",
-      "Integration:",
-      "  • Connected to https://roadmap.sh/u/infinitedim",
-      "  • Skills data synced from roadmap.sh",
-      "  • Local progress tracking with cloud sync",
-      "",
       "Tips:",
       "  • Use arrow keys (↑/↓) to navigate command history",
       "  • Commands support aliases (e.g., 'cls' for 'clear')",
       "  • Commands are case-insensitive with typo tolerance",
       "  • Use flags for quick access to lists and previews",
       "  • Font ligatures supported for enhanced readability",
-      "  • Progress is automatically saved locally",
     ].join("\n");
 
     return {
@@ -106,7 +89,7 @@ export const aboutCommand: Command = {
       "  • Creative Problem Solving",
       "",
       "My learning journey is tracked on roadmap.sh",
-      "   Use 'skills overview' to see my current progress!",
+      "   Visit the homepage roadmap to see my current progress!",
       "",
       `Type "${projectName}" to see my work or "contact" to get in touch!`,
     ].join("\n");
@@ -155,7 +138,7 @@ export const projectsCommand: Command = {
       "   • Sass/SCSS for styling",
       "",
       "All projects contribute to my roadmap.sh progress!",
-      "   Use 'skills overview' to see how they map to my skills.",
+      "   Visit the homepage roadmap to see how they map to my skills.",
       "",
       "Visit my GitHub for more projects and source code!",
     ].join("\n");
@@ -843,10 +826,6 @@ export const aliasCommand: Command = {
       "  theme    → color, style",
       "  font     → typeface, typography",
       "  pwa      → app, install, offline",
-      "",
-      "Skills Commands:",
-      "  skills   → skill, roadmap, rm",
-      "  progress → prog, status-skills",
       "",
       "Language Commands:",
       "  lang     → language, locale",
