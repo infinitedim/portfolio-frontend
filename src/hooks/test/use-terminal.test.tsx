@@ -24,10 +24,8 @@ if (typeof Bun !== "undefined") {
 ) {
   (vi as unknown as Record<string, unknown>).mock = () => undefined;
 }
-vi.mock("@/lib/commands/skills-commands", () => ({ skillsCommand: null }));
 vi.mock("@/lib/commands/roadmap-commands", () => ({
   roadmapCommand: null,
-  progressCommand: null,
 }));
 vi.mock("@/lib/commands/command-registry", () => {
   const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });

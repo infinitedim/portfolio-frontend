@@ -1,4 +1,4 @@
-import { ProjectMetadataService } from "@/lib/projects/project-metadata";
+import { getProjectsData } from "@/lib/data/data-fetching";
 import type { Command, CommandOutput } from "@/types/terminal";
 
 export const techStackCommand: Command = {
@@ -10,20 +10,20 @@ export const techStackCommand: Command = {
 
     switch (action) {
       case "list":
-        return listTechnologies();
+        return await listTechnologies();
       case "projects":
-        return getProjectsByTech(params[0]);
+        return await getProjectsByTech(params[0]);
       case "stats":
-        return getTechStats();
+        return await getTechStats();
       case "categories":
-        return categorizeTechnologies();
+        return await categorizeTechnologies();
       case "search":
-        return searchTechnologies(params.join(" "));
+        return await searchTechnologies(params.join(" "));
       case "help":
         return showTechStackHelp();
       default:
         if (!action) {
-          return listTechnologies();
+          return await listTechnologies();
         }
         return {
           type: "error",
@@ -35,22 +35,13 @@ export const techStackCommand: Command = {
   },
 };
 
-function listTechnologies(): CommandOutput {
-  const projectService = ProjectMetadataService.getInstance();
-  const technologies = projectService.getTechnologies();
-
-  if (!Array.isArray(technologies)) {
-    console.error(
-      "Technologies is not an array in listTechnologies:",
-      technologies,
-    );
-    return {
-      type: "error",
-      content: "Error: Unable to retrieve technologies data.",
-      timestamp: new Date(),
-      id: "tech-stack-technologies-error",
-    };
-  }
+async function listTechnologies(): Promise<CommandOutput> {
+  const projects = await getProjectsData();
+  const techSet = new Set<string>();
+  projects.forEach((project) => {
+    project.technologies.forEach((tech) => techSet.add(tech));
+  });
+  const technologies = Array.from(techSet).sort();
 
   if (technologies.length === 0) {
     return {
@@ -61,7 +52,7 @@ function listTechnologies(): CommandOutput {
     };
   }
 
-  const categorized = categorizeTechnologiesData();
+  const categorized = await categorizeTechnologiesData();
   const techList = Object.entries(categorized)
     .map(([category, techs]) => {
       const techItems = techs.map((tech) => `  • ${tech}`).join("\n");
@@ -77,7 +68,7 @@ function listTechnologies(): CommandOutput {
   };
 }
 
-function getProjectsByTech(technology: string): CommandOutput {
+async function getProjectsByTech(technology: string): Promise<CommandOutput> {
   if (!technology) {
     return {
       type: "error",
@@ -88,20 +79,13 @@ function getProjectsByTech(technology: string): CommandOutput {
     };
   }
 
-  const projectService = ProjectMetadataService.getInstance();
-  const projects = projectService.getProjectsByTechnology(technology);
+  const projects = await getProjectsData();
+  const searchTech = technology.toLowerCase();
+  const filteredProjects = projects.filter((project) =>
+    project.technologies.some((t) => t.toLowerCase().includes(searchTech)),
+  );
 
-  if (!Array.isArray(projects)) {
-    console.error("Projects is not an array in getProjectsByTech:", projects);
-    return {
-      type: "error",
-      content: "Error: Unable to retrieve projects data.",
-      timestamp: new Date(),
-      id: "tech-stack-projects-error",
-    };
-  }
-
-  if (projects.length === 0) {
+  if (filteredProjects.length === 0) {
     return {
       type: "info",
       content: `No projects found using '${technology}'.`,
@@ -110,7 +94,7 @@ function getProjectsByTech(technology: string): CommandOutput {
     };
   }
 
-  const projectList = projects
+  const projectList = filteredProjects
     .map((project) => {
       const featured = project.featured ? "⭐" : "";
       return `${project.name} ${featured}\n   ${project.description}\n   ️  ${project.technologies.join(", ")}`;
@@ -125,38 +109,26 @@ function getProjectsByTech(technology: string): CommandOutput {
   };
 }
 
-function getTechStats(): CommandOutput {
-  const projectService = ProjectMetadataService.getInstance();
-  const technologies = projectService.getTechnologies();
-  const projects = projectService.getAllProjects();
+async function getTechStats(): Promise<CommandOutput> {
+  const projects = await getProjectsData();
+  const techUsage: Record<string, number> = {};
 
-  if (!Array.isArray(technologies)) {
-    console.error(
-      "Technologies is not an array in getTechStats:",
-      technologies,
-    );
+  projects.forEach((project) => {
+    project.technologies.forEach((tech) => {
+      techUsage[tech] = (techUsage[tech] || 0) + 1;
+    });
+  });
+
+  const technologies = Object.keys(techUsage).sort();
+
+  if (technologies.length === 0) {
     return {
-      type: "error",
-      content: "Error: Unable to retrieve technologies data.",
+      type: "info",
+      content: "No technologies found.",
       timestamp: new Date(),
       id: "tech-stack-stats-error",
     };
   }
-
-  if (!Array.isArray(projects)) {
-    console.error("Projects is not an array in getTechStats:", projects);
-    return {
-      type: "error",
-      content: "Error: Unable to retrieve projects data.",
-      timestamp: new Date(),
-      id: "tech-stack-stats-projects-error",
-    };
-  }
-
-  const techUsage: Record<string, number> = {};
-  technologies.forEach((tech) => {
-    techUsage[tech] = projectService.getProjectsByTechnology(tech).length;
-  });
 
   const sortedTechs = Object.entries(techUsage)
     .sort(([, a], [, b]) => b - a)
@@ -177,14 +149,13 @@ function getTechStats(): CommandOutput {
   };
 }
 
-function categorizeTechnologiesData(): Record<string, string[]> {
-  const projectService = ProjectMetadataService.getInstance();
-  const technologies = projectService.getTechnologies();
-
-  if (!Array.isArray(technologies)) {
-    console.error("Technologies is not an array:", technologies);
-    return {};
-  }
+async function categorizeTechnologiesData(): Promise<Record<string, string[]>> {
+  const projects = await getProjectsData();
+  const techSet = new Set<string>();
+  projects.forEach((project) => {
+    project.technologies.forEach((tech) => techSet.add(tech));
+  });
+  const technologies = Array.from(techSet);
 
   const categories = {
     Frontend: [
@@ -210,20 +181,16 @@ function categorizeTechnologiesData(): Record<string, string[]> {
       "Express",
       "Django",
       "Spring",
+      "Axum",
     ],
-    Database: ["MongoDB", "PostgreSQL", "MySQL", "SQLite", "Redis", "Firebase"],
-    DevOps: ["Docker", "Kubernetes", "AWS", "Azure", "GCP", "Git", "CI/CD"],
+    Database: ["MongoDB", "PostgreSQL", "MySQL", "SQLite", "Redis", "Firebase", "Supabase"],
+    DevOps: ["Docker", "Kubernetes", "AWS", "Azure", "GCP", "Git", "CI/CD", "Vercel", "Grafana", "Loki", "Prometheus"],
     Mobile: ["React Native", "Flutter", "Swift", "Kotlin", "Ionic"],
-    Tools: ["Webpack", "Vite", "Babel", "ESLint", "Prettier", "Vitest"],
+    Tools: ["Webpack", "Vite", "Babel", "ESLint", "Prettier", "Vitest", "Prisma"],
   };
 
   const categorized: Record<string, string[]> = {};
   Object.entries(categories).forEach(([category, techs]) => {
-    if (!Array.isArray(techs)) {
-      console.error(`Techs for category ${category} is not an array:`, techs);
-      return;
-    }
-
     const matchingTechs = technologies.filter((tech) =>
       techs.some((catTech) =>
         tech.toLowerCase().includes(catTech.toLowerCase()),
@@ -237,8 +204,8 @@ function categorizeTechnologiesData(): Record<string, string[]> {
   return categorized;
 }
 
-function categorizeTechnologies(): CommandOutput {
-  const categorized = categorizeTechnologiesData();
+async function categorizeTechnologies(): Promise<CommandOutput> {
+  const categorized = await categorizeTechnologiesData();
 
   const categoryList = Object.entries(categorized)
     .map(
@@ -255,7 +222,7 @@ function categorizeTechnologies(): CommandOutput {
   };
 }
 
-function searchTechnologies(query: string): CommandOutput {
+async function searchTechnologies(query: string): Promise<CommandOutput> {
   if (!query) {
     return {
       type: "error",
@@ -266,22 +233,16 @@ function searchTechnologies(query: string): CommandOutput {
     };
   }
 
-  const projectService = ProjectMetadataService.getInstance();
-  const technologies = projectService.getTechnologies();
+  const projects = await getProjectsData();
+  const techUsage: Record<string, number> = {};
 
-  if (!Array.isArray(technologies)) {
-    console.error(
-      "Technologies is not an array in searchTechnologies:",
-      technologies,
-    );
-    return {
-      type: "error",
-      content: "Error: Unable to retrieve technologies data.",
-      timestamp: new Date(),
-      id: "tech-stack-search-error",
-    };
-  }
+  projects.forEach((project) => {
+    project.technologies.forEach((tech) => {
+      techUsage[tech] = (techUsage[tech] || 0) + 1;
+    });
+  });
 
+  const technologies = Object.keys(techUsage);
   const matchingTechs = technologies.filter((tech) =>
     tech.toLowerCase().includes(query.toLowerCase()),
   );
@@ -297,7 +258,7 @@ function searchTechnologies(query: string): CommandOutput {
 
   const techList = matchingTechs
     .map((tech) => {
-      const projectCount = projectService.getProjectsByTechnology(tech).length;
+      const projectCount = techUsage[tech];
       return `️  ${tech} (${projectCount} projects)`;
     })
     .join("\n");

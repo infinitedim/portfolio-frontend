@@ -1,4 +1,4 @@
-import { ProjectMetadataService } from "@/lib/projects/project-metadata";
+import { getProjectsData } from "@/lib/data/data-fetching";
 import type { Command, CommandOutput } from "@/types/terminal";
 import { generateId } from "@/lib/utils/utils";
 
@@ -17,15 +17,15 @@ export const demoCommand: Command = {
 
     switch (action) {
       case "list":
-        return listProjects();
+        return await listProjects();
       case "open":
-        return openProject(params[0]);
+        return await openProject(params[0]);
       case "search":
-        return searchProjects(params.join(" "));
+        return await searchProjects(params.join(" "));
       case "tech":
-        return listTechnologies();
+        return await listTechnologies();
       case "category":
-        return listCategories();
+        return await listCategories();
       case "help":
         return showDemoHelp();
       default:
@@ -42,9 +42,8 @@ export const demoCommand: Command = {
   },
 };
 
-function listProjects(): CommandOutput {
-  const projectService = ProjectMetadataService.getInstance();
-  const projects = projectService.getAllProjects();
+async function listProjects(): Promise<CommandOutput> {
+  const projects = await getProjectsData();
 
   if (projects.length === 0) {
     return {
@@ -71,7 +70,7 @@ function listProjects(): CommandOutput {
   };
 }
 
-function openProject(projectId: string): CommandOutput {
+async function openProject(projectId: string): Promise<CommandOutput> {
   if (!projectId) {
     return {
       type: "error",
@@ -82,8 +81,8 @@ function openProject(projectId: string): CommandOutput {
     };
   }
 
-  const projectService = ProjectMetadataService.getInstance();
-  const project = projectService.getProjectById(projectId);
+  const projects = await getProjectsData();
+  const project = projects.find((p) => p.id === projectId);
 
   if (!project) {
     return {
@@ -115,7 +114,7 @@ function openProject(projectId: string): CommandOutput {
   };
 }
 
-function searchProjects(query: string): CommandOutput {
+async function searchProjects(query: string): Promise<CommandOutput> {
   if (!query) {
     return {
       type: "error",
@@ -125,8 +124,16 @@ function searchProjects(query: string): CommandOutput {
     };
   }
 
-  const projectService = ProjectMetadataService.getInstance();
-  const results = projectService.searchProjects(query);
+  const projects = await getProjectsData();
+  const searchTerm = query.toLowerCase();
+  const results = projects.filter(
+    (project) =>
+      project.name.toLowerCase().includes(searchTerm) ||
+      project.description.toLowerCase().includes(searchTerm) ||
+      project.technologies.some((tech) =>
+        tech.toLowerCase().includes(searchTerm),
+      ),
+  );
 
   if (results.length === 0) {
     return {
@@ -152,9 +159,13 @@ function searchProjects(query: string): CommandOutput {
   };
 }
 
-function listTechnologies(): CommandOutput {
-  const projectService = ProjectMetadataService.getInstance();
-  const technologies = projectService.getTechnologies();
+async function listTechnologies(): Promise<CommandOutput> {
+  const projects = await getProjectsData();
+  const techSet = new Set<string>();
+  projects.forEach((project) => {
+    project.technologies.forEach((tech) => techSet.add(tech));
+  });
+  const technologies = Array.from(techSet).sort();
 
   if (technologies.length === 0) {
     return {
@@ -173,20 +184,21 @@ function listTechnologies(): CommandOutput {
   };
 }
 
-function listCategories(): CommandOutput {
-  const projectService = ProjectMetadataService.getInstance();
-  const categories = projectService.getCategories();
+async function listCategories(): Promise<CommandOutput> {
+  const projects = await getProjectsData();
 
-  const categoryList = categories
-    .map((category) => {
-      const projects = projectService.getProjectsByCategory(category);
-      return `${category} (${projects.length} projects)`;
-    })
-    .join("\n");
+  if (projects.length === 0) {
+    return {
+      type: "success",
+      content: "Project Categories:\n\nNo categories found.",
+      timestamp: new Date(),
+      id: generateId(),
+    };
+  }
 
   return {
     type: "success",
-    content: `Project Categories:\n\n${categoryList}\n\nUse 'demo search <category>' to find projects in a specific category`,
+    content: `Project Categories:\n\nGeneral (${projects.length} projects)\n\nUse 'demo search <category>' to find projects in a specific category`,
     timestamp: new Date(),
     id: generateId(),
   };

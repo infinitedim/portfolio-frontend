@@ -22,27 +22,16 @@ import {
 import { useCommandHistory } from "./use-command-history";
 import { generateId } from "@/lib/utils/utils";
 
-const getSkillsCommand = async () => {
-  if (typeof window === "undefined") return null;
-  try {
-    const { skillsCommand } = await import("@/lib/commands/skills-commands");
-    return skillsCommand;
-  } catch (error) {
-    console.error("Failed to load skills command:", error);
-    return null;
-  }
-};
-
 const getRoadmapCommands = async () => {
   if (typeof window === "undefined")
-    return { roadmapCommand: null, progressCommand: null };
+    return { roadmapCommand: null };
   try {
-    const { roadmapCommand, progressCommand } =
+    const { roadmapCommand } =
       await import("@/lib/commands/roadmap-commands");
-    return { roadmapCommand, progressCommand };
+    return { roadmapCommand };
   } catch (error) {
     console.error("Failed to load roadmap commands:", error);
-    return { roadmapCommand: null, progressCommand: null };
+    return { roadmapCommand: null };
   }
 };
 
@@ -434,12 +423,9 @@ export function useTerminal(
         },
       });
 
-      const skillsCmd = await getSkillsCommand();
-      const { roadmapCommand, progressCommand } = await getRoadmapCommands();
+      const { roadmapCommand } = await getRoadmapCommands();
 
-      if (skillsCmd) parser.register(skillsCmd);
       if (roadmapCommand) parser.register(roadmapCommand);
-      if (progressCommand) parser.register(progressCommand);
 
       parser.register(languageCommand);
       parser.register(languageListCommand);

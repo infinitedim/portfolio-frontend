@@ -1,33 +1,37 @@
 import { describe, it, beforeEach, expect, vi } from "vitest";
 import { demoCommand, setDemoCallback } from "../demo-commands";
-import { ProjectMetadataService, ProjectMetadata } from "@/lib/projects/project-metadata";
+
+const mockProjects = [
+  {
+    id: "p1",
+    name: "Proj1",
+    description: "Project description",
+    technologies: ["React", "TypeScript"],
+    demoUrl: "https://demo.example.com",
+    featured: true,
+    status: "completed" as const,
+  },
+  {
+    id: "p2",
+    name: "Proj2",
+    description: "Second project",
+    technologies: ["Node.js"],
+    demoUrl: "",
+    featured: false,
+    status: "in-progress" as const,
+  },
+];
+
+let projectsData = [...mockProjects];
+
+vi.mock("@/lib/data/data-fetching", () => ({
+  getProjectsData: vi.fn(async () => projectsData),
+}));
 
 describe("demoCommand", () => {
   beforeEach(() => {
-    const svc = ProjectMetadataService.getInstance();
-
-    svc["projects"] = [
-      {
-        id: "p1",
-        name: "Proj1",
-        description: "Project description",
-        technologies: ["React", "TypeScript"],
-        tags: ["web", "frontend"],
-        demoUrl: "https://demo.example.com",
-        featured: true,
-        category: "web-app",
-      },
-      {
-        id: "p2",
-        name: "Proj2",
-        description: "Second project",
-        technologies: ["Node.js"],
-        tags: ["backend", "api"],
-        demoUrl: "",
-        featured: false,
-        category: "api",
-      },
-    ] as unknown as ProjectMetadata[];
+    vi.clearAllMocks();
+    projectsData = [...mockProjects];
   });
 
   describe("list action", () => {
@@ -48,8 +52,7 @@ describe("demoCommand", () => {
     });
 
     it("returns info when no projects available", async () => {
-      const svc = ProjectMetadataService.getInstance();
-      svc["projects"] = [];
+      projectsData = [];
 
       const out = await demoCommand.execute(["list"]);
       expect(out.type).toBe("info");
