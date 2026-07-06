@@ -115,13 +115,13 @@ We only use the good stuff around here:
 
 ### Frontend
 
-| Technology        | Why It's Awesome                                 | Version |
-| ----------------- | ------------------------------------------------ | ------- |
-| **Next.js**       | The React framework that makes everything better | 16.x    |
-| **TypeScript** | Because `any` is not a type strategy             | 5.9+    |
-| **Tailwind CSS**  | Utility-first CSS that sparks joy                | 4.1+    |
-| **shadcn/ui**  | Components so beautiful they make you cry        | Latest  |
-| **Radix UI**      | Accessible primitives for the win                | Latest  |
+| Technology       | Why It's Awesome                                 | Version |
+| ---------------- | ------------------------------------------------ | ------- |
+| **Next.js**      | The React framework that makes everything better | 16.x    |
+| **TypeScript**   | Because `any` is not a type strategy             | 5.9+    |
+| **Tailwind CSS** | Utility-first CSS that sparks joy                | 4.1+    |
+| **shadcn/ui**    | Components so beautiful they make you cry        | Latest  |
+| **Radix UI**     | Accessible primitives for the win                | Latest  |
 
 ### Backend
 
@@ -129,7 +129,7 @@ We only use the good stuff around here:
 | ------------ | ------------------------------------------ | ------- |
 | **Rust**     | Blazing-fast, memory-safe backend          | 1.75+   |
 | **Axum**     | Ergonomic and modular web framework        | 0.8     |
-| ️ **SQLx**  | Async PostgreSQL with compile-time helpers | 0.8     |
+| ️ **SQLx**    | Async PostgreSQL with compile-time helpers | 0.8     |
 | **Tracing**  | Powerful structured logging                | Latest  |
 | **Loki**     | Scalable log aggregation system            | Latest  |
 | **Promtail** | Log collection agent                       | Latest  |
@@ -224,7 +224,8 @@ cd portfolio
 **Step 2**: Install frontend dependencies! ```bash
 cd portfolio-frontend
 bun install
-```
+
+````
 
 **Step 3**: Set up the backend!
 
@@ -236,7 +237,7 @@ cargo build --release
 
 # Start the logging stack (Loki + Grafana)
 docker-compose -f docker-compose.logging.yml up -d
-```
+````
 
 **Step 4**: Configure environment!
 
@@ -253,14 +254,18 @@ cp .env.example .env.development
 ```
 
 **Step 5**: Fire it up! ```bash
+
 # Terminal 1: Start the backend
+
 cd portfolio-backend
 cargo run
 
 # Terminal 2: Start the frontend
+
 cd portfolio-frontend
 bun run dev
-```
+
+````
 
 **Step 6**: Open your browser and navigate to:
 
@@ -304,7 +309,7 @@ theme matrix     # Welcome to the real world
 theme cyberpunk  # Neon everything
 theme minimal    # Less is more
 theme retro      # Vintage vibes
-```
+````
 
 ## Environment Variables
 
@@ -428,11 +433,11 @@ Want to make this even more awesome? We'd love your help!
 ### How to Contribute
 
 1. Fork this bad boy 2. Create your feature branch: `git checkout -b feature/mind-blowing-feature`
-3. Code something amazing
-4. Test it thoroughly
-5. Commit with style: `git commit -m 'feat: add mind-blowing feature'`
-6. Push it: `git push origin feature/mind-blowing-feature`
-7. Open a PR and watch the magic happen ### Code Standards
+2. Code something amazing
+3. Test it thoroughly
+4. Commit with style: `git commit -m 'feat: add mind-blowing feature'`
+5. Push it: `git push origin feature/mind-blowing-feature`
+6. Open a PR and watch the magic happen ### Code Standards
 
 - TypeScript strict mode
 - ESLint + Prettier formatting
@@ -600,7 +605,7 @@ _A rainbow of themes to choose from_
 
 ### Live Demo
 
-**[Check out the live demo!](https://your-awesome-portfolio.vercel.app) **
+**[Check out the live demo!](https://infinitedim.vercel.app) **
 
 _Go ahead, type `help` and start exploring!_
 
