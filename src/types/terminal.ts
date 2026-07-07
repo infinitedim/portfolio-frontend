@@ -1,4 +1,4 @@
-import type React from "react";
+import type {ComponentType} from "react";
 
 export interface Command {
   name: string;
@@ -11,7 +11,7 @@ export interface Command {
 
 export interface CommandOutput {
   type: "text" | "warning" | "component" | "error" | "success" | "info";
-  content: string | React.ComponentType;
+  content: string | ComponentType;
   timestamp?: Date;
   id?: string;
 }

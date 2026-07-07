@@ -17,23 +17,22 @@ import {
 
 type Stage =
   | { kind: "loading" }
-  | { kind: "disabled" } // 2FA off, ready to start setup
+  | { kind: "disabled" }
   | {
       kind: "setup";
       data: SetupTwoFAResponse;
       code: string;
       acknowledgedCodes: boolean;
-    } // setup in progress
+    }
   | { kind: "enabled"; backupRemaining: number };
 
 export default function AdminTwoFactorPage(): JSX.Element {
   const { themeConfig } = useTheme();
   const router = useRouter();
+
   const [stage, setStage] = useState<Stage>({ kind: "loading" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Disable form
   const [disablePassword, setDisablePassword] = useState("");
   const [disableCode, setDisableCode] = useState("");
   const [disableUseBackup, setDisableUseBackup] = useState(false);
@@ -431,7 +430,7 @@ function SetupPanel({
               value={data.otpauthUri}
               size={176}
               level="M"
-              includeMargin={false}
+              marginSize={0}
             />
           </div>
 
