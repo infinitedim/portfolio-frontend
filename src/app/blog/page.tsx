@@ -14,7 +14,7 @@ import { TagChip } from "@/components/atoms/shared/tag-chip";
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { getCachedBlogList } from "@/lib/services/cached-blog-fetch";
-import { getTranslationsForLocale } from "@/lib/i18n/i18n-service";
+import { getTranslationsForLocale } from "@/lib/i18n";
 
 function getBackendUrl(): string {
   return getServerApiUrl();

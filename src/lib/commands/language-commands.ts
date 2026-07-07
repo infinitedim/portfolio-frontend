@@ -1,6 +1,7 @@
 import type { Command, CommandOutput } from "@/types/terminal";
 import { generateId } from "@/lib/utils/utils";
-import { i18n, t } from "@/lib/i18n/i18n-service";
+import { i18n, t } from "@/lib/i18n";
+import type { LocaleConfig } from "@/lib/i18n/locales";
 import {
   isRegionalVariant,
   getFallbackLocale,
@@ -103,7 +104,7 @@ function showCurrentLanguage() {
     `Direction: ${currentConfig?.direction.toUpperCase()}`,
     "",
     `${t("availableLanguages")}:`,
-    ...supportedLocales.map((locale) => {
+    ...supportedLocales.map((locale: LocaleConfig) => {
       const isCurrent = locale.code === currentLocale;
       const indicator = isCurrent ? "" : "  ";
       return `${indicator} ${locale.flag} ${locale.name} (${locale.code})`;
@@ -136,7 +137,7 @@ export const languageListCommand: Command = {
       `${t("availableLanguages")}`,
       "═".repeat(50),
       "",
-      ...supportedLocales.map((locale, index) => {
+      ...supportedLocales.map((locale: LocaleConfig, index: number) => {
         const isCurrent = locale.code === currentLocale;
         const indicator = isCurrent
           ? ""

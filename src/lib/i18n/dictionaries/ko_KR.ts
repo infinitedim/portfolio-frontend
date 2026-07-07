@@ -566,7 +566,8 @@ export const ko_KR_key: TranslationKeys = {
   tourTryIt: "시도해 보세요:",
   tryAgain: "다시 시도하세요",
   welcome: "환영",
-  adminWelcomeBack: "Welcome back, {email}! You have full administrative access.",
+  adminWelcomeBack:
+    "Welcome back, {email}! You have full administrative access.",
   adminUserInformation: "User Information",
   adminUserId: "User ID",
   adminEmail: "Email",
@@ -592,12 +593,14 @@ export const ko_KR_key: TranslationKeys = {
   adminGrafanaDesc: "Open analytics dashboards",
   adminApiDocs: "API Docs",
   adminApiDocsDesc: "Open Swagger UI (new tab)",
-  adminFooterHint: "Admin Dashboard • Press Ctrl+L to logout • Press Ctrl+H to go home",
+  adminFooterHint:
+    "Admin Dashboard • Press Ctrl+L to logout • Press Ctrl+H to go home",
   adminHome: "Home",
   adminLoginTitle: "Admin Authentication",
   adminLoginDesc: "Enter your credentials to access the admin panel",
   adminLoginBack: "← Back",
-  adminLoginHint: "Press ← Back to return to home • Use Tab to navigate • Enter to submit",
+  adminLoginHint:
+    "Press ← Back to return to home • Use Tab to navigate • Enter to submit",
   adminLoginNoAccount: "Don't have an account?",
   adminLoginRegister: "Register here",
   adminLoginEmailPlaceholder: "Enter your email",
@@ -606,7 +609,8 @@ export const ko_KR_key: TranslationKeys = {
   adminLoginCtrlHint: "Use Ctrl+C to cancel • Use Ctrl+L to clear",
   adminLoginFailed: "Login failed",
   adminLoginUnexpectedError: "An unexpected error occurred",
-  admin2FACodeHint: "Enter the {codeType} from your authenticator app to finish signing in.",
+  admin2FACodeHint:
+    "Enter the {codeType} from your authenticator app to finish signing in.",
   admin2FACodeType6Digit: "6-digit code",
   admin2FACodeTypeBackup: "backup code",
   admin2FAVerifying: "Verifying…",
@@ -620,4 +624,11 @@ export const ko_KR_key: TranslationKeys = {
   errorViewDetails: "View error details",
   errorTryAgain: "Try again",
   errorFailedLoadImage: "Failed to load image",
+  upload: "업로드",
+  system: "시스템",
+  yes: "예",
+  no: "아니오",
+  exporting: "내보내는 중…",
+  importing: "가져오는 중…",
+  disabled: "비활성화됨",
 } as const;

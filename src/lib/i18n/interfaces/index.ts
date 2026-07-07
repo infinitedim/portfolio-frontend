@@ -603,4 +603,12 @@ export interface TranslationKeys {
   errorViewDetails: string;
   errorTryAgain: string;
   errorFailedLoadImage: string;
+
+  upload: string;
+  system: string;
+  yes: string;
+  no: string;
+  exporting: string;
+  importing: string;
+  disabled: string;
 }

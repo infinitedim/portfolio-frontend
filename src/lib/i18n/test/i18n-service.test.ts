@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
-import { I18nService, i18n, t, tWithFallback } from "../i18n-service";
+import { i18n, I18nService, t, tWithFallback } from "..";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||

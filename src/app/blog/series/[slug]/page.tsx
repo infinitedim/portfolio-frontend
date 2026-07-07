@@ -6,7 +6,7 @@ import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 import { getPublicSeries } from "@/lib/services/series-service";
 import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
-import { getTranslationsForLocale } from "@/lib/i18n/i18n-service";
+import { getTranslationsForLocale } from "@/lib/i18n";
 
 const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
 

@@ -569,7 +569,8 @@ export const th_TH_key: TranslationKeys = {
   tourTryIt: "ลองมัน:",
   tryAgain: "ลองอีกครั้ง",
   welcome: "ยินดีต้อนรับ",
-  adminWelcomeBack: "Welcome back, {email}! You have full administrative access.",
+  adminWelcomeBack:
+    "Welcome back, {email}! You have full administrative access.",
   adminUserInformation: "User Information",
   adminUserId: "User ID",
   adminEmail: "Email",
@@ -595,12 +596,14 @@ export const th_TH_key: TranslationKeys = {
   adminGrafanaDesc: "Open analytics dashboards",
   adminApiDocs: "API Docs",
   adminApiDocsDesc: "Open Swagger UI (new tab)",
-  adminFooterHint: "Admin Dashboard • Press Ctrl+L to logout • Press Ctrl+H to go home",
+  adminFooterHint:
+    "Admin Dashboard • Press Ctrl+L to logout • Press Ctrl+H to go home",
   adminHome: "Home",
   adminLoginTitle: "Admin Authentication",
   adminLoginDesc: "Enter your credentials to access the admin panel",
   adminLoginBack: "← Back",
-  adminLoginHint: "Press ← Back to return to home • Use Tab to navigate • Enter to submit",
+  adminLoginHint:
+    "Press ← Back to return to home • Use Tab to navigate • Enter to submit",
   adminLoginNoAccount: "Don't have an account?",
   adminLoginRegister: "Register here",
   adminLoginEmailPlaceholder: "Enter your email",
@@ -609,7 +612,8 @@ export const th_TH_key: TranslationKeys = {
   adminLoginCtrlHint: "Use Ctrl+C to cancel • Use Ctrl+L to clear",
   adminLoginFailed: "Login failed",
   adminLoginUnexpectedError: "An unexpected error occurred",
-  admin2FACodeHint: "Enter the {codeType} from your authenticator app to finish signing in.",
+  admin2FACodeHint:
+    "Enter the {codeType} from your authenticator app to finish signing in.",
   admin2FACodeType6Digit: "6-digit code",
   admin2FACodeTypeBackup: "backup code",
   admin2FAVerifying: "Verifying…",
@@ -623,4 +627,11 @@ export const th_TH_key: TranslationKeys = {
   errorViewDetails: "View error details",
   errorTryAgain: "Try again",
   errorFailedLoadImage: "Failed to load image",
+  upload: "อัปโหลด",
+  system: "ระบบ",
+  yes: "ใช่",
+  no: "ไม่",
+  exporting: "กำลังส่งออก…",
+  importing: "กำลังนำเข้า…",
+  disabled: "ปิดใช้งาน",
 } as const;

@@ -292,7 +292,9 @@ export function TerminalLoginForm({
         >
           {t("admin2FACodeHint").replace(
             "{codeType}",
-            useBackupCode ? t("admin2FACodeTypeBackup") : t("admin2FACodeType6Digit"),
+            useBackupCode
+              ? t("admin2FACodeTypeBackup")
+              : t("admin2FACodeType6Digit"),
           )}
         </div>
 
@@ -414,7 +416,12 @@ export function TerminalLoginForm({
       )}
 
       <div className="relative">
-        {renderInputField("email", email, t("adminLoginEmailPlaceholder"), emailInputRef)}
+        {renderInputField(
+          "email",
+          email,
+          t("adminLoginEmailPlaceholder"),
+          emailInputRef,
+        )}
       </div>
 
       <div className="relative">

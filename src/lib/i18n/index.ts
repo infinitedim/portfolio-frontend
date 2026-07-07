@@ -1,4 +1,12 @@
-import { DEFAULT_LOCALE, getFallbackLocale, getLocaleConfig, getSupportedLocales, isRegionalVariant, isValidLocale, LocaleConfig } from "./locales";
+import {
+  DEFAULT_LOCALE,
+  getFallbackLocale,
+  getLocaleConfig,
+  getSupportedLocales,
+  isRegionalVariant,
+  isValidLocale,
+  LocaleConfig,
+} from "./locales";
 import { TranslationKeys } from "./interfaces";
 import {
   ar_SA_key,
@@ -39,7 +47,6 @@ const translations: Record<string, TranslationKeys> = {
   vi_VN: vi_VN_key,
   zh_CN: zh_CN_key,
 } as const;
-
 
 class I18nService {
   private static instance: I18nService;
@@ -158,11 +165,20 @@ function getTranslationsForLocale(locale: string): TranslationKeys {
 
 const t = (key: keyof TranslationKeys): string => i18n.t(key);
 
-const tWithFallback = (
-  key: keyof TranslationKeys,
-  fallback?: string,
-): string => i18n.tWithFallback(key, fallback);
+const tWithFallback = (key: keyof TranslationKeys, fallback?: string): string =>
+  i18n.tWithFallback(key, fallback);
 
-
-export { I18nService, i18n, t, getTranslationsForLocale, tWithFallback, DEFAULT_LOCALE, getFallbackLocale, getLocaleConfig, getSupportedLocales, isRegionalVariant, isValidLocale };
+export {
+  I18nService,
+  i18n,
+  t,
+  getTranslationsForLocale,
+  tWithFallback,
+  DEFAULT_LOCALE,
+  getFallbackLocale,
+  getLocaleConfig,
+  getSupportedLocales,
+  isRegionalVariant,
+  isValidLocale,
+};
 export type { TranslationKeys };

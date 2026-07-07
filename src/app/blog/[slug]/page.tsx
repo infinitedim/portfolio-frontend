@@ -17,7 +17,7 @@ import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { BlogLocaleSwitcher } from "@/components/molecules/blog/locale-switcher";
 import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
 import { getCachedBlogPost } from "@/lib/services/cached-blog-fetch";
-import { getTranslationsForLocale } from "@/lib/i18n/i18n-service";
+import { getTranslationsForLocale } from "@/lib/i18n";
 
 const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
 

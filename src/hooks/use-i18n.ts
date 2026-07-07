@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { i18n, t, type TranslationKeys, getTranslationsForLocale } from "@/lib/i18n";
+import {
+  i18n,
+  t,
+  type TranslationKeys,
+  getTranslationsForLocale,
+} from "@/lib/i18n";
 import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 
 export function useI18n() {

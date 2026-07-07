@@ -574,7 +574,8 @@ export const id_ID_key: TranslationKeys = {
   tourTryIt: "Cobalah:",
   tryAgain: "Coba lagi",
   welcome: "Selamat Datang",
-  adminWelcomeBack: "Selamat datang kembali, {email}! Anda memiliki akses administratif penuh.",
+  adminWelcomeBack:
+    "Selamat datang kembali, {email}! Anda memiliki akses administratif penuh.",
   adminUserInformation: "Informasi Pengguna",
   adminUserId: "ID Pengguna",
   adminEmail: "Email",
@@ -600,12 +601,14 @@ export const id_ID_key: TranslationKeys = {
   adminGrafanaDesc: "Buka dasbor analitik",
   adminApiDocs: "Dokumentasi API",
   adminApiDocsDesc: "Buka Swagger UI (tab baru)",
-  adminFooterHint: "Dasbor Admin • Tekan Ctrl+L untuk keluar • Tekan Ctrl+H untuk ke beranda",
+  adminFooterHint:
+    "Dasbor Admin • Tekan Ctrl+L untuk keluar • Tekan Ctrl+H untuk ke beranda",
   adminHome: "Beranda",
   adminLoginTitle: "Autentikasi Admin",
   adminLoginDesc: "Masukkan kredensial Anda untuk mengakses panel admin",
   adminLoginBack: "← Kembali",
-  adminLoginHint: "Tekan ← Kembali untuk kembali ke beranda • Gunakan Tab untuk navigasi • Enter untuk kirim",
+  adminLoginHint:
+    "Tekan ← Kembali untuk kembali ke beranda • Gunakan Tab untuk navigasi • Enter untuk kirim",
   adminLoginNoAccount: "Belum punya akun?",
   adminLoginRegister: "Daftar di sini",
   adminLoginEmailPlaceholder: "Masukkan email Anda",
@@ -614,7 +617,8 @@ export const id_ID_key: TranslationKeys = {
   adminLoginCtrlHint: "Gunakan Ctrl+C untuk batal • Gunakan Ctrl+L untuk hapus",
   adminLoginFailed: "Login gagal",
   adminLoginUnexpectedError: "Terjadi kesalahan yang tidak terduga",
-  admin2FACodeHint: "Masukkan {codeType} dari aplikasi autentikator Anda untuk menyelesaikan masuk.",
+  admin2FACodeHint:
+    "Masukkan {codeType} dari aplikasi autentikator Anda untuk menyelesaikan masuk.",
   admin2FACodeType6Digit: "kode 6 digit",
   admin2FACodeTypeBackup: "kode cadangan",
   admin2FAVerifying: "Memverifikasi…",
@@ -628,4 +632,11 @@ export const id_ID_key: TranslationKeys = {
   errorViewDetails: "Lihat detail kesalahan",
   errorTryAgain: "Coba lagi",
   errorFailedLoadImage: "Gagal memuat gambar",
-} as const ;
+  upload: "Unggah",
+  system: "Sistem",
+  yes: "Ya",
+  no: "Tidak",
+  exporting: "Mengekspor…",
+  importing: "Mengimpor…",
+  disabled: "Dinonaktifkan",
+} as const;
