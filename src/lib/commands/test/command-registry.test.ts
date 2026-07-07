@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Command } from "@/types/terminal";
 
+vi.unmock("@/lib/utils/arg-parser");
+
 describe("commandRegistry", () => {
   let commandRegistry: typeof import("@/lib/commands/command-registry");
   let createHelpCommand: (getCommands: () => Command[]) => Command;
@@ -15,12 +17,6 @@ describe("commandRegistry", () => {
   let aliasCommand: Command;
 
   beforeEach(async () => {
-    if (typeof vi !== "undefined" && vi.unmock) {
-      vi.unmock("@/lib/utils/arg-parser");
-    }
-    if (typeof vi !== "undefined" && vi.doUnmock) {
-      vi.doUnmock("@/lib/utils/arg-parser");
-    }
 
     if (typeof vi !== "undefined" && vi.importActual) {
       commandRegistry = await vi.importActual<

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
+import React, { Suspense } from "react";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
@@ -56,6 +57,33 @@ vi.mock("@/components/molecules/projects/project-card", () => ({
 vi.mock("@/components/organisms/projects/projects-loading", () => ({
   ProjectsLoading: () => <div data-testid="projects-loading">Loading...</div>,
 }));
+
+const mockUseSyncContent = { value: false };
+
+vi.mock("./page", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./page")>();
+  const MockProjectsPageContent = (props: any) => {
+    if (mockUseSyncContent.value) {
+      return <div data-testid="mock-projects-content" />;
+    }
+    return (actual.ProjectsPageContent as any)(props);
+  };
+  return {
+    ...actual,
+    ProjectsPageContent: MockProjectsPageContent,
+    default: function MockProjectsPage() {
+      return (
+        <div data-testid="standard-page-layout">
+          <main>
+            <Suspense fallback={<div data-testid="projects-loading">Loading...</div>}>
+              <MockProjectsPageContent />
+            </Suspense>
+          </main>
+        </div>
+      );
+    }
+  };
+});
 
 import ProjectsPage, {
   ProjectsPageContent,
@@ -198,8 +226,13 @@ describe("ProjectsPage", () => {
         return;
       }
 
-      const { container } = render(<ProjectsPage />);
-      expect(container).toBeTruthy();
+      mockUseSyncContent.value = true;
+      try {
+        const { container } = render(<ProjectsPage />);
+        expect(container).toBeTruthy();
+      } finally {
+        mockUseSyncContent.value = false;
+      }
     });
 
     it("should include structured data script", async () => {

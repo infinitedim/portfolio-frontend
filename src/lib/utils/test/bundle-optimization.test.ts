@@ -153,6 +153,14 @@ describe("bundleOptimization", () => {
   });
 
   describe("dynamicImportWithRetry function", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
     it("should be defined and exportable", () => {
       expect(dynamicImportWithRetry).toBeDefined();
       expect(typeof dynamicImportWithRetry).toBe("function");
@@ -170,37 +178,52 @@ describe("bundleOptimization", () => {
     it("should retry on failed import", async () => {
       const mockImport = vi
         .fn()
-        .mockRejectedValueOnce(new Error("fail"))
-        .mockResolvedValue("success");
+        .mockImplementationOnce(async () => { throw new Error("fail"); })
+        .mockImplementation(async () => "success");
 
-      const result = await dynamicImportWithRetry(mockImport, 2);
+      const promise = dynamicImportWithRetry(mockImport, 2);
 
+      await vi.advanceTimersByTimeAsync(1000);
+
+      const result = await promise;
       expect(result).toBe("success");
       expect(mockImport).toHaveBeenCalledTimes(2);
     });
 
     it("should throw error after all retries", async () => {
-      const mockImport = vi.fn().mockRejectedValue(new Error("fail"));
+      const mockImport = vi.fn().mockImplementation(async () => { throw new Error("fail"); });
 
-      await expect(dynamicImportWithRetry(mockImport, 2, 10)).rejects.toThrow(
-        "fail",
-      );
+      const promise = dynamicImportWithRetry(mockImport, 2, 10);
+      promise.catch(() => {});
+
+      await vi.advanceTimersByTimeAsync(10);
+
+      await expect(promise).rejects.toThrow("fail");
       expect(mockImport).toHaveBeenCalledTimes(2);
     });
 
     it("should use default retry count and delay", async () => {
-      const mockImport = vi.fn().mockRejectedValue(new Error("fail"));
+      const mockImport = vi.fn().mockImplementation(async () => { throw new Error("fail"); });
 
-      await expect(dynamicImportWithRetry(mockImport)).rejects.toThrow("fail");
+      const promise = dynamicImportWithRetry(mockImport);
+      promise.catch(() => {});
+
+      // Call 1: fails. Schedules 1000ms delay.
+      await vi.advanceTimersByTimeAsync(1000);
+      // Call 2: fails. Schedules 2000ms delay.
+      await vi.advanceTimersByTimeAsync(2000);
+
+      await expect(promise).rejects.toThrow("fail");
       expect(mockImport).toHaveBeenCalledTimes(3);
     });
 
     it("should handle custom retry parameters", async () => {
-      const mockImport = vi.fn().mockRejectedValue(new Error("fail"));
+      const mockImport = vi.fn().mockImplementation(async () => { throw new Error("fail"); });
 
-      await expect(dynamicImportWithRetry(mockImport, 1, 5)).rejects.toThrow(
-        "fail",
-      );
+      const promise = dynamicImportWithRetry(mockImport, 1, 5);
+      promise.catch(() => {});
+
+      await expect(promise).rejects.toThrow("fail");
       expect(mockImport).toHaveBeenCalledTimes(1);
     });
   });

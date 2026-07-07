@@ -250,7 +250,9 @@ describe("useTimerManager", () => {
 
       result.current.setTimeout(callback1, 1000);
       result.current.setInterval(callback2, 500);
-      result.current.clearAll();
+      act(() => {
+        result.current.clearAll();
+      });
 
       act(() => {
         vi.advanceTimersByTime(2000);

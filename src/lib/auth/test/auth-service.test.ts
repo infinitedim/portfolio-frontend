@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { AuthUser } from "@/lib/auth/auth-service";
 
+vi.unmock("@/lib/auth/auth-service");
+
 interface MockAuthService {
   accessToken: string | null;
   user: AuthUser | null;
@@ -70,13 +72,6 @@ describe("AuthService", () => {
   let authService: typeof import("@/lib/auth/auth-service").authService;
 
   beforeEach(async () => {
-    if (typeof vi !== "undefined" && vi.unmock) {
-      vi.unmock("@/lib/auth/auth-service");
-    }
-    if (typeof vi !== "undefined" && vi.doUnmock) {
-      vi.doUnmock("@/lib/auth/auth-service");
-    }
-
     vi.clearAllMocks();
 
     let module;

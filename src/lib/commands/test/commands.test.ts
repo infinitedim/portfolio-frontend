@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import type { Command } from "@/types/terminal";
 
+vi.unmock("@/lib/utils/arg-parser");
+
 describe("commands.ts", () => {
   let commands: typeof import("../commands");
   let resumeCommand: Command;
@@ -12,12 +14,6 @@ describe("commands.ts", () => {
   let enhancedCommands: Record<string, Command>;
 
   beforeEach(async () => {
-    if (typeof vi !== "undefined" && vi.unmock) {
-      vi.unmock("@/lib/utils/arg-parser");
-    }
-    if (typeof vi !== "undefined" && vi.doUnmock) {
-      vi.doUnmock("@/lib/utils/arg-parser");
-    }
 
     if (typeof vi !== "undefined" && vi.importActual) {
       commands =

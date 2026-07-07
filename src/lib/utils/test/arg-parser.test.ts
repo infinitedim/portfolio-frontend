@@ -1,18 +1,12 @@
 import { ParsedArgs } from "@/lib/utils/arg-parser";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
+vi.unmock("@/lib/utils/arg-parser");
+
 describe("argParser", () => {
   let ArgumentParser: typeof import("@/lib/utils/arg-parser").ArgumentParser;
 
-
-
   beforeEach(async () => {
-    if (typeof vi !== "undefined" && vi.unmock) {
-      vi.unmock("@/lib/utils/arg-parser");
-    }
-    if (typeof vi !== "undefined" && vi.doUnmock) {
-      vi.doUnmock("@/lib/utils/arg-parser");
-    }
 
     let module;
     if (typeof vi !== "undefined" && vi.importActual) {

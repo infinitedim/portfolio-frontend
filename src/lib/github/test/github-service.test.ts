@@ -1,17 +1,13 @@
 import { vi, beforeEach, afterEach, describe, it, expect } from "vitest";
 
+vi.unmock("@/lib/github/github-service");
+
 describe("GitHubService", () => {
   let originalFetch: typeof globalThis.fetch | undefined;
   let GitHubService: typeof import("@/lib/github/github-service").GitHubService;
   let mockFetch: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
-    if (typeof vi !== "undefined" && vi.unmock) {
-      vi.unmock("@/lib/github/github-service");
-    }
-    if (typeof vi !== "undefined" && vi.doUnmock) {
-      vi.doUnmock("@/lib/github/github-service");
-    }
 
     let module;
     if (typeof vi !== "undefined" && vi.importActual) {

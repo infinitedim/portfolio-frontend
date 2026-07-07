@@ -27,7 +27,100 @@ describe("data-fetching.ts", () => {
     if (!canRunTests) return;
     ensureDocumentBody();
     vi.clearAllMocks();
-    mockFetch.mockClear();
+    mockFetch.mockReset();
+    mockFetch.mockImplementation(async (url: string) => {
+      if (url.includes("section=skills")) {
+        return {
+          ok: true,
+          json: async () => ({
+            data: [
+              {
+                name: "Frontend",
+                skills: [{ name: "React", level: "expert", yearsOfExperience: 5, projects: [] }],
+                progress: 80,
+              },
+            ],
+          }),
+        };
+      }
+      if (url.includes("section=projects")) {
+        return {
+          ok: true,
+          json: async () => ({
+            data: [
+              {
+                id: "proj-1",
+                name: "Project 1",
+                description: "Description 1",
+                technologies: ["React"],
+                status: "completed",
+                featured: true,
+              },
+              {
+                id: "proj-2",
+                name: "Project 2",
+                description: "Description 2",
+                technologies: ["Rust"],
+                status: "in-progress",
+                featured: false,
+              },
+            ],
+          }),
+        };
+      }
+      if (url.includes("section=experience")) {
+        return {
+          ok: true,
+          json: async () => ({
+            data: [
+              {
+                company: "Company",
+                position: "Developer",
+                duration: "2020-2021",
+                description: ["Did stuff"],
+                technologies: ["React"],
+              },
+            ],
+          }),
+        };
+      }
+      if (url.includes("section=about")) {
+        return {
+          ok: true,
+          json: async () => ({
+            data: {
+              name: "Dimas Saputra",
+              title: "Full-Stack Developer",
+              bio: "Bio",
+              location: "Indonesia",
+              contact: { email: "test@test.com", github: "", linkedin: "" },
+            },
+          }),
+        };
+      }
+      if (url.includes("/api/github/stats/")) {
+        return {
+          ok: true,
+          json: async () => ({
+            profile: { followers: 10, following: 20, publicRepos: 5 },
+            repositories: [
+              {
+                name: "repo1",
+                description: "Description",
+                stars: 10,
+                forks: 5,
+                language: "TypeScript",
+                updatedAt: new Date().toISOString(),
+              },
+            ],
+          }),
+        };
+      }
+      return {
+        ok: true,
+        json: async () => ({}),
+      };
+    });
   });
 
   describe("getPortfolioData", () => {

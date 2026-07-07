@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
+vi.unmock("@/lib/utils/utils");
+
 describe("utils", () => {
   let utils: typeof import("../utils");
   let cn: typeof import("../utils").cn;
@@ -7,10 +9,8 @@ describe("utils", () => {
   let formatTimestamp: typeof import("../utils").formatTimestamp;
 
   beforeEach(async () => {
-    if (typeof vi !== "undefined") {
-      if (vi.unmock) vi.unmock("@/lib/utils/utils");
-      if (vi.doUnmock) vi.doUnmock("@/lib/utils/utils");
-      if (vi.resetModules) vi.resetModules();
+    if (typeof vi !== "undefined" && vi.resetModules) {
+      vi.resetModules();
     }
 
     vi.clearAllMocks();
