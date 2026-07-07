@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { BlogSeriesSummary } from "@/lib/services/series-service";
 
+import { useI18n } from "@/hooks/use-i18n";
+
 interface SeriesFilterProps {
   series: BlogSeriesSummary[];
   activeSeries?: string;
@@ -16,6 +18,7 @@ function SeriesFilterInner({
   activeSeries,
   search,
 }: SeriesFilterProps) {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
 
   const buildHref = (seriesSlug?: string): string => {
@@ -35,7 +38,7 @@ function SeriesFilterInner({
 
   return (
     <div className="mb-4 flex flex-wrap items-center gap-2 font-mono">
-      <span className="text-xs text-terminal-muted">Series:</span>
+      <span className="text-xs text-terminal-muted">{t("blogSeries")}</span>
       <Link
         href={buildHref() as never}
         className={`rounded border px-2 py-0.5 text-xs transition-colors ${
@@ -44,7 +47,7 @@ function SeriesFilterInner({
             : "border-terminal-border text-terminal-muted hover:border-terminal-muted"
         }`}
       >
-        All
+        {t("logsAll")}
       </Link>
       {series.map((item) => (
         <Link

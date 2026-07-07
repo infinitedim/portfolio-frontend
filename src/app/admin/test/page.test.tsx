@@ -214,7 +214,9 @@ describe("AdminDashboardPage", () => {
 
       render(<AdminDashboardPage />);
       expect(screen.getByRole("button", { name: /home/i })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /logout/i }),
+      ).toBeInTheDocument();
     });
 
     it("should render terminal window decorations", () => {

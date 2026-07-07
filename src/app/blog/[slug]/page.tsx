@@ -17,6 +17,7 @@ import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { BlogLocaleSwitcher } from "@/components/molecules/blog/locale-switcher";
 import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
 import { getCachedBlogPost } from "@/lib/services/cached-blog-fetch";
+import { getTranslationsForLocale } from "@/lib/i18n/i18n-service";
 
 const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
 
@@ -111,10 +112,11 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 }
 
 function BlogPostSkeleton() {
+  const t = getTranslationsForLocale(DEFAULT_BLOG_LOCALE);
   return (
     <StandardPageLayout>
       <div className="container mx-auto max-w-6xl px-4 py-8">
-        <p className="text-gray-400">Loading post…</p>
+        <p className="text-gray-400">{t.blogLoadingPost}</p>
       </div>
     </StandardPageLayout>
   );
@@ -138,6 +140,8 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
     notFound();
   }
 
+  const t = getTranslationsForLocale(locale);
+
   const contentHtml = post.contentHtml
     ? addHeadingIdsToHtml(post.contentHtml)
     : null;
@@ -153,7 +157,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
               href="/blog"
               className="text-terminal-accent hover:text-terminal-accent/90 transition-colors"
             >
-              ← Back to Blog
+              {t.blogBackToBlog}
             </Link>
             <BlogLocaleSwitcher slug={slug} />
           </nav>
@@ -192,7 +196,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                 )}
                 <div className="flex flex-wrap items-center gap-4 text-sm text-terminal-muted font-mono">
                   <time dateTime={post.createdAt}>
-                    Published:{" "}
+                    {t.blogPublishedPrefix}
                     {new Date(post.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
@@ -201,7 +205,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                   </time>
                   {post.updatedAt !== post.createdAt && (
                     <time dateTime={post.updatedAt}>
-                      Updated:{" "}
+                      {t.blogUpdatedPrefix}
                       {new Date(post.updatedAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
@@ -210,10 +214,14 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                     </time>
                   )}
                   {post.readingTimeMinutes > 0 && (
-                    <span>{post.readingTimeMinutes} min read</span>
+                    <span>
+                      {post.readingTimeMinutes} {t.blogMinRead}
+                    </span>
                   )}
                   {post.viewCount > 0 && (
-                    <span>{post.viewCount.toLocaleString()} views</span>
+                    <span>
+                      {post.viewCount.toLocaleString()} {t.blogViews}
+                    </span>
                   )}
                 </div>
               </header>
@@ -241,7 +249,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
 
           <section className="mt-12 pt-8 border-t border-terminal-border max-w-4xl">
             <h2 className="text-xl font-semibold text-terminal-text mb-6">
-              Comments
+              {t.blogComments}
             </h2>
             <GiscusComments slug={post.slug} />
           </section>
@@ -257,7 +265,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
               href="/blog"
               className="block text-terminal-accent hover:text-terminal-accent/90 transition-colors"
             >
-              ← Back to Blog
+              {t.blogBackToBlog}
             </Link>
           </footer>
         </div>

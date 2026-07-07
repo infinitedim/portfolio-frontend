@@ -9,6 +9,8 @@ import {
   isValidBlogLocale,
 } from "@/lib/i18n/locales";
 
+import { useI18n } from "@/hooks/use-i18n";
+
 interface BlogLocaleSwitcherProps {
   slug?: string;
   className?: string;
@@ -18,6 +20,7 @@ function BlogLocaleSwitcherInner({
   slug,
   className = "",
 }: BlogLocaleSwitcherProps) {
+  const { t } = useI18n();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentLocale = searchParams.get("locale") ?? DEFAULT_BLOG_LOCALE;
@@ -43,7 +46,7 @@ function BlogLocaleSwitcherInner({
 
   return (
     <div className={`flex flex-wrap items-center gap-2 font-mono ${className}`}>
-      <span className="text-xs text-terminal-muted">Language:</span>
+      <span className="text-xs text-terminal-muted">{t("blogLanguage")}</span>
       {BLOG_CONTENT_LOCALES.map((locale) => {
         const isActive = locale.code === activeLocale;
         return (

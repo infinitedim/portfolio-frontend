@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { useI18n } from "@/hooks/use-i18n";
 
 export interface BlogContentProps {
   html?: string | null;
@@ -6,6 +9,8 @@ export interface BlogContentProps {
 }
 
 export function BlogContent({ html, md }: BlogContentProps) {
+  const { t } = useI18n();
+
   if (html) {
     return (
       <div
@@ -34,5 +39,5 @@ export function BlogContent({ html, md }: BlogContentProps) {
     );
   }
 
-  return <p className="text-terminal-muted font-mono">No content available.</p>;
+  return <p className="text-terminal-muted font-mono">{t("blogNoContent")}</p>;
 }

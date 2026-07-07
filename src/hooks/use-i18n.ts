@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { i18n, t, type TranslationKeys, getTranslationsForLocale } from "@/lib/i18n/i18n-service";
+import { i18n, t, type TranslationKeys, getTranslationsForLocale } from "@/lib/i18n";
 import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 
 export function useI18n() {
@@ -23,12 +23,15 @@ export function useI18n() {
     return unsubscribe;
   }, []);
 
-  const translate = useCallback((key: keyof TranslationKeys): string => {
-    if (!mounted) {
-      return getTranslationsForLocale(DEFAULT_LOCALE)[key] ?? key;
-    }
-    return t(key);
-  }, [mounted]);
+  const translate = useCallback(
+    (key: keyof TranslationKeys): string => {
+      if (!mounted) {
+        return getTranslationsForLocale(DEFAULT_LOCALE)[key] ?? key;
+      }
+      return t(key);
+    },
+    [mounted],
+  );
 
   const translateWithFallback = useCallback(
     (key: keyof TranslationKeys, fallback?: string): string => {

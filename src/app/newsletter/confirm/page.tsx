@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { confirmNewsletter } from "@/lib/services/newsletter-service";
+import { useI18n } from "@/hooks/use-i18n";
 
 function ConfirmContent() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const [status, setStatus] = useState<"loading" | "success" | "error">(
@@ -37,10 +39,10 @@ function ConfirmContent() {
   return (
     <div className="container mx-auto max-w-lg px-4 py-16 text-center">
       <h1 className="mb-4 text-2xl font-bold text-green-400">
-        Newsletter Confirmation
+        {t("newsletterConfirmTitle")}
       </h1>
       {status === "loading" && (
-        <p className="text-gray-400">Confirming your subscription…</p>
+        <p className="text-gray-400">{t("newsletterConfirmLoading")}</p>
       )}
       {status === "success" && <p className="text-gray-300">{message}</p>}
       {status === "error" && (
@@ -55,20 +57,21 @@ function ConfirmContent() {
         href="/"
         className="mt-8 inline-block text-green-400 hover:text-green-300"
       >
-        ← Back to home
+        {t("newsletterConfirmBack")}
       </Link>
     </div>
   );
 }
 
+function LoadingFallback() {
+  const { t } = useI18n();
+  return <div className="py-16 text-center text-gray-400">{t("loading")}</div>;
+}
+
 export default function NewsletterConfirmPage() {
   return (
     <StandardPageLayout>
-      <Suspense
-        fallback={
-          <div className="py-16 text-center text-gray-400">Loading…</div>
-        }
-      >
+      <Suspense fallback={<LoadingFallback />}>
         <ConfirmContent />
       </Suspense>
     </StandardPageLayout>

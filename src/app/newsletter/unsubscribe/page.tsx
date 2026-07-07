@@ -6,8 +6,10 @@ import { useSearchParams } from "next/navigation";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { unsubscribeNewsletter } from "@/lib/services/newsletter-service";
 import { toast } from "sonner";
+import { useI18n } from "@/hooks/use-i18n";
 
 function UnsubscribeContent() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const initialToken = searchParams.get("token") ?? "";
   const [token, setToken] = useState(initialToken);
@@ -34,7 +36,9 @@ function UnsubscribeContent() {
 
   return (
     <div className="container mx-auto max-w-lg px-4 py-16">
-      <h1 className="mb-4 text-2xl font-bold text-green-400">Unsubscribe</h1>
+      <h1 className="mb-4 text-2xl font-bold text-green-400">
+        {t("newsletterUnsubscribeTitle")}
+      </h1>
       {done ? (
         <p className="text-gray-300">{message}</p>
       ) : (
@@ -43,14 +47,13 @@ function UnsubscribeContent() {
           className="space-y-4"
         >
           <p className="text-sm text-gray-400">
-            Enter your unsubscribe token from the newsletter email, or use the
-            link provided in the message.
+            {t("newsletterUnsubscribeDesc")}
           </p>
           <input
             type="text"
             value={token}
             onChange={(e) => setToken(e.target.value)}
-            placeholder="Unsubscribe token"
+            placeholder={t("newsletterUnsubscribePlaceholder")}
             required
             className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 focus:border-green-400 focus:outline-none"
           />
@@ -59,7 +62,7 @@ function UnsubscribeContent() {
             disabled={loading}
             className="rounded border border-red-400/40 px-4 py-2 text-sm text-red-400 hover:bg-red-400/10 disabled:opacity-50"
           >
-            {loading ? "Processing…" : "Unsubscribe"}
+            {loading ? t("processing") : t("newsletterUnsubscribeTitle")}
           </button>
         </form>
       )}
@@ -67,20 +70,21 @@ function UnsubscribeContent() {
         href="/"
         className="mt-8 inline-block text-green-400 hover:text-green-300"
       >
-        ← Back to home
+        {t("newsletterUnsubscribeBack")}
       </Link>
     </div>
   );
 }
 
+function LoadingFallback() {
+  const { t } = useI18n();
+  return <div className="py-16 text-center text-gray-400">{t("loading")}</div>;
+}
+
 export default function NewsletterUnsubscribePage() {
   return (
     <StandardPageLayout>
-      <Suspense
-        fallback={
-          <div className="py-16 text-center text-gray-400">Loading…</div>
-        }
-      >
+      <Suspense fallback={<LoadingFallback />}>
         <UnsubscribeContent />
       </Suspense>
     </StandardPageLayout>

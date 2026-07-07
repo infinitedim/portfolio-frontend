@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface CommandLoadingIndicatorProps {
   command?: string;
@@ -22,7 +23,20 @@ export function CommandLoadingIndicator({
   visible = false,
   messages = DEFAULT_MESSAGES,
 }: CommandLoadingIndicatorProps): JSX.Element | null {
+  const { t } = useI18n();
   const { themeConfig } = useTheme();
+
+  const defaultMessages = [
+    t("termLoading1"),
+    t("termLoading2"),
+    t("termLoading3"),
+    t("termLoading4"),
+    t("termLoading5"),
+  ];
+
+  const activeMessages =
+    messages === DEFAULT_MESSAGES ? defaultMessages : messages;
+
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [dots, setDots] = useState("");
 
@@ -30,11 +44,11 @@ export function CommandLoadingIndicator({
     if (!visible) return;
 
     const messageInterval = setInterval(() => {
-      setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
+      setCurrentMessageIndex((prev) => (prev + 1) % activeMessages.length);
     }, 1500);
 
     return () => clearInterval(messageInterval);
-  }, [visible, messages.length]);
+  }, [visible, activeMessages.length]);
 
   useEffect(() => {
     if (!visible) return;
@@ -84,7 +98,7 @@ export function CommandLoadingIndicator({
               {command}
             </span>
           )}
-          <span className="text-sm">{messages[currentMessageIndex]}</span>
+          <span className="text-sm">{activeMessages[currentMessageIndex]}</span>
           <span
             className="w-6 text-left font-mono"
             style={{ color: themeConfig.colors.accent }}

@@ -5,12 +5,7 @@ export interface ValidationResult {
 }
 
 export type ParameterValue =
-  | string
-  | number
-  | boolean
-  | object
-  | null
-  | undefined;
+  string | number | boolean | object | null | undefined;
 
 export interface ParameterValidation {
   name: string;

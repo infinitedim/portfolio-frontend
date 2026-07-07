@@ -8,6 +8,7 @@ import {
   type JSX,
 } from "react";
 import { useTheme } from "@/hooks/use-theme";
+import { useI18n } from "@/hooks/use-i18n";
 
 export interface KeyboardShortcut {
   id: string;
@@ -40,6 +41,7 @@ export function KeyboardShortcut({
   onShortcutChange,
   className = "",
 }: KeyboardShortcutProps): JSX.Element | null {
+  const { t } = useI18n();
   const { themeConfig } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -238,7 +240,7 @@ export function KeyboardShortcut({
                     themeConfig.colors.warning || themeConfig.colors.accent,
                 }}
               >
-                Disabled
+                {t("disabled")}
               </span>
             )}
           </div>
@@ -259,7 +261,7 @@ export function KeyboardShortcut({
                   className="text-xs"
                   style={{ color: themeConfig.colors.muted }}
                 >
-                  Recording... (Esc to cancel, Enter to save)
+                  {t("shortcutRecording")}
                 </span>
               </div>
             )}
@@ -277,7 +279,7 @@ export function KeyboardShortcut({
                 borderColor: themeConfig.colors.border,
                 color: themeConfig.colors.muted,
               }}
-              title="Customize shortcut"
+              title={t("shortcutCustomizeTitle")}
             >
               ️
             </button>
@@ -291,7 +293,7 @@ export function KeyboardShortcut({
               borderColor: themeConfig.colors.border,
               color: themeConfig.colors.muted,
             }}
-            title="Test shortcut"
+            title={t("shortcutTestTitle")}
           >
             ▶️
           </button>
@@ -335,7 +337,7 @@ export function KeyboardShortcut({
               className="text-lg font-semibold"
               style={{ color: themeConfig.colors.text }}
             >
-              ⌨️ Keyboard Shortcuts
+              ⌨️ {t("shortcutPanelTitle")}
             </h3>
 
             <div className="flex items-center gap-2">
@@ -383,7 +385,7 @@ export function KeyboardShortcut({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search shortcuts..."
+            placeholder={t("shortcutSearchPlaceholder")}
             className="w-full px-4 py-2 rounded border bg-transparent outline-none transition-colors"
             style={{
               borderColor: themeConfig.colors.border,
@@ -399,7 +401,7 @@ export function KeyboardShortcut({
                 className="text-center py-8 opacity-75"
                 style={{ color: themeConfig.colors.muted }}
               >
-                {searchQuery ? "No shortcuts found" : "No shortcuts available"}
+                {searchQuery ? t("shortcutNoFound") : t("shortcutNoAvailable")}
               </div>
             ) : (
               filteredShortcuts.map(renderShortcut)
@@ -415,12 +417,14 @@ export function KeyboardShortcut({
           }}
         >
           <div>
-            Showing {filteredShortcuts.length} of {shortcuts.length} shortcuts
+            {t("shortcutShowingCount")
+              .replace("{count}", String(filteredShortcuts.length))
+              .replace("{total}", String(shortcuts.length))}
           </div>
           <div className="flex items-center gap-4">
-            <span>Esc Close</span>
-            <span>️ Customize</span>
-            <span>▶️ Test</span>
+            <span>Esc {t("shortcutEscClose")}</span>
+            <span>️ {t("shortcutCustomizeHint")}</span>
+            <span>▶️ {t("shortcutTestHint")}</span>
           </div>
         </div>
       </div>

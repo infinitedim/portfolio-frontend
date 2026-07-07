@@ -23,11 +23,12 @@ The December 2025 core update was described as a "watershed moment" that:
 - Significantly improved AI content quality detection
 
 **Impact by industry:**
-| Industry | Traffic Drops |
-|----------|--------------|
+
+| Industry        | Traffic Drops       |
+| --------------- | ------------------- |
 | Affiliate sites | 71% average decline |
-| Health/YMYL | 67% average decline |
-| E-commerce | 52% average decline |
+| Health/YMYL     | 67% average decline |
+| E-commerce      | 52% average decline |
 
 **Key takeaway:** Even entertainment and lifestyle content now requires demonstrated expertise. Generic content no longer ranks.
 

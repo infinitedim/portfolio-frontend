@@ -102,7 +102,10 @@ describe("AuthService", () => {
 
   describe("isAuthenticated", () => {
     it("should return true when user is authenticated", () => {
-      if (!authService || (authService as unknown as MockAuthService).isAuthenticated?.mock) {
+      if (
+        !authService ||
+        (authService as unknown as MockAuthService).isAuthenticated?.mock
+      ) {
         expect(true).toBe(true);
         return;
       }
@@ -118,7 +121,10 @@ describe("AuthService", () => {
     });
 
     it("should return false when user is not authenticated", () => {
-      if (!authService || (authService as unknown as MockAuthService).isAuthenticated?.mock) {
+      if (
+        !authService ||
+        (authService as unknown as MockAuthService).isAuthenticated?.mock
+      ) {
         expect(true).toBe(true);
         return;
       }
@@ -132,7 +138,10 @@ describe("AuthService", () => {
 
   describe("getCurrentUser", () => {
     it("should return current user", () => {
-      if (!authService || (authService as unknown as MockAuthService).getCurrentUser?.mock) {
+      if (
+        !authService ||
+        (authService as unknown as MockAuthService).getCurrentUser?.mock
+      ) {
         expect(true).toBe(true);
         return;
       }
@@ -148,7 +157,10 @@ describe("AuthService", () => {
     });
 
     it("should return null when no user", () => {
-      if (!authService || (authService as unknown as MockAuthService).getCurrentUser?.mock) {
+      if (
+        !authService ||
+        (authService as unknown as MockAuthService).getCurrentUser?.mock
+      ) {
         expect(true).toBe(true);
         return;
       }

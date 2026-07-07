@@ -138,13 +138,17 @@ describe("themeDisplay", () => {
     });
 
     it("should handle invalid theme names", () => {
-      const result = ThemeDisplay.generateColorPreview("nonexistent" as unknown as ThemeName);
+      const result = ThemeDisplay.generateColorPreview(
+        "nonexistent" as unknown as ThemeName,
+      );
       expect(typeof result).toBe("string");
     });
 
     it("should return consistent output type", () => {
       const result1 = ThemeDisplay.generateColorPreview("light" as ThemeName);
-      const result2 = ThemeDisplay.generateColorPreview("invalid" as unknown as ThemeName);
+      const result2 = ThemeDisplay.generateColorPreview(
+        "invalid" as unknown as ThemeName,
+      );
 
       expect(typeof result1).toBe("string");
       expect(typeof result2).toBe("string");
@@ -158,7 +162,9 @@ describe("themeDisplay", () => {
     });
 
     it("should handle single theme", () => {
-      const result = ThemeDisplay.generateThemeComparison(["dark"] as unknown as ThemeName[]);
+      const result = ThemeDisplay.generateThemeComparison([
+        "dark",
+      ] as unknown as ThemeName[]);
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
     });
@@ -217,7 +223,9 @@ describe("themeDisplay", () => {
       ).not.toThrow();
       expect(() => ThemeDisplay.generateThemeComparison([])).not.toThrow();
       expect(() =>
-        ThemeDisplay.generateThemeComparison(["test" as unknown as ThemeName] as ThemeName[]),
+        ThemeDisplay.generateThemeComparison([
+          "test" as unknown as ThemeName,
+        ] as ThemeName[]),
       ).not.toThrow();
     });
   });
@@ -225,7 +233,9 @@ describe("themeDisplay", () => {
   describe("output formatting", () => {
     it("should return string output for all methods", () => {
       const list = ThemeDisplay.generateList();
-      const preview = ThemeDisplay.generateColorPreview("test" as unknown as ThemeName);
+      const preview = ThemeDisplay.generateColorPreview(
+        "test" as unknown as ThemeName,
+      );
       const comparison = ThemeDisplay.generateThemeComparison([
         "test" as unknown as ThemeName,
       ] as ThemeName[]);

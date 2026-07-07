@@ -79,8 +79,7 @@ export function TabCompletion({
               <span
                 className="text-sm"
                 style={{ color: themeConfig.colors.accent }}
-              >
-                </span>
+              ></span>
               <div className="flex-1">
                 <span
                   className="font-mono font-medium"

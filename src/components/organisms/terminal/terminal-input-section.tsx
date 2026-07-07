@@ -26,6 +26,7 @@ import { type JSX } from "react";
 import { CommandInput } from "@/components/molecules/terminal/command-input";
 import { CommandLoadingIndicator } from "@/components/molecules/terminal/command-loading-indicator";
 import { useTerminalContext } from "@/lib/context/terminal-context";
+import { useI18n } from "@/hooks/use-i18n";
 
 /** Commands available for tab-completion / suggestions */
 const AVAILABLE_COMMANDS = [
@@ -56,14 +57,6 @@ const AVAILABLE_COMMANDS = [
   "tour",
 ] as const;
 
-const LOADING_MESSAGES = [
-  "Processing command...",
-  "Executing request...",
-  "Gathering data...",
-  "Compiling response...",
-  "Almost finished...",
-] as const;
-
 /**
  * TerminalInputSection
  *
@@ -71,6 +64,7 @@ const LOADING_MESSAGES = [
  * processed, a loading indicator is shown above the input field.
  */
 export function TerminalInputSection(): JSX.Element {
+  const { t } = useI18n();
   const {
     currentInput,
     setCurrentInput,
@@ -81,6 +75,14 @@ export function TerminalInputSection(): JSX.Element {
     getFrequentCommands,
     commandInputRef,
   } = useTerminalContext();
+
+  const loadingMessages = [
+    t("termLoading1"),
+    t("termLoading2"),
+    t("termLoading3"),
+    t("termLoading4"),
+    t("termLoading5"),
+  ];
 
   return (
     <div
@@ -95,7 +97,7 @@ export function TerminalInputSection(): JSX.Element {
         <CommandLoadingIndicator
           command={currentInput}
           visible={isProcessing}
-          messages={[...LOADING_MESSAGES]}
+          messages={loadingMessages}
         />
       )}
 

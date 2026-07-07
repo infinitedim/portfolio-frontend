@@ -503,8 +503,7 @@ export function HistorySearchPanel({
                 backgroundColor: "transparent",
               }}
               title="Export history"
-            >
-              </button>
+            ></button>
 
             <button
               type="button"

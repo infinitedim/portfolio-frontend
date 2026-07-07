@@ -7,7 +7,7 @@ import {
   type ContactSubmission,
 } from "@/lib/services/contact-service";
 import { useI18n } from "@/hooks/use-i18n";
-import { type TranslationKeys } from "@/lib/i18n/i18n-service";
+import type { TranslationKeys } from "@/lib/i18n";
 
 const MIN_MESSAGE_LEN = 10;
 const MAX_MESSAGE_LEN = 5000;
@@ -40,16 +40,25 @@ function isPlausibleEmail(email: string): boolean {
   return true;
 }
 
-function validate(form: FormState, t: (key: keyof TranslationKeys) => string): string | null {
+function validate(
+  form: FormState,
+  t: (key: keyof TranslationKeys) => string,
+): string | null {
   if (!form.name.trim()) return t("contactValidationNameRequired");
   if (form.name.length > 100) return t("contactValidationNameTooLong");
   if (!isPlausibleEmail(form.email)) return t("contactValidationEmailInvalid");
   if (form.subject.length > 200) return t("contactValidationSubjectTooLong");
   if (form.message.trim().length < MIN_MESSAGE_LEN) {
-    return t("contactValidationMessageMin").replace("{min}", String(MIN_MESSAGE_LEN));
+    return t("contactValidationMessageMin").replace(
+      "{min}",
+      String(MIN_MESSAGE_LEN),
+    );
   }
   if (form.message.length > MAX_MESSAGE_LEN) {
-    return t("contactValidationMessageMax").replace("{max}", String(MAX_MESSAGE_LEN));
+    return t("contactValidationMessageMax").replace(
+      "{max}",
+      String(MAX_MESSAGE_LEN),
+    );
   }
   return null;
 }
@@ -119,9 +128,7 @@ export function ContactForm(): JSX.Element {
       {submitted ? (
         <div className="rounded-lg border border-green-500/40 bg-green-500/5 p-6 font-mono text-sm text-green-400">
           <p className="font-semibold">{t("contactSendSuccess")}</p>
-          <p className="mt-2 text-neutral-300">
-            {t("contactSuccessDesc")}
-          </p>
+          <p className="mt-2 text-neutral-300">{t("contactSuccessDesc")}</p>
           <button
             type="button"
             onClick={() => setSubmitted(false)}

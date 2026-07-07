@@ -8,7 +8,6 @@ describe("GitHubService", () => {
   let mockFetch: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
-
     let module;
     if (typeof vi !== "undefined" && vi.importActual) {
       module = await vi.importActual<
@@ -59,7 +58,8 @@ describe("GitHubService", () => {
 
   afterEach(() => {
     if (GitHubService) {
-      (GitHubService as unknown as { instance: unknown })["instance"] = undefined;
+      (GitHubService as unknown as { instance: unknown })["instance"] =
+        undefined;
     }
     if (originalFetch) globalThis.fetch = originalFetch;
     vi.clearAllMocks();

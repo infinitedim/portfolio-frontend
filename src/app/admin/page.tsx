@@ -8,6 +8,7 @@ import { ProtectedRoute } from "@/components/molecules/admin/protected-route";
 import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/lib/auth/auth-context";
+import { useI18n } from "@/hooks/use-i18n";
 import { getApiUrl } from "@/lib/api/get-api-url";
 import {
   FileText,
@@ -23,6 +24,7 @@ import {
 export default function AdminDashboardPage(): JSX.Element {
   const { themeConfig } = useTheme();
   const { user, logout } = useAuth();
+  const { t } = useI18n();
   const router = useRouter();
   const [isLogoutHovered, setIsLogoutHovered] = useState(false);
 
@@ -93,7 +95,7 @@ export default function AdminDashboardPage(): JSX.Element {
                     border: `1px solid ${themeConfig.colors.accent}`,
                   }}
                 >
-                  Home
+                  {t("adminHome")}
                 </button>
 
                 <button
@@ -116,7 +118,7 @@ export default function AdminDashboardPage(): JSX.Element {
                       : "none",
                   }}
                 >
-                  Logout
+                  {t("adminLogout")}
                 </button>
               </div>
             </div>
@@ -127,14 +129,13 @@ export default function AdminDashboardPage(): JSX.Element {
                   className="text-2xl font-bold mb-2"
                   style={{ color: themeConfig.colors.accent }}
                 >
-                  Admin Dashboard
+                  {t("adminDashboard")}
                 </h1>
                 <p
                   className="text-sm"
                   style={{ color: themeConfig.colors.muted }}
                 >
-                  Welcome back, {user?.email}! You have full administrative
-                  access.
+                  {t("adminWelcomeBack").replace("{email}", user?.email ?? "")}
                 </p>
               </div>
 
@@ -147,24 +148,24 @@ export default function AdminDashboardPage(): JSX.Element {
                     className="text-lg font-semibold mb-3"
                     style={{ color: themeConfig.colors.accent }}
                   >
-                    User Information
+                    {t("adminUserInformation")}
                   </h3>
                   <div className="space-y-2 text-sm">
                     <div>
                       <span style={{ color: themeConfig.colors.muted }}>
-                        User ID:
+                        {t("adminUserId")}:
                       </span>{" "}
                       <span>{user?.userId}</span>
                     </div>
                     <div>
                       <span style={{ color: themeConfig.colors.muted }}>
-                        Email:
+                        {t("adminEmail")}:
                       </span>{" "}
                       <span>{user?.email}</span>
                     </div>
                     <div>
                       <span style={{ color: themeConfig.colors.muted }}>
-                        Role:
+                        {t("adminRole")}:
                       </span>{" "}
                       <span
                         className="px-2 py-1 rounded text-xs"
@@ -187,12 +188,12 @@ export default function AdminDashboardPage(): JSX.Element {
                     className="text-lg font-semibold mb-3"
                     style={{ color: themeConfig.colors.accent }}
                   >
-                    System Status
+                    {t("adminSystemStatus")}
                   </h3>
                   <div className="space-y-2 text-sm">
                     <div>
                       <span style={{ color: themeConfig.colors.muted }}>
-                        Status:
+                        {t("adminStatus")}:
                       </span>{" "}
                       <span
                         className="px-2 py-1 rounded text-xs"
@@ -201,20 +202,20 @@ export default function AdminDashboardPage(): JSX.Element {
                           color: themeConfig.colors.success,
                         }}
                       >
-                        Online
+                        {t("adminOnline")}
                       </span>
                     </div>
                     <div>
                       <span style={{ color: themeConfig.colors.muted }}>
-                        Last Login:
+                        {t("adminLastLogin")}:
                       </span>{" "}
                       <span>{new Date().toLocaleString()}</span>
                     </div>
                     <div>
                       <span style={{ color: themeConfig.colors.muted }}>
-                        Session:
+                        {t("adminSession")}:
                       </span>{" "}
-                      <span>Active</span>
+                      <span>{t("adminSessionActive")}</span>
                     </div>
                   </div>
                 </div>
@@ -228,7 +229,7 @@ export default function AdminDashboardPage(): JSX.Element {
                   className="text-lg font-semibold mb-3"
                   style={{ color: themeConfig.colors.accent }}
                 >
-                  Quick Actions
+                  {t("adminQuickActions")}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Link
@@ -243,9 +244,9 @@ export default function AdminDashboardPage(): JSX.Element {
                     <div className="text-lg mb-1">
                       <FileText size={20} />
                     </div>
-                    <div className="font-semibold">Manage Posts</div>
+                    <div className="font-semibold">{t("adminManagePosts")}</div>
                     <div className="text-xs opacity-70">
-                      Create and edit blog posts
+                      {t("adminManagePostsDesc")}
                     </div>
                   </Link>
 
@@ -261,9 +262,9 @@ export default function AdminDashboardPage(): JSX.Element {
                     <div className="text-lg mb-1">
                       <Inbox size={20} />
                     </div>
-                    <div className="font-semibold">Inbox</div>
+                    <div className="font-semibold">{t("adminInbox")}</div>
                     <div className="text-xs opacity-70">
-                      Read messages from contact form
+                      {t("adminInboxDesc")}
                     </div>
                   </Link>
 
@@ -279,9 +280,9 @@ export default function AdminDashboardPage(): JSX.Element {
                     <div className="text-lg mb-1">
                       <ShieldCheck size={20} />
                     </div>
-                    <div className="font-semibold">Two-Factor Auth</div>
+                    <div className="font-semibold">{t("adminTwoFactor")}</div>
                     <div className="text-xs opacity-70">
-                      Manage TOTP &amp; backup codes
+                      {t("adminTwoFactorDesc")}
                     </div>
                   </Link>
 
@@ -297,9 +298,11 @@ export default function AdminDashboardPage(): JSX.Element {
                     <div className="text-lg mb-1">
                       <History size={20} />
                     </div>
-                    <div className="font-semibold">Portfolio History</div>
+                    <div className="font-semibold">
+                      {t("adminPortfolioHistory")}
+                    </div>
                     <div className="text-xs opacity-70">
-                      View and restore section versions
+                      {t("adminPortfolioHistoryDesc")}
                     </div>
                   </Link>
 
@@ -315,9 +318,9 @@ export default function AdminDashboardPage(): JSX.Element {
                     <div className="text-lg mb-1">
                       <Mail size={20} />
                     </div>
-                    <div className="font-semibold">Newsletter</div>
+                    <div className="font-semibold">{t("adminNewsletter")}</div>
                     <div className="text-xs opacity-70">
-                      Subscribers and broadcast
+                      {t("adminNewsletterDesc")}
                     </div>
                   </Link>
 
@@ -333,9 +336,9 @@ export default function AdminDashboardPage(): JSX.Element {
                     <div className="text-lg mb-1">
                       <Key size={20} />
                     </div>
-                    <div className="font-semibold">Headless CMS</div>
+                    <div className="font-semibold">{t("adminHeadlessCMS")}</div>
                     <div className="text-xs opacity-70">
-                      API key docs and endpoints
+                      {t("adminHeadlessCMSDesc")}
                     </div>
                   </Link>
 
@@ -354,9 +357,9 @@ export default function AdminDashboardPage(): JSX.Element {
                       <div className="text-lg mb-1">
                         <TrendingUp size={20} />
                       </div>
-                      <div className="font-semibold">Grafana</div>
+                      <div className="font-semibold">{t("adminGrafana")}</div>
                       <div className="text-xs opacity-70">
-                        Open analytics dashboards
+                        {t("adminGrafanaDesc")}
                       </div>
                     </a>
                   ) : null}
@@ -375,9 +378,9 @@ export default function AdminDashboardPage(): JSX.Element {
                     <div className="text-lg mb-1">
                       <BookOpen size={20} />
                     </div>
-                    <div className="font-semibold">API Docs</div>
+                    <div className="font-semibold">{t("adminApiDocs")}</div>
                     <div className="text-xs opacity-70">
-                      Open Swagger UI (new tab)
+                      {t("adminApiDocsDesc")}
                     </div>
                   </a>
                 </div>
@@ -389,8 +392,7 @@ export default function AdminDashboardPage(): JSX.Element {
               style={{ borderColor: themeConfig.colors.border }}
             >
               <span style={{ color: themeConfig.colors.muted }}>
-                Admin Dashboard • Press Ctrl+L to logout • Press Ctrl+H to go
-                home
+                {t("adminFooterHint")}
               </span>
             </div>
           </div>

@@ -6,11 +6,16 @@ export const roadmapCommand: Command = {
   description: "Open roadmap.sh profile",
   async execute() {
     if (typeof window !== "undefined") {
-      window.open("https://roadmap.sh/u/infinitedim", "_blank", "noopener,noreferrer");
+      window.open(
+        "https://roadmap.sh/u/infinitedim",
+        "_blank",
+        "noopener,noreferrer",
+      );
     }
     return {
       type: "success",
-      content: "Opening roadmap.sh profile (https://roadmap.sh/u/infinitedim)...",
+      content:
+        "Opening roadmap.sh profile (https://roadmap.sh/u/infinitedim)...",
       timestamp: new Date(),
       id: generateId(),
     };

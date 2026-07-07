@@ -7,7 +7,6 @@ describe("argParser", () => {
   let ArgumentParser: typeof import("@/lib/utils/arg-parser").ArgumentParser;
 
   beforeEach(async () => {
-
     let module;
     if (typeof vi !== "undefined" && vi.importActual) {
       module = await vi.importActual<typeof import("@/lib/utils/arg-parser")>(

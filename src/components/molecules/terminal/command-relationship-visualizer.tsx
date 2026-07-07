@@ -598,7 +598,8 @@ export function CommandRelationshipVisualizer({
         >
           <div className="flex items-center justify-between">
             <span>
-              ️ Interactive relationship mapping • Pattern analysis • Usage insights
+              ️ Interactive relationship mapping • Pattern analysis • Usage
+              insights
             </span>
             <span className="text-xs">
               Click nodes to explore relationships

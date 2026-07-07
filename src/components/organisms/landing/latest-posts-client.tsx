@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
-import { FadeIn, StaggerContainer, HoverCard } from "@/components/atoms/shared/motion-wrappers";
+import {
+  FadeIn,
+  StaggerContainer,
+  HoverCard,
+} from "@/components/atoms/shared/motion-wrappers";
 
 interface BlogPostItem {
   id: string;
@@ -18,7 +22,9 @@ interface LatestPostsClientProps {
   posts: BlogPostItem[];
 }
 
-export function LatestPostsClient({ posts }: LatestPostsClientProps): JSX.Element {
+export function LatestPostsClient({
+  posts,
+}: LatestPostsClientProps): JSX.Element {
   const { t, currentLocale } = useI18n();
 
   const formattedDate = (dateStr: string) => {
@@ -41,7 +47,11 @@ export function LatestPostsClient({ posts }: LatestPostsClientProps): JSX.Elemen
   return (
     <section className="border-t border-neutral-800 px-4 py-16">
       <div className="mx-auto max-w-4xl">
-        <FadeIn direction="up" duration={0.5} className="mb-8 flex items-end justify-between gap-4">
+        <FadeIn
+          direction="up"
+          duration={0.5}
+          className="mb-8 flex items-end justify-between gap-4"
+        >
           <h2 className="font-mono text-2xl font-bold text-green-400">
             {t("landingBlogTitle")}
           </h2>
@@ -67,7 +77,12 @@ export function LatestPostsClient({ posts }: LatestPostsClientProps): JSX.Elemen
           <StaggerContainer>
             <ul className="space-y-4">
               {posts.map((post, index) => (
-                <FadeIn key={post.id} direction="up" delay={index * 0.08} duration={0.5}>
+                <FadeIn
+                  key={post.id}
+                  direction="up"
+                  delay={index * 0.08}
+                  duration={0.5}
+                >
                   <li className="list-none">
                     <HoverCard scale={1.015}>
                       <Link

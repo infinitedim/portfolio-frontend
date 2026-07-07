@@ -219,9 +219,7 @@ export default function RootLayout({
         <ClientOnlyComponents />
         <AccessibilityProvider>
           <ScreenReaderAnnouncer message="Terminal Portfolio" />
-          <LenisProvider>
-            {children}
-          </LenisProvider>
+          <LenisProvider>{children}</LenisProvider>
         </AccessibilityProvider>
       </body>
     </html>

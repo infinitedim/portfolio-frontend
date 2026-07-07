@@ -11,6 +11,7 @@ import { BackgroundManager } from "@/components/molecules/customization/backgrou
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
 import type { CustomTheme, CustomFont } from "@/types/customization";
 import type { ThemeName } from "@/types/theme";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface CustomizationManagerProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export function CustomizationManager({
   isOpen,
   onClose,
 }: CustomizationManagerProps): JSX.Element | null {
+  const { t } = useI18n();
   const { themeConfig, changeTheme, theme: currentTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<
     "themes" | "fonts" | "backgrounds" | "settings" | "import-export"
@@ -52,16 +54,14 @@ export function CustomizationManager({
       setCustomThemes(themes);
       setCustomFonts(fonts);
 
-      console.log(
-        `Loaded ${themes.length} themes and ${fonts.length} fonts`,
-      );
+      console.log(`Loaded ${themes.length} themes and ${fonts.length} fonts`);
     } catch (error) {
       console.error("Failed to load customization data:", error);
-      showNotification("Failed to load customization data", "error");
+      showNotification(t("customLoadError"), "error");
     } finally {
       setIsLoading(false);
     }
-  }, [customizationService, showNotification]);
+  }, [customizationService, showNotification, t]);
 
   useEffect(() => {
     if (isOpen) {
@@ -91,7 +91,7 @@ export function CustomizationManager({
         if (success) {
           console.log(`Successfully applied theme: ${themeId}`);
           showNotification(
-            `Theme "${themeId}" applied successfully!`,
+            t("customApplySuccess").replace("{themeId}", themeId),
             "success",
           );
 
@@ -102,14 +102,20 @@ export function CustomizationManager({
           }, 200);
         } else {
           console.error(`Failed to apply theme: ${themeId}`);
-          showNotification(`Failed to apply theme "${themeId}"`, "error");
+          showNotification(
+            t("customApplyError").replace("{themeId}", themeId),
+            "error",
+          );
         }
       } catch (error) {
         console.error("Error applying theme:", error);
-        showNotification(`Error applying theme: ${error}`, "error");
+        showNotification(
+          t("customApplyErrorDetails").replace("{error}", String(error)),
+          "error",
+        );
       }
     },
-    [changeTheme, showNotification, onClose],
+    [changeTheme, showNotification, onClose, t],
   );
 
   useEffect(() => {
@@ -130,30 +136,30 @@ export function CustomizationManager({
   const tabs = [
     {
       id: "themes" as const,
-      label: "Themes",
+      label: t("customThemesTab"),
       count: customThemes.filter((t) => t.source === "custom").length,
-      description: "Manage color themes",
+      description: t("customThemesDesc"),
     },
     {
       id: "fonts" as const,
-      label: "Fonts",
+      label: t("customFontsTab"),
       count: customFonts.filter((f) => f.source === "custom").length,
-      description: "Manage fonts and typography",
+      description: t("customFontsDesc"),
     },
     {
       id: "backgrounds" as const,
-      label: "️ Backgrounds",
-      description: "Customize background effects",
+      label: `️ ${t("customBackgroundsTab")}`,
+      description: t("customBackgroundsDesc"),
     },
     {
       id: "settings" as const,
-      label: "️ Settings",
-      description: "General preferences",
+      label: `️ ${t("customSettingsTab")}`,
+      description: t("customSettingsDesc"),
     },
     {
       id: "import-export" as const,
-      label: "Import/Export",
-      description: "Backup and restore",
+      label: t("customImportExportTab"),
+      description: t("customImportExportDesc"),
     },
   ];
 
@@ -178,11 +184,12 @@ export function CustomizationManager({
               className="text-xl font-bold"
               style={{ color: themeConfig.colors.accent }}
             >
-              Customization Manager
+              {t("customCustomizationManagerTitle")}
             </h2>
             <p className="text-sm opacity-75">
-              Manage themes, fonts, and appearance settings
-              {currentTheme && ` • Current theme: ${currentTheme}`}
+              {t("customSubtitle")}
+              {currentTheme &&
+                t("customCurrentTheme").replace("{theme}", currentTheme)}
             </p>
           </div>
           <button
@@ -192,8 +199,8 @@ export function CustomizationManager({
               backgroundColor: `${themeConfig.colors.error || themeConfig.colors.accent}20`,
               color: themeConfig.colors.error || themeConfig.colors.accent,
             }}
-            aria-label="Close customization manager"
-            title="Close (Esc)"
+            aria-label={t("customCustomizationManagerTitle")}
+            title={t("customCancel")}
           >
             ✕
           </button>
@@ -257,7 +264,7 @@ export function CustomizationManager({
                     "localStorage/custom-fonts.json",
                     "localStorage/settings.json",
                   ]}
-                  completionText="Customization data loaded!"
+                  completionText={t("customLoaded")}
                 />
               </div>
             </div>

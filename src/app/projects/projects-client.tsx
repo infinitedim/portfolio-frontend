@@ -10,7 +10,10 @@ interface ProjectsClientProps {
   featuredProjects: Project[];
 }
 
-export function ProjectsClient({ allProjects, featuredProjects }: ProjectsClientProps): JSX.Element {
+export function ProjectsClient({
+  allProjects,
+  featuredProjects,
+}: ProjectsClientProps): JSX.Element {
   const { t, currentLocale } = useI18n();
 
   const getSubtitle = () => {
@@ -29,7 +32,8 @@ export function ProjectsClient({ allProjects, featuredProjects }: ProjectsClient
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-6xl font-bold font-mono mb-6">
-              <span className="text-terminal-accent">~/</span>{t("projects")}
+              <span className="text-terminal-accent">~/</span>
+              {t("projects")}
             </h1>
             <p className="text-xl md:text-2xl text-terminal-muted max-w-3xl mx-auto">
               {getSubtitle()}
@@ -94,13 +98,17 @@ export function ProjectsClient({ allProjects, featuredProjects }: ProjectsClient
               <div className="text-3xl font-bold text-terminal-accent font-mono">
                 {allProjects.length}
               </div>
-              <div className="text-terminal-muted">{t("projectsTotalProjects")}</div>
+              <div className="text-terminal-muted">
+                {t("projectsTotalProjects")}
+              </div>
             </div>
             <div>
               <div className="text-3xl font-bold text-terminal-accent font-mono">
                 {featuredProjects.length}
               </div>
-              <div className="text-terminal-muted">{t("projectsFeaturedStatus")}</div>
+              <div className="text-terminal-muted">
+                {t("projectsFeaturedStatus")}
+              </div>
             </div>
             <div>
               <div className="text-3xl font-bold text-terminal-accent font-mono">
@@ -110,13 +118,17 @@ export function ProjectsClient({ allProjects, featuredProjects }: ProjectsClient
                   ).length
                 }
               </div>
-              <div className="text-terminal-muted">{t("projectsTechnologiesStatus")}</div>
+              <div className="text-terminal-muted">
+                {t("projectsTechnologiesStatus")}
+              </div>
             </div>
             <div>
               <div className="text-3xl font-bold text-terminal-accent font-mono">
                 {allProjects.filter((p) => p.status === "completed").length}
               </div>
-              <div className="text-terminal-muted">{t("projectsCompletedStatus")}</div>
+              <div className="text-terminal-muted">
+                {t("projectsCompletedStatus")}
+              </div>
             </div>
           </div>
         </div>

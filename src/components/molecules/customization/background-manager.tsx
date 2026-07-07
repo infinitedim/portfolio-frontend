@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { CustomizationService } from "@/lib/services/customization-service";
 import type { BackgroundSettings } from "@/types/customization";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface BackgroundManagerProps {
   onUpdate?: () => void;
@@ -14,6 +15,7 @@ export function BackgroundManager({
   onUpdate,
   onClose,
 }: BackgroundManagerProps): JSX.Element {
+  const { t } = useI18n();
   const { themeConfig } = useTheme();
   const customizationService = CustomizationService.getInstance();
   const [backgroundType, setBackgroundType] = useState<
@@ -83,7 +85,7 @@ export function BackgroundManager({
             className="text-lg font-semibold mb-2"
             style={{ color: themeConfig.colors.text }}
           >
-            Background Type
+            {t("customBackgroundType")}
           </h3>
           <div className="flex gap-2">
             <button
@@ -102,7 +104,7 @@ export function BackgroundManager({
                 color: themeConfig.colors.text,
               }}
             >
-              Letter Glitch
+              {t("customLetterGlitch")}
             </button>
             <button
               onClick={() => setBackgroundType("none")}
@@ -120,7 +122,7 @@ export function BackgroundManager({
                 color: themeConfig.colors.text,
               }}
             >
-              None
+              {t("customNone")}
             </button>
           </div>
         </div>
@@ -132,7 +134,7 @@ export function BackgroundManager({
                 className="text-sm font-medium mb-2"
                 style={{ color: themeConfig.colors.text }}
               >
-                Glitch Colors
+                {t("customGlitchColors")}
               </h4>
               <div className="space-y-2">
                 {letterGlitchSettings.glitchColors.map((color, index) => (
@@ -170,7 +172,7 @@ export function BackgroundManager({
                           color: themeConfig.colors.error,
                         }}
                       >
-                        Remove
+                        {t("customRemoveColor")}
                       </button>
                     )}
                   </div>
@@ -184,7 +186,7 @@ export function BackgroundManager({
                     color: themeConfig.colors.success,
                   }}
                 >
-                  + Add Color
+                  {t("customAddColor")}
                 </button>
               </div>
             </div>
@@ -195,7 +197,10 @@ export function BackgroundManager({
                 className="block text-sm font-medium mb-2"
                 style={{ color: themeConfig.colors.text }}
               >
-                Glitch Speed: {letterGlitchSettings.glitchSpeed}ms
+                {t("customGlitchSpeed").replace(
+                  "{speed}",
+                  String(letterGlitchSettings.glitchSpeed),
+                )}
               </label>
               <input
                 id="glitch-speed"
@@ -215,8 +220,12 @@ export function BackgroundManager({
                 }}
               />
               <div className="flex justify-between text-xs opacity-70 mt-1">
-                <span style={{ color: themeConfig.colors.text }}>Fast</span>
-                <span style={{ color: themeConfig.colors.text }}>Slow</span>
+                <span style={{ color: themeConfig.colors.text }}>
+                  {t("customFast")}
+                </span>
+                <span style={{ color: themeConfig.colors.text }}>
+                  {t("customSlow")}
+                </span>
               </div>
             </div>
 
@@ -241,7 +250,7 @@ export function BackgroundManager({
                   className="text-sm"
                   style={{ color: themeConfig.colors.text }}
                 >
-                  Center Vignette
+                  {t("customCenterVignette")}
                 </span>
               </label>
 
@@ -265,7 +274,7 @@ export function BackgroundManager({
                   className="text-sm"
                   style={{ color: themeConfig.colors.text }}
                 >
-                  Outer Vignette
+                  {t("customOuterVignette")}
                 </span>
               </label>
 
@@ -289,7 +298,7 @@ export function BackgroundManager({
                   className="text-sm"
                   style={{ color: themeConfig.colors.text }}
                 >
-                  Smooth Animation
+                  {t("customSmoothAnimation")}
                 </span>
               </label>
             </div>
@@ -300,7 +309,7 @@ export function BackgroundManager({
                 className="block text-sm font-medium mb-2"
                 style={{ color: themeConfig.colors.text }}
               >
-                Characters
+                {t("customCharacters")}
               </label>
               <textarea
                 id="characters-input"
@@ -317,13 +326,13 @@ export function BackgroundManager({
                   color: themeConfig.colors.text,
                 }}
                 rows={3}
-                placeholder="Enter characters to display..."
+                placeholder={t("customCharactersPlaceholder")}
               />
               <p
                 className="text-xs opacity-70 mt-1"
                 style={{ color: themeConfig.colors.text }}
               >
-                Characters that will appear in the background animation
+                {t("customCharactersHelp")}
               </p>
             </div>
           </div>
@@ -343,7 +352,7 @@ export function BackgroundManager({
             color: themeConfig.colors.bg,
           }}
         >
-          Save Background Settings
+          {t("customSaveBackgroundSettings")}
         </button>
         {onClose && (
           <button
@@ -355,7 +364,7 @@ export function BackgroundManager({
               color: themeConfig.colors.text,
             }}
           >
-            Cancel
+            {t("customCancel")}
           </button>
         )}
       </div>

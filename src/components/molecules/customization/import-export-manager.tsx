@@ -6,6 +6,7 @@ import { useState, useRef, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { CustomizationService } from "@/lib/services/customization-service";
 import { Zap, Info } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface ImportExportManagerProps {
   onUpdate: () => void;
@@ -14,6 +15,7 @@ interface ImportExportManagerProps {
 export function ImportExportManager({
   onUpdate,
 }: ImportExportManagerProps): JSX.Element {
+  const { t } = useI18n();
   const { themeConfig } = useTheme();
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
@@ -43,7 +45,7 @@ export function ImportExportManager({
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Failed to export themes. Please try again.");
+      alert(t("customExportFailed"));
     } finally {
       setIsExporting(false);
     }
@@ -114,7 +116,7 @@ export function ImportExportManager({
             className="text-lg font-bold mb-4"
             style={{ color: themeConfig.colors.accent }}
           >
-            Export
+            {t("customExportTitle")}
           </h3>
           <div className="space-y-4">
             <div
@@ -128,15 +130,19 @@ export function ImportExportManager({
                 className="font-medium mb-2"
                 style={{ color: themeConfig.colors.success }}
               >
-                Export Custom Themes
+                {t("customExportThemes")}
               </h4>
               <p className="text-sm opacity-75 mb-3">
-                Export your custom themes to share with others or backup your
-                work.
+                {t("customExportThemesDesc")}
               </p>
               <div className="flex items-center justify-between">
                 <div className="text-sm">
-                  <span>{customThemes.length} custom themes available</span>
+                  <span>
+                    {t("customThemesAvailable").replace(
+                      "{count}",
+                      String(customThemes.length),
+                    )}
+                  </span>
                 </div>
                 <button
                   onClick={handleExportThemes}
@@ -148,7 +154,7 @@ export function ImportExportManager({
                     color: themeConfig.colors.success,
                   }}
                 >
-                  {isExporting ? "Exporting..." : "Export Themes"}
+                  {isExporting ? t("exporting") : t("customExportThemesBtn")}
                 </button>
               </div>
             </div>
@@ -164,16 +170,26 @@ export function ImportExportManager({
                 className="font-medium mb-2"
                 style={{ color: themeConfig.colors.accent }}
               >
-                Export Complete Backup
+                {t("customExportBackup")}
               </h4>
               <p className="text-sm opacity-75 mb-3">
-                Export all customizations including themes, fonts, and settings.
+                {t("customExportBackupDesc")}
               </p>
               <div className="flex items-center justify-between">
                 <div className="text-sm space-y-1">
-                  <div>{customThemes.length} custom themes</div>
-                  <div>{customFonts.length} custom fonts</div>
-                  <div>Settings and preferences</div>
+                  <div>
+                    {t("customThemesCountLabel").replace(
+                      "{count}",
+                      String(customThemes.length),
+                    )}
+                  </div>
+                  <div>
+                    {t("customFontsCountLabel").replace(
+                      "{count}",
+                      String(customFonts.length),
+                    )}
+                  </div>
+                  <div>{t("customSettingsPreferences")}</div>
                 </div>
                 <button
                   onClick={handleExportSettings}
@@ -184,7 +200,7 @@ export function ImportExportManager({
                     color: themeConfig.colors.accent,
                   }}
                 >
-                  Export All
+                  {t("customExportAllBtn")}
                 </button>
               </div>
             </div>
@@ -196,7 +212,7 @@ export function ImportExportManager({
             className="text-lg font-bold mb-4"
             style={{ color: themeConfig.colors.accent }}
           >
-            Import
+            {t("customImportTitle")}
           </h3>
           <div className="space-y-4">
             <div
@@ -210,10 +226,10 @@ export function ImportExportManager({
                 className="font-medium mb-2"
                 style={{ color: themeConfig.colors.prompt }}
               >
-                Import Themes
+                {t("customImportThemes")}
               </h4>
               <p className="text-sm opacity-75 mb-3">
-                Import theme files from other users or restore from backup.
+                {t("customImportThemesDesc")}
               </p>
               <div className="flex items-center gap-3">
                 <button
@@ -226,10 +242,10 @@ export function ImportExportManager({
                     color: themeConfig.colors.prompt,
                   }}
                 >
-                  {isImporting ? "Importing..." : "Choose File"}
+                  {isImporting ? t("importing") : t("customChooseFileBtn")}
                 </button>
                 <span className="text-sm opacity-75">
-                  Supports .json theme files
+                  {t("customSupportsJson")}
                 </span>
               </div>
 
@@ -265,14 +281,20 @@ export function ImportExportManager({
                       }}
                     >
                       {importResult.success > 0 &&
-                        `Successfully imported ${importResult.success} themes`}
+                        t("customImportSuccess").replace(
+                          "{count}",
+                          String(importResult.success),
+                        )}
                       {importResult.errors.length > 0 &&
-                        `${importResult.errors.length} errors occurred`}
+                        t("customImportErrors").replace(
+                          "{count}",
+                          String(importResult.errors.length),
+                        )}
                     </div>
                     {importResult.errors.length > 0 && (
                       <details className="mt-2">
                         <summary className="cursor-pointer text-xs opacity-75">
-                          Show errors
+                          {t("customShowErrors")}
                         </summary>
                         <div className="mt-1 text-xs space-y-1">
                           {importResult.errors.map((error, index) => (
@@ -299,17 +321,13 @@ export function ImportExportManager({
             style={{ color: themeConfig.colors.accent }}
           >
             <span className="flex items-center gap-1.5">
-              <Zap size={18} /> Quick Actions
+              <Zap size={18} /> {t("customQuickActionsTitle")}
             </span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
               onClick={() => {
-                if (
-                  confirm(
-                    "This will reset all customizations to defaults. Continue?",
-                  )
-                ) {
+                if (confirm(t("customResetAllConfirm"))) {
                   customizationService.resetToDefaults();
                   onUpdate();
                 }
@@ -325,10 +343,10 @@ export function ImportExportManager({
                 className="font-medium mb-1"
                 style={{ color: themeConfig.colors.error }}
               >
-                Reset All
+                {t("customResetAllBtn")}
               </div>
               <div className="text-sm opacity-75">
-                Reset all themes, fonts, and settings to defaults
+                {t("customResetAllDesc")}
               </div>
             </button>
 
@@ -344,7 +362,13 @@ export function ImportExportManager({
                   }).length,
                 };
                 alert(
-                  `Storage Info:\n• ${data.themes} custom themes\n• ${data.fonts} custom fonts\n• ~${Math.round(data.storageUsed / 1024)}KB used`,
+                  t("customStorageAlert")
+                    .replace("{themes}", String(data.themes))
+                    .replace("{fonts}", String(data.fonts))
+                    .replace(
+                      "{storage}",
+                      String(Math.round(data.storageUsed / 1024)),
+                    ),
                 );
               }}
               className="p-4 rounded border text-left hover:opacity-80"
@@ -358,10 +382,10 @@ export function ImportExportManager({
                 className="font-medium mb-1"
                 style={{ color: themeConfig.colors.accent }}
               >
-                Storage Info
+                {t("customStorageInfoBtn")}
               </div>
               <div className="text-sm opacity-75">
-                View storage usage and customization statistics
+                {t("customStorageInfoDesc")}
               </div>
             </button>
           </div>
@@ -379,26 +403,15 @@ export function ImportExportManager({
             style={{ color: themeConfig.colors.accent }}
           >
             <span className="flex items-center gap-1.5">
-              <Info size={16} /> Tips & Best Practices
+              <Info size={16} /> {t("customTipsTitle")}
             </span>
           </h4>
           <div className="text-sm space-y-2 opacity-75">
-            <div>
-              • Export your customizations regularly to avoid losing your work
-            </div>
-            <div>
-              • Share theme files with others to spread your creative designs
-            </div>
-            <div>
-              • Custom fonts should be optimized for web use (WOFF/WOFF2
-              preferred)
-            </div>
-            <div>
-              • Test themes in different lighting conditions for accessibility
-            </div>
-            <div>
-              • Use meaningful names and descriptions for your custom themes
-            </div>
+            <div>• {t("customTip1")}</div>
+            <div>• {t("customTip2")}</div>
+            <div>• {t("customTip3")}</div>
+            <div>• {t("customTip4")}</div>
+            <div>• {t("customTip5")}</div>
           </div>
         </div>
       </div>

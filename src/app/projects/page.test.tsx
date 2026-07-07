@@ -75,13 +75,15 @@ vi.mock("./page", async (importOriginal) => {
       return (
         <div data-testid="standard-page-layout">
           <main>
-            <Suspense fallback={<div data-testid="projects-loading">Loading...</div>}>
+            <Suspense
+              fallback={<div data-testid="projects-loading">Loading...</div>}
+            >
               <MockProjectsPageContent />
             </Suspense>
           </main>
         </div>
       );
-    }
+    },
   };
 });
 

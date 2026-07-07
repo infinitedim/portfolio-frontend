@@ -505,12 +505,13 @@ cosign verify ghcr.io/org/app:latest --certificate-identity=ci@org.com --certifi
 ```
 
 **SLSA Levels Overview:**
-| Level | Requirement | What It Proves |
-|-------|-------------|----------------|
-| 1 | Build process documented | Provenance exists |
-| 2 | Hosted build service, signed provenance | Tamper-resistant provenance |
-| 3 | Hardened build platform, non-falsifiable provenance | Tamper-proof build |
-| 4 | Two-party review, hermetic builds | Maximum supply-chain assurance |
+
+| Level | Requirement                                         | What It Proves                 |
+| ----- | --------------------------------------------------- | ------------------------------ |
+| 1     | Build process documented                            | Provenance exists              |
+| 2     | Hosted build service, signed provenance             | Tamper-resistant provenance    |
+| 3     | Hardened build platform, non-falsifiable provenance | Tamper-proof build             |
+| 4     | Two-party review, hermetic builds                   | Maximum supply-chain assurance |
 
 > **Cross-references:** `security-pen-testing` (vulnerability exploitation testing), `dependency-auditor` (license and CVE audit for dependencies).
 

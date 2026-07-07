@@ -2,6 +2,7 @@
 
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import clientLogger from "@/lib/logger/client-logger";
+import { i18n } from "@/lib/i18n";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -135,18 +136,18 @@ function DefaultErrorFallback({
             </svg>
           </div>
           <h2 className="text-lg font-semibold text-red-800 dark:text-red-200">
-            Something went wrong
+            {i18n.t("errorSomethingWentWrong")}
           </h2>
         </div>
 
         <p className="mb-4 text-sm text-red-700 dark:text-red-300">
-          {error.message || "An unexpected error occurred"}
+          {error.message || i18n.t("errorUnexpected")}
         </p>
 
         {isDev && errorInfo && (
           <details className="mb-4">
             <summary className="cursor-pointer text-xs text-red-600 dark:text-red-400">
-              View error details
+              {i18n.t("errorViewDetails")}
             </summary>
             <pre className="mt-2 max-h-32 overflow-auto rounded bg-red-100 p-2 text-xs text-red-800 dark:bg-red-900 dark:text-red-200">
               {error.stack}
@@ -161,7 +162,7 @@ function DefaultErrorFallback({
           onClick={resetAction}
           className="w-full rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-red-700 dark:hover:bg-red-600"
         >
-          Try again
+          {i18n.t("errorTryAgain")}
         </button>
       </div>
     </div>
@@ -178,13 +179,13 @@ export function CompactErrorFallback({
   return (
     <div className="rounded-md border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950">
       <p className="mb-2 text-sm text-red-700 dark:text-red-300">
-        {error.message || "Something went wrong"}
+        {error.message || i18n.t("errorSomethingWentWrong")}
       </p>
       <button
         onClick={resetAction}
         className="text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400"
       >
-        Try again
+        {i18n.t("errorTryAgain")}
       </button>
     </div>
   );

@@ -135,7 +135,9 @@ describe("I18nService", () => {
         return;
       }
       const service = I18nService.getInstance();
-      const translation = service.t("nonexistent" as unknown as Parameters<typeof service.t>[0]);
+      const translation = service.t(
+        "nonexistent" as unknown as Parameters<typeof service.t>[0],
+      );
 
       expect(translation).toBe("nonexistent");
     });

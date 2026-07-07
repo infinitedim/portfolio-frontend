@@ -14,6 +14,7 @@ import { TagChip } from "@/components/atoms/shared/tag-chip";
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { getCachedBlogList } from "@/lib/services/cached-blog-fetch";
+import { getTranslationsForLocale } from "@/lib/i18n/i18n-service";
 
 function getBackendUrl(): string {
   return getServerApiUrl();
@@ -143,6 +144,8 @@ async function BlogPageContent({
   const series = params.series?.trim() || undefined;
   const locale = params.locale?.trim() || DEFAULT_BLOG_LOCALE;
 
+  const t = getTranslationsForLocale(locale);
+
   const [{ items: posts, total }, availableTags, seriesList] =
     await Promise.all([
       getBlogPosts(page, pageSize, search, tag, series, locale),
@@ -151,10 +154,6 @@ async function BlogPageContent({
     ]);
   const totalPages = Math.ceil(total / pageSize);
 
-  // typedRoutes only knows about static literal paths, so dynamic query
-  // strings need an explicit cast. We type this as `Route` so consumers get
-  // proper completion when used with `<Link href>` instead of the `never`
-  // hack that silenced *all* type errors at the call site.
   const buildUrl = (overrides: {
     page?: number;
     search?: string;
@@ -195,9 +194,7 @@ async function BlogPageContent({
                 RSS
               </a>
             </div>
-            <p className="text-terminal-muted mb-6">
-              Latest articles, tutorials, and insights.
-            </p>
+            <p className="text-terminal-muted mb-6">{t.blogLatestArticles}</p>
 
             <BlogLocaleSwitcher className="mb-4" />
 
@@ -210,7 +207,7 @@ async function BlogPageContent({
                 type="text"
                 name="search"
                 defaultValue={search ?? ""}
-                placeholder="Search posts..."
+                placeholder={t.blogSearchPlaceholder}
                 className="flex-1 bg-terminal-bg/50 border border-terminal-border rounded px-3 py-2 text-sm text-terminal-text placeholder-terminal-muted/40 focus:outline-none focus:border-terminal-accent font-mono"
               />
               {tag && (
@@ -238,7 +235,7 @@ async function BlogPageContent({
                 type="submit"
                 className="px-4 py-2 bg-terminal-accent/10 border border-terminal-accent/40 text-terminal-accent rounded text-sm hover:bg-terminal-accent/20 transition-colors font-mono cursor-pointer"
               >
-                Search
+                {t.blogSearchButton}
               </button>
               {(search || tag || series) && (
                 <Link
@@ -250,7 +247,7 @@ async function BlogPageContent({
                   })}
                   className="px-4 py-2 border border-terminal-border text-terminal-muted rounded text-sm hover:border-terminal-muted transition-colors font-mono"
                 >
-                  Clear
+                  {t.blogClearButton}
                 </Link>
               )}
             </form>
@@ -274,7 +271,7 @@ async function BlogPageContent({
             <div className="text-center py-12 text-terminal-muted font-mono">
               {search || tag || series ? (
                 <p>
-                  No posts found for{" "}
+                  {t.blogNoPostsFound}{" "}
                   {search && <span>&ldquo;{search}&rdquo;</span>}
                   {search && (tag || series) && " in "}
                   {tag && <span className="text-terminal-accent">#{tag}</span>}
@@ -294,11 +291,11 @@ async function BlogPageContent({
                     })}
                     className="text-terminal-accent hover:underline"
                   >
-                    View all posts
+                    {t.blogViewAllPosts}
                   </Link>
                 </p>
               ) : (
-                <p>No blog posts yet. Check back soon!</p>
+                <p>{t.blogNoPostsMessage}</p>
               )}
             </div>
           ) : (
@@ -343,14 +340,16 @@ async function BlogPageContent({
                         })}
                       </time>
                       {post.readingTimeMinutes > 0 && (
-                        <span>{post.readingTimeMinutes} min read</span>
+                        <span>
+                          {post.readingTimeMinutes} {t.blogMinRead}
+                        </span>
                       )}
                     </div>
                     <Link
                       href={`/blog/${post.slug}`}
                       className="text-terminal-accent hover:text-terminal-accent/90"
                     >
-                      Read more →
+                      {t.blogReadMore}
                     </Link>
                   </div>
                 </article>
@@ -365,18 +364,20 @@ async function BlogPageContent({
                   href={buildUrl({ page: page - 1 })}
                   className="px-4 py-2 border border-terminal-border rounded hover:border-terminal-accent transition-colors"
                 >
-                  ← Previous
+                  ← {t.previous}
                 </Link>
               )}
               <span className="px-4 py-2 text-terminal-muted">
-                Page {page} of {totalPages}
+                {t.blogPageOf
+                  .replace("{page}", String(page))
+                  .replace("{totalPages}", String(totalPages))}
               </span>
               {page < totalPages && (
                 <Link
                   href={buildUrl({ page: page + 1 })}
                   className="px-4 py-2 border border-terminal-border rounded hover:border-terminal-accent transition-colors"
                 >
-                  Next →
+                  {t.next} →
                 </Link>
               )}
             </nav>
@@ -388,10 +389,11 @@ async function BlogPageContent({
 }
 
 function BlogListSkeleton() {
+  const t = getTranslationsForLocale(DEFAULT_BLOG_LOCALE);
   return (
     <StandardPageLayout>
       <div className="container mx-auto px-4 py-8">
-        <p className="text-gray-400">Loading blog…</p>
+        <p className="text-gray-400">{t.blogLoadingBlog}</p>
       </div>
     </StandardPageLayout>
   );

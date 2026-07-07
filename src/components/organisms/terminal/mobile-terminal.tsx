@@ -4,12 +4,14 @@ import type React from "react";
 import { useState, useEffect, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useMobile } from "@/hooks/use-mobile";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface MobileTerminalProps {
   children: React.ReactNode;
 }
 
 export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
+  const { t } = useI18n();
   const { themeConfig, theme } = useTheme();
   const { isMobile, isVirtualKeyboardOpen, orientation } = useMobile();
   const [showMobileHint, setShowMobileHint] = useState(false);
@@ -77,10 +79,10 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
             <div className="flex items-center gap-3">
               <span className="text-lg"></span>
               <div>
-                <div className="font-medium">Mobile Terminal Ready!</div>
+                <div className="font-medium">{t("termMobileReady")}</div>
                 <div className="text-xs opacity-90 mt-1">
-                  {isMobile ? "Phone" : "Tablet"} • {orientation} • Optimized
-                  for touch
+                  {isMobile ? "Phone" : "Tablet"} • {orientation} •{" "}
+                  {t("termOptimizedTouch")}
                 </div>
               </div>
             </div>
@@ -134,7 +136,7 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
               onClick={handleFocusInput}
               aria-label="Focus command input"
             >
-              Focus Input
+              {t("termFocusInput")}
             </button>
             {orientation === "landscape" && (
               <div
@@ -168,7 +170,7 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
             className="text-xs font-medium mb-2"
             style={{ color: themeConfig.colors.muted }}
           >
-            Quick Commands:
+            {t("termQuickCommands")}:
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
             {["help", "about", "skills", "theme -l", "roadmap", "clear"].map(
@@ -201,7 +203,7 @@ export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
             className="text-xs opacity-60"
             style={{ color: themeConfig.colors.muted }}
           >
-            Swipe for more commands
+            {t("termSwipeMore")}
           </div>
         </div>
       </div>

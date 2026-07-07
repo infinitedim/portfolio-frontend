@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import type { KeyboardShortcut } from "@/components/molecules/terminal/keyboard-shortcuts";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface UseTerminalShortcutsOptions {
   onClear?: () => void;
@@ -20,6 +21,7 @@ export function useTerminalShortcuts({
   onShortcutsOpen,
   onCommandExecute,
 }: UseTerminalShortcutsOptions = {}) {
+  const { t } = useI18n();
   const [customShortcuts, setCustomShortcuts] = useState<
     Record<string, string[]>
   >({});
@@ -74,7 +76,7 @@ export function useTerminalShortcuts({
       {
         id: "clear-terminal",
         keys: customShortcuts["clear-terminal"] || ["Ctrl", "L"],
-        description: "Clear terminal output",
+        description: t("shortcutClearDesc"),
         category: "navigation",
         action: () => onClearRef.current?.(),
         enabled: true,
@@ -83,7 +85,7 @@ export function useTerminalShortcuts({
       {
         id: "show-help",
         keys: customShortcuts["show-help"] || ["Ctrl", "H"],
-        description: "Show help information",
+        description: t("shortcutHelpDesc"),
         category: "navigation",
         action: () => onHelpRef.current?.(),
         enabled: true,
@@ -92,7 +94,7 @@ export function useTerminalShortcuts({
       {
         id: "show-help-f1",
         keys: customShortcuts["show-help-f1"] || ["F1"],
-        description: "Show help (alternative)",
+        description: t("shortcutHelpAltDesc"),
         category: "navigation",
         action: () => onHelpRef.current?.(),
         enabled: true,
@@ -102,7 +104,7 @@ export function useTerminalShortcuts({
       {
         id: "open-history",
         keys: customShortcuts["open-history"] || ["Ctrl", "R"],
-        description: "Open command history search",
+        description: t("shortcutHistoryDesc"),
         category: "terminal",
         action: () => onHistoryOpenRef.current?.(),
         enabled: true,
@@ -111,7 +113,7 @@ export function useTerminalShortcuts({
       {
         id: "open-shortcuts",
         keys: customShortcuts["open-shortcuts"] || ["Ctrl", "?"],
-        description: "Show keyboard shortcuts",
+        description: t("shortcutShortcutsDesc"),
         category: "terminal",
         action: () => onShortcutsOpenRef.current?.(),
         enabled: true,
@@ -120,7 +122,7 @@ export function useTerminalShortcuts({
       {
         id: "quick-command-help",
         keys: customShortcuts["quick-command-help"] || ["Ctrl", "Shift", "H"],
-        description: "Quick help command",
+        description: t("shortcutQuickHelpDesc"),
         category: "terminal",
         action: () => onCommandExecuteRef.current?.("help"),
         enabled: true,
@@ -129,7 +131,7 @@ export function useTerminalShortcuts({
       {
         id: "quick-command-clear",
         keys: customShortcuts["quick-command-clear"] || ["Ctrl", "Shift", "C"],
-        description: "Quick clear command",
+        description: t("shortcutQuickClearDesc"),
         category: "terminal",
         action: () => onCommandExecuteRef.current?.("clear"),
         enabled: true,
@@ -139,7 +141,7 @@ export function useTerminalShortcuts({
       {
         id: "toggle-theme",
         keys: customShortcuts["toggle-theme"] || ["Ctrl", "T"],
-        description: "Toggle theme",
+        description: t("shortcutToggleThemeDesc"),
         category: "customization",
         action: () => onThemeToggleRef.current?.(),
         enabled: true,
@@ -149,7 +151,7 @@ export function useTerminalShortcuts({
       {
         id: "quick-about",
         keys: customShortcuts["quick-about"] || ["Ctrl", "I"],
-        description: "Show about information",
+        description: t("shortcutQuickAboutDesc"),
         category: "system",
         action: () => onCommandExecuteRef.current?.("about"),
         enabled: true,
@@ -158,7 +160,7 @@ export function useTerminalShortcuts({
       {
         id: "quick-skills",
         keys: customShortcuts["quick-skills"] || ["Ctrl", "S"],
-        description: "Show skills",
+        description: t("shortcutQuickSkillsDesc"),
         category: "system",
         action: () => onCommandExecuteRef.current?.("skills"),
         enabled: true,
@@ -167,7 +169,7 @@ export function useTerminalShortcuts({
       {
         id: "quick-projects",
         keys: customShortcuts["quick-projects"] || ["Ctrl", "P"],
-        description: "Show projects",
+        description: t("shortcutQuickProjectsDesc"),
         category: "system",
         action: () => onCommandExecuteRef.current?.("projects"),
         enabled: true,
@@ -177,7 +179,7 @@ export function useTerminalShortcuts({
       {
         id: "escape-close",
         keys: ["Escape"],
-        description: "Close panels/cancel operations",
+        description: t("shortcutEscapeCloseDesc"),
         category: "help",
         action: () => {},
         enabled: true,
@@ -186,7 +188,7 @@ export function useTerminalShortcuts({
       {
         id: "arrow-navigation",
         keys: ["↑", "↓"],
-        description: "Navigate through lists",
+        description: t("shortcutArrowNavigationDesc"),
         category: "help",
         action: () => {},
         enabled: true,
@@ -195,14 +197,14 @@ export function useTerminalShortcuts({
       {
         id: "enter-select",
         keys: ["Enter"],
-        description: "Select/execute highlighted item",
+        description: t("shortcutEnterSelectDesc"),
         category: "help",
         action: () => {},
         enabled: true,
         customizable: false,
       },
     ];
-  }, [customShortcuts]);
+  }, [customShortcuts, t]);
 
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {

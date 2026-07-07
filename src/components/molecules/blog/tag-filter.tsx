@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
+import { useI18n } from "@/hooks/use-i18n";
 
 export interface TagWithCount {
   name: string;
@@ -25,15 +28,16 @@ function buildTagUrl(
 }
 
 export function TagFilter({ tags, activeTag, searchParam }: TagFilterProps) {
+  const { t } = useI18n();
   if (tags.length === 0) return null;
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-      <span className="text-xs text-gray-500 shrink-0">Filter:</span>
+      <span className="text-xs text-gray-500 shrink-0">{t("blogFilter")}</span>
 
       <Link href={buildTagUrl(undefined, searchParam) as never}>
         <TagChip
-          name="All"
+          name={t("logsAll")}
           active={!activeTag}
           size="sm"
         />

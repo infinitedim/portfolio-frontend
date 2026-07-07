@@ -63,13 +63,14 @@ Read `seo/references/eeat-framework.md` for full criteria.
 ### Word Count Analysis
 
 Compare against page type minimums:
-| Page Type | Minimum |
-|-----------|---------|
-| Homepage | 500 |
-| Service page | 800 |
-| Blog post | 1,500 |
-| Product page | 300+ (400+ for complex products) |
-| Location page | 500-600 |
+
+| Page Type     | Minimum                          |
+| ------------- | -------------------------------- |
+| Homepage      | 500                              |
+| Service page  | 800                              |
+| Blog post     | 1,500                            |
+| Product page  | 300+ (400+ for complex products) |
+| Location page | 500-600                          |
 
 > **Important:** These are **topical coverage floors**, not targets. Google has confirmed word count is NOT a direct ranking factor. The goal is comprehensive topical coverage; a 500-word page that thoroughly answers the query will outrank a 2,000-word page that doesn't. Use these as guidelines for adequate coverage depth, not rigid requirements.
 

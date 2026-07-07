@@ -3,7 +3,11 @@
 import { type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { SkillCategory } from "@/lib/data/data-fetching";
-import { FadeIn, StaggerContainer, HoverCard } from "@/components/atoms/shared/motion-wrappers";
+import {
+  FadeIn,
+  StaggerContainer,
+  HoverCard,
+} from "@/components/atoms/shared/motion-wrappers";
 
 interface SkillsGridClientProps {
   categories: SkillCategory[];
@@ -16,7 +20,9 @@ const LEVEL_COLORS: Record<string, string> = {
   expert: "text-green-400",
 };
 
-export function SkillsGridClient({ categories }: SkillsGridClientProps): JSX.Element {
+export function SkillsGridClient({
+  categories,
+}: SkillsGridClientProps): JSX.Element {
   const { t } = useI18n();
 
   const getLevelLabel = (level: string) => {
@@ -37,15 +43,26 @@ export function SkillsGridClient({ categories }: SkillsGridClientProps): JSX.Ele
   return (
     <section className="border-t border-neutral-800 px-4 py-16">
       <div className="mx-auto max-w-6xl">
-        <FadeIn direction="up" duration={0.5}>
+        <FadeIn
+          direction="up"
+          duration={0.5}
+        >
           <h2 className="mb-8 font-mono text-2xl font-bold text-green-400">
             {t("landingSkillsTitle")}
           </h2>
         </FadeIn>
         <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {categories.slice(0, 6).map((category, index) => (
-            <FadeIn key={category.name} direction="up" delay={index * 0.08} duration={0.5}>
-              <HoverCard scale={1.02} className="h-full">
+            <FadeIn
+              key={category.name}
+              direction="up"
+              delay={index * 0.08}
+              duration={0.5}
+            >
+              <HoverCard
+                scale={1.02}
+                className="h-full"
+              >
                 <div className="h-full rounded-lg border border-neutral-800 bg-neutral-900/50 p-4">
                   <h3 className="mb-3 font-mono text-sm font-semibold text-white">
                     {category.name}

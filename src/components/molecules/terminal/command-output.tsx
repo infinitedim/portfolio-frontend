@@ -97,8 +97,8 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
             {formatContent(output.content)}
             {isError && (
               <div className="mt-2 text-sm opacity-75">
-                Try typing 'help' to see available commands or 'clear' to
-                reset the terminal.
+                Try typing 'help' to see available commands or 'clear' to reset
+                the terminal.
               </div>
             )}
           </div>

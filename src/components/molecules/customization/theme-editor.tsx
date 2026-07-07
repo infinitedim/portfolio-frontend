@@ -4,6 +4,7 @@ import { useState, useEffect, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import type { CustomTheme } from "@/types/customization";
 import { Eye, EyeOff } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface ThemeEditorProps {
   theme: CustomTheme;
@@ -16,6 +17,7 @@ export function ThemeEditor({
   onSave,
   onCancel,
 }: ThemeEditorProps): JSX.Element {
+  const { t } = useI18n();
   const { themeConfig } = useTheme();
   const [editedTheme, setEditedTheme] = useState<CustomTheme>(theme);
   const [previewMode, setPreviewMode] = useState(false);
@@ -182,20 +184,36 @@ export function ThemeEditor({
   };
 
   const colorFields = [
-    { key: "bg", label: "Background", description: "Main background color" },
-    { key: "text", label: "Text", description: "Primary text color" },
-    { key: "prompt", label: "Prompt", description: "Command prompt color" },
-    { key: "success", label: "Success", description: "Success message color" },
-    { key: "error", label: "Error", description: "Error message color" },
+    { key: "bg" as const, label: t("colorBg"), description: t("colorBgDesc") },
     {
-      key: "accent",
-      label: "Accent",
-      description: "Accent and highlight color",
+      key: "text" as const,
+      label: t("colorText"),
+      description: t("colorTextDesc"),
     },
     {
-      key: "border",
-      label: "Border",
-      description: "Border and separator color",
+      key: "prompt" as const,
+      label: t("colorPrompt"),
+      description: t("colorPromptDesc"),
+    },
+    {
+      key: "success" as const,
+      label: t("colorSuccess"),
+      description: t("colorSuccessDesc"),
+    },
+    {
+      key: "error" as const,
+      label: t("colorError"),
+      description: t("colorErrorDesc"),
+    },
+    {
+      key: "accent" as const,
+      label: t("colorAccent"),
+      description: t("colorAccentDesc"),
+    },
+    {
+      key: "border" as const,
+      label: t("colorBorder"),
+      description: t("colorBorderDesc"),
     },
   ];
 
@@ -210,7 +228,9 @@ export function ThemeEditor({
             className="text-lg font-bold"
             style={{ color: themeConfig.colors.accent }}
           >
-            {theme.id ? "Edit Theme" : "Create New Theme"}
+            {theme.id
+              ? t("customEditThemeTitle")
+              : t("customCreateNewThemeTitle")}
           </h3>
           <div className="flex gap-2">
             <button
@@ -229,18 +249,18 @@ export function ThemeEditor({
               }}
               title={
                 previewMode
-                  ? "Click to disable live preview in terminal"
-                  : "Click to preview theme in terminal"
+                  ? t("customPreviewModeOn")
+                  : t("customPreviewModeOff")
               }
             >
               <span className="flex items-center justify-center gap-1.5">
                 {previewMode ? (
                   <>
-                    <EyeOff size={16} /> Live Preview ON
+                    <EyeOff size={16} /> {t("customPreviewModeOn")}
                   </>
                 ) : (
                   <>
-                    <Eye size={16} /> Preview in Terminal
+                    <Eye size={16} /> {t("customLivePreview")}
                   </>
                 )}
               </span>
@@ -263,7 +283,7 @@ export function ThemeEditor({
                   className="block text-sm font-medium mb-1.5"
                   style={{ color: themeConfig.colors.text }}
                 >
-                  Color Rule
+                  {t("customColorRule")}
                 </label>
                 <div className="relative">
                   <button
@@ -393,7 +413,7 @@ export function ThemeEditor({
                     color: themeConfig.colors.bg,
                   }}
                 >
-                  Generate Random Theme
+                  {t("customGenerateRandomTheme")}
                 </button>
               </div>
             </div>
@@ -414,7 +434,7 @@ export function ThemeEditor({
                   borderColor: themeConfig.colors.border,
                   color: themeConfig.colors.text,
                 }}
-                placeholder="Enter theme name"
+                placeholder={t("customThemeNamePlaceholder")}
               />
             </label>
           </div>
@@ -433,7 +453,7 @@ export function ThemeEditor({
                   borderColor: themeConfig.colors.border,
                   color: themeConfig.colors.text,
                 }}
-                placeholder="Describe your theme"
+                placeholder={t("customThemeDescriptionPlaceholder")}
               />
             </label>
           </div>
@@ -446,7 +466,7 @@ export function ThemeEditor({
               className="font-medium mb-2"
               style={{ color: themeConfig.colors.text }}
             >
-              Live Preview
+              {t("customLivePreview")}
             </h4>
             <div
               className="p-4 rounded border font-mono text-sm"
@@ -539,7 +559,7 @@ export function ThemeEditor({
             className="font-medium mb-2"
             style={{ color: themeConfig.colors.text }}
           >
-            Color Palette
+            {t("customColorPalette")}
           </h4>
 
           <div className="grid gap-2.5">
@@ -603,7 +623,7 @@ export function ThemeEditor({
             color: themeConfig.colors.text,
           }}
         >
-          Cancel
+          {t("customCancel")}
         </button>
         <button
           onClick={handleSave}
@@ -615,7 +635,7 @@ export function ThemeEditor({
           }}
           disabled={!editedTheme.name.trim()}
         >
-          Save Theme
+          {t("customSaveTheme")}
         </button>
       </div>
     </div>

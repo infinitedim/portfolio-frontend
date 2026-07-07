@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface ShareButtonsProps {
   title: string;
@@ -9,6 +10,7 @@ interface ShareButtonsProps {
 }
 
 export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
+  const { t } = useI18n();
   const [copied, setCopied] = useState(false);
 
   const baseUrl =
@@ -35,14 +37,16 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-3 font-mono">
-      <span className="text-sm text-terminal-muted font-mono">Share:</span>
+      <span className="text-sm text-terminal-muted font-mono">
+        {t("blogShare")}
+      </span>
 
       <a
         href={twitterUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="text-xs px-3 py-1.5 border border-terminal-border rounded hover:border-sky-400/80 text-terminal-muted hover:text-sky-400 transition-colors"
-        aria-label="Share on Twitter/X"
+        aria-label={t("blogShareTwitter")}
       >
         𝕏 Twitter
       </a>
@@ -52,7 +56,7 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
         target="_blank"
         rel="noopener noreferrer"
         className="text-xs px-3 py-1.5 border border-terminal-border rounded hover:border-blue-400/80 text-terminal-muted hover:text-blue-400 transition-colors"
-        aria-label="Share on LinkedIn"
+        aria-label={t("blogShareLinkedin")}
       >
         LinkedIn
       </a>
@@ -60,9 +64,9 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
       <button
         onClick={handleCopyLink}
         className="text-xs px-3 py-1.5 border border-terminal-border rounded hover:border-terminal-accent text-terminal-muted hover:text-terminal-accent transition-colors cursor-pointer"
-        aria-label="Copy link"
+        aria-label={t("blogCopyLink")}
       >
-        {copied ? "✓ Copied!" : "Copy Link"}
+        {copied ? t("blogCopied") : t("blogCopyLink")}
       </button>
     </div>
   );

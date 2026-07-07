@@ -126,11 +126,11 @@ export function TerminalLoginForm({
 
         onLoginSuccess?.();
       } else {
-        setError(result.error || "Login failed");
+        setError(result.error || t("adminLoginFailed"));
         setCurrentField("password");
       }
     } catch (_err) {
-      setError("An unexpected error occurred");
+      setError(t("adminLoginUnexpectedError"));
       setCurrentField("password");
     } finally {
       setIsLoading(false);
@@ -157,10 +157,10 @@ export function TerminalLoginForm({
         setCurrentField("email");
         onLoginSuccess?.();
       } else {
-        setError(result.error || "Invalid 2FA code");
+        setError(result.error || t("admin2FAInvalidCode"));
       }
     } catch (_err) {
-      setError("An unexpected error occurred");
+      setError(t("adminLoginUnexpectedError"));
     } finally {
       setIsLoading(false);
     }
@@ -290,8 +290,10 @@ export function TerminalLoginForm({
             color: themeConfig.colors.text,
           }}
         >
-          Enter the {useBackupCode ? "backup code" : "6-digit code"} from
-          your authenticator app to finish signing in.
+          {t("admin2FACodeHint").replace(
+            "{codeType}",
+            useBackupCode ? t("admin2FACodeTypeBackup") : t("admin2FACodeType6Digit"),
+          )}
         </div>
 
         <div className="flex items-center gap-2 w-full">
@@ -356,11 +358,11 @@ export function TerminalLoginForm({
                   className="animate-spin"
                   size={14}
                 />{" "}
-                Verifying…
+                {t("admin2FAVerifying")}
               </span>
             ) : (
               <span className="flex items-center justify-center gap-2">
-                <ArrowRight size={14} /> Verify
+                <ArrowRight size={14} /> {t("admin2FAVerify")}
               </span>
             )}
           </button>
@@ -374,7 +376,7 @@ export function TerminalLoginForm({
               border: `1px solid ${themeConfig.colors.border}`,
             }}
           >
-            Cancel
+            {t("admin2FACancel")}
           </button>
         </div>
 
@@ -389,8 +391,8 @@ export function TerminalLoginForm({
           style={{ color: themeConfig.colors.accent }}
         >
           {useBackupCode
-            ? "Use 6-digit authenticator code instead"
-            : "Lost your device? Use a backup code"}
+            ? t("admin2FAUseAuthenticator")
+            : t("admin2FAUseBackup")}
         </button>
       </div>
     );
@@ -412,14 +414,14 @@ export function TerminalLoginForm({
       )}
 
       <div className="relative">
-        {renderInputField("email", email, "Enter your email", emailInputRef)}
+        {renderInputField("email", email, t("adminLoginEmailPlaceholder"), emailInputRef)}
       </div>
 
       <div className="relative">
         {renderInputField(
           "password",
           password,
-          "Enter your password",
+          t("adminLoginPasswordPlaceholder"),
           passwordInputRef,
         )}
       </div>
@@ -492,8 +494,8 @@ export function TerminalLoginForm({
       </div>
 
       <div className="text-xs opacity-60 text-center">
-        <div>Press Tab to switch fields • Press Enter to submit</div>
-        <div>Use Ctrl+C to cancel • Use Ctrl+L to clear</div>
+        <div>{t("adminLoginTabHint")}</div>
+        <div>{t("adminLoginCtrlHint")}</div>
       </div>
     </div>
   );

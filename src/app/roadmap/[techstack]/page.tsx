@@ -10,7 +10,9 @@ interface PageProps {
 }
 
 // Dynamically generate metadata based on the roadmap title
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { techstack } = await params;
 
   if (!/^[a-zA-Z0-9_-]+$/.test(techstack)) {
@@ -20,13 +22,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const filePath = path.join(
     process.cwd(),
     "src/lib/data/roadmaps",
-    `${techstack}.json`
+    `${techstack}.json`,
   );
 
   try {
     const rawData = await fs.readFile(filePath, "utf-8");
     const roadmapData = JSON.parse(rawData) as Root;
-    const title = roadmapData.title?.page ?? roadmapData.title?.card ?? techstack;
+    const title =
+      roadmapData.title?.page ?? roadmapData.title?.card ?? techstack;
     return {
       title: `${title} Roadmap | Portfolio`,
       description: roadmapData.description,
@@ -68,7 +71,7 @@ async function RoadmapDetailContent({ params }: PageProps) {
   const filePath = path.join(
     process.cwd(),
     "src/lib/data/roadmaps",
-    `${techstack}.json`
+    `${techstack}.json`,
   );
 
   let roadmapData: Root;
@@ -76,14 +79,22 @@ async function RoadmapDetailContent({ params }: PageProps) {
     const rawData = await fs.readFile(filePath, "utf-8");
     roadmapData = JSON.parse(rawData) as Root;
   } catch (err) {
-    console.error(`[roadmap/[techstack]] failed to read static layout for ${techstack}:`, err);
+    console.error(
+      `[roadmap/[techstack]] failed to read static layout for ${techstack}:`,
+      err,
+    );
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-neutral-400 font-mono p-5 text-center">
         <div>
           <div className="text-3xl mb-3">️</div>
           <h1 className="text-white text-lg font-bold">Layout Not Found</h1>
-          <p className="text-sm mt-1">We don't have the visual layout structure for "{techstack}" yet.</p>
-          <a href="/roadmap" className="mt-4 inline-block text-xs text-sky-500 hover:underline">
+          <p className="text-sm mt-1">
+            We don't have the visual layout structure for "{techstack}" yet.
+          </p>
+          <a
+            href="/roadmap"
+            className="mt-4 inline-block text-xs text-sky-500 hover:underline"
+          >
             ← Back to Roadmap Progress
           </a>
         </div>
@@ -91,6 +102,10 @@ async function RoadmapDetailContent({ params }: PageProps) {
     );
   }
 
-  return <RoadmapDetailClient techstack={techstack} initialStructure={roadmapData} />;
+  return (
+    <RoadmapDetailClient
+      techstack={techstack}
+      initialStructure={roadmapData}
+    />
+  );
 }
-

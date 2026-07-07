@@ -9,12 +9,18 @@ interface AboutSectionClientProps {
   about: AboutInfo;
 }
 
-export function AboutSectionClient({ about }: AboutSectionClientProps): JSX.Element {
+export function AboutSectionClient({
+  about,
+}: AboutSectionClientProps): JSX.Element {
   const { t } = useI18n();
 
   return (
     <section className="border-t border-neutral-800 px-4 py-16">
-      <FadeIn direction="up" duration={0.6} className="mx-auto max-w-4xl">
+      <FadeIn
+        direction="up"
+        duration={0.6}
+        className="mx-auto max-w-4xl"
+      >
         <h2 className="mb-6 font-mono text-2xl font-bold text-green-400">
           {t("landingAboutTitle")}
         </h2>
@@ -22,7 +28,9 @@ export function AboutSectionClient({ about }: AboutSectionClientProps): JSX.Elem
           <p className="text-lg text-white">{about.title}</p>
           <p>{about.bio}</p>
           {about.location && (
-            <p className="text-neutral-500">{t("aboutLocation")}: {about.location}</p>
+            <p className="text-neutral-500">
+              {t("aboutLocation")}: {about.location}
+            </p>
           )}
         </div>
       </FadeIn>

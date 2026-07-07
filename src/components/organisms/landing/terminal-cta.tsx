@@ -13,8 +13,14 @@ export function TerminalCta(): JSX.Element {
 
   return (
     <section className="border-t border-neutral-800 px-4 py-16">
-      <FadeIn direction="up" duration={0.6}>
-        <HoverCard scale={1.01} className="mx-auto max-w-4xl rounded-lg border border-green-400/20 bg-green-400/5 p-8 text-center">
+      <FadeIn
+        direction="up"
+        duration={0.6}
+      >
+        <HoverCard
+          scale={1.01}
+          className="mx-auto max-w-4xl rounded-lg border border-green-400/20 bg-green-400/5 p-8 text-center"
+        >
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-green-400/70">
               {t("landingCtaTerminalGate")}

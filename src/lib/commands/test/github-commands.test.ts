@@ -147,11 +147,7 @@ describe("githubCommand", () => {
         expect(true).toBe(true);
         return;
       }
-      const out = await githubCommand.execute([
-        "repo",
-        "user",
-        "test-repo",
-      ]);
+      const out = await githubCommand.execute(["repo", "user", "test-repo"]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("Repository");
       expect(out.content as string).toContain("user/test-repo");
@@ -169,11 +165,7 @@ describe("githubCommand", () => {
         expect(true).toBe(true);
         return;
       }
-      const out = await githubCommand.execute([
-        "commits",
-        "user",
-        "repo",
-      ]);
+      const out = await githubCommand.execute(["commits", "user", "repo"]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("commits");
       expect(out.content as string).toContain("Initial commit");
@@ -191,11 +183,7 @@ describe("githubCommand", () => {
         expect(true).toBe(true);
         return;
       }
-      const out = await githubCommand.execute([
-        "languages",
-        "user",
-        "repo",
-      ]);
+      const out = await githubCommand.execute(["languages", "user", "repo"]);
       expect(out.type).toBe("success");
       expect(out.content as string).toContain("Languages");
       expect(out.content as string).toContain("TypeScript");

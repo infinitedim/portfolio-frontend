@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { i18n } from "@/lib/i18n";
 
 interface Props {
   children: React.ReactNode;
@@ -33,7 +34,7 @@ export class ImageErrorBoundary extends React.Component<Props, State> {
             <div className="text-center p-4">
               <span className="text-4xl">️</span>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                Failed to load image
+                {i18n.t("errorFailedLoadImage")}
               </p>
             </div>
           </div>

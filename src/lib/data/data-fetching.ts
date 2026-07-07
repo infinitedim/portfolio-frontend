@@ -70,8 +70,6 @@ const CACHE_DURATIONS = {
   ABOUT: 1000 * 60 * 60 * 24,
 } as const;
 
-
-
 export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   const backendUrl = getBackendUrl();
 

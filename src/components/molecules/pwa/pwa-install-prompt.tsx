@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTheme } from "@/hooks/use-theme";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface PWAInstallPromptProps {
   onInstall?: () => void;
@@ -16,6 +17,7 @@ export function PWAInstallPrompt({
   delay = 3000,
   persistDismissal = true,
 }: PWAInstallPromptProps) {
+  const { t } = useI18n();
   const { themeConfig } = useTheme();
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -198,7 +200,7 @@ export function PWAInstallPrompt({
             <button
               className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors"
               onClick={handleDismiss}
-              aria-label="Close"
+              aria-label={t("close")}
             />
             <div className="w-3 h-3 rounded-full bg-yellow-500" />
             <div className="w-3 h-3 rounded-full bg-green-500" />
@@ -216,14 +218,14 @@ export function PWAInstallPrompt({
                 id="pwa-prompt-title"
                 className="font-semibold text-sm"
               >
-                Install Portfolio App
+                {t("pwaInstallTitle")}
               </h2>
               <p
                 id="pwa-prompt-description"
                 className="text-xs opacity-75 mt-0.5"
                 style={{ color: textColor }}
               >
-                Get the native app experience
+                {t("pwaInstallSubtitle")}
               </p>
             </div>
           </div>
@@ -236,15 +238,15 @@ export function PWAInstallPrompt({
           >
             <div className="flex items-center gap-2">
               <span style={{ color: accentColor }}>✓</span>
-              <span>Faster loading & offline access</span>
+              <span>{t("pwaFasterLoading")}</span>
             </div>
             <div className="flex items-center gap-2">
               <span style={{ color: accentColor }}>✓</span>
-              <span>Native app experience</span>
+              <span>{t("pwaNativeExperience")}</span>
             </div>
             <div className="flex items-center gap-2">
               <span style={{ color: accentColor }}>✓</span>
-              <span>Home screen shortcut</span>
+              <span>{t("pwaHomeScreenShortcut")}</span>
             </div>
           </div>
 
@@ -264,7 +266,7 @@ export function PWAInstallPrompt({
                 e.currentTarget.style.boxShadow = `0 0 10px ${accentColor}66`;
               }}
             >
-              Install Now
+              {t("pwaInstallNow")}
             </button>
             <button
               onClick={handleDismiss}
@@ -274,7 +276,7 @@ export function PWAInstallPrompt({
                 backgroundColor: `${accentColor}11`,
               }}
             >
-              Later
+              {t("pwaInstallLater")}
             </button>
           </div>
 
@@ -283,9 +285,10 @@ export function PWAInstallPrompt({
             style={{}}
           >
             <span>
-              Tip: <span className="font-bold">pwa --install</span>
+              {t("pwaInstallTip")}{" "}
+              <span className="font-bold">{t("pwaInstallCommand")}</span>
             </span>
-            <span className="text-xs opacity-50">ESC to dismiss</span>
+            <span className="text-xs opacity-50">{t("pwaDismiss")}</span>
           </div>
         </div>
       </div>

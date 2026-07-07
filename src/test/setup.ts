@@ -154,7 +154,9 @@ Object.defineProperty(global, "crypto", {
     subtle: _nativeCrypto?.subtle,
     getRandomValues: <T extends ArrayBufferView>(array: T): T => {
       if (_nativeCrypto) {
-        return _nativeCrypto.getRandomValues(array as unknown as Uint8Array) as unknown as T;
+        return _nativeCrypto.getRandomValues(
+          array as unknown as Uint8Array,
+        ) as unknown as T;
       }
       return array;
     },

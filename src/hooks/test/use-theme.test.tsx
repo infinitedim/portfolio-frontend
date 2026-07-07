@@ -149,7 +149,9 @@ describe("useTheme", () => {
       const { result } = renderHook(() => useTheme());
 
       act(() => {
-        const success = result.current.changeTheme("invalidThemeName" as unknown as ThemeName);
+        const success = result.current.changeTheme(
+          "invalidThemeName" as unknown as ThemeName,
+        );
         expect(success).toBe(false);
       });
     });

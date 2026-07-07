@@ -196,13 +196,15 @@ export function ThemePreview({
                 Contrast Ratio (Text/Background):
                 <span className="ml-2 font-mono">
                   {}
-                  Good </span>
+                  Good{" "}
+                </span>
               </div>
               <div>
                 Color Blind Friendly:
                 <span className="ml-2">
                   {}
-                  Checking... </span>
+                  Checking...{" "}
+                </span>
               </div>
             </div>
           </div>

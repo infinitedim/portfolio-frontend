@@ -178,7 +178,9 @@ describe("bundleOptimization", () => {
     it("should retry on failed import", async () => {
       const mockImport = vi
         .fn()
-        .mockImplementationOnce(async () => { throw new Error("fail"); })
+        .mockImplementationOnce(async () => {
+          throw new Error("fail");
+        })
         .mockImplementation(async () => "success");
 
       const promise = dynamicImportWithRetry(mockImport, 2);
@@ -191,7 +193,9 @@ describe("bundleOptimization", () => {
     });
 
     it("should throw error after all retries", async () => {
-      const mockImport = vi.fn().mockImplementation(async () => { throw new Error("fail"); });
+      const mockImport = vi.fn().mockImplementation(async () => {
+        throw new Error("fail");
+      });
 
       const promise = dynamicImportWithRetry(mockImport, 2, 10);
       promise.catch(() => {});
@@ -203,7 +207,9 @@ describe("bundleOptimization", () => {
     });
 
     it("should use default retry count and delay", async () => {
-      const mockImport = vi.fn().mockImplementation(async () => { throw new Error("fail"); });
+      const mockImport = vi.fn().mockImplementation(async () => {
+        throw new Error("fail");
+      });
 
       const promise = dynamicImportWithRetry(mockImport);
       promise.catch(() => {});
@@ -218,7 +224,9 @@ describe("bundleOptimization", () => {
     });
 
     it("should handle custom retry parameters", async () => {
-      const mockImport = vi.fn().mockImplementation(async () => { throw new Error("fail"); });
+      const mockImport = vi.fn().mockImplementation(async () => {
+        throw new Error("fail");
+      });
 
       const promise = dynamicImportWithRetry(mockImport, 1, 5);
       promise.catch(() => {});
@@ -441,7 +449,8 @@ describe("error handling and edge cases", () => {
       removeItem: vi.fn(),
     };
 
-    (global as unknown as Record<string, unknown>).localStorage = mockLocalStorage;
+    (global as unknown as Record<string, unknown>).localStorage =
+      mockLocalStorage;
 
     Object.keys = vi.fn().mockReturnValue(["temp-test"]);
 

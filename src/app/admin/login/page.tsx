@@ -6,19 +6,21 @@ import { TerminalLoginForm } from "@/components/molecules/admin/terminal-login-f
 import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/lib/auth/auth-context";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function AdminLoginPage() {
   const { themeConfig } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
+  const { t } = useI18n();
   const router = useRouter();
   const [isBackHovered, setIsBackHovered] = useState(false);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      const t = setTimeout(() => {
+      const timer = setTimeout(() => {
         router.push("/admin");
       }, 0);
-      return () => clearTimeout(t);
+      return () => clearTimeout(timer);
     }
   }, [isLoading, isAuthenticated, router]);
 
@@ -101,7 +103,7 @@ export default function AdminLoginPage() {
                   : "none",
               }}
             >
-              ← Back
+              {t("adminLoginBack")}
             </button>
           </div>
 
@@ -111,13 +113,13 @@ export default function AdminLoginPage() {
                 className="text-xl font-bold mb-2"
                 style={{ color: themeConfig.colors.accent }}
               >
-                Admin Authentication
+                {t("adminLoginTitle")}
               </h1>
               <p
                 className="text-sm"
                 style={{ color: themeConfig.colors.muted }}
               >
-                Enter your credentials to access the admin panel
+                {t("adminLoginDesc")}
               </p>
             </div>
 
@@ -132,18 +134,17 @@ export default function AdminLoginPage() {
             style={{ borderColor: themeConfig.colors.border }}
           >
             <span style={{ color: themeConfig.colors.muted }}>
-              Press ← Back to return to home • Use Tab to navigate • Enter to
-              submit
+              {t("adminLoginHint")}
             </span>{" "}
             <br />
             <span style={{ color: themeConfig.colors.muted }}>
-              Don't have an account?{" "}
+              {t("adminLoginNoAccount")}{" "}
               <button
                 onClick={() => router.push("/admin/register")}
                 className="underline hover:no-underline"
                 style={{ color: themeConfig.colors.accent }}
               >
-                Register here
+                {t("adminLoginRegister")}
               </button>
             </span>{" "}
           </div>

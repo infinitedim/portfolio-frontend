@@ -92,8 +92,7 @@ export function AccessibilityMenu(): JSX.Element {
           className="text-lg"
           role="img"
           aria-label="Accessibility"
-        >
-          </span>
+        ></span>
       </button>
 
       {isOpen && (

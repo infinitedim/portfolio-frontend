@@ -10,6 +10,7 @@ import { TerminalDropdown } from "@/components/atoms/terminal/terminal-dropdown"
 import { Check, Save, Upload, Loader2, Dices } from "lucide-react";
 import type { CustomFont } from "@/types/customization";
 import type { FontName } from "@/types/font";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface FontManagerProps {
   fonts: CustomFont[];
@@ -22,6 +23,7 @@ export function FontManager({
   onUpdate,
   onClose,
 }: FontManagerProps): JSX.Element {
+  const { t } = useI18n();
   const { themeConfig } = useTheme();
   const { changeFont } = useFont();
   const [selectedFont, setSelectedFont] = useState<CustomFont | null>(null);
@@ -89,7 +91,7 @@ export function FontManager({
         : googleFonts;
 
       if (availableFonts.length === 0) {
-        alert("No fonts available with ligatures support.");
+        alert(t("customNoLigaturesFonts"));
         setIsGeneratingRandom(false);
         return;
       }
@@ -222,7 +224,7 @@ export function FontManager({
   const handleDeleteFont = (font: CustomFont) => {
     if (font.source !== "custom") return;
 
-    if (confirm(`Are you sure you want to delete "${font.name}"?`)) {
+    if (confirm(t("customDeleteConfirm").replace("{name}", font.name))) {
       customizationService.deleteCustomFont(font.id);
       onUpdate();
       if (selectedFont?.id === font.id) {
@@ -248,7 +250,7 @@ export function FontManager({
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Search fonts..."
+                placeholder={t("customSearchFontsPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-3 py-2 rounded border bg-transparent"
@@ -274,11 +276,11 @@ export function FontManager({
                         size={14}
                         className="animate-spin"
                       />{" "}
-                      Uploading...
+                      {t("picking")}
                     </>
                   ) : (
                     <>
-                      <Upload size={14} /> Upload
+                      <Upload size={14} /> {t("upload")}
                     </>
                   )}
                 </span>
@@ -300,10 +302,10 @@ export function FontManager({
                 setFilterSource(value as "all" | "system" | "google" | "custom")
               }
               options={[
-                { label: "All Sources", value: "all" },
-                { label: "System", value: "system" },
-                { label: "Google Fonts", value: "google" },
-                { label: "Custom", value: "custom" },
+                { label: t("allSources"), value: "all" },
+                { label: t("system"), value: "system" },
+                { label: t("googleFonts"), value: "google" },
+                { label: t("custom"), value: "custom" },
               ]}
               className="w-full"
             />
@@ -320,7 +322,7 @@ export function FontManager({
                   className="text-sm font-medium"
                   style={{ color: themeConfig.colors.text }}
                 >
-                  Pick Random Font
+                  {t("pickRandomFont")}
                 </span>
                 <div className="flex items-center gap-2">
                   <label
@@ -339,7 +341,7 @@ export function FontManager({
                         accentColor: themeConfig.colors.accent,
                       }}
                     />
-                    <span>Ligatures</span>
+                    <span>{t("customLigatures")}</span>
                   </label>
                 </div>
               </div>
@@ -359,11 +361,11 @@ export function FontManager({
                         size={14}
                         className="animate-spin"
                       />{" "}
-                      Picking...
+                      {t("picking")}
                     </>
                   ) : (
                     <>
-                      <Dices size={14} /> Pick Random Font
+                      <Dices size={14} /> {t("pickRandomFont")}
                     </>
                   )}
                 </span>
@@ -454,7 +456,10 @@ export function FontManager({
 
                 {font.source === "custom" && font.size && (
                   <div className="text-xs opacity-60 mb-2">
-                    Size: {formatFileSize(font.size)}
+                    {t("customSize").replace(
+                      "{size}",
+                      formatFileSize(font.size),
+                    )}
                   </div>
                 )}
 
@@ -471,7 +476,7 @@ export function FontManager({
                       color: themeConfig.colors.success,
                     }}
                   >
-                    Apply
+                    {t("apply")}
                   </button>
 
                   {font.source === "custom" && (
@@ -487,7 +492,7 @@ export function FontManager({
                         color: themeConfig.colors.error,
                       }}
                     >
-                      Delete
+                      {t("delete")}
                     </button>
                   )}
                 </div>
@@ -527,7 +532,7 @@ export function FontManager({
                     }}
                   >
                     <span className="flex items-center gap-1">
-                      <Check size={14} /> Apply Font
+                      <Check size={14} /> {t("applyFont")}
                     </span>
                   </button>
                   <button
@@ -538,24 +543,44 @@ export function FontManager({
                       borderColor: themeConfig.colors.accent,
                       color: themeConfig.colors.accent,
                     }}
-                    title="Save as current font and keep dialog open"
+                    title={t("customSaveCurrentFont")}
                   >
                     <span className="flex items-center gap-1">
-                      <Save size={14} /> Save as Current Font
+                      <Save size={14} /> {t("customSaveCurrentFont")}
                     </span>
                   </button>
                 </div>
               </div>
 
               <div className="flex gap-4 text-xs opacity-75">
-                <span>Source: {selectedFont.source}</span>
-                <span>Weight: {selectedFont.weight}</span>
-                <span>Ligatures: {selectedFont.ligatures ? "Yes" : "No"}</span>
+                <span>
+                  {t("customSource").replace("{source}", selectedFont.source)}
+                </span>
+                <span>
+                  {t("customWeight").replace(
+                    "{weight}",
+                    String(selectedFont.weight),
+                  )}
+                </span>
+                <span>
+                  {t("customLigaturesLabel").replace(
+                    "{ligatures}",
+                    selectedFont.ligatures ? t("yes") : t("no"),
+                  )}
+                </span>
                 {selectedFont.size && (
-                  <span>Size: {formatFileSize(selectedFont.size)}</span>
+                  <span>
+                    {t("customSize").replace(
+                      "{size}",
+                      formatFileSize(selectedFont.size),
+                    )}
+                  </span>
                 )}
                 <span>
-                  Added: {selectedFont.createdAt.toLocaleDateString()}
+                  {t("customAdded").replace(
+                    "{date}",
+                    selectedFont.createdAt.toLocaleDateString(),
+                  )}
                 </span>
               </div>
             </div>
@@ -567,7 +592,7 @@ export function FontManager({
                     className="font-medium mb-3"
                     style={{ color: themeConfig.colors.text }}
                   >
-                    Font Preview
+                    {t("customFontPreview")}
                   </h4>
                   <div className="space-y-4">
                     {[12, 14, 16, 18, 20].map((size) => (
@@ -600,7 +625,7 @@ export function FontManager({
                     className="font-medium mb-3"
                     style={{ color: themeConfig.colors.text }}
                   >
-                    Code Sample
+                    {t("customCodeSample")}
                   </h4>
                   <div
                     className="p-4 rounded border font-mono text-sm"
@@ -650,7 +675,7 @@ export function FontManager({
                     className="font-medium mb-3"
                     style={{ color: themeConfig.colors.text }}
                   >
-                    Terminal Sample
+                    {t("customTerminalSample")}
                   </h4>
                   <div
                     className="p-4 rounded border font-mono text-sm"
@@ -694,7 +719,7 @@ export function FontManager({
                       className="font-medium mb-3"
                       style={{ color: themeConfig.colors.text }}
                     >
-                      Ligatures Test
+                      {t("customLigaturesTest")}
                     </h4>
                     <div
                       className="p-4 rounded border font-mono text-sm"
@@ -730,10 +755,10 @@ export function FontManager({
                 className="text-lg font-medium mb-2"
                 style={{ color: themeConfig.colors.accent }}
               >
-                Select a Font
+                {t("customSelectFont")}
               </h3>
               <p className="text-sm opacity-75">
-                Choose a font from the list to preview it
+                {t("customChooseFontPreview")}
               </p>
               <div className="mt-4 text-xs opacity-60">
                 <p>Supported formats: .woff, .woff2, .ttf, .otf</p>

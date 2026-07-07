@@ -1,9 +1,6 @@
 import { Metadata } from "next";
 import { Suspense, JSX } from "react";
-import {
-  getProjectsData,
-  getFeaturedProjects,
-} from "@/lib/data/data-fetching";
+import { getProjectsData, getFeaturedProjects } from "@/lib/data/data-fetching";
 import { ProjectsLoading } from "@/components/organisms/projects/projects-loading";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 

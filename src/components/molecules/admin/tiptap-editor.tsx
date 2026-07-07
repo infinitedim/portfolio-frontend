@@ -50,18 +50,19 @@ export function TiptapEditor({
   minHeight = "320px",
 }: TiptapEditorProps) {
   const extensions = useMemo(
-    () => [
-      StarterKit.configure({ heading: false, link: false }),
-      HeadingWithIds.configure({ levels: [1, 2, 3] }),
-      Link.configure({ openOnClick: false }),
-      Image.configure({ inline: false }),
-      Placeholder.configure({ placeholder }),
-      Markdown.configure({
-        html: true,
-        transformPastedText: true,
-        breaks: false,
-      }),
-    ] as unknown as Extensions,
+    () =>
+      [
+        StarterKit.configure({ heading: false, link: false }),
+        HeadingWithIds.configure({ levels: [1, 2, 3] }),
+        Link.configure({ openOnClick: false }),
+        Image.configure({ inline: false }),
+        Placeholder.configure({ placeholder }),
+        Markdown.configure({
+          html: true,
+          transformPastedText: true,
+          breaks: false,
+        }),
+      ] as unknown as Extensions,
     [placeholder],
   );
 
@@ -121,9 +122,9 @@ export function TiptapEditor({
       if (!file) return;
       const url = await onImageUpload(file);
       if (url) {
-        (
-          editor.chain().focus() as unknown as ChainedEditorCommands
-        ).setImage({ src: url }).run();
+        (editor.chain().focus() as unknown as ChainedEditorCommands)
+          .setImage({ src: url })
+          .run();
       }
     };
     input.click();
@@ -156,9 +157,9 @@ export function TiptapEditor({
           label="B"
           active={editor.isActive("bold")}
           onClick={() =>
-            (
-              editor.chain().focus() as unknown as ChainedEditorCommands
-            ).toggleBold().run()
+            (editor.chain().focus() as unknown as ChainedEditorCommands)
+              .toggleBold()
+              .run()
           }
           themeConfig={themeConfig}
         />
@@ -166,9 +167,9 @@ export function TiptapEditor({
           label="I"
           active={editor.isActive("italic")}
           onClick={() =>
-            (
-              editor.chain().focus() as unknown as ChainedEditorCommands
-            ).toggleItalic().run()
+            (editor.chain().focus() as unknown as ChainedEditorCommands)
+              .toggleItalic()
+              .run()
           }
           themeConfig={themeConfig}
         />
@@ -176,9 +177,9 @@ export function TiptapEditor({
           label="H2"
           active={editor.isActive("heading", { level: 2 })}
           onClick={() =>
-            (
-              editor.chain().focus() as unknown as ChainedEditorCommands
-            ).toggleHeading({ level: 2 }).run()
+            (editor.chain().focus() as unknown as ChainedEditorCommands)
+              .toggleHeading({ level: 2 })
+              .run()
           }
           themeConfig={themeConfig}
         />
@@ -186,9 +187,9 @@ export function TiptapEditor({
           label="H3"
           active={editor.isActive("heading", { level: 3 })}
           onClick={() =>
-            (
-              editor.chain().focus() as unknown as ChainedEditorCommands
-            ).toggleHeading({ level: 3 }).run()
+            (editor.chain().focus() as unknown as ChainedEditorCommands)
+              .toggleHeading({ level: 3 })
+              .run()
           }
           themeConfig={themeConfig}
         />
@@ -196,9 +197,9 @@ export function TiptapEditor({
           label="• List"
           active={editor.isActive("bulletList")}
           onClick={() =>
-            (
-              editor.chain().focus() as unknown as ChainedEditorCommands
-            ).toggleBulletList().run()
+            (editor.chain().focus() as unknown as ChainedEditorCommands)
+              .toggleBulletList()
+              .run()
           }
           themeConfig={themeConfig}
         />
@@ -208,9 +209,9 @@ export function TiptapEditor({
           onClick={() => {
             const url = window.prompt("URL");
             if (url) {
-              (
-                editor.chain().focus() as unknown as ChainedEditorCommands
-              ).setLink({ href: url }).run();
+              (editor.chain().focus() as unknown as ChainedEditorCommands)
+                .setLink({ href: url })
+                .run();
             }
           }}
           themeConfig={themeConfig}

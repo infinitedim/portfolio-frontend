@@ -14,7 +14,6 @@ describe("commands.ts", () => {
   let enhancedCommands: Record<string, Command>;
 
   beforeEach(async () => {
-
     if (typeof vi !== "undefined" && vi.importActual) {
       commands =
         await vi.importActual<typeof import("../commands")>("../commands");

@@ -58,7 +58,8 @@ describe("CustomizationService", () => {
     mockRemove.mockClear();
     localStorageMock.clear();
 
-    (CustomizationService as unknown as { instance: unknown })["instance"] = undefined;
+    (CustomizationService as unknown as { instance: unknown })["instance"] =
+      undefined;
   });
 
   it("returns built-in themes plus custom themes via getAllThemes", () => {

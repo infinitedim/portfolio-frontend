@@ -36,7 +36,14 @@ describe("data-fetching.ts", () => {
             data: [
               {
                 name: "Frontend",
-                skills: [{ name: "React", level: "expert", yearsOfExperience: 5, projects: [] }],
+                skills: [
+                  {
+                    name: "React",
+                    level: "expert",
+                    yearsOfExperience: 5,
+                    projects: [],
+                  },
+                ],
                 progress: 80,
               },
             ],

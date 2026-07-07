@@ -11,7 +11,7 @@ import type { FontName, FontConfig } from "@/types/font";
 import type { CommandOutput, TerminalHistory } from "@/types/terminal";
 import type { TourStep } from "@/components/organisms/onboarding/tour-steps";
 import type { BackgroundSettings } from "@/types/customization";
-import type { TranslationKeys } from "@/lib/i18n/i18n-service";
+import type { TranslationKeys } from "@/lib/i18n/interfaces";
 
 // ---------------------------------------------------------------------------
 // Notification

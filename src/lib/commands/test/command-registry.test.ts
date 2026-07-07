@@ -17,7 +17,6 @@ describe("commandRegistry", () => {
   let aliasCommand: Command;
 
   beforeEach(async () => {
-
     if (typeof vi !== "undefined" && vi.importActual) {
       commandRegistry = await vi.importActual<
         typeof import("@/lib/commands/command-registry")

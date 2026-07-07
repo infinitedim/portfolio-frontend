@@ -20,7 +20,7 @@ describe("roadmap-commands.ts", () => {
         expect(openMock).toHaveBeenCalledWith(
           "https://roadmap.sh/u/infinitedim",
           "_blank",
-          "noopener,noreferrer"
+          "noopener,noreferrer",
         );
       } finally {
         window.open = originalOpen;

@@ -7,6 +7,7 @@ import { ThemeEditor } from "./theme-editor";
 import { TerminalDropdown } from "@/components/atoms/terminal/terminal-dropdown";
 import type { CustomTheme } from "@/types/customization";
 import { ThemeName } from "@/types/theme";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface ThemeManagerProps {
   themes: CustomTheme[];
@@ -21,6 +22,7 @@ export function ThemeManager({
   onApplyTheme,
   currentTheme,
 }: ThemeManagerProps): JSX.Element {
+  const { t } = useI18n();
   const { themeConfig, changeTheme, isThemeActive } = useTheme();
   const [selectedTheme, setSelectedTheme] = useState<CustomTheme | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -187,7 +189,7 @@ export function ThemeManager({
   };
 
   const handleDeleteTheme = (themeId: string) => {
-    if (window.confirm("Are you sure you want to delete this theme?")) {
+    if (window.confirm(t("customDeleteThemeConfirm"))) {
       if (customizationService.deleteCustomTheme(themeId)) {
         onUpdate();
         if (selectedTheme?.id === themeId) {
@@ -274,11 +276,14 @@ export function ThemeManager({
               className="text-lg font-semibold"
               style={{ color: themeConfig.colors.accent }}
             >
-              Theme Manager
+              {t("customThemeManagerTitle")}
             </h3>
             <p className="text-sm opacity-75">
-              {filteredThemes.length} of {themes.length} themes
-              {currentTheme && ` • Active: ${currentTheme}`}
+              {t("customThemesCount")
+                .replace("{count1}", String(filteredThemes.length))
+                .replace("{count2}", String(themes.length))}
+              {currentTheme &&
+                t("customActiveTheme").replace("{theme}", currentTheme)}
             </p>
           </div>
           <button
@@ -289,13 +294,13 @@ export function ThemeManager({
               color: themeConfig.colors?.bg || "#000000",
             }}
           >
-            + Create Theme
+            {t("customCreateTheme")}
           </button>
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
           <input
             type="text"
-            placeholder="Search themes..."
+            placeholder={t("customSearchThemesPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-1 px-3 py-2 rounded border text-sm transition-colors"
@@ -314,10 +319,10 @@ export function ThemeManager({
                 )
               }
               options={[
-                { label: "All Sources", value: "all" },
-                { label: "Built-in", value: "built-in" },
-                { label: "Custom", value: "custom" },
-                { label: "Imported", value: "imported" },
+                { label: t("allSources"), value: "all" },
+                { label: t("builtIn"), value: "built-in" },
+                { label: t("custom"), value: "custom" },
+                { label: t("imported"), value: "imported" },
               ]}
             />
             <TerminalDropdown
@@ -326,9 +331,9 @@ export function ThemeManager({
                 setSortBy(value as "name" | "created" | "modified")
               }
               options={[
-                { label: "Sort by Name", value: "name" },
-                { label: "Sort by Created", value: "created" },
-                { label: "Sort by Modified", value: "modified" },
+                { label: t("sortByName"), value: "name" },
+                { label: t("sortByCreated"), value: "created" },
+                { label: t("sortByModified"), value: "modified" },
               ]}
             />
           </div>
@@ -343,15 +348,15 @@ export function ThemeManager({
               className="text-lg font-medium mb-2"
               style={{ color: themeConfig.colors.accent }}
             >
-              No themes found
+              {t("customNoThemesFound")}
             </h3>
             <p
               className="text-sm opacity-75"
               style={{ color: themeConfig.colors.text }}
             >
               {searchQuery || filterSource !== "all"
-                ? "Try adjusting your search or filter"
-                : "Create your first custom theme"}
+                ? t("customAdjustSearchFilter")
+                : t("customCreateFirstTheme")}
             </p>
             {!searchQuery && filterSource === "all" && (
               <button
@@ -363,7 +368,7 @@ export function ThemeManager({
                   border: `1px solid ${themeConfig.colors.accent}`,
                 }}
               >
-                Create Theme
+                {t("customCreateTheme")}
               </button>
             )}
           </div>
@@ -459,8 +464,14 @@ export function ThemeManager({
                         style={{ color: themeConfig.colors.text }}
                       >
                         {theme.modifiedAt
-                          ? `Modified ${theme.modifiedAt.toLocaleDateString()}`
-                          : `Created ${theme.createdAt.toLocaleDateString()}`}
+                          ? t("customModified").replace(
+                              "{date}",
+                              theme.modifiedAt.toLocaleDateString(),
+                            )
+                          : t("customCreated").replace(
+                              "{date}",
+                              theme.createdAt.toLocaleDateString(),
+                            )}
                       </p>
                     )}
                   </div>
@@ -472,7 +483,7 @@ export function ThemeManager({
                       style={isActiveStyle}
                       disabled={isActive}
                     >
-                      {isActive ? "✓ Active" : "Apply"}
+                      {isActive ? t("customActive") : t("apply")}
                     </button>
 
                     <button
@@ -482,9 +493,8 @@ export function ThemeManager({
                         backgroundColor: `${themeConfig.colors.muted}30`,
                         color: themeConfig.colors.text,
                       }}
-                      title="Duplicate theme"
-                    >
-                      </button>
+                      title={t("customDuplicateTheme")}
+                    ></button>
 
                     {theme.source === "custom" && (
                       <>
@@ -495,7 +505,7 @@ export function ThemeManager({
                             backgroundColor: `${themeConfig.colors.muted}30`,
                             color: themeConfig.colors.text,
                           }}
-                          title="Edit theme"
+                          title={t("customEditTheme")}
                         >
                           ️
                         </button>
@@ -507,7 +517,7 @@ export function ThemeManager({
                             backgroundColor: `${themeConfig.colors.error || "#ef4444"}30`,
                             color: themeConfig.colors.error || "#ef4444",
                           }}
-                          title="Delete theme"
+                          title={t("customDeleteTheme")}
                         >
                           ️
                         </button>

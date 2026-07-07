@@ -6,8 +6,10 @@ import { CustomizationService } from "@/lib/services/customization-service";
 import type { CustomizationSettings } from "@/types/customization";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
 import { Settings, Save, RotateCcw } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 export function SettingsManager(): JSX.Element {
+  const { t } = useI18n();
   const { themeConfig, theme } = useTheme();
 
   const [settings, setSettings] = useState<CustomizationSettings | null>(null);
@@ -44,7 +46,7 @@ export function SettingsManager(): JSX.Element {
   };
 
   const handleReset = () => {
-    if (confirm("Are you sure you want to reset all settings to defaults?")) {
+    if (confirm(t("customResetConfirm"))) {
       customizationService.resetToDefaults();
       const defaultSettings = customizationService.getSettings();
       setSettings(defaultSettings);
@@ -65,7 +67,7 @@ export function SettingsManager(): JSX.Element {
               "src/hooks/useTheme.ts",
               "src/components/customization/SettingsManager.tsx",
             ]}
-            completionText="Settings loaded!"
+            completionText={t("customSettingsLoaded")}
           />
         </div>
       </div>
@@ -88,13 +90,13 @@ export function SettingsManager(): JSX.Element {
               className="text-lg font-bold transition-colors duration-300 flex items-center gap-1.5"
               style={{ color: themeConfig.colors.accent }}
             >
-              <Settings size={18} /> Customization Settings
+              <Settings size={18} /> {t("customSettingsTitle")}
             </h3>
             <p
               className="text-sm opacity-75 transition-colors duration-300"
               style={{ color: themeConfig.colors.text }}
             >
-              Configure appearance and behavior preferences
+              {t("customSettingsSubtitle")}
             </p>
           </div>
           <div className="flex gap-2">
@@ -111,7 +113,7 @@ export function SettingsManager(): JSX.Element {
                 }}
               >
                 <span className="flex items-center gap-1">
-                  <Save size={14} /> Save Changes
+                  <Save size={14} /> {t("customSaveChanges")}
                 </span>
               </button>
             )}
@@ -125,7 +127,7 @@ export function SettingsManager(): JSX.Element {
               }}
             >
               <span className="flex items-center gap-1">
-                <RotateCcw size={14} /> Reset to Defaults
+                <RotateCcw size={14} /> {t("customResetDefaults")}
               </span>
             </button>
           </div>
@@ -141,7 +143,7 @@ export function SettingsManager(): JSX.Element {
               className="font-medium mb-4 transition-colors duration-300"
               style={{ color: themeConfig.colors.text }}
             >
-              General
+              {t("customGeneral")}
             </h4>
             <div className="space-y-4">
               {}
@@ -151,7 +153,7 @@ export function SettingsManager(): JSX.Element {
                   className="font-medium"
                   style={{ color: themeConfig.colors.text }}
                 >
-                  Auto-save Changes
+                  {t("customAutoSave")}
                 </label>
                 <input
                   type="checkbox"
@@ -172,7 +174,7 @@ export function SettingsManager(): JSX.Element {
               className="font-medium mb-4"
               style={{ color: themeConfig.colors.text }}
             >
-              Typography & Display
+              {t("customTypographyDisplay")}
             </h4>
             <div className="space-y-4">
               {}
@@ -182,7 +184,10 @@ export function SettingsManager(): JSX.Element {
                   className="block font-medium mb-2"
                   style={{ color: themeConfig.colors.text }}
                 >
-                  Font Size: {settings.fontSize}px
+                  {t("customFontSizeLabel").replace(
+                    "{size}",
+                    String(settings.fontSize),
+                  )}
                 </label>
                 <input
                   type="range"
@@ -209,7 +214,7 @@ export function SettingsManager(): JSX.Element {
               className="font-medium mb-4"
               style={{ color: themeConfig.colors.text }}
             >
-              Live Preview
+              {t("customLivePreview")}
             </h4>
             <div
               className="p-4 rounded border font-mono"

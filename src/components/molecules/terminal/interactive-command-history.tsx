@@ -535,8 +535,7 @@ export function InteractiveCommandHistory({
                   <div
                     className="text-6xl mb-4 opacity-50"
                     style={{ color: themeConfig.colors.muted }}
-                  >
-                    </div>
+                  ></div>
                   <p
                     className="text-lg mb-2"
                     style={{ color: themeConfig.colors.muted }}

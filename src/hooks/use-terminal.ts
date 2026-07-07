@@ -23,11 +23,9 @@ import { useCommandHistory } from "./use-command-history";
 import { generateId } from "@/lib/utils/utils";
 
 const getRoadmapCommands = async () => {
-  if (typeof window === "undefined")
-    return { roadmapCommand: null };
+  if (typeof window === "undefined") return { roadmapCommand: null };
   try {
-    const { roadmapCommand } =
-      await import("@/lib/commands/roadmap-commands");
+    const { roadmapCommand } = await import("@/lib/commands/roadmap-commands");
     return { roadmapCommand };
   } catch (error) {
     console.error("Failed to load roadmap commands:", error);

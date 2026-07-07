@@ -20,9 +20,12 @@ async function getHandler(
   }
 
   try {
-    const res = await fetch(`${getBackendUrl()}/api/roadmap/progress/${techstack}`, {
-      next: { revalidate: 300 },
-    });
+    const res = await fetch(
+      `${getBackendUrl()}/api/roadmap/progress/${techstack}`,
+      {
+        next: { revalidate: 300 },
+      },
+    );
 
     if (!res.ok) {
       return NextResponse.json(
@@ -38,7 +41,10 @@ async function getHandler(
       },
     });
   } catch (err) {
-    console.error(`[/api/roadmap/progress/${techstack}] upstream fetch failed`, err);
+    console.error(
+      `[/api/roadmap/progress/${techstack}] upstream fetch failed`,
+      err,
+    );
     return NextResponse.json(
       { error: "upstream unreachable" },
       { status: 502 },

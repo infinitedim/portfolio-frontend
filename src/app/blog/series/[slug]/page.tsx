@@ -5,11 +5,14 @@ import { Suspense } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 import { getPublicSeries } from "@/lib/services/series-service";
+import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
+import { getTranslationsForLocale } from "@/lib/i18n/i18n-service";
 
 const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
 
 interface SeriesPageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ locale?: string }>;
 }
 
 export async function generateMetadata({
@@ -33,7 +36,7 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return [{ slug: BUILD_PLACEHOLDER_SLUG }];
 }
 
-async function BlogSeriesContent({ params }: SeriesPageProps) {
+async function BlogSeriesContent({ params, searchParams }: SeriesPageProps) {
   const { slug } = await params;
   if (slug === BUILD_PLACEHOLDER_SLUG) {
     notFound();
@@ -45,6 +48,10 @@ async function BlogSeriesContent({ params }: SeriesPageProps) {
     notFound();
   }
 
+  const { locale: localeParam } = await searchParams;
+  const locale = localeParam?.trim() || DEFAULT_BLOG_LOCALE;
+  const t = getTranslationsForLocale(locale);
+
   return (
     <StandardPageLayout>
       <div className="min-h-screen bg-terminal-bg text-terminal-text">
@@ -54,13 +61,13 @@ async function BlogSeriesContent({ params }: SeriesPageProps) {
               href="/blog"
               className="text-terminal-accent transition-colors hover:text-terminal-accent/90"
             >
-              ← Back to Blog
+              {t.blogBackToBlog}
             </Link>
           </nav>
 
           <header className="mb-8">
             <p className="mb-2 text-xs uppercase tracking-wide text-terminal-muted font-mono">
-              Series
+              {t.adminSeries}
             </p>
             <h1 className="mb-3 text-4xl font-bold text-terminal-accent">
               {series.title}
@@ -69,13 +76,14 @@ async function BlogSeriesContent({ params }: SeriesPageProps) {
               <p className="text-terminal-muted">{series.description}</p>
             )}
             <p className="mt-2 text-sm text-terminal-muted font-mono">
-              {series.posts.length} post{series.posts.length === 1 ? "" : "s"}
+              {series.posts.length}{" "}
+              {series.posts.length === 1 ? t.blogPostSingle : t.blogPostPlural}
             </p>
           </header>
 
           {series.posts.length === 0 ? (
             <p className="text-center text-terminal-muted py-12 font-mono">
-              No published posts in this series yet.
+              {t.blogNoPostsInSeries}
             </p>
           ) : (
             <ol className="space-y-6">
@@ -86,10 +94,12 @@ async function BlogSeriesContent({ params }: SeriesPageProps) {
                 >
                   <div className="mb-2 flex items-center gap-3 text-sm text-terminal-muted font-mono">
                     <span className="text-terminal-accent/80">
-                      Part {post.seriesOrder ?? index + 1}
+                      {t.blogPart} {post.seriesOrder ?? index + 1}
                     </span>
                     {post.readingTimeMinutes > 0 && (
-                      <span>{post.readingTimeMinutes} min read</span>
+                      <span>
+                        {post.readingTimeMinutes} {t.blogMinRead}
+                      </span>
                     )}
                   </div>
                   <Link href={`/blog/${post.slug}`}>
@@ -122,10 +132,11 @@ async function BlogSeriesContent({ params }: SeriesPageProps) {
 }
 
 function BlogSeriesSkeleton() {
+  const t = getTranslationsForLocale(DEFAULT_BLOG_LOCALE);
   return (
     <StandardPageLayout>
       <div className="container mx-auto max-w-4xl px-4 py-8">
-        <p className="text-gray-400">Loading series…</p>
+        <p className="text-gray-400">{t.blogLoadingSeries}</p>
       </div>
     </StandardPageLayout>
   );

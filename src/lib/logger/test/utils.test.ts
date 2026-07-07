@@ -50,8 +50,12 @@ describe("Logger Utils", () => {
       };
       const result = maskPII(input);
       expect(result).toHaveProperty("email");
-      expect((result as { email?: string; name?: string }).email).not.toContain("user@example.com");
-      expect((result as { email?: string; name?: string }).name).toBe("John Doe");
+      expect((result as { email?: string; name?: string }).email).not.toContain(
+        "user@example.com",
+      );
+      expect((result as { email?: string; name?: string }).name).toBe(
+        "John Doe",
+      );
     });
 
     it("should mask sensitive field names", () => {
@@ -61,9 +65,18 @@ describe("Logger Utils", () => {
         username: "john",
       };
       const result = maskPII(input);
-      expect((result as { password?: string; apiKey?: string; username?: string }).password).toBe("[REDACTED]");
-      expect((result as { password?: string; apiKey?: string; username?: string }).apiKey).toBe("[REDACTED]");
-      expect((result as { password?: string; apiKey?: string; username?: string }).username).toBe("john");
+      expect(
+        (result as { password?: string; apiKey?: string; username?: string })
+          .password,
+      ).toBe("[REDACTED]");
+      expect(
+        (result as { password?: string; apiKey?: string; username?: string })
+          .apiKey,
+      ).toBe("[REDACTED]");
+      expect(
+        (result as { password?: string; apiKey?: string; username?: string })
+          .username,
+      ).toBe("john");
     });
 
     it("should handle nested objects", () => {
@@ -75,7 +88,9 @@ describe("Logger Utils", () => {
           },
         },
       };
-      const result = maskPII(input) as { user: { email: string; profile: { phone: string } } };
+      const result = maskPII(input) as {
+        user: { email: string; profile: { phone: string } };
+      };
       expect(result.user.email).not.toContain("user@example.com");
       expect(result.user.profile.phone).not.toContain("555-123");
     });
