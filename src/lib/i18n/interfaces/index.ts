@@ -611,4 +611,21 @@ export interface TranslationKeys {
   exporting: string;
   importing: string;
   disabled: string;
+
+  terminalFeaturesTitle: string;
+  terminalFeaturesSubtitle: string;
+  terminalFeaturesRoadmapTitle: string;
+  terminalFeaturesRoadmapDesc: string;
+  terminalFeaturesThemeTitle: string;
+  terminalFeaturesThemeDesc: string;
+  terminalFeaturesDemoTitle: string;
+  terminalFeaturesDemoDesc: string;
+  terminalFeaturesGithubTitle: string;
+  terminalFeaturesGithubDesc: string;
+  terminalFeaturesPwaTitle: string;
+  terminalFeaturesPwaDesc: string;
+  terminalFeaturesShellTitle: string;
+  terminalFeaturesShellDesc: string;
+  terminalFeaturesCtaProceed: string;
+  terminalFeaturesCtaCancel: string;
 }

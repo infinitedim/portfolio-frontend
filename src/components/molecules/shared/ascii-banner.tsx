@@ -24,21 +24,7 @@ export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
     [],
   );
 
-  const simpleBanner = useMemo(
-    () => `
-  ████████ ████████ ██████  ██   ██ ██ ██   ██  █████  ██
-     ██    ██       ██   ██ ██   ██ ██ ██   ██ ██   ██ ██
-     ██    ██████   ██████  ███████ ██ ███████ ███████ ██
-     ██    ██       ██   ██ ██   ██ ██ ██   ██ ██   ██ ██
-     ██    ████████ ██   ██ ██   ██ ██ ██   ██ ██   ██ ███████
 
-  ██████  ██████  ██████  ████████ ███████  ██████  ██      ██  ██████
-  ██   ██ ██    ██ ██   ██    ██    ██      ██    ██ ██      ██ ██    ██
-  ██████  ██    ██ ██████     ██    █████   ██    ██ ██      ██ ██    ██
-  ██      ██    ██ ██   ██    ██    ██      ██    ██ ██      ██ ██    ██
-  ██       ██████  ██   ██    ██    ██       ██████  ███████ ██  ██████  `,
-    [],
-  );
 
   const bannerStyles = useMemo(
     () => ({
@@ -71,16 +57,6 @@ export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
           {banner}
         </pre>
       </div>
-
-      <div className="block sm:hidden">
-        <pre
-          style={{ ...bannerStyles, fontSize: "7px" }}
-          className="whitespace-pre text-center w-full"
-        >
-          {simpleBanner}
-        </pre>
-      </div>
-
       <div className="text-center mt-6 space-y-2 px-4">
         <div
           style={{ color: themeConfig.colors.accent }}
