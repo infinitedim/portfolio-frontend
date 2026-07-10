@@ -645,7 +645,7 @@ What's coming next? Glad you asked!
 - [x] **Rust Backend**: High-performance backend
 - [x] **Bun Runtime**: Fast JavaScript runtime
 
-## 🆘 Need Help?
+## Need Help?
 
 Stuck? Don't worry, we've all been there!
 
