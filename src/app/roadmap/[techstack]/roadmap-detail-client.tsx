@@ -79,6 +79,18 @@ export function RoadmapDetailClient({
   // Dimensions of canvas
   const padding = 120;
 
+  // ─── Theme color consts (single declaration, reused everywhere below) ───
+  const successColor =
+    themeConfig.colors.success ?? themeConfig.colors.accent;
+  const _errorColor = themeConfig.colors.error ?? themeConfig.colors.muted;
+  const warningColor =
+    themeConfig.colors.warning ?? themeConfig.colors.accent;
+  const infoColor = themeConfig.colors.info ?? successColor;
+  const borderColor = themeConfig.colors.border;
+  const mutedColor = themeConfig.colors.muted;
+  const textColor = themeConfig.colors.text;
+  const bgColor = themeConfig.colors.bg;
+
   const { minX, minY, width, height } = useMemo(() => {
     const nodes = initialStructure.nodes;
     if (nodes.length === 0) {
@@ -110,6 +122,17 @@ export function RoadmapDetailClient({
 
   // Render a single node
   const renderNode = (node: Node) => {
+    // ── Node type scope: only topic, subtopic, section, vertical, horizontal ──
+    // title, paragraph, button, label are intentionally NOT rendered on this canvas.
+    if (
+      node.type === "title" ||
+      node.type === "paragraph" ||
+      node.type === "button" ||
+      node.type === "label"
+    ) {
+      return null;
+    }
+
     const w = node.style?.width ?? node.width ?? node.measured?.width ?? 200;
     const h = node.style?.height ?? node.height ?? node.measured?.height ?? 60;
 
@@ -119,7 +142,8 @@ export function RoadmapDetailClient({
 
     // Helper: Determine topic status
     const isTopic = node.type === "topic" || node.type === "subtopic";
-    let status: "done" | "learning" | "skipped" | "not-started" = "not-started";
+    let status: "done" | "learning" | "skipped" | "not-started" =
+      "not-started";
 
     if (isTopic) {
       if (doneSet.has(node.id)) status = "done";
@@ -180,109 +204,68 @@ export function RoadmapDetailClient({
           key={node.id}
           style={{
             ...commonStyles,
-            backgroundColor: `${themeConfig.colors.muted}10`,
-            borderColor: themeConfig.colors.border,
+            backgroundColor: `${mutedColor}10`,
+            borderColor: borderColor,
           }}
           className="rounded-lg border border-dashed pointer-events-none opacity-40"
         />
       );
     }
 
-    if (node.type === "title") {
-      return (
-        <div
-          key={node.id}
-          style={{
-            ...commonStyles,
-            height: "auto",
-          }}
-          className="font-mono font-bold text-white text-3xl select-none"
-        >
-          {node.data.label}
-        </div>
-      );
-    }
-
-    if (node.type === "paragraph") {
-      return (
-        <div
-          key={node.id}
-          style={{
-            ...commonStyles,
-            height: "auto",
-          }}
-          className="font-mono text-neutral-400 text-xs leading-relaxed max-w-md select-none"
-        >
-          {node.data.label}
-        </div>
-      );
-    }
-
-    if (node.type === "button") {
-      return (
-        <a
-          key={node.id}
-          href={node.data.href ?? "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={commonStyles}
-          className="flex items-center justify-center rounded font-mono text-sm font-bold border border-neutral-700 bg-neutral-900 text-neutral-300 hover:bg-neutral-800 hover:text-white transition-all select-none"
-        >
-          {node.data.label}
-        </a>
-      );
-    }
-
-    if (node.type === "label") {
-      return (
-        <div
-          key={node.id}
-          style={{
-            ...commonStyles,
-            height: "auto",
-          }}
-          className="font-mono text-neutral-500 text-xs font-semibold select-none"
-        >
-          {node.data.label}
-        </div>
-      );
-    }
-
     // Default: topic / subtopic
-    let statusClass =
-      "border-neutral-800 bg-neutral-950 text-neutral-400 hover:border-neutral-700";
-    let icon = null;
+    // Build inline style objects per status (no hardcoded Tailwind color classes)
+    let nodeStyle: React.CSSProperties = {
+      borderColor: borderColor,
+      backgroundColor: bgColor,
+      color: mutedColor,
+    };
+    let icon: JSX.Element | null = null;
 
     if (status === "done") {
-      statusClass =
-        "border-emerald-500 bg-emerald-950/20 text-emerald-300 hover:border-emerald-400 hover:bg-emerald-950/30";
+      nodeStyle = {
+        borderColor: successColor,
+        backgroundColor: `${successColor}1a`,
+        color: successColor,
+      };
       icon = (
         <CheckCircle2
           size={12}
-          className="text-emerald-400 shrink-0"
+          style={{ color: successColor }}
+          className="shrink-0"
         />
       );
     } else if (status === "learning") {
-      statusClass =
-        "border-sky-500 bg-sky-950/20 text-sky-300 hover:border-sky-400 hover:bg-sky-950/30 animate-pulse-subtle";
+      nodeStyle = {
+        borderColor: infoColor,
+        backgroundColor: `${infoColor}1a`,
+        color: infoColor,
+      };
       icon = (
         <BookOpen
           size={12}
-          className="text-sky-400 shrink-0"
+          style={{ color: infoColor }}
+          className="shrink-0"
         />
       );
     } else if (status === "skipped") {
-      statusClass =
-        "border-neutral-700 bg-neutral-900/40 text-neutral-500 hover:border-neutral-600";
+      nodeStyle = {
+        borderColor: `${mutedColor}99`,
+        backgroundColor: `${bgColor}66`,
+        color: `${mutedColor}99`,
+      };
       icon = (
         <SkipForward
           size={12}
-          className="text-neutral-500 shrink-0"
+          style={{ color: `${mutedColor}99` }}
+          className="shrink-0"
         />
       );
     } else if (status === "not-started" && !loading) {
-      statusClass =
-        "border-neutral-700 bg-neutral-900 text-neutral-300 hover:border-neutral-600 hover:text-white";
+      nodeStyle = {
+        borderColor: `${mutedColor}99`,
+        backgroundColor: bgColor,
+        color: textColor,
+      };
     }
 
     // Font size styling
@@ -295,9 +278,10 @@ export function RoadmapDetailClient({
         key={node.id}
         style={{
           ...commonStyles,
+          ...nodeStyle,
           fontSize,
         }}
-        className={`flex flex-col justify-center rounded border p-3 font-mono shadow-sm transition-all duration-200 ${statusClass}`}
+        className={`flex flex-col justify-center rounded border p-3 font-mono shadow-sm transition-all duration-200${status === "learning" ? " animate-pulse-subtle" : ""}`}
       >
         <div className="flex items-start gap-1.5 justify-between">
           <span className="font-semibold select-none leading-snug">
@@ -387,19 +371,30 @@ export function RoadmapDetailClient({
       <div className="min-h-screen px-4 py-8 font-mono select-none">
         <div className="mx-auto max-w-6xl space-y-4">
           {/* Header Action Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-800 pb-4">
+          <div
+            className="flex flex-wrap items-center justify-between gap-4 border-b pb-4"
+            style={{ borderBottomColor: borderColor }}
+          >
             <div className="flex items-center gap-3">
               <Link
                 href="/roadmap"
-                className="flex items-center justify-center w-8 h-8 rounded border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-white hover:border-neutral-700 transition-all"
+                className="flex items-center justify-center w-8 h-8 rounded border transition-all"
+                style={{
+                  borderColor: borderColor,
+                  backgroundColor: bgColor,
+                  color: mutedColor,
+                }}
               >
                 <ArrowLeft size={16} />
               </Link>
               <div>
-                <h1 className="text-lg font-bold text-white uppercase tracking-wider">
+                <h1
+                  className="text-lg font-bold uppercase tracking-wider"
+                  style={{ color: textColor }}
+                >
                   {initialStructure.title?.page ?? initialStructure.title?.card}
                 </h1>
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs" style={{ color: mutedColor }}>
                   {initialStructure.description}
                 </p>
               </div>
@@ -408,16 +403,27 @@ export function RoadmapDetailClient({
             {/* Sync progress button & Status indicator */}
             <div className="flex items-center gap-3">
               {loading && (
-                <div className="flex items-center gap-1.5 text-xs text-neutral-400">
+                <div
+                  className="flex items-center gap-1.5 text-xs"
+                  style={{ color: mutedColor }}
+                >
                   <Loader2
                     size={14}
-                    className="animate-spin text-sky-500"
+                    className="animate-spin"
+                    style={{ color: infoColor }}
                   />
                   <span>{t("roadmapSyncing")}</span>
                 </div>
               )}
               {error && (
-                <div className="flex items-center gap-1.5 text-xs text-amber-500 border border-amber-500/20 bg-amber-500/5 px-2 py-1 rounded">
+                <div
+                  className="flex items-center gap-1.5 text-xs border px-2 py-1 rounded"
+                  style={{
+                    color: warningColor,
+                    borderColor: `${warningColor}33`,
+                    backgroundColor: `${warningColor}0d`,
+                  }}
+                >
                   <AlertCircle size={14} />
                   <span>{error}</span>
                 </div>
@@ -425,7 +431,12 @@ export function RoadmapDetailClient({
               <button
                 onClick={fetchProgress}
                 disabled={loading}
-                className="flex items-center justify-center gap-1.5 text-xs px-2.5 py-1.5 rounded border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-white hover:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="flex items-center justify-center gap-1.5 text-xs px-2.5 py-1.5 rounded border disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                style={{
+                  borderColor: borderColor,
+                  backgroundColor: bgColor,
+                  color: mutedColor,
+                }}
               >
                 <RefreshCw
                   size={12}
@@ -438,39 +449,57 @@ export function RoadmapDetailClient({
 
           {/* Stats Bar */}
           {progress && (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4 text-center">
+            <div
+              className="grid grid-cols-2 gap-3 sm:grid-cols-4 rounded-lg border p-4 text-center"
+              style={{
+                borderColor: borderColor,
+                backgroundColor: `${bgColor}1a`,
+              }}
+            >
               <div>
-                <div className="text-xl font-bold text-white">
+                <div
+                  className="text-xl font-bold"
+                  style={{ color: textColor }}
+                >
                   {progress.totalTopicCount}
                 </div>
-                <div className="text-xs text-neutral-500">
+                <div className="text-xs" style={{ color: mutedColor }}>
                   {t("roadmapTotalTopics")}
                 </div>
               </div>
               <div>
-                <div className="text-xl font-bold text-emerald-500 flex items-center justify-center gap-1">
+                <div
+                  className="text-xl font-bold flex items-center justify-center gap-1"
+                  style={{ color: successColor }}
+                >
                   <CheckCircle2 size={16} />
                   {progress.done.length}
                 </div>
-                <div className="text-xs text-neutral-500">
+                <div className="text-xs" style={{ color: mutedColor }}>
                   {t("roadmapCompleted")}
                 </div>
               </div>
               <div>
-                <div className="text-xl font-bold text-sky-500 flex items-center justify-center gap-1">
+                <div
+                  className="text-xl font-bold flex items-center justify-center gap-1"
+                  style={{ color: infoColor }}
+                >
                   <BookOpen size={16} />
                   {progress.learning.length}
                 </div>
-                <div className="text-xs text-neutral-500">
+                <div className="text-xs" style={{ color: mutedColor }}>
                   {t("roadmapLearning")}
                 </div>
               </div>
               <div>
-                <div className="text-xl font-bold text-neutral-400 flex items-center justify-center gap-1">
+                <div
+                  className="text-xl font-bold flex items-center justify-center gap-1"
+                  style={{ color: mutedColor }}
+                >
                   <SkipForward size={16} />
                   {progress.skipped.length}
                 </div>
-                <div className="text-xs text-neutral-500">
+                <div className="text-xs" style={{ color: mutedColor }}>
                   {t("roadmapSkipped")}
                 </div>
               </div>
@@ -478,14 +507,21 @@ export function RoadmapDetailClient({
           )}
 
           {/* Map Visualizer Canvas Container */}
-          <div className="relative border border-neutral-800 bg-neutral-950 rounded-lg overflow-auto max-h-[75vh] min-h-[400px] shadow-inner select-none">
+          <div
+            className="relative border rounded-lg overflow-auto max-h-[75vh] min-h-100 shadow-inner select-none"
+            style={{
+              borderColor: borderColor,
+              backgroundColor: bgColor,
+            }}
+          >
             <div
               style={{
                 width,
                 height,
                 position: "relative",
+                backgroundImage: `radial-gradient(${mutedColor}33 1px, transparent 1px)`,
+                backgroundSize: "24px 24px",
               }}
-              className="bg-[radial-gradient(#262626_1px,transparent_1px)] [background-size:24px_24px]"
             >
               {/* SVG containing connections */}
               <svg
@@ -547,30 +583,70 @@ export function RoadmapDetailClient({
           </div>
 
           {/* Legend Banner */}
-          <div className="flex flex-wrap gap-4 items-center justify-between text-xs text-neutral-500 rounded border border-neutral-800/40 p-3 bg-neutral-950/20">
-            <div className="flex items-center gap-1 text-neutral-400">
+          <div
+            className="flex flex-wrap gap-4 items-center justify-between text-xs rounded border p-3"
+            style={{
+              color: mutedColor,
+              borderColor: `${borderColor}66`,
+              backgroundColor: `${bgColor}33`,
+            }}
+          >
+            <div
+              className="flex items-center gap-1"
+              style={{ color: textColor }}
+            >
               <Info
                 size={12}
-                className="text-sky-500"
+                style={{ color: infoColor }}
               />
               <span>{t("roadmapScrollHelp")}</span>
             </div>
             <div className="flex gap-4">
               <div className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-sm border border-emerald-500 bg-emerald-950/10"></span>{" "}
-                <span className="text-emerald-400">{t("roadmapDone")}</span>
+                <span
+                  className="w-2.5 h-2.5 rounded-sm border"
+                  style={{
+                    borderColor: successColor,
+                    backgroundColor: `${successColor}1a`,
+                  }}
+                />
+                <span style={{ color: successColor }}>
+                  {t("roadmapDone")}
+                </span>
               </div>
               <div className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-sm border border-sky-500 bg-sky-950/10"></span>{" "}
-                <span className="text-sky-400">{t("roadmapLearning")}</span>
+                <span
+                  className="w-2.5 h-2.5 rounded-sm border"
+                  style={{
+                    borderColor: infoColor,
+                    backgroundColor: `${infoColor}1a`,
+                  }}
+                />
+                <span style={{ color: infoColor }}>
+                  {t("roadmapLearning")}
+                </span>
               </div>
               <div className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-sm border border-neutral-700 bg-neutral-900/40"></span>{" "}
-                <span className="text-neutral-500">{t("roadmapSkipped")}</span>
+                <span
+                  className="w-2.5 h-2.5 rounded-sm border"
+                  style={{
+                    borderColor: `${mutedColor}99`,
+                    backgroundColor: `${bgColor}66`,
+                  }}
+                />
+                <span style={{ color: `${mutedColor}99` }}>
+                  {t("roadmapSkipped")}
+                </span>
               </div>
               <div className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-sm border border-neutral-700 bg-neutral-900"></span>{" "}
-                <span className="text-neutral-300">
+                <span
+                  className="w-2.5 h-2.5 rounded-sm border"
+                  style={{
+                    borderColor: `${mutedColor}99`,
+                    backgroundColor: bgColor,
+                  }}
+                />
+                <span style={{ color: textColor }}>
                   {t("roadmapNotStarted")}
                 </span>
               </div>
