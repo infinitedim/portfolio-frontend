@@ -29,7 +29,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.vercel.app",
+    process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.dev",
   ),
   title: {
     default: "Dimas Saputra | Full-Stack Developer",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     "flutter web developer",
     "flutter web developer portfolio",
   ],
-  authors: [{ name: "Dimas Saputra", url: "https://infinitedim.vercel.app" }],
+  authors: [{ name: "Dimas Saputra", url: "https://infinitedim.dev" }],
   creator: "Dimas Saputra",
   publisher: "Dimas Saputra",
   formatDetection: {
@@ -163,8 +163,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               name: "Dimas Saputra",
-              url: "https://infinitedim.vercel.app",
-              image: "https://infinitedim.vercel.app/avatar.jpg",
+              url: "https://infinitedim.dev",
+              image: "https://infinitedim.dev/avatar.jpg",
               sameAs: [
                 "https://github.com/infinitedim",
                 "https://linkedin.com/in/infinitedim",
@@ -196,7 +196,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "Dimas Saputra Portfolio",
-              url: "https://infinitedim.vercel.app",
+              url: "https://infinitedim.dev",
               description:
                 "Full-stack developer portfolio — projects, blog, and interactive terminal.",
               author: {
@@ -206,7 +206,7 @@ export default function RootLayout({
               potentialAction: {
                 "@type": "SearchAction",
                 target:
-                  "https://infinitedim.vercel.app/search?q={search_term_string}",
+                  "https://infinitedim.dev/search?q={search_term_string}",
                 "query-input": "required name=search_term_string",
               },
             }),

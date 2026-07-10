@@ -164,15 +164,15 @@ export const SEO_CONFIG = {
       "@type": "WebSite",
       potentialAction: {
         "@type": "SearchAction",
-        target: "https://infinitedim.vercel.app/search?q={search_term_string}",
+        target: "https://infinitedim.dev/search?q={search_term_string}",
         "query-input": "required name=search_term_string",
       },
     },
     organization: {
       "@type": "Organization",
       name: "Terminal Portfolio",
-      url: "https://infinitedim.vercel.app",
-      logo: "https://infinitedim.vercel.app/logo.png",
+      url: "https://infinitedim.dev",
+      logo: "https://infinitedim.dev/logo.png",
       contactPoint: {
         "@type": "ContactPoint",
         telephone: "",

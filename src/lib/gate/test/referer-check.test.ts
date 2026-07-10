@@ -17,27 +17,27 @@ describe("referer-check", () => {
   });
 
   beforeEach(() => {
-    process.env.NEXT_PUBLIC_BASE_URL = "https://infinitedim.vercel.app";
+    process.env.NEXT_PUBLIC_BASE_URL = "https://infinitedim.dev";
   });
 
   it("builds terminal referer URL", () => {
     expect(getTerminalRefererUrl()).toBe(
-      "https://infinitedim.vercel.app/terminal",
+      "https://infinitedim.dev/terminal",
     );
   });
 
   it("accepts valid terminal referer", () => {
     expect(
-      isValidTerminalReferer("https://infinitedim.vercel.app/terminal"),
+      isValidTerminalReferer("https://infinitedim.dev/terminal"),
     ).toBe(true);
     expect(
-      isValidTerminalReferer("https://infinitedim.vercel.app/terminal/"),
+      isValidTerminalReferer("https://infinitedim.dev/terminal/"),
     ).toBe(true);
   });
 
   it("rejects invalid referer", () => {
     expect(
-      isValidTerminalReferer("https://infinitedim.vercel.app/gate/3"),
+      isValidTerminalReferer("https://infinitedim.dev/gate/3"),
     ).toBe(false);
     expect(isValidTerminalReferer(null)).toBe(false);
   });

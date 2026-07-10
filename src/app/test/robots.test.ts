@@ -24,8 +24,8 @@ describe("robots.ts", () => {
 
     it("should use default base URL when env var is not set", () => {
       const result = robots();
-      expect(result.host).toBe("https://infinitedim.vercel.app");
-      expect(result.sitemap).toBe("https://infinitedim.vercel.app/sitemap.xml");
+      expect(result.host).toBe("https://infinitedim.dev");
+      expect(result.sitemap).toBe("https://infinitedim.dev/sitemap.xml");
     });
 
     it("should use NEXT_PUBLIC_BASE_URL when set", () => {

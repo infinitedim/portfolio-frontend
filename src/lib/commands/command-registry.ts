@@ -164,7 +164,7 @@ export const contactCommand: Command = {
       "LinkedIn: linkedin.com/in/infinitedim",
       "GitHub: github.com/infinitedim",
       "Twitter: @infinitedim",
-      "Website: infinitedim.vercel.app",
+      "Website: infinitedim.dev",
       "Roadmap: https://roadmap.sh/u/infinitedim",
       "",
       "I'm always open to:",

@@ -605,7 +605,7 @@ _A rainbow of themes to choose from_
 
 ### Live Demo
 
-**[Check out the live demo!](https://infinitedim.vercel.app) **
+**[Check out the live demo!](https://infinitedim.dev) **
 
 _Go ahead, type `help` and start exploring!_
 

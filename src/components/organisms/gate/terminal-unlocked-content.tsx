@@ -57,7 +57,7 @@ export function TerminalUnlockedContent(): JSX.Element {
             name: "Terminal Portfolio",
             description:
               "Interactive developer portfolio with terminal interface",
-            url: "https://infinitedim.vercel.app/terminal",
+            url: "https://infinitedim.dev/terminal",
             mainEntity: {
               "@type": "Person",
               name: "Dimas Saputra",
@@ -72,13 +72,13 @@ export function TerminalUnlockedContent(): JSX.Element {
                   "@type": "ListItem",
                   position: 1,
                   name: "Home",
-                  item: "https://infinitedim.vercel.app",
+                  item: "https://infinitedim.dev",
                 },
                 {
                   "@type": "ListItem",
                   position: 2,
                   name: "Terminal",
-                  item: "https://infinitedim.vercel.app/terminal",
+                  item: "https://infinitedim.dev/terminal",
                 },
               ],
             },

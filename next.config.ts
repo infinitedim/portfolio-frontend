@@ -40,8 +40,8 @@ const nextConfig = {
     // through `next/image`, which is a footgun (SSRF-flavoured + ghost
     // credit-card abuse vector for paid Image Optimization plans).
     remotePatterns: [
-      { protocol: "https", hostname: "infinitedim.vercel.app" },
-      { protocol: "https", hostname: "*.infinitedim.vercel.app" },
+      { protocol: "https", hostname: "infinitedim.dev" },
+      { protocol: "https", hostname: "*.infinitedim.dev" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
       { protocol: "https", hostname: "raw.githubusercontent.com" },
       { protocol: "https", hostname: "github.com" },

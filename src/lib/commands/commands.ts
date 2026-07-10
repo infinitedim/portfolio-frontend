@@ -64,7 +64,7 @@ Examples:
       "   Name: Full-Stack Developer",
       "   Email: developer@portfolio.com",
       "   Location: Global Remote",
-      "   Portfolio: https://infinitedim.vercel.app",
+      "   Portfolio: https://infinitedim.dev",
       "",
       "PROFESSIONAL SUMMARY",
       "   Passionate full-stack developer with expertise in modern web",
@@ -266,7 +266,7 @@ Timezone: Available for global collaboration
 │  Email:     mailto:dragdimas9@gmail.com        │
 │  LinkedIn:  https://linkedin.com/in/infinitedim      │
 │  Twitter:   https://twitter.com/yourblooo          │
-│  Schedule:  https://infinitedim.vercel.app/schedule         │
+│  Schedule:  https://infinitedim.dev/schedule         │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 

@@ -49,7 +49,7 @@ const edgeLogger = {
 
 /** Origin only — no trailing slash; upgrade http→https for connect-src. */
 export function normalizeApiOrigin(raw: string | undefined): string {
-  const fallback = "https://api.infinitedim.vercel.app";
+  const fallback = "https://api.infinitedim.dev";
   if (!raw?.trim()) return fallback;
   try {
     const parsed = new URL(raw.trim());
@@ -86,7 +86,7 @@ function buildCsp(isDev: boolean): string {
       "data:",
       "https://avatars.githubusercontent.com",
       "https://raw.githubusercontent.com",
-      "https://infinitedim.vercel.app",
+      "https://infinitedim.dev",
     ],
     "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
     "connect-src": [
