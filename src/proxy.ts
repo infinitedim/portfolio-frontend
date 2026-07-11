@@ -84,7 +84,6 @@ function buildCsp(isDev: boolean): string {
     "script-src": [
       "'self'",
       "'unsafe-inline'",
-      "'sha256-F94enWkTefRDd25wHmnng+4zBT4r1pPfiHcrRYVkeus='",
       "https://va.vercel-scripts.com",
       "https://vercel.live",
       ...(isDev ? ["'unsafe-eval'"] : []),
@@ -117,8 +116,6 @@ function buildCsp(isDev: boolean): string {
     "manifest-src": ["'self'"],
     "worker-src": ["'self'", "blob:"],
     "upgrade-insecure-requests": [],
-    "trusted-types": ["default"],
-    "require-trusted-types-for": ["'script'"],
   };
 
   return Object.entries(directives)
