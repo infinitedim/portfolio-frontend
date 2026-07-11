@@ -13,7 +13,9 @@ interface ProjectsEditorProps {
   themeConfig: ThemeConfig;
 }
 
-export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Element {
+export function ProjectsEditor({
+  themeConfig,
+}: ProjectsEditorProps): JSX.Element {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -34,7 +36,9 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
   const loadProjects = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${getApiUrl()}/api/portfolio?section=projects`);
+      const response = await fetch(
+        `${getApiUrl()}/api/portfolio?section=projects`,
+      );
       if (response.ok) {
         const data = await response.json();
         setProjects(data.data ?? []);
@@ -60,22 +64,25 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-")
       .replace(/^-|-$/g, "");
-    
+
     let currentSlug = baseSlug;
     let counter = 2;
-    
+
     // Check for collisions
-    while (projects.some(p => p.id === currentSlug && p.id !== excludeId)) {
+    while (projects.some((p) => p.id === currentSlug && p.id !== excludeId)) {
       currentSlug = `${baseSlug}-${counter}`;
       counter++;
     }
-    
+
     return currentSlug;
   };
 
   const addTag = () => {
     const trimmed = tagInput.trim();
-    if (trimmed && !tags.some((t) => t.toLowerCase() === trimmed.toLowerCase())) {
+    if (
+      trimmed &&
+      !tags.some((t) => t.toLowerCase() === trimmed.toLowerCase())
+    ) {
       setTags((prev) => [...prev, trimmed]);
       setTagInput("");
     }
@@ -176,7 +183,7 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
     setIsSaving(true);
     try {
       const projectId = isNewProject ? generateSlug(name) : editingProject!.id;
-      
+
       const projectToSave: Project = {
         id: projectId,
         name: name.trim(),
@@ -269,7 +276,9 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <span style={{ color: themeConfig.colors.accent }}>Loading projects...</span>
+        <span style={{ color: themeConfig.colors.accent }}>
+          Loading projects...
+        </span>
       </div>
     );
   }
@@ -285,7 +294,10 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
         }}
       >
         <div className="flex items-center space-x-2">
-          <span className="text-sm font-mono" style={{ color: themeConfig.colors.accent }}>
+          <span
+            className="text-sm font-mono"
+            style={{ color: themeConfig.colors.accent }}
+          >
             editor@portfolio:~$
           </span>
           <span className="text-sm opacity-70">./manage-projects.sh</span>
@@ -311,7 +323,9 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
           className={`space-y-4 ${editingProject ? "lg:col-span-1" : "lg:col-span-3"}`}
         >
           {projects.length === 0 && !editingProject ? (
-            <p className="opacity-70 text-sm">No projects found. Add one to get started.</p>
+            <p className="opacity-70 text-sm">
+              No projects found. Add one to get started.
+            </p>
           ) : (
             <div className="space-y-2">
               {projects.map((project) => (
@@ -338,7 +352,9 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
                       {project.featured && (
                         <>
                           <span>•</span>
-                          <span style={{ color: themeConfig.colors.accent }}>Featured</span>
+                          <span style={{ color: themeConfig.colors.accent }}>
+                            Featured
+                          </span>
                         </>
                       )}
                     </div>
@@ -370,9 +386,15 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
         {editingProject && (
           <div
             className="lg:col-span-2 p-4 border rounded bg-opacity-50"
-            style={{ borderColor: themeConfig.colors.border, backgroundColor: themeConfig.colors.bg }}
+            style={{
+              borderColor: themeConfig.colors.border,
+              backgroundColor: themeConfig.colors.bg,
+            }}
           >
-            <div className="flex items-center justify-between mb-4 border-b pb-2" style={{ borderColor: themeConfig.colors.border }}>
+            <div
+              className="flex items-center justify-between mb-4 border-b pb-2"
+              style={{ borderColor: themeConfig.colors.border }}
+            >
               <h3 className="font-semibold text-lg">
                 {isNewProject ? "Add Project" : "Edit Project"}
               </h3>
@@ -387,7 +409,12 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
             <div className="space-y-4 text-sm">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1 md:col-span-2">
-                  <label htmlFor="project-name" className="block opacity-80">Name *</label>
+                  <label
+                    htmlFor="project-name"
+                    className="block opacity-80"
+                  >
+                    Name *
+                  </label>
                   <input
                     id="project-name"
                     type="text"
@@ -398,19 +425,44 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
                     placeholder="Project Name"
                   />
                 </div>
-                
+
                 <div className="space-y-1">
-                  <label htmlFor="project-status" className="block opacity-80">Status</label>
+                  <label
+                    htmlFor="project-status"
+                    className="block opacity-80"
+                  >
+                    Status
+                  </label>
                   <select
                     id="project-status"
                     value={status}
-                    onChange={(e) => setStatus(e.target.value as Project["status"])}
+                    onChange={(e) =>
+                      setStatus(e.target.value as Project["status"])
+                    }
                     className="w-full bg-transparent border rounded p-2 focus:outline-none"
-                    style={{ borderColor: themeConfig.colors.border, color: themeConfig.colors.text }}
+                    style={{
+                      borderColor: themeConfig.colors.border,
+                      color: themeConfig.colors.text,
+                    }}
                   >
-                    <option value="completed" className="bg-neutral-900">Completed</option>
-                    <option value="in-progress" className="bg-neutral-900">In Progress</option>
-                    <option value="planned" className="bg-neutral-900">Planned</option>
+                    <option
+                      value="completed"
+                      className="bg-neutral-900"
+                    >
+                      Completed
+                    </option>
+                    <option
+                      value="in-progress"
+                      className="bg-neutral-900"
+                    >
+                      In Progress
+                    </option>
+                    <option
+                      value="planned"
+                      className="bg-neutral-900"
+                    >
+                      Planned
+                    </option>
                   </select>
                 </div>
 
@@ -428,7 +480,12 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
                 </div>
 
                 <div className="space-y-1 md:col-span-2">
-                  <label htmlFor="project-description" className="block opacity-80">Description *</label>
+                  <label
+                    htmlFor="project-description"
+                    className="block opacity-80"
+                  >
+                    Description *
+                  </label>
                   <textarea
                     id="project-description"
                     value={description}
@@ -441,8 +498,13 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
                 </div>
 
                 <div className="space-y-1 md:col-span-2">
-                  <label htmlFor="project-tech" className="block opacity-80">Technologies</label>
-                  <div 
+                  <label
+                    htmlFor="project-tech"
+                    className="block opacity-80"
+                  >
+                    Technologies
+                  </label>
+                  <div
                     className="flex flex-wrap gap-2 p-2 border rounded min-h-10.5"
                     style={{ borderColor: themeConfig.colors.border }}
                   >
@@ -463,13 +525,20 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
                       onKeyDown={handleTagKeyDown}
                       onBlur={addTag}
                       className="flex-1 bg-transparent focus:outline-none min-w-30 text-sm"
-                      placeholder={tags.length === 0 ? "Add tech (press Enter)..." : ""}
+                      placeholder={
+                        tags.length === 0 ? "Add tech (press Enter)..." : ""
+                      }
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="project-demo" className="block opacity-80">Demo URL</label>
+                  <label
+                    htmlFor="project-demo"
+                    className="block opacity-80"
+                  >
+                    Demo URL
+                  </label>
                   <input
                     id="project-demo"
                     type="url"
@@ -482,7 +551,12 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="project-github" className="block opacity-80">GitHub URL</label>
+                  <label
+                    htmlFor="project-github"
+                    className="block opacity-80"
+                  >
+                    GitHub URL
+                  </label>
                   <input
                     id="project-github"
                     type="url"
@@ -495,7 +569,12 @@ export function ProjectsEditor({ themeConfig }: ProjectsEditorProps): JSX.Elemen
                 </div>
 
                 <div className="space-y-1 md:col-span-2">
-                  <label htmlFor="project-image" className="block opacity-80">Image URL</label>
+                  <label
+                    htmlFor="project-image"
+                    className="block opacity-80"
+                  >
+                    Image URL
+                  </label>
                   <input
                     id="project-image"
                     type="url"

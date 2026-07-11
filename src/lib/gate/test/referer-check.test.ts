@@ -21,24 +21,22 @@ describe("referer-check", () => {
   });
 
   it("builds terminal referer URL", () => {
-    expect(getTerminalRefererUrl()).toBe(
-      "https://infinitedim.dev/terminal",
-    );
+    expect(getTerminalRefererUrl()).toBe("https://infinitedim.dev/terminal");
   });
 
   it("accepts valid terminal referer", () => {
-    expect(
-      isValidTerminalReferer("https://infinitedim.dev/terminal"),
-    ).toBe(true);
-    expect(
-      isValidTerminalReferer("https://infinitedim.dev/terminal/"),
-    ).toBe(true);
+    expect(isValidTerminalReferer("https://infinitedim.dev/terminal")).toBe(
+      true,
+    );
+    expect(isValidTerminalReferer("https://infinitedim.dev/terminal/")).toBe(
+      true,
+    );
   });
 
   it("rejects invalid referer", () => {
-    expect(
-      isValidTerminalReferer("https://infinitedim.dev/gate/3"),
-    ).toBe(false);
+    expect(isValidTerminalReferer("https://infinitedim.dev/gate/3")).toBe(
+      false,
+    );
     expect(isValidTerminalReferer(null)).toBe(false);
   });
 });

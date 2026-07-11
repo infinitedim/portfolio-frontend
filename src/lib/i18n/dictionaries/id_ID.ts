@@ -640,19 +640,26 @@ export const id_ID_key: TranslationKeys = {
   importing: "Mengimpor…",
   disabled: "Dinonaktifkan",
   terminalFeaturesTitle: "Fitur Terkunci Terminal",
-  terminalFeaturesSubtitle: "Terminal interaktif dibatasi oleh gerbang tantangan keamanan NATAS-style. Berikut adalah fitur eksklusif yang hanya dapat diakses di mode Terminal CLI:",
+  terminalFeaturesSubtitle:
+    "Terminal interaktif dibatasi oleh gerbang tantangan keamanan NATAS-style. Berikut adalah fitur eksklusif yang hanya dapat diakses di mode Terminal CLI:",
   terminalFeaturesRoadmapTitle: "Sinkronisasi Peta Jalan & Skill",
-  terminalFeaturesRoadmapDesc: "Manajemen skill interaktif (`skills`), sinkronisasi langsung ke akun roadmap.sh, serta kemampuan memperbarui dan menandai kemajuan belajar secara real-time.",
+  terminalFeaturesRoadmapDesc:
+    "Manajemen skill interaktif (`skills`), sinkronisasi langsung ke akun roadmap.sh, serta kemampuan memperbarui dan menandai kemajuan belajar secara real-time.",
   terminalFeaturesThemeTitle: "Ubah Tema & Font Berligatur",
-  terminalFeaturesThemeDesc: "Kustomisasi penuh tampilan terminal dengan preset tema (Dracula, Monokai, Hacker, dll.) dan font developer berligatur (Fira Code, JetBrains Mono, Inconsolata).",
+  terminalFeaturesThemeDesc:
+    "Kustomisasi penuh tampilan terminal dengan preset tema (Dracula, Monokai, Hacker, dll.) dan font developer berligatur (Fira Code, JetBrains Mono, Inconsolata).",
   terminalFeaturesDemoTitle: "Live Simulasi Demo Proyek",
-  terminalFeaturesDemoDesc: "Jalankan demo interaktif langsung dari dalam CLI (`demo`) untuk melihat alur kerja project secara visual dan interaktif.",
+  terminalFeaturesDemoDesc:
+    "Jalankan demo interaktif langsung dari dalam CLI (`demo`) untuk melihat alur kerja project secara visual dan interaktif.",
   terminalFeaturesGithubTitle: "Metrik GitHub & Kontribusi Real-time",
-  terminalFeaturesGithubDesc: "Dapatkan statistik kontribusi, repositori terpopuler, dan analisis komit GitHub terbaru (`github`) langsung melalui stream terminal.",
+  terminalFeaturesGithubDesc:
+    "Dapatkan statistik kontribusi, repositori terpopuler, dan analisis komit GitHub terbaru (`github`) langsung melalui stream terminal.",
   terminalFeaturesPwaTitle: "Dasbor PWA & Mode Offline Mandiri",
-  terminalFeaturesPwaDesc: "Kontrol penuh Progressive Web App (`pwa`), cek instalasi lokal, serta kelola kapabilitas luring total agar portofolio tetap berjalan tanpa internet.",
+  terminalFeaturesPwaDesc:
+    "Kontrol penuh Progressive Web App (`pwa`), cek instalasi lokal, serta kelola kapabilitas luring total agar portofolio tetap berjalan tanpa internet.",
   terminalFeaturesShellTitle: "Shell Linux dengan Toleransi Typo",
-  terminalFeaturesShellDesc: "Navigasi keyboard penuh menggunakan arah panah (↑/↓) untuk riwayat perintah, toleransi typo cerdas, multi-alias, dan argumen flag baris perintah.",
+  terminalFeaturesShellDesc:
+    "Navigasi keyboard penuh menggunakan arah panah (↑/↓) untuk riwayat perintah, toleransi typo cerdas, multi-alias, dan argumen flag baris perintah.",
   terminalFeaturesCtaProceed: "Mulai Tantangan Gate →",
   terminalFeaturesCtaCancel: "Kembali",
 } as const;

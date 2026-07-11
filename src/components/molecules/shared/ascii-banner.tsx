@@ -24,8 +24,6 @@ export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
     [],
   );
 
-
-
   const bannerStyles = useMemo(
     () => ({
       color: themeConfig.colors.accent,

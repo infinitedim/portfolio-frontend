@@ -73,18 +73,17 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   const backendUrl = getBackendUrl();
 
   try {
-    const [projectsRes, experienceRes, aboutRes] =
-      await Promise.allSettled([
-        fetch(`${backendUrl}/api/portfolio?section=projects`, {
-          next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
-        }),
-        fetch(`${backendUrl}/api/portfolio?section=experience`, {
-          next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000 },
-        }),
-        fetch(`${backendUrl}/api/portfolio?section=about`, {
-          next: { revalidate: CACHE_DURATIONS.ABOUT / 1000 },
-        }),
-      ]);
+    const [projectsRes, experienceRes, aboutRes] = await Promise.allSettled([
+      fetch(`${backendUrl}/api/portfolio?section=projects`, {
+        next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
+      }),
+      fetch(`${backendUrl}/api/portfolio?section=experience`, {
+        next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000 },
+      }),
+      fetch(`${backendUrl}/api/portfolio?section=about`, {
+        next: { revalidate: CACHE_DURATIONS.ABOUT / 1000 },
+      }),
+    ]);
 
     const projects =
       projectsRes.status === "fulfilled" && projectsRes.value.ok

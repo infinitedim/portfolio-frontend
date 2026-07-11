@@ -13,8 +13,7 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ?? "https://infinitedim.dev";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://infinitedim.dev";
   const url = `${baseUrl}/blog/${slug}`;
   const text = summary ? `${title} — ${summary}` : title;
 

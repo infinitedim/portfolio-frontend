@@ -13,7 +13,13 @@ import {
 } from "@/lib/data/data-fetching";
 import Link from "next/link";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
-import { Flame, CheckCircle2, BookOpen, SkipForward, ArrowRight } from "lucide-react";
+import {
+  Flame,
+  CheckCircle2,
+  BookOpen,
+  SkipForward,
+  ArrowRight,
+} from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Roadmap Progress | Portfolio",

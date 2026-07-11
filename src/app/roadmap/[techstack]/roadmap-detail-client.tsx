@@ -84,11 +84,9 @@ export function RoadmapDetailClient({
   const padding = 120;
 
   // ─── Theme color consts (single declaration, reused everywhere below) ───
-  const successColor =
-    themeConfig.colors.success ?? themeConfig.colors.accent;
+  const successColor = themeConfig.colors.success ?? themeConfig.colors.accent;
   const _errorColor = themeConfig.colors.error ?? themeConfig.colors.muted;
-  const warningColor =
-    themeConfig.colors.warning ?? themeConfig.colors.accent;
+  const warningColor = themeConfig.colors.warning ?? themeConfig.colors.accent;
   const infoColor = themeConfig.colors.info ?? successColor;
   const borderColor = themeConfig.colors.border;
   const mutedColor = themeConfig.colors.muted;
@@ -132,7 +130,8 @@ export function RoadmapDetailClient({
     const handleResize = () => {
       const containerWidth = container.clientWidth;
       // Only scale down, never up — don't blow up small roadmaps to fill the container.
-      const rawScale = containerWidth > 0 ? Math.min(1, containerWidth / width) : 1;
+      const rawScale =
+        containerWidth > 0 ? Math.min(1, containerWidth / width) : 1;
       const scale = Math.max(rawScale, 0.85);
       setFitScale(scale);
     };
@@ -167,8 +166,7 @@ export function RoadmapDetailClient({
 
     // Helper: Determine topic status
     const isTopic = node.type === "topic" || node.type === "subtopic";
-    let status: "done" | "learning" | "skipped" | "not-started" =
-      "not-started";
+    let status: "done" | "learning" | "skipped" | "not-started" = "not-started";
 
     if (isTopic) {
       if (doneSet.has(node.id)) status = "done";
@@ -419,7 +417,10 @@ export function RoadmapDetailClient({
                 >
                   {initialStructure.title?.page ?? initialStructure.title?.card}
                 </h1>
-                <p className="text-xs" style={{ color: mutedColor }}>
+                <p
+                  className="text-xs"
+                  style={{ color: mutedColor }}
+                >
                   {initialStructure.description}
                 </p>
               </div>
@@ -488,7 +489,10 @@ export function RoadmapDetailClient({
                 >
                   {progress.totalTopicCount}
                 </div>
-                <div className="text-xs" style={{ color: mutedColor }}>
+                <div
+                  className="text-xs"
+                  style={{ color: mutedColor }}
+                >
                   {t("roadmapTotalTopics")}
                 </div>
               </div>
@@ -500,7 +504,10 @@ export function RoadmapDetailClient({
                   <CheckCircle2 size={16} />
                   {progress.done.length}
                 </div>
-                <div className="text-xs" style={{ color: mutedColor }}>
+                <div
+                  className="text-xs"
+                  style={{ color: mutedColor }}
+                >
                   {t("roadmapCompleted")}
                 </div>
               </div>
@@ -512,7 +519,10 @@ export function RoadmapDetailClient({
                   <BookOpen size={16} />
                   {progress.learning.length}
                 </div>
-                <div className="text-xs" style={{ color: mutedColor }}>
+                <div
+                  className="text-xs"
+                  style={{ color: mutedColor }}
+                >
                   {t("roadmapLearning")}
                 </div>
               </div>
@@ -524,7 +534,10 @@ export function RoadmapDetailClient({
                   <SkipForward size={16} />
                   {progress.skipped.length}
                 </div>
-                <div className="text-xs" style={{ color: mutedColor }}>
+                <div
+                  className="text-xs"
+                  style={{ color: mutedColor }}
+                >
                   {t("roadmapSkipped")}
                 </div>
               </div>
@@ -646,9 +659,7 @@ export function RoadmapDetailClient({
                     backgroundColor: `${successColor}1a`,
                   }}
                 />
-                <span style={{ color: successColor }}>
-                  {t("roadmapDone")}
-                </span>
+                <span style={{ color: successColor }}>{t("roadmapDone")}</span>
               </div>
               <div className="flex items-center gap-1">
                 <span
@@ -658,9 +669,7 @@ export function RoadmapDetailClient({
                     backgroundColor: `${infoColor}1a`,
                   }}
                 />
-                <span style={{ color: infoColor }}>
-                  {t("roadmapLearning")}
-                </span>
+                <span style={{ color: infoColor }}>{t("roadmapLearning")}</span>
               </div>
               <div className="flex items-center gap-1">
                 <span
