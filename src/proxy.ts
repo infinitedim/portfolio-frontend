@@ -66,12 +66,21 @@ export function normalizeApiOrigin(raw: string | undefined): string {
   }
 }
 
+function toWebSocketOrigin(httpOrigin: string): string {
+  try {
+    const parsed = new URL(httpOrigin);
+    parsed.protocol = parsed.protocol === "http:" ? "ws:" : "wss:";
+    return parsed.origin;
+  } catch {
+    return httpOrigin;
+  }
+}
+
 function buildCsp(isDev: boolean): string {
   const apiOrigin = normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL);
 
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
-    // PPR static shell ships nonce-less /_next/static scripts — avoid strict-dynamic.
     "script-src": [
       "'self'",
       "'unsafe-inline'",
@@ -92,6 +101,7 @@ function buildCsp(isDev: boolean): string {
     "connect-src": [
       "'self'",
       apiOrigin,
+      toWebSocketOrigin(apiOrigin),
       "https://giscus.app",
       "https://api.github.com",
       "https://vitals.vercel-insights.com",
