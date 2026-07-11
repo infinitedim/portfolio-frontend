@@ -3,10 +3,6 @@
 import Link from "next/link";
 import { type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
-import {
-  FadeIn,
-  StaggerContainer,
-} from "@/components/atoms/shared/motion-wrappers";
 
 export function HeroSection(): JSX.Element {
   const { t } = useI18n();
@@ -14,29 +10,26 @@ export function HeroSection(): JSX.Element {
   return (
     <section className="relative overflow-hidden px-4 py-20 sm:py-28">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-green-900/20 via-neutral-950 to-neutral-950" />
-      <StaggerContainer className="relative mx-auto max-w-4xl text-center">
-        <FadeIn
-          direction="up"
-          delay={0.1}
-          duration={0.6}
+      <div className="relative mx-auto max-w-4xl text-center">
+        <div
+          className="animate-slide-in-up"
+          style={{ animationDelay: "100ms" }}
         >
           <h1 className="font-mono text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
             {t("landingHeroTitle")}
           </h1>
-        </FadeIn>
-        <FadeIn
-          direction="up"
-          delay={0.2}
-          duration={0.6}
+        </div>
+        <div
+          className="animate-slide-in-up"
+          style={{ animationDelay: "200ms" }}
         >
           <p className="mx-auto mt-6 max-w-2xl font-mono text-base text-neutral-400 sm:text-lg">
             {t("landingHeroTagline")}
           </p>
-        </FadeIn>
-        <FadeIn
-          direction="up"
-          delay={0.35}
-          duration={0.6}
+        </div>
+        <div
+          className="animate-slide-in-up"
+          style={{ animationDelay: "350ms" }}
         >
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link
@@ -52,8 +45,9 @@ export function HeroSection(): JSX.Element {
               {t("landingCtaContact")}
             </Link>
           </div>
-        </FadeIn>
-      </StaggerContainer>
+        </div>
+      </div>
     </section>
   );
 }
+

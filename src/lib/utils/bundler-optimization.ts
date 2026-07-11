@@ -65,7 +65,6 @@ export const SplittingStrategies = {
 
 export const addResourceHints = () => {
   const dnsPrefetch = [
-    "https://fonts.googleapis.com",
     "https://cdn.jsdelivr.net",
   ];
 
@@ -76,7 +75,7 @@ export const addResourceHints = () => {
     document.head.appendChild(link);
   });
 
-  const preconnect = ["https://fonts.gstatic.com"];
+  const preconnect: string[] = [];
 
   preconnect.forEach((origin) => {
     const link = document.createElement("link");
@@ -86,6 +85,7 @@ export const addResourceHints = () => {
     document.head.appendChild(link);
   });
 };
+
 
 export const optimizeThirdParty = () => {
   const analytics = "[src*='analytics']";
