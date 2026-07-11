@@ -9,7 +9,7 @@ export const en_US_key: TranslationKeys = {
   adminBlogEditor: "Blog Editor",
   adminCPU: "CPU",
   adminContentLocale: "Content locale",
-  adminDashboard: "Dashboard",
+  adminDashboard: "Admin Dashboard",
   adminDisk: "DISK",
   adminDraft: "Draft",
   adminImageAttr: "Image",

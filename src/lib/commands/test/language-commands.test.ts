@@ -14,7 +14,7 @@ let mockSetLocaleResult = true;
 if (typeof (vi as unknown as Record<string, unknown>).mock !== "function")
   (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("@/lib/i18n/i18n-service", () => ({
+vi.mock("@/lib/i18n", () => ({
   i18n: {
     getCurrentLocale: () => mockCurrentLocale,
     getCurrentLocaleConfig: () => {
@@ -70,6 +70,7 @@ vi.mock("@/lib/i18n/i18n-service", () => ({
 }));
 
 vi.mock("@/lib/i18n/locales", () => ({
+  DEFAULT_LOCALE: "en_US",
   isRegionalVariant: (code: string) => {
     const regionalVariants = [
       "en_GB",

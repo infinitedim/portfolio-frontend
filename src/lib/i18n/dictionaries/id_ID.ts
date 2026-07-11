@@ -9,7 +9,7 @@ export const id_ID_key: TranslationKeys = {
   adminBlogEditor: "Editor Blog",
   adminCPU: "CPU",
   adminContentLocale: "Lokal konten",
-  adminDashboard: "Dasbor",
+  adminDashboard: "Dasbor Admin",
   adminDisk: "DISK",
   adminDraft: "Draf",
   adminImageAttr: "Gambar",
