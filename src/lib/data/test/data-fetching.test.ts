@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import {
   getPortfolioData,
-  getSkillsData,
   getProjectsData,
   getExperienceData,
   getAboutData,
@@ -29,27 +28,6 @@ describe("data-fetching.ts", () => {
     vi.clearAllMocks();
     mockFetch.mockReset();
     mockFetch.mockImplementation(async (url: string) => {
-      if (url.includes("section=skills")) {
-        return {
-          ok: true,
-          json: async () => ({
-            data: [
-              {
-                name: "Frontend",
-                skills: [
-                  {
-                    name: "React",
-                    level: "expert",
-                    yearsOfExperience: 5,
-                    projects: [],
-                  },
-                ],
-                progress: 80,
-              },
-            ],
-          }),
-        };
-      }
       if (url.includes("section=projects")) {
         return {
           ok: true,
@@ -138,23 +116,10 @@ describe("data-fetching.ts", () => {
       }
       const result = await getPortfolioData();
 
-      expect(result).toHaveProperty("skills");
       expect(result).toHaveProperty("projects");
       expect(result).toHaveProperty("experience");
       expect(result).toHaveProperty("about");
       expect(result).toHaveProperty("lastUpdated");
-    });
-  });
-
-  describe("getSkillsData", () => {
-    it("should return skills data", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await getSkillsData();
-
-      expect(Array.isArray(result)).toBe(true);
     });
   });
 

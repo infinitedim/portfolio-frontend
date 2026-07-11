@@ -3,7 +3,6 @@ import { type JSX, Suspense } from "react";
 import { HeroSection } from "@/components/organisms/landing/hero-section";
 import { AboutSection } from "@/components/organisms/landing/about-section";
 import { FeaturedProjects } from "@/components/organisms/landing/featured-projects";
-import { SkillsGrid } from "@/components/organisms/landing/skills-grid";
 import { LatestPosts } from "@/components/organisms/landing/latest-posts";
 import { TerminalCta } from "@/components/organisms/landing/terminal-cta";
 import { LandingSectionSkeleton } from "@/components/organisms/landing/landing-section-skeleton";
@@ -81,17 +80,6 @@ export default function HomePage(): JSX.Element {
         }
       >
         <FeaturedProjects />
-      </Suspense>
-
-      <Suspense
-        fallback={
-          <LandingSectionSkeleton
-            lines={5}
-            heightClass="min-h-[280px]"
-          />
-        }
-      >
-        <SkillsGrid />
       </Suspense>
 
       <Suspense
