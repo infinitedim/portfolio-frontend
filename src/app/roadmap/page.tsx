@@ -146,7 +146,7 @@ function ProgressRow({ p }: { p: RoadmapProgress }): JSX.Element {
       </div>
 
       {}
-      <div className="mt-1 flex items-center justify-between text-xs text-neutral-600">
+      <div className="mt-1 flex items-center justify-between text-xs text-neutral-400">
         <span>updated {formatDate(p.updatedAt)}</span>
         <Link
           href={`/roadmap/${p.resourceId}`}

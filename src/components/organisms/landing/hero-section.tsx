@@ -34,12 +34,14 @@ export function HeroSection(): JSX.Element {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/projects"
+              prefetch={false}
               className="rounded border border-green-400/40 bg-green-400/10 px-5 py-2.5 font-mono text-sm text-green-400 transition-colors hover:bg-green-400/20"
             >
               {t("landingCtaProjects")}
             </Link>
             <Link
               href="/contact"
+              prefetch={false}
               className="rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white"
             >
               {t("landingCtaContact")}

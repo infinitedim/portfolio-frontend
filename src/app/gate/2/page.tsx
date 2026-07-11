@@ -47,7 +47,7 @@ export default function GateLevel2Page(): JSX.Element {
   return (
     <>
       <header className="mb-6 text-center">
-        <p className="text-xs uppercase tracking-widest text-neutral-600">
+        <p className="text-xs uppercase tracking-widest text-neutral-400">
           Level 2
         </p>
         <h1 className="mt-2 text-xl text-green-400">Natas 3</h1>

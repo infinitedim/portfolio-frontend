@@ -1,3 +1,5 @@
+import path from "path";
+
 const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig = {
@@ -22,7 +24,19 @@ const nextConfig = {
   turbopack: {
     resolveAlias: {
       canvas: "./empty-module.ts",
+      "../build/polyfills/polyfill-module": "./empty-module.ts",
     },
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  webpack: (config: any, { isServer }: { isServer: boolean }) => {
+    if (!isServer) {
+      config.resolve = config.resolve || {};
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        "../build/polyfills/polyfill-module": path.resolve(__dirname, "./empty-module.ts"),
+      };
+    }
+    return config;
   },
   images: {
     loader: "default",

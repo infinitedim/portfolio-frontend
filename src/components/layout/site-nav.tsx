@@ -29,7 +29,7 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur supports-[backdrop-filter]:bg-neutral-950/80">
+      <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur supports-backdrop-filter:bg-neutral-950/80">
         <nav
           aria-label="Main navigation"
           className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
@@ -49,6 +49,7 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
                 <li key={href}>
                   <Link
                     href={href}
+                    prefetch={false}
                     className={`rounded px-3 py-1.5 font-mono text-xs transition-colors ${
                       isActive
                         ? "bg-green-400/10 text-green-400"

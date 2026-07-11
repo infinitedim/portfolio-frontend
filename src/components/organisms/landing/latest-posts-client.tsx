@@ -57,6 +57,7 @@ export function LatestPostsClient({
           </h2>
           <Link
             href="/blog"
+            prefetch={false}
             className="font-mono text-xs text-neutral-500 transition-colors hover:text-green-400"
           >
             {t("blogAllPosts")} →
@@ -64,10 +65,11 @@ export function LatestPostsClient({
         </FadeIn>
 
         {posts.length === 0 ? (
-          <p className="font-mono text-sm text-neutral-500">
+          <p className="font-mono text-sm text-terminal-muted">
             {t("blogNoPosts")}{" "}
             <Link
               href="/blog"
+              prefetch={false}
               className="text-green-400 hover:underline"
             >
               {t("blogVisit")}
@@ -87,6 +89,7 @@ export function LatestPostsClient({
                     <HoverCard scale={1.015}>
                       <Link
                         href={`/blog/${post.slug}`}
+                        prefetch={false}
                         className="group block rounded-lg border border-neutral-800 bg-neutral-900/30 p-4 transition-colors hover:border-green-400/30"
                       >
                         <h3 className="font-mono text-base font-semibold text-white group-hover:text-green-400">
@@ -97,7 +100,7 @@ export function LatestPostsClient({
                             {post.summary}
                           </p>
                         )}
-                        <p className="mt-2 font-mono text-xs text-neutral-600">
+                        <p className="mt-2 font-mono text-xs text-terminal-muted/80">
                           {post.readingTimeMinutes} {t("blogMinRead")} ·{" "}
                           {formattedDate(post.createdAt)}
                         </p>

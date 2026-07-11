@@ -32,6 +32,7 @@ export function FeaturedProjectsClient({
           </h2>
           <Link
             href="/projects"
+            prefetch={false}
             className="font-mono text-xs text-neutral-400 transition-colors hover:text-green-400"
           >
             {t("projectsViewAll")} →

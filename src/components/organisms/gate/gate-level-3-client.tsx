@@ -43,7 +43,7 @@ export function GateLevel3Client({
   return (
     <>
       <header className="mb-6 text-center">
-        <p className="text-xs uppercase tracking-widest text-neutral-600">
+        <p className="text-xs uppercase tracking-widest text-neutral-400">
           Level 3
         </p>
         <h1 className="mt-2 text-xl text-green-400">Referer check</h1>

@@ -1,5 +1,3 @@
-import { getApiUrl } from "@/lib/api/get-api-url";
-
 export interface PageviewPayload {
   path: string;
   slug?: string;
@@ -7,7 +5,7 @@ export interface PageviewPayload {
 
 export async function recordPageview(payload: PageviewPayload): Promise<void> {
   try {
-    await fetch(`${getApiUrl()}/api/analytics/pageview`, {
+    await fetch("/api/analytics/pageview", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
