@@ -19,6 +19,7 @@ import {
   Key,
   TrendingUp,
   BookOpen,
+  Briefcase,
 } from "lucide-react";
 
 export default function AdminDashboardPage(): JSX.Element {
@@ -247,6 +248,24 @@ export default function AdminDashboardPage(): JSX.Element {
                     <div className="font-semibold">{t("adminManagePosts")}</div>
                     <div className="text-xs opacity-70">
                       {t("adminManagePostsDesc")}
+                    </div>
+                  </Link>
+
+                  <Link
+                    href={"/admin/projects" as Route}
+                    className="p-3 text-left rounded transition-all duration-200 hover:scale-105 block"
+                    style={{
+                      backgroundColor: `${themeConfig.colors.accent}10`,
+                      border: `1px solid ${themeConfig.colors.accent}`,
+                      color: themeConfig.colors.accent,
+                    }}
+                  >
+                    <div className="text-lg mb-1">
+                      <Briefcase size={20} />
+                    </div>
+                    <div className="font-semibold">Manage Projects</div>
+                    <div className="text-xs opacity-70">
+                      Add, edit, and organize portfolio projects
                     </div>
                   </Link>
 
