@@ -8,7 +8,7 @@ const config = {
         "http://localhost:3000/projects",
       ],
       numberOfRuns: 3,
-      startServerCommand: "bun run start",
+      startServerCommand: "BACKEND_URL=http://localhost:8080 NEXT_PUBLIC_API_URL=http://localhost:8080 bun run start",
       startServerReadyPattern: "Ready",
       startServerReadyTimeout: 120000,
       settings: {
@@ -42,4 +42,4 @@ const config = {
   },
 };
 
-export default config;
+module.exports = config;

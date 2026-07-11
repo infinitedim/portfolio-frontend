@@ -22,8 +22,8 @@
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "clean": "rm -rf .next node_modules/.cache tsconfig.tsbuildinfo",
     "perf:analyze": "ANALYZE=true bun run build",
-    "perf:lighthouse": "lhci autorun --config=lighthouserc.js",
-    "perf:lighthouse:mobile": "lhci autorun --config=lighthouserc.mobile.js"
+    "perf:lighthouse": "lhci autorun --config=lighthouserc.cjs",
+    "perf:lighthouse:mobile": "lhci autorun --config=lighthouserc.mobile.cjs"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",

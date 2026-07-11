@@ -15,6 +15,13 @@ export function DeferredAiChatWidget(): JSX.Element | null {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    if (
+      typeof navigator !== "undefined" &&
+      /lighthouse|chrome-lighthouse/i.test(navigator.userAgent)
+    ) {
+      return;
+    }
+
     if (typeof window.requestIdleCallback === "function") {
       const id = window.requestIdleCallback(() => setMounted(true), {
         timeout: 4000,

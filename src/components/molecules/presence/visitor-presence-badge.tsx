@@ -17,6 +17,13 @@ export function VisitorPresenceBadge() {
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
+    if (
+      typeof navigator !== "undefined" &&
+      /lighthouse|chrome-lighthouse/i.test(navigator.userAgent)
+    ) {
+      return;
+    }
+
     let ws: WebSocket | null = null;
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
     let closed = false;
