@@ -152,7 +152,7 @@ class I18nService {
   public updateDocumentDirection(): void {
     if (typeof document !== "undefined") {
       document.documentElement.dir = this.getDocumentDirection();
-      document.documentElement.lang = this.currentLocale;
+      document.documentElement.lang = this.currentLocale.replace("_", "-");
     }
   }
 }

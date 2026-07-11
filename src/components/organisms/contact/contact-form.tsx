@@ -197,7 +197,7 @@ export function ContactForm(): JSX.Element {
               className="w-full resize-y rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50"
               disabled={submitting}
             />
-            <div className="mt-1 text-right text-xs text-neutral-500">
+            <div className="mt-1 text-right text-xs text-neutral-400">
               {charsRemaining} {t("contactCharsLeft")}
             </div>
           </Field>
@@ -243,7 +243,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs text-neutral-500">
+      <span className="mb-1.5 block text-xs text-neutral-400">
         {label}
         {required ? " *" : ""}
       </span>

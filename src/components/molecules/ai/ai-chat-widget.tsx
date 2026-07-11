@@ -91,7 +91,7 @@ export function AiChatWidget() {
             <h2 className="font-mono text-sm font-semibold text-green-400">
               Portfolio Assistant
             </h2>
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-neutral-400">
               Ask about projects, blog posts, and skills
             </p>
           </header>
@@ -101,7 +101,7 @@ export function AiChatWidget() {
             className="flex-1 space-y-3 overflow-y-auto p-4"
           >
             {messages.length === 0 && (
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-neutral-400">
                 Try: &ldquo;What projects have you built?&rdquo;
               </p>
             )}

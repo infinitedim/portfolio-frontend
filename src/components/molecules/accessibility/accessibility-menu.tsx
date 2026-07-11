@@ -198,7 +198,7 @@ export function AccessibilityMenu(): JSX.Element {
                 ) : (
                   <X
                     size={14}
-                    className="text-neutral-500"
+                    style={{ color: themeConfig.colors.muted }}
                   />
                 )}
               </span>
@@ -217,7 +217,7 @@ export function AccessibilityMenu(): JSX.Element {
                 ) : (
                   <X
                     size={14}
-                    className="text-neutral-500"
+                    style={{ color: themeConfig.colors.muted }}
                   />
                 )}
               </span>

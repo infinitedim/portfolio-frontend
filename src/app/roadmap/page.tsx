@@ -73,7 +73,7 @@ function StreakCard({ streak }: { streak: RoadmapStreak }): JSX.Element {
           </div>
         ))}
       </div>
-      <div className="mt-4 flex justify-between text-xs text-neutral-500">
+      <div className="mt-4 flex justify-between text-xs text-neutral-400">
         <span>First visit: {formatDate(streak.firstVisitAt)}</span>
         <span>Last visit: {formatDate(streak.lastVisitAt)}</span>
       </div>
@@ -135,7 +135,7 @@ function ProgressRow({ p }: { p: RoadmapProgress }): JSX.Element {
           <span className="flex items-center gap-1">
             <SkipForward
               size={12}
-              className="text-neutral-500"
+              className="text-neutral-400"
             />{" "}
             <span className="text-neutral-200">{p.skipped}</span> skipped
           </span>
@@ -321,12 +321,12 @@ async function RoadmapContent(): Promise<JSX.Element> {
             @{dashboard.username} · {dashboard.headline}
           </p>
           {teams.length > 0 && (
-            <p className="mt-1 text-xs text-neutral-500">
+            <p className="mt-1 text-xs text-neutral-400">
               Teams: {teams.map((t) => t.name).join(", ")}
             </p>
           )}
           {favourites && favourites.weeklySubscriptions.length > 0 && (
-            <p className="mt-1 text-xs text-neutral-500">
+            <p className="mt-1 text-xs text-neutral-400">
               Weekly subscriptions: {favourites.weeklySubscriptions.length}
             </p>
           )}

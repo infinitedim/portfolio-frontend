@@ -28,7 +28,7 @@ export function AboutSectionClient({
           <p className="text-lg text-white">{about.title}</p>
           <p>{about.bio}</p>
           {about.location && (
-            <p className="text-neutral-500">
+            <p className="text-neutral-400">
               {t("aboutLocation")}: {about.location}
             </p>
           )}

@@ -10,7 +10,7 @@ export default function S3cr3tIndexPage(): JSX.Element {
         <div className="mt-4 overflow-x-auto rounded border border-neutral-800 bg-black/40">
           <table className="w-full border-collapse text-left">
             <thead>
-              <tr className="border-b border-neutral-800 text-neutral-500">
+              <tr className="border-b border-neutral-800 text-neutral-400">
                 <th className="px-4 py-2 font-normal">Name</th>
                 <th className="px-4 py-2 font-normal">Last modified</th>
                 <th className="px-4 py-2 font-normal">Size</th>
@@ -29,8 +29,8 @@ export default function S3cr3tIndexPage(): JSX.Element {
                     Parent Directory
                   </Link>
                 </td>
-                <td className="px-4 py-2 text-neutral-500">-</td>
-                <td className="px-4 py-2 text-neutral-500">-</td>
+                <td className="px-4 py-2 text-neutral-400">-</td>
+                <td className="px-4 py-2 text-neutral-400">-</td>
                 <td className="hidden px-4 py-2 sm:table-cell" />
               </tr>
               <tr>
@@ -42,8 +42,8 @@ export default function S3cr3tIndexPage(): JSX.Element {
                     users.txt
                   </Link>
                 </td>
-                <td className="px-4 py-2 text-neutral-500">2026-05-30 12:00</td>
-                <td className="px-4 py-2 text-neutral-500">-</td>
+                <td className="px-4 py-2 text-neutral-400">2026-05-30 12:00</td>
+                <td className="px-4 py-2 text-neutral-400">-</td>
                 <td className="hidden px-4 py-2 sm:table-cell" />
               </tr>
             </tbody>

@@ -10,7 +10,7 @@ export function TerminalLockedTeaser(): JSX.Element {
       {/* view-source: the terminal is locked — find the path from /terminal */}
       <div className="max-w-lg text-center">
         <h1 className="text-lg">Terminal locked</h1>
-        <p className="mt-3 text-sm text-neutral-500">
+        <p className="mt-3 text-sm text-neutral-400">
           Complete the gate puzzles to access the interactive terminal.
         </p>
         <p className="mt-6 text-xs text-neutral-600">

@@ -32,14 +32,14 @@ export function FeaturedProjectsClient({
           </h2>
           <Link
             href="/projects"
-            className="font-mono text-xs text-neutral-500 transition-colors hover:text-green-400"
+            className="font-mono text-xs text-neutral-400 transition-colors hover:text-green-400"
           >
             {t("projectsViewAll")} →
           </Link>
         </FadeIn>
 
         {projects.length === 0 ? (
-          <p className="font-mono text-sm text-neutral-500">
+          <p className="font-mono text-sm text-neutral-400">
             {t("projectsNone")}
           </p>
         ) : (

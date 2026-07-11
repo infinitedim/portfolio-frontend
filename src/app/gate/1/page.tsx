@@ -39,7 +39,7 @@ export default function GateLevel1Page(): JSX.Element {
   };
 
   if (!status) {
-    return <p className="text-neutral-500">Loading gate...</p>;
+    return <p className="text-neutral-400">Loading gate...</p>;
   }
 
   return (
@@ -49,7 +49,7 @@ export default function GateLevel1Page(): JSX.Element {
           Level 1
         </p>
         <h1 className="mt-2 text-xl text-green-400">Natas 0</h1>
-        <p className="mt-2 text-xs text-neutral-500">
+        <p className="mt-2 text-xs text-neutral-400">
           Log in with the credentials below.
         </p>
       </header>

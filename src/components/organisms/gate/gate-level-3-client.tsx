@@ -47,7 +47,7 @@ export function GateLevel3Client({
           Level 3
         </p>
         <h1 className="mt-2 text-xl text-green-400">Referer check</h1>
-        <p className="mt-2 text-xs text-neutral-500">
+        <p className="mt-2 text-xs text-neutral-400">
           This page checks where you came from.
         </p>
       </header>
@@ -61,7 +61,7 @@ export function GateLevel3Client({
         {refererGranted ? (
           <>
             <p className="text-green-400">Access granted.</p>
-            <p className="mt-2 text-xs text-neutral-500">
+            <p className="mt-2 text-xs text-neutral-400">
               Referer validated. You may enter the terminal.
             </p>
             <button
@@ -76,7 +76,7 @@ export function GateLevel3Client({
         ) : (
           <>
             <p className="text-red-400">Unauthorized</p>
-            <p className="mt-2 text-xs text-neutral-500">
+            <p className="mt-2 text-xs text-neutral-400">
               Refresh this page with a valid Referer header pointing to
               /terminal.
             </p>

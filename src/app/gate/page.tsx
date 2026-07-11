@@ -27,7 +27,7 @@ export default function GateIndexPage(): JSX.Element {
 
   return (
     <div className="text-center">
-      <p className="text-neutral-500">Loading gate status...</p>
+      <p className="text-neutral-400">Loading gate status...</p>
       <GateProgress
         currentLevel={1}
         completedLevels={[]}

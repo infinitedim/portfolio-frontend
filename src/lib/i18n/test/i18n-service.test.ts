@@ -194,6 +194,25 @@ describe("I18nService", () => {
 
       expect(["ltr", "rtl"]).toContain(direction);
     });
+
+    it("should set document lang in BCP 47 format (hyphen-separated)", () => {
+      if (!canRunTests) {
+        expect(true).toBe(true);
+        return;
+      }
+      if (typeof document === "undefined") {
+        expect(true).toBe(true);
+        return;
+      }
+      const service = I18nService.getInstance();
+      service.setLocale("id_ID");
+      service.updateDocumentDirection();
+      expect(document.documentElement.lang).toBe("id-ID");
+
+      service.setLocale("en_US");
+      service.updateDocumentDirection();
+      expect(document.documentElement.lang).toBe("en-US");
+    });
   });
 
   describe("Exports", () => {

@@ -62,7 +62,7 @@ export function NatasLoginForm({
     <div className="mx-auto max-w-md space-y-4">
       {showCredentials && (
         <div className="rounded border border-green-400/30 bg-green-400/5 p-4 font-mono text-xs text-green-300">
-          <p className="text-neutral-500">Hint: credentials for this level</p>
+          <p className="text-neutral-400">Hint: credentials for this level</p>
           <p className="mt-2">
             Username: <span className="text-green-400">{GATE_L1_USERNAME}</span>
           </p>
@@ -72,7 +72,7 @@ export function NatasLoginForm({
         </div>
       )}
 
-      {hint && <p className="font-mono text-xs text-neutral-500">{hint}</p>}
+      {hint && <p className="font-mono text-xs text-neutral-400">{hint}</p>}
 
       <form
         onSubmit={handleSubmit}
@@ -114,7 +114,7 @@ export function NatasLoginForm({
         </button>
 
         {attempts > 0 && (
-          <p className="mt-2 font-mono text-xs text-neutral-500">
+          <p className="mt-2 font-mono text-xs text-neutral-400">
             Attempts: {attempts}
           </p>
         )}

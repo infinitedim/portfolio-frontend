@@ -32,11 +32,11 @@ export function SiteFooter(): JSX.Element {
         </div>
 
         <div className="flex flex-col items-center gap-3 border-t border-neutral-800 pt-6">
-          <p className="font-mono text-xs text-neutral-500">Newsletter</p>
+          <p className="font-mono text-xs text-neutral-400">Newsletter</p>
           <NewsletterSignup />
         </div>
 
-        <div className="flex items-center justify-center gap-4 font-mono text-xs text-neutral-500">
+        <div className="flex items-center justify-center gap-4 font-mono text-xs text-neutral-400">
           <Link
             href="/rss.xml"
             className="transition-colors hover:text-orange-400"

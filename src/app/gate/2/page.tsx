@@ -41,7 +41,7 @@ export default function GateLevel2Page(): JSX.Element {
   };
 
   if (!status) {
-    return <p className="text-neutral-500">Loading gate...</p>;
+    return <p className="text-neutral-400">Loading gate...</p>;
   }
 
   return (
@@ -51,7 +51,7 @@ export default function GateLevel2Page(): JSX.Element {
           Level 2
         </p>
         <h1 className="mt-2 text-xl text-green-400">Natas 3</h1>
-        <p className="mt-2 text-xs text-neutral-500">
+        <p className="mt-2 text-xs text-neutral-400">
           Find the hidden directory. Read users.txt for the password.
         </p>
       </header>

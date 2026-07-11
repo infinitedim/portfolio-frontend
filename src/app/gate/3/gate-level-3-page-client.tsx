@@ -36,7 +36,7 @@ export function GateLevel3PageClient({
   }, [router]);
 
   if (!status) {
-    return <p className="text-neutral-500">Loading gate...</p>;
+    return <p className="text-neutral-400">Loading gate...</p>;
   }
 
   return (

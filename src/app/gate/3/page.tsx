@@ -13,7 +13,7 @@ async function GateLevel3RefererContent(): Promise<JSX.Element> {
 
 export default function GateLevel3Page(): JSX.Element {
   return (
-    <Suspense fallback={<p className="text-neutral-500">Loading gate...</p>}>
+    <Suspense fallback={<p className="text-neutral-400">Loading gate...</p>}>
       <GateLevel3RefererContent />
     </Suspense>
   );
