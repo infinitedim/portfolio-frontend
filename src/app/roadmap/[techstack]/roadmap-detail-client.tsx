@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, JSX, useMemo, useCallback } from "react";
+import { useState, useEffect, JSX, useMemo, useCallback, useRef } from "react";
 import Link from "next/link";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { useTheme } from "@/hooks/use-theme";
@@ -41,6 +41,10 @@ export function RoadmapDetailClient({
   const [progress, setProgress] = useState<ProgressResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Canvas scaling & scroll prevent refs
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [fitScale, setFitScale] = useState(1);
 
   // Fetch progress live from backend route
   const fetchProgress = useCallback(async () => {
@@ -119,6 +123,27 @@ export function RoadmapDetailClient({
       height: maxY - minY + padding * 2,
     };
   }, [initialStructure]);
+
+  // Effect to calculate fit scale and handle window resize
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || width === 0) return;
+
+    const handleResize = () => {
+      const containerWidth = container.clientWidth;
+      // Only scale down, never up — don't blow up small roadmaps to fill the container.
+      const rawScale = containerWidth > 0 ? Math.min(1, containerWidth / width) : 1;
+      const scale = Math.max(rawScale, 0.85);
+      setFitScale(scale);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [width]);
 
   // Render a single node
   const renderNode = (node: Node) => {
@@ -508,6 +533,8 @@ export function RoadmapDetailClient({
 
           {/* Map Visualizer Canvas Container */}
           <div
+            ref={containerRef}
+            data-lenis-prevent
             className="relative border rounded-lg overflow-auto max-h-[75vh] min-h-100 shadow-inner select-none"
             style={{
               borderColor: borderColor,
@@ -516,69 +543,78 @@ export function RoadmapDetailClient({
           >
             <div
               style={{
-                width,
-                height,
-                position: "relative",
-                backgroundImage: `radial-gradient(${mutedColor}33 1px, transparent 1px)`,
-                backgroundSize: "24px 24px",
+                width: width * fitScale,
+                height: height * fitScale,
               }}
             >
-              {/* SVG containing connections */}
-              <svg
+              <div
                 style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  width: "100%",
-                  height: "100%",
-                  pointerEvents: "none",
+                  width,
+                  height,
+                  position: "relative",
+                  transform: `scale(${fitScale})`,
+                  transformOrigin: "top left",
+                  backgroundImage: `radial-gradient(${mutedColor}33 1px, transparent 1px)`,
+                  backgroundSize: "24px 24px",
                 }}
               >
-                {/* Arrow markers */}
-                <defs>
-                  <marker
-                    id="arrow"
-                    viewBox="0 0 10 10"
-                    refX="6"
-                    refY="5"
-                    markerWidth="6"
-                    markerHeight="6"
-                    orient="auto-start-reverse"
-                  >
-                    <path
-                      d="M 0 1.5 L 8 5 L 0 8.5 z"
-                      fill="var(--terminal-border)"
-                    />
-                  </marker>
-                </defs>
+                {/* SVG containing connections */}
+                <svg
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    width: "100%",
+                    height: "100%",
+                    pointerEvents: "none",
+                  }}
+                >
+                  {/* Arrow markers */}
+                  <defs>
+                    <marker
+                      id="arrow"
+                      viewBox="0 0 10 10"
+                      refX="6"
+                      refY="5"
+                      markerWidth="6"
+                      markerHeight="6"
+                      orient="auto-start-reverse"
+                    >
+                      <path
+                        d="M 0 1.5 L 8 5 L 0 8.5 z"
+                        fill="var(--terminal-border)"
+                      />
+                    </marker>
+                  </defs>
 
-                {/* Draw edges */}
-                {edgesData.map((edge) => {
-                  if (!edge) return null;
-                  const isDashed = edge.style?.strokeDasharray !== "0";
+                  {/* Draw edges */}
+                  {edgesData.map((edge) => {
+                    if (!edge) return null;
+                    const isDashed = edge.style?.strokeDasharray !== "0";
 
-                  return (
-                    <line
-                      key={edge.id}
-                      x1={edge.startX}
-                      y1={edge.startY}
-                      x2={edge.endX}
-                      y2={edge.endY}
-                      stroke={edge.style?.stroke ?? "var(--terminal-border)"}
-                      strokeWidth={edge.style?.strokeWidth ?? 3.5}
-                      strokeDasharray={
-                        isDashed ? edge.style?.strokeDasharray : undefined
-                      }
-                      strokeLinecap="round"
-                      markerEnd="url(#arrow)"
-                      opacity="0.8"
-                    />
-                  );
-                })}
-              </svg>
+                    return (
+                      <line
+                        key={edge.id}
+                        x1={edge.startX}
+                        y1={edge.startY}
+                        x2={edge.endX}
+                        y2={edge.endY}
+                        stroke={edge.style?.stroke ?? "var(--terminal-border)"}
+                        strokeWidth={edge.style?.strokeWidth ?? 3.5}
+                        strokeDasharray={
+                          isDashed ? edge.style?.strokeDasharray : undefined
+                        }
+                        strokeLinecap="round"
+                        markerEnd="url(#arrow)"
+                        opacity="0.8"
+                      />
+                    );
+                  })}
+                </svg>
 
-              {/* Render all nodes */}
-              {initialStructure.nodes.map((node) => renderNode(node))}
+                {/* Render all nodes */}
+                {initialStructure.nodes.map((node) => renderNode(node))}
+              </div>
             </div>
           </div>
 

@@ -29,6 +29,22 @@ export class PerformanceMonitor {
   private isEnabled: boolean = true;
   private maxMetrics: number = 1000;
 
+  // Next.js/React dev-mode internal Profiler measure names.
+  // These fire on every page load regardless of app code and are not
+  // actionable performance signals — filter them out so real slow-operation
+  // warnings from this app's own code aren't drowned out.
+  private static readonly DEV_INTERNAL_MEASURE_NAMES = new Set([
+    "HotReload",
+    "Mount",
+    "Reconnect",
+    "AppDevOverlayErrorBoundary",
+    "DevRootHTTPAccessFallbackBoundary",
+    "HTTPAccessFallbackBoundary",
+    "HTTPAccessFallbackErrorBoundary",
+    "RedirectBoundary",
+    "RedirectErrorBoundary",
+  ]);
+
   private constructor() {
     this.setupPerformanceObserver();
     this.startSystemMonitoring();
@@ -209,6 +225,9 @@ export class PerformanceMonitor {
       const observer = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
           if (entry.entryType === "measure") {
+            if (PerformanceMonitor.DEV_INTERNAL_MEASURE_NAMES.has(entry.name)) {
+              return;
+            }
             this.recordMetric(entry.name, entry.duration, "system", {
               entryType: entry.entryType,
             });
