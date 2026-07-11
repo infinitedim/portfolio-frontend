@@ -10,7 +10,6 @@ function getBackendUrl(): string {
 }
 
 export interface PortfolioData {
-  skills: SkillCategory[];
   projects: Project[];
   experience: Experience[];
   about: AboutInfo;
@@ -74,11 +73,8 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   const backendUrl = getBackendUrl();
 
   try {
-    const [skillsRes, projectsRes, experienceRes, aboutRes] =
+    const [projectsRes, experienceRes, aboutRes] =
       await Promise.allSettled([
-        fetch(`${backendUrl}/api/portfolio?section=skills`, {
-          next: { revalidate: CACHE_DURATIONS.SKILLS / 1000 },
-        }),
         fetch(`${backendUrl}/api/portfolio?section=projects`, {
           next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
         }),
@@ -89,11 +85,6 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
           next: { revalidate: CACHE_DURATIONS.ABOUT / 1000 },
         }),
       ]);
-
-    const skills =
-      skillsRes.status === "fulfilled" && skillsRes.value.ok
-        ? ((await skillsRes.value.json()).data ?? [])
-        : [];
 
     const projects =
       projectsRes.status === "fulfilled" && projectsRes.value.ok
@@ -111,7 +102,6 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
         : getFallbackAboutData();
 
     return {
-      skills,
       projects,
       experience,
       about,
@@ -123,27 +113,6 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
     });
     return getFallbackPortfolioData();
   }
-});
-
-export const getSkillsData = cache(async (): Promise<SkillCategory[]> => {
-  const backendUrl = getBackendUrl();
-
-  try {
-    const response = await fetch(`${backendUrl}/api/portfolio?section=skills`, {
-      next: { revalidate: CACHE_DURATIONS.SKILLS / 1000 },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      return data.data ?? [];
-    }
-  } catch (error) {
-    console.error("Failed to fetch skills data from backend", {
-      error: error instanceof Error ? error.message : String(error),
-    });
-  }
-
-  return [];
 });
 
 export const getProjectsData = cache(
@@ -318,7 +287,6 @@ export const getGitHubData = cache(
 
 function getFallbackPortfolioData(): PortfolioData {
   return {
-    skills: [],
     projects: [],
     experience: [],
     about: getFallbackAboutData(),
