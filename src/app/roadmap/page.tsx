@@ -11,8 +11,9 @@ import {
   type RoadmapProgress,
   type RoadmapFetchError,
 } from "@/lib/data/data-fetching";
+import Link from "next/link";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
-import { Flame, CheckCircle2, BookOpen, SkipForward } from "lucide-react";
+import { Flame, CheckCircle2, BookOpen, SkipForward, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Roadmap Progress | Portfolio",
@@ -139,8 +140,15 @@ function ProgressRow({ p }: { p: RoadmapProgress }): JSX.Element {
       </div>
 
       {}
-      <div className="mt-1 text-right text-xs text-neutral-600">
-        updated {formatDate(p.updatedAt)}
+      <div className="mt-1 flex items-center justify-between text-xs text-neutral-600">
+        <span>updated {formatDate(p.updatedAt)}</span>
+        <Link
+          href={`/roadmap/${p.resourceId}`}
+          className="flex items-center gap-1 rounded border border-neutral-700 bg-neutral-800 px-2 py-1 font-semibold text-neutral-200 transition-colors hover:border-neutral-500 hover:text-white"
+        >
+          Detail
+          <ArrowRight size={12} />
+        </Link>
       </div>
     </div>
   );
