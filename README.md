@@ -1,672 +1,237 @@
-# Terminal Portfolio - Where Code Meets Creativity
+# Portfolio Frontend
 
-> _"Why have a boring portfolio when you can have a TERMINAL portfolio?"_
+This repository contains the Next.js frontend for the developer portfolio application. The frontend provides a standard web interface as well as an interactive terminal shell that connects to a separate Rust/Axum backend.
 
-Welcome to the most epic way to showcase your skills! This isn't just another portfolio website - it's a full-blown terminal experience with enterprise-grade logging and monitoring that'll make visitors go "Whoa, this is actually pretty cool!"
+## Tech Stack
 
-## Dual entry (landing + gated terminal)
+The frontend application is built using the following technologies:
 
-- **`/`** — Standard portfolio landing (SEO-friendly)
-- **`/terminal`** — Interactive terminal (gated via `/gate` puzzles)
-- **`/blog`, `/projects`, `/contact`** — Shared public routes (no duplication)
+- Next.js 16 (App Router, cacheComponents enabled, experimental typed environment variables, typed routes)
+- React 19 (React Compiler enabled in production)
+- TypeScript 6
+- Tailwind CSS 4 (via `@tailwindcss/postcss`)
+- Bun (runtime and package manager)
+- Pino (structured logging)
+- Radix UI (accessible primitive UI components)
+- Framer Motion (animations)
+- TipTap (WYSIWYG editor in the admin panel)
+- Sandpack (interactive coding playground environment)
+- Vitest (unit and integration tests)
+- Playwright (end-to-end testing)
 
-Copy `.env.example` → `.env.development` for local dev. Set `NEXT_PUBLIC_GATE_ENABLED=true`. For dev bypass, set server-only `GATE_BYPASS_SECRET` and send header `X-Gate-Bypass`. See [docs/dual-ui-gate.md](./docs/dual-ui-gate.md). Production: upload `.env` to Vercel or set env in dashboard. Feature status: [FEATURE_PLANNING.md](./FEATURE_PLANNING.md).
+The application consumes data from a separate backend service, which runs a Rust/Axum REST and WebSocket API. By default, the frontend expects this API to be running on port 8080.
 
-[![Next.js Badge](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![Rust Badge](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
-[![TypeScript Badge](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS Badge](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Bun Badge](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)](https://bun.sh/)
-[![Grafana Badge](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.com/)
-[![Vercel Badge](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+## Features
 
-## What's New in v2.0 (Major Update!)
+The portfolio frontend includes the following routes and interactive capabilities:
 
-This release brings **blazing-fast performance**, **enterprise-grade logging**, and **modern architecture**. Here's what changed:
+### Public Pages
 
-- **Rust Backend** - High-performance backend with Axum web framework
-- **Bun Runtime** - Lightning-fast JavaScript runtime and package manager
-- **Comprehensive Logging** - Loki + Grafana for log aggregation & monitoring
-- **Real-time Dashboards** - Application, errors, performance, and security metrics
-- **Modern UI** - Built with Next.js 16 App Router and Tailwind CSS v4
-- **Smart Alerting** - Automated alerts for errors, performance, and security
-  - **File-based Logging** - Structured logging with rotation and retention
+- **Homepage (`/`)**: Standard portfolio landing page displaying an introduction, project highlights, and learning journey metrics.
+- **Projects (`/projects`)**: A list of projects.
+- **Blog (`/blog`, `/blog/[slug]`, `/blog/series/[slug]`)**: Static and dynamic blog views with server-side caching and Giscus comment integration.
+- **Contact (`/contact`)**: Form for sending messages.
+- **Roadmap (`/roadmap`)**: Visualization of learning progress based on roadmap.sh data.
+- **Playground (`/playground`)**: A live coding playground using CodeSandbox Sandpack for code snippet execution.
 
-## What's This All About?
+### Gated Terminal (`/terminal`)
 
-Imagine if your portfolio had a baby with a terminal emulator, and that baby grew up to be absolutely awesome! That's exactly what this is.
+An interactive command-line experience. Access to `/terminal` is gated behind a series of puzzles located at `/gate` and `/gate/[level]`.
 
-**Terminal Portfolio** transforms the traditional "scroll-through-my-resume" experience into an interactive command-line adventure. Your visitors don't just _read_ about your skills - they _discover_ them by typing commands like a real developer would!
+- **Command Parser**: Supports standard commands with typo tolerance, command history (using Arrow Up/Down keys), auto-completion (using Tab), and command flags/arguments.
+- **Theme and Font Customization**: Interactive customization via command-line arguments (e.g., `theme dracula`, `font fira-code`).
+- **Interactive Tour**: Guide/walkthrough for first-time visitors.
+- **Progressive Web App (PWA)**: Support for offline mode, caching via service worker, and install prompts (triggered upon completion of the terminal tour).
+- **Internationalization**: Support for multiple languages, including English and Indonesian, with a language selection command (`lang`).
 
-It's like giving your portfolio a personality transplant from "corporate brochure" to "hackerman extraordinaire"
+### Administration and Security
 
-### Why This Rocks
+- **Admin Panel (`/admin`)**: A dashboard for managing portfolio content (projects, blog posts, messages) using JWT-based auth with refresh token verification.
+- **NATAS-style Puzzle Gate (`/s3cr3t/`, `/robots.txt`)**: Level 2 puzzle discovery endpoint proxying backend assets.
+- **Edge Proxy (`src/proxy.ts`)**: Handles security headers (CSP, HSTS, CORS), gate redirections, and bypass mechanisms.
 
-- **Memorable**: Nobody forgets the portfolio that made them feel like a hacker
-- **Interactive**: Visitors actually _engage_ instead of just scrolling
-- **Geeky Cool**: Appeals to fellow developers and tech enthusiasts
-- **Accessible**: Because cool shouldn't exclude anyone
-- **Customizable**: Make it uniquely _yours_
-- **Secure**: Enterprise-grade security out of the box
+## Prerequisites
 
-## Features That'll Blow Your Mind
+To run this project locally, ensure you have the following installed:
 
-### The Terminal Experience
+- Bun 1.2 or higher
+- Node.js 22 or higher (for build compatibility)
 
-- **Real Command Line Feel**: Complete with that satisfying cursor blink
-- **Smart Auto-completion**: Hit `Tab` and watch the magic happen
-- **Command History**: Arrow keys work just like in your favorite terminal
-- **Typo Forgiveness**: Typed `hlep` instead of `help`? We got you!
-- **⌨️ Keyboard Shortcuts**: All the `Ctrl+` combos you know and love
-- **Input Sanitization**: Protected against XSS and injection attacks
+## Getting Started
 
-### Security Fort Knox
-
-Because security isn't optional anymore:
-
-- **JWT Authentication**: Secure token-based auth with refresh tokens
-- **CSRF Protection**: Cross-site request forgery prevention
-- **️ Rate Limiting**: Redis-backed with in-memory fallback
-- **XSS Sanitization**: All inputs sanitized before rendering
-- **Audit Logging**: Every security event tracked
-- **IP Allowlisting**: Admin access restricted by IP
-- **Token Blacklisting**: Revoked tokens can't be reused
-
-### Theme Paradise
-
-Choose your fighter!
-
-- **Matrix**: _"Welcome to the real world"_
-- **Cyberpunk**: Neon dreams and digital nightmares
-- **Minimal**: Clean, crisp, and classy
-- **Retro**: Vintage vibes with modern functionality
-- **Custom**: Build your own masterpiece!
-
-**Pro Tip**: The theme editor is so good, you might spend more time customizing than coding! ### Accessibility Superpowers
-
-Because awesome should be for everyone:
-
-- **Screen Reader Friendly**: Every element speaks up when needed
-- ⌨️ **Keyboard Navigation**: Mouse? What mouse?
-- **High Contrast Mode**: Easy on the eyes
-- **Reduced Motion**: Respects your preferences
-- **Zoom Friendly**: Scale up without breaking
-
-### Mobile Magic
-
-Your terminal works everywhere:
-
-- **Touch Optimized**: Tap, swipe, and type with ease
-- **Responsive Design**: Looks great on everything from phones to ultrawide monitors
-- ⌨️ **Virtual Keyboard Support**: Mobile typing that doesn't suck
-
-### ️ Journey Visualization
-
-- **Interactive Roadmap**: Your learning journey in beautiful visuals
-- **Skills Showcase**: Level up your skill display game
-- **Progress Tracking**: Show off that growth mindset
-- **Achievement Unlocked**: Highlight your wins
-- **Real-time API Integration**: Live data from roadmap.sh API
-- � **Automatic Fallback**: Graceful degradation if API is unavailable
-
-## Tech Stack Hall of Fame
-
-We only use the good stuff around here:
-
-### Frontend
-
-| Technology       | Why It's Awesome                                 | Version |
-| ---------------- | ------------------------------------------------ | ------- |
-| **Next.js**      | The React framework that makes everything better | 16.x    |
-| **TypeScript**   | Because `any` is not a type strategy             | 5.9+    |
-| **Tailwind CSS** | Utility-first CSS that sparks joy                | 4.1+    |
-| **shadcn/ui**    | Components so beautiful they make you cry        | Latest  |
-| **Radix UI**     | Accessible primitives for the win                | Latest  |
-
-### Backend
-
-| Technology   | Why It's Awesome                           | Version |
-| ------------ | ------------------------------------------ | ------- |
-| **Rust**     | Blazing-fast, memory-safe backend          | 1.75+   |
-| **Axum**     | Ergonomic and modular web framework        | 0.8     |
-| ️ **SQLx**    | Async PostgreSQL with compile-time helpers | 0.8     |
-| **Tracing**  | Powerful structured logging                | Latest  |
-| **Loki**     | Scalable log aggregation system            | Latest  |
-| **Promtail** | Log collection agent                       | Latest  |
-| **Grafana**  | Beautiful dashboards and visualization     | Latest  |
-
-### ️ Infrastructure
-
-| Technology | Why It's Awesome                          | Version |
-| ---------- | ----------------------------------------- | ------- |
-| **Bun**    | The fast runtime that makes npm look slow | 1.2+    |
-| **Vercel** | Deploy faster than you can say "git push" | -       |
-| **Docker** | Containerization for logging stack        | Latest  |
-| **Cargo**  | Rust package manager and build tool       | Latest  |
-
-## ️ Architecture Overview
-
-```text
-portfolio/
-├── portfolio-frontend/             # Next.js Frontend
-│   ├── src/
-│   │   ├── app/                       # App Router pages
-│   │   ├── components/                # React components
-│   │   │   ├── atoms/                 # Atomic components
-│   │   │   ├── molecules/             # Molecule components
-│   │   │   ├── organisms/             # Complex components
-│   │   │   │   └── terminal/          # Terminal magic │   │   │   └── monitoring/            # Monitoring components
-│   │   ├── lib/
-│   │   │   ├── commands/              # Terminal commands
-│   │   │   ├── logger/                # Client & server logging
-│   │   │   ├── auth/                  # Authentication
-│   │   │   └── ...
-│   │   ├── hooks/                     # React hooks
-│   │   ├── middleware/                # Next.js middleware
-│   │   └── test/                      # Test setup
-│   ├── e2e/                           # Playwright E2E tests
-│   ├── public/                        # Static assets
-│   ├── logs/                          # Frontend log files
-│   └── docs/                          # Documentation
-│
-├── portfolio-backend/              # Rust Backend
-│   ├── src/
-│   │   ├── main.rs                    # Entry point
-│   │   ├── lib.rs                     # Library exports
-│   │   ├── routes/                    # API routes
-│   │   │   ├── health.rs              # Health check
-│   │   │   ├── logs.rs                # Log ingestion
-│   │   │   ├── auth.rs                # Authentication
-│   │   │   ├── blog.rs                # Blog API
-│   │   │   └── portfolio.rs           # Portfolio data
-│   │   ├── logging/                   # Logging configuration
-│   │   │   ├── config.rs              # Log config
-│   │   │   └── middleware.rs          # HTTP logging
-│   │   └── db/                        # Database (future)
-│   ├── config/                        # Loki, Promtail, Grafana
-│   │   ├── loki-config.yml
-│   │   ├── promtail-config.yml
-│   │   └── grafana/
-│   │       ├── dashboards/            # Pre-built dashboards
-│   │       ├── datasources/           # Loki datasource
-│   │       └── alerts/                # Alert rules
-│   ├── logs/                          # Backend log files
-│   ├── data/                          # Persistent data
-│   └── docker-compose.logging.yml     # Logging stack
-│
-└── Shared/
-    ├── VSCode settings
-    ├── .github/workflows/             # CI/CD pipelines
-    └── Environment configs
-```
-
-## Let's Get This Party Started
-
-### Prerequisites
-
-Before we dive in, make sure you have:
-
-- **Bun 1.2+** - Fast JavaScript runtime and package manager
-- **Rust 1.75+** - For backend development
-- **Git** - Obviously!
-- **Docker & Docker Compose** - For logging stack (Loki, Grafana)
-- **Coffee** - Not required but highly recommended
-
-### Installation Speedrun
-
-**Step 1**: Grab the code!
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/infinitedim/portfolio-frontend.git
-cd portfolio
+cd portfolio-frontend
 ```
 
-**Step 2**: Install frontend dependencies! ```bash
-cd portfolio-frontend
+### 2. Install Dependencies
+
+```bash
 bun install
-
-````
-
-**Step 3**: Set up the backend!
-
-```bash
-cd ../portfolio-backend
-
-# Build the Rust backend
-cargo build --release
-
-# Start the logging stack (Loki + Grafana)
-docker-compose -f docker-compose.logging.yml up -d
-````
-
-**Step 4**: Configure environment!
-
-```bash
-# Frontend (portfolio-frontend/.env.development)
-cd ../portfolio-frontend
-cp .env.example .env.development
-# Edit with your local values
-
-# Backend (portfolio-backend/.env.development)
-cd ../portfolio-backend
-cp .env.example .env.development
-# Edit with your local values
 ```
 
-**Step 5**: Fire it up! ```bash
+### 3. Set Up Environment Variables
 
-# Terminal 1: Start the backend
-
-cd portfolio-backend
-cargo run
-
-# Terminal 2: Start the frontend
-
-cd portfolio-frontend
-bun run dev
-
-````
-
-**Step 6**: Open your browser and navigate to:
-
-- Frontend: `http://localhost:3000`
-- Grafana: `http://localhost:3001` (admin/admin)
-- Loki API: `http://localhost:3100`
-
-**Step 7**: Type `help` and prepare to be amazed! ## How to Play... I Mean, Use
-
-### Essential Commands
-
-Your new superpowers:
-
-| Command        | What It Does                               | Cool Factor     |
-| -------------- | ------------------------------------------ | --------------- |
-| `help`         | Shows all commands                         | 🆘 Essential    |
-| `about`        | Learn about the awesome person behind this | Personal     |
-| `skills`       | Display your superpowers                   | Impressive   |
-| `projects`     | Show off your creations                    | Portfolio Gold  |
-| `contact`      | How to reach the legend                    | Networking   |
-| `resume`       | The formal stuff                           | Professional |
-| `roadmap`      | Your journey to greatness                  | ️ Inspiring    |
-| `customize`    | Make it YOURS                              | Fun             |
-| `clear`        | Clean slate                                | Utility         |
-| `theme matrix` | Enter the Matrix                           | Epic            |
-
-### Pro Tips & Tricks
-
-**Hot Keys That'll Make You Look Cool:**
-
-- `Tab` → Auto-complete like a boss
-- `↑/↓` → Navigate command history like a time traveler
-- `Ctrl+L` → Clear screen (so satisfying)
-- `Ctrl+C` → Cancel current input (panic button)
-- `Ctrl+A/E` → Jump to start/end of line (efficiency!)
-
-**Theme Switching Like a DJ:**
+Copy the example environment file and configure the values:
 
 ```bash
-theme matrix     # Welcome to the real world
-theme cyberpunk  # Neon everything
-theme minimal    # Less is more
-theme retro      # Vintage vibes
-````
+cp .env.example .env.development
+```
+
+Edit `.env.development` with your local configuration.
+
+### 4. Start the Development Server
+
+```bash
+bun run dev
+```
+
+Navigate to `http://localhost:3000` to view the application. Note that for features like the terminal gate and admin auth to function, you must have the Rust backend running on the URL specified in your environment config (default: `http://localhost:8080`).
 
 ## Environment Variables
 
-### Frontend (`portfolio-frontend/.env.development` — local; `.env` — Vercel production)
+Configure the following variables in `.env.development` (local) or in your hosting provider's dashboard (production):
 
-```env
-# App Config
-NODE_ENV="development"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
+### Application and API Config
 
-# Logging
-NEXT_PUBLIC_LOG_LEVEL="info"           # trace|debug|info|warn|error
-NEXT_PUBLIC_LOG_API_URL="/api/logs"    # Log ingestion endpoint
+- `NEXT_PUBLIC_BASE_URL`: Base URL of the deployed site (used for Open Graph, sitemap, and canonical URLs). Default: `http://localhost:3000`.
+- `SITE_URL`: Canonical base URL used by server-side referer validation checks. Default: `http://localhost:3000`.
+- `BACKEND_URL`: Server-side API URL used by SSR/API route handlers to call the backend. Default: `http://localhost:8080`.
+- `NEXT_PUBLIC_API_URL`: Browser-accessible backend API URL. Default: `http://localhost:8080`.
+- `ALLOWED_ORIGINS`: Comma-separated list of allowed origins for the proxy CORS check. Default: `http://localhost:3000`.
 
-# ️ Roadmap.sh Integration (Optional)
-# ROADMAP_EMAIL and ROADMAP_PASSWORD are configured server-side in portfolio-backend
-# NEXT_PUBLIC_ROADMAP_* secrets are not used
+### Gate and Bypass
 
-# Analytics (Optional)
-NEXT_PUBLIC_GA_ID="G-XXXXXXXXXX"
-NEXT_PUBLIC_ANALYTICS_ENABLED="true"
+- `NEXT_PUBLIC_GATE_ENABLED`: Enable or disable the gate puzzle redirect. Default: `true`.
+- `GATE_BYPASS_SECRET`: Server-only secret used to bypass the terminal gate. Send the `X-Gate-Bypass` header matching this value to skip redirects during development.
 
-# Monitoring (Optional)
-SENTRY_DSN="your-sentry-dsn"
-SENTRY_ENVIRONMENT="development"
-```
+### Giscus Comments
 
-### Backend (`portfolio-backend/.env.development` — local; `.env` — GCP production)
+- `NEXT_PUBLIC_GISCUS_REPO`: The target GitHub repository for comments (format: `owner/repo`).
+- `NEXT_PUBLIC_GISCUS_REPO_ID`: The Giscus repository ID.
+- `NEXT_PUBLIC_GISCUS_CATEGORY`: Default discussion category for comments.
+- `NEXT_PUBLIC_GISCUS_CATEGORY_ID`: Default discussion category ID.
+- Giscus also supports specific category IDs:
+  - `NEXT_PUBLIC_GISCUS_CATEGORY_ID_ANNOUNCEMENTS`
+  - `NEXT_PUBLIC_GISCUS_CATEGORY_ID_GENERAL`
+  - `NEXT_PUBLIC_GISCUS_CATEGORY_ID_IDEAS`
+  - `NEXT_PUBLIC_GISCUS_CATEGORY_ID_POLLS`
+  - `NEXT_PUBLIC_GISCUS_CATEGORY_ID_QA`
+  - `NEXT_PUBLIC_GISCUS_CATEGORY_ID_SHOW_AND_TELL`
+  - `NEXT_PUBLIC_GISCUS_CATEGORY_ID_BLOG_COMMENTS`
 
-```env
-# Backend Config
-ENVIRONMENT="development"              # production|staging|development
-LOG_LEVEL="debug"                      # trace|debug|info|warn|error
-RUST_LOG="info"                        # Rust logging level
+### SEO Verification
 
-# Server
-HOST="0.0.0.0"
-PORT="8080"
-```
+- `GOOGLE_SITE_VERIFICATION`: Google Search Console verification token.
+- `YANDEX_VERIFICATION`: Yandex Webmaster verification token.
+- `BING_VERIFICATION`: Bing Webmaster verification token.
 
-## Monitoring & Logging
+### Logging and Monitoring
 
-### Logging Architecture
+- `NEXT_PUBLIC_LOG_API_URL`: Endpoint for client log ingestion. Default: `/api/logs`.
+- `NEXT_PUBLIC_LOG_LEVEL`: Minimum level for client-side logging (`trace` | `debug` | `info` | `warn` | `error`). Default: `info`.
+- `LOG_TO_FILE`: Set to `true` to enable server-side file-based logging.
 
-```text
-┌──────────────┐
-│  Frontend    │
-│  (Next.js)   │  Client logs
-│              ├──────────┐
-└──────┬───────┘          │
-       │ Server logs      │
-       │                  │
-       ▼                  ▼
-┌──────────────┐    ┌─────────┐
-│  Backend     │    │ Log API │
-│  (Rust)      │◄───┤ /api/   │
-└──────┬───────┘    └─────────┘
-       │
-       │ Write JSON logs
-       ▼
-┌──────────────┐    ┌───────────┐    ┌─────────┐
-│  Log Files   │───▶│ Promtail  │───▶│  Loki   │
-│  - app.log   │    │(Collector)│    │(Storage)│
-│  - error.log │    └───────────┘    └────┬────┘
-└──────────────┘                          │
-                                          ▼
-                                    ┌─────────────┐
-                                    │   Grafana   │
-                                    │ (Dashboards)│
-                                    └─────────────┘
-```
+### Integrations and Analytics
 
-### Available Dashboards
+- `GH_USERNAME`: Default GitHub username for fetching profile stats in SSR data paths. Default: `exampleuser`.
+- `NEXT_PUBLIC_GRAFANA_URL`: Grafana dashboard URL linked from the admin dashboard. Default: `http://localhost:3001`.
+- `ANALYZE`: Set to `true` during a build to run the Next.js bundle analyzer.
 
-1. **Application Overview** - Requests, errors, response times, Web Vitals
-2. **Errors Dashboard** - Error tracking, distribution, and recent critical errors
-3. **Performance** - Response time percentiles, slow requests, heatmaps
-4. **Security** - Suspicious patterns, rate limits, failed auth
+### Test Environment
 
-### Alerting
+- `PLAYWRIGHT_BASE_URL`: Base URL for E2E integration tests.
 
-- High error rate (>5 errors/second)
-- Service down (no logs for 5 minutes)
-- Slow response time (P95 >2s)
-- Security events (failed logins, rate limit abuse)
+## Available Scripts
+
+Manage the project lifecycle using these scripts:
+
+| Command                          | Action                                                            |
+| -------------------------------- | ----------------------------------------------------------------- |
+| `bun run dev`                    | Starts the development server with hot reloading                  |
+| `bun run dev:clean`              | Deletes the `.next` cache and starts the dev server               |
+| `bun run build`                  | Builds the application for production                             |
+| `bun run start`                  | Starts the Next.js production server                              |
+| `bun run lint`                   | Runs ESLint rules across the project                              |
+| `bun run lint:fix`               | Runs ESLint and applies automatic code fixes                      |
+| `bun run type-check`             | Runs the TypeScript compiler check (`tsc`) without emitting files |
+| `bun run format`                 | Formats JavaScript, TypeScript, and Markdown files using Prettier |
+| `bun run test`                   | Runs the Vitest unit/integration test suite once                  |
+| `bun run test:watch`             | Runs Vitest in watch mode                                         |
+| `bun run test:ui`                | Runs the interactive Vitest UI                                    |
+| `bun run test:coverage`          | Runs unit tests with coverage reporting (v8 provider)             |
+| `bun run test:e2e`               | Runs the Playwright E2E tests                                     |
+| `bun run test:e2e:ui`            | Opens the Playwright UI mode for interactive E2E debugging        |
+| `bun run clean`                  | Deletes the `.next` build folder and dependency caches            |
+| `bun run perf:analyze`           | Analyzes bundle sizes using `@next/bundle-analyzer`               |
+| `bun run perf:lighthouse`        | Runs desktop Core Web Vitals audits using Lighthouse CI           |
+| `bun run perf:lighthouse:mobile` | Runs mobile Core Web Vitals audits using Lighthouse CI            |
 
 ## Testing
 
-### Frontend Tests
+The frontend is covered by two distinct testing suites:
+
+### Unit and Integration Tests (Vitest)
+
+Unit and integration tests are located next to the components they test and run using Vitest.
 
 ```bash
-# Fast tests with Bun (recommended for development)
-bun test                    # ~14 seconds for full suite!
-bun test --watch            # Watch mode
+bun run test
+```
 
-# Comprehensive tests with Vitest (CI uses this)
-bun run test              # vitest run
-bun run test:coverage     # With coverage reports (88% thresholds)
+To run tests with code coverage:
 
-# E2E tests with Playwright (CI sets NEXT_PUBLIC_GATE_ENABLED=false)
+```bash
+bun run test:coverage
+```
+
+Thresholds are configured at 88% for lines, functions, branches, and statements in `vitest.config.ts`.
+
+### End-to-End Tests (Playwright)
+
+End-to-end tests are located in the `e2e` directory and use Playwright.
+
+```bash
 bun run test:e2e
-bun run test:e2e:ui       # Interactive UI mode
 ```
 
-**Performance Note**: We use **Bun test** for local development (50x faster!) and **Vitest** for comprehensive CI/CD testing. Some advanced mocking features (vi.mock) are currently disabled in Bun but work in Vitest.
-
-### Backend Tests
+For local interactive debugging, launch the E2E UI:
 
 ```bash
-cd portfolio-backend
-cargo test --all-features
-TEST_DATABASE_URL=postgres://portfolio:portfolio@localhost:5432/portfolio_test \
-  cargo test --all-features   # DB integration tests (CI)
-cargo test -- --nocapture
+bun run test:e2e:ui
 ```
 
-## Join the Revolution
-
-Want to make this even more awesome? We'd love your help!
-
-### How to Contribute
-
-1. Fork this bad boy 2. Create your feature branch: `git checkout -b feature/mind-blowing-feature`
-2. Code something amazing
-3. Test it thoroughly
-4. Commit with style: `git commit -m 'feat: add mind-blowing feature'`
-5. Push it: `git push origin feature/mind-blowing-feature`
-6. Open a PR and watch the magic happen ### Code Standards
-
-- TypeScript strict mode
-- ESLint + Prettier formatting
-- Conventional commits (feat, fix, docs, etc.)
-- Tests for new features
-- No `console.log` in production code
-- Security-first mindset
-
-### Found a Bug?
-
-Don't panic! Just:
-
-1. Check if someone already reported it
-2. Create a detailed issue with steps to reproduce
-3. Include screenshots if it helps
-4. Be nice (we're all human!)
+_Note: In the CI environment, Playwright automatically runs using a production build (`bun run build && bun run start`) and overrides `NEXT_PUBLIC_GATE_ENABLED=false` to test routes without gate restrictions._
 
 ## Deployment
 
-### Vercel (Recommended for Frontend)
+Deploying the frontend application involves the following workflow:
 
-```bash
-# Install Vercel CLI
-bun add -g vercel
+### Production (Vercel)
 
-# Deploy
-vercel
-```
+The project is set up to automatically deploy to Vercel upon pushes to the `main` branch. This is configured via a GitHub Action CD pipeline in `.github/workflows/cd-production.yml` that triggers on successful completion of the CI pipeline.
 
-### Backend Deployment
+To deploy manually via the Vercel CLI:
 
-The Rust backend can be deployed using Docker:
+1. Install the Vercel CLI: `bun add -g vercel`
+2. Link the project and deploy: `vercel`
+3. Deploy to production: `vercel --prod`
 
-1. **Docker Container**
+Ensure all variables listed in the Environment Variables section are populated in your Vercel project settings.
 
+## Contributing
+
+1. Run checks locally before creating a pull request:
    ```bash
-   # Build Docker image
-   docker build -t portfolio-backend .
-
-   # Run container
-   docker run -p 8080:8080 \
-     -v ./logs:/app/logs \
-     -v ./config:/app/config \
-     portfolio-backend
+   bun run lint
+   bun run type-check
+   bun run test
    ```
-
-2. **Logging Stack**
-
-   ```bash
-   # Deploy Loki + Grafana stack
-   docker-compose -f docker-compose.logging.yml up -d
-   ```
-
-### Production Checklist
-
-- [ ] Set `NODE_ENV=production` for frontend
-- [ ] Set `ENVIRONMENT=production` for backend
-- [ ] Configure Grafana admin password
-- [ ] Set up HTTPS/TLS certificates
-- [ ] Configure CORS origins
-- [ ] Set up log retention policies
-- [ ] Configure monitoring alerts
-
-## API Reference for Developers
-
-### Backend API Endpoints
-
-```bash
-# Health Check
-GET /health
-
-# Log Ingestion
-POST /api/logs
-Content-Type: application/json
-{
-  "logs": [
-    {
-      "timestamp": "2024-01-01T12:00:00Z",
-      "level": "info",
-      "message": "User action",
-      "context": {...}
-    }
-  ]
-}
-
-# Blog API (if implemented)
-GET /api/blog
-GET /api/blog/:slug
-
-# Portfolio Data
-GET /api/portfolio
-```
-
-### Command System
-
-Want to add your own commands? It's easier than making instant noodles:
-
-```typescript
-import { CommandRegistry } from "@/lib/commands/commandRegistry";
-
-CommandRegistry.register({
-  name: "awesome",
-  description: "Does something awesome",
-  usage: "awesome [--super-awesome]",
-  execute: async (args, context) => {
-    return "You are awesome!";
-  },
-});
-```
-
-### Theme System
-
-Create themes that would make Picasso jealous:
-
-```typescript
-import { Theme } from "@/types/theme";
-
-const myEpicTheme: Theme = {
-  name: "Epic Theme",
-  colors: {
-    bg: "#000000",
-    text: "#00ff00",
-    accent: "#ff0080",
-    // Make it pop!
-  },
-};
-```
-
-### Logging in Your Code
-
-```typescript
-import { clientLogger } from "@/lib/logger";
-
-// Log user actions
-clientLogger.logUserAction("button_click", {
-  buttonId: "submit",
-  page: "/contact",
-});
-
-// Log errors
-try {
-  const data = await fetchData();
-  clientLogger.info("Data fetched", { component: "DataFetcher" });
-} catch (error) {
-  clientLogger.logError(error, {
-    component: "DataFetcher",
-    action: "fetch-data",
-  });
-}
-```
-
-## Screenshots & Demo
-
-### Desktop Experience
-
-_Coming soon: Screenshots that'll make you go "I need this!"_
-
-### Mobile Magic
-
-_Mobile screenshots that prove responsive design isn't dead_
-
-### Theme Gallery
-
-_A rainbow of themes to choose from_
-
-### Live Demo
-
-**[Check out the live demo!](https://infinitedim.dev) **
-
-_Go ahead, type `help` and start exploring!_
+2. Follow conventional commit messages (e.g., `feat:`, `fix:`, `docs:`, `chore:`).
+3. Ensure any new features include unit or E2E tests where appropriate.
 
 ## License
 
-This project is licensed under the MIT License - which basically means "do whatever you want with it, just don't blame us if something breaks!" See the [LICENSE](LICENSE) file for the boring legal details.
-
-## Shoutouts & Thanks
-
-Massive thanks to these amazing projects:
-
-- **shadcn/ui** - For components so beautiful they make designers weep
-- **Rust Community** - For the amazing language and ecosystem
-- **Grafana Labs** - For open-source monitoring perfection
-- **Loki** - For making log aggregation simple and powerful
-- **Bun Team** - For the runtime that makes everything faster
-- **Tailwind CSS** - For making CSS fun again
-- ️ **Next.js Team** - For the framework that just works
-- **Vercel** - For deployment that's faster than light
-- **Coffee** - For making all of this possible
-- **You** - For checking out this project!
-
-## ️ Roadmap to Awesomeness
-
-What's coming next? Glad you asked!
-
-- [ ] **Game Mode**: Turn your portfolio into an actual game
-- [ ] **AI Assistant**: Chat with an AI version of yourself
-- [ ] **Sound Effects**: Because everything's better with sound
-- [ ] **File System**: Simulate a real file system
-- [ ] **Plugin System**: Let others extend your terminal
-- [ ] **Enhanced Analytics**: More detailed visitor insights
-- [ ] **Authentication**: Optional user accounts and personalization
-- [x] **i18n Support**: 17+ languages with RTL support
-- [x] **PWA**: Service worker, offline mode, installable
-- [x] **Logging System**: Loki + Grafana monitoring
-- [x] **Rust Backend**: High-performance backend
-- [x] **Bun Runtime**: Fast JavaScript runtime
-
-## Need Help?
-
-Stuck? Don't worry, we've all been there!
-
-1. **Check the docs** (you're reading them!)
-2. **Search existing issues**
-3. **Open a discussion**
-4. **Create an issue**
-
----
-
-<div align="center">
-
-**Built with , , and way too much enthusiasm by [Dimas Saputra](https://github.com/infinitedim)**
-
-_"Code is poetry, and this portfolio is our sonnet"_
-
-[![Star this repo](https://img.shields.io/github/stars/infinitedim/portfolio-frontend?style=social)](https://github.com/infinitedim/portfolio-frontend)
-[![Follow me](https://img.shields.io/github/followers/infinitedim?style=social)](https://github.com/infinitedim)
-
-</div>
-
----
-
-_P.S. If you actually read this entire README, you deserve a cookie! Type `cookie` in the terminal for a surprise!_
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
