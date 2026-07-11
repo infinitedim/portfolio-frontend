@@ -98,7 +98,7 @@ export const ProjectCard = memo(function ProjectCard({
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-6 flex flex-1 flex-col">
           <div className="mb-4">
             <h3
               className="mb-2 text-xl font-bold text-terminal-text transition-colors group-hover:text-terminal-accent"
@@ -136,7 +136,7 @@ export const ProjectCard = memo(function ProjectCard({
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="mt-auto flex gap-4">
             {project.demoUrl && (
               <a
                 href={project.demoUrl}
