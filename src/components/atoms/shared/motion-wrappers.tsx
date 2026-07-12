@@ -11,6 +11,7 @@ interface FadeInProps {
   duration?: number;
   className?: string;
   distance?: number;
+  viewportMargin?: string;
 }
 
 export function FadeIn({
@@ -20,6 +21,7 @@ export function FadeIn({
   duration = 0.5,
   className = "",
   distance = 30,
+  viewportMargin = "0px 0px -10% 0px",
 }: FadeInProps): ReactNode {
   const { isReducedMotion } = useAccessibility();
 
@@ -42,7 +44,7 @@ export function FadeIn({
     <motion.div
       initial={{ opacity: 0, ...offset }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
+      viewport={{ once: true, margin: viewportMargin }}
       transition={{
         duration,
         delay,
@@ -60,6 +62,7 @@ interface StaggerContainerProps {
   delayChildren?: number;
   staggerChildren?: number;
   className?: string;
+  viewportMargin?: string;
 }
 
 export function StaggerContainer({
@@ -67,6 +70,7 @@ export function StaggerContainer({
   delayChildren = 0,
   staggerChildren = 0.1,
   className = "",
+  viewportMargin = "0px 0px -5% 0px",
 }: StaggerContainerProps): ReactNode {
   const { isReducedMotion } = useAccessibility();
 
@@ -78,7 +82,7 @@ export function StaggerContainer({
     <motion.div
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: "-10% 0px" }}
+      viewport={{ once: true, margin: viewportMargin }}
       variants={{
         hidden: {},
         show: {
