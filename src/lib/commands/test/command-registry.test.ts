@@ -5,7 +5,7 @@ vi.unmock("@/lib/utils/arg-parser");
 
 describe("commandRegistry", () => {
   let commandRegistry: typeof import("@/lib/commands/command-registry");
-  let createHelpCommand: (getCommands: () => Command[]) => Command;
+  let createHelpCommand: (getCommands: () => Array<Command>) => Command;
   let aboutCommand: Command;
   let projectsCommand: Command;
   let contactCommand: Command;

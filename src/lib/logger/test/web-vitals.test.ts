@@ -28,9 +28,9 @@ const mockError = vi.fn();
 
 vi.mock("../client-logger", () => ({
   default: {
-    logPerformance: (...args: unknown[]) => mockLogPerformance(...args),
-    debug: (...args: unknown[]) => mockDebug(...args),
-    error: (...args: unknown[]) => mockError(...args),
+    logPerformance: (...args: Array<unknown>) => mockLogPerformance(...args),
+    debug: (...args: Array<unknown>) => mockDebug(...args),
+    error: (...args: Array<unknown>) => mockError(...args),
   },
 }));
 

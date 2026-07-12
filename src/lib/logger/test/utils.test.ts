@@ -97,7 +97,7 @@ describe("Logger Utils", () => {
 
     it("should handle arrays", () => {
       const input = ["user@example.com", "other@example.com"];
-      const result = maskPII(input) as string[];
+      const result = maskPII(input) as Array<string>;
       expect(result[0]).not.toContain("user@example.com");
       expect(result[1]).not.toContain("other@example.com");
     });

@@ -38,7 +38,7 @@ test.describe("Security Headers", () => {
   });
 
   test("Next.js chunk scripts are not blocked by CSP", async ({ page }) => {
-    const cspViolations: string[] = [];
+    const cspViolations: Array<string> = [];
     page.on("console", (msg) => {
       if (msg.text().includes("Content Security Policy")) {
         cspViolations.push(msg.text());

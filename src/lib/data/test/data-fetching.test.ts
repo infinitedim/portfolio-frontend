@@ -16,7 +16,7 @@ globalThis.fetch = mockFetch as unknown as typeof fetch;
 
 global.Blob = class Blob {
   size: number;
-  constructor(parts: unknown[]) {
+  constructor(parts: Array<unknown>) {
     this.size = JSON.stringify(parts).length;
   }
 } as unknown as typeof Blob;

@@ -469,7 +469,7 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-    const commands: string[] = [];
+    const commands: Array<string> = [];
     const { result } = renderHook(() =>
       useTerminalGestures((c: string) => commands.push(c)),
     );

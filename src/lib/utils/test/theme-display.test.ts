@@ -164,7 +164,7 @@ describe("themeDisplay", () => {
     it("should handle single theme", () => {
       const result = ThemeDisplay.generateThemeComparison([
         "dark",
-      ] as unknown as ThemeName[]);
+      ] as unknown as Array<ThemeName>);
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
     });
@@ -173,7 +173,7 @@ describe("themeDisplay", () => {
       const result = ThemeDisplay.generateThemeComparison([
         "dark",
         "light",
-      ] as unknown as ThemeName[]);
+      ] as unknown as Array<ThemeName>);
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
     });
@@ -181,7 +181,7 @@ describe("themeDisplay", () => {
     it("should handle invalid themes gracefully", () => {
       const result = ThemeDisplay.generateThemeComparison([
         "nonexistent",
-      ] as unknown as ThemeName[]);
+      ] as unknown as Array<ThemeName>);
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
     });
@@ -191,7 +191,7 @@ describe("themeDisplay", () => {
         "dark",
         "light",
         "cyberpunk",
-      ] as unknown as ThemeName[]);
+      ] as unknown as Array<ThemeName>);
       expect(typeof result).toBe("string");
       expect(result.length).toBeGreaterThan(0);
     });
@@ -225,7 +225,7 @@ describe("themeDisplay", () => {
       expect(() =>
         ThemeDisplay.generateThemeComparison([
           "test" as unknown as ThemeName,
-        ] as ThemeName[]),
+        ] as Array<ThemeName>),
       ).not.toThrow();
     });
   });
@@ -238,7 +238,7 @@ describe("themeDisplay", () => {
       );
       const comparison = ThemeDisplay.generateThemeComparison([
         "test" as unknown as ThemeName,
-      ] as ThemeName[]);
+      ] as Array<ThemeName>);
 
       expect(typeof list).toBe("string");
       expect(typeof preview).toBe("string");

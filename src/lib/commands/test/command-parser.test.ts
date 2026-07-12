@@ -18,7 +18,7 @@ describe("CommandParser", () => {
     const cmd = {
       name: "echo",
       description: "echo",
-      async execute(args: string[]) {
+      async execute(args: Array<string>) {
         return { type: "success", content: args.join(" ") } as CommandOutput;
       },
     };
@@ -84,7 +84,7 @@ describe("CommandParser", () => {
     parser.register({
       name: "right",
       description: "right",
-      async execute(args: string[]) {
+      async execute(args: Array<string>) {
         return { type: "success", content: args.join(" ") } as CommandOutput;
       },
     } as Command);

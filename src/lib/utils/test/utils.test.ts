@@ -142,7 +142,7 @@ describe("utils", () => {
     });
 
     it("should generate different IDs on multiple calls", async () => {
-      const ids: string[] = [];
+      const ids: Array<string> = [];
       for (let i = 0; i < 5; i++) {
         ids.push(generateId());
 

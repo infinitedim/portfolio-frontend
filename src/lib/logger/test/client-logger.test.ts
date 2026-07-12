@@ -43,7 +43,7 @@ describe("ClientLogger", () => {
   describe("Basic Logging", () => {
     it("should log info messages", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { info: (...args: unknown[]) => void } })
+        (logger as unknown as { pino: { info: (...args: Array<unknown>) => void } })
           .pino,
         "info",
       );
@@ -64,7 +64,7 @@ describe("ClientLogger", () => {
 
     it("should log warnings", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { warn: (...args: unknown[]) => void } })
+        (logger as unknown as { pino: { warn: (...args: Array<unknown>) => void } })
           .pino,
         "warn",
       );
@@ -82,7 +82,7 @@ describe("ClientLogger", () => {
   describe("User Actions", () => {
     it("should log user actions", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { info: (...args: unknown[]) => void } })
+        (logger as unknown as { pino: { info: (...args: Array<unknown>) => void } })
           .pino,
         "info",
       );
@@ -100,7 +100,7 @@ describe("ClientLogger", () => {
 
     it("should warn on slow performance", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { warn: (...args: unknown[]) => void } })
+        (logger as unknown as { pino: { warn: (...args: Array<unknown>) => void } })
           .pino,
         "warn",
       );
@@ -134,7 +134,7 @@ describe("ClientLogger", () => {
 
     it("should warn on client errors", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { warn: (...args: unknown[]) => void } })
+        (logger as unknown as { pino: { warn: (...args: Array<unknown>) => void } })
           .pino,
         "warn",
       );

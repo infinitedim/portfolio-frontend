@@ -151,6 +151,7 @@ export default [
     rules: {
       "no-console": "off",
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/array-type": ["error", { default: "generic" }],
       "jsdoc/require-jsdoc": "off",
     },
   },
