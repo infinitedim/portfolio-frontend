@@ -60,8 +60,8 @@ vi.mock("@/components/organisms/projects/projects-loading", () => ({
 
 const mockUseSyncContent = { value: false };
 
-vi.mock("./page", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("./page")>();
+vi.mock("./projects-page-content", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./projects-page-content")>();
   const MockProjectsPageContent = (props: any) => {
     if (mockUseSyncContent.value) {
       return <div data-testid="mock-projects-content" />;
@@ -71,26 +71,13 @@ vi.mock("./page", async (importOriginal) => {
   return {
     ...actual,
     ProjectsPageContent: MockProjectsPageContent,
-    default: function MockProjectsPage() {
-      return (
-        <div data-testid="standard-page-layout">
-          <main>
-            <Suspense
-              fallback={<div data-testid="projects-loading">Loading...</div>}
-            >
-              <MockProjectsPageContent />
-            </Suspense>
-          </main>
-        </div>
-      );
-    },
   };
 });
 
 import ProjectsPage, {
-  ProjectsPageContent,
   metadata as projectsMetadata,
 } from "./page";
+import { ProjectsPageContent } from "./projects-page-content";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
 describe("ProjectsPage", () => {

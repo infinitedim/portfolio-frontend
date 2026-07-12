@@ -4,10 +4,15 @@ import { HeroSection } from "@/components/organisms/landing/hero-section";
 import { AboutSection } from "@/components/organisms/landing/about-section";
 import { FeaturedProjects } from "@/components/organisms/landing/featured-projects";
 import { LatestPosts } from "@/components/organisms/landing/latest-posts";
-import { TerminalCta } from "@/components/organisms/landing/terminal-cta";
 import { LandingSectionSkeleton } from "@/components/organisms/landing/landing-section-skeleton";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { getSiteUrl } from "@/lib/api/get-site-url";
+import dynamic from "next/dynamic";
+
+const TerminalCta = dynamic(
+  () => import("@/components/organisms/landing/terminal-cta").then((mod) => mod.TerminalCta),
+  { ssr: true }
+);
 
 export const metadata: Metadata = {
   title: "Dimas Saputra | Full-Stack Developer",

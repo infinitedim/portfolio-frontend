@@ -9,6 +9,7 @@ const nextConfig = {
   typedRoutes: true,
   serverExternalPackages: ["bcryptjs"],
   experimental: {
+    optimizeCss: true,
     serverActions: { bodySizeLimit: "2mb" },
     typedEnv: true,
     optimizePackageImports: [

@@ -1,6 +1,11 @@
 import { type JSX } from "react";
 import { getFeaturedProjects } from "@/lib/data/data-fetching";
-import { FeaturedProjectsClient } from "./featured-projects-client";
+import dynamic from "next/dynamic";
+
+const FeaturedProjectsClient = dynamic(
+  () => import("./featured-projects-client").then((mod) => mod.FeaturedProjectsClient),
+  { ssr: true }
+);
 
 export async function FeaturedProjects(): Promise<JSX.Element> {
   const projects = await getFeaturedProjects();

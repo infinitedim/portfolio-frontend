@@ -1,6 +1,11 @@
 import { type JSX } from "react";
 import { getServerApiUrl } from "@/lib/api/get-api-url";
-import { LatestPostsClient } from "./latest-posts-client";
+import dynamic from "next/dynamic";
+
+const LatestPostsClient = dynamic(
+  () => import("./latest-posts-client").then((mod) => mod.LatestPostsClient),
+  { ssr: true }
+);
 
 interface BlogPostItem {
   id: string;

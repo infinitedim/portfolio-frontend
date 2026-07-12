@@ -13,7 +13,7 @@ export function HeroSection(): JSX.Element {
       <div className="relative mx-auto max-w-4xl text-center">
         <div
           className="animate-slide-in-up"
-          style={{ animationDelay: "100ms" }}
+          style={{ animationDelay: "25ms", animationDuration: "200ms" }}
         >
           <h1 className="font-mono text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
             {t("landingHeroTitle")}
@@ -21,7 +21,7 @@ export function HeroSection(): JSX.Element {
         </div>
         <div
           className="animate-slide-in-up"
-          style={{ animationDelay: "200ms" }}
+          style={{ animationDelay: "50ms", animationDuration: "200ms" }}
         >
           <p className="mx-auto mt-6 max-w-2xl font-mono text-base text-neutral-400 sm:text-lg">
             {t("landingHeroTagline")}
@@ -29,7 +29,7 @@ export function HeroSection(): JSX.Element {
         </div>
         <div
           className="animate-slide-in-up"
-          style={{ animationDelay: "350ms" }}
+          style={{ animationDelay: "100ms", animationDuration: "200ms" }}
         >
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link
