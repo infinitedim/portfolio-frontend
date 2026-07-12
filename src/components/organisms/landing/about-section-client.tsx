@@ -19,7 +19,7 @@ export function AboutSectionClient({
       <FadeIn
         direction="up"
         duration={0.6}
-        className="mx-auto max-w-4xl"
+        className="mx-auto max-w-6xl"
       >
         <h2 className="mb-6 font-mono text-2xl font-bold text-green-400">
           {t("landingAboutTitle")}

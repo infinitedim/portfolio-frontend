@@ -46,7 +46,7 @@ export function LatestPostsClient({
 
   return (
     <section className="border-t border-neutral-800 px-4 py-16">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-6xl">
         <FadeIn
           direction="up"
           duration={0.5}
