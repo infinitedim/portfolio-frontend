@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
-import React, { Suspense } from "react";
+import React from "react";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
