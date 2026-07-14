@@ -15,7 +15,6 @@ The frontend application is built using the following technologies:
 - Radix UI (accessible primitive UI components)
 - Framer Motion (animations)
 - TipTap (WYSIWYG editor in the admin panel)
-- Sandpack (interactive coding playground environment)
 - Vitest (unit and integration tests)
 - Playwright (end-to-end testing)
 
@@ -32,7 +31,6 @@ The portfolio frontend includes the following routes and interactive capabilitie
 - **Blog (`/blog`, `/blog/[slug]`, `/blog/series/[slug]`)**: Static and dynamic blog views with server-side caching and Giscus comment integration.
 - **Contact (`/contact`)**: Form for sending messages.
 - **Roadmap (`/roadmap`)**: Visualization of learning progress based on roadmap.sh data.
-- **Playground (`/playground`)**: A live coding playground using CodeSandbox Sandpack for code snippet execution.
 
 ### Gated Terminal (`/terminal`)
 

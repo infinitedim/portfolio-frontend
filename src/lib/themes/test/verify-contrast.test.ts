@@ -3,17 +3,22 @@ import { themes } from "../theme-config";
 
 function hexToRgb(hex: string) {
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-  const fullHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+  const fullHex = hex.replace(
+    shorthandRegex,
+    (m, r, g, b) => r + r + g + g + b + b,
+  );
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
 }
 
-function getLuminance(rgb: { r: number, g: number, b: number }) {
-  const a = [rgb.r, rgb.g, rgb.b].map(v => {
+function getLuminance(rgb: { r: number; g: number; b: number }) {
+  const a = [rgb.r, rgb.g, rgb.b].map((v) => {
     v /= 255;
     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
   });
@@ -38,7 +43,9 @@ describe("WCAG Color Contrast Validation", () => {
       const bg = theme.colors.bg;
       const muted = theme.colors.muted;
       const ratio = getContrastRatio(muted, bg);
-      console.log(`${theme.name}: muted ${muted} on bg ${bg} -> ratio: ${ratio.toFixed(2)}`);
+      console.log(
+        `${theme.name}: muted ${muted} on bg ${bg} -> ratio: ${ratio.toFixed(2)}`,
+      );
       expect(ratio).toBeGreaterThanOrEqual(4.5);
     }
   });

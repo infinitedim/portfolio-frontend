@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 const LatestPostsClient = dynamic(
   () => import("./latest-posts-client").then((mod) => mod.LatestPostsClient),
-  { ssr: true }
+  { ssr: true },
 );
 
 interface BlogPostItem {

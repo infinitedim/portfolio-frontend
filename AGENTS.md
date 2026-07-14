@@ -41,7 +41,7 @@ Next.js 16 App Router UI for [portfolio-backend](../portfolio-backend) (Rust/Axu
 ## Tech stack
 
 - **Next.js 16.1**, **React 19**, **TypeScript**, **Bun** (package manager + `bun run dev`)
-- **Tailwind CSS 4**, **Radix UI**, **TipTap** (admin blog), **Sandpack** (playground)
+- **Tailwind CSS 4**, **Radix UI**, **TipTap** (admin blog)
 - **Vitest** + Testing Library (unit); **Playwright** (`e2e/`)
 - **PPR:** `cacheComponents: true` in `next.config.ts`
 - **React Compiler** enabled in production builds
@@ -114,7 +114,7 @@ Known Vitest hang: `background-manager.test.tsx` (~16 min) — skip unless user 
 | ----------------------------------------------------------- | ---------------- | --------------------------------------------------- |
 | `/`                                                         | Public           | Standard landing (RSC hero, deferred sections)      |
 | `/projects`, `/blog`, `/blog/[slug]`, `/blog/series/[slug]` | Public           | Cached fetch where applicable                       |
-| `/contact`, `/roadmap`, `/playground`                       | Public           | Roadmap hits backend proxy at request time          |
+| `/contact`, `/roadmap`                                      | Public           | Roadmap hits backend proxy at request time          |
 | `/rss.xml`                                                  | Public           | Proxies/backend aggregate                           |
 | `/gate`, `/gate/1`–`3`                                      | Public puzzles   | Redirect to `/terminal` if already unlocked         |
 | `/s3cr3t`, `/s3cr3t/users.txt`                              | Public (noindex) | L2 discovery; `users.txt` proxies backend challenge |
@@ -197,7 +197,6 @@ Most data fetching uses `src/lib/data/data-fetching.ts` or feature-specific serv
 
 - Page: `src/app/terminal/page.tsx` + `src/components/layout/terminal-client.tsx`
 - Commands: `src/lib/commands/command-registry.ts`, `command-parser.ts`; hook `use-terminal.ts`
-- Heavy UI loaded dynamically (Sandpack only on `/playground`)
 - **PWA install prompt** only after terminal onboarding tour completes (`public/sw.js`, `manifest.json`)
 - i18n: `src/lib/i18n/i18n-service.ts` — reuse for gate/landing English + toggle
 
@@ -212,7 +211,7 @@ Most data fetching uses `src/lib/data/data-fetching.ts` or feature-specific serv
 - CI: `bun run perf:lighthouse`, bundle job in `.github/workflows/ci.yml`
 - Docs: `docs/performance/BASELINE.md`, `grafana-cwv-dashboard.json`
 
-Interactive routes (gate, terminal, admin, playground) stay client-heavy or request-time — do not force static generation on them.
+Interactive routes (gate, terminal, admin) stay client-heavy or request-time — do not force static generation on them.
 
 ---
 

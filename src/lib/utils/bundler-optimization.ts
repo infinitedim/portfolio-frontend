@@ -64,9 +64,7 @@ export const SplittingStrategies = {
 };
 
 export const addResourceHints = () => {
-  const dnsPrefetch = [
-    "https://cdn.jsdelivr.net",
-  ];
+  const dnsPrefetch = ["https://cdn.jsdelivr.net"];
 
   dnsPrefetch.forEach((domain) => {
     const link = document.createElement("link");
@@ -85,7 +83,6 @@ export const addResourceHints = () => {
     document.head.appendChild(link);
   });
 };
-
 
 export const optimizeThirdParty = () => {
   const analytics = "[src*='analytics']";

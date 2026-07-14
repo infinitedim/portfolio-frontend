@@ -34,7 +34,10 @@ const nextConfig = {
       config.resolve = config.resolve || {};
       config.resolve.alias = {
         ...config.resolve.alias,
-        "../build/polyfills/polyfill-module": path.resolve(__dirname, "./empty-module.ts"),
+        "../build/polyfills/polyfill-module": path.resolve(
+          __dirname,
+          "./empty-module.ts",
+        ),
       };
     }
     return config;

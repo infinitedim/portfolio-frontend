@@ -10,8 +10,11 @@ import { getSiteUrl } from "@/lib/api/get-site-url";
 import dynamic from "next/dynamic";
 
 const TerminalCta = dynamic(
-  () => import("@/components/organisms/landing/terminal-cta").then((mod) => mod.TerminalCta),
-  { ssr: true }
+  () =>
+    import("@/components/organisms/landing/terminal-cta").then(
+      (mod) => mod.TerminalCta,
+    ),
+  { ssr: true },
 );
 
 export const metadata: Metadata = {

@@ -26,7 +26,6 @@ describe("sitemap.ts", () => {
     expect(urls.some((url) => url.endsWith("/blog"))).toBe(true);
     expect(urls.some((url) => url.endsWith("/contact"))).toBe(true);
     expect(urls.some((url) => url.endsWith("/roadmap"))).toBe(true);
-    expect(urls.some((url) => url.endsWith("/playground"))).toBe(true);
 
     expect(urls.some((url) => url.includes("/skills"))).toBe(false);
     expect(urls.some((url) => url.includes("/about"))).toBe(false);

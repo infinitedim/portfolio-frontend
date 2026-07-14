@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 const AboutSectionClient = dynamic(
   () => import("./about-section-client").then((mod) => mod.AboutSectionClient),
-  { ssr: true }
+  { ssr: true },
 );
 
 export async function AboutSection(): Promise<JSX.Element | null> {

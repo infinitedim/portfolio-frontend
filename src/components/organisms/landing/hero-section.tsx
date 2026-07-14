@@ -52,4 +52,3 @@ export function HeroSection(): JSX.Element {
     </section>
   );
 }
-

@@ -97,14 +97,6 @@ const getMiscCommands = async () => {
   }
 };
 
-const getPlaygroundCommands = async () => {
-  try {
-    return await import("@/lib/commands/playground-commands");
-  } catch {
-    return null;
-  }
-};
-
 const getAiCommands = async () => {
   try {
     return await import("@/lib/commands/ai-commands");
@@ -142,7 +134,6 @@ const ALL_COMMANDS = [
   "language",
   "demo",
   "github",
-  "playground",
   "ask",
   "tech-stack",
   "resume",
@@ -292,7 +283,6 @@ export function useTerminal(
         locationCmds,
         tourCmds,
         blogCmds,
-        playgroundCmds,
         aiCmds,
       ] = await Promise.allSettled([
         getMiscCommands(),
@@ -303,7 +293,6 @@ export function useTerminal(
         getLocationCommands(),
         getTourCommands(),
         getBlogCommands(),
-        getPlaygroundCommands(),
         getAiCommands(),
       ]);
 
@@ -583,11 +572,6 @@ export function useTerminal(
 
       const gh = githubCmds.status === "fulfilled" ? githubCmds.value : null;
       if (gh?.githubCommand) parser.register(gh.githubCommand);
-
-      const playground =
-        playgroundCmds.status === "fulfilled" ? playgroundCmds.value : null;
-      if (playground?.playgroundCommand)
-        parser.register(playground.playgroundCommand);
 
       const ai = aiCmds.status === "fulfilled" ? aiCmds.value : null;
       if (ai?.askCommand) parser.register(ai.askCommand);

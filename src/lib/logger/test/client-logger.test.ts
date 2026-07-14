@@ -43,8 +43,11 @@ describe("ClientLogger", () => {
   describe("Basic Logging", () => {
     it("should log info messages", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { info: (...args: Array<unknown>) => void } })
-          .pino,
+        (
+          logger as unknown as {
+            pino: { info: (...args: Array<unknown>) => void };
+          }
+        ).pino,
         "info",
       );
       logger.info("Test message", { component: "test" });
@@ -64,8 +67,11 @@ describe("ClientLogger", () => {
 
     it("should log warnings", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { warn: (...args: Array<unknown>) => void } })
-          .pino,
+        (
+          logger as unknown as {
+            pino: { warn: (...args: Array<unknown>) => void };
+          }
+        ).pino,
         "warn",
       );
       logger.warn("Warning message");
@@ -82,8 +88,11 @@ describe("ClientLogger", () => {
   describe("User Actions", () => {
     it("should log user actions", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { info: (...args: Array<unknown>) => void } })
-          .pino,
+        (
+          logger as unknown as {
+            pino: { info: (...args: Array<unknown>) => void };
+          }
+        ).pino,
         "info",
       );
       logger.logUserAction("click", { buttonId: "submit" });
@@ -100,8 +109,11 @@ describe("ClientLogger", () => {
 
     it("should warn on slow performance", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { warn: (...args: Array<unknown>) => void } })
-          .pino,
+        (
+          logger as unknown as {
+            pino: { warn: (...args: Array<unknown>) => void };
+          }
+        ).pino,
         "warn",
       );
       logger.logPerformance("api_call", 2000, { endpoint: "/api/slow" });
@@ -134,8 +146,11 @@ describe("ClientLogger", () => {
 
     it("should warn on client errors", () => {
       const spy = vi.spyOn(
-        (logger as unknown as { pino: { warn: (...args: Array<unknown>) => void } })
-          .pino,
+        (
+          logger as unknown as {
+            pino: { warn: (...args: Array<unknown>) => void };
+          }
+        ).pino,
         "warn",
       );
       logger.logApiCall("POST", "/api/users", 400, 100);

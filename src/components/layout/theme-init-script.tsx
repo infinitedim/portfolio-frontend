@@ -12,4 +12,3 @@ export function ThemeInitScript(): JSX.Element {
     />
   );
 }
-
