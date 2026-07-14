@@ -112,9 +112,6 @@ export const metadata: Metadata = {
           ...(process.env.YANDEX_VERIFICATION
             ? { yandex: process.env.YANDEX_VERIFICATION }
             : {}),
-          ...(process.env.BING_VERIFICATION
-            ? { yahoo: process.env.BING_VERIFICATION }
-            : {}),
         },
       }
     : {}),
@@ -133,6 +130,7 @@ export const metadata: Metadata = {
     title: "Portfolio Terminal",
   },
   other: {
+    "msvalidate.01": process.env.BING_VERIFICATION || "",
     "msapplication-TileColor": "#000000",
     "theme-color": "#000000",
     "msapplication-config": "/browserconfig.xml",
