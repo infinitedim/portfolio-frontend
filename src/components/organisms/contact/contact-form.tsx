@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, type FormEvent, type JSX } from "react";
+import { useState, useEffect, useRef, type SubmitEvent, type JSX } from "react";
 import { toast } from "sonner";
 import {
   submitContactMessage,
@@ -77,7 +77,7 @@ export function ContactForm(): JSX.Element {
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (submitting) return;
 

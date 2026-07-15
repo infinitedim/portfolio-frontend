@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, type SubmitEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
@@ -17,7 +17,7 @@ function UnsubscribeContent() {
   const [done, setDone] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handleUnsubscribe = async (e: React.FormEvent) => {
+  const handleUnsubscribe = async (e: SubmitEvent) => {
     e.preventDefault();
     if (!token.trim()) return;
 

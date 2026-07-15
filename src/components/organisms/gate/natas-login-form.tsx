@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type JSX } from "react";
+import { useState, type SubmitEvent, type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { gateClient } from "@/lib/gate/gate-client";
 import { GATE_L1_USERNAME, GATE_L2_USERNAME } from "@/lib/gate/types";
@@ -27,7 +27,7 @@ export function NatasLoginForm({
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     if (submitting || !password.trim()) return;
 

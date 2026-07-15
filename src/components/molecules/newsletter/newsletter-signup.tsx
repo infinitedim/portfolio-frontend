@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type SubmitEvent } from "react";
 import { toast } from "sonner";
 import { subscribeNewsletter } from "@/lib/services/newsletter-service";
 
@@ -8,7 +8,7 @@ export function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
 

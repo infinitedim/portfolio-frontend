@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { type SubmitEvent, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ProtectedRoute } from "@/components/molecules/admin/protected-route";
 import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
@@ -40,7 +40,7 @@ export default function AdminNewsletterPage() {
     void load();
   }, [load]);
 
-  const handleBroadcast = async (e: React.FormEvent) => {
+  const handleBroadcast = async (e: SubmitEvent) => {
     e.preventDefault();
     if (!subject.trim() || !body.trim()) return;
     if (
