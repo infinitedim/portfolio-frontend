@@ -5,6 +5,7 @@ import { useTheme } from "@/hooks/use-theme";
 import type { CustomTheme } from "@/types/customization";
 import { Eye, EyeOff } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
+import { LenisScroll } from "@/components/layout/lenis-scroll";
 
 interface ThemeEditorProps {
   theme: CustomTheme;
@@ -459,8 +460,8 @@ export function ThemeEditor({
           </div>
         </div>
       </div>
-      <div className="flex-1 p-4 overflow-y-auto">
-        <div className="space-y-3">
+      <LenisScroll className="flex-1 overflow-y-auto">
+        <div className="space-y-3 p-4">
           <div className="mb-3">
             <h4
               className="font-medium mb-2"
@@ -610,7 +611,7 @@ export function ThemeEditor({
             ))}
           </div>
         </div>
-      </div>
+      </LenisScroll>
       <div
         className="p-4 border-t flex justify-end gap-2"
         style={{ borderColor: themeConfig.colors.border }}

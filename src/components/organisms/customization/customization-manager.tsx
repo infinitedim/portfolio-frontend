@@ -166,7 +166,10 @@ export function CustomizationManager({
   if (!currentTheme) return <div />;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+    <div
+      data-lenis-prevent
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm"
+    >
       <div
         className="w-full max-w-6xl h-[90vh] rounded-lg border shadow-2xl flex flex-col animate-in fade-in duration-200"
         style={{

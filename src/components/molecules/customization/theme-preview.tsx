@@ -3,6 +3,7 @@
 import { useTheme } from "@/hooks/use-theme";
 import type { CustomTheme } from "@/types/customization";
 import { JSX } from "react";
+import { LenisScroll } from "@/components/layout/lenis-scroll";
 
 interface ThemePreviewProps {
   theme: CustomTheme;
@@ -85,8 +86,8 @@ export function ThemePreview({
       </div>
 
       {}
-      <div className="flex-1 p-4 overflow-y-auto">
-        <div className="space-y-6">
+      <LenisScroll className="flex-1 overflow-y-auto">
+        <div className="space-y-6 p-4">
           {}
           <div>
             <h4
@@ -209,7 +210,7 @@ export function ThemePreview({
             </div>
           </div>
         </div>
-      </div>
+      </LenisScroll>
     </div>
   );
 }

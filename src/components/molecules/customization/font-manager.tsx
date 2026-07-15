@@ -11,6 +11,7 @@ import { Check, Save, Upload, Loader2, Dices } from "lucide-react";
 import type { CustomFont } from "@/types/customization";
 import type { FontName } from "@/types/font";
 import { useI18n } from "@/hooks/use-i18n";
+import { LenisScroll } from "@/components/layout/lenis-scroll";
 
 interface FontManagerProps {
   fonts: CustomFont[];
@@ -373,7 +374,8 @@ export function FontManager({
             </div>
           </div>
 
-          <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+          <LenisScroll className="max-h-[60vh] overflow-y-auto">
+            <div className="space-y-2">
             {filteredFonts.map((font) => (
               <div
                 key={font.id}
@@ -498,7 +500,8 @@ export function FontManager({
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          </LenisScroll>
         </div>
       </div>
 
@@ -585,8 +588,8 @@ export function FontManager({
               </div>
             </div>
 
-            <div className="flex-1 p-4 overflow-y-auto">
-              <div className="space-y-6">
+            <LenisScroll className="flex-1 overflow-y-auto">
+              <div className="space-y-6 p-4">
                 <div>
                   <h4
                     className="font-medium mb-3"
@@ -745,7 +748,7 @@ export function FontManager({
                   </div>
                 )}
               </div>
-            </div>
+            </LenisScroll>
           </div>
         ) : (
           <div className="flex items-center justify-center h-full text-center">

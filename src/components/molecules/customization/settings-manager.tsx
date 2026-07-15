@@ -7,6 +7,7 @@ import type { CustomizationSettings } from "@/types/customization";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
 import { Settings, Save, RotateCcw } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
+import { LenisScroll } from "@/components/layout/lenis-scroll";
 
 export function SettingsManager(): JSX.Element {
   const { t } = useI18n();
@@ -135,8 +136,8 @@ export function SettingsManager(): JSX.Element {
       </div>
 
       {}
-      <div className="flex-1 p-4 overflow-y-auto">
-        <div className="max-w-2xl space-y-6">
+      <LenisScroll className="flex-1 overflow-y-auto">
+        <div className="max-w-2xl space-y-6 p-4">
           {}
           <div>
             <h4
@@ -238,7 +239,7 @@ export function SettingsManager(): JSX.Element {
             </div>
           </div>
         </div>
-      </div>
+      </LenisScroll>
     </div>
   );
 }

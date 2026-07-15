@@ -7,6 +7,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { CustomizationService } from "@/lib/services/customization-service";
 import { Zap, Info } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
+import { LenisScroll } from "@/components/layout/lenis-scroll";
 
 interface ImportExportManagerProps {
   onUpdate: () => void;
@@ -109,8 +110,8 @@ export function ImportExportManager({
   const customFonts = customizationService.getCustomFonts();
 
   return (
-    <div className="h-full p-4 overflow-y-auto">
-      <div className="max-w-2xl space-y-6">
+    <LenisScroll className="h-full overflow-y-auto">
+      <div className="max-w-2xl space-y-6 p-4">
         <div>
           <h3
             className="text-lg font-bold mb-4"
@@ -415,6 +416,6 @@ export function ImportExportManager({
           </div>
         </div>
       </div>
-    </div>
+    </LenisScroll>
   );
 }

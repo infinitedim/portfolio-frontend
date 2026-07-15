@@ -5,6 +5,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { CustomizationService } from "@/lib/services/customization-service";
 import type { BackgroundSettings } from "@/types/customization";
 import { useI18n } from "@/hooks/use-i18n";
+import { LenisScroll } from "@/components/layout/lenis-scroll";
 
 interface BackgroundManagerProps {
   onUpdate?: () => void;
@@ -78,8 +79,9 @@ export function BackgroundManager({
   }, []);
 
   return (
-    <div className="h-full flex flex-col p-4 space-y-4 overflow-y-auto">
-      <div className="space-y-4">
+    <LenisScroll className="h-full overflow-y-auto">
+      <div className="flex flex-col p-4 space-y-4">
+        <div className="space-y-4">
         <div>
           <h3
             className="text-lg font-semibold mb-2"
@@ -369,5 +371,6 @@ export function BackgroundManager({
         )}
       </div>
     </div>
+  </LenisScroll>
   );
 }

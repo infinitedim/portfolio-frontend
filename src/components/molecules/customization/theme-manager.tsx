@@ -8,6 +8,7 @@ import { TerminalDropdown } from "@/components/atoms/terminal/terminal-dropdown"
 import type { CustomTheme } from "@/types/customization";
 import { ThemeName } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
+import { LenisScroll } from "@/components/layout/lenis-scroll";
 
 interface ThemeManagerProps {
   themes: CustomTheme[];
@@ -340,8 +341,9 @@ export function ThemeManager({
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-4">
-        {filteredThemes.length === 0 ? (
+      <LenisScroll className="flex-1 overflow-auto">
+        <div className="p-4">
+          {filteredThemes.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-4xl mb-4"></div>
             <h3
@@ -529,7 +531,8 @@ export function ThemeManager({
             })}
           </div>
         )}
-      </div>
+        </div>
+      </LenisScroll>
     </div>
   );
 }

@@ -31,7 +31,6 @@ import { MobileTerminal } from "@/components/organisms/terminal/mobile-terminal"
 import { SkipLinks } from "@/components/molecules/accessibility/skip-to-content";
 import { LetterGlitch } from "@/components/molecules/shared/letter-glitch";
 import { DevelopmentBanner } from "@/components/molecules/shared/development-banner";
-import { AccessibilityMenu } from "@/components/molecules/accessibility/accessibility-menu";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
 import { useTerminalShortcuts } from "@/hooks/use-terminal-shortcuts";
 import { KeyboardShortcut } from "@/components/molecules/terminal/keyboard-shortcuts";
@@ -346,7 +345,6 @@ function TerminalContent({
 
       <MobileTerminal>
         <DevelopmentBanner />
-        <AccessibilityMenu />
 
         {/* Background animation */}
         {backgroundSettings.type === "letter-glitch" &&

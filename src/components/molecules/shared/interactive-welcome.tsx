@@ -91,17 +91,7 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
                 >
                   {cmd.command}
                 </span>
-                {isHighlighted && (
-                  <span
-                    className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
-                    style={{
-                      backgroundColor: themeConfig.colors.accent,
-                      color: themeConfig.colors.bg,
-                    }}
-                  >
-                    NEW
-                  </span>
-                )}
+
               </div>
               <div
                 className="text-xs opacity-75"

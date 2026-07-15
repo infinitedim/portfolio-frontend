@@ -3,6 +3,7 @@
 import { type JSX, useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { CustomizationManager } from "@/components/organisms/customization/customization-manager";
+import { Palette } from "lucide-react";
 
 export function CustomizationButton(): JSX.Element {
   const { themeConfig, theme } = useTheme();
@@ -13,7 +14,7 @@ export function CustomizationButton(): JSX.Element {
       <button
         key={`customization-button-${theme}`}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 p-3 rounded-full border backdrop-blur-sm shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-opacity-50 z-40"
+        className="fixed bottom-4 right-4 p-3 rounded-full border backdrop-blur-sm shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-opacity-50 z-40 flex items-center justify-center"
         style={{
           backgroundColor: `${themeConfig.colors.bg}dd`,
           borderColor: themeConfig.colors.accent,
@@ -23,7 +24,7 @@ export function CustomizationButton(): JSX.Element {
         aria-label="Open customization manager"
         title="Customize themes and fonts"
       >
-        <span className="text-lg"></span>
+        <Palette className="w-5 h-5" />
       </button>
 
       <CustomizationManager
