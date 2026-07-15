@@ -6,25 +6,17 @@ import { useTheme } from "@/hooks/use-theme";
 interface InteractiveWelcomeProps {
   onCommandSelect: (command: string) => void;
   onDismiss: () => void;
-  onStartTour?: () => void;
 }
 
 export const InteractiveWelcome = memo(function InteractiveWelcome({
   onCommandSelect,
   onDismiss,
-  onStartTour,
 }: InteractiveWelcomeProps): JSX.Element {
   const { themeConfig } = useTheme();
   const [selectedCommand, setSelectedCommand] = useState<string | null>(null);
 
   const quickCommands = [
-    {
-      command: "tour",
-      description: "Take a guided tour",
-      icon: "",
-      highlight: true,
-    },
-    { command: "help", description: "View all available commands", icon: "" },
+    { command: "help", description: "View all available commands", icon: "", highlight: true },
     { command: "about", description: "Learn about me", icon: "‍" },
     { command: "skills", description: "View my technical skills", icon: "️" },
     { command: "projects", description: "Explore my projects", icon: "" },
@@ -33,14 +25,6 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
 
   const handleCommandClick = (command: string) => {
     setSelectedCommand(command);
-
-    if (command === "tour" && onStartTour) {
-      setTimeout(() => {
-        onStartTour();
-        onDismiss();
-      }, 200);
-      return;
-    }
 
     setTimeout(() => {
       onCommandSelect(command);

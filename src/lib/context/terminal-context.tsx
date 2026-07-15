@@ -21,7 +21,6 @@
  *  - useI18n          – translations + locale switching
  *  - useAccessibility – a11y flags + announcer
  *  - useTerminal      – command history + executor
- *  - useTour          – guided-tour state machine
  */
 
 "use client";
@@ -42,7 +41,6 @@ import { useFont } from "@/hooks/use-font";
 import { useI18n } from "@/hooks/use-i18n";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 import { useTerminal } from "@/hooks/use-terminal";
-import { useTour } from "@/hooks/use-tour";
 import { CustomizationService } from "@/lib/services/customization-service";
 import { isThemeName } from "@/types/theme";
 import { isFontName } from "@/types/font";
@@ -153,19 +151,6 @@ export function TerminalProvider({
     commandAnalytics,
   } = useTerminal(undefined, undefined, themePerformance);
 
-  const {
-    isActive: isTourActive,
-    currentStep,
-    currentStepIndex,
-    totalSteps,
-    progress: tourProgress,
-    hasCompletedTour,
-    isFirstVisit,
-    startTour,
-    nextStep,
-    prevStep,
-    skipTour,
-  } = useTour();
 
   // ── Local UI state ─────────────────────────────────────────────────────
   const [showWelcome, setShowWelcome] = useState(true);
@@ -246,43 +231,6 @@ export function TerminalProvider({
     [setCurrentInput],
   );
 
-  const handleTourDemoCommand = useCallback(
-    async (command: string) => {
-      // Show the command in the input briefly so the user can see what the
-      // tour is running for them.
-      setCurrentInput(command);
-      const output = await executeCommand(command);
-
-      // Mirror the regular submit pipeline so the demo command shows up in
-      // the visible terminal history. Without this the user reaches the
-      // "history" step with an apparently empty terminal and has nothing to
-      // recall via the arrow keys.
-      if (output) {
-        addToHistory(command, output);
-      }
-
-      // Reset the input and refocus so the next interaction (typing or arrow
-      // navigation) actually lands on the input element.
-      setCurrentInput("");
-      setTimeout(() => commandInputRef.current?.focus(), 50);
-    },
-    [executeCommand, addToHistory, setCurrentInput],
-  );
-
-  // Note: we deliberately do NOT clear the command history when stepping past
-  // the "history" step. Users need their demo commands to remain available
-  // both to actually exercise the history-navigation step and so that
-  // pressing the Back button returns them to a usable state.
-  const handleTourNext = useCallback(() => {
-    nextStep();
-  }, [nextStep]);
-
-  const handleTourSkip = useCallback(() => {
-    if (history.length > 0) clearHistory();
-    setShowWelcome(true);
-    setCurrentInput("");
-    skipTour();
-  }, [history.length, clearHistory, setCurrentInput, skipTour]);
 
   /**
    * handleSubmit
@@ -301,20 +249,6 @@ export function TerminalProvider({
         return;
       }
 
-      // ── START_GUIDED_TOUR ──────────────────────────────────────────────
-      if (
-        typeof output.content === "string" &&
-        output.content === "START_GUIDED_TOUR"
-      ) {
-        startTour();
-        addToHistory(command, {
-          ...output,
-          content: "Starting guided tour...",
-          type: "success",
-        });
-        setCurrentInput("");
-        return;
-      }
 
       // ── OPEN_CUSTOMIZATION_MANAGER ─────────────────────────────────────
       if (
@@ -507,7 +441,6 @@ export function TerminalProvider({
       onThemeChange,
       setCurrentInput,
       showNotification,
-      startTour,
       theme,
       themeConfig?.name,
       themeError,
@@ -563,18 +496,6 @@ export function TerminalProvider({
       focusMode,
       setFocusMode,
 
-      // Tour
-      isTourActive,
-      currentStep,
-      currentStepIndex,
-      totalSteps,
-      tourProgress,
-      hasCompletedTour,
-      isFirstVisit,
-      startTour,
-      nextStep,
-      prevStep,
-      skipTour,
 
       // Background
       backgroundSettings,
@@ -589,9 +510,7 @@ export function TerminalProvider({
 
       // High-level handlers
       handleSubmit,
-      handleTourNext,
-      handleTourSkip,
-      handleTourDemoCommand,
+
       handleWelcomeCommandSelect,
 
       // Refs
@@ -634,26 +553,14 @@ export function TerminalProvider({
       setFontSize,
       focusMode,
       setFocusMode,
-      isTourActive,
-      currentStep,
-      currentStepIndex,
-      totalSteps,
-      tourProgress,
-      hasCompletedTour,
-      isFirstVisit,
-      startTour,
-      nextStep,
-      prevStep,
-      skipTour,
+
       backgroundSettings,
       showWelcome,
       notification,
       showNotification,
       clearNotification,
       handleSubmit,
-      handleTourNext,
-      handleTourSkip,
-      handleTourDemoCommand,
+
       handleWelcomeCommandSelect,
     ],
   );

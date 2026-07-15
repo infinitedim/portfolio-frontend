@@ -73,13 +73,6 @@ const getLocationCommands = async () => {
   }
 };
 
-const getTourCommands = async () => {
-  try {
-    return await import("@/lib/commands/tour-commands");
-  } catch {
-    return null;
-  }
-};
 
 const getBlogCommands = async () => {
   try {
@@ -141,7 +134,6 @@ const ALL_COMMANDS = [
   "blog",
   "shortcuts",
   "easter-eggs",
-  "tour",
 ] as const;
 
 export function useTerminal(
@@ -281,7 +273,6 @@ export function useTerminal(
         githubCmds,
         techCmds,
         locationCmds,
-        tourCmds,
         blogCmds,
         aiCmds,
       ] = await Promise.allSettled([
@@ -291,7 +282,6 @@ export function useTerminal(
         getGithubCommands(),
         getTechStackCommands(),
         getLocationCommands(),
-        getTourCommands(),
         getBlogCommands(),
         getAiCommands(),
       ]);
@@ -579,8 +569,6 @@ export function useTerminal(
       const tech = techCmds.status === "fulfilled" ? techCmds.value : null;
       if (tech?.techStackCommand) parser.register(tech.techStackCommand);
 
-      const tour = tourCmds.status === "fulfilled" ? tourCmds.value : null;
-      if (tour?.tourCommand) parser.register(tour.tourCommand);
 
       const location =
         locationCmds.status === "fulfilled" ? locationCmds.value : null;

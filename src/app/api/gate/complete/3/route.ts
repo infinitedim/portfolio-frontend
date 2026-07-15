@@ -4,18 +4,20 @@ import { getTerminalRefererUrl } from "@/lib/gate/referer-check";
 
 export async function POST(request: NextRequest) {
   const referer = request.headers.get("referer");
-  const modifiedRequest = new NextRequest(request, {
-    headers: new Headers(request.headers),
-  });
+  const modifiedHeaders = new Headers(request.headers);
 
   if (referer && referer.includes("/gate/3")) {
-    modifiedRequest.headers.set("referer", getTerminalRefererUrl());
+    modifiedHeaders.set("referer", getTerminalRefererUrl());
   }
+
+  const fakeRequest = {
+    headers: modifiedHeaders,
+  } as unknown as NextRequest;
 
   return proxyGateRequest({
     method: "POST",
     backendPath: "/api/gate/complete/3",
-    request: modifiedRequest,
+    request: fakeRequest,
     body: "{}",
     forwardReferer: true,
   });

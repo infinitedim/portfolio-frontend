@@ -572,11 +572,6 @@ export const it_IT_key: TranslationKeys = {
   timeDstActive: "Ora legale attiva",
   timeIpAddress: "Indirizzo IP",
   timeUtcTime: "Ora UTC",
-  tourGetStarted: "Inizia!",
-  tourNavigate: "Navigare",
-  tourNext: "Prossimo",
-  tourSkip: "Saltare",
-  tourTryIt: "Provalo:",
   tryAgain: "Riprova",
   welcome: "Benvenuto",
   adminWelcomeBack:

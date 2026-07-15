@@ -196,8 +196,7 @@ Most data fetching uses `src/lib/data/data-fetching.ts` or feature-specific serv
 ## Terminal experience
 
 - Page: `src/app/terminal/page.tsx` + `src/components/layout/terminal-client.tsx`
-- Commands: `src/lib/commands/command-registry.ts`, `command-parser.ts`; hook `use-terminal.ts`
-- **PWA install prompt** only after terminal onboarding tour completes (`public/sw.js`, `manifest.json`)
+- **PWA install prompt** setup (`public/sw.js`, `manifest.json`)
 - i18n: `src/lib/i18n/i18n-service.ts` — reuse for gate/landing English + toggle
 
 ---

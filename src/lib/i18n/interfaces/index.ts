@@ -541,11 +541,6 @@ export interface TranslationKeys {
   timeDstActive: string;
   timeIpAddress: string;
   timeUtcTime: string;
-  tourGetStarted: string;
-  tourNavigate: string;
-  tourNext: string;
-  tourSkip: string;
-  tourTryIt: string;
   tryAgain: string;
   welcome: string;
 

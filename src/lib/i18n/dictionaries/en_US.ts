@@ -560,11 +560,6 @@ export const en_US_key: TranslationKeys = {
   timeDstActive: "DST Active",
   timeIpAddress: "IP Address",
   timeUtcTime: "UTC Time",
-  tourGetStarted: "Get Started!",
-  tourNavigate: "Navigate",
-  tourNext: "Next",
-  tourSkip: "Skip",
-  tourTryIt: "Try it:",
   tryAgain: "Try again",
   welcome: "Welcome",
   adminWelcomeBack:

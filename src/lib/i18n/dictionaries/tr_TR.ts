@@ -568,11 +568,6 @@ export const tr_TR_key: TranslationKeys = {
   timeDstActive: "DST Etkin",
   timeIpAddress: "IP Adresi",
   timeUtcTime: "UTC Saati",
-  tourGetStarted: "Başlayın!",
-  tourNavigate: "Gezin",
-  tourNext: "Sonraki",
-  tourSkip: "Atlamak",
-  tourTryIt: "Deneyin:",
   tryAgain: "Tekrar deneyin",
   welcome: "Hoş geldin",
   adminWelcomeBack:

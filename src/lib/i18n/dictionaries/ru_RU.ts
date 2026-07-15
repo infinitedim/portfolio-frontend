@@ -572,11 +572,6 @@ export const ru_RU_key: TranslationKeys = {
   timeDstActive: "Летнее время активно",
   timeIpAddress: "IP-адрес",
   timeUtcTime: "Время по всемирному координированному времени",
-  tourGetStarted: "Начинайте!",
-  tourNavigate: "Навигация",
-  tourNext: "Следующий",
-  tourSkip: "Пропускать",
-  tourTryIt: "Попробуйте:",
   tryAgain: "Попробуйте еще раз",
   welcome: "Добро пожаловать",
   adminWelcomeBack:

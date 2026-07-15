@@ -575,11 +575,6 @@ export const fr_FR_key: TranslationKeys = {
   timeDstActive: "Heure d'été active",
   timeIpAddress: "Adresse IP",
   timeUtcTime: "Heure UTC",
-  tourGetStarted: "Commencer!",
-  tourNavigate: "Naviguer",
-  tourNext: "Suivant",
-  tourSkip: "Sauter",
-  tourTryIt: "Essayez-le :",
   tryAgain: "Essayer à nouveau",
   welcome: "Accueillir",
   adminWelcomeBack:

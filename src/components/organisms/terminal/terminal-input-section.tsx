@@ -54,7 +54,6 @@ const AVAILABLE_COMMANDS = [
   "shortcuts",
   "easter-eggs",
   "pwa",
-  "tour",
 ] as const;
 
 /**

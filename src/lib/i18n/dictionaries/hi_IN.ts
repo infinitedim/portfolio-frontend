@@ -566,11 +566,6 @@ export const hi_IN_key: TranslationKeys = {
   timeDstActive: "डीएसटी सक्रिय",
   timeIpAddress: "आईपी ​​पता",
   timeUtcTime: "यूटीसी समय",
-  tourGetStarted: "शुरू हो जाओ!",
-  tourNavigate: "नेविगेट",
-  tourNext: "अगला",
-  tourSkip: "छोडना",
-  tourTryIt: "इसे अजमाएं:",
   tryAgain: "पुनः प्रयास करें",
   welcome: "स्वागत",
   adminWelcomeBack:

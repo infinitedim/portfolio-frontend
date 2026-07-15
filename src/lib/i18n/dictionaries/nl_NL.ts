@@ -571,11 +571,6 @@ export const nl_NL_key: TranslationKeys = {
   timeDstActive: "Zomertijd actief",
   timeIpAddress: "IP-adres",
   timeUtcTime: "UTC-tijd",
-  tourGetStarted: "Ga aan de slag!",
-  tourNavigate: "Navigeren",
-  tourNext: "Volgende",
-  tourSkip: "Overslaan",
-  tourTryIt: "Probeer het:",
   tryAgain: "Probeer het opnieuw",
   welcome: "Welkom",
   adminWelcomeBack:

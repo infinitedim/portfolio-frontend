@@ -74,10 +74,6 @@ vi.mock("@/lib/commands/location-commands", () => {
   const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
   return { createLocationCommand: vi.fn(() => cmd("location")) };
 });
-vi.mock("@/lib/commands/tour-commands", () => {
-  const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
-  return { tourCommand: cmd("tour") };
-});
 vi.mock("@/lib/commands/commands", () => {
   const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
   return {

@@ -562,11 +562,6 @@ export const th_TH_key: TranslationKeys = {
   timeDstActive: "ดีเอสทีใช้งานอยู่",
   timeIpAddress: "ที่อยู่ IP",
   timeUtcTime: "เวลา UTC",
-  tourGetStarted: "เริ่มต้น!",
-  tourNavigate: "นำทาง",
-  tourNext: "ต่อไป",
-  tourSkip: "ข้าม",
-  tourTryIt: "ลองมัน:",
   tryAgain: "ลองอีกครั้ง",
   welcome: "ยินดีต้อนรับ",
   adminWelcomeBack:

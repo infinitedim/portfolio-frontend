@@ -30,7 +30,6 @@ import { TerminalHistory } from "./terminal-history";
 import { MobileTerminal } from "@/components/organisms/terminal/mobile-terminal";
 import { SkipLinks } from "@/components/molecules/accessibility/skip-to-content";
 import { LetterGlitch } from "@/components/molecules/shared/letter-glitch";
-import { GuidedTour } from "@/components/organisms/onboarding/guided-tour";
 import { DevelopmentBanner } from "@/components/molecules/shared/development-banner";
 import { AccessibilityMenu } from "@/components/molecules/accessibility/accessibility-menu";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
@@ -70,18 +69,7 @@ function TerminalContent({
     isReducedMotion,
     history,
     backgroundSettings,
-    isTourActive,
-    currentStep,
-    currentStepIndex,
-    totalSteps,
-    tourProgress,
-    hasCompletedTour,
-    isFirstVisit,
-    startTour,
-    handleTourNext,
-    handleTourSkip,
-    handleTourDemoCommand,
-    prevStep,
+
     commandInputRef,
     terminalRef,
     bottomRef,
@@ -94,7 +82,6 @@ function TerminalContent({
   } = useTerminalContext();
 
   const [hasMinimumLoadingTime, setHasMinimumLoadingTime] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   /** Tracks if customization manager is open (used to gate global keydown) */
@@ -144,28 +131,12 @@ function TerminalContent({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [shortcutsOpen, historyOpen]);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   /** Minimum loading delay so the splash screen isn't a flash */
   useEffect(() => {
     const timer = setTimeout(() => setHasMinimumLoadingTime(true), 800);
     return () => clearTimeout(timer);
   }, []);
 
-  /** Auto-start tour for first-time visitors once history is empty */
-  useEffect(() => {
-    if (
-      isMounted &&
-      !hasCompletedTour &&
-      isFirstVisit &&
-      history.length === 0
-    ) {
-      const timer = setTimeout(() => startTour(), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [isMounted, hasCompletedTour, isFirstVisit, history.length, startTour]);
 
   /** Scroll to bottom whenever history updates */
   useEffect(() => {
@@ -433,19 +404,6 @@ function TerminalContent({
           <TerminalCustomizationToolbar />
         </div>
 
-        {/* Guided tour overlay */}
-        {isTourActive && currentStep && (
-          <GuidedTour
-            step={currentStep}
-            stepIndex={currentStepIndex}
-            totalSteps={totalSteps}
-            progress={tourProgress}
-            onNext={handleTourNext}
-            onPrev={prevStep}
-            onSkip={handleTourSkip}
-            onDemoCommand={handleTourDemoCommand}
-          />
-        )}
 
         <KeyboardShortcut
           isOpen={shortcutsOpen}

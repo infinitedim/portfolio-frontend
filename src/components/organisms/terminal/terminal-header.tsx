@@ -13,7 +13,7 @@
  * ```
  *
  * @dependencies
- * - useTerminalContext – showWelcome, setShowWelcome, isTourActive, startTour,
+ * - useTerminalContext – showWelcome, setShowWelcome,
  *                        handleWelcomeCommandSelect
  * - ASCIIBanner
  * - InteractiveWelcome
@@ -29,15 +29,12 @@ import { useTerminalContext } from "@/lib/context/terminal-context";
 /**
  * TerminalHeader
  *
- * Renders the ASCII banner and, when no commands have been typed yet and the
- * tour is not active, the interactive welcome panel.
+ * Renders the ASCII banner and, when no commands have been typed yet, the interactive welcome panel.
  */
 export function TerminalHeader(): JSX.Element {
   const {
     showWelcome,
     setShowWelcome,
-    isTourActive,
-    startTour,
     handleWelcomeCommandSelect,
     history,
   } = useTerminalContext();
@@ -49,15 +46,11 @@ export function TerminalHeader(): JSX.Element {
         <ASCIIBanner />
       </div>
 
-      {/* Interactive welcome – only before first command, outside tour */}
-      {showWelcome && history.length === 0 && !isTourActive && (
+      {/* Interactive welcome – only before first command */}
+      {showWelcome && history.length === 0 && (
         <InteractiveWelcome
           onCommandSelect={handleWelcomeCommandSelect}
           onDismiss={() => setShowWelcome(false)}
-          onStartTour={() => {
-            setShowWelcome(false);
-            startTour();
-          }}
         />
       )}
     </div>

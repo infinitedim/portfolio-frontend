@@ -567,11 +567,6 @@ export const ja_JP_key: TranslationKeys = {
   timeDstActive: "DST アクティブ",
   timeIpAddress: "IPアドレス",
   timeUtcTime: "UTC 時間",
-  tourGetStarted: "始めましょう!",
-  tourNavigate: "ナビゲート",
-  tourNext: "次",
-  tourSkip: "スキップ",
-  tourTryIt: "試してみてください:",
   tryAgain: "もう一度やり直してください",
   welcome: "いらっしゃいませ",
   adminWelcomeBack:

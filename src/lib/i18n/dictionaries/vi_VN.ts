@@ -564,11 +564,6 @@ export const vi_VN_key: TranslationKeys = {
   timeDstActive: "DST đang hoạt động",
   timeIpAddress: "Địa chỉ IP",
   timeUtcTime: "Giờ UTC",
-  tourGetStarted: "Bắt đầu!",
-  tourNavigate: "Điều hướng",
-  tourNext: "Kế tiếp",
-  tourSkip: "Nhảy",
-  tourTryIt: "Hãy thử nó:",
   tryAgain: "Thử lại",
   welcome: "Chào mừng",
   adminWelcomeBack:

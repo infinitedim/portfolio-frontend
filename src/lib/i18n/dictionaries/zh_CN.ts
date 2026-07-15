@@ -549,11 +549,6 @@ export const zh_CN_key: TranslationKeys = {
   timeDstActive: "夏令时有效",
   timeIpAddress: "IP地址",
   timeUtcTime: "世界标准时间",
-  tourGetStarted: "开始吧！",
-  tourNavigate: "导航",
-  tourNext: "下一个",
-  tourSkip: "跳过",
-  tourTryIt: "尝试一下：",
   tryAgain: "再试一次",
   welcome: "欢迎",
   adminWelcomeBack:

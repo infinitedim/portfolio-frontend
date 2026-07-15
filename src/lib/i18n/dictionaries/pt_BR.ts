@@ -571,11 +571,6 @@ export const pt_BR_key: TranslationKeys = {
   timeDstActive: "Horário de verão ativo",
   timeIpAddress: "Endereço IP",
   timeUtcTime: "Hora UTC",
-  tourGetStarted: "Comece!",
-  tourNavigate: "Navegar",
-  tourNext: "Próximo",
-  tourSkip: "Pular",
-  tourTryIt: "Experimente:",
   tryAgain: "Tente novamente",
   welcome: "Bem-vindo",
   adminWelcomeBack:

@@ -581,11 +581,6 @@ export const de_DE_key: TranslationKeys = {
   timeDstActive: "Sommerzeit aktiv",
   timeIpAddress: "IP-Adresse",
   timeUtcTime: "UTC-Zeit",
-  tourGetStarted: "Legen Sie los!",
-  tourNavigate: "Navigieren",
-  tourNext: "Nächste",
-  tourSkip: "Überspringen",
-  tourTryIt: "Probieren Sie es aus:",
   tryAgain: "Versuchen Sie es erneut",
   welcome: "Willkommen",
   adminWelcomeBack:

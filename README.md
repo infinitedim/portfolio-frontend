@@ -38,8 +38,7 @@ An interactive command-line experience. Access to `/terminal` is gated behind a 
 
 - **Command Parser**: Supports standard commands with typo tolerance, command history (using Arrow Up/Down keys), auto-completion (using Tab), and command flags/arguments.
 - **Theme and Font Customization**: Interactive customization via command-line arguments (e.g., `theme dracula`, `font fira-code`).
-- **Interactive Tour**: Guide/walkthrough for first-time visitors.
-- **Progressive Web App (PWA)**: Support for offline mode, caching via service worker, and install prompts (triggered upon completion of the terminal tour).
+- **Progressive Web App (PWA)**: Support for offline mode, caching via service worker, and install prompts.
 - **Internationalization**: Support for multiple languages, including English and Indonesian, with a language selection command (`lang`).
 
 ### Administration and Security

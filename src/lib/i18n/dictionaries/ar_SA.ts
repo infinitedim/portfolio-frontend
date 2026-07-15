@@ -558,11 +558,6 @@ export const ar_SA_key: TranslationKeys = {
   timeDstActive: "التوقيت الصيفي نشط",
   timeIpAddress: "عنوان IP",
   timeUtcTime: "التوقيت العالمي المنسق",
-  tourGetStarted: "ابدأ!",
-  tourNavigate: "انتقل",
-  tourNext: "التالي",
-  tourSkip: "يتخطى",
-  tourTryIt: "جربه:",
   tryAgain: "حاول ثانية",
   welcome: "مرحباً",
   adminWelcomeBack:

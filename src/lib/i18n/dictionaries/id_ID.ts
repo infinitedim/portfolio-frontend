@@ -567,11 +567,6 @@ export const id_ID_key: TranslationKeys = {
   timeDstActive: "DST Aktif",
   timeIpAddress: "Alamat IP",
   timeUtcTime: "Waktu UTC",
-  tourGetStarted: "Mulailah!",
-  tourNavigate: "Navigasi",
-  tourNext: "Berikutnya",
-  tourSkip: "Melewati",
-  tourTryIt: "Cobalah:",
   tryAgain: "Coba lagi",
   welcome: "Selamat Datang",
   adminWelcomeBack:

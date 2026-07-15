@@ -559,11 +559,6 @@ export const ko_KR_key: TranslationKeys = {
   timeDstActive: "DST 활성",
   timeIpAddress: "IP 주소",
   timeUtcTime: "UTC 시간",
-  tourGetStarted: "시작하세요!",
-  tourNavigate: "탐색",
-  tourNext: "다음",
-  tourSkip: "건너뛰다",
-  tourTryIt: "시도해 보세요:",
   tryAgain: "다시 시도하세요",
   welcome: "환영",
   adminWelcomeBack:
