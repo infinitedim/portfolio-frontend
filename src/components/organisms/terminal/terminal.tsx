@@ -30,25 +30,16 @@ import { TerminalHistory } from "./terminal-history";
 import { MobileTerminal } from "@/components/organisms/terminal/mobile-terminal";
 import { SkipLinks } from "@/components/molecules/accessibility/skip-to-content";
 import { LetterGlitch } from "@/components/molecules/shared/letter-glitch";
-import { DevelopmentBanner } from "@/components/molecules/shared/development-banner";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
 import { useTerminalShortcuts } from "@/hooks/use-terminal-shortcuts";
 import { KeyboardShortcut } from "@/components/molecules/terminal/keyboard-shortcuts";
 import { HistorySearchPanel } from "@/components/molecules/terminal/history-search-panel";
 import type { ThemeName } from "@/types/theme";
 
-// ---------------------------------------------------------------------------
-// Props
-// ---------------------------------------------------------------------------
-
 interface TerminalProps {
   onThemeChange?: (theme: string) => void;
   onFontChange?: (font: string) => void;
 }
-
-// ---------------------------------------------------------------------------
-// TerminalContent – uses context
-// ---------------------------------------------------------------------------
 
 /**
  * Internal component that consumes TerminalContext.
@@ -344,9 +335,6 @@ function TerminalContent({
       />
 
       <MobileTerminal>
-        <DevelopmentBanner />
-
-        {/* Background animation */}
         {backgroundSettings.type === "letter-glitch" &&
           backgroundSettings.letterGlitch && (
             <LetterGlitch
@@ -365,8 +353,6 @@ function TerminalContent({
               className="opacity-30 fixed inset-0 z-0"
             />
           )}
-
-        {/* Main terminal area */}
         <div
           ref={terminalRef}
           id="main-content"
@@ -385,20 +371,11 @@ function TerminalContent({
           aria-label="Terminal interface"
         >
           <div className="relative z-10 w-full max-w-4xl mx-auto space-y-4 sm:space-y-8 mt-2 sm:mt-10">
-            {/* Header: ASCII banner + welcome */}
             <TerminalHeader />
-
-            {/* Command history */}
             <TerminalHistory history={history} />
-
-            {/* Input + loading indicator */}
             <TerminalInputSection />
-
-            {/* Scroll sentinel */}
             <div ref={bottomRef} />
           </div>
-
-          {/* Customization button + manager + toasts */}
           <TerminalCustomizationToolbar />
         </div>
 
