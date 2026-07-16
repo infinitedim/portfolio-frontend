@@ -2,6 +2,8 @@
 
 import { useState, memo, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
+import { useI18n } from "@/hooks/use-i18n";
+import { HelpCircle, User, FolderGit2, Mail } from "lucide-react";
 
 interface InteractiveWelcomeProps {
   onCommandSelect: (command: string) => void;
@@ -13,14 +15,31 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
   onDismiss,
 }: InteractiveWelcomeProps): JSX.Element {
   const { themeConfig } = useTheme();
+  const { t } = useI18n();
   const [selectedCommand, setSelectedCommand] = useState<string | null>(null);
 
   const quickCommands = [
-    { command: "help", description: "View all available commands", icon: "", highlight: true },
-    { command: "about", description: "Learn about me", icon: "‍" },
-    { command: "skills", description: "View my technical skills", icon: "️" },
-    { command: "projects", description: "Explore my projects", icon: "" },
-    { command: "contact", description: "Get in touch", icon: "" },
+    {
+      command: "help",
+      description: t("terminalWelcomeDescHelp") || "View all available commands",
+      icon: HelpCircle,
+      highlight: true,
+    },
+    {
+      command: "about",
+      description: t("terminalWelcomeDescAbout") || "Learn about me",
+      icon: User,
+    },
+    {
+      command: "projects",
+      description: t("terminalWelcomeDescProjects") || "Explore my projects",
+      icon: FolderGit2,
+    },
+    {
+      command: "contact",
+      description: t("terminalWelcomeDescContact") || "Get in touch",
+      icon: Mail,
+    },
   ];
 
   const handleCommandClick = (command: string) => {
@@ -45,27 +64,28 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
           className="text-lg font-bold mb-2"
           style={{ color: themeConfig.colors.accent }}
         >
-          Welcome to My Terminal Portfolio!
+          {t("terminalWelcomeTitle") || "Welcome to My Terminal Portfolio!"}
         </div>
         <div
           className="text-sm opacity-75"
           style={{ color: themeConfig.colors.muted }}
         >
-          Click on any command below to get started, or type directly in the
-          terminal
+          {t("terminalWelcomeSubtitle") ||
+            "Click on any command below to get started, or type directly in the terminal"}
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
         {quickCommands.map((cmd) => {
           const isHighlighted = "highlight" in cmd && cmd.highlight;
+          const IconComponent = cmd.icon;
           return (
             <button
               key={cmd.command}
               onClick={() => handleCommandClick(cmd.command)}
-              className={`p-3 rounded-lg border transition-all duration-200 text-left hover:scale-105 ${
+              className={`p-3 rounded-lg border transition-all duration-200 text-left hover:scale-105 hover:bg-(--terminal-accent)/10 hover:border-(--terminal-accent) focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none ${
                 selectedCommand === cmd.command ? "animate-pulse" : ""
-              } ${isHighlighted ? "ring-2 ring-offset-2 ring-offset-transparent" : ""}`}
+              }`}
               style={
                 {
                   borderColor: isHighlighted
@@ -84,14 +104,16 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
               }
             >
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">{cmd.icon}</span>
+                <IconComponent
+                  className="w-4 h-4"
+                  style={{ color: themeConfig.colors.accent }}
+                />
                 <span
                   className="font-mono text-sm font-bold"
                   style={{ color: themeConfig.colors.accent }}
                 >
                   {cmd.command}
                 </span>
-
               </div>
               <div
                 className="text-xs opacity-75"
@@ -109,17 +131,18 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
           className="opacity-60"
           style={{ color: themeConfig.colors.muted }}
         >
-          Tip: Use Tab for auto-completion and ↑↓ for command history
+          {t("terminalWelcomeTip") ||
+            "Tip: Use Tab for auto-completion and ↑↓ for command history"}
         </div>
         <button
           onClick={onDismiss}
-          className="px-3 py-1 rounded border hover:opacity-80 transition-opacity"
+          className="px-3 py-1 rounded border hover:opacity-80 transition-opacity focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:outline-none"
           style={{
             borderColor: themeConfig.colors.border,
             color: themeConfig.colors.muted,
           }}
         >
-          Skip intro
+          {t("terminalWelcomeSkip") || "Skip intro"}
         </button>
       </div>
     </div>

@@ -6,6 +6,7 @@ import {
   useCommandSuggestions,
   type SuggestionItem,
 } from "@/hooks/use-command-suggestions";
+import { LenisScroll } from "@/components/layout/lenis-scroll";
 
 interface CommandSuggestionsProps {
   input: string;
@@ -283,7 +284,7 @@ export function CommandSuggestions({
         </div>
       </div>
 
-      <div className="max-h-72 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-current scrollbar-thumb-opacity-20">
+      <LenisScroll className="max-h-72 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-current scrollbar-thumb-opacity-20">
         {suggestions.map((suggestion, index) => (
           <button
             key={`${suggestion.command}-${index}-${suggestion.type}`}
@@ -292,7 +293,7 @@ export function CommandSuggestions({
             role="option"
             aria-selected={index === selectedIndex}
             tabIndex={0}
-            className={`w-full text-left px-4 py-3 cursor-pointer transition-all duration-200 ease-out focus:outline-none group relative ${
+            className={`w-full text-left px-4 py-3 cursor-pointer transition-all duration-200 ease-out focus:outline-none group relative whitespace-normal ${
               index === selectedIndex
                 ? "opacity-100 transform scale-[1.02]"
                 : "opacity-85 hover:opacity-100 hover:transform hover:scale-[1.01]"
@@ -327,7 +328,7 @@ export function CommandSuggestions({
                 </span>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
                     <span
                       className="font-mono font-semibold truncate text-base"
                       style={{
@@ -370,7 +371,7 @@ export function CommandSuggestions({
 
                   {showDescriptions && suggestion.description && (
                     <div
-                      className="text-sm mb-1 opacity-75 leading-relaxed"
+                      className="text-sm mb-1 opacity-75 leading-relaxed break-words whitespace-normal"
                       style={{ color: themeConfig.colors.muted }}
                     >
                       {suggestion.description}
@@ -379,7 +380,7 @@ export function CommandSuggestions({
 
                   {suggestion.usage && (
                     <div
-                      className="text-xs font-mono opacity-60 bg-black bg-opacity-10 px-2 py-1 rounded"
+                      className="text-xs font-mono opacity-60 bg-black bg-opacity-10 px-2 py-1 rounded break-all whitespace-normal"
                       style={{ color: themeConfig.colors.muted }}
                     >
                       Usage: {suggestion.usage}
@@ -423,7 +424,7 @@ export function CommandSuggestions({
             )}
           </button>
         ))}
-      </div>
+      </LenisScroll>
 
       <div
         className="px-4 py-3 text-xs border-t"

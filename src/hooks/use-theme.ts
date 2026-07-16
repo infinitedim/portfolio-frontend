@@ -278,6 +278,10 @@ export function useTheme(): UseThemeReturn {
         popularThemes: themeEntries.slice(0, 5),
       }));
 
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("theme-change", { detail: newTheme }));
+      }
+
       return true;
     },
     [
@@ -310,6 +314,24 @@ export function useTheme(): UseThemeReturn {
       setState((prev) => ({ ...prev, mounted: true, theme: defaultTheme }));
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleThemeChange = (e: Event) => {
+      const customEvent = e as CustomEvent<ThemeName>;
+      const newTheme = customEvent.detail;
+      if (newTheme && validateTheme(newTheme) && themes[newTheme] && isMountedRef.current) {
+        setState((prev) => {
+          if (prev.theme === newTheme) return prev;
+          return { ...prev, theme: newTheme, error: null };
+        });
+      }
+    };
+    window.addEventListener("theme-change", handleThemeChange);
+    return () => {
+      window.removeEventListener("theme-change", handleThemeChange);
+    };
+  }, [isMountedRef]);
 
   useEffect(() => {
     try {

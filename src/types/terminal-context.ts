@@ -212,7 +212,7 @@ export interface TerminalContextType {
 
 
   /** Set the current input to a selected welcome-panel command */
-  handleWelcomeCommandSelect: (command: string) => string;
+  handleWelcomeCommandSelect: (command: string) => void;
 
   // ── Refs ───────────────────────────────────────────────────────────────
   /** Ref for the hidden text input element used to receive typed characters */

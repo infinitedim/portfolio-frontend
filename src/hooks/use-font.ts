@@ -72,6 +72,24 @@ export function useFont() {
     }
   }, [font, mounted]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleFontChange = (e: Event) => {
+      const customEvent = e as CustomEvent<FontName>;
+      const newFont = customEvent.detail;
+      if (newFont && fonts[newFont] && isMountedRef.current) {
+        setFont((prev) => {
+          if (prev === newFont) return prev;
+          return newFont;
+        });
+      }
+    };
+    window.addEventListener("font-change", handleFontChange);
+    return () => {
+      window.removeEventListener("font-change", handleFontChange);
+    };
+  }, []);
+
   const changeFont = useCallback((newFont: FontName) => {
     if (!isMountedRef.current) return;
 
@@ -81,6 +99,9 @@ export function useFont() {
     }
 
     setFont(newFont);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("font-change", { detail: newFont }));
+    }
   }, []);
 
   return {

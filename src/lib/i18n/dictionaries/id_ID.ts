@@ -657,4 +657,15 @@ export const id_ID_key: TranslationKeys = {
     "Navigasi keyboard penuh menggunakan arah panah (↑/↓) untuk riwayat perintah, toleransi typo cerdas, multi-alias, dan argumen flag baris perintah.",
   terminalFeaturesCtaProceed: "Mulai Tantangan Gate →",
   terminalFeaturesCtaCancel: "Kembali",
+
+  // Terminal Interactive Welcome
+  terminalWelcomeTitle: "Selamat Datang di Portofolio Terminal Saya!",
+  terminalWelcomeSubtitle: "Klik salah satu perintah di bawah ini untuk memulai, atau ketik langsung di terminal",
+  terminalWelcomeTip: "Tips: Gunakan Tab untuk melengkapi otomatis dan ↑↓ untuk riwayat perintah",
+  terminalWelcomeSkip: "Lewati intro",
+  terminalWelcomeDescHelp: "Lihat semua perintah yang tersedia",
+  terminalWelcomeDescAbout: "Pelajari tentang saya",
+  terminalWelcomeDescSkills: "Lihat keahlian teknis saya",
+  terminalWelcomeDescProjects: "Jelajahi proyek-proyek saya",
+  terminalWelcomeDescContact: "Hubungi saya",
 } as const;

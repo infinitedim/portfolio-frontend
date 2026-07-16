@@ -26,9 +26,6 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
         if (cmd.name === "font") {
           return `  • ${name} - ${desc}${aliases}`;
         }
-        if (cmd.name === "pwa") {
-          return `  • ${name} - ${desc}${aliases}`;
-        }
         return `  • ${name} - ${desc}${aliases}`;
       }),
       "",
@@ -36,14 +33,8 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
       "  theme -l                      - List all available themes",
       "  theme dracula                 - Switch to dracula theme",
       "  font fira-code                - Switch to Fira Code font",
-      "  pwa -s                        - Check PWA status",
-      "  pwa -i                        - Install app guide",
-      "  lang id_ID                    - Change language to Indonesian",
-      "  langlist                      - List all supported languages",
       "  demo list                     - List available project demos",
-      "  github user <username>        - Get GitHub user info",
       "  tech-stack list               - Show technology stack",
-      "  location                      - Show current location & time",
       "",
       "Command-Line Arguments:",
       "  theme -l, --list              - Show theme list",
@@ -628,178 +619,7 @@ export const statusCommand: Command = {
   },
 };
 
-export const pwaCommand: Command = {
-  name: "pwa",
-  description: "Progressive Web App status and controls",
-  aliases: ["app", "install", "offline"],
-  async execute(args, fullInput = "") {
-    const parsedArgs = ArgumentParser.parse(fullInput);
 
-    const isInstallFlag = ArgumentParser.hasFlagAny(parsedArgs, [
-      { short: "i", long: "install" },
-    ]);
-
-    const isStatusFlag = ArgumentParser.hasFlagAny(parsedArgs, [
-      { short: "s", long: "status" },
-    ]);
-
-    const isOfflineFlag = ArgumentParser.hasFlagAny(parsedArgs, [
-      { short: "o", long: "offline" },
-    ]);
-
-    const isOnline = typeof navigator !== "undefined" ? navigator.onLine : true;
-    const isInstalled =
-      (typeof window !== "undefined" &&
-        typeof window !== "undefined" &&
-        window.matchMedia &&
-        window.matchMedia("(display-mode: standalone)").matches) ||
-      (typeof navigator !== "undefined" &&
-        (navigator as unknown as { standalone?: boolean }).standalone === true);
-    const swSupported =
-      typeof navigator !== "undefined" && "serviceWorker" in navigator;
-    const swRegistered =
-      typeof navigator !== "undefined" &&
-      navigator.serviceWorker &&
-      navigator.serviceWorker.controller;
-
-    if (isInstallFlag) {
-      if (isInstalled) {
-        return {
-          type: "info",
-          content: [
-            "PWA Already Installed",
-            "═".repeat(30),
-            "",
-            "The app is already installed as a PWA!",
-            "",
-            "You can:",
-            "  • Find it in your app drawer/menu",
-            "  • Pin it to your taskbar",
-            "  • Use it offline",
-            "",
-            "Use 'pwa -s' to check detailed status",
-          ].join("\n"),
-          timestamp: new Date(),
-          id: generateId(),
-        };
-      }
-
-      return {
-        type: "success",
-        content: [
-          "Install Portfolio PWA",
-          "═".repeat(30),
-          "",
-          "To install this portfolio as an app:",
-          "",
-          "Chrome/Edge:",
-          "  1. Look for install icon (⊕) in address bar",
-          "  2. Click 'Install Portfolio'",
-          "  3. Confirm installation",
-          "",
-          "Mobile:",
-          "  1. Tap browser menu (⋯)",
-          "  2. Select 'Add to Home Screen'",
-          "  3. Confirm installation",
-          "",
-          "Firefox:",
-          "  1. Look for install prompt",
-          "  2. Or use 'Add to Home Screen' in menu",
-          "",
-          "Benefits:",
-          "  • Faster loading",
-          "  • Offline access",
-          "  • Native app experience",
-          "  • No browser UI",
-          "",
-          "An install button may appear automatically!",
-        ].join("\n"),
-        timestamp: new Date(),
-        id: generateId(),
-      };
-    }
-
-    if (isOfflineFlag) {
-      return {
-        type: "info",
-        content: [
-          "Offline Capabilities",
-          "═".repeat(30),
-          "",
-          `Connection Status: ${isOnline ? "Online" : "Offline"}`,
-          `Service Worker: ${swRegistered ? "Active" : "Not Active"}`,
-          "",
-          "What Works Offline:",
-          "  ✓ Basic terminal interface",
-          "  ✓ All commands and help",
-          "  ✓ Theme and font switching",
-          "  ✓ Static content and projects",
-          "  ✓ Cached resources",
-          "",
-          "Requires Internet:",
-          "  ✗ Real-time data (GitHub)",
-          "  ✗ API calls and live updates",
-          "  ✗ External images/resources",
-          "",
-          "The app automatically caches content for offline use!",
-        ].join("\n"),
-        timestamp: new Date(),
-        id: generateId(),
-      };
-    }
-
-    if (isStatusFlag || args.length === 0) {
-      return {
-        type: "success",
-        content: [
-          "PWA Status Dashboard",
-          "═".repeat(30),
-          "",
-          "Installation Status:",
-          `  App Installed: ${isInstalled ? "Yes" : "No"}`,
-          `  Service Worker: ${swSupported ? "Supported" : "Not Supported"}`,
-          `  SW Registered: ${swRegistered ? "Active" : "Inactive"}`,
-          "",
-          "Network Status:",
-          `  Connection: ${isOnline ? "Online" : "Offline"}`,
-          `  Offline Ready: ${swRegistered ? "Yes" : "No"}`,
-          "",
-          "PWA Features:",
-          "  ✓ Web App Manifest",
-          "  ✓ Service Worker Caching",
-          "  ✓ Offline Fallback Page",
-          "  ✓ App Icons & Shortcuts",
-          "  ✓ Installable",
-          "",
-          "Available Commands:",
-          "  pwa -i, --install    # Installation guide",
-          "  pwa -o, --offline    # Offline capabilities info",
-          "  pwa -s, --status     # This status page",
-          "",
-          isInstalled
-            ? "You're using the PWA! Enjoy the app experience."
-            : "Install the app for the best experience: pwa -i",
-        ].join("\n"),
-        timestamp: new Date(),
-        id: generateId(),
-      };
-    }
-
-    return {
-      type: "info",
-      content: [
-        "PWA Quick Status",
-        "",
-        `Status: ${isInstalled ? "Installed" : "Web Version"}`,
-        `Offline: ${swRegistered ? "Ready" : "Not Ready"}`,
-        "",
-        "Use 'pwa -s' for detailed status or 'pwa -i' for install guide",
-      ].join("\n"),
-      timestamp: new Date(),
-      id: generateId(),
-    };
-  },
-};
 
 export const aliasCommand: Command = {
   name: "alias",
@@ -825,18 +645,13 @@ export const aliasCommand: Command = {
       "Customization:",
       "  theme    → color, style",
       "  font     → typeface, typography",
-      "  pwa      → app, install, offline",
       "",
       "Language Commands:",
       "  lang     → language, locale",
-      "  langlist → languages, locales",
-      "  langinfo → localeinfo",
       "",
       "Interactive Commands:",
       "  demo     → project-demo, show-demo",
-      "  github   → gh, git",
       "  tech-stack → tech, stack, technologies",
-      "  location → loc, time, timezone, where",
       "",
       "Command-Line Flags:",
       "  theme -l, --list              # List themes",

@@ -6,7 +6,6 @@ import { CustomizationService } from "@/lib/services/customization-service";
 import { ThemeManager } from "@/components/molecules/customization/theme-manager";
 import { FontManager } from "@/components/molecules/customization/font-manager";
 import { SettingsManager } from "@/components/molecules/customization/settings-manager";
-import { ImportExportManager } from "@/components/molecules/customization/import-export-manager";
 import { BackgroundManager } from "@/components/molecules/customization/background-manager";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
 import type { CustomTheme, CustomFont } from "@/types/customization";
@@ -25,7 +24,7 @@ export function CustomizationManager({
   const { t } = useI18n();
   const { themeConfig, changeTheme, theme: currentTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<
-    "themes" | "fonts" | "backgrounds" | "settings" | "import-export"
+    "themes" | "fonts" | "backgrounds" | "settings"
   >("themes");
   const [customThemes, setCustomThemes] = useState<CustomTheme[]>([]);
   const [customFonts, setCustomFonts] = useState<CustomFont[]>([]);
@@ -96,10 +95,6 @@ export function CustomizationManager({
           );
 
           onClose();
-
-          setTimeout(() => {
-            window.location.reload();
-          }, 200);
         } else {
           console.error(`Failed to apply theme: ${themeId}`);
           showNotification(
@@ -155,11 +150,6 @@ export function CustomizationManager({
       id: "settings" as const,
       label: `️ ${t("customSettingsTab")}`,
       description: t("customSettingsDesc"),
-    },
-    {
-      id: "import-export" as const,
-      label: t("customImportExportTab"),
-      description: t("customImportExportDesc"),
     },
   ];
 
@@ -263,8 +253,6 @@ export function CustomizationManager({
                     "src/components/customization/SettingsManager.tsx",
                     "src/lib/themes/themeConfig.ts",
                     "src/types/customization.ts",
-                    "localStorage/custom-themes.json",
-                    "localStorage/custom-fonts.json",
                     "localStorage/settings.json",
                   ]}
                   completionText={t("customLoaded")}
@@ -292,14 +280,6 @@ export function CustomizationManager({
                 <BackgroundManager onUpdate={loadData} />
               )}
               {activeTab === "settings" && <SettingsManager />}
-              {activeTab === "import-export" && (
-                <ImportExportManager
-                  onUpdate={() => {
-                    handleThemeUpdate();
-                    handleFontUpdate();
-                  }}
-                />
-              )}
             </>
           )}
         </div>

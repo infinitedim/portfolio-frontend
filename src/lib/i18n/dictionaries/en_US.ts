@@ -650,4 +650,15 @@ export const en_US_key: TranslationKeys = {
     "Full keyboard-only experience with arrow navigation (↑/↓) for command logs, typo-tolerance algorithms, command flags parsing, and clear utilities.",
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
+
+  // Terminal Interactive Welcome
+  terminalWelcomeTitle: "Welcome to My Terminal Portfolio!",
+  terminalWelcomeSubtitle: "Click on any command below to get started, or type directly in the terminal",
+  terminalWelcomeTip: "Tip: Use Tab for auto-completion and ↑↓ for command history",
+  terminalWelcomeSkip: "Skip intro",
+  terminalWelcomeDescHelp: "View all available commands",
+  terminalWelcomeDescAbout: "Learn about me",
+  terminalWelcomeDescSkills: "View my technical skills",
+  terminalWelcomeDescProjects: "Explore my projects",
+  terminalWelcomeDescContact: "Get in touch",
 } as const;

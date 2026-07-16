@@ -2,12 +2,11 @@
 
 import type React from "react";
 
-import { useState, useRef, JSX } from "react";
+import { useState, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useFont } from "@/hooks/use-font";
 import { CustomizationService } from "@/lib/services/customization-service";
-import { TerminalDropdown } from "@/components/atoms/terminal/terminal-dropdown";
-import { Check, Save, Upload, Loader2, Dices } from "lucide-react";
+import { Check } from "lucide-react";
 import type { CustomFont } from "@/types/customization";
 import type { FontName } from "@/types/font";
 import { useI18n } from "@/hooks/use-i18n";
@@ -21,23 +20,14 @@ interface FontManagerProps {
 
 export function FontManager({
   fonts,
-  onUpdate,
+  onUpdate: _onUpdate,
   onClose,
 }: FontManagerProps): JSX.Element {
   const { t } = useI18n();
   const { themeConfig } = useTheme();
   const { changeFont } = useFont();
   const [selectedFont, setSelectedFont] = useState<CustomFont | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterSource, setFilterSource] = useState<
-    "all" | "system" | "google" | "custom"
-  >("all");
-  const [randomFontLigatures, setRandomFontLigatures] = useState(false);
-  const [isGeneratingRandom, setIsGeneratingRandom] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const customizationService = CustomizationService.getInstance();
 
   const filteredFonts = fonts
     .filter((font) => {
@@ -46,149 +36,10 @@ export function FontManager({
         font.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         font.family.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesFilter =
-        filterSource === "all" || font.source === filterSource;
-
-      return matchesSearch && matchesFilter;
+      return matchesSearch;
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  const googleFonts = [
-    "Fira Code",
-    "JetBrains Mono",
-    "Source Code Pro",
-    "Victor Mono",
-    "Roboto Mono",
-    "Inconsolata",
-    "Ubuntu Mono",
-    "Space Mono",
-    "Courier Prime",
-    "IBM Plex Mono",
-    "PT Mono",
-    "Overpass Mono",
-    "Red Hat Mono",
-    "Share Tech Mono",
-    "Cousine",
-    "Anonymous Pro",
-    "Oxygen Mono",
-    "Fira Mono",
-    "Nova Mono",
-    "VT323",
-    "Press Start 2P",
-  ];
-
-  const fontsWithLigatures = [
-    "Fira Code",
-    "JetBrains Mono",
-    "Source Code Pro",
-    "Victor Mono",
-  ];
-
-  const generateRandomFont = async () => {
-    setIsGeneratingRandom(true);
-    try {
-      const availableFonts = randomFontLigatures
-        ? googleFonts.filter((font) => fontsWithLigatures.includes(font))
-        : googleFonts;
-
-      if (availableFonts.length === 0) {
-        alert(t("customNoLigaturesFonts"));
-        setIsGeneratingRandom(false);
-        return;
-      }
-
-      if (randomFontLigatures) {
-        console.log("Available fonts with ligatures:", availableFonts);
-      }
-
-      const randomIndex = Math.floor(Math.random() * availableFonts.length);
-      const randomFontName = availableFonts[randomIndex];
-      const fontFamily = randomFontName.replace(/\s+/g, "+");
-      const googleFontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@400&display=swap`;
-
-      console.log(
-        "Picked random font:",
-        randomFontName,
-        "from",
-        availableFonts.length,
-        "available fonts",
-      );
-      console.log("All available fonts with ligatures:", availableFonts);
-
-      const existingFonts = customizationService.getCustomFonts();
-      const existingFont = existingFonts.find(
-        (f) => f.name === randomFontName && f.source === "google",
-      );
-
-      let savedFont: CustomFont;
-
-      if (existingFont) {
-        console.log("Using existing font:", existingFont.name);
-        savedFont = existingFont;
-      } else {
-        const newFont: Omit<CustomFont, "id" | "createdAt"> = {
-          name: randomFontName,
-          family: `"${randomFontName}", monospace`,
-          source: "google",
-          url: googleFontUrl,
-          ligatures: randomFontLigatures,
-          weight: "400",
-          style: "normal",
-        };
-
-        savedFont = customizationService.saveCustomFontFromGoogle(newFont);
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      onUpdate();
-
-      setSelectedFont(savedFont);
-    } catch (error) {
-      console.error("Failed to generate random font:", error);
-      alert("Failed to generate random font. Please try again.");
-    } finally {
-      setIsGeneratingRandom(false);
-    }
-  };
-
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    setIsUploading(true);
-
-    try {
-      for (const file of Array.from(files)) {
-        if (
-          !file.type.includes("font") &&
-          !file.name.match(/\.(woff|woff2|ttf|otf)$/i)
-        ) {
-          alert(`${file.name} is not a valid font file`);
-          continue;
-        }
-
-        await customizationService.saveCustomFont(file, {
-          ligatures:
-            file.name.toLowerCase().includes("liga") ||
-            file.name.toLowerCase().includes("code") ||
-            file.name.toLowerCase().includes("fira"),
-        });
-      }
-
-      onUpdate();
-    } catch (error) {
-      console.error("Font upload failed:", error);
-      alert("Failed to upload font. Please try again.");
-    } finally {
-      setIsUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    }
-  };
 
   const handleApplyFont = (font: CustomFont, closeDialog = true) => {
     if (font.source === "system") {
@@ -210,7 +61,7 @@ export function FontManager({
         font.ligatures ? "normal" : "none",
       );
 
-      customizationService.saveSettings({ currentFont: font.id });
+      CustomizationService.getInstance().saveSettings({ currentFont: font.id });
 
       if (closeDialog) {
         onClose?.();
@@ -218,27 +69,7 @@ export function FontManager({
     }
   };
 
-  const handleSaveFont = (font: CustomFont) => {
-    handleApplyFont(font, false);
-  };
 
-  const handleDeleteFont = (font: CustomFont) => {
-    if (font.source !== "custom") return;
-
-    if (confirm(t("customDeleteConfirm").replace("{name}", font.name))) {
-      customizationService.deleteCustomFont(font.id);
-      onUpdate();
-      if (selectedFont?.id === font.id) {
-        setSelectedFont(null);
-      }
-    }
-  };
-
-  const formatFileSize = (bytes?: number) => {
-    if (!bytes) return "Unknown";
-    const kb = bytes / 1024;
-    return kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb.toFixed(1)} KB`;
-  };
 
   return (
     <div className="h-full flex">
@@ -248,130 +79,17 @@ export function FontManager({
       >
         <div className="p-4 space-y-4">
           <div className="space-y-3">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder={t("customSearchFontsPlaceholder")}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-3 py-2 rounded border bg-transparent"
-                style={{
-                  borderColor: themeConfig.colors.border,
-                  color: themeConfig.colors.text,
-                }}
-              />
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                className="px-4 py-2 rounded border hover:opacity-80 disabled:opacity-50"
-                style={{
-                  backgroundColor: `${themeConfig.colors.success}20`,
-                  borderColor: themeConfig.colors.success,
-                  color: themeConfig.colors.success,
-                }}
-              >
-                <span className="flex items-center gap-1">
-                  {isUploading ? (
-                    <>
-                      <Loader2
-                        size={14}
-                        className="animate-spin"
-                      />{" "}
-                      {t("picking")}
-                    </>
-                  ) : (
-                    <>
-                      <Upload size={14} /> {t("upload")}
-                    </>
-                  )}
-                </span>
-              </button>
-            </div>
-
             <input
-              ref={fileInputRef}
-              type="file"
-              accept=".woff,.woff2,.ttf,.otf"
-              multiple
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-
-            <TerminalDropdown
-              value={filterSource}
-              onChange={(value) =>
-                setFilterSource(value as "all" | "system" | "google" | "custom")
-              }
-              options={[
-                { label: t("allSources"), value: "all" },
-                { label: t("system"), value: "system" },
-                { label: t("googleFonts"), value: "google" },
-                { label: t("custom"), value: "custom" },
-              ]}
-              className="w-full"
-            />
-
-            <div
-              className="p-3 rounded border"
+              type="text"
+              placeholder={t("customSearchFontsPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-3 py-2 rounded border bg-transparent"
               style={{
-                backgroundColor: `${themeConfig.colors.accent}05`,
-                borderColor: `${themeConfig.colors.accent}30`,
+                borderColor: themeConfig.colors.border,
+                color: themeConfig.colors.text,
               }}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span
-                  className="text-sm font-medium"
-                  style={{ color: themeConfig.colors.text }}
-                >
-                  {t("pickRandomFont")}
-                </span>
-                <div className="flex items-center gap-2">
-                  <label
-                    htmlFor="random-font-ligatures"
-                    className="text-xs flex items-center gap-1.5 cursor-pointer"
-                    style={{ color: themeConfig.colors.text }}
-                  >
-                    <input
-                      id="random-font-ligatures"
-                      type="checkbox"
-                      checked={randomFontLigatures}
-                      onChange={(e) => setRandomFontLigatures(e.target.checked)}
-                      className="w-4 h-4 rounded border cursor-pointer"
-                      style={{
-                        borderColor: themeConfig.colors.border,
-                        accentColor: themeConfig.colors.accent,
-                      }}
-                    />
-                    <span>{t("customLigatures")}</span>
-                  </label>
-                </div>
-              </div>
-              <button
-                onClick={generateRandomFont}
-                disabled={isGeneratingRandom}
-                className="w-full px-4 py-2 rounded text-sm font-medium transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  backgroundColor: themeConfig.colors.accent,
-                  color: themeConfig.colors.bg,
-                }}
-              >
-                <span className="flex items-center gap-1 justify-center">
-                  {isGeneratingRandom ? (
-                    <>
-                      <Loader2
-                        size={14}
-                        className="animate-spin"
-                      />{" "}
-                      {t("picking")}
-                    </>
-                  ) : (
-                    <>
-                      <Dices size={14} /> {t("pickRandomFont")}
-                    </>
-                  )}
-                </span>
-              </button>
-            </div>
+            />
           </div>
 
           <LenisScroll className="max-h-[60vh] overflow-y-auto">
@@ -456,15 +174,6 @@ export function FontManager({
                   The quick brown fox jumps over the lazy dog
                 </div>
 
-                {font.source === "custom" && font.size && (
-                  <div className="text-xs opacity-60 mb-2">
-                    {t("customSize").replace(
-                      "{size}",
-                      formatFileSize(font.size),
-                    )}
-                  </div>
-                )}
-
                 <div className="flex gap-2">
                   <button
                     onClick={(e) => {
@@ -480,23 +189,6 @@ export function FontManager({
                   >
                     {t("apply")}
                   </button>
-
-                  {font.source === "custom" && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteFont(font);
-                      }}
-                      className="px-2 py-1 text-xs rounded border hover:opacity-80"
-                      style={{
-                        backgroundColor: `${themeConfig.colors.error}20`,
-                        borderColor: themeConfig.colors.error,
-                        color: themeConfig.colors.error,
-                      }}
-                    >
-                      {t("delete")}
-                    </button>
-                  )}
                 </div>
               </div>
             ))}
@@ -538,20 +230,6 @@ export function FontManager({
                       <Check size={14} /> {t("applyFont")}
                     </span>
                   </button>
-                  <button
-                    onClick={() => handleSaveFont(selectedFont)}
-                    className="px-3 py-1 text-sm rounded border hover:opacity-80"
-                    style={{
-                      backgroundColor: `${themeConfig.colors.accent}20`,
-                      borderColor: themeConfig.colors.accent,
-                      color: themeConfig.colors.accent,
-                    }}
-                    title={t("customSaveCurrentFont")}
-                  >
-                    <span className="flex items-center gap-1">
-                      <Save size={14} /> {t("customSaveCurrentFont")}
-                    </span>
-                  </button>
                 </div>
               </div>
 
@@ -571,14 +249,7 @@ export function FontManager({
                     selectedFont.ligatures ? t("yes") : t("no"),
                   )}
                 </span>
-                {selectedFont.size && (
-                  <span>
-                    {t("customSize").replace(
-                      "{size}",
-                      formatFileSize(selectedFont.size),
-                    )}
-                  </span>
-                )}
+
                 <span>
                   {t("customAdded").replace(
                     "{date}",
@@ -607,11 +278,7 @@ export function FontManager({
                         <div
                           className="font-mono"
                           style={{
-                            fontFamily:
-                              selectedFont.source === "custom" ||
-                              selectedFont.source === "google"
-                                ? selectedFont.family
-                                : undefined,
+                            fontFamily: selectedFont.family,
                             fontSize: `${size}px`,
                             color: themeConfig.colors.text,
                           }}
@@ -635,11 +302,7 @@ export function FontManager({
                     style={{
                       backgroundColor: `${themeConfig.colors.bg}80`,
                       borderColor: themeConfig.colors.border,
-                      fontFamily:
-                        selectedFont.source === "custom" ||
-                        selectedFont.source === "google"
-                          ? selectedFont.family
-                          : undefined,
+                      fontFamily: selectedFont.family,
                       color: themeConfig.colors.text,
                     }}
                   >
@@ -685,11 +348,7 @@ export function FontManager({
                     style={{
                       backgroundColor: themeConfig.colors.bg,
                       borderColor: themeConfig.colors.border,
-                      fontFamily:
-                        selectedFont.source === "custom" ||
-                        selectedFont.source === "google"
-                          ? selectedFont.family
-                          : undefined,
+                      fontFamily: selectedFont.family,
                       color: themeConfig.colors.text,
                     }}
                   >
@@ -729,11 +388,7 @@ export function FontManager({
                       style={{
                         backgroundColor: `${themeConfig.colors.accent}10`,
                         borderColor: `${themeConfig.colors.accent}40`,
-                        fontFamily:
-                          selectedFont.source === "custom" ||
-                          selectedFont.source === "google"
-                            ? selectedFont.family
-                            : undefined,
+                        fontFamily: selectedFont.family,
                         color: themeConfig.colors.text,
                       }}
                     >
@@ -764,8 +419,7 @@ export function FontManager({
                 {t("customChooseFontPreview")}
               </p>
               <div className="mt-4 text-xs opacity-60">
-                <p>Supported formats: .woff, .woff2, .ttf, .otf</p>
-                <p>Upload custom fonts to personalize your terminal</p>
+                <p>Choose any pre-installed system font to apply</p>
               </div>
             </div>
           </div>

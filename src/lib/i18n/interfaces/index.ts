@@ -623,4 +623,16 @@ export interface TranslationKeys {
   terminalFeaturesShellDesc: string;
   terminalFeaturesCtaProceed: string;
   terminalFeaturesCtaCancel: string;
+
+  // Terminal Interactive Welcome
+  terminalWelcomeTitle?: string;
+  terminalWelcomeSubtitle?: string;
+  terminalWelcomeTip?: string;
+  terminalWelcomeSkip?: string;
+  terminalWelcomeDescHelp?: string;
+  terminalWelcomeDescAbout?: string;
+  terminalWelcomeDescSkills?: string;
+  terminalWelcomeDescProjects?: string;
+  terminalWelcomeDescContact?: string;
 }
+

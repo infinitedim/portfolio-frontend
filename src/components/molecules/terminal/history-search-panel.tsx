@@ -47,7 +47,9 @@ export function HistorySearchPanel({
     clearHistory,
     exportHistory,
     getSuggestions: _getSuggestions,
-  } = useCommandHistory();
+  } = useCommandHistory({
+    persistKey: "terminal-command-history-enhanced",
+  });
 
   useEffect(() => {
     if (isOpen && searchInputRef.current) {
@@ -115,9 +117,11 @@ export function HistorySearchPanel({
     setSearchOptions((prev) => ({ ...prev, ...filters }));
   };
 
-  const formatTimestamp = (date: Date) => {
+  const formatTimestamp = (date: Date | string | number) => {
+    const dateObj = date instanceof Date ? date : new Date(date);
+    if (isNaN(dateObj.getTime())) return "unknown date";
     const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
+    const diffMs = now.getTime() - dateObj.getTime();
     const diffMins = Math.floor(diffMs / (1000 * 60));
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
@@ -126,7 +130,7 @@ export function HistorySearchPanel({
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
+    return dateObj.toLocaleDateString();
   };
 
   const formatExecutionTime = (ms?: number) => {
@@ -445,6 +449,7 @@ export function HistorySearchPanel({
         style={{
           backgroundColor: themeConfig.colors.bg,
           borderColor: themeConfig.colors.border,
+          color: themeConfig.colors.text,
         }}
         role="dialog"
         aria-labelledby="history-panel-title"

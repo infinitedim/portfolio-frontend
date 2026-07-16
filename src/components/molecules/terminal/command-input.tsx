@@ -202,6 +202,9 @@ export function CommandInput({
         break;
 
       case "ArrowUp":
+        if (showSuggestions) {
+          break;
+        }
         e.preventDefault();
         e.stopPropagation();
         if (showTabCompletion) {
@@ -221,6 +224,9 @@ export function CommandInput({
         break;
 
       case "ArrowDown":
+        if (showSuggestions) {
+          break;
+        }
         e.preventDefault();
         e.stopPropagation();
         if (showTabCompletion) {
@@ -300,8 +306,10 @@ export function CommandInput({
   const handleSuggestionSelect = (suggestion: string) => {
     const parts = value.split(" ");
     parts[parts.length - 1] = suggestion;
-    onChange(parts.join(" ") + " ");
+    const finalCommand = parts.join(" ");
+    onChange(finalCommand);
     setShowSuggestions(false);
+    onSubmit(finalCommand);
 
     setTimeout(() => {
       if (actualInputRef.current) {

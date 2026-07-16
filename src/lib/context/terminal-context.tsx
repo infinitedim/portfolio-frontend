@@ -172,10 +172,8 @@ export function TerminalProvider({
     if (history.length > 0) setShowWelcome(false);
   }, [history.length]);
 
-  /** Load custom fonts + announce on mount */
+  /** Announce on mount */
   useEffect(() => {
-    const customizationService = CustomizationService.getInstance();
-    customizationService.loadAllCustomFonts();
     announceMessage("Terminal portfolio loaded", "polite");
   }, [announceMessage]);
 
@@ -223,13 +221,7 @@ export function TerminalProvider({
 
   const clearNotification = useCallback(() => setNotification(null), []);
 
-  const handleWelcomeCommandSelect = useCallback(
-    (command: string) => {
-      setCurrentInput(command);
-      return command;
-    },
-    [setCurrentInput],
-  );
+
 
 
   /**
@@ -241,7 +233,6 @@ export function TerminalProvider({
    */
   const handleSubmit = useCallback(
     async (command: string): Promise<void> => {
-      const customizationService = CustomizationService.getInstance();
       const output = await executeCommand(command);
 
       if (!output) {
@@ -354,8 +345,6 @@ export function TerminalProvider({
         output.content === "SHOW_STATUS"
       ) {
         const uptime = new Date().toLocaleString();
-        const customThemes = customizationService.getCustomThemes().length;
-        const customFonts = customizationService.getCustomFonts().length;
 
         const analytics = commandAnalytics ?? {
           totalCommands: 0,
@@ -392,12 +381,10 @@ export function TerminalProvider({
           "",
           "Theme System:",
           `   • ${availableThemes?.length ?? 0} built-in themes available`,
-          `   • ${customThemes} custom themes created`,
           "   • Use 'theme -l' to list all themes",
           "",
           "Font System:",
           `   • ${availableFonts?.length ?? 0} system fonts available`,
-          `   • ${customFonts} custom fonts uploaded`,
           "   • Use 'font -l' to list all fonts",
           "",
           "Enhanced Features:",
@@ -446,6 +433,14 @@ export function TerminalProvider({
       themeError,
       themeMetrics,
     ],
+  );
+
+
+  const handleWelcomeCommandSelect = useCallback(
+    (command: string) => {
+      handleSubmit(command);
+    },
+    [handleSubmit],
   );
 
   // ── Context value ──────────────────────────────────────────────────────

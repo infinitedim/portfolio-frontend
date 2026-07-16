@@ -2,8 +2,7 @@
 
 import { useState, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
-import { CustomizationService } from "@/lib/services/customization-service";
-import { ThemeEditor } from "./theme-editor";
+
 import { TerminalDropdown } from "@/components/atoms/terminal/terminal-dropdown";
 import type { CustomTheme } from "@/types/customization";
 import { ThemeName } from "@/types/theme";
@@ -19,21 +18,15 @@ interface ThemeManagerProps {
 
 export function ThemeManager({
   themes,
-  onUpdate,
+  onUpdate: _onUpdate,
   onApplyTheme,
   currentTheme,
 }: ThemeManagerProps): JSX.Element {
   const { t } = useI18n();
   const { themeConfig, changeTheme, isThemeActive } = useTheme();
-  const [selectedTheme, setSelectedTheme] = useState<CustomTheme | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterSource, setFilterSource] = useState<
-    "all" | "built-in" | "custom" | "imported"
-  >("all");
   const [sortBy, setSortBy] = useState<"name" | "created" | "modified">("name");
 
-  const customizationService = CustomizationService.getInstance();
 
   const filteredThemes = themes
     .filter((theme) => {
@@ -41,8 +34,7 @@ export function ThemeManager({
         theme.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         theme.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesFilter =
-        filterSource === "all" || theme.source === filterSource;
+      const matchesFilter = true;
 
       return matchesSearch && matchesFilter;
     })
@@ -64,206 +56,23 @@ export function ThemeManager({
     console.log(`ThemeManager: Applying theme ${themeId}`);
 
     try {
-      const customTheme = customizationService
-        .getCustomThemes()
-        .find((t) => t.id === themeId);
+      const success = changeTheme(themeId as ThemeName);
 
-      if (customTheme) {
-        const root = document.documentElement;
-        const body = document.body;
-
-        if (!root || !body) {
-          console.error("DOM elements not available");
-          return;
-        }
-
-        const themeConfig = {
-          name: customTheme.name,
-          colors: {
-            bg: customTheme.colors.bg,
-            text: customTheme.colors.text,
-            accent: customTheme.colors.accent,
-            muted:
-              customTheme.colors.muted ||
-              customTheme.colors.border ||
-              customTheme.colors.text,
-            border: customTheme.colors.border,
-            success: customTheme.colors.success || customTheme.colors.accent,
-            error: customTheme.colors.error || "#ff4444",
-            warning: customTheme.colors.warning || "#ffaa00",
-            info: customTheme.colors.info || "#00aaff",
-            prompt: customTheme.colors.prompt || customTheme.colors.accent,
-          },
-        };
-
-        const hexToHsl = (hex: string): string => {
-          if (!hex?.match(/^#[0-9A-Fa-f]{6}$/)) return "0 0% 0%";
-          const r = parseInt(hex.slice(1, 3), 16) / 255;
-          const g = parseInt(hex.slice(3, 5), 16) / 255;
-          const b = parseInt(hex.slice(5, 7), 16) / 255;
-          const max = Math.max(r, g, b);
-          const min = Math.min(r, g, b);
-          let h = 0;
-          let s = 0;
-          const l = (max + min) / 2;
-          if (max !== min) {
-            const d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-            h =
-              max === r
-                ? (g - b) / d + (g < b ? 6 : 0)
-                : max === g
-                  ? (b - r) / d + 2
-                  : (r - g) / d + 4;
-            h /= 6;
-          }
-          return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
-        };
-
-        const cssVars = {
-          "--terminal-bg": themeConfig.colors.bg,
-          "--terminal-text": themeConfig.colors.text,
-          "--terminal-accent": themeConfig.colors.accent,
-          "--terminal-muted": themeConfig.colors.muted,
-          "--terminal-border": themeConfig.colors.border,
-          "--terminal-success": themeConfig.colors.success,
-          "--terminal-error": themeConfig.colors.error,
-          "--terminal-warning": themeConfig.colors.warning,
-          "--terminal-info": themeConfig.colors.info,
-          "--terminal-prompt": themeConfig.colors.prompt,
-          "--background": hexToHsl(themeConfig.colors.bg),
-          "--foreground": hexToHsl(themeConfig.colors.text),
-          "--primary": hexToHsl(themeConfig.colors.accent),
-          "--primary-foreground": hexToHsl(themeConfig.colors.bg),
-          "--muted": hexToHsl(themeConfig.colors.muted),
-          "--muted-foreground": hexToHsl(themeConfig.colors.text),
-          "--border": hexToHsl(themeConfig.colors.border),
-          "--input": hexToHsl(themeConfig.colors.border),
-          "--ring": hexToHsl(themeConfig.colors.accent),
-          "--secondary": hexToHsl(themeConfig.colors.muted),
-          "--secondary-foreground": hexToHsl(themeConfig.colors.text),
-          "--accent": hexToHsl(themeConfig.colors.accent),
-          "--accent-foreground": hexToHsl(themeConfig.colors.bg),
-          "--destructive": hexToHsl(themeConfig.colors.error),
-          "--destructive-foreground": hexToHsl(themeConfig.colors.bg),
-          "--card": hexToHsl(themeConfig.colors.bg),
-          "--card-foreground": hexToHsl(themeConfig.colors.text),
-          "--popover": hexToHsl(themeConfig.colors.bg),
-          "--popover-foreground": hexToHsl(themeConfig.colors.text),
-        };
-
-        Object.entries(cssVars).forEach(([property, value]) => {
-          root.style.setProperty(property, value);
-        });
-
-        const themeClasses = body.className
-          .split(" ")
-          .filter((cls) => !cls.startsWith("theme-"));
-        themeClasses.push(`theme-custom-${customTheme.id}`);
-        body.className = themeClasses.join(" ");
-
-        if (typeof window !== "undefined" && window.localStorage) {
-          window.localStorage.setItem("terminal-theme", themeId);
-        }
-
-        console.log(`Successfully applied custom theme: ${themeId}`);
+      if (success) {
+        console.log(`Successfully applied theme: ${themeId}`);
 
         if (onApplyTheme) {
           onApplyTheme(themeId);
         }
       } else {
-        const success = changeTheme(themeId as ThemeName);
-
-        if (success) {
-          console.log(`Successfully applied theme: ${themeId}`);
-
-          if (onApplyTheme) {
-            onApplyTheme(themeId);
-          }
-        } else {
-          console.error(`Failed to apply theme: ${themeId}`);
-        }
+        console.error(`Failed to apply theme: ${themeId}`);
       }
     } catch (error) {
       console.error("Error in handleApplyTheme:", error);
     }
   };
 
-  const handleDeleteTheme = (themeId: string) => {
-    if (window.confirm(t("customDeleteThemeConfirm"))) {
-      if (customizationService.deleteCustomTheme(themeId)) {
-        onUpdate();
-        if (selectedTheme?.id === themeId) {
-          setSelectedTheme(null);
-          setIsEditing(false);
-        }
-      }
-    }
-  };
 
-  const handleDuplicateTheme = (themeId: string) => {
-    const duplicated = customizationService.duplicateTheme(themeId);
-    if (duplicated) {
-      onUpdate();
-      setSelectedTheme(duplicated);
-      setIsEditing(true);
-    }
-  };
-
-  const handleCreateTheme = () => {
-    setSelectedTheme(null);
-    setIsEditing(true);
-  };
-
-  const handleEditTheme = (theme: CustomTheme) => {
-    setSelectedTheme(theme);
-    setIsEditing(true);
-  };
-
-  const handleSaveTheme = (
-    themeData: Omit<CustomTheme, "id" | "createdAt">,
-  ) => {
-    if (selectedTheme) {
-      customizationService.updateCustomTheme(selectedTheme.id, themeData);
-    } else {
-      customizationService.saveCustomTheme(themeData);
-    }
-
-    setIsEditing(false);
-    setSelectedTheme(null);
-    onUpdate();
-  };
-
-  if (isEditing) {
-    const defaultTheme: CustomTheme = {
-      id: "",
-      name: "New Theme",
-      description: "A custom theme",
-      author: "User",
-      colors: {
-        bg: "#1a1a1a",
-        text: "#ffffff",
-        prompt: "#00ff00",
-        success: "#00ff00",
-        error: "#ff0000",
-        accent: "#0080ff",
-        border: "#333333",
-      },
-      source: "custom",
-      createdAt: new Date(),
-    };
-
-    return (
-      <ThemeEditor
-        theme={selectedTheme || defaultTheme}
-        onSave={handleSaveTheme}
-        onCancel={() => {
-          setIsEditing(false);
-          setSelectedTheme(null);
-        }}
-      />
-    );
-  }
 
   return (
     <div className="h-full flex flex-col">
@@ -287,16 +96,6 @@ export function ThemeManager({
                 t("customActiveTheme").replace("{theme}", currentTheme)}
             </p>
           </div>
-          <button
-            onClick={handleCreateTheme}
-            className="px-4 py-2 rounded text-sm font-medium transition-all duration-200 hover:scale-105"
-            style={{
-              backgroundColor: themeConfig.colors.accent,
-              color: themeConfig.colors?.bg || "#000000",
-            }}
-          >
-            {t("customCreateTheme")}
-          </button>
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
           <input
@@ -312,20 +111,6 @@ export function ThemeManager({
             }}
           />
           <div className="flex gap-2">
-            <TerminalDropdown
-              value={filterSource}
-              onChange={(value) =>
-                setFilterSource(
-                  value as "all" | "built-in" | "custom" | "imported",
-                )
-              }
-              options={[
-                { label: t("allSources"), value: "all" },
-                { label: t("builtIn"), value: "built-in" },
-                { label: t("custom"), value: "custom" },
-                { label: t("imported"), value: "imported" },
-              ]}
-            />
             <TerminalDropdown
               value={sortBy}
               onChange={(value) =>
@@ -356,23 +141,10 @@ export function ThemeManager({
               className="text-sm opacity-75"
               style={{ color: themeConfig.colors.text }}
             >
-              {searchQuery || filterSource !== "all"
+              {searchQuery
                 ? t("customAdjustSearchFilter")
-                : t("customCreateFirstTheme")}
+                : t("customNoThemesFound")}
             </p>
-            {!searchQuery && filterSource === "all" && (
-              <button
-                onClick={handleCreateTheme}
-                className="mt-4 px-4 py-2 rounded text-sm font-medium transition-all duration-200"
-                style={{
-                  backgroundColor: `${themeConfig.colors.accent}20`,
-                  color: themeConfig.colors.accent,
-                  border: `1px solid ${themeConfig.colors.accent}`,
-                }}
-              >
-                {t("customCreateTheme")}
-              </button>
-            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -488,43 +260,6 @@ export function ThemeManager({
                       {isActive ? t("customActive") : t("apply")}
                     </button>
 
-                    <button
-                      onClick={() => handleDuplicateTheme(theme.id)}
-                      className="px-3 py-1.5 rounded text-sm transition-all duration-200 hover:scale-105"
-                      style={{
-                        backgroundColor: `${themeConfig.colors.muted}30`,
-                        color: themeConfig.colors.text,
-                      }}
-                      title={t("customDuplicateTheme")}
-                    ></button>
-
-                    {theme.source === "custom" && (
-                      <>
-                        <button
-                          onClick={() => handleEditTheme(theme)}
-                          className="px-3 py-1.5 rounded text-sm transition-all duration-200 hover:scale-105"
-                          style={{
-                            backgroundColor: `${themeConfig.colors.muted}30`,
-                            color: themeConfig.colors.text,
-                          }}
-                          title={t("customEditTheme")}
-                        >
-                          ️
-                        </button>
-
-                        <button
-                          onClick={() => handleDeleteTheme(theme.id)}
-                          className="px-3 py-1.5 rounded text-sm transition-all duration-200 hover:scale-105"
-                          style={{
-                            backgroundColor: `${themeConfig.colors.error || "#ef4444"}30`,
-                            color: themeConfig.colors.error || "#ef4444",
-                          }}
-                          title={t("customDeleteTheme")}
-                        >
-                          ️
-                        </button>
-                      </>
-                    )}
                   </div>
                 </div>
               );

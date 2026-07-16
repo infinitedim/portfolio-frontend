@@ -13,7 +13,6 @@ describe("commandRegistry", () => {
   let themeCommand: Command;
   let fontCommand: Command;
   let statusCommand: Command;
-  let pwaCommand: Command;
   let aliasCommand: Command;
 
   beforeEach(async () => {
@@ -33,7 +32,6 @@ describe("commandRegistry", () => {
     themeCommand = commandRegistry.themeCommand;
     fontCommand = commandRegistry.fontCommand;
     statusCommand = commandRegistry.statusCommand;
-    pwaCommand = commandRegistry.pwaCommand;
     aliasCommand = commandRegistry.aliasCommand;
   });
   describe("createHelpCommand", () => {
@@ -194,17 +192,7 @@ describe("commandRegistry", () => {
     });
   });
 
-  describe("pwaCommand", () => {
-    it("shows help with -h flag", async () => {
-      const out = await pwaCommand.execute(["-h"], "pwa -h");
-      expect(["success", "info"]).toContain(out.type);
-    });
 
-    it("shows status with -s flag", async () => {
-      const out = await pwaCommand.execute(["-s"], "pwa -s");
-      expect(["success", "info"]).toContain(out.type);
-    });
-  });
 
   describe("aliasCommand", () => {
     beforeEach(() => {

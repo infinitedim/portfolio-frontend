@@ -67,10 +67,6 @@ export function AccessibilityMenu(): JSX.Element {
       announceMessage(`Theme changed to ${nextTheme}`, "polite");
 
       setIsOpen(false);
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 150);
     }
   }, [theme, changeTheme, announceMessage]);
 

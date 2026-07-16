@@ -12,12 +12,9 @@ import {
   fontCommand,
   statusCommand,
   aliasCommand,
-  pwaCommand,
 } from "@/lib/commands/command-registry";
 import {
   languageCommand,
-  languageListCommand,
-  languageInfoCommand,
 } from "@/lib/commands/language-commands";
 import { useCommandHistory } from "./use-command-history";
 import { generateId } from "@/lib/utils/utils";
@@ -49,25 +46,9 @@ const getDemoCommands = async () => {
   }
 };
 
-const getGithubCommands = async () => {
-  try {
-    return await import("@/lib/commands/github-commands");
-  } catch {
-    return null;
-  }
-};
-
 const getTechStackCommands = async () => {
   try {
     return await import("@/lib/commands/tech-stack-commands");
-  } catch {
-    return null;
-  }
-};
-
-const getLocationCommands = async () => {
-  try {
-    return await import("@/lib/commands/location-commands");
   } catch {
     return null;
   }
@@ -126,7 +107,7 @@ const ALL_COMMANDS = [
   "font",
   "language",
   "demo",
-  "github",
+
   "ask",
   "tech-stack",
   "resume",
@@ -264,24 +245,20 @@ export function useTerminal(
       parser.register(fontCommand);
       parser.register(statusCommand);
       parser.register(aliasCommand);
-      parser.register(pwaCommand);
+
 
       const [
         miscCmds,
         customCmds,
         demoCmds,
-        githubCmds,
         techCmds,
-        locationCmds,
         blogCmds,
         aiCmds,
       ] = await Promise.allSettled([
         getMiscCommands(),
         getCustomizationCommands(),
         getDemoCommands(),
-        getGithubCommands(),
         getTechStackCommands(),
-        getLocationCommands(),
         getBlogCommands(),
         getAiCommands(),
       ]);
@@ -405,8 +382,7 @@ export function useTerminal(
       if (roadmapCommand) parser.register(roadmapCommand);
 
       parser.register(languageCommand);
-      parser.register(languageListCommand);
-      parser.register(languageInfoCommand);
+
 
       parser.register({
         name: "perf",
@@ -560,20 +536,11 @@ export function useTerminal(
         if (demo.demoCommand) parser.register(demo.demoCommand);
       }
 
-      const gh = githubCmds.status === "fulfilled" ? githubCmds.value : null;
-      if (gh?.githubCommand) parser.register(gh.githubCommand);
-
       const ai = aiCmds.status === "fulfilled" ? aiCmds.value : null;
       if (ai?.askCommand) parser.register(ai.askCommand);
 
       const tech = techCmds.status === "fulfilled" ? techCmds.value : null;
       if (tech?.techStackCommand) parser.register(tech.techStackCommand);
-
-
-      const location =
-        locationCmds.status === "fulfilled" ? locationCmds.value : null;
-      if (location?.createLocationCommand)
-        parser.register(location.createLocationCommand());
 
       parser.register(createHelpCommand(() => parser.getCommands()));
 

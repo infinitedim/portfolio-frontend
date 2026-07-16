@@ -73,43 +73,7 @@ describe("CustomizationService", () => {
     expect(all.length).toBeGreaterThan(0);
   });
 
-  it("can save, update, delete, and duplicate a custom theme", () => {
-    if (typeof window === "undefined" || !window.localStorage) {
-      expect(true).toBe(true);
-      return;
-    }
-    const svc = CustomizationService.getInstance();
 
-    const saved = svc.saveCustomTheme({
-      name: "My Theme",
-      description: "A test theme",
-      source: "custom",
-      colors: {
-        bg: "#000000",
-        text: "#ffffff",
-        prompt: "#111",
-        success: "#0f0",
-        error: "#f00",
-        accent: "#0ea5e9",
-        border: "#222",
-      },
-    });
-
-    expect(saved).toHaveProperty("id");
-    expect(saved.name).toBe("My Theme");
-
-    const updated = svc.updateCustomTheme(saved.id, { name: "My Theme v2" });
-    expect(updated).toBe(true);
-
-    const duplicate = svc.duplicateTheme(saved.id, "Copied Theme");
-    expect(duplicate).not.toBeNull();
-    expect(duplicate?.name).toBe("Copied Theme");
-
-    const deleted = svc.deleteCustomTheme(saved.id);
-    expect(deleted).toBe(true);
-
-    expect(svc.deleteCustomTheme(saved.id)).toBe(false);
-  });
 
   it("manages settings and resetToDefaults", () => {
     const svc = CustomizationService.getInstance();

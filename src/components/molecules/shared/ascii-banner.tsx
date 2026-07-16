@@ -37,9 +37,9 @@ export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
 
   const subtitleStyles = useMemo(
     () => ({
-      color: themeConfig.colors.muted,
+      color: themeConfig.colors.text,
     }),
-    [themeConfig.colors.muted],
+    [themeConfig.colors.text],
   );
 
   return (
@@ -64,7 +64,7 @@ export const ASCIIBanner = memo(function ASCIIBanner(): JSX.Element {
         </div>
         <div
           style={subtitleStyles}
-          className="text-xs opacity-75 font-mono"
+          className="text-xs font-mono"
         >
           Type 'help' to explore • Tab for completion • 'themes' to customize
         </div>
