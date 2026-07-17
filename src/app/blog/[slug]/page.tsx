@@ -12,6 +12,7 @@ import { GiscusComments } from "@/components/molecules/blog/giscus-comments-dyna
 import { BlogContent } from "@/components/molecules/blog/blog-content";
 
 import { getServerApiUrl } from "@/lib/api/get-api-url";
+import { ArticleSchema } from "@/components/molecules/seo/json-ld";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { BlogLocaleSwitcher } from "@/components/molecules/blog/locale-switcher";
@@ -148,6 +149,16 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
 
   return (
     <StandardPageLayout>
+      <ArticleSchema
+        headline={post.title}
+        description={post.summary || post.title}
+        author="Dimas Saputra"
+        publisher="infinitedim"
+        datePublished={post.createdAt}
+        dateModified={post.updatedAt}
+        url={`https://infinitedim.dev/blog/${post.slug}`}
+        keywords={post.tags?.join(", ")}
+      />
       <div className="min-h-screen bg-terminal-bg text-terminal-text">
         <ScrollProgress />
 
