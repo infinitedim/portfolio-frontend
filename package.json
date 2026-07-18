@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development bun next dev",
     "dev:clean": "rm -rf .next && next dev",
-    "build": "next build",
+    "build": "NODE_OPTIONS=\"--dns-result-order=ipv4first\" next build",
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

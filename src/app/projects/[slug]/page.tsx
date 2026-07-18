@@ -15,15 +15,33 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
+
 async function findProject(slug: string): Promise<Project | null> {
   const projects = await getProjectsData();
   return projects.find((p) => p.slug === slug) ?? null;
+}
+
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  try {
+    const projects = await getProjectsData();
+    const slugs = (projects || []).map((p) => ({ slug: p.slug }));
+    if (slugs.length > 0) {
+      return slugs;
+    }
+  } catch (error) {
+    console.error("Failed to generate static params for projects:", error);
+  }
+  return [{ slug: BUILD_PLACEHOLDER_SLUG }];
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  if (slug === BUILD_PLACEHOLDER_SLUG) {
+    return { title: "Project Case Study" };
+  }
   const project = await findProject(slug);
 
   if (!project) {
@@ -54,10 +72,14 @@ export async function generateMetadata({
 }
 
 async function ProjectDetailContent({
-  slug,
+  params,
 }: {
-  slug: string;
+  params: Promise<{ slug: string }>;
 }): Promise<JSX.Element> {
+  const { slug } = await params;
+  if (slug === BUILD_PLACEHOLDER_SLUG) {
+    notFound();
+  }
   const project = await findProject(slug);
   if (!project) notFound();
 
@@ -267,15 +289,13 @@ function ProjectDetailFallback(): JSX.Element {
   );
 }
 
-export default async function ProjectDetailPage({
+export default function ProjectDetailPage({
   params,
-}: PageProps): Promise<JSX.Element> {
-  const { slug } = await params;
-
+}: PageProps): JSX.Element {
   return (
     <StandardPageLayout>
       <Suspense fallback={<ProjectDetailFallback />}>
-        <ProjectDetailContent slug={slug} />
+        <ProjectDetailContent params={params} />
       </Suspense>
     </StandardPageLayout>
   );
