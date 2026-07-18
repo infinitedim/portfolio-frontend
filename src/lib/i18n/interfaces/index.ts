@@ -335,6 +335,7 @@ export interface TranslationKeys {
   logsTimestamp: string;
   logsTitle: string;
   logsWarning: string;
+  navAbout: string;
   navBlog: string;
   navContact: string;
   navHome: string;

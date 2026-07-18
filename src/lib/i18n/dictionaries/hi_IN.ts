@@ -355,6 +355,7 @@ export const hi_IN_key: TranslationKeys = {
   logsTimestamp: "समय-चिह्न",
   logsTitle: "सिस्टम लॉग",
   logsWarning: "चेतावनी",
+  navAbout: "के बारे में",
   navBlog: "ब्लॉग",
   navContact: "संपर्क",
   navHome: "घर",

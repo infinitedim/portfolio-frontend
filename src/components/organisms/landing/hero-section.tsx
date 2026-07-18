@@ -39,6 +39,13 @@ export function HeroSection(): JSX.Element {
             >
               {t("landingCtaProjects")}
             </Link>
+            <a
+              href="/resume.pdf"
+              download
+              className="rounded bg-green-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-colors hover:bg-green-300"
+            >
+              ↓ Resume
+            </a>
             <Link
               href="/contact"
               prefetch={false}

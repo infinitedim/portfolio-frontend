@@ -361,6 +361,7 @@ export const pt_BR_key: TranslationKeys = {
   logsTimestamp: "Carimbo de data e hora",
   logsTitle: "Registros do sistema",
   logsWarning: "Aviso",
+  navAbout: "Sobre",
   navBlog: "Blogue",
   navContact: "Contato",
   navHome: "Lar",

@@ -352,6 +352,7 @@ export const th_TH_key: TranslationKeys = {
   logsTimestamp: "การประทับเวลา",
   logsTitle: "บันทึกของระบบ",
   logsWarning: "คำเตือน",
+  navAbout: "เกี่ยวกับ",
   navBlog: "บล็อก",
   navContact: "ติดต่อ",
   navHome: "บ้าน",

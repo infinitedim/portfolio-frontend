@@ -348,6 +348,7 @@ export const ar_SA_key: TranslationKeys = {
   logsTimestamp: "الطابع الزمني",
   logsTitle: "سجلات النظام",
   logsWarning: "تحذير",
+  navAbout: "حول",
   navBlog: "مدونة",
   navContact: "اتصال",
   navHome: "بيت",

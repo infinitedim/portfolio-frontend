@@ -341,6 +341,7 @@ export const zh_CN_key: TranslationKeys = {
   logsTimestamp: "时间戳",
   logsTitle: "系统日志",
   logsWarning: "警告",
+  navAbout: "关于",
   navBlog: "博客",
   navContact: "接触",
   navHome: "家",

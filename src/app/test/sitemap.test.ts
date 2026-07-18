@@ -26,9 +26,9 @@ describe("sitemap.ts", () => {
     expect(urls.some((url) => url.endsWith("/blog"))).toBe(true);
     expect(urls.some((url) => url.endsWith("/contact"))).toBe(true);
     expect(urls.some((url) => url.endsWith("/roadmap"))).toBe(true);
+    expect(urls.some((url) => url.endsWith("/about"))).toBe(true);
 
     expect(urls.some((url) => url.includes("/skills"))).toBe(false);
-    expect(urls.some((url) => url.includes("/about"))).toBe(false);
     expect(urls.some((url) => url.includes("/resume"))).toBe(false);
     expect(urls.some((url) => url.includes("/services/"))).toBe(false);
     expect(urls.some((url) => url.includes("/privacy-policy"))).toBe(false);

@@ -166,6 +166,11 @@ const nextConfig = {
           destination: "/",
           permanent: true,
         },
+        {
+          source: "/skills",
+          destination: "/about#skills",
+          permanent: true,
+        },
       ],
 };
 

@@ -362,6 +362,7 @@ export const ru_RU_key: TranslationKeys = {
   logsTimestamp: "Временная метка",
   logsTitle: "Системные журналы",
   logsWarning: "Предупреждение",
+  navAbout: "О себе",
   navBlog: "Блог",
   navContact: "Контакт",
   navHome: "Дом",

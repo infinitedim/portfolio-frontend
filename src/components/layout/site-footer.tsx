@@ -37,6 +37,14 @@ export function SiteFooter(): JSX.Element {
         </div>
 
         <div className="flex items-center justify-center gap-4 font-mono text-xs text-neutral-400">
+          <a
+            href="/resume.pdf"
+            download
+            className="transition-colors hover:text-green-400"
+          >
+            Resume
+          </a>
+          <span aria-hidden="true">·</span>
           <Link
             href="/rss.xml"
             className="transition-colors hover:text-orange-400"

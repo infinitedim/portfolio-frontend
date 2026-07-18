@@ -10,6 +10,7 @@ import { TerminalFeaturesModal } from "@/components/molecules/shared/terminal-fe
 
 const NAV_LINKS = [
   { key: "navHome" as const, href: "/" },
+  { key: "navAbout" as const, href: "/about" },
   { key: "navProjects" as const, href: "/projects" },
   { key: "navBlog" as const, href: "/blog" },
   { key: "navContact" as const, href: "/contact" },

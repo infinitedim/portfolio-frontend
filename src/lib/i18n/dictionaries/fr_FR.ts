@@ -364,6 +364,7 @@ export const fr_FR_key: TranslationKeys = {
   logsTimestamp: "Horodatage",
   logsTitle: "Journaux système",
   logsWarning: "Avertissement",
+  navAbout: "À propos",
   navBlog: "Blogue",
   navContact: "Contact",
   navHome: "Maison",

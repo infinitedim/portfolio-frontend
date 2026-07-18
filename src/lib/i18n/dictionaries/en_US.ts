@@ -350,6 +350,7 @@ export const en_US_key: TranslationKeys = {
   logsTimestamp: "Timestamp",
   logsTitle: "System Logs",
   logsWarning: "Warning",
+  navAbout: "About",
   navBlog: "Blog",
   navContact: "Contact",
   navHome: "Home",

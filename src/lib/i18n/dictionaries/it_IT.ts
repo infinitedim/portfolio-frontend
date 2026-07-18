@@ -362,6 +362,7 @@ export const it_IT_key: TranslationKeys = {
   logsTimestamp: "Timestamp",
   logsTitle: "Registri di sistema",
   logsWarning: "Avvertimento",
+  navAbout: "Chi sono",
   navBlog: "Blog",
   navContact: "Contatto",
   navHome: "Casa",

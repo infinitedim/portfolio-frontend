@@ -360,6 +360,7 @@ export const nl_NL_key: TranslationKeys = {
   logsTimestamp: "Tijdstempel",
   logsTitle: "Systeemlogboeken",
   logsWarning: "Waarschuwing",
+  navAbout: "Over",
   navBlog: "Bloggen",
   navContact: "Contact",
   navHome: "Thuis",

@@ -32,6 +32,7 @@ export interface Skill {
 export interface Project {
   id: string;
   name: string;
+  slug: string;
   description: string;
   technologies: string[];
   demoUrl?: string;
@@ -153,9 +154,17 @@ function normalizeProjectStatus(status: unknown): Project["status"] {
   return map[value] ?? "completed";
 }
 
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 function normalizeProject(project: Project): Project {
   return {
     ...project,
+    slug: project.slug || generateSlug(project.name),
     status: normalizeProjectStatus(project.status),
   };
 }
@@ -177,7 +186,8 @@ export const getExperienceData = cache(async (): Promise<Experience[]> => {
 
     if (response.ok) {
       const data = await response.json();
-      return data.data ?? [];
+      const result = data.data ?? [];
+      return result.length > 0 ? result : getFallbackExperienceData();
     }
   } catch (error) {
     console.error("Failed to fetch experience data from backend", {
@@ -185,7 +195,7 @@ export const getExperienceData = cache(async (): Promise<Experience[]> => {
     });
   }
 
-  return [];
+  return getFallbackExperienceData();
 });
 
 export const getAboutData = cache(async (): Promise<AboutInfo> => {
@@ -305,6 +315,22 @@ function getFallbackAboutData(): AboutInfo {
       linkedin: "https://linkedin.com/in/infinitedim",
     },
   };
+}
+
+function getFallbackExperienceData(): Experience[] {
+  return [
+    {
+      company: "Freelance",
+      position: "Full-Stack Developer",
+      duration: "2022 — Present",
+      description: [
+        "Building modern web applications with React, Next.js, and TypeScript",
+        "Developing REST APIs with Rust/Axum and Node.js",
+        "Implementing CI/CD pipelines and cloud deployments on GCP",
+      ],
+      technologies: ["React", "Next.js", "TypeScript", "Rust", "GCP"],
+    },
+  ];
 }
 
 export interface RoadmapProgress {

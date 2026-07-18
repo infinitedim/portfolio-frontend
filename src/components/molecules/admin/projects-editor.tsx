@@ -119,6 +119,7 @@ export function ProjectsEditor({
     const newProject: Project = {
       id: "", // Will be generated on save
       name: "",
+      slug: "",
       description: "",
       technologies: [],
       status: "completed",
@@ -187,6 +188,7 @@ export function ProjectsEditor({
       const projectToSave: Project = {
         id: projectId,
         name: name.trim(),
+        slug: generateSlug(name.trim()),
         description: description.trim(),
         demoUrl: demoUrl.trim() || undefined,
         githubUrl: githubUrl.trim() || undefined,

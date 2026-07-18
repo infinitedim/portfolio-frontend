@@ -349,6 +349,7 @@ export const ko_KR_key: TranslationKeys = {
   logsTimestamp: "타임스탬프",
   logsTitle: "시스템 로그",
   logsWarning: "경고",
+  navAbout: "소개",
   navBlog: "블로그",
   navContact: "연락하다",
   navHome: "집",

@@ -1,4 +1,5 @@
 import { memo, JSX, Suspense } from "react";
+import Link from "next/link";
 import { Project } from "@/lib/data/data-fetching";
 import { ProjectCardImage } from "@/components/molecules/projects/project-card-image";
 import { ImageErrorBoundary } from "@/components/organisms/error/image-error-boundary";
@@ -104,7 +105,12 @@ export const ProjectCard = memo(function ProjectCard({
               className="mb-2 text-xl font-bold text-terminal-text transition-colors group-hover:text-terminal-accent"
               itemProp="name"
             >
-              {project.name}
+              <Link
+                href={`/projects/${project.slug}`}
+                className="hover:underline"
+              >
+                {project.name}
+              </Link>
             </h3>
             <p
               className="text-sm leading-relaxed text-terminal-muted"

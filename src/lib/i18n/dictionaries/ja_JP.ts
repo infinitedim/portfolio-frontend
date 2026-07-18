@@ -356,6 +356,7 @@ export const ja_JP_key: TranslationKeys = {
   logsTimestamp: "タイムスタンプ",
   logsTitle: "システムログ",
   logsWarning: "警告",
+  navAbout: "概要",
   navBlog: "ブログ",
   navContact: "接触",
   navHome: "家",

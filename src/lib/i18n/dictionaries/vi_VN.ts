@@ -354,6 +354,7 @@ export const vi_VN_key: TranslationKeys = {
   logsTimestamp: "Dấu thời gian",
   logsTitle: "Nhật ký hệ thống",
   logsWarning: "Cảnh báo",
+  navAbout: "Giới thiệu",
   navBlog: "Blog",
   navContact: "Liên hệ",
   navHome: "Trang chủ",

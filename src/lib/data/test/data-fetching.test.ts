@@ -162,7 +162,7 @@ describe("data-fetching.ts", () => {
       expect(Array.isArray(result)).toBe(true);
     });
 
-    it("should return empty array on error", async () => {
+    it("should return fallback data on error", async () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -172,7 +172,8 @@ describe("data-fetching.ts", () => {
       const result = await getExperienceData();
 
       expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBe(0);
+      expect(result.length).toBe(1);
+      expect(result[0].company).toBe("Freelance");
     });
   });
 

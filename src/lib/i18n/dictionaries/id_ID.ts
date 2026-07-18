@@ -355,6 +355,7 @@ export const id_ID_key: TranslationKeys = {
   logsTimestamp: "Waktu",
   logsTitle: "Log Sistem",
   logsWarning: "Peringatan",
+  navAbout: "Tentang",
   navBlog: "Blog",
   navContact: "Kontak",
   navHome: "Beranda",

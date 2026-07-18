@@ -357,6 +357,7 @@ export const tr_TR_key: TranslationKeys = {
   logsTimestamp: "Zaman damgası",
   logsTitle: "Sistem Günlükleri",
   logsWarning: "Uyarı",
+  navAbout: "Hakkında",
   navBlog: "Blog",
   navContact: "Temas etmek",
   navHome: "Ev",
