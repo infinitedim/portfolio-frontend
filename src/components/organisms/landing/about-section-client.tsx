@@ -1,6 +1,6 @@
 "use client";
 
-import { type JSX } from "react";
+import type { JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { FadeIn } from "@/components/atoms/shared/motion-wrappers";
 import { AboutInfo } from "@/lib/data/data-fetching";
@@ -27,11 +27,6 @@ export function AboutSectionClient({
         <div className="space-y-4 font-mono text-sm leading-relaxed text-neutral-300">
           <p className="text-lg text-white">{about.title}</p>
           <p>{about.bio}</p>
-          {about.location && (
-            <p className="text-neutral-400">
-              {t("aboutLocation")}: {about.location}
-            </p>
-          )}
         </div>
       </FadeIn>
     </section>

@@ -42,7 +42,7 @@ export const ProjectCard = memo(function ProjectCard({
   return (
     <HoverCard
       className={`
-        group relative overflow-hidden rounded-lg border border-terminal-border bg-terminal-bg
+        h-full group relative overflow-hidden rounded-lg border border-terminal-border bg-terminal-bg
         transition-all duration-300 hover:border-terminal-accent hover:shadow-lg
         ${featured ? "ring-2 ring-terminal-accent ring-opacity-20" : ""}
       `}

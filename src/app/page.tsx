@@ -117,7 +117,7 @@ export default function HomePage(): JSX.Element {
             sameAs: [
               "https://github.com/infinitedim",
               "https://linkedin.com/in/infinitedim",
-              "https://twitter.com/yourblooo",
+              "https://x.com/yourblooo",
             ],
           }),
         }}
