@@ -76,13 +76,13 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   try {
     const [projectsRes, experienceRes, aboutRes] = await Promise.allSettled([
       fetch(`${backendUrl}/api/portfolio?section=projects`, {
-        next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
+        next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000, tags: ["portfolio-projects"] },
       }),
       fetch(`${backendUrl}/api/portfolio?section=experience`, {
-        next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000 },
+        next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000, tags: ["portfolio-experience"] },
       }),
       fetch(`${backendUrl}/api/portfolio?section=about`, {
-        next: { revalidate: CACHE_DURATIONS.ABOUT / 1000 },
+        next: { revalidate: CACHE_DURATIONS.ABOUT / 1000, tags: ["portfolio-about"] },
       }),
     ]);
 
@@ -123,7 +123,7 @@ export const getProjectsData = cache(
       const response = await fetch(
         `${backendUrl}/api/portfolio?section=projects`,
         {
-          next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000 },
+          next: { revalidate: CACHE_DURATIONS.PROJECTS / 1000, tags: ["portfolio-projects"] },
         },
       );
 
@@ -180,7 +180,7 @@ export const getExperienceData = cache(async (): Promise<Experience[]> => {
     const response = await fetch(
       `${backendUrl}/api/portfolio?section=experience`,
       {
-        next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000 },
+        next: { revalidate: CACHE_DURATIONS.EXPERIENCE / 1000, tags: ["portfolio-experience"] },
       },
     );
 
@@ -203,7 +203,7 @@ export const getAboutData = cache(async (): Promise<AboutInfo> => {
 
   try {
     const response = await fetch(`${backendUrl}/api/portfolio?section=about`, {
-      next: { revalidate: CACHE_DURATIONS.ABOUT / 1000 },
+      next: { revalidate: CACHE_DURATIONS.ABOUT / 1000, tags: ["portfolio-about"] },
     });
 
     if (response.ok) {
