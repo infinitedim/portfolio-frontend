@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   const referer = request.headers.get("referer");
   const modifiedHeaders = new Headers(request.headers);
 
-  if (referer && referer.includes("/gate/3")) {
+  if (referer && (referer.includes("/gate/") || referer.includes("/gate"))) {
     modifiedHeaders.set("referer", getTerminalRefererUrl());
   }
 

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, type SubmitEvent, type JSX } from "react";
+import { useRouter } from "next/navigation";
 import { useI18n } from "@/hooks/use-i18n";
 import { gateClient } from "@/lib/gate/gate-client";
 import { GATE_L1_USERNAME, GATE_L2_USERNAME } from "@/lib/gate/types";
+import { runRecruiterBypass } from "@/lib/gate/gate-bypass-helper";
 
 interface NatasLoginFormProps {
   level: 1 | 2;
@@ -18,6 +20,7 @@ export function NatasLoginForm({
   showCredentials = false,
   hint,
 }: NatasLoginFormProps): JSX.Element {
+  const router = useRouter();
   const { t } = useI18n();
   const defaultUsername = level === 1 ? GATE_L1_USERNAME : GATE_L2_USERNAME;
   const [username, setUsername] = useState(defaultUsername);
@@ -26,6 +29,22 @@ export function NatasLoginForm({
   const [hintText, setHintText] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [bypassLoading, setBypassLoading] = useState(false);
+  const [bypassStatus, setBypassStatus] = useState("");
+
+  const handleBypass = async () => {
+    setBypassLoading(true);
+    setError(null);
+    try {
+      await runRecruiterBypass((progress) => {
+        setBypassStatus(progress.message);
+      });
+      router.push("/terminal");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Bypass failed");
+      setBypassLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
@@ -127,6 +146,22 @@ export function NatasLoginForm({
           <p className="mt-2 font-mono text-xs text-red-400">{error}</p>
         )}
       </form>
+
+      {level === 1 && (
+        <div className="mt-6 border-t border-neutral-800 pt-6 text-center">
+          <p className="text-xs text-neutral-500 font-mono">
+            Hiring manager or recruiter?
+          </p>
+          <button
+            type="button"
+            onClick={handleBypass}
+            disabled={submitting || bypassLoading}
+            className="mt-3 w-full rounded border border-green-400 bg-green-400/10 px-4 py-2.5 font-mono text-xs text-green-400 transition-all hover:bg-green-400/20 disabled:opacity-50 cursor-pointer"
+          >
+            {bypassLoading ? bypassStatus : "⚡ Recruiter Bypass (Auto Unlock)"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -107,7 +107,7 @@ export const ProjectCard = memo(function ProjectCard({
             >
               <Link
                 href={`/projects/${project.slug}`}
-                className="hover:underline"
+                className="hover:underline after:absolute after:inset-0 after:z-0"
               >
                 {project.name}
               </Link>
@@ -124,25 +124,28 @@ export const ProjectCard = memo(function ProjectCard({
             <div className="mb-2 font-mono text-xs text-terminal-muted">
               {t("projectTechStack")}:
             </div>
-            <div className="flex flex-wrap gap-2">
+            <ul
+              aria-label="Technologies used"
+              className="flex flex-wrap gap-2"
+            >
               {project.technologies.slice(0, 4).map((tech) => (
-                <span
+                <li
                   key={tech}
                   className="rounded border border-terminal-accent/20 bg-terminal-accent/10 px-2 py-1 font-mono text-xs text-terminal-accent"
                   itemProp="programmingLanguage"
                 >
                   {tech}
-                </span>
+                </li>
               ))}
               {project.technologies.length > 4 && (
-                <span className="rounded border border-terminal-border px-2 py-1 text-xs text-terminal-muted">
+                <li className="rounded border border-terminal-border px-2 py-1 text-xs text-terminal-muted">
                   +{project.technologies.length - 4} {t("projectMore")}
-                </span>
+                </li>
               )}
-            </div>
+            </ul>
           </div>
 
-          <div className="mt-auto flex gap-4">
+          <div className="mt-auto flex gap-4 relative z-10">
             {project.demoUrl && (
               <a
                 href={project.demoUrl}

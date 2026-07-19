@@ -40,32 +40,45 @@ function isPlausibleEmail(email: string): boolean {
   return true;
 }
 
-function validate(
+function validateForm(
   form: FormState,
   t: (key: keyof TranslationKeys) => string,
-): string | null {
-  if (!form.name.trim()) return t("contactValidationNameRequired");
-  if (form.name.length > 100) return t("contactValidationNameTooLong");
-  if (!isPlausibleEmail(form.email)) return t("contactValidationEmailInvalid");
-  if (form.subject.length > 200) return t("contactValidationSubjectTooLong");
+): Record<string, string> {
+  const errors: Record<string, string> = {};
+
+  if (!form.name.trim()) {
+    errors.name = t("contactValidationNameRequired");
+  } else if (form.name.length > 100) {
+    errors.name = t("contactValidationNameTooLong");
+  }
+
+  if (!isPlausibleEmail(form.email)) {
+    errors.email = t("contactValidationEmailInvalid");
+  }
+
+  if (form.subject.length > 200) {
+    errors.subject = t("contactValidationSubjectTooLong");
+  }
+
   if (form.message.trim().length < MIN_MESSAGE_LEN) {
-    return t("contactValidationMessageMin").replace(
+    errors.message = t("contactValidationMessageMin").replace(
       "{min}",
       String(MIN_MESSAGE_LEN),
     );
-  }
-  if (form.message.length > MAX_MESSAGE_LEN) {
-    return t("contactValidationMessageMax").replace(
+  } else if (form.message.length > MAX_MESSAGE_LEN) {
+    errors.message = t("contactValidationMessageMax").replace(
       "{max}",
       String(MAX_MESSAGE_LEN),
     );
   }
-  return null;
+
+  return errors;
 }
 
 export function ContactForm(): JSX.Element {
   const { t } = useI18n();
   const [form, setForm] = useState<FormState>(EMPTY);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -74,16 +87,27 @@ export function ContactForm(): JSX.Element {
     nameInputRef.current?.focus();
   }, []);
 
-  const update = <K extends keyof FormState>(key: K, value: FormState[K]) =>
+  const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    if (errors[key]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+    }
+  };
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (submitting) return;
 
-    const error = validate(form, t);
-    if (error) {
-      toast.error(error);
+    const validationErrors = validateForm(form, t);
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      const firstError = Object.values(validationErrors)[0];
+      toast.error(firstError);
       return;
     }
 
@@ -102,6 +126,7 @@ export function ContactForm(): JSX.Element {
     if (result.ok) {
       setSubmitted(true);
       setForm(EMPTY);
+      setErrors({});
       toast.success(t("contactSendSuccess"));
     } else if (result.status === 429) {
       toast.error(t("contactSendFailure"));
@@ -144,58 +169,104 @@ export function ContactForm(): JSX.Element {
           noValidate
         >
           <Field
+            id="contact-name"
             label={t("contactName")}
             required
+            error={errors.name}
           >
             <input
+              id="contact-name"
               ref={nameInputRef}
               type="text"
               value={form.name}
               onChange={(e) => update("name", e.target.value)}
               maxLength={100}
               autoComplete="name"
-              className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50"
+              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50 ${
+                errors.name
+                  ? "border-red-500/70 focus:border-red-500"
+                  : "border-neutral-700"
+              }`}
               disabled={submitting}
+              aria-invalid={errors.name ? "true" : "false"}
+              aria-describedby={
+                errors.name ? "contact-name-error" : undefined
+              }
             />
           </Field>
 
           <Field
+            id="contact-email"
             label={t("contactEmail")}
             required
+            error={errors.email}
           >
             <input
+              id="contact-email"
               type="email"
               value={form.email}
               onChange={(e) => update("email", e.target.value)}
               maxLength={254}
               autoComplete="email"
-              className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50"
+              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50 ${
+                errors.email
+                  ? "border-red-500/70 focus:border-red-500"
+                  : "border-neutral-700"
+              }`}
               disabled={submitting}
-            />
-          </Field>
-
-          <Field label={t("contactSubject")}>
-            <input
-              type="text"
-              value={form.subject}
-              onChange={(e) => update("subject", e.target.value)}
-              maxLength={200}
-              className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50"
-              disabled={submitting}
+              aria-invalid={errors.email ? "true" : "false"}
+              aria-describedby={
+                errors.email ? "contact-email-error" : undefined
+              }
             />
           </Field>
 
           <Field
+            id="contact-subject"
+            label={t("contactSubject")}
+            error={errors.subject}
+          >
+            <input
+              id="contact-subject"
+              type="text"
+              value={form.subject}
+              onChange={(e) => update("subject", e.target.value)}
+              maxLength={200}
+              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50 ${
+                errors.subject
+                  ? "border-red-500/70 focus:border-red-500"
+                  : "border-neutral-700"
+              }`}
+              disabled={submitting}
+              aria-invalid={errors.subject ? "true" : "false"}
+              aria-describedby={
+                errors.subject ? "contact-subject-error" : undefined
+              }
+            />
+          </Field>
+
+          <Field
+            id="contact-message"
             label={t("contactMessage")}
             required
+            error={errors.message}
           >
             <textarea
+              id="contact-message"
               value={form.message}
               onChange={(e) => update("message", e.target.value)}
               maxLength={MAX_MESSAGE_LEN}
               rows={8}
-              className="w-full resize-y rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50"
+              className={`w-full resize-y rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50 ${
+                errors.message
+                  ? "border-red-500/70 focus:border-red-500"
+                  : "border-neutral-700"
+              }`}
               disabled={submitting}
+              aria-invalid={errors.message ? "true" : "false"}
+              aria-describedby={
+                errors.message ? "contact-message-error" : undefined
+              }
             />
             <div className="mt-1 text-right text-xs text-neutral-400">
               {charsRemaining} {t("contactCharsLeft")}
@@ -232,22 +303,40 @@ export function ContactForm(): JSX.Element {
   );
 }
 
-function Field({
-  label,
-  required,
-  children,
-}: {
+interface FieldProps {
+  id: string;
   label: string;
   required?: boolean;
+  error?: string;
   children: React.ReactNode;
-}) {
+}
+
+function Field({
+  id,
+  label,
+  required,
+  error,
+  children,
+}: FieldProps): JSX.Element {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-xs text-neutral-400">
+    <div className="block">
+      <label
+        htmlFor={id}
+        className="mb-1.5 block text-xs text-neutral-400"
+      >
         {label}
         {required ? " *" : ""}
-      </span>
+      </label>
       {children}
-    </label>
+      {error && (
+        <span
+          id={`${id}-error`}
+          className="mt-1.5 block text-xs text-red-400 font-mono"
+          role="alert"
+        >
+          {error}
+        </span>
+      )}
+    </div>
   );
 }

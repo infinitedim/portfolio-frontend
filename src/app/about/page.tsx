@@ -113,7 +113,7 @@ async function AboutContent(): Promise<JSX.Element> {
           <p className="mx-auto mt-4 max-w-2xl font-mono text-base text-neutral-400 sm:text-lg">
             {about.bio}
           </p>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-3 font-mono text-xs text-neutral-500">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-3 font-mono text-xs text-neutral-400">
             <span>📍 {about.location}</span>
             <span aria-hidden="true">·</span>
             <a
@@ -144,7 +144,7 @@ async function AboutContent(): Promise<JSX.Element> {
                     <h3 className="font-mono text-lg font-semibold text-white">
                       {exp.position}
                     </h3>
-                    <span className="font-mono text-xs text-neutral-500">
+                    <span className="font-mono text-xs text-neutral-400">
                       {exp.duration}
                     </span>
                   </div>
@@ -163,16 +163,16 @@ async function AboutContent(): Promise<JSX.Element> {
                     ))}
                   </ul>
                   {exp.technologies.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
+                    <ul aria-label="Technologies used" className="mt-3 flex flex-wrap gap-1.5">
                       {exp.technologies.map((tech) => (
-                        <span
+                        <li
                           key={tech}
-                          className="rounded border border-green-400/20 bg-green-400/5 px-2 py-0.5 font-mono text-xs text-green-400/80"
+                          className="rounded border border-green-400/20 bg-green-400/5 px-2 py-0.5 font-mono text-xs text-green-400"
                         >
                           {tech}
-                        </span>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   )}
                 </div>
               </div>
@@ -197,16 +197,16 @@ async function AboutContent(): Promise<JSX.Element> {
                 <h3 className="mb-3 font-mono text-sm font-bold text-green-400">
                   {group.label}
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <ul aria-label="Skills list" className="flex flex-wrap gap-2">
                   {group.items.map((skill) => (
-                    <span
+                    <li
                       key={skill}
                       className="rounded bg-neutral-800 px-2.5 py-1 font-mono text-xs text-neutral-300"
                     >
                       {skill}
-                    </span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             ))}
           </div>
