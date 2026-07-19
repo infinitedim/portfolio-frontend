@@ -140,7 +140,7 @@ export function ContactForm(): JSX.Element {
   const charsRemaining = MAX_MESSAGE_LEN - form.message.length;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10">
       <header className="mb-8">
         <h1 className="font-mono text-3xl font-bold text-green-400">
           {t("contactTitle")}
@@ -165,7 +165,7 @@ export function ContactForm(): JSX.Element {
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="space-y-5 font-mono text-sm"
+          className="max-w-2xl space-y-5 font-mono text-sm"
           noValidate
         >
           <Field

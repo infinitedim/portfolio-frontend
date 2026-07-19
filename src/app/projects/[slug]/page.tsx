@@ -132,7 +132,7 @@ async function ProjectDetailContent({
       />
 
       {/* Back link */}
-      <div className="mx-auto max-w-4xl px-4 pt-8">
+      <div className="mx-auto max-w-6xl px-4 pt-8">
         <Link
           href="/projects"
           className="inline-flex items-center gap-1.5 font-mono text-sm text-neutral-400 transition-colors hover:text-green-400"
@@ -144,7 +144,7 @@ async function ProjectDetailContent({
 
       {/* Hero */}
       <section className="px-4 py-8 sm:py-12">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-6xl">
           <div className="flex flex-col gap-6">
             {/* Project image */}
             {project.imageUrl && (
@@ -218,7 +218,7 @@ async function ProjectDetailContent({
 
       {/* Tech Stack */}
       <section className="px-4 py-8 sm:px-6">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-6xl">
           <h2 className="mb-4 font-mono text-xl font-bold text-white">
             <span className="text-green-400">$</span> tech --stack
           </h2>
@@ -238,7 +238,7 @@ async function ProjectDetailContent({
       {/* Related projects */}
       {related.length > 0 && (
         <section className="px-4 py-8 sm:px-6 border-t border-neutral-800">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-6xl">
             <h2 className="mb-6 font-mono text-xl font-bold text-white">
               <span className="text-green-400">$</span> ls --related
             </h2>
@@ -278,7 +278,7 @@ async function ProjectDetailContent({
 function ProjectDetailFallback(): JSX.Element {
   return (
     <div className="px-4 py-16">
-      <div className="mx-auto max-w-4xl space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6">
         <div className="h-6 w-24 animate-pulse rounded bg-neutral-800" />
         <div className="aspect-video animate-pulse rounded-lg bg-neutral-800" />
         <div className="h-8 w-64 animate-pulse rounded bg-neutral-800" />

@@ -55,7 +55,7 @@ async function BlogSeriesContent({ params, searchParams }: SeriesPageProps) {
   return (
     <StandardPageLayout>
       <div className="min-h-screen bg-terminal-bg text-terminal-text">
-        <div className="container mx-auto max-w-4xl px-4 py-8">
+        <div className="container mx-auto max-w-6xl px-4 py-8">
           <nav className="mb-6 font-mono">
             <Link
               href="/blog"
@@ -135,7 +135,7 @@ function BlogSeriesSkeleton() {
   const t = getTranslationsForLocale(DEFAULT_BLOG_LOCALE);
   return (
     <StandardPageLayout>
-      <div className="container mx-auto max-w-4xl px-4 py-8">
+      <div className="container mx-auto max-w-6xl px-4 py-8">
         <p className="text-gray-400">{t.blogLoadingSeries}</p>
       </div>
     </StandardPageLayout>

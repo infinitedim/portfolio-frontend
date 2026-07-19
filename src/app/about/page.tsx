@@ -106,7 +106,7 @@ async function AboutContent(): Promise<JSX.Element> {
       {/* Hero */}
       <section className="relative overflow-hidden px-4 py-16 sm:py-24">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-green-900/20 via-neutral-950 to-neutral-950" />
-        <div className="relative mx-auto max-w-3xl text-center">
+        <div className="relative mx-auto max-w-6xl text-center">
           <h1 className="font-mono text-4xl font-bold tracking-tight text-white sm:text-5xl">
             <span className="text-green-400">~/</span>about
           </h1>
@@ -128,7 +128,7 @@ async function AboutContent(): Promise<JSX.Element> {
 
       {/* Experience Timeline */}
       <section className="px-4 py-12 sm:px-6">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-6xl">
           <h2 className="mb-8 font-mono text-2xl font-bold text-white">
             <span className="text-green-400">$</span> work --history
           </h2>
@@ -183,12 +183,12 @@ async function AboutContent(): Promise<JSX.Element> {
 
       {/* Skills Grid */}
       <section id="skills" className="px-4 py-12 sm:px-6 scroll-mt-24">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-6xl">
           <h2 className="mb-8 font-mono text-2xl font-bold text-white">
             <span className="text-green-400">$</span> skills --list
           </h2>
 
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             {SKILL_GROUPS.map((group) => (
               <div
                 key={group.label}
@@ -215,7 +215,7 @@ async function AboutContent(): Promise<JSX.Element> {
 
       {/* CTA */}
       <section className="px-4 py-12 sm:px-6">
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto max-w-6xl text-center">
           <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-8">
             <p className="font-mono text-sm text-neutral-400">
               Interested in working together?
@@ -245,7 +245,7 @@ async function AboutContent(): Promise<JSX.Element> {
 function AboutFallback(): JSX.Element {
   return (
     <div className="px-4 py-16">
-      <div className="mx-auto max-w-3xl space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6">
         <div className="h-10 w-48 animate-pulse rounded bg-neutral-800" />
         <div className="h-4 w-full animate-pulse rounded bg-neutral-800" />
         <div className="h-4 w-3/4 animate-pulse rounded bg-neutral-800" />

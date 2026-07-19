@@ -346,7 +346,7 @@ export default function RoadmapPage(): JSX.Element {
   return (
     <StandardPageLayout>
       <div className="min-h-screen px-4 py-10">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-6xl">
           <Suspense
             fallback={
               <div className="font-mono text-sm text-neutral-400 animate-pulse">

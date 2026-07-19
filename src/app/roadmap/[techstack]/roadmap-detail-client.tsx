@@ -306,7 +306,7 @@ export function RoadmapDetailClient({
         }}
         className={`flex flex-col justify-center rounded border p-3 font-mono shadow-sm transition-all duration-200${status === "learning" ? " animate-pulse-subtle" : ""}`}
       >
-        <div className="flex items-start gap-1.5 justify-between">
+        <div className="flex items-center gap-1.5 justify-between">
           <span className="font-semibold select-none leading-snug">
             {node.data.label}
           </span>
@@ -354,27 +354,65 @@ export function RoadmapDetailClient({
         const tx = targetNode.position.x - minX + padding;
         const ty = targetNode.position.y - minY + padding;
 
-        // Connect boundary box centers:
+        const sPrefix = edge.sourceHandle ? edge.sourceHandle.charAt(0) : "";
+        const tPrefix = edge.targetHandle ? edge.targetHandle.charAt(0) : "";
+
+        // Source coordinates
         let startX = sx + sW / 2;
         let startY = sy + sH / 2;
-        let endX = tx + tW / 2;
-        let endY = ty + tH / 2;
-
-        // Adjust boundaries so lines connect nicely to edges of boxes
-        if (ty > sy + sH) {
+        if (sPrefix === "x") {
+          startX = sx + sW;
+          startY = sy + sH / 2;
+        } else if (sPrefix === "y") {
+          startX = sx + sW / 2;
           startY = sy + sH;
-          endY = ty;
-        } else if (ty + tH < sy) {
+        } else if (sPrefix === "z") {
+          startX = sx + sW / 2;
           startY = sy;
-          endY = ty + tH;
+        } else if (sPrefix === "w") {
+          startX = sx;
+          startY = sy + sH / 2;
+        } else {
+          // Fallback old boundary logic
+          if (ty > sy + sH) {
+            startY = sy + sH;
+          } else if (ty + tH < sy) {
+            startY = sy;
+          }
+          if (tx > sx + sW) {
+            startX = sx + sW;
+          } else if (tx + tW < sx) {
+            startX = sx;
+          }
         }
 
-        if (tx > sx + sW) {
-          startX = sx + sW;
-          endX = tx;
-        } else if (tx + tW < sx) {
-          startX = sx;
+        // Target coordinates
+        let endX = tx + tW / 2;
+        let endY = ty + tH / 2;
+        if (tPrefix === "x") {
           endX = tx + tW;
+          endY = ty + tH / 2;
+        } else if (tPrefix === "y") {
+          endX = tx + tW / 2;
+          endY = ty + tH;
+        } else if (tPrefix === "z") {
+          endX = tx + tW / 2;
+          endY = ty;
+        } else if (tPrefix === "w") {
+          endX = tx;
+          endY = ty + tH / 2;
+        } else {
+          // Fallback old boundary logic
+          if (ty > sy + sH) {
+            endY = ty;
+          } else if (ty + tH < sy) {
+            endY = ty + tH;
+          }
+          if (tx > sx + sW) {
+            endX = tx;
+          } else if (tx + tW < sx) {
+            endX = tx + tW;
+          }
         }
 
         return {
@@ -383,6 +421,8 @@ export function RoadmapDetailClient({
           startY,
           endX,
           endY,
+          sourceHandle: edge.sourceHandle,
+          targetHandle: edge.targetHandle,
           style: edge.style,
         };
       })
@@ -605,13 +645,44 @@ export function RoadmapDetailClient({
                     if (!edge) return null;
                     const isDashed = edge.style?.strokeDasharray !== "0";
 
+                    const sPrefix = edge.sourceHandle
+                      ? edge.sourceHandle.charAt(0)
+                      : "";
+                    const tPrefix = edge.targetHandle
+                      ? edge.targetHandle.charAt(0)
+                      : "";
+
+                    let cp1x = edge.startX;
+                    let cp1y = edge.startY;
+                    if (sPrefix === "x") {
+                      cp1x = edge.startX + 80;
+                    } else if (sPrefix === "y") {
+                      cp1y = edge.startY + 80;
+                    } else if (sPrefix === "z") {
+                      cp1y = edge.startY - 80;
+                    } else if (sPrefix === "w") {
+                      cp1x = edge.startX - 80;
+                    }
+
+                    let cp2x = edge.endX;
+                    let cp2y = edge.endY;
+                    if (tPrefix === "x") {
+                      cp2x = edge.endX + 80;
+                    } else if (tPrefix === "y") {
+                      cp2y = edge.endY + 80;
+                    } else if (tPrefix === "z") {
+                      cp2y = edge.endY - 80;
+                    } else if (tPrefix === "w") {
+                      cp2x = edge.endX - 80;
+                    }
+
+                    const pathD = `M ${edge.startX} ${edge.startY} C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${edge.endX} ${edge.endY}`;
+
                     return (
-                      <line
+                      <path
                         key={edge.id}
-                        x1={edge.startX}
-                        y1={edge.startY}
-                        x2={edge.endX}
-                        y2={edge.endY}
+                        d={pathD}
+                        fill="none"
                         stroke={edge.style?.stroke ?? "var(--terminal-border)"}
                         strokeWidth={edge.style?.strokeWidth ?? 3.5}
                         strokeDasharray={

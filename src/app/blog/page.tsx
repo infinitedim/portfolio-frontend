@@ -181,7 +181,7 @@ async function BlogPageContent({
   return (
     <StandardPageLayout>
       <div className="min-h-screen bg-terminal-bg text-terminal-text">
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
           <header className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-4xl font-bold font-mono text-terminal-accent">
@@ -392,7 +392,7 @@ function BlogListSkeleton() {
   const t = getTranslationsForLocale(DEFAULT_BLOG_LOCALE);
   return (
     <StandardPageLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
         <p className="text-gray-400">{t.blogLoadingBlog}</p>
       </div>
     </StandardPageLayout>
