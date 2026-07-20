@@ -29,6 +29,7 @@
     "@codesandbox/sandpack-react": "^2.20.0",
     "@giscus/react": "^3.1.0",
     "@radix-ui/react-dialog": "^1.1.18",
+    "@radix-ui/react-select": "^2.3.4",
     "@tiptap/extension-heading": "^3.27.2",
     "@tiptap/extension-image": "^3.27.2",
     "@tiptap/extension-link": "^3.27.2",
@@ -131,4 +132,3 @@
     ]
   }
 }
-

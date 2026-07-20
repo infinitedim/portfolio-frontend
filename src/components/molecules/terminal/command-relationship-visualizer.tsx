@@ -3,6 +3,13 @@
 import { useState, useMemo } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useCommandHistory } from "@/hooks/use-command-history";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CommandNode {
   id: string;
@@ -209,25 +216,28 @@ export function CommandRelationshipVisualizer({
           </div>
 
           <div className="flex items-center gap-3">
-            <select
+            <Select
               value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className="px-3 py-1 text-sm rounded border bg-transparent"
-              style={{
-                borderColor: themeConfig.colors.border,
-                color: themeConfig.colors.text,
-              }}
+              onValueChange={setFilterCategory}
             >
-              <option value="all">All Categories</option>
-              {categories.map((category) => (
-                <option
-                  key={category}
-                  value={category}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger
+                className="w-40 px-3 py-1 h-[30px] text-sm rounded border bg-transparent focus:outline-none"
+                style={{
+                  borderColor: themeConfig.colors.border,
+                  color: themeConfig.colors.text,
+                }}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <button
               onClick={onClose}

@@ -1,18 +1,21 @@
 "use client";
 
-import { useState, useRef, useEffect, type JSX } from "react";
+import { type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface LanguageSwitcherProps {
   variant?: "dropdown" | "list";
-
   className?: string;
-
   showNative?: boolean;
-
   showFlags?: boolean;
-
   onLanguageChange?: (locale: string) => void;
 }
 
@@ -32,46 +35,22 @@ export function LanguageSwitcher({
     getCurrentLocaleConfig,
   } = useI18n();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
   const supportedLocales = getSupportedLocales();
   const currentConfig = mounted
     ? getCurrentLocaleConfig()
     : supportedLocales.find((l) => l.code === "en_US") || null;
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const handleLanguageChange = (localeCode: string) => {
     const success = changeLocale(localeCode);
     if (success) {
-      setIsOpen(false);
       onLanguageChange?.(localeCode);
     }
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent, localeCode?: string) => {
+  const handleKeyDown = (event: React.KeyboardEvent, localeCode: string) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      if (localeCode) {
-        handleLanguageChange(localeCode);
-      } else {
-        setIsOpen(!isOpen);
-      }
-    } else if (event.key === "Escape") {
-      setIsOpen(false);
+      handleLanguageChange(localeCode);
     }
   };
 
@@ -115,99 +94,31 @@ export function LanguageSwitcher({
   }
 
   return (
-    <div
-      ref={dropdownRef}
-      className={`relative ${className}`}
-    >
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        onKeyDown={(e) => handleKeyDown(e)}
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-        aria-label={`Current language: ${currentConfig?.name}. Click to change.`}
-        className="flex items-center gap-2 px-3 py-1.5 rounded text-sm font-mono transition-all duration-200 border hover:opacity-80"
-        style={{
-          backgroundColor: themeConfig.colors.bg,
-          color: themeConfig.colors.text,
-          borderColor: themeConfig.colors.border,
-        }}
+    <div className={`relative ${className}`}>
+      <Select
+        value={mounted ? currentLocale : "en_US"}
+        onValueChange={handleLanguageChange}
       >
-        {showFlags && currentConfig && (
-          <span className="text-base">{currentConfig.flag}</span>
-        )}
-        <span>
-          {showNative
-            ? currentConfig?.nativeName
-            : currentConfig?.name || currentLocale}
-        </span>
-        <svg
-          className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+        <SelectTrigger
+          className="w-fit min-w-[120px] h-8 px-3 py-1.5"
+          aria-label={`Current language: ${currentConfig?.name}. Click to change.`}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
-
-      {isOpen && (
-        <div
-          role="listbox"
-          aria-label="Available languages"
-          data-lenis-prevent
-          className="absolute top-full mt-1 right-0 min-w-48 max-h-64 overflow-y-auto rounded border shadow-lg z-50"
-          style={{
-            backgroundColor: themeConfig.colors.bg,
-            borderColor: themeConfig.colors.border,
-          }}
-        >
-          {supportedLocales.map((locale) => {
-            const isSelected =
-              locale.code === (mounted ? currentLocale : "en_US");
-            return (
-              <button
-                key={locale.code}
-                onClick={() => handleLanguageChange(locale.code)}
-                onKeyDown={(e) => handleKeyDown(e, locale.code)}
-                role="option"
-                aria-selected={isSelected}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm font-mono transition-all duration-200 hover:opacity-80"
-                style={{
-                  backgroundColor: isSelected
-                    ? `${themeConfig.colors.accent}20`
-                    : "transparent",
-                  color: isSelected
-                    ? themeConfig.colors.accent
-                    : themeConfig.colors.text,
-                }}
-              >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {supportedLocales.map((locale) => (
+            <SelectItem key={locale.code} value={locale.code}>
+              <div className="flex items-center gap-2">
                 {showFlags && <span className="text-base">{locale.flag}</span>}
-                <span className="flex-1 text-left">
+                <span className="flex-1 text-left truncate">
                   {showNative ? locale.nativeName : locale.name}
                 </span>
-                {isSelected && (
-                  <svg
-                    className="w-4 h-4"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
+              </div>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
+

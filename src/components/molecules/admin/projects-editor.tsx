@@ -8,6 +8,13 @@ import { getApiUrl } from "@/lib/api/get-api-url";
 import { type Project } from "@/lib/data/data-fetching";
 import { Plus, Save, Trash, X, Edit } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ProjectsEditorProps {
   themeConfig: ThemeConfig;
@@ -435,37 +442,25 @@ export function ProjectsEditor({
                   >
                     Status
                   </label>
-                  <select
-                    id="project-status"
+                  <Select
                     value={status}
-                    onChange={(e) =>
-                      setStatus(e.target.value as Project["status"])
-                    }
-                    className="w-full bg-transparent border rounded p-2 focus:outline-none"
-                    style={{
-                      borderColor: themeConfig.colors.border,
-                      color: themeConfig.colors.text,
-                    }}
+                    onValueChange={(val) => setStatus(val as Project["status"])}
                   >
-                    <option
-                      value="completed"
-                      className="bg-neutral-900"
+                    <SelectTrigger
+                      className="w-full h-[38px] bg-transparent border rounded px-3 py-2 text-sm focus:outline-none"
+                      style={{
+                        borderColor: themeConfig.colors.border,
+                        color: themeConfig.colors.text,
+                      }}
                     >
-                      Completed
-                    </option>
-                    <option
-                      value="in-progress"
-                      className="bg-neutral-900"
-                    >
-                      In Progress
-                    </option>
-                    <option
-                      value="planned"
-                      className="bg-neutral-900"
-                    >
-                      Planned
-                    </option>
-                  </select>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="in-progress">In Progress</SelectItem>
+                      <SelectItem value="planned">Planned</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-1 flex items-center pt-6">

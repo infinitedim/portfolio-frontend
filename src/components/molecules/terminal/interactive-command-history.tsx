@@ -3,6 +3,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useCommandHistory } from "@/hooks/use-command-history";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface TimelineEntry {
   id: string;
@@ -270,25 +277,31 @@ export function InteractiveCommandHistory({
           </div>
 
           <div className="flex items-center gap-3">
-            <select
+            <Select
               value={timelineConfig.groupBy}
-              onChange={(e) =>
+              onValueChange={(val) =>
                 setTimelineConfig((prev) => ({
                   ...prev,
-                  groupBy: e.target.value as TimelineConfig["groupBy"],
+                  groupBy: val as TimelineConfig["groupBy"],
                 }))
               }
-              className="px-3 py-1 text-sm rounded border bg-transparent"
-              style={{
-                borderColor: themeConfig.colors.border,
-                color: themeConfig.colors.text,
-              }}
             >
-              <option value="hour">Group by Hour</option>
-              <option value="day">Group by Day</option>
-              <option value="week">Group by Week</option>
-              <option value="month">Group by Month</option>
-            </select>
+              <SelectTrigger
+                className="w-40 px-3 py-1 h-[30px] text-sm rounded border bg-transparent focus:outline-none"
+                style={{
+                  borderColor: themeConfig.colors.border,
+                  color: themeConfig.colors.text,
+                }}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hour">Group by Hour</SelectItem>
+                <SelectItem value="day">Group by Day</SelectItem>
+                <SelectItem value="week">Group by Week</SelectItem>
+                <SelectItem value="month">Group by Month</SelectItem>
+              </SelectContent>
+            </Select>
 
             {enableReplay && (
               <div className="flex items-center gap-2">

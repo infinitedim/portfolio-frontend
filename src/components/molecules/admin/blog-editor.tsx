@@ -13,6 +13,13 @@ import {
 } from "./image-upload-button";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 import { BlogContent } from "@/components/molecules/blog/blog-content";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { BLOG_CONTENT_LOCALES, DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
 import {
@@ -983,47 +990,53 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
             <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div>
                 <div className="text-xs opacity-70 mb-2">Content locale</div>
-                <select
+                <Select
                   value={locale}
-                  onChange={(e) => setLocale(e.target.value)}
+                  onValueChange={setLocale}
                   disabled={!isNewPost && !!currentPost}
-                  className="w-full px-3 py-2 text-sm border rounded bg-transparent font-mono"
-                  style={{
-                    borderColor: themeConfig.colors.border,
-                    color: themeConfig.colors.text,
-                  }}
                 >
-                  {BLOG_CONTENT_LOCALES.map((loc) => (
-                    <option
-                      key={loc.code}
-                      value={loc.code}
-                    >
-                      {loc.flag} {loc.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger
+                    className="w-full px-3 py-2 h-[38px] text-sm border rounded bg-transparent font-mono"
+                    style={{
+                      borderColor: themeConfig.colors.border,
+                      color: themeConfig.colors.text,
+                    }}
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BLOG_CONTENT_LOCALES.map((loc) => (
+                      <SelectItem key={loc.code} value={loc.code}>
+                        {loc.flag} {loc.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <div className="text-xs opacity-70 mb-2">Series</div>
-                <select
-                  value={seriesId}
-                  onChange={(e) => setSeriesId(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border rounded bg-transparent font-mono"
-                  style={{
-                    borderColor: themeConfig.colors.border,
-                    color: themeConfig.colors.text,
-                  }}
+                <Select
+                  value={seriesId || "none"}
+                  onValueChange={(val) => setSeriesId(val === "none" ? "" : val)}
                 >
-                  <option value="">None</option>
-                  {availableSeries.map((s) => (
-                    <option
-                      key={s.id}
-                      value={s.id}
-                    >
-                      {s.title}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger
+                    className="w-full px-3 py-2 h-[38px] text-sm border rounded bg-transparent font-mono"
+                    style={{
+                      borderColor: themeConfig.colors.border,
+                      color: themeConfig.colors.text,
+                    }}
+                  >
+                    <SelectValue placeholder="None" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    {availableSeries.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <div className="text-xs opacity-70 mb-2">Series order</div>

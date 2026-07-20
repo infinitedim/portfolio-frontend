@@ -9,6 +9,13 @@ import React, {
   memo,
 } from "react";
 import type { ThemeConfig } from "@/types/theme";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface PerformanceData {
   timestamp: number;
@@ -244,20 +251,26 @@ function PerformanceMonitorComponent({ themeConfig }: PerformanceMonitorProps) {
             >
               {isPaused ? "▶ Resume" : "⏸ Pause"}
             </button>
-            <select
-              value={refreshRate}
-              onChange={(e) => setRefreshRate(Number(e.target.value))}
-              className="px-2 py-1 text-xs border rounded bg-transparent"
-              style={{
-                borderColor: themeConfig.colors.border,
-                color: themeConfig.colors.text,
-              }}
+            <Select
+              value={String(refreshRate)}
+              onValueChange={(val) => setRefreshRate(Number(val))}
             >
-              <option value={500}>0.5s</option>
-              <option value={1000}>1s</option>
-              <option value={2000}>2s</option>
-              <option value={5000}>5s</option>
-            </select>
+              <SelectTrigger
+                className="w-20 px-2 py-1 h-[26px] text-xs border rounded bg-transparent focus:outline-none"
+                style={{
+                  borderColor: themeConfig.colors.border,
+                  color: themeConfig.colors.text,
+                }}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="500">0.5s</SelectItem>
+                <SelectItem value="1000">1s</SelectItem>
+                <SelectItem value="2000">2s</SelectItem>
+                <SelectItem value="5000">5s</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

@@ -13,6 +13,13 @@ import {
   type CommandHistoryEntry,
   type HistorySearchOptions,
 } from "@/hooks/use-command-history";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface HistorySearchPanelProps {
   isOpen: boolean;
@@ -559,72 +566,88 @@ export function HistorySearchPanel({
             />
 
             <div className="flex flex-wrap gap-3">
-              <select
-                value={searchOptions.category || ""}
-                onChange={(e) =>
+              <Select
+                value={searchOptions.category || "all"}
+                onValueChange={(val) =>
                   handleFilterChange({
-                    category: e.target.value || undefined,
+                    category: val === "all" ? undefined : val,
                   })
                 }
-                className="px-3 py-1.5 rounded border bg-transparent text-sm"
-                style={{
-                  borderColor: themeConfig.colors.border,
-                  color: themeConfig.colors.text,
-                  backgroundColor: themeConfig.colors.bg,
-                }}
               >
-                <option value="">All categories</option>
-                {categories.map((category) => (
-                  <option
-                    key={category}
-                    value={category}
-                  >
-                    {category}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger
+                  className="w-[140px] px-3 py-1.5 h-[34px] rounded border bg-transparent text-sm focus:outline-none"
+                  style={{
+                    borderColor: themeConfig.colors.border,
+                    color: themeConfig.colors.text,
+                    backgroundColor: themeConfig.colors.bg,
+                  }}
+                >
+                  <SelectValue placeholder="All categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-              <select
+              <Select
                 value={searchOptions.sortBy}
-                onChange={(e) =>
+                onValueChange={(val) =>
                   handleFilterChange({
-                    sortBy: e.target.value as HistorySearchOptions["sortBy"],
+                    sortBy: val as HistorySearchOptions["sortBy"],
                   })
                 }
-                className="px-3 py-1.5 rounded border bg-transparent text-sm"
-                style={{
-                  borderColor: themeConfig.colors.border,
-                  color: themeConfig.colors.text,
-                  backgroundColor: themeConfig.colors.bg,
-                }}
               >
-                <option value="recent">Recent</option>
-                <option value="frequency">Frequency</option>
-                <option value="alphabetical">Alphabetical</option>
-                <option value="execution_time">Execution Time</option>
-              </select>
+                <SelectTrigger
+                  className="w-[140px] px-3 py-1.5 h-[34px] rounded border bg-transparent text-sm focus:outline-none"
+                  style={{
+                    borderColor: themeConfig.colors.border,
+                    color: themeConfig.colors.text,
+                    backgroundColor: themeConfig.colors.bg,
+                  }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="recent">Recent</SelectItem>
+                  <SelectItem value="frequency">Frequency</SelectItem>
+                  <SelectItem value="alphabetical">Alphabetical</SelectItem>
+                  <SelectItem value="execution_time">Execution Time</SelectItem>
+                </SelectContent>
+              </Select>
 
-              <select
-                value={searchOptions.timeRange || ""}
-                onChange={(e) =>
+              <Select
+                value={searchOptions.timeRange || "all"}
+                onValueChange={(val) =>
                   handleFilterChange({
                     timeRange:
-                      (e.target.value as HistorySearchOptions["timeRange"]) ||
-                      undefined,
+                      val === "all"
+                        ? undefined
+                        : (val as HistorySearchOptions["timeRange"]),
                   })
                 }
-                className="px-3 py-1.5 rounded border bg-transparent text-sm"
-                style={{
-                  borderColor: themeConfig.colors.border,
-                  color: themeConfig.colors.text,
-                  backgroundColor: themeConfig.colors.bg,
-                }}
               >
-                <option value="">All time</option>
-                <option value="today">Today</option>
-                <option value="week">This week</option>
-                <option value="month">This month</option>
-              </select>
+                <SelectTrigger
+                  className="w-[140px] px-3 py-1.5 h-[34px] rounded border bg-transparent text-sm focus:outline-none"
+                  style={{
+                    borderColor: themeConfig.colors.border,
+                    color: themeConfig.colors.text,
+                    backgroundColor: themeConfig.colors.bg,
+                  }}
+                >
+                  <SelectValue placeholder="All time" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All time</SelectItem>
+                  <SelectItem value="today">Today</SelectItem>
+                  <SelectItem value="week">This week</SelectItem>
+                  <SelectItem value="month">This month</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         )}

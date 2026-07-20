@@ -34,14 +34,19 @@ export function LenisScroll({
   };
 
   return (
-    <ReactLenis
-      root={false}
-      options={options}
-      className={className}
-      data-lenis-prevent
-      style={{ overscrollBehavior: "contain" }}
+    <div
+      onWheel={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+      className="contents"
     >
-      {children}
-    </ReactLenis>
+      <ReactLenis
+        root={false}
+        options={options}
+        className={className}
+        style={{ overscrollBehavior: "contain" }}
+      >
+        {children}
+      </ReactLenis>
+    </div>
   );
 }
