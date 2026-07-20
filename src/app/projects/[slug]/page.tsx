@@ -143,7 +143,7 @@ async function ProjectDetailContent({
       </div>
 
       {/* Hero */}
-      <section className="px-4 py-8 sm:py-12">
+      <section className="px-4 py-8">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-col gap-6">
             {/* Project image */}
@@ -217,7 +217,7 @@ async function ProjectDetailContent({
       </section>
 
       {/* Tech Stack */}
-      <section className="px-4 py-8 sm:px-6">
+      <section className="px-4 py-8">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-4 font-mono text-xl font-bold text-white">
             <span className="text-green-400">$</span> tech --stack
@@ -237,7 +237,7 @@ async function ProjectDetailContent({
 
       {/* Related projects */}
       {related.length > 0 && (
-        <section className="px-4 py-8 sm:px-6 border-t border-neutral-800">
+        <section className="px-4 py-8 border-t border-neutral-800">
           <div className="mx-auto max-w-6xl">
             <h2 className="mb-6 font-mono text-xl font-bold text-white">
               <span className="text-green-400">$</span> ls --related

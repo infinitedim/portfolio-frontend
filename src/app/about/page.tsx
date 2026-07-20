@@ -127,7 +127,7 @@ async function AboutContent(): Promise<JSX.Element> {
       </section>
 
       {/* Experience Timeline */}
-      <section className="px-4 py-12 sm:px-6">
+      <section className="px-4 py-12">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-8 font-mono text-2xl font-bold text-white">
             <span className="text-green-400">$</span> work --history
@@ -182,7 +182,7 @@ async function AboutContent(): Promise<JSX.Element> {
       </section>
 
       {/* Skills Grid */}
-      <section id="skills" className="px-4 py-12 sm:px-6 scroll-mt-24">
+      <section id="skills" className="px-4 py-12 scroll-mt-24">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-8 font-mono text-2xl font-bold text-white">
             <span className="text-green-400">$</span> skills --list
@@ -214,7 +214,7 @@ async function AboutContent(): Promise<JSX.Element> {
       </section>
 
       {/* CTA */}
-      <section className="px-4 py-12 sm:px-6">
+      <section className="px-4 py-12">
         <div className="mx-auto max-w-6xl text-center">
           <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-8">
             <p className="font-mono text-sm text-neutral-400">

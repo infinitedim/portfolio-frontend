@@ -28,7 +28,7 @@ export function ProjectsClient({
 
   return (
     <div className="min-h-screen bg-terminal-bg text-terminal-text">
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-6xl font-bold font-mono mb-6">
@@ -55,7 +55,7 @@ export function ProjectsClient({
       </section>
 
       {featuredProjects.length > 0 && (
-        <section className="py-12 px-4 sm:px-6 lg:px-8">
+        <section className="py-12 px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold font-mono mb-8 text-terminal-accent">
               {t("projectFeatured")} {t("projectsTitle")}
@@ -73,7 +73,7 @@ export function ProjectsClient({
         </section>
       )}
 
-      <section className="py-12 px-4 sm:px-6 lg:px-8">
+      <section className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold font-mono mb-8 text-terminal-text">
             {t("projectsAllProjects")}
@@ -91,7 +91,7 @@ export function ProjectsClient({
         </div>
       </section>
 
-      <section className="py-12 px-4 sm:px-6 lg:px-8 border-t border-terminal-border">
+      <section className="py-12 px-4 border-t border-terminal-border">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>

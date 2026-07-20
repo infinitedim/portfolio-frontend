@@ -35,7 +35,7 @@ function UnsubscribeContent() {
   };
 
   return (
-    <div className="container mx-auto max-w-lg px-4 py-16">
+    <div className="mx-auto max-w-lg px-4 py-16">
       <h1 className="mb-4 text-2xl font-bold text-green-400">
         {t("newsletterUnsubscribeTitle")}
       </h1>
