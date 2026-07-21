@@ -22,16 +22,6 @@ export const SOCIAL_LINKS: SocialLink[] = [
     handle: "@yourblooo",
     icon: "twitter",
   },
-  {
-    platform: "Dev.to",
-    url: "https://dev.to/infinitedim",
-    icon: "devto",
-  },
-  {
-    platform: "Stack Overflow",
-    url: "https://stackoverflow.com/users/infinitedim",
-    icon: "stackoverflow",
-  },
 ];
 
 export function getSocialLink(platform: string): SocialLink | undefined {

@@ -8,8 +8,6 @@ const SOCIAL_ICONS: Record<string, string> = {
   github: "[GitHub]",
   linkedin: "[LinkedIn]",
   twitter: "[Twitter]",
-  devto: "[Dev.to]",
-  stackoverflow: "[StackOverflow]",
 };
 
 export const resumeCommand: Command = {
@@ -72,7 +70,7 @@ Examples:
       "   Node.js. Strong focus on performance, accessibility, and UX.",
       "",
       "EXPERIENCE",
-      "   Full-Stack Developer (2021 - Present)",
+      "   Full-Stack Developer (2023 - Present)",
       "   • Developed scalable web applications using React & Next.js",
       "   • Built robust APIs with Rust, Axum, and PostgreSQL (SQLx)",
       "   • Implemented CI/CD pipelines and cloud deployments",
