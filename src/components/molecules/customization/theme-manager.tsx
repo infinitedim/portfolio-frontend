@@ -2,8 +2,14 @@
 
 import { useState, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
-
-import { TerminalDropdown } from "@/components/atoms/terminal/terminal-dropdown";
+import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { CustomTheme } from "@/types/customization";
 import { ThemeName } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
@@ -24,6 +30,7 @@ export function ThemeManager({
 }: ThemeManagerProps): JSX.Element {
   const { t } = useI18n();
   const { themeConfig, changeTheme, isThemeActive } = useTheme();
+  const { isReducedMotion } = useAccessibility();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"name" | "created" | "modified">("name");
 
@@ -111,17 +118,27 @@ export function ThemeManager({
             }}
           />
           <div className="flex gap-2">
-            <TerminalDropdown
-              value={sortBy}
-              onChange={(value) =>
-                setSortBy(value as "name" | "created" | "modified")
-              }
-              options={[
-                { label: t("sortByName"), value: "name" },
-                { label: t("sortByCreated"), value: "created" },
-                { label: t("sortByModified"), value: "modified" },
-              ]}
-            />
+            <div className="relative inline-block w-full sm:w-auto">
+              <Select
+                value={sortBy}
+                onValueChange={(value) =>
+                  setSortBy(value as "name" | "created" | "modified")
+                }
+              >
+                <SelectTrigger
+                  className={`w-full sm:min-w-35 ${
+                    !isReducedMotion ? "hover:scale-[1.02]" : ""
+                  }`}
+                >
+                  <SelectValue placeholder="Sort by..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name">{t("sortByName")}</SelectItem>
+                  <SelectItem value="created">{t("sortByCreated")}</SelectItem>
+                  <SelectItem value="modified">{t("sortByModified")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </div>
