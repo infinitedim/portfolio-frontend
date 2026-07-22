@@ -10,12 +10,13 @@ function getBackendUrl(): string {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    const body = await req.json();
+    const text = await req.text();
+    const body = text ? JSON.parse(text) : {};
 
     const res = await fetch(`${getBackendUrl()}/api/analytics/pageview`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content- Type": "application/json",
         "X-Forwarded-For": req.headers.get("x-forwarded-for") || "",
         "User-Agent": req.headers.get("user-agent") || "",
       },

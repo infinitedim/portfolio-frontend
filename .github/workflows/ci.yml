@@ -115,6 +115,7 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
+          NEXT_FONT_GOOGLE_MOCKED: "1"
 
   security:
     name: Security Scan
@@ -177,10 +178,17 @@ jobs:
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
 
+      - name: Build for E2E
+        run: bun run build
+        env:
+          NEXT_FONT_GOOGLE_MOCKED: "1"
+          NEXT_PUBLIC_GATE_ENABLED: "false"
+
       - name: Run E2E tests
         run: bun run test:e2e
         env:
           CI: "true"
+          NEXT_FONT_GOOGLE_MOCKED: "1"
           NEXT_PUBLIC_GATE_ENABLED: "false"
           NEXT_PUBLIC_BASE_URL: "http://localhost:3000"
           NEXT_PUBLIC_API_URL: "http://localhost:8080"
