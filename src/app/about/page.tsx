@@ -134,9 +134,16 @@ async function AboutContent(): Promise<JSX.Element> {
 
                 <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5">
                   <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                    <h3 className="font-mono text-lg font-semibold text-white">
-                      {exp.position}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-mono text-lg font-semibold text-white">
+                        {exp.position}
+                      </h3>
+                      {exp.type && (
+                        <span className="rounded border border-green-400/30 bg-green-400/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-green-400">
+                          {exp.type.replace("_", " ")}
+                        </span>
+                      )}
+                    </div>
                     <span className="font-mono text-xs text-neutral-400">
                       {exp.duration}
                     </span>

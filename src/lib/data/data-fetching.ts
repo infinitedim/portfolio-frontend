@@ -42,12 +42,15 @@ export interface Project {
   featured: boolean;
 }
 
+export type ExperienceType = "intern" | "full-time" | "part-time" | "freelance";
+
 export interface Experience {
   company: string;
   position: string;
   duration: string;
   description: string[];
   technologies: string[];
+  type?: ExperienceType;
 }
 
 export interface AboutInfo {
@@ -347,6 +350,7 @@ function getFallbackExperienceData(): Experience[] {
         "Implementing CI/CD pipelines and cloud deployments on GCP",
       ],
       technologies: ["React", "Next.js", "TypeScript", "Rust", "GCP"],
+      type: "freelance",
     },
   ];
 }
