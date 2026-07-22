@@ -1,7 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 
 interface FadeInProps {
@@ -20,40 +19,69 @@ export function FadeIn({
   delay = 0,
   duration = 0.5,
   className = "",
-  distance = 30,
-  viewportMargin = "0px 0px -10% 0px",
+  distance: _distance = 30,
 }: FadeInProps): ReactNode {
   const { isReducedMotion } = useAccessibility();
+  const [isVisible, setIsVisible] = useState(false);
+  const domRef = useRef<HTMLDivElement>(null);
 
-  // If reduced motion is requested, render a static block or instant transition
+  useEffect(() => {
+    if (isReducedMotion) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            if (domRef.current) observer.unobserve(domRef.current);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentRef = domRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
+  }, [isReducedMotion]);
+
   if (isReducedMotion) {
     return <div className={className}>{children}</div>;
   }
 
-  const directionOffsets = {
-    up: { y: distance },
-    down: { y: -distance },
-    left: { x: distance },
-    right: { x: -distance },
-    none: {},
+  const directionClasses = {
+    up: "translate-y-6",
+    down: "-translate-y-6",
+    left: "translate-x-6",
+    right: "-translate-x-6",
+    none: "",
   };
 
-  const offset = directionOffsets[direction] || directionOffsets.up;
+  const offsetClass = directionClasses[direction] || directionClasses.up;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, ...offset }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: viewportMargin }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.25, 0.1, 0.25, 1.0], // cubic-bezier smooth easing
+    <div
+      ref={domRef}
+      style={{
+        transitionDuration: `${duration}s`,
+        transitionDelay: `${delay}s`,
       }}
-      className={className}
+      className={`transition-all ease-out ${
+        isVisible
+          ? "opacity-100 translate-x-0 translate-y-0"
+          : `opacity-0 ${offsetClass}`
+      } ${className}`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -67,36 +95,9 @@ interface StaggerContainerProps {
 
 export function StaggerContainer({
   children,
-  delayChildren = 0,
-  staggerChildren = 0.1,
   className = "",
-  viewportMargin = "0px 0px -5% 0px",
 }: StaggerContainerProps): ReactNode {
-  const { isReducedMotion } = useAccessibility();
-
-  if (isReducedMotion) {
-    return <div className={className}>{children}</div>;
-  }
-
-  return (
-    <motion.div
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: viewportMargin }}
-      variants={{
-        hidden: {},
-        show: {
-          transition: {
-            staggerChildren,
-            delayChildren,
-          },
-        },
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={className}>{children}</div>;
 }
 
 interface HoverCardProps {
@@ -108,7 +109,6 @@ interface HoverCardProps {
 export function HoverCard({
   children,
   className = "",
-  scale = 1.02,
 }: HoverCardProps): ReactNode {
   const { isReducedMotion } = useAccessibility();
 
@@ -117,16 +117,10 @@ export function HoverCard({
   }
 
   return (
-    <motion.div
-      whileHover={{
-        scale,
-        y: -4,
-        transition: { duration: 0.2, ease: "easeOut" },
-      }}
-      whileTap={{ scale: 0.98 }}
-      className={className}
+    <div
+      className={`transition-transform duration-200 ease-out hover:scale-[1.02] hover:-translate-y-1 active:scale-[0.98] ${className}`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

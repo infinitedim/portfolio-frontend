@@ -2,7 +2,6 @@
 
 import type { JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
-import { FadeIn } from "@/components/atoms/shared/motion-wrappers";
 import { AboutInfo } from "@/lib/data/data-fetching";
 
 interface AboutSectionClientProps {
@@ -16,11 +15,7 @@ export function AboutSectionClient({
 
   return (
     <section className="border-t border-neutral-800 px-4 py-16">
-      <FadeIn
-        direction="up"
-        duration={0.6}
-        className="mx-auto max-w-6xl"
-      >
+      <div className="mx-auto max-w-6xl animate-slide-in-up">
         <h2 className="mb-6 font-mono text-2xl font-bold text-green-400">
           {t("landingAboutTitle")}
         </h2>
@@ -28,7 +23,7 @@ export function AboutSectionClient({
           <p className="text-lg text-white">{about.title}</p>
           <p>{about.bio}</p>
         </div>
-      </FadeIn>
+      </div>
     </section>
   );
 }
