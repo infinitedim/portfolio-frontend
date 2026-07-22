@@ -71,7 +71,7 @@ export function LanguageSwitcher({
               onKeyDown={(e) => handleKeyDown(e, locale.code)}
               role="option"
               aria-selected={isSelected}
-              className="px-3 py-1.5 rounded text-sm font-mono transition-all duration-200 border"
+              className="px-3 py-1.5 rounded text-sm font-mono transition-colors duration-200 border"
               style={{
                 backgroundColor: isSelected
                   ? themeConfig.colors.accent
@@ -100,7 +100,7 @@ export function LanguageSwitcher({
         onValueChange={handleLanguageChange}
       >
         <SelectTrigger
-          className="w-fit min-w-[120px] h-8 px-3 py-1.5"
+          className="w-fit min-w-30 h-8 px-3 py-1.5"
           aria-label={`Current language: ${currentConfig?.name}. Click to change.`}
         >
           <SelectValue />

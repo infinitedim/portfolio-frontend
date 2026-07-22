@@ -49,7 +49,7 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
             infinitedim
           </Link>
 
-          <ul className="hidden items-center gap-1 sm:flex">
+          <ul className="hidden h-8 items-center gap-1 sm:flex">
             {NAV_LINKS.map(({ key, href }) => {
               const isActive =
                 href === "/" ? activePath === "/" : activePath.startsWith(href);
