@@ -279,7 +279,9 @@ export function useTheme(): UseThemeReturn {
       }));
 
       if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("theme-change", { detail: newTheme }));
+        window.dispatchEvent(
+          new CustomEvent("theme-change", { detail: newTheme }),
+        );
       }
 
       return true;
@@ -320,7 +322,12 @@ export function useTheme(): UseThemeReturn {
     const handleThemeChange = (e: Event) => {
       const customEvent = e as CustomEvent<ThemeName>;
       const newTheme = customEvent.detail;
-      if (newTheme && validateTheme(newTheme) && themes[newTheme] && isMountedRef.current) {
+      if (
+        newTheme &&
+        validateTheme(newTheme) &&
+        themes[newTheme] &&
+        isMountedRef.current
+      ) {
         setState((prev) => {
           if (prev.theme === newTheme) return prev;
           return { ...prev, theme: newTheme, error: null };

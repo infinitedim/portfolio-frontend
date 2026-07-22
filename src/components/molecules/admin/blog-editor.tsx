@@ -1006,7 +1006,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   </SelectTrigger>
                   <SelectContent>
                     {BLOG_CONTENT_LOCALES.map((loc) => (
-                      <SelectItem key={loc.code} value={loc.code}>
+                      <SelectItem
+                        key={loc.code}
+                        value={loc.code}
+                      >
                         {loc.flag} {loc.label}
                       </SelectItem>
                     ))}
@@ -1017,7 +1020,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 <div className="text-xs opacity-70 mb-2">Series</div>
                 <Select
                   value={seriesId || "none"}
-                  onValueChange={(val) => setSeriesId(val === "none" ? "" : val)}
+                  onValueChange={(val) =>
+                    setSeriesId(val === "none" ? "" : val)
+                  }
                 >
                   <SelectTrigger
                     className="w-full px-3 py-2 h-[38px] text-sm border rounded bg-transparent font-mono"
@@ -1031,7 +1036,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   <SelectContent>
                     <SelectItem value="none">None</SelectItem>
                     {availableSeries.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>
+                      <SelectItem
+                        key={s.id}
+                        value={s.id}
+                      >
                         {s.title}
                       </SelectItem>
                     ))}

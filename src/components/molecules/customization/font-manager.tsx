@@ -40,7 +40,6 @@ export function FontManager({
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
-
   const handleApplyFont = (font: CustomFont, closeDialog = true) => {
     if (font.source === "system") {
       changeFont(font.id as FontName);
@@ -69,8 +68,6 @@ export function FontManager({
     }
   };
 
-
-
   return (
     <div className="h-full flex">
       <div
@@ -94,104 +91,105 @@ export function FontManager({
 
           <LenisScroll className="max-h-[60vh] overflow-y-auto">
             <div className="space-y-2">
-            {filteredFonts.map((font) => (
-              <div
-                key={font.id}
-                className={`p-3 rounded border cursor-pointer transition-all ${selectedFont?.id === font.id ? "ring-2" : ""}`}
-                style={{
-                  borderColor: themeConfig.colors.border,
-                  backgroundColor:
-                    selectedFont?.id === font.id
-                      ? `${themeConfig.colors.accent}10`
-                      : "transparent",
-                  boxShadow:
-                    selectedFont?.id === font.id
-                      ? `0 0 0 2px ${themeConfig.colors.accent}`
-                      : "none",
-                }}
-                role="button"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") setSelectedFont(font);
-                }}
-                tabIndex={0}
-                onClick={() => setSelectedFont(font)}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h3
-                    className="font-medium"
-                    style={{
-                      color: themeConfig.colors.text,
-                      fontFamily:
-                        font.source === "custom" ? font.family : undefined,
-                    }}
-                  >
-                    {font.name}
-                  </h3>
-                  <div className="flex items-center gap-1">
-                    {font.ligatures && (
-                      <span
-                        className="px-1 py-0.5 text-xs rounded"
-                        style={{
-                          backgroundColor: `${themeConfig.colors.accent}20`,
-                          color: themeConfig.colors.accent,
-                        }}
-                        title="Supports ligatures"
-                      >
-                        ≡
-                      </span>
-                    )}
-                    <span
-                      className="px-2 py-1 text-xs rounded"
+              {filteredFonts.map((font) => (
+                <div
+                  key={font.id}
+                  className={`p-3 rounded border cursor-pointer transition-all ${selectedFont?.id === font.id ? "ring-2" : ""}`}
+                  style={{
+                    borderColor: themeConfig.colors.border,
+                    backgroundColor:
+                      selectedFont?.id === font.id
+                        ? `${themeConfig.colors.accent}10`
+                        : "transparent",
+                    boxShadow:
+                      selectedFont?.id === font.id
+                        ? `0 0 0 2px ${themeConfig.colors.accent}`
+                        : "none",
+                  }}
+                  role="button"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ")
+                      setSelectedFont(font);
+                  }}
+                  tabIndex={0}
+                  onClick={() => setSelectedFont(font)}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h3
+                      className="font-medium"
                       style={{
-                        backgroundColor:
-                          font.source === "system"
-                            ? `${themeConfig.colors.prompt}20`
-                            : font.source === "custom"
-                              ? `${themeConfig.colors.accent}20`
-                              : `${themeConfig.colors.success}20`,
-                        color:
-                          font.source === "system"
-                            ? themeConfig.colors.prompt
-                            : font.source === "custom"
-                              ? themeConfig.colors.accent
-                              : themeConfig.colors.success,
+                        color: themeConfig.colors.text,
+                        fontFamily:
+                          font.source === "custom" ? font.family : undefined,
                       }}
                     >
-                      {font.source}
-                    </span>
+                      {font.name}
+                    </h3>
+                    <div className="flex items-center gap-1">
+                      {font.ligatures && (
+                        <span
+                          className="px-1 py-0.5 text-xs rounded"
+                          style={{
+                            backgroundColor: `${themeConfig.colors.accent}20`,
+                            color: themeConfig.colors.accent,
+                          }}
+                          title="Supports ligatures"
+                        >
+                          ≡
+                        </span>
+                      )}
+                      <span
+                        className="px-2 py-1 text-xs rounded"
+                        style={{
+                          backgroundColor:
+                            font.source === "system"
+                              ? `${themeConfig.colors.prompt}20`
+                              : font.source === "custom"
+                                ? `${themeConfig.colors.accent}20`
+                                : `${themeConfig.colors.success}20`,
+                          color:
+                            font.source === "system"
+                              ? themeConfig.colors.prompt
+                              : font.source === "custom"
+                                ? themeConfig.colors.accent
+                                : themeConfig.colors.success,
+                        }}
+                      >
+                        {font.source}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div
-                  className="text-sm mb-2 font-mono"
-                  style={{
-                    fontFamily:
-                      font.source === "custom" ? font.family : undefined,
-                    color: themeConfig.colors.text,
-                    opacity: 0.8,
-                  }}
-                >
-                  The quick brown fox jumps over the lazy dog
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleApplyFont(font);
-                    }}
-                    className="px-2 py-1 text-xs rounded border hover:opacity-80"
+                  <div
+                    className="text-sm mb-2 font-mono"
                     style={{
-                      backgroundColor: `${themeConfig.colors.success}20`,
-                      borderColor: themeConfig.colors.success,
-                      color: themeConfig.colors.success,
+                      fontFamily:
+                        font.source === "custom" ? font.family : undefined,
+                      color: themeConfig.colors.text,
+                      opacity: 0.8,
                     }}
                   >
-                    {t("apply")}
-                  </button>
+                    The quick brown fox jumps over the lazy dog
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleApplyFont(font);
+                      }}
+                      className="px-2 py-1 text-xs rounded border hover:opacity-80"
+                      style={{
+                        backgroundColor: `${themeConfig.colors.success}20`,
+                        borderColor: themeConfig.colors.success,
+                        color: themeConfig.colors.success,
+                      }}
+                    >
+                      {t("apply")}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
             </div>
           </LenisScroll>
         </div>

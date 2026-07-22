@@ -21,7 +21,7 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "flex h-10 w-full items-center justify-between rounded-md border border-[var(--terminal-border)] bg-[var(--terminal-bg)] px-3 py-2 text-sm font-mono text-[var(--terminal-text)] ring-offset-[var(--terminal-bg)] placeholder:text-[var(--terminal-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--terminal-accent)] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200",
-      className
+      className,
     )}
     {...props}
   >
@@ -41,7 +41,7 @@ const SelectScrollUpButton = React.forwardRef<
     ref={ref}
     className={cn(
       "flex cursor-default items-center justify-center py-1",
-      className
+      className,
     )}
     {...props}
   >
@@ -58,7 +58,7 @@ const SelectScrollDownButton = React.forwardRef<
     ref={ref}
     className={cn(
       "flex cursor-default items-center justify-center py-1",
-      className
+      className,
     )}
     {...props}
   >
@@ -79,7 +79,7 @@ const SelectContent = React.forwardRef<
         "relative z-[100] max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-[var(--terminal-border)] bg-[var(--terminal-bg)] text-[var(--terminal-text)] shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
-        className
+        className,
       )}
       position={position}
       {...props}
@@ -89,7 +89,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           "p-1",
           position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]",
         )}
       >
         <LenisScroll className="max-h-72 w-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[var(--terminal-muted)] hover:scrollbar-thumb-[var(--terminal-accent)]">
@@ -125,12 +125,12 @@ const SelectItem = React.forwardRef<
       "focus:bg-[color-mix(in_srgb,var(--terminal-accent)_10%,transparent)] focus:text-[var(--terminal-accent)]",
       "data-[state=checked]:bg-[color-mix(in_srgb,var(--terminal-accent)_20%,transparent)] data-[state=checked]:text-[var(--terminal-accent)]",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors",
-      className
+      className,
     )}
     {...props}
   >
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-    
+
     <span className="flex h-3.5 w-3.5 items-center justify-center ml-2">
       <SelectPrimitive.ItemIndicator>
         <Check className="h-4 w-4 text-[var(--terminal-accent)]" />

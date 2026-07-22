@@ -654,8 +654,10 @@ export const en_US_key: TranslationKeys = {
 
   // Terminal Interactive Welcome
   terminalWelcomeTitle: "Welcome to My Terminal Portfolio!",
-  terminalWelcomeSubtitle: "Click on any command below to get started, or type directly in the terminal",
-  terminalWelcomeTip: "Tip: Use Tab for auto-completion and ↑↓ for command history",
+  terminalWelcomeSubtitle:
+    "Click on any command below to get started, or type directly in the terminal",
+  terminalWelcomeTip:
+    "Tip: Use Tab for auto-completion and ↑↓ for command history",
   terminalWelcomeSkip: "Skip intro",
   terminalWelcomeDescHelp: "View all available commands",
   terminalWelcomeDescAbout: "Learn about me",

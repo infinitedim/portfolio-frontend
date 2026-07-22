@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import { i18n } from "@/lib/i18n";
+import { Component } from "react";
 
 interface Props {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ interface State {
   hasError: boolean;
 }
 
-export class ImageErrorBoundary extends React.Component<Props, State> {
+export class ImageErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false };

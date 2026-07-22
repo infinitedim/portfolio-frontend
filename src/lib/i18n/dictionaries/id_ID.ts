@@ -661,8 +661,10 @@ export const id_ID_key: TranslationKeys = {
 
   // Terminal Interactive Welcome
   terminalWelcomeTitle: "Selamat Datang di Portofolio Terminal Saya!",
-  terminalWelcomeSubtitle: "Klik salah satu perintah di bawah ini untuk memulai, atau ketik langsung di terminal",
-  terminalWelcomeTip: "Tips: Gunakan Tab untuk melengkapi otomatis dan ↑↓ untuk riwayat perintah",
+  terminalWelcomeSubtitle:
+    "Klik salah satu perintah di bawah ini untuk memulai, atau ketik langsung di terminal",
+  terminalWelcomeTip:
+    "Tips: Gunakan Tab untuk melengkapi otomatis dan ↑↓ untuk riwayat perintah",
   terminalWelcomeSkip: "Lewati intro",
   terminalWelcomeDescHelp: "Lihat semua perintah yang tersedia",
   terminalWelcomeDescAbout: "Pelajari tentang saya",

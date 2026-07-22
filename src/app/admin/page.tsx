@@ -1,6 +1,6 @@
 "use client";
 
-import { JSX, useState } from "react";
+import { type JSX, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Route } from "next";

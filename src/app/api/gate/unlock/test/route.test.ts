@@ -3,7 +3,11 @@ import { POST } from "../route";
 import { proxyGateRequest } from "@/lib/gate/gate-proxy";
 import { NextRequest } from "next/server";
 
-if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/server", () => ({
   NextRequest: class {},

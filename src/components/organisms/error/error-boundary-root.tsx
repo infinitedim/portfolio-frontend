@@ -1,6 +1,7 @@
 "use client";
 
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import type { ErrorInfo, ReactNode } from "react";
+import { Component, Suspense } from "react";
 import clientLogger from "@/lib/logger/client-logger";
 import { i18n } from "@/lib/i18n";
 
@@ -220,9 +221,9 @@ export function AsyncBoundary({
 }: AsyncErrorBoundaryProps): ReactNode {
   return (
     <ErrorBoundary {...errorBoundaryProps}>
-      <React.Suspense fallback={loadingFallback || <DefaultLoadingFallback />}>
+      <Suspense fallback={loadingFallback || <DefaultLoadingFallback />}>
         {children}
-      </React.Suspense>
+      </Suspense>
     </ErrorBoundary>
   );
 }
@@ -234,5 +235,3 @@ function DefaultLoadingFallback(): ReactNode {
     </div>
   );
 }
-
-import React from "react";

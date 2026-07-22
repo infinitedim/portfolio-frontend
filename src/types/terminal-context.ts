@@ -170,7 +170,6 @@ export interface TerminalContextType {
   /** Toggle focus mode on/off */
   setFocusMode: (enabled: boolean) => void;
 
-
   // ── Background ─────────────────────────────────────────────────────────
   /** Current background animation / colour settings */
   backgroundSettings: BackgroundSettings;
@@ -208,8 +207,6 @@ export interface TerminalContextType {
    * and calls the appropriate hook functions before adding to history.
    */
   handleSubmit: (command: string) => Promise<void>;
-
-
 
   /** Set the current input to a selected welcome-panel command */
   handleWelcomeCommandSelect: (command: string) => void;

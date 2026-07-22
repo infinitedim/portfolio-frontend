@@ -189,9 +189,7 @@ export function ContactForm(): JSX.Element {
               }`}
               disabled={submitting}
               aria-invalid={errors.name ? "true" : "false"}
-              aria-describedby={
-                errors.name ? "contact-name-error" : undefined
-              }
+              aria-describedby={errors.name ? "contact-name-error" : undefined}
             />
           </Field>
 

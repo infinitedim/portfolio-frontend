@@ -636,4 +636,3 @@ export interface TranslationKeys {
   terminalWelcomeDescProjects?: string;
   terminalWelcomeDescContact?: string;
 }
-

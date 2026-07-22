@@ -1,4 +1,5 @@
-import React, { Component, type ErrorInfo, type ReactNode } from "react";
+import type { ComponentType, ErrorInfo, ReactNode } from "react";
+import { Component, useCallback, useEffect, useState } from "react";
 import {
   EnhancedError,
   ErrorCategory,
@@ -388,7 +389,7 @@ function DefaultErrorFallback({
 }
 
 export function withErrorBoundary<P extends object>(
-  Component: React.ComponentType<P>,
+  Component: ComponentType<P>,
   config: ErrorBoundaryConfig = {},
 ) {
   const WrappedComponent = (props: P) => (
@@ -403,18 +404,18 @@ export function withErrorBoundary<P extends object>(
 }
 
 export function useErrorBoundary() {
-  const [error, setError] = React.useState<Error | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
-  const resetError = React.useCallback(() => {
+  const resetError = useCallback(() => {
     setError(null);
   }, []);
 
-  const captureError = React.useCallback((error: Error | string) => {
+  const captureError = useCallback((error: Error | string) => {
     const errorObj = typeof error === "string" ? new Error(error) : error;
     setError(errorObj);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) {
       throw error;
     }

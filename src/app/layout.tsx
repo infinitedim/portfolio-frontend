@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
-import { type JSX, type ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 import "./globals.css";
 import { ThemeInitScript } from "@/components/layout/theme-init-script";
 import { AccessibilityProvider } from "../components/organisms/accessibility/accessibility-provider";

@@ -127,7 +127,6 @@ function TerminalContent({
     return () => clearTimeout(timer);
   }, []);
 
-
   /** Scroll to bottom whenever history updates */
   useEffect(() => {
     const rafId = requestAnimationFrame(() => {
@@ -378,7 +377,6 @@ function TerminalContent({
           </div>
           <TerminalCustomizationToolbar />
         </div>
-
 
         <KeyboardShortcut
           isOpen={shortcutsOpen}

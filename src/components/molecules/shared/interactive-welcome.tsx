@@ -21,7 +21,8 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
   const quickCommands = [
     {
       command: "help",
-      description: t("terminalWelcomeDescHelp") || "View all available commands",
+      description:
+        t("terminalWelcomeDescHelp") || "View all available commands",
       icon: HelpCircle,
       highlight: true,
     },

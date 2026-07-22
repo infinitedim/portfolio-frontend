@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { authService, type AuthUser } from "@/lib/auth/auth-service";
 
 export interface LoginResult {

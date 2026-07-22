@@ -2,7 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "../route";
 import { serverHandshake } from "@/lib/crypto/server";
 
-if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/server", () => ({
   NextRequest: class {},
@@ -46,7 +50,10 @@ describe("POST /api/crypto/handshake", () => {
     expect(data.error).toContain("clientPublicKey");
   });
   it("should call serverHandshake and return handshake results on success", async () => {
-    const mockResult = { serverPublicKey: "server_key", sessionId: "session_123" };
+    const mockResult = {
+      serverPublicKey: "server_key",
+      sessionId: "session_123",
+    };
     vi.mocked(serverHandshake).mockReturnValueOnce(mockResult as any);
 
     const req = createMockRequest({ clientPublicKey: "client_key" });
@@ -55,7 +62,9 @@ describe("POST /api/crypto/handshake", () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data).toEqual(mockResult);
-    expect(res.headers.get("Cache-Control")).toBe("no-store, no-cache, must-revalidate");
+    expect(res.headers.get("Cache-Control")).toBe(
+      "no-store, no-cache, must-revalidate",
+    );
 
     expect(serverHandshake).toHaveBeenCalledWith("client_key");
   });

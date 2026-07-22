@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "../route";
 
-if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/server", () => ({
   NextRequest: class {},
@@ -23,7 +27,7 @@ globalThis.fetch = mockFetch;
 function createMockRequest(
   method: string,
   body?: unknown,
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ): Request {
   return new Request("http://localhost:3000/api/auth/login", {
     method,
@@ -43,7 +47,7 @@ describe("POST /api/auth/[...authPath]", () => {
   it("should compositions the correct URL and forward cookies/auth to backend", async () => {
     const mockHeaders = new Headers();
     mockHeaders.getSetCookie = () => [
-      "refresh_token=abc; Domain=api.infinitedim.dev; Path=/; Secure; HttpOnly"
+      "refresh_token=abc; Domain=api.infinitedim.dev; Path=/; Secure; HttpOnly",
     ];
 
     mockFetch.mockResolvedValueOnce({
@@ -52,10 +56,14 @@ describe("POST /api/auth/[...authPath]", () => {
       json: () => Promise.resolve({ success: true }),
     } as unknown as Response);
 
-    const req = createMockRequest("POST", { email: "test@example.com" }, {
-      "cookie": "some_cookie",
-      "authorization": "Bearer token123",
-    });
+    const req = createMockRequest(
+      "POST",
+      { email: "test@example.com" },
+      {
+        cookie: "some_cookie",
+        authorization: "Bearer token123",
+      },
+    );
 
     const context = {
       params: Promise.resolve({ authPath: ["login"] }),
@@ -63,7 +71,7 @@ describe("POST /api/auth/[...authPath]", () => {
 
     const res = await POST(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(200);
@@ -81,7 +89,7 @@ describe("POST /api/auth/[...authPath]", () => {
         method: "POST",
         headers: expect.any(Headers),
         body: JSON.stringify({ email: "test@example.com" }),
-      })
+      }),
     );
 
     const sentHeaders = mockFetch.mock.calls[0][1].headers;
@@ -91,7 +99,7 @@ describe("POST /api/auth/[...authPath]", () => {
 
   it("should handle GET/HEAD requests without body parsing", async () => {
     mockFetch.mockResolvedValueOnce(
-      new Response(JSON.stringify({ status: "ok" }), { status: 200 })
+      new Response(JSON.stringify({ status: "ok" }), { status: 200 }),
     );
 
     const req = new Request("http://localhost:3000/api/auth/status", {
@@ -104,7 +112,7 @@ describe("POST /api/auth/[...authPath]", () => {
 
     const res = await POST(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(200);
@@ -116,7 +124,7 @@ describe("POST /api/auth/[...authPath]", () => {
       expect.objectContaining({
         method: "GET",
         body: undefined,
-      })
+      }),
     );
   });
 
@@ -130,7 +138,7 @@ describe("POST /api/auth/[...authPath]", () => {
 
     const res = await POST(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(502);

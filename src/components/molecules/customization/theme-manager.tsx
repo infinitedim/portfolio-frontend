@@ -34,7 +34,6 @@ export function ThemeManager({
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"name" | "created" | "modified">("name");
 
-
   const filteredThemes = themes
     .filter((theme) => {
       const matchesSearch =
@@ -78,8 +77,6 @@ export function ThemeManager({
       console.error("Error in handleApplyTheme:", error);
     }
   };
-
-
 
   return (
     <div className="h-full flex flex-col">
@@ -135,7 +132,9 @@ export function ThemeManager({
                 <SelectContent>
                   <SelectItem value="name">{t("sortByName")}</SelectItem>
                   <SelectItem value="created">{t("sortByCreated")}</SelectItem>
-                  <SelectItem value="modified">{t("sortByModified")}</SelectItem>
+                  <SelectItem value="modified">
+                    {t("sortByModified")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -146,143 +145,142 @@ export function ThemeManager({
       <LenisScroll className="flex-1 overflow-auto">
         <div className="p-4">
           {filteredThemes.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4"></div>
-            <h3
-              className="text-lg font-medium mb-2"
-              style={{ color: themeConfig.colors.accent }}
-            >
-              {t("customNoThemesFound")}
-            </h3>
-            <p
-              className="text-sm opacity-75"
-              style={{ color: themeConfig.colors.text }}
-            >
-              {searchQuery
-                ? t("customAdjustSearchFilter")
-                : t("customNoThemesFound")}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredThemes.map((theme) => {
-              const isActive = isThemeActive(theme.id as ThemeName);
+            <div className="text-center py-12">
+              <div className="text-4xl mb-4"></div>
+              <h3
+                className="text-lg font-medium mb-2"
+                style={{ color: themeConfig.colors.accent }}
+              >
+                {t("customNoThemesFound")}
+              </h3>
+              <p
+                className="text-sm opacity-75"
+                style={{ color: themeConfig.colors.text }}
+              >
+                {searchQuery
+                  ? t("customAdjustSearchFilter")
+                  : t("customNoThemesFound")}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredThemes.map((theme) => {
+                const isActive = isThemeActive(theme.id as ThemeName);
 
-              const isActiveStyle = {
-                backgroundColor: isActive
-                  ? `${themeConfig.colors.success || themeConfig.colors.accent}30`
-                  : themeConfig.colors.accent,
-                color: isActive
-                  ? themeConfig.colors.success || themeConfig.colors.accent
-                  : themeConfig.colors.bg,
-              };
+                const isActiveStyle = {
+                  backgroundColor: isActive
+                    ? `${themeConfig.colors.success || themeConfig.colors.accent}30`
+                    : themeConfig.colors.accent,
+                  color: isActive
+                    ? themeConfig.colors.success || themeConfig.colors.accent
+                    : themeConfig.colors.bg,
+                };
 
-              return (
-                <div
-                  key={theme.id}
-                  className="border rounded-lg p-4 transition-all duration-200 hover:shadow-lg hover:scale-[1.02]"
-                  style={{
-                    borderColor: isActive
-                      ? themeConfig.colors.accent
-                      : themeConfig.colors.border,
-                    backgroundColor: isActive
-                      ? `${themeConfig.colors.accent}10`
-                      : "transparent",
-                    boxShadow: isActive
-                      ? `0 0 0 1px ${themeConfig.colors.accent}`
-                      : "none",
-                  }}
-                >
-                  <div className="mb-3">
-                    <div className="flex gap-1 mb-2">
-                      {Object.entries(theme.colors)
-                        .slice(0, 5)
-                        .map(([key, color]) => (
-                          <div
-                            key={key}
-                            className="w-6 h-6 rounded border"
-                            style={{
-                              backgroundColor: color,
-                              borderColor: themeConfig.colors.border,
-                            }}
-                            title={`${key}: ${color}`}
-                          />
-                        ))}
-                    </div>
-                  </div>
-
-                  <div className="mb-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <h4
-                        className="font-medium truncate"
-                        style={{ color: themeConfig.colors.text }}
-                      >
-                        {theme.name}
-                      </h4>
-                      <div className="flex items-center gap-1">
-                        {isActive && (
-                          <span
-                            className="text-xs px-1 py-0.5 rounded"
-                            style={{ color: themeConfig.colors.accent }}
-                          >
-                            ✓
-                          </span>
-                        )}
-                        <span
-                          className="text-xs px-2 py-1 rounded"
-                          style={{
-                            backgroundColor: `${themeConfig.colors.muted}30`,
-                            color: themeConfig.colors.muted,
-                          }}
-                        >
-                          {theme.source}
-                        </span>
+                return (
+                  <div
+                    key={theme.id}
+                    className="border rounded-lg p-4 transition-all duration-200 hover:shadow-lg hover:scale-[1.02]"
+                    style={{
+                      borderColor: isActive
+                        ? themeConfig.colors.accent
+                        : themeConfig.colors.border,
+                      backgroundColor: isActive
+                        ? `${themeConfig.colors.accent}10`
+                        : "transparent",
+                      boxShadow: isActive
+                        ? `0 0 0 1px ${themeConfig.colors.accent}`
+                        : "none",
+                    }}
+                  >
+                    <div className="mb-3">
+                      <div className="flex gap-1 mb-2">
+                        {Object.entries(theme.colors)
+                          .slice(0, 5)
+                          .map(([key, color]) => (
+                            <div
+                              key={key}
+                              className="w-6 h-6 rounded border"
+                              style={{
+                                backgroundColor: color,
+                                borderColor: themeConfig.colors.border,
+                              }}
+                              title={`${key}: ${color}`}
+                            />
+                          ))}
                       </div>
                     </div>
 
-                    {theme.description && (
-                      <p
-                        className="text-sm opacity-75 line-clamp-2"
-                        style={{ color: themeConfig.colors.text }}
+                    <div className="mb-3">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4
+                          className="font-medium truncate"
+                          style={{ color: themeConfig.colors.text }}
+                        >
+                          {theme.name}
+                        </h4>
+                        <div className="flex items-center gap-1">
+                          {isActive && (
+                            <span
+                              className="text-xs px-1 py-0.5 rounded"
+                              style={{ color: themeConfig.colors.accent }}
+                            >
+                              ✓
+                            </span>
+                          )}
+                          <span
+                            className="text-xs px-2 py-1 rounded"
+                            style={{
+                              backgroundColor: `${themeConfig.colors.muted}30`,
+                              color: themeConfig.colors.muted,
+                            }}
+                          >
+                            {theme.source}
+                          </span>
+                        </div>
+                      </div>
+
+                      {theme.description && (
+                        <p
+                          className="text-sm opacity-75 line-clamp-2"
+                          style={{ color: themeConfig.colors.text }}
+                        >
+                          {theme.description}
+                        </p>
+                      )}
+
+                      {(theme.createdAt || theme.modifiedAt) && (
+                        <p
+                          className="text-xs opacity-50 mt-1"
+                          style={{ color: themeConfig.colors.text }}
+                        >
+                          {theme.modifiedAt
+                            ? t("customModified").replace(
+                                "{date}",
+                                theme.modifiedAt.toLocaleDateString(),
+                              )
+                            : t("customCreated").replace(
+                                "{date}",
+                                theme.createdAt.toLocaleDateString(),
+                              )}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleApplyTheme(theme.id)}
+                        className="flex-1 px-3 py-1.5 rounded text-sm font-medium transition-all duration-200 hover:scale-105"
+                        style={isActiveStyle}
+                        disabled={isActive}
                       >
-                        {theme.description}
-                      </p>
-                    )}
-
-                    {(theme.createdAt || theme.modifiedAt) && (
-                      <p
-                        className="text-xs opacity-50 mt-1"
-                        style={{ color: themeConfig.colors.text }}
-                      >
-                        {theme.modifiedAt
-                          ? t("customModified").replace(
-                              "{date}",
-                              theme.modifiedAt.toLocaleDateString(),
-                            )
-                          : t("customCreated").replace(
-                              "{date}",
-                              theme.createdAt.toLocaleDateString(),
-                            )}
-                      </p>
-                    )}
+                        {isActive ? t("customActive") : t("apply")}
+                      </button>
+                    </div>
                   </div>
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleApplyTheme(theme.id)}
-                      className="flex-1 px-3 py-1.5 rounded text-sm font-medium transition-all duration-200 hover:scale-105"
-                      style={isActiveStyle}
-                      disabled={isActive}
-                    >
-                      {isActive ? t("customActive") : t("apply")}
-                    </button>
-
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
         </div>
       </LenisScroll>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { JSX, useState, useEffect } from "react";
+import { JSX, useState, useEffect } from "react";
 import type { ThemeName, ThemeConfig } from "@/types/theme";
 import { TerminalLoadingProgress } from "@/components/molecules/terminal/terminal-loading-progress";
 

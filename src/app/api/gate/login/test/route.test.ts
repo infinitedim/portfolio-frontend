@@ -3,7 +3,11 @@ import { POST } from "../route";
 import { proxyGateRequest } from "@/lib/gate/gate-proxy";
 import { NextRequest } from "next/server";
 
-if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/server", () => {
   const original = vi.importActual("next/server");
@@ -14,7 +18,7 @@ vi.mock("next/server", () => {
       bodyText: string;
       constructor(input: string, init?: RequestInit) {
         this.url = input;
-        this.bodyText = init?.body as string ?? "";
+        this.bodyText = (init?.body as string) ?? "";
       }
       text() {
         return Promise.resolve(this.bodyText);
@@ -46,7 +50,11 @@ describe("POST /api/gate/login", () => {
     const mockResponse = new Response(JSON.stringify({ passed: true }));
     vi.mocked(proxyGateRequest).mockResolvedValueOnce(mockResponse as any);
 
-    const bodyPayload = JSON.stringify({ level: 1, username: "u", password: "p" });
+    const bodyPayload = JSON.stringify({
+      level: 1,
+      username: "u",
+      password: "p",
+    });
     const req = new NextRequest("http://localhost:3000/api/gate/login", {
       method: "POST",
       body: bodyPayload,

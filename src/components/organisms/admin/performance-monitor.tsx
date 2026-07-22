@@ -1,13 +1,6 @@
 "use client";
 
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  useCallback,
-  memo,
-} from "react";
+import { useState, useEffect, useRef, useMemo, useCallback, memo } from "react";
 import type { ThemeConfig } from "@/types/theme";
 import {
   Select,
@@ -256,7 +249,7 @@ function PerformanceMonitorComponent({ themeConfig }: PerformanceMonitorProps) {
               onValueChange={(val) => setRefreshRate(Number(val))}
             >
               <SelectTrigger
-                className="w-20 px-2 py-1 h-[26px] text-xs border rounded bg-transparent focus:outline-none"
+                className="w-20 px-2 py-1 h-6.5 text-xs border rounded bg-transparent focus:outline-none"
                 style={{
                   borderColor: themeConfig.colors.border,
                   color: themeConfig.colors.text,

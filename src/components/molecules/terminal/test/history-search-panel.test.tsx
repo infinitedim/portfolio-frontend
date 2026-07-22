@@ -4,9 +4,9 @@ import { expect, test, vi } from "vitest";
 import { AccessibilityProvider } from "@/components/organisms/accessibility/accessibility-provider";
 
 // Mock window.matchMedia since AccessibilityProvider uses it
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -28,7 +28,7 @@ test("renders HistorySearchPanel successfully without throwing", () => {
         onClose={() => {}}
         onSelectCommand={() => {}}
       />
-    </AccessibilityProvider>
+    </AccessibilityProvider>,
   );
 
   expect(getByText("Command History")).toBeDefined();

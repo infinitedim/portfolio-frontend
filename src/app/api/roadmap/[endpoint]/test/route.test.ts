@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET } from "../route";
 
-if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/server", () => ({
   NextRequest: class {},
@@ -33,7 +37,7 @@ describe("GET /api/roadmap/[endpoint]", () => {
 
     const res = await GET(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(404);
@@ -44,7 +48,7 @@ describe("GET /api/roadmap/[endpoint]", () => {
   it("should call fetch and return cached response for allowed endpoints", async () => {
     const mockData = { streak: 5 };
     mockFetch.mockResolvedValueOnce(
-      new Response(JSON.stringify(mockData), { status: 200 })
+      new Response(JSON.stringify(mockData), { status: 200 }),
     );
 
     const req = new Request("http://localhost:3000/api/roadmap/streak");
@@ -54,7 +58,7 @@ describe("GET /api/roadmap/[endpoint]", () => {
 
     const res = await GET(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(200);
@@ -66,13 +70,13 @@ describe("GET /api/roadmap/[endpoint]", () => {
       expect.stringContaining("/api/roadmap/streak"),
       expect.objectContaining({
         next: { revalidate: 300 },
-      })
+      }),
     );
   });
 
   it("should return upstream error status code when backend fails", async () => {
     mockFetch.mockResolvedValueOnce(
-      new Response(JSON.stringify({ error: "error" }), { status: 500 })
+      new Response(JSON.stringify({ error: "error" }), { status: 500 }),
     );
 
     const req = new Request("http://localhost:3000/api/roadmap/dashboard");
@@ -82,7 +86,7 @@ describe("GET /api/roadmap/[endpoint]", () => {
 
     const res = await GET(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(500);
@@ -101,7 +105,7 @@ describe("GET /api/roadmap/[endpoint]", () => {
 
     const res = await GET(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(502);

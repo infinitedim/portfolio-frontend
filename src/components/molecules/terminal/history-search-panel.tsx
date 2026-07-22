@@ -587,7 +587,10 @@ export function HistorySearchPanel({
                 <SelectContent>
                   <SelectItem value="all">All categories</SelectItem>
                   {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
+                    <SelectItem
+                      key={category}
+                      value={category}
+                    >
                       {category}
                     </SelectItem>
                   ))}

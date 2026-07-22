@@ -32,12 +32,8 @@ import { useTerminalContext } from "@/lib/context/terminal-context";
  * Renders the ASCII banner and, when no commands have been typed yet, the interactive welcome panel.
  */
 export function TerminalHeader(): JSX.Element {
-  const {
-    showWelcome,
-    setShowWelcome,
-    handleWelcomeCommandSelect,
-    history,
-  } = useTerminalContext();
+  const { showWelcome, setShowWelcome, handleWelcomeCommandSelect, history } =
+    useTerminalContext();
 
   return (
     <div>

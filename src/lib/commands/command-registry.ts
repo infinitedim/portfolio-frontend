@@ -619,8 +619,6 @@ export const statusCommand: Command = {
   },
 };
 
-
-
 export const aliasCommand: Command = {
   name: "alias",
   description: "Show available command aliases",

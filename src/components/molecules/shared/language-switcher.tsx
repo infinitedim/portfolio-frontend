@@ -107,7 +107,10 @@ export function LanguageSwitcher({
         </SelectTrigger>
         <SelectContent>
           {supportedLocales.map((locale) => (
-            <SelectItem key={locale.code} value={locale.code}>
+            <SelectItem
+              key={locale.code}
+              value={locale.code}
+            >
               <div className="flex items-center gap-2">
                 {showFlags && <span className="text-base">{locale.flag}</span>}
                 <span className="flex-1 text-left truncate">
@@ -121,4 +124,3 @@ export function LanguageSwitcher({
     </div>
   );
 }
-

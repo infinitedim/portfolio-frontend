@@ -13,9 +13,7 @@ import {
   statusCommand,
   aliasCommand,
 } from "@/lib/commands/command-registry";
-import {
-  languageCommand,
-} from "@/lib/commands/language-commands";
+import { languageCommand } from "@/lib/commands/language-commands";
 import { useCommandHistory } from "./use-command-history";
 import { generateId } from "@/lib/utils/utils";
 
@@ -53,7 +51,6 @@ const getTechStackCommands = async () => {
     return null;
   }
 };
-
 
 const getBlogCommands = async () => {
   try {
@@ -246,22 +243,15 @@ export function useTerminal(
       parser.register(statusCommand);
       parser.register(aliasCommand);
 
-
-      const [
-        miscCmds,
-        customCmds,
-        demoCmds,
-        techCmds,
-        blogCmds,
-        aiCmds,
-      ] = await Promise.allSettled([
-        getMiscCommands(),
-        getCustomizationCommands(),
-        getDemoCommands(),
-        getTechStackCommands(),
-        getBlogCommands(),
-        getAiCommands(),
-      ]);
+      const [miscCmds, customCmds, demoCmds, techCmds, blogCmds, aiCmds] =
+        await Promise.allSettled([
+          getMiscCommands(),
+          getCustomizationCommands(),
+          getDemoCommands(),
+          getTechStackCommands(),
+          getBlogCommands(),
+          getAiCommands(),
+        ]);
 
       const blog = blogCmds.status === "fulfilled" ? blogCmds.value : null;
       if (blog?.blogCommand) parser.register(blog.blogCommand);
@@ -382,7 +372,6 @@ export function useTerminal(
       if (roadmapCommand) parser.register(roadmapCommand);
 
       parser.register(languageCommand);
-
 
       parser.register({
         name: "perf",

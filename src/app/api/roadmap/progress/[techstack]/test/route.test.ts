@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET } from "../route";
 
-if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/server", () => ({
   NextRequest: class {},
@@ -33,7 +37,7 @@ describe("GET /api/roadmap/progress/[techstack]", () => {
 
     const res = await GET(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(400);
@@ -44,7 +48,7 @@ describe("GET /api/roadmap/progress/[techstack]", () => {
   it("should call fetch and return cached response for valid techstack parameter", async () => {
     const mockData = { progress: 80 };
     mockFetch.mockResolvedValueOnce(
-      new Response(JSON.stringify(mockData), { status: 200 })
+      new Response(JSON.stringify(mockData), { status: 200 }),
     );
 
     const req = new Request("http://localhost:3000/api/roadmap/progress/react");
@@ -54,7 +58,7 @@ describe("GET /api/roadmap/progress/[techstack]", () => {
 
     const res = await GET(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(200);
@@ -66,13 +70,13 @@ describe("GET /api/roadmap/progress/[techstack]", () => {
       expect.stringContaining("/api/roadmap/progress/react"),
       expect.objectContaining({
         next: { revalidate: 300 },
-      })
+      }),
     );
   });
 
   it("should return upstream error status code when backend fails", async () => {
     mockFetch.mockResolvedValueOnce(
-      new Response(JSON.stringify({ error: "error" }), { status: 500 })
+      new Response(JSON.stringify({ error: "error" }), { status: 500 }),
     );
 
     const req = new Request("http://localhost:3000/api/roadmap/progress/rust");
@@ -82,7 +86,7 @@ describe("GET /api/roadmap/progress/[techstack]", () => {
 
     const res = await GET(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(500);
@@ -94,14 +98,16 @@ describe("GET /api/roadmap/progress/[techstack]", () => {
   it("should return 502 Bad Gateway when fetch throws", async () => {
     mockFetch.mockRejectedValueOnce(new Error("unreachable"));
 
-    const req = new Request("http://localhost:3000/api/roadmap/progress/nextjs");
+    const req = new Request(
+      "http://localhost:3000/api/roadmap/progress/nextjs",
+    );
     const context = {
       params: Promise.resolve({ techstack: "nextjs" }),
     };
 
     const res = await GET(
       req as unknown as import("next/server").NextRequest,
-      context
+      context,
     );
 
     expect(res.status).toBe(502);

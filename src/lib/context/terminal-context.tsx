@@ -151,7 +151,6 @@ export function TerminalProvider({
     commandAnalytics,
   } = useTerminal(undefined, undefined, themePerformance);
 
-
   // ── Local UI state ─────────────────────────────────────────────────────
   const [showWelcome, setShowWelcome] = useState(true);
   const [notification, setNotification] = useState<TerminalNotification | null>(
@@ -221,9 +220,6 @@ export function TerminalProvider({
 
   const clearNotification = useCallback(() => setNotification(null), []);
 
-
-
-
   /**
    * handleSubmit
    *
@@ -239,7 +235,6 @@ export function TerminalProvider({
         setCurrentInput("");
         return;
       }
-
 
       // ── OPEN_CUSTOMIZATION_MANAGER ─────────────────────────────────────
       if (
@@ -435,7 +430,6 @@ export function TerminalProvider({
     ],
   );
 
-
   const handleWelcomeCommandSelect = useCallback(
     (command: string) => {
       handleSubmit(command);
@@ -490,7 +484,6 @@ export function TerminalProvider({
       setFontSize,
       focusMode,
       setFocusMode,
-
 
       // Background
       backgroundSettings,

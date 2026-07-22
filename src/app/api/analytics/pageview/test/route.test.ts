@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "../route";
 
-if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/server", () => ({
   NextRequest: class {},
@@ -20,7 +24,10 @@ vi.mock("next/server", () => ({
 const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
 
-function createMockRequest(body: unknown, headers: Record<string, string> = {}): Request {
+function createMockRequest(
+  body: unknown,
+  headers: Record<string, string> = {},
+): Request {
   return new Request("http://localhost:3000/api/analytics/pageview", {
     method: "POST",
     headers: {
@@ -38,7 +45,7 @@ describe("POST /api/analytics/pageview", () => {
 
   it("should forward request to backend and return success 200 on success", async () => {
     mockFetch.mockResolvedValueOnce(
-      new Response(JSON.stringify({ success: true }), { status: 200 })
+      new Response(JSON.stringify({ success: true }), { status: 200 }),
     );
 
     const req = createMockRequest({ path: "/" });
@@ -53,13 +60,13 @@ describe("POST /api/analytics/pageview", () => {
       expect.objectContaining({
         method: "POST",
         body: JSON.stringify({ path: "/" }),
-      })
+      }),
     );
   });
 
   it("should return upstream error status code when backend fails", async () => {
     mockFetch.mockResolvedValueOnce(
-      new Response(JSON.stringify({ error: "bad request" }), { status: 400 })
+      new Response(JSON.stringify({ error: "bad request" }), { status: 400 }),
     );
 
     const req = createMockRequest({ path: "" });

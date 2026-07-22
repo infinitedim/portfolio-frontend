@@ -192,8 +192,6 @@ describe("commandRegistry", () => {
     });
   });
 
-
-
   describe("aliasCommand", () => {
     beforeEach(() => {
       if (typeof window === "undefined") {

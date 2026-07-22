@@ -82,295 +82,299 @@ export function BackgroundManager({
     <LenisScroll className="h-full overflow-y-auto">
       <div className="flex flex-col p-4 space-y-4">
         <div className="space-y-4">
-        <div>
-          <h3
-            className="text-lg font-semibold mb-2"
-            style={{ color: themeConfig.colors.text }}
-          >
-            {t("customBackgroundType")}
-          </h3>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setBackgroundType("letter-glitch")}
-              className={`px-4 py-2 rounded border transition-all ${
-                backgroundType === "letter-glitch"
-                  ? "opacity-100"
-                  : "opacity-60 hover:opacity-80"
-              }`}
-              style={{
-                backgroundColor:
+          <div>
+            <h3
+              className="text-lg font-semibold mb-2"
+              style={{ color: themeConfig.colors.text }}
+            >
+              {t("customBackgroundType")}
+            </h3>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setBackgroundType("letter-glitch")}
+                className={`px-4 py-2 rounded border transition-all ${
                   backgroundType === "letter-glitch"
-                    ? `${themeConfig.colors.accent}20`
-                    : "transparent",
-                borderColor: themeConfig.colors.border,
-                color: themeConfig.colors.text,
-              }}
-            >
-              {t("customLetterGlitch")}
-            </button>
-            <button
-              onClick={() => setBackgroundType("none")}
-              className={`px-4 py-2 rounded border transition-all ${
-                backgroundType === "none"
-                  ? "opacity-100"
-                  : "opacity-60 hover:opacity-80"
-              }`}
-              style={{
-                backgroundColor:
-                  backgroundType === "none"
-                    ? `${themeConfig.colors.accent}20`
-                    : "transparent",
-                borderColor: themeConfig.colors.border,
-                color: themeConfig.colors.text,
-              }}
-            >
-              {t("customNone")}
-            </button>
-          </div>
-        </div>
-
-        {backgroundType === "letter-glitch" && (
-          <div className="space-y-4">
-            <div>
-              <h4
-                className="text-sm font-medium mb-2"
-                style={{ color: themeConfig.colors.text }}
-              >
-                {t("customGlitchColors")}
-              </h4>
-              <div className="space-y-2">
-                {letterGlitchSettings.glitchColors.map((color, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2"
-                  >
-                    <input
-                      type="color"
-                      value={color}
-                      onChange={(e) => handleColorChange(index, e.target.value)}
-                      className="w-12 h-10 rounded border cursor-pointer"
-                      style={{
-                        borderColor: themeConfig.colors.border,
-                        backgroundColor: color,
-                      }}
-                    />
-                    <input
-                      type="text"
-                      value={color}
-                      onChange={(e) => handleColorChange(index, e.target.value)}
-                      className="flex-1 px-3 py-2 rounded border bg-transparent"
-                      style={{
-                        borderColor: themeConfig.colors.border,
-                        color: themeConfig.colors.text,
-                      }}
-                    />
-                    {letterGlitchSettings.glitchColors.length > 1 && (
-                      <button
-                        onClick={() => handleRemoveColor(index)}
-                        className="px-3 py-2 rounded border hover:opacity-80 transition-all"
-                        style={{
-                          backgroundColor: `${themeConfig.colors.error}20`,
-                          borderColor: themeConfig.colors.error,
-                          color: themeConfig.colors.error,
-                        }}
-                      >
-                        {t("customRemoveColor")}
-                      </button>
-                    )}
-                  </div>
-                ))}
-                <button
-                  onClick={handleAddColor}
-                  className="w-full px-4 py-2 rounded border hover:opacity-80 transition-all"
-                  style={{
-                    backgroundColor: `${themeConfig.colors.success}20`,
-                    borderColor: themeConfig.colors.success,
-                    color: themeConfig.colors.success,
-                  }}
-                >
-                  {t("customAddColor")}
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="glitch-speed"
-                className="block text-sm font-medium mb-2"
-                style={{ color: themeConfig.colors.text }}
-              >
-                {t("customGlitchSpeed").replace(
-                  "{speed}",
-                  String(letterGlitchSettings.glitchSpeed),
-                )}
-              </label>
-              <input
-                id="glitch-speed"
-                type="range"
-                min="10"
-                max="200"
-                value={letterGlitchSettings.glitchSpeed}
-                onChange={(e) =>
-                  setLetterGlitchSettings((prev) => ({
-                    ...prev,
-                    glitchSpeed: Number.parseInt(e.target.value, 10),
-                  }))
-                }
-                className="w-full"
+                    ? "opacity-100"
+                    : "opacity-60 hover:opacity-80"
+                }`}
                 style={{
-                  accentColor: themeConfig.colors.accent,
-                }}
-              />
-              <div className="flex justify-between text-xs opacity-70 mt-1">
-                <span style={{ color: themeConfig.colors.text }}>
-                  {t("customFast")}
-                </span>
-                <span style={{ color: themeConfig.colors.text }}>
-                  {t("customSlow")}
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={letterGlitchSettings.centerVignette}
-                  onChange={(e) =>
-                    setLetterGlitchSettings((prev) => ({
-                      ...prev,
-                      centerVignette: e.target.checked,
-                    }))
-                  }
-                  className="w-4 h-4 rounded border cursor-pointer"
-                  style={{
-                    borderColor: themeConfig.colors.border,
-                    accentColor: themeConfig.colors.accent,
-                  }}
-                />
-                <span
-                  className="text-sm"
-                  style={{ color: themeConfig.colors.text }}
-                >
-                  {t("customCenterVignette")}
-                </span>
-              </label>
-
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={letterGlitchSettings.outerVignette}
-                  onChange={(e) =>
-                    setLetterGlitchSettings((prev) => ({
-                      ...prev,
-                      outerVignette: e.target.checked,
-                    }))
-                  }
-                  className="w-4 h-4 rounded border cursor-pointer"
-                  style={{
-                    borderColor: themeConfig.colors.border,
-                    accentColor: themeConfig.colors.accent,
-                  }}
-                />
-                <span
-                  className="text-sm"
-                  style={{ color: themeConfig.colors.text }}
-                >
-                  {t("customOuterVignette")}
-                </span>
-              </label>
-
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={letterGlitchSettings.smooth}
-                  onChange={(e) =>
-                    setLetterGlitchSettings((prev) => ({
-                      ...prev,
-                      smooth: e.target.checked,
-                    }))
-                  }
-                  className="w-4 h-4 rounded border cursor-pointer"
-                  style={{
-                    borderColor: themeConfig.colors.border,
-                    accentColor: themeConfig.colors.accent,
-                  }}
-                />
-                <span
-                  className="text-sm"
-                  style={{ color: themeConfig.colors.text }}
-                >
-                  {t("customSmoothAnimation")}
-                </span>
-              </label>
-            </div>
-
-            <div>
-              <label
-                htmlFor="characters-input"
-                className="block text-sm font-medium mb-2"
-                style={{ color: themeConfig.colors.text }}
-              >
-                {t("customCharacters")}
-              </label>
-              <textarea
-                id="characters-input"
-                value={letterGlitchSettings.characters}
-                onChange={(e) =>
-                  setLetterGlitchSettings((prev) => ({
-                    ...prev,
-                    characters: e.target.value,
-                  }))
-                }
-                className="w-full px-3 py-2 rounded border bg-transparent font-mono text-sm"
-                style={{
+                  backgroundColor:
+                    backgroundType === "letter-glitch"
+                      ? `${themeConfig.colors.accent}20`
+                      : "transparent",
                   borderColor: themeConfig.colors.border,
                   color: themeConfig.colors.text,
                 }}
-                rows={3}
-                placeholder={t("customCharactersPlaceholder")}
-              />
-              <p
-                className="text-xs opacity-70 mt-1"
-                style={{ color: themeConfig.colors.text }}
               >
-                {t("customCharactersHelp")}
-              </p>
+                {t("customLetterGlitch")}
+              </button>
+              <button
+                onClick={() => setBackgroundType("none")}
+                className={`px-4 py-2 rounded border transition-all ${
+                  backgroundType === "none"
+                    ? "opacity-100"
+                    : "opacity-60 hover:opacity-80"
+                }`}
+                style={{
+                  backgroundColor:
+                    backgroundType === "none"
+                      ? `${themeConfig.colors.accent}20`
+                      : "transparent",
+                  borderColor: themeConfig.colors.border,
+                  color: themeConfig.colors.text,
+                }}
+              >
+                {t("customNone")}
+              </button>
             </div>
           </div>
-        )}
-      </div>
 
-      <div
-        className="flex gap-2 pt-4 border-t"
-        style={{ borderColor: themeConfig.colors.border }}
-      >
-        <button
-          onClick={handleSave}
-          className="flex-1 px-4 py-2 rounded border font-medium transition-all hover:opacity-80"
-          style={{
-            backgroundColor: themeConfig.colors.accent,
-            borderColor: themeConfig.colors.accent,
-            color: themeConfig.colors.bg,
-          }}
+          {backgroundType === "letter-glitch" && (
+            <div className="space-y-4">
+              <div>
+                <h4
+                  className="text-sm font-medium mb-2"
+                  style={{ color: themeConfig.colors.text }}
+                >
+                  {t("customGlitchColors")}
+                </h4>
+                <div className="space-y-2">
+                  {letterGlitchSettings.glitchColors.map((color, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2"
+                    >
+                      <input
+                        type="color"
+                        value={color}
+                        onChange={(e) =>
+                          handleColorChange(index, e.target.value)
+                        }
+                        className="w-12 h-10 rounded border cursor-pointer"
+                        style={{
+                          borderColor: themeConfig.colors.border,
+                          backgroundColor: color,
+                        }}
+                      />
+                      <input
+                        type="text"
+                        value={color}
+                        onChange={(e) =>
+                          handleColorChange(index, e.target.value)
+                        }
+                        className="flex-1 px-3 py-2 rounded border bg-transparent"
+                        style={{
+                          borderColor: themeConfig.colors.border,
+                          color: themeConfig.colors.text,
+                        }}
+                      />
+                      {letterGlitchSettings.glitchColors.length > 1 && (
+                        <button
+                          onClick={() => handleRemoveColor(index)}
+                          className="px-3 py-2 rounded border hover:opacity-80 transition-all"
+                          style={{
+                            backgroundColor: `${themeConfig.colors.error}20`,
+                            borderColor: themeConfig.colors.error,
+                            color: themeConfig.colors.error,
+                          }}
+                        >
+                          {t("customRemoveColor")}
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    onClick={handleAddColor}
+                    className="w-full px-4 py-2 rounded border hover:opacity-80 transition-all"
+                    style={{
+                      backgroundColor: `${themeConfig.colors.success}20`,
+                      borderColor: themeConfig.colors.success,
+                      color: themeConfig.colors.success,
+                    }}
+                  >
+                    {t("customAddColor")}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="glitch-speed"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: themeConfig.colors.text }}
+                >
+                  {t("customGlitchSpeed").replace(
+                    "{speed}",
+                    String(letterGlitchSettings.glitchSpeed),
+                  )}
+                </label>
+                <input
+                  id="glitch-speed"
+                  type="range"
+                  min="10"
+                  max="200"
+                  value={letterGlitchSettings.glitchSpeed}
+                  onChange={(e) =>
+                    setLetterGlitchSettings((prev) => ({
+                      ...prev,
+                      glitchSpeed: Number.parseInt(e.target.value, 10),
+                    }))
+                  }
+                  className="w-full"
+                  style={{
+                    accentColor: themeConfig.colors.accent,
+                  }}
+                />
+                <div className="flex justify-between text-xs opacity-70 mt-1">
+                  <span style={{ color: themeConfig.colors.text }}>
+                    {t("customFast")}
+                  </span>
+                  <span style={{ color: themeConfig.colors.text }}>
+                    {t("customSlow")}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={letterGlitchSettings.centerVignette}
+                    onChange={(e) =>
+                      setLetterGlitchSettings((prev) => ({
+                        ...prev,
+                        centerVignette: e.target.checked,
+                      }))
+                    }
+                    className="w-4 h-4 rounded border cursor-pointer"
+                    style={{
+                      borderColor: themeConfig.colors.border,
+                      accentColor: themeConfig.colors.accent,
+                    }}
+                  />
+                  <span
+                    className="text-sm"
+                    style={{ color: themeConfig.colors.text }}
+                  >
+                    {t("customCenterVignette")}
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={letterGlitchSettings.outerVignette}
+                    onChange={(e) =>
+                      setLetterGlitchSettings((prev) => ({
+                        ...prev,
+                        outerVignette: e.target.checked,
+                      }))
+                    }
+                    className="w-4 h-4 rounded border cursor-pointer"
+                    style={{
+                      borderColor: themeConfig.colors.border,
+                      accentColor: themeConfig.colors.accent,
+                    }}
+                  />
+                  <span
+                    className="text-sm"
+                    style={{ color: themeConfig.colors.text }}
+                  >
+                    {t("customOuterVignette")}
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={letterGlitchSettings.smooth}
+                    onChange={(e) =>
+                      setLetterGlitchSettings((prev) => ({
+                        ...prev,
+                        smooth: e.target.checked,
+                      }))
+                    }
+                    className="w-4 h-4 rounded border cursor-pointer"
+                    style={{
+                      borderColor: themeConfig.colors.border,
+                      accentColor: themeConfig.colors.accent,
+                    }}
+                  />
+                  <span
+                    className="text-sm"
+                    style={{ color: themeConfig.colors.text }}
+                  >
+                    {t("customSmoothAnimation")}
+                  </span>
+                </label>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="characters-input"
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: themeConfig.colors.text }}
+                >
+                  {t("customCharacters")}
+                </label>
+                <textarea
+                  id="characters-input"
+                  value={letterGlitchSettings.characters}
+                  onChange={(e) =>
+                    setLetterGlitchSettings((prev) => ({
+                      ...prev,
+                      characters: e.target.value,
+                    }))
+                  }
+                  className="w-full px-3 py-2 rounded border bg-transparent font-mono text-sm"
+                  style={{
+                    borderColor: themeConfig.colors.border,
+                    color: themeConfig.colors.text,
+                  }}
+                  rows={3}
+                  placeholder={t("customCharactersPlaceholder")}
+                />
+                <p
+                  className="text-xs opacity-70 mt-1"
+                  style={{ color: themeConfig.colors.text }}
+                >
+                  {t("customCharactersHelp")}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div
+          className="flex gap-2 pt-4 border-t"
+          style={{ borderColor: themeConfig.colors.border }}
         >
-          {t("customSaveBackgroundSettings")}
-        </button>
-        {onClose && (
           <button
-            onClick={onClose}
-            className="px-4 py-2 rounded border transition-all hover:opacity-80"
+            onClick={handleSave}
+            className="flex-1 px-4 py-2 rounded border font-medium transition-all hover:opacity-80"
             style={{
-              backgroundColor: "transparent",
-              borderColor: themeConfig.colors.border,
-              color: themeConfig.colors.text,
+              backgroundColor: themeConfig.colors.accent,
+              borderColor: themeConfig.colors.accent,
+              color: themeConfig.colors.bg,
             }}
           >
-            {t("customCancel")}
+            {t("customSaveBackgroundSettings")}
           </button>
-        )}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="px-4 py-2 rounded border transition-all hover:opacity-80"
+              style={{
+                backgroundColor: "transparent",
+                borderColor: themeConfig.colors.border,
+                color: themeConfig.colors.text,
+              }}
+            >
+              {t("customCancel")}
+            </button>
+          )}
+        </div>
       </div>
-    </div>
-  </LenisScroll>
+    </LenisScroll>
   );
 }

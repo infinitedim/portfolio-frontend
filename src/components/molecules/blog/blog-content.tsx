@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import { useI18n } from "@/hooks/use-i18n";
+import { sanitize } from "isomorphic-dompurify";
 
 export interface BlogContentProps {
   html?: string | null;
@@ -12,9 +12,10 @@ export function BlogContent({ html, md }: BlogContentProps) {
   const { t } = useI18n();
 
   if (html) {
+    const cleanHtml = sanitize(html);
     return (
       <div
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: cleanHtml }}
         className="prose prose-invert max-w-none
           prose-headings:text-terminal-accent
           prose-a:text-terminal-accent hover:prose-a:text-terminal-accent/85

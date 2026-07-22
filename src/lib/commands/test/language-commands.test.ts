@@ -164,9 +164,7 @@ vi.mock("@/lib/i18n/locales", () => ({
   },
 }));
 
-import {
-  languageCommand,
-} from "@/lib/commands/language-commands";
+import { languageCommand } from "@/lib/commands/language-commands";
 
 describe("languageCommands", () => {
   beforeEach(() => {
@@ -347,5 +345,4 @@ describe("languageCommands", () => {
       });
     });
   });
-
 });

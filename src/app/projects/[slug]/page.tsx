@@ -5,9 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { getProjectsData, type Project } from "@/lib/data/data-fetching";
-import {
-  BreadcrumbListSchema,
-} from "@/components/molecules/seo/json-ld";
+import { BreadcrumbListSchema } from "@/components/molecules/seo/json-ld";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 import { ArrowLeft, ExternalLink, Code, Star } from "lucide-react";
 
@@ -96,9 +94,21 @@ async function ProjectDetailContent({
     .slice(0, 3);
 
   const statusConfig = {
-    completed: { color: "text-green-400", bg: "bg-green-400/10 border-green-400/20", label: "Completed" },
-    "in-progress": { color: "text-yellow-400", bg: "bg-yellow-400/10 border-yellow-400/20", label: "In Progress" },
-    planned: { color: "text-blue-400", bg: "bg-blue-400/10 border-blue-400/20", label: "Planned" },
+    completed: {
+      color: "text-green-400",
+      bg: "bg-green-400/10 border-green-400/20",
+      label: "Completed",
+    },
+    "in-progress": {
+      color: "text-yellow-400",
+      bg: "bg-yellow-400/10 border-yellow-400/20",
+      label: "In Progress",
+    },
+    planned: {
+      color: "text-blue-400",
+      bg: "bg-blue-400/10 border-blue-400/20",
+      label: "Planned",
+    },
   };
   const status = statusConfig[project.status] ?? statusConfig.completed;
 
@@ -168,7 +178,10 @@ async function ProjectDetailContent({
                 </h1>
                 {project.featured && (
                   <span className="mt-1 inline-flex items-center gap-1 rounded bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400">
-                    <Star size={12} className="fill-current" />
+                    <Star
+                      size={12}
+                      className="fill-current"
+                    />
                     Featured
                   </span>
                 )}
@@ -289,9 +302,7 @@ function ProjectDetailFallback(): JSX.Element {
   );
 }
 
-export default function ProjectDetailPage({
-  params,
-}: PageProps): JSX.Element {
+export default function ProjectDetailPage({ params }: PageProps): JSX.Element {
   return (
     <StandardPageLayout>
       <Suspense fallback={<ProjectDetailFallback />}>

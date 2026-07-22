@@ -73,8 +73,6 @@ describe("CustomizationService", () => {
     expect(all.length).toBeGreaterThan(0);
   });
 
-
-
   it("manages settings and resetToDefaults", () => {
     const svc = CustomizationService.getInstance();
 

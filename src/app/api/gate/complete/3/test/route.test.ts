@@ -3,7 +3,11 @@ import { POST } from "../route";
 import { proxyGateRequest } from "@/lib/gate/gate-proxy";
 import { NextRequest } from "next/server";
 
-if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (
+  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
+  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+)
+  (vi as unknown as Record<string, unknown>).mock = () => undefined;
 
 vi.mock("next/server", () => {
   const original = vi.importActual("next/server");
@@ -16,7 +20,10 @@ vi.mock("next/server", () => {
       constructor(input: string, init?: RequestInit) {
         this.url = input;
         this.method = init?.method ?? "GET";
-        this.headers = init?.headers instanceof Headers ? init.headers : new Headers(init?.headers);
+        this.headers =
+          init?.headers instanceof Headers
+            ? init.headers
+            : new Headers(init?.headers);
       }
       clone() {
         return new (NextRequest as any)(this.url, {
@@ -58,7 +65,7 @@ describe("POST /api/gate/complete/3", () => {
     const req = new NextRequest("http://localhost:3000/api/gate/complete/3", {
       method: "POST",
       headers: {
-        "referer": "http://localhost:3000/gate/3",
+        referer: "http://localhost:3000/gate/3",
       },
     });
 
@@ -71,12 +78,14 @@ describe("POST /api/gate/complete/3", () => {
         backendPath: "/api/gate/complete/3",
         body: "{}",
         forwardReferer: true,
-      })
+      }),
     );
 
     const callArg = vi.mocked(proxyGateRequest).mock.calls[0][0];
     const modifiedReq = callArg.request;
-    expect(modifiedReq.headers.get("referer")).toBe("http://localhost:3000/terminal");
+    expect(modifiedReq.headers.get("referer")).toBe(
+      "http://localhost:3000/terminal",
+    );
   });
 
   it("should not modify referer header if it doesn't contain /gate/3", async () => {
@@ -86,7 +95,7 @@ describe("POST /api/gate/complete/3", () => {
     const req = new NextRequest("http://localhost:3000/api/gate/complete/3", {
       method: "POST",
       headers: {
-        "referer": "http://localhost:3000/other-page",
+        referer: "http://localhost:3000/other-page",
       },
     });
 
@@ -94,6 +103,8 @@ describe("POST /api/gate/complete/3", () => {
 
     const callArg = vi.mocked(proxyGateRequest).mock.calls[0][0];
     const modifiedReq = callArg.request;
-    expect(modifiedReq.headers.get("referer")).toBe("http://localhost:3000/other-page");
+    expect(modifiedReq.headers.get("referer")).toBe(
+      "http://localhost:3000/other-page",
+    );
   });
 });

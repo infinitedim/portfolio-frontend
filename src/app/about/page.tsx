@@ -1,10 +1,7 @@
 import { type Metadata } from "next";
 import { type JSX, Suspense } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
-import {
-  getAboutData,
-  getExperienceData,
-} from "@/lib/data/data-fetching";
+import { getAboutData, getExperienceData } from "@/lib/data/data-fetching";
 import {
   BreadcrumbListSchema,
   PersonSchema,
@@ -18,8 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
   openGraph: {
     title: "About | Dimas Saputra",
-    description:
-      "Full-stack developer — experience, skills, and background.",
+    description: "Full-stack developer — experience, skills, and background.",
     type: "profile",
     url: "/about",
   },
@@ -59,13 +55,7 @@ const SKILL_GROUPS = [
   },
   {
     label: "Other",
-    items: [
-      "Flutter",
-      "Git",
-      "Figma",
-      "Linux",
-      "PWA",
-    ],
+    items: ["Flutter", "Git", "Figma", "Linux", "PWA"],
   },
 ] as const;
 
@@ -135,7 +125,10 @@ async function AboutContent(): Promise<JSX.Element> {
 
           <div className="relative border-l-2 border-neutral-800 pl-6 space-y-10">
             {experience.map((exp, i) => (
-              <div key={`${exp.company}-${i}`} className="relative">
+              <div
+                key={`${exp.company}-${i}`}
+                className="relative"
+              >
                 {/* Timeline dot */}
                 <div className="absolute -left-7.75 top-1 h-4 w-4 rounded-full border-2 border-green-400 bg-neutral-950" />
 
@@ -163,7 +156,10 @@ async function AboutContent(): Promise<JSX.Element> {
                     ))}
                   </ul>
                   {exp.technologies.length > 0 && (
-                    <ul aria-label="Technologies used" className="mt-3 flex flex-wrap gap-1.5">
+                    <ul
+                      aria-label="Technologies used"
+                      className="mt-3 flex flex-wrap gap-1.5"
+                    >
                       {exp.technologies.map((tech) => (
                         <li
                           key={tech}
@@ -182,7 +178,10 @@ async function AboutContent(): Promise<JSX.Element> {
       </section>
 
       {/* Skills Grid */}
-      <section id="skills" className="px-4 py-12 scroll-mt-24">
+      <section
+        id="skills"
+        className="px-4 py-12 scroll-mt-24"
+      >
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-8 font-mono text-2xl font-bold text-white">
             <span className="text-green-400">$</span> skills --list
@@ -197,7 +196,10 @@ async function AboutContent(): Promise<JSX.Element> {
                 <h3 className="mb-3 font-mono text-sm font-bold text-green-400">
                   {group.label}
                 </h3>
-                <ul aria-label="Skills list" className="flex flex-wrap gap-2">
+                <ul
+                  aria-label="Skills list"
+                  className="flex flex-wrap gap-2"
+                >
                   {group.items.map((skill) => (
                     <li
                       key={skill}
