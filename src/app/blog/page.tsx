@@ -13,6 +13,7 @@ import { TagChip } from "@/components/atoms/shared/tag-chip";
 
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
+import { PageHeader } from "@/components/atoms/shared/page-header";
 import { getCachedBlogList } from "@/lib/services/cached-blog-fetch";
 import { getTranslationsForLocale } from "@/lib/i18n";
 
@@ -182,75 +183,74 @@ async function BlogPageContent({
     <StandardPageLayout>
       <div className="min-h-screen bg-terminal-bg text-terminal-text">
         <div className="mx-auto max-w-6xl px-4 py-8">
-          <header className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="text-4xl font-bold font-mono text-terminal-accent">
-                <span className="text-terminal-accent opacity-60">~/</span>blog
-              </h1>
+          <PageHeader
+            title="blog"
+            description={t.blogLatestArticles}
+            actions={
               <a
                 href="/rss.xml"
                 className="text-xs text-terminal-muted hover:text-orange-400 transition-colors border border-terminal-border hover:border-orange-400/50 px-2 py-1 rounded font-mono"
               >
                 RSS
               </a>
-            </div>
-            <p className="text-terminal-muted mb-6">{t.blogLatestArticles}</p>
-
+            }
+          >
             <BlogLocaleSwitcher className="mb-4" />
+          </PageHeader>
 
-            <form
-              method="GET"
-              action="/blog"
-              className="flex gap-2 mb-4"
-            >
+          <form
+            method="GET"
+            action="/blog"
+            className="flex gap-2 mb-4"
+          >
+            <input
+              type="text"
+              name="search"
+              defaultValue={search ?? ""}
+              placeholder={t.blogSearchPlaceholder}
+              className="flex-1 bg-terminal-bg/50 border border-terminal-border rounded px-3 py-2 text-sm text-terminal-text placeholder-terminal-muted/40 focus:outline-none focus:border-terminal-accent font-mono"
+            />
+            {tag && (
               <input
-                type="text"
-                name="search"
-                defaultValue={search ?? ""}
-                placeholder={t.blogSearchPlaceholder}
-                className="flex-1 bg-terminal-bg/50 border border-terminal-border rounded px-3 py-2 text-sm text-terminal-text placeholder-terminal-muted/40 focus:outline-none focus:border-terminal-accent font-mono"
+                type="hidden"
+                name="tag"
+                value={tag}
               />
-              {tag && (
-                <input
-                  type="hidden"
-                  name="tag"
-                  value={tag}
-                />
-              )}
-              {series && (
-                <input
-                  type="hidden"
-                  name="series"
-                  value={series}
-                />
-              )}
-              {locale !== DEFAULT_BLOG_LOCALE && (
-                <input
-                  type="hidden"
-                  name="locale"
-                  value={locale}
-                />
-              )}
-              <button
-                type="submit"
-                className="px-4 py-2 bg-terminal-accent/10 border border-terminal-accent/40 text-terminal-accent rounded text-sm hover:bg-terminal-accent/20 transition-colors font-mono cursor-pointer"
+            )}
+            {series && (
+              <input
+                type="hidden"
+                name="series"
+                value={series}
+              />
+            )}
+            {locale !== DEFAULT_BLOG_LOCALE && (
+              <input
+                type="hidden"
+                name="locale"
+                value={locale}
+              />
+            )}
+            <button
+              type="submit"
+              className="px-4 py-2 bg-terminal-accent/10 border border-terminal-accent/40 text-terminal-accent rounded text-sm hover:bg-terminal-accent/20 transition-colors font-mono cursor-pointer"
+            >
+              {t.blogSearchButton}
+            </button>
+            {(search || tag || series) && (
+              <Link
+                href={buildUrl({
+                  page: 1,
+                  search: undefined,
+                  tag: undefined,
+                  series: undefined,
+                })}
+                className="px-4 py-2 border border-terminal-border text-terminal-muted rounded text-sm hover:border-terminal-muted transition-colors font-mono"
               >
-                {t.blogSearchButton}
-              </button>
-              {(search || tag || series) && (
-                <Link
-                  href={buildUrl({
-                    page: 1,
-                    search: undefined,
-                    tag: undefined,
-                    series: undefined,
-                  })}
-                  className="px-4 py-2 border border-terminal-border text-terminal-muted rounded text-sm hover:border-terminal-muted transition-colors font-mono"
-                >
-                  {t.blogClearButton}
-                </Link>
-              )}
-            </form>
+                {t.blogClearButton}
+              </Link>
+            )}
+          </form>
 
             <SeriesFilter
               series={seriesList}
@@ -265,7 +265,6 @@ async function BlogPageContent({
                 searchParam={search}
               />
             )}
-          </header>
 
           {posts.length === 0 ? (
             <div className="text-center py-12 text-terminal-muted font-mono">

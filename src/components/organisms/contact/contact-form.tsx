@@ -9,6 +9,8 @@ import {
 import { useI18n } from "@/hooks/use-i18n";
 import type { TranslationKeys } from "@/lib/i18n";
 
+import { PageHeader } from "@/components/atoms/shared/page-header";
+
 const MIN_MESSAGE_LEN = 10;
 const MAX_MESSAGE_LEN = 5000;
 
@@ -141,14 +143,10 @@ export function ContactForm(): JSX.Element {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <header className="mb-8">
-        <h1 className="font-mono text-3xl font-bold text-green-400">
-          {t("contactTitle")}
-        </h1>
-        <p className="mt-2 font-mono text-sm text-neutral-400">
-          {t("contactDesc")}
-        </p>
-      </header>
+      <PageHeader
+        title="contact"
+        description={t("contactDesc")}
+      />
 
       {submitted ? (
         <div className="rounded-lg border border-green-500/40 bg-green-500/5 p-6 font-mono text-sm text-green-400">

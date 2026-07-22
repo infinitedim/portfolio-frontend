@@ -13,6 +13,7 @@ import {
 } from "@/lib/data/data-fetching";
 import Link from "next/link";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
+import { PageHeader } from "@/components/atoms/shared/page-header";
 import {
   Flame,
   CheckCircle2,
@@ -347,6 +348,10 @@ export default function RoadmapPage(): JSX.Element {
     <StandardPageLayout>
       <div className="min-h-screen px-4 py-10">
         <div className="mx-auto max-w-6xl">
+          <PageHeader
+            title="roadmap"
+            description="My learning progress across various technology roadmaps tracked on roadmap.sh"
+          />
           <Suspense
             fallback={
               <div className="font-mono text-sm text-neutral-400 animate-pulse">

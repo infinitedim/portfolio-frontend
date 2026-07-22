@@ -1,12 +1,14 @@
 import { type Metadata } from "next";
 import { type JSX, Suspense } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
+import { PageHeader } from "@/components/atoms/shared/page-header";
 import { getAboutData, getExperienceData } from "@/lib/data/data-fetching";
 import {
   BreadcrumbListSchema,
   PersonSchema,
 } from "@/components/molecules/seo/json-ld";
 import { getSiteUrl } from "@/lib/api/get-site-url";
+import { Mail } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "About",
@@ -94,25 +96,23 @@ async function AboutContent(): Promise<JSX.Element> {
       />
 
       {/* Hero */}
-      <section className="relative overflow-hidden px-4 py-16 sm:py-24">
+      <section className="relative overflow-hidden px-4 py-12 sm:py-16">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-green-900/20 via-neutral-950 to-neutral-950" />
-        <div className="relative mx-auto max-w-6xl text-center">
-          <h1 className="font-mono text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            <span className="text-green-400">~/</span>about
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl font-mono text-base text-neutral-400 sm:text-lg">
-            {about.bio}
-          </p>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-3 font-mono text-xs text-neutral-400">
-            <span>📍 {about.location}</span>
-            <span aria-hidden="true">·</span>
-            <a
-              href={`mailto:${about.contact.email}`}
-              className="text-green-400 hover:text-green-300 transition-colors"
-            >
-              {about.contact.email}
-            </a>
-          </div>
+        <div className="relative mx-auto max-w-6xl">
+          <PageHeader
+            title="about"
+            description={about.bio}
+          >
+            <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-neutral-400">
+              <a
+                href={`mailto:${about.contact.email}`}
+                className="inline-flex items-center gap-1.5 text-green-400 hover:text-green-300 transition-colors"
+              >
+                <Mail className="h-3.5 w-3.5" />
+                {about.contact.email}
+              </a>
+            </div>
+          </PageHeader>
         </div>
       </section>
 

@@ -4,6 +4,7 @@ import { type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { Project } from "@/lib/data/data-fetching";
 import { ProjectCard } from "@/components/molecules/projects/project-card";
+import { PageHeader } from "@/components/atoms/shared/page-header";
 
 interface ProjectsClientProps {
   allProjects: Project[];
@@ -28,29 +29,25 @@ export function ProjectsClient({
 
   return (
     <div className="min-h-screen bg-terminal-bg text-terminal-text">
-      <section className="py-16 px-4">
+      <section className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold font-mono mb-6">
-              <span className="text-terminal-accent">~/</span>
-              {t("projects")}
-            </h1>
-            <p className="text-xl md:text-2xl text-terminal-muted max-w-3xl mx-auto">
-              {getSubtitle()}
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <PageHeader
+            title="projects"
+            description={getSubtitle()}
+          >
+            <div className="flex flex-wrap gap-2">
               {Array.from(new Set(allProjects.flatMap((p) => p.technologies)))
                 .slice(0, 8)
                 .map((tech) => (
                   <span
                     key={tech}
-                    className="px-3 py-1 text-sm bg-terminal-accent/10 text-terminal-accent rounded-full border border-terminal-accent/20"
+                    className="px-3 py-1 font-mono text-xs bg-green-400/10 text-green-400 rounded-full border border-green-400/20"
                   >
                     {tech}
                   </span>
                 ))}
             </div>
-          </div>
+          </PageHeader>
         </div>
       </section>
 

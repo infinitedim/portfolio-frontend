@@ -15,12 +15,12 @@ export function AboutSectionClient({
 
   return (
     <section className="border-t border-neutral-800 px-4 py-16">
-      <div className="mx-auto max-w-6xl animate-slide-in-up">
+      <div className="mx-auto max-w-6xl text-left animate-slide-in-up">
         <h2 className="mb-6 font-mono text-2xl font-bold text-green-400">
           {t("landingAboutTitle")}
         </h2>
-        <div className="space-y-4 font-mono text-sm leading-relaxed text-neutral-300">
-          <p className="text-lg text-white">{about.title}</p>
+        <div className="space-y-4 font-mono text-sm leading-relaxed text-neutral-300 max-w-3xl">
+          <p className="text-lg font-semibold text-white">{about.title}</p>
           <p>{about.bio}</p>
         </div>
       </div>
