@@ -19,7 +19,8 @@ export function VisitorPresenceBadge() {
   useEffect(() => {
     if (
       typeof navigator !== "undefined" &&
-      /lighthouse|chrome-lighthouse/i.test(navigator.userAgent)
+      (/lighthouse|chrome-lighthouse/i.test(navigator.userAgent) ||
+        navigator.webdriver)
     ) {
       return;
     }
@@ -27,6 +28,7 @@ export function VisitorPresenceBadge() {
     let ws: WebSocket | null = null;
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
     let closed = false;
+    let hasInteracted = false;
 
     const connect = () => {
       if (closed) return;
@@ -68,12 +70,27 @@ export function VisitorPresenceBadge() {
       };
     };
 
-    connect();
+    const interactionEvents = ["mousemove", "touchstart", "keydown", "scroll"];
+    const onInteract = () => {
+      if (hasInteracted || closed) return;
+      hasInteracted = true;
+      connect();
+      interactionEvents.forEach((evt) =>
+        window.removeEventListener(evt, onInteract),
+      );
+    };
+
+    interactionEvents.forEach((evt) =>
+      window.addEventListener(evt, onInteract, { once: true }),
+    );
 
     return () => {
       closed = true;
       if (reconnectTimer) clearTimeout(reconnectTimer);
       ws?.close();
+      interactionEvents.forEach((evt) =>
+        window.removeEventListener(evt, onInteract),
+      );
     };
   }, []);
 

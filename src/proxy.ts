@@ -47,6 +47,24 @@ const edgeLogger = {
   },
 };
 
+const RATE_LIMIT = 200; // max requests per minute
+const RATE_LIMIT_WINDOW_MS = 60000;
+const rateLimitMap = new Map<string, { count: number; expires: number }>();
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+  if (!record || record.expires < now) {
+    rateLimitMap.set(ip, { count: 1, expires: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (record.count > RATE_LIMIT) {
+    return false;
+  }
+  record.count++;
+  return true;
+}
+
 /** Origin only — no trailing slash; upgrade http→https for connect-src. */
 export function normalizeApiOrigin(raw: string | undefined): string {
   const fallback = "https://api.infinitedim.dev";
@@ -182,6 +200,16 @@ export function proxy(request: NextRequest): NextResponse {
   const gateRedirect = resolveGateRedirect(request);
   if (gateRedirect) {
     return gateRedirect;
+  }
+
+  // IP-based Rate Limiting (Basic L7 DDoS Mitigation)
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
+  if (ip !== "unknown" && !checkRateLimit(ip)) {
+    edgeLogger.warn("Rate limit exceeded", { ip, path: request.nextUrl.pathname });
+    return new NextResponse("Too Many Requests", { status: 429 });
   }
 
   const isDevelopment = process.env.NODE_ENV === "development";

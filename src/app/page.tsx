@@ -61,23 +61,8 @@ export default function HomePage(): JSX.Element {
 
   return (
     <StandardPageLayout>
-      <link
-        rel="preload"
-        as="image"
-        href="/og-image.png"
-      />
       <HeroSection />
-
-      <Suspense
-        fallback={
-          <LandingSectionSkeleton
-            lines={4}
-            heightClass="min-h-[200px]"
-          />
-        }
-      >
-        <AboutSection />
-      </Suspense>
+      <AboutSection />
 
       <Suspense
         fallback={
