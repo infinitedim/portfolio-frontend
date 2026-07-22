@@ -76,7 +76,7 @@ function toWebSocketOrigin(httpOrigin: string): string {
   }
 }
 
-function buildCsp(isDev: boolean, nonce: string): string {
+function buildCsp(isDev: boolean): string {
   const apiOrigin = normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL);
 
   const directives: Record<string, string[]> = {
@@ -84,8 +84,6 @@ function buildCsp(isDev: boolean, nonce: string): string {
     "script-src": [
       "'self'",
       "'unsafe-inline'",
-      `'nonce-${nonce}'`,
-      "'strict-dynamic'",
       "https://va.vercel-scripts.com",
       "https://vercel.live",
       ...(isDev ? ["'unsafe-eval'"] : []),
@@ -189,7 +187,7 @@ export function proxy(request: NextRequest): NextResponse {
   const isDevelopment = process.env.NODE_ENV === "development";
   const requestId = crypto.randomUUID();
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-  const csp = buildCsp(isDevelopment, nonce);
+  const csp = buildCsp(isDevelopment);
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-request-id", requestId);
