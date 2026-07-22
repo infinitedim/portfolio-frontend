@@ -62,7 +62,17 @@ export default function HomePage(): JSX.Element {
   return (
     <StandardPageLayout>
       <HeroSection />
-      <AboutSection />
+
+      <Suspense
+        fallback={
+          <LandingSectionSkeleton
+            lines={4}
+            heightClass="min-h-[200px]"
+          />
+        }
+      >
+        <AboutSection />
+      </Suspense>
 
       <Suspense
         fallback={
