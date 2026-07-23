@@ -188,9 +188,33 @@ function normalizeProjects(projects: Project[]): Project[] {
   return projects.map(normalizeProject);
 }
 
-export const getExperienceData = cache(async (): Promise<Experience[]> => {
+export async function getExperienceData(
+  locale: string = "en_US",
+): Promise<Experience[]> {
   const backendUrl = getBackendUrl();
 
+  try {
+    // Try the new dedicated i18n experience endpoint first
+    const i18nResponse = await fetch(
+      `${backendUrl}/api/portfolio/experience?locale=${encodeURIComponent(locale)}`,
+      {
+        next: {
+          revalidate: CACHE_DURATIONS.EXPERIENCE / 1000,
+          tags: ["portfolio-experience"],
+        },
+      },
+    );
+
+    if (i18nResponse.ok) {
+      const data = await i18nResponse.json();
+      const result = data.data ?? [];
+      if (result.length > 0) return result;
+    }
+  } catch {
+    // Fall through to legacy endpoint
+  }
+
+  // Fallback to the legacy section-based endpoint
   try {
     const response = await fetch(
       `${backendUrl}/api/portfolio?section=experience`,
@@ -214,7 +238,7 @@ export const getExperienceData = cache(async (): Promise<Experience[]> => {
   }
 
   return getFallbackExperienceData();
-});
+}
 
 export const getAboutData = cache(async (): Promise<AboutInfo> => {
   const backendUrl = getBackendUrl();

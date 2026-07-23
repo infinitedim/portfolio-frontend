@@ -62,9 +62,14 @@ const SKILL_GROUPS = [
 ] as const;
 
 async function AboutContent(): Promise<JSX.Element> {
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const locale =
+    cookieStore.get("portfolio_locale")?.value ?? "en_US";
+
   const [about, experience] = await Promise.all([
     getAboutData(),
-    getExperienceData(),
+    getExperienceData(locale),
   ]);
   const siteUrl = getSiteUrl();
 
