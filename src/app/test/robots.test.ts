@@ -255,12 +255,12 @@ describe("robots.ts", () => {
       expect(gptBotRule).toBeDefined();
     });
 
-    it("should disallow all routes for GPTBot", () => {
+    it("should disallow root but allow blog routes for GPTBot", () => {
       const result = robots();
       const rulesArray = getRulesArray(result);
       const gptBotRule = rulesArray.find((rule) => rule.userAgent === "GPTBot");
       expect(gptBotRule?.disallow).toContain("/");
-      expect(gptBotRule?.allow).toBeUndefined();
+      expect(gptBotRule?.allow).toEqual(["/blog", "/blog/"]);
     });
   });
 

@@ -39,9 +39,9 @@ import {
   EyeOff,
 } from "lucide-react";
 
-const TiptapEditor = dynamic(
+const CustomEditor = dynamic(
   () =>
-    import("./tiptap-editor").then((mod) => ({ default: mod.TiptapEditor })),
+    import("./custom-editor").then((mod) => ({ default: mod.CustomEditor })),
   {
     ssr: false,
     loading: () => (
@@ -996,7 +996,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   disabled={!isNewPost && !!currentPost}
                 >
                   <SelectTrigger
-                    className="w-full px-3 py-2 h-[38px] text-sm border rounded bg-transparent font-mono"
+                    className="w-full px-3 py-2 h-9.5 text-sm border rounded bg-transparent font-mono"
                     style={{
                       borderColor: themeConfig.colors.border,
                       color: themeConfig.colors.text,
@@ -1025,7 +1025,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                   }
                 >
                   <SelectTrigger
-                    className="w-full px-3 py-2 h-[38px] text-sm border rounded bg-transparent font-mono"
+                    className="w-full px-3 py-2 h-9.5 text-sm border rounded bg-transparent font-mono"
                     style={{
                       borderColor: themeConfig.colors.border,
                       color: themeConfig.colors.text,
@@ -1217,18 +1217,17 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
               {viewMode === "edit" ? (
                 <ImageDropZone onUploadComplete={handleImageUpload}>
-                  <TiptapEditor
+                  <CustomEditor
                     value={content}
                     onChange={setContent}
                     themeConfig={themeConfig}
-                    placeholder="Write your post…"
+                    placeholder="Write your post or MDX content…"
                     onImageUpload={uploadBlogImage}
                     minHeight="500px"
                   />
                   <div className="mt-2 text-[10px] opacity-50 font-mono text-center flex items-center justify-center gap-1">
-                    <Info size={10} /> Editor supports standard Markdown syntax.
-                    Specific React/MDX components will be rendered as plain
-                    text.
+                    <Info size={10} /> Editor supports standard Markdown and MDX
+                    JSX syntax.
                   </div>
                 </ImageDropZone>
               ) : (

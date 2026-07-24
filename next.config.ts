@@ -15,8 +15,6 @@ const nextConfig = {
     optimizePackageImports: [
       "@radix-ui/react-dialog",
       "lucide-react",
-      "@tiptap/react",
-      "@tiptap/starter-kit",
       "date-fns",
       "@giscus/react",
     ],

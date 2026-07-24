@@ -40,8 +40,8 @@ Next.js 16 App Router UI for [portfolio-backend](../portfolio-backend) (Rust/Axu
 
 ## Tech stack
 
-- **Next.js 16.1**, **React 19**, **TypeScript**, **Bun** (package manager + `bun run dev`)
-- **Tailwind CSS 4**, **Radix UI**, **TipTap** (admin blog)
+- **Next.js 16.2**, **React 19**, **TypeScript**, **Bun** (package manager + `bun run dev`)
+- **Tailwind CSS 4**, **Radix UI**, **Custom Blog Editor** (`custom-editor.tsx` — Markdown + MDX support, zero TipTap/ProseMirror dependencies)
 - **Vitest** + Testing Library (unit); **Playwright** (`e2e/`)
 - **PPR:** `cacheComponents: true` in `next.config.ts`
 - **React Compiler** enabled in production builds
@@ -63,21 +63,25 @@ src/
     terminal/             # Gated terminal (noindex)
     admin/                # Dashboard (JWT client-side + protected routes)
     blog/, projects/, …   # Public content
+    rss.xml/              # RSS feed generator route handler
   proxy.ts                # Next.js Proxy (CSP, gate redirect) — NOT middleware.ts
   components/
     atoms/ molecules/ organisms/   # Atomic design
     layout/               # SiteNav, footer, deferred widgets
+    molecules/admin/      # custom-editor.tsx, blog-editor.tsx, image-upload-button.tsx
   lib/
     gate/                 # gate-client, gate-proxy, referer-check, gate-server
     api/get-api-url.ts    # NEXT_PUBLIC_API_URL vs BACKEND_URL
-    data/data-fetching.ts # SSR fetch helpers
+    data/data-fetching.ts # SSR fetch helpers (projects, experience, about, roadmap)
     services/cached-blog-fetch.ts
     commands/             # Terminal command registry + parser
     logger/               # client-logger, web-vitals
-    i18n/
-  hooks/                  # use-terminal, etc.
+    i18n/                 # i18n-service, locales
+  hooks/                  # use-terminal, use-draft-autosave, etc.
 public/
   manifest.json, sw.js    # PWA site-wide (scope /)
+  avatar.jpg, resume.pdf  # Static assets
+  llms.txt, llms-full.txt # AI search engine indexation files
 e2e/                      # Playwright specs
 docs/                     # dual-ui-gate, features/, performance/
 lighthouserc.js           # Desktop CWV CI
@@ -113,16 +117,27 @@ Known Vitest hang: `background-manager.test.tsx` (~16 min) — skip unless user 
 | Route                                                       | Access           | Notes                                               |
 | ----------------------------------------------------------- | ---------------- | --------------------------------------------------- |
 | `/`                                                         | Public           | Standard landing (RSC hero, deferred sections)      |
-| `/projects`, `/blog`, `/blog/[slug]`, `/blog/series/[slug]` | Public           | Cached fetch where applicable                       |
+| `/projects`, `/blog`, `/blog/[slug]`, `/blog/series/[slug]` | Public           | Dynamic sitemap coverage; cached fetch              |
 | `/contact`, `/roadmap`                                      | Public           | Roadmap hits backend proxy at request time          |
-| `/rss.xml`                                                  | Public           | Proxies/backend aggregate                           |
+| `/rss.xml`                                                  | Public           | Dynamic RSS feed generator                          |
 | `/gate`, `/gate/1`–`3`                                      | Public puzzles   | Redirect to `/terminal` if already unlocked         |
 | `/s3cr3t`, `/s3cr3t/users.txt`                              | Public (noindex) | L2 discovery; `users.txt` proxies backend challenge |
 | `/terminal`                                                 | **Gated**        | `portfolio_gate` cookie; `robots: noindex`          |
 | `/admin/*`                                                  | Auth             | Admin JWT; auth provider scoped to admin layout     |
 | `/offline`                                                  | PWA              | Offline fallback                                    |
 
-SEO: `src/app/robots.ts`, `src/app/sitemap.ts` — gate/terminal/admin/s3cr3t disallowed for crawlers.
+---
+
+## SEO, Indexing & GEO Setup
+
+- **Sitemap (`src/app/sitemap.ts`):** Includes static routes (`/`, `/about`, `/projects`, `/blog`, `/contact`, `/roadmap`) and dynamic `/blog/${post.slug}` and `/projects/${project.slug}`.
+- **Robots (`src/app/robots.ts`):** Disallows `/api/`, `/admin/`, `/private/`, `/s3cr3t/`, `/gate`, `/terminal`. `GPTBot` policy is set to `allow: ["/blog", "/blog/"]` and `disallow: ["/"]`.
+- **i18n Alternates:** `layout.tsx` defines language alternates using canonical query parameters (`?locale=en` and `?locale=id`).
+- **Structured Data (Schema.org):**
+  - `Person` & `WebSite` schemas in `layout.tsx`.
+  - `ArticleSchema` + `BreadcrumbListSchema` in `src/app/blog/[slug]/page.tsx`.
+  - `SoftwareSourceCode` + `BreadcrumbListSchema` in `src/app/projects/[slug]/page.tsx`.
+- **GEO / AI Search Readiness:** `public/llms.txt` and `public/llms-full.txt` summarize developer profile, tech stack, projects, and article index for AI crawlers (Perplexity, ChatGPT, Claude).
 
 ---
 
@@ -218,7 +233,7 @@ Interactive routes (gate, terminal, admin) stay client-heavy or request-time —
 
 - Layout: `src/app/admin/layout.tsx` + `admin-layout-inner.tsx` (isolates auth context from public pages)
 - Login/register/2FA: `src/app/admin/login`, `register`, `2fa`
-- Blog editor: TipTap `tiptap-editor.tsx`, image upload to backend `/api/upload/*`
+- Blog editor: Custom Editor `custom-editor.tsx` (Markdown/MDX support with direct DOM selection formatting, zero TipTap/ProseMirror dependencies), image upload to backend `/api/upload/*`
 - Protected UI: `protected-route.tsx` — tokens via backend JWT (HttpOnly refresh cookie pattern on API)
 
 ---
@@ -288,4 +303,4 @@ Integrations (Gemini, Resend, CMS, roadmap login): configured on **backend** —
 
 ---
 
-_Last expanded for agent onboarding — gate BFF, proxy.ts, NATAS L2 robots/s3cr3t, PPR/CWV Feature #33, dual UI. Update when routes or env contracts change._
+_Last expanded for agent onboarding — Custom Editor (Markdown/MDX), SEO dynamic sitemap & GPTBot policy, llms.txt, gate BFF, proxy.ts, NATAS L2 robots/s3cr3t, PPR/CWV Feature #33. Update when routes or env contracts change._
