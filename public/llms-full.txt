@@ -1,0 +1,39 @@
+# Dimas Saputra — Full-Stack Developer Portfolio & Detailed Context
+
+> Complete overview of projects, technical experience, blog content, and system architecture for LLM reasoning engines.
+
+## Developer Profile
+- **Name**: Dimas Saputra
+- **Role**: Full-Stack Software Engineer
+- **Specializations**: Web performance, reactive UIs, distributed systems in Rust, secure API design, and modern frontend design systems.
+- **GitHub**: https://github.com/infinitedim
+- **Twitter/X**: https://twitter.com/yourblooo
+
+---
+
+## Technical Architecture Overview
+
+### Frontend Architecture (`portfolio-frontend`)
+- Framework: Next.js 16 (App Router) with React 19.
+- Styling: Tailwind CSS 4, Radix UI primitives, Lenis smooth scroll.
+- Rendering: Partial Prerendering (PPR) enabled, hybrid static/dynamic fetch.
+- Edge Proxy: Custom Edge Proxy in `src/proxy.ts` enforcing Content Security Policy (CSP) and security headers.
+
+### Backend Architecture (`portfolio-backend`)
+- Language & Framework: Rust (edition 2021), Axum 0.8.
+- Persistence: PostgreSQL 16 with SQLx inline migrations, Redis 7 for distributed rate-limiting and real-time presence.
+- Security: JWT admin authentication, NATAS-inspired web security challenge puzzles.
+- Observability: Prometheus metrics, structured tracing, Loki & Grafana logs.
+
+---
+
+## Public Content Index
+
+### Blog Categories & Topics
+- Rust API architecture & microsecond latency optimizations.
+- Next.js 16 performance engineering, Core Web Vitals, and PPR strategies.
+- Web security, penetration testing, and challenge design.
+
+### Featured Projects
+- **Portfolio Monorepo**: High-performance dual-entry web application (landing + gated security terminal) powered by Next.js 16 and Axum.
+- **Developer Tools**: Open-source utilities for web developers and systems programming.

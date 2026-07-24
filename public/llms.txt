@@ -1,0 +1,18 @@
+# Dimas Saputra — Full-Stack Developer Portfolio & Engineering Blog
+
+> Full-Stack Developer specializing in React, Next.js 16, TypeScript, Rust (Axum), and modern cloud web architectures.
+
+## Core Technical Stack
+- **Frontend**: Next.js 16 (App Router, PPR, React 19), React, TypeScript, Tailwind CSS, Radix UI.
+- **Backend**: Rust (edition 2021, Axum 0.8), Node.js, PostgreSQL, Redis, REST & WebSocket APIs.
+- **DevOps & Cloud**: GCP (Cloud Run, Cloud SQL), Terraform, Docker, Vercel, Prometheus & Grafana.
+
+## Key Pages & Resources
+- [Portfolio Home](https://infinitedim.dev/): Main landing page featuring developer bio, core skills, and featured projects.
+- [Projects](https://infinitedim.dev/projects): Portfolio of open-source applications, full-stack tools, and web experiments.
+- [About](https://infinitedim.dev/about): Professional background, experience timeline, and tech stack details.
+- [Blog](https://infinitedim.dev/blog): Technical articles, architecture breakdowns, performance engineering, and web development tutorials.
+- [Contact](https://infinitedim.dev/contact): Get in touch for freelance engineering and software consulting.
+
+## Optional / Detailed Information
+- [Full LLM Context](https://infinitedim.dev/llms-full.txt): Detailed project descriptions and article breakdown.

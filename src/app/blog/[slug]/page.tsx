@@ -12,7 +12,7 @@ import { GiscusComments } from "@/components/molecules/blog/giscus-comments-dyna
 import { BlogContent } from "@/components/molecules/blog/blog-content";
 
 import { getServerApiUrl } from "@/lib/api/get-api-url";
-import { ArticleSchema } from "@/components/molecules/seo/json-ld";
+import { ArticleSchema, BreadcrumbListSchema } from "@/components/molecules/seo/json-ld";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { BlogLocaleSwitcher } from "@/components/molecules/blog/locale-switcher";
@@ -72,6 +72,14 @@ export async function generateMetadata({
   return {
     title: `${post.title} | Blog`,
     description: post.summary ?? post.title,
+    authors: [{ name: "Dimas Saputra" }],
+    alternates: {
+      canonical: `/blog/${post.slug}`,
+      languages: {
+        en: `/blog/${post.slug}?locale=en`,
+        id: `/blog/${post.slug}?locale=id`,
+      },
+    },
     openGraph: {
       title: post.title,
       description: post.summary ?? post.title,
@@ -158,6 +166,13 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
         dateModified={post.updatedAt}
         url={`https://infinitedim.dev/blog/${post.slug}`}
         keywords={post.tags?.join(", ")}
+      />
+      <BreadcrumbListSchema
+        items={[
+          { name: "Home", item: "https://infinitedim.dev" },
+          { name: "Blog", item: "https://infinitedim.dev/blog" },
+          { name: post.title, item: `https://infinitedim.dev/blog/${post.slug}` },
+        ]}
       />
       <div className="min-h-screen bg-terminal-bg text-terminal-text">
         <ScrollProgress />

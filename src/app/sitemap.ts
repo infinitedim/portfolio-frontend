@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 import { getSiteUrl } from "@/lib/api/get-site-url";
+import { getProjectsData } from "@/lib/data/data-fetching";
 
 function getBackendUrl(): string {
   return getServerApiUrl();
@@ -75,5 +76,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Failed to fetch blog posts for sitemap:", error);
   }
 
-  return [...staticRoutes, ...blogRoutes];
+  let projectRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const projects = await getProjectsData();
+    projectRoutes = (projects || []).map((project) => ({
+      url: `${baseUrl}/projects/${project.slug}`,
+      lastModified: currentDate,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+  } catch (error) {
+    console.error("Failed to fetch projects for sitemap:", error);
+  }
+
+  return [...staticRoutes, ...blogRoutes, ...projectRoutes];
 }
+

@@ -118,7 +118,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
     languages: {
-      "en-US": "/en-US",
+      en: "/?locale=en",
+      id: "/?locale=id",
     },
   },
   category: "technology",
