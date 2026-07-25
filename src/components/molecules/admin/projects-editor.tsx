@@ -8,6 +8,7 @@ import { getApiUrl } from "@/lib/api/get-api-url";
 import { type Project } from "@/lib/data/data-fetching";
 import { Plus, Save, Trash, X, Edit } from "lucide-react";
 import { toast } from "sonner";
+import { ProjectImageUpload } from "@/components/molecules/admin/project-image-upload";
 import {
   Select,
   SelectContent,
@@ -175,10 +176,6 @@ export function ProjectsEditor({
     }
     if (githubUrl && !isValidUrl(githubUrl)) {
       toast.error("GitHub URL must be a valid URL");
-      return;
-    }
-    if (imageUrl && !isValidUrl(imageUrl)) {
-      toast.error("Image URL must be a valid URL");
       return;
     }
 
@@ -566,20 +563,13 @@ export function ProjectsEditor({
                 </div>
 
                 <div className="space-y-1 md:col-span-2">
-                  <label
-                    htmlFor="project-image"
-                    className="block opacity-80"
-                  >
-                    Image URL
-                  </label>
-                  <input
-                    id="project-image"
-                    type="url"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    className="w-full bg-transparent border rounded p-2 focus:outline-none"
-                    style={{ borderColor: themeConfig.colors.border }}
-                    placeholder="https://..."
+                  <span className="block opacity-80 mb-1 text-xs font-medium">
+                    Project Image
+                  </span>
+                  <ProjectImageUpload
+                    imageUrl={imageUrl || undefined}
+                    onUploadComplete={(url) => setImageUrl(url || "")}
+                    themeConfig={themeConfig}
                   />
                 </div>
               </div>
