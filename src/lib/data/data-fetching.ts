@@ -240,16 +240,21 @@ export async function getExperienceData(
   return getFallbackExperienceData();
 }
 
-export const getAboutData = cache(async (): Promise<AboutInfo> => {
+export async function getAboutData(
+  locale: string = "en_US",
+): Promise<AboutInfo> {
   const backendUrl = getBackendUrl();
 
   try {
-    const response = await fetch(`${backendUrl}/api/portfolio?section=about`, {
-      next: {
-        revalidate: CACHE_DURATIONS.ABOUT / 1000,
-        tags: ["portfolio-about"],
+    const response = await fetch(
+      `${backendUrl}/api/portfolio?section=about&locale=${encodeURIComponent(locale)}`,
+      {
+        next: {
+          revalidate: CACHE_DURATIONS.ABOUT / 1000,
+          tags: ["portfolio-about"],
+        },
       },
-    });
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -262,7 +267,7 @@ export const getAboutData = cache(async (): Promise<AboutInfo> => {
   }
 
   return getFallbackAboutData();
-});
+}
 
 export const getFeaturedProjects = cache(async (): Promise<Project[]> => {
   const projects = await getProjectsData();

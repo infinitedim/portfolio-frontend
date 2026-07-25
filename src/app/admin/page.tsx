@@ -20,6 +20,7 @@ import {
   TrendingUp,
   BookOpen,
   Briefcase,
+  UserCheck,
 } from "lucide-react";
 
 export default function AdminDashboardPage(): JSX.Element {
@@ -342,6 +343,32 @@ export default function AdminDashboardPage(): JSX.Element {
                       style={{ color: themeConfig.colors.text }}
                     >
                       Experience i18n
+                    </span>
+                    <span
+                      className="text-center font-mono text-[10px] opacity-50"
+                      style={{ color: themeConfig.colors.text }}
+                    >
+                      AI Auto-Translate
+                    </span>
+                  </Link>
+
+                  <Link
+                    href={"/admin/about" as Route}
+                    className="group flex flex-col items-center justify-center gap-2 rounded-lg border p-4 transition-all hover:scale-[1.02]"
+                    style={{
+                      borderColor: themeConfig.colors.border,
+                      backgroundColor: `${themeConfig.colors.border}15`,
+                    }}
+                  >
+                    <UserCheck
+                      className="w-5 h-5"
+                      style={{ color: themeConfig.colors.accent }}
+                    />
+                    <span
+                      className="text-center font-mono text-xs"
+                      style={{ color: themeConfig.colors.text }}
+                    >
+                      About i18n
                     </span>
                     <span
                       className="text-center font-mono text-[10px] opacity-50"
