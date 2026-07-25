@@ -107,6 +107,13 @@ function buildCsp(isDev: boolean): string {
       "https://challenges.cloudflare.com",
       ...(isDev ? ["'unsafe-eval'"] : []),
     ],
+    "script-src-elem": [
+      "'self'",
+      "'unsafe-inline'",
+      "https://va.vercel-scripts.com",
+      "https://vercel.live",
+      "https://challenges.cloudflare.com",
+    ],
     "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
     "img-src": [
       "'self'",
