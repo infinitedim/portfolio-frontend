@@ -4,6 +4,7 @@ import { SOCIAL_LINKS } from "@/lib/data/social-links";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 import { NewsletterSignup } from "@/components/molecules/newsletter/newsletter-signup";
 import { CopyrightYear } from "./copyright-year";
+import { FooterResumeButton } from "@/components/molecules/shared/footer-resume-button";
 
 export function SiteFooter(): JSX.Element {
   const siteUrl = getSiteUrl();
@@ -37,13 +38,7 @@ export function SiteFooter(): JSX.Element {
         </div>
 
         <div className="flex items-center justify-center gap-4 font-mono text-xs text-neutral-400">
-          <a
-            href="/resume.pdf"
-            download
-            className="transition-colors hover:text-green-400"
-          >
-            Resume
-          </a>
+          <FooterResumeButton />
           <span aria-hidden="true">·</span>
           <Link
             href="/rss.xml"

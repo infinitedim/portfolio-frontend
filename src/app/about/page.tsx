@@ -9,6 +9,7 @@ import {
 } from "@/components/molecules/seo/json-ld";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 import { Mail } from "lucide-react";
+import { AboutResumeButton } from "@/components/molecules/about/about-resume-button";
 
 export const metadata: Metadata = {
   title: "About",
@@ -235,13 +236,7 @@ async function AboutContent(): Promise<JSX.Element> {
               Interested in working together?
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="/resume.pdf"
-                download
-                className="rounded bg-green-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-colors hover:bg-green-300"
-              >
-                ↓ Download Resume
-              </a>
+              <AboutResumeButton />
               <a
                 href="/contact"
                 className="rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white"

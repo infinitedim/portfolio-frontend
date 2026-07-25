@@ -197,6 +197,17 @@ export function resolveGateRedirect(request: NextRequest): NextResponse | null {
 }
 
 export function proxy(request: NextRequest): NextResponse {
+  // Block direct access to /resume.pdf — require Turnstile via /api/resume/download
+  if (request.nextUrl.pathname.toLowerCase() === "/resume.pdf") {
+    return new NextResponse(
+      "Direct access to resume.pdf is blocked. Please use the download verification on the site.",
+      {
+        status: 403,
+        headers: { "Content-Type": "text/plain" },
+      },
+    );
+  }
+
   const gateRedirect = resolveGateRedirect(request);
   if (gateRedirect) {
     return gateRedirect;

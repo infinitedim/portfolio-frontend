@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
+import { TurnstileResumeModal } from "@/components/molecules/shared/turnstile-resume-modal";
 
 export function HeroSection(): JSX.Element {
   const { t } = useI18n();
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
   return (
     <section className="relative overflow-hidden px-4 py-20 sm:py-28">
@@ -39,13 +42,13 @@ export function HeroSection(): JSX.Element {
             >
               {t("landingCtaProjects")}
             </Link>
-            <a
-              href="/resume.pdf"
-              download
-              className="rounded bg-green-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-colors hover:bg-green-300"
+            <button
+              type="button"
+              onClick={() => setIsResumeModalOpen(true)}
+              className="rounded bg-green-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-colors hover:bg-green-300 cursor-pointer"
             >
               ↓ Resume
-            </a>
+            </button>
             <Link
               href="/contact"
               prefetch={false}
@@ -56,6 +59,11 @@ export function HeroSection(): JSX.Element {
           </div>
         </div>
       </div>
+
+      <TurnstileResumeModal
+        isOpen={isResumeModalOpen}
+        onOpenChange={setIsResumeModalOpen}
+      />
     </section>
   );
 }

@@ -41,8 +41,8 @@ Examples:
     if (ArgumentParser.hasFlag(parsed, "d", "download")) {
       if (typeof window !== "undefined") {
         const link = document.createElement("a");
-        link.href = "/resume.pdf";
-        link.download = "Resume_Developer.pdf";
+        link.href = "/api/resume/download";
+        link.download = "Dimas_Saputra_Resume.pdf";
         link.click();
       }
 
