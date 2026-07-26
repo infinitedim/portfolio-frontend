@@ -105,6 +105,7 @@ function buildCsp(isDev: boolean): string {
       "https://va.vercel-scripts.com",
       "https://vercel.live",
       "https://challenges.cloudflare.com",
+      "https://*.challenges.cloudflare.com",
       ...(isDev ? ["'unsafe-eval'"] : []),
     ],
     "script-src-elem": [
@@ -113,6 +114,7 @@ function buildCsp(isDev: boolean): string {
       "https://va.vercel-scripts.com",
       "https://vercel.live",
       "https://challenges.cloudflare.com",
+      "https://*.challenges.cloudflare.com",
     ],
     "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
     "img-src": [
@@ -133,6 +135,7 @@ function buildCsp(isDev: boolean): string {
       "https://vitals.vercel-insights.com",
       "https://vercel.live",
       "https://challenges.cloudflare.com",
+      "https://*.challenges.cloudflare.com",
       ...(isDev ? ["ws:", "wss:"] : []),
     ],
     "frame-src": [
@@ -140,6 +143,7 @@ function buildCsp(isDev: boolean): string {
       "https://giscus.app",
       "https://vercel.live",
       "https://challenges.cloudflare.com",
+      "https://*.challenges.cloudflare.com",
     ],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
