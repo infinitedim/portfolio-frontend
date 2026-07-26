@@ -18,6 +18,8 @@ export function TurnstileResumeModal({
   const [isDownloading, setIsDownloading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const [hasFailed, setHasFailed] = useState(false);
+
   const siteKey = process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY || "";
 
   const handleDownloadWithToken = useCallback(
@@ -65,7 +67,13 @@ export function TurnstileResumeModal({
   return (
     <Dialog.Root
       open={isOpen}
-      onOpenChange={onOpenChange}
+      onOpenChange={(open) => {
+        if (!open) {
+          setHasFailed(false);
+          setErrorMsg(null);
+        }
+        onOpenChange(open);
+      }}
     >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm animate-fade-in" />
@@ -100,28 +108,35 @@ export function TurnstileResumeModal({
                   <Loader2 className="h-6 w-6 animate-spin" />
                   <span className="text-xs">Preparing download...</span>
                 </div>
-              ) : siteKey ? (
-                <Turnstile
-                  siteKey={siteKey}
-                  onSuccess={(token) => handleDownloadWithToken(token)}
-                  onError={() =>
-                    setErrorMsg("Security check failed to load. Please retry.")
-                  }
-                  options={{
-                    theme: "dark",
-                    size: "normal",
-                  }}
-                />
+              ) : siteKey && !hasFailed ? (
+                <div className="flex flex-col items-center gap-3">
+                  <Turnstile
+                    siteKey={siteKey}
+                    onSuccess={(token) => handleDownloadWithToken(token)}
+                    onError={() => {
+                      setHasFailed(true);
+                      setErrorMsg(
+                        "Security verification service unavailable. You can download directly below.",
+                      );
+                    }}
+                    options={{
+                      theme: "dark",
+                      size: "normal",
+                    }}
+                  />
+                </div>
               ) : (
                 <div className="flex flex-col items-center gap-3 text-center">
                   <span className="text-xs text-neutral-400">
-                    Turnstile verification is inactive in dev mode.
+                    {hasFailed
+                      ? "Security verification skipped."
+                      : "Turnstile verification inactive."}
                   </span>
                   <button
                     type="button"
                     onClick={() => handleDownloadWithToken()}
                     disabled={isDownloading}
-                    className="inline-flex items-center gap-2 rounded-lg bg-green-500 hover:bg-green-400 text-neutral-950 px-4 py-2 text-xs font-bold transition-all shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                    className="inline-flex items-center gap-2 rounded-lg bg-green-500 hover:bg-green-400 text-neutral-950 px-4 py-2 text-xs font-bold transition-all shadow-[0_0_15px_rgba(34,197,94,0.3)] cursor-pointer"
                   >
                     <Download className="h-4 w-4" />
                     Download PDF directly

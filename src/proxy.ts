@@ -106,6 +106,8 @@ function buildCsp(isDev: boolean): string {
       "https://vercel.live",
       "https://challenges.cloudflare.com",
       "https://*.challenges.cloudflare.com",
+      "https://challenge.cloudflare.com",
+      "https://*.challenge.cloudflare.com",
       ...(isDev ? ["'unsafe-eval'"] : []),
     ],
     "script-src-elem": [
@@ -115,6 +117,8 @@ function buildCsp(isDev: boolean): string {
       "https://vercel.live",
       "https://challenges.cloudflare.com",
       "https://*.challenges.cloudflare.com",
+      "https://challenge.cloudflare.com",
+      "https://*.challenge.cloudflare.com",
     ],
     "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
     "img-src": [
@@ -136,6 +140,8 @@ function buildCsp(isDev: boolean): string {
       "https://vercel.live",
       "https://challenges.cloudflare.com",
       "https://*.challenges.cloudflare.com",
+      "https://challenge.cloudflare.com",
+      "https://*.challenge.cloudflare.com",
       ...(isDev ? ["ws:", "wss:"] : []),
     ],
     "frame-src": [
@@ -144,6 +150,8 @@ function buildCsp(isDev: boolean): string {
       "https://vercel.live",
       "https://challenges.cloudflare.com",
       "https://*.challenges.cloudflare.com",
+      "https://challenge.cloudflare.com",
+      "https://*.challenge.cloudflare.com",
     ],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],

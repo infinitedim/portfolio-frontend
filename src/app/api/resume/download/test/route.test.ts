@@ -11,6 +11,7 @@ if (
 describe("POST /api/resume/download", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    delete process.env.CF_TURNSTILE_SECRET_KEY;
   });
 
   it("bypasses Turnstile in dev or unconfigured secret and fetches PDF from backend", async () => {
