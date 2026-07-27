@@ -149,10 +149,12 @@ export default function AdminExperiencePage(): JSX.Element {
     setEditingId(exp.id);
     setForm({
       company: exp.company,
-      position: exp.position?.en_US ?? Object.values(exp.position)[0] ?? "",
-      duration: exp.duration?.en_US ?? Object.values(exp.duration)[0] ?? "",
+      position:
+        exp.position?.id_ID ?? exp.position?.en_US ?? Object.values(exp.position || {})[0] ?? "",
+      duration:
+        exp.duration?.id_ID ?? exp.duration?.en_US ?? Object.values(exp.duration || {})[0] ?? "",
       description:
-        (exp.description?.en_US ?? Object.values(exp.description)[0] ?? [])
+        (exp.description?.id_ID ?? exp.description?.en_US ?? Object.values(exp.description || {})[0] ?? [])
           .join("\n"),
       technologies: exp.technologies.join(", "),
       type: exp.type,

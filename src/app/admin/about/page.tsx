@@ -59,16 +59,21 @@ export default function AdminAboutPage(): JSX.Element {
       const json = await res.json();
       const data = json.data ?? {};
 
-      const titleRaw = data.title;
-      const bioRaw = data.bio;
-      const locationRaw = data.location;
+      const extractStr = (val: unknown): string => {
+        if (typeof val === "string") return val;
+        if (typeof val === "object" && val !== null) {
+          const obj = val as Record<string, string>;
+          return obj.id_ID ?? obj.en_US ?? Object.values(obj)[0] ?? "";
+        }
+        return "";
+      };
 
-      const titleStr = typeof titleRaw === "string" ? titleRaw : (titleRaw?.en_US ?? Object.values(titleRaw || {})[0] ?? "");
-      const bioStr = typeof bioRaw === "string" ? bioRaw : (bioRaw?.en_US ?? Object.values(bioRaw || {})[0] ?? "");
-      const locationStr = typeof locationRaw === "string" ? locationRaw : (locationRaw?.en_US ?? Object.values(locationRaw || {})[0] ?? "");
+      const titleStr = extractStr(data.title);
+      const bioStr = extractStr(data.bio);
+      const locationStr = extractStr(data.location);
 
-      if (typeof bioRaw === "object" && bioRaw !== null) {
-        setLocaleCount(Object.keys(bioRaw).length);
+      if (typeof data.bio === "object" && data.bio !== null) {
+        setLocaleCount(Object.keys(data.bio as Record<string, string>).length);
       } else {
         setLocaleCount(1);
       }
