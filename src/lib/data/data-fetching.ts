@@ -73,7 +73,7 @@ const CACHE_DURATIONS = {
   ABOUT: 1000 * 60 * 60 * 24,
 } as const;
 
-export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
+export const getPortfolioData = cache(async (locale: string = "en_US"): Promise<PortfolioData> => {
   const backendUrl = getBackendUrl();
 
   try {
@@ -84,13 +84,13 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
           tags: ["portfolio-projects"],
         },
       }),
-      fetch(`${backendUrl}/api/portfolio?section=experience`, {
+      fetch(`${backendUrl}/api/portfolio?section=experience&locale=${encodeURIComponent(locale)}`, {
         next: {
           revalidate: CACHE_DURATIONS.EXPERIENCE / 1000,
           tags: ["portfolio-experience"],
         },
       }),
-      fetch(`${backendUrl}/api/portfolio?section=about`, {
+      fetch(`${backendUrl}/api/portfolio?section=about&locale=${encodeURIComponent(locale)}`, {
         next: {
           revalidate: CACHE_DURATIONS.ABOUT / 1000,
           tags: ["portfolio-about"],

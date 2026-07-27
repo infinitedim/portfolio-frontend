@@ -69,7 +69,7 @@ async function AboutContent(): Promise<JSX.Element> {
     cookieStore.get("portfolio_locale")?.value ?? "en_US";
 
   const [about, experience] = await Promise.all([
-    getAboutData(),
+    getAboutData(locale),
     getExperienceData(locale),
   ]);
   const siteUrl = getSiteUrl();

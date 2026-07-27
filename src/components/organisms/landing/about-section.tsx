@@ -8,7 +8,11 @@ const AboutSectionClient = dynamic(
 );
 
 export async function AboutSection(): Promise<JSX.Element | null> {
-  const about = await getAboutData();
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("portfolio_locale")?.value ?? "en_US";
+
+  const about = await getAboutData(locale);
 
   if (!about?.bio) {
     return null;
