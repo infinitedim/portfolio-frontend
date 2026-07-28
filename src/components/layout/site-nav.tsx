@@ -81,7 +81,7 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
             />
             <button
               onClick={() => setIsModalOpen(true)}
-              className="rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
+              className="hidden sm:inline-flex rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
             >
               {t("navTerminal")} →
             </button>

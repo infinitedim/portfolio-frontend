@@ -1,211 +1,36 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, JSX } from "react";
-import { useTheme } from "@/hooks/use-theme";
+import { type JSX } from "react";
 import { useMobile } from "@/hooks/use-mobile";
-import { useI18n } from "@/hooks/use-i18n";
 
 interface MobileTerminalProps {
   children: React.ReactNode;
 }
 
 export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
-  const { t } = useI18n();
-  const { themeConfig, theme } = useTheme();
-  const { isMobile, isVirtualKeyboardOpen, orientation } = useMobile();
-  const [showMobileHint, setShowMobileHint] = useState(false);
-
-  useEffect(() => {
-    if (isMobile && !localStorage.getItem("mobile-hint-dismissed")) {
-      setShowMobileHint(true);
-    }
-  }, [isMobile]);
-
-  const dismissMobileHint = () => {
-    setShowMobileHint(false);
-    localStorage.setItem("mobile-hint-dismissed", "true");
-  };
-
-  const handleCommandClick = (command: string) => {
-    const input = document.querySelector("input") as HTMLInputElement;
-    if (input) {
-      input.value = command;
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.focus();
-    }
-  };
-
-  const handleFocusInput = () => {
-    const input = document.querySelector("input");
-    input?.focus();
-  };
+  const { isMobile } = useMobile();
 
   if (!isMobile) {
     return <>{children}</>;
   }
 
-  if (!themeConfig?.colors) {
-    return <div key={`mobile-terminal-no-config-${theme}`}>{children}</div>;
-  }
-
   return (
-    <div
-      key={`mobile-terminal-${theme}`}
-      className={`mobile-terminal ${isVirtualKeyboardOpen ? "keyboard-visible" : ""} ${orientation === "landscape" ? "landscape-mode" : "portrait-mode"}`}
-      style={{
-        minHeight: isVirtualKeyboardOpen ? "auto" : "100vh",
-        paddingBottom: isVirtualKeyboardOpen
-          ? "0"
-          : "env(safe-area-inset-bottom)",
-        backgroundColor: themeConfig.colors.bg,
-        transition: "background-color 300ms ease",
-        touchAction: "manipulation",
-        WebkitTouchCallout: "none",
-        WebkitUserSelect: "none",
-        userSelect: "none",
-      }}
-    >
-      {showMobileHint && (
-        <div
-          className="fixed top-0 left-0 right-0 z-50 p-4 text-sm animate-in slide-in-from-top duration-300"
-          style={{
-            backgroundColor: themeConfig.colors.accent,
-            color: themeConfig.colors.bg,
-            paddingTop: "calc(1rem + env(safe-area-inset-top))",
-          }}
+    <div className="flex min-h-screen flex-col items-center justify-center bg-neutral-950 p-6 text-center font-mono">
+      <div className="max-w-md rounded-xl border border-neutral-800 bg-neutral-900/60 p-8 shadow-2xl backdrop-blur">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-green-500/30 bg-green-500/10 text-green-400">
+          <span className="text-xl font-bold">&gt;_</span>
+        </div>
+        <h2 className="text-lg font-bold text-white">Desktop Required</h2>
+        <p className="mt-3 text-xs leading-relaxed text-neutral-400">
+          The interactive terminal and gate puzzles are designed for desktop browsers with keyboard navigation. Please open this portfolio on a desktop computer for the full CLI experience.
+        </p>
+        <a
+          href="/"
+          className="mt-6 inline-flex items-center justify-center rounded-lg border border-green-400/40 bg-green-400/10 px-5 py-2.5 text-xs font-bold text-green-400 transition-colors hover:bg-green-400/20"
         >
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <span className="text-lg"></span>
-              <div>
-                <div className="font-medium">{t("termMobileReady")}</div>
-                <div className="text-xs opacity-90 mt-1">
-                  {isMobile ? "Phone" : "Tablet"} • {orientation} •{" "}
-                  {t("termOptimizedTouch")}
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={dismissMobileHint}
-              className="text-xl hover:opacity-70 focus:opacity-70 p-2 -m-2 transition-opacity"
-              aria-label="Dismiss mobile hint"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div
-        className="sticky top-0 z-40 px-3 py-2 border-b backdrop-blur-sm"
-        style={{
-          backgroundColor: `${themeConfig.colors.bg}f5`,
-          borderColor: themeConfig.colors.border,
-          paddingTop: "calc(0.5rem + env(safe-area-inset-top))",
-        }}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div
-              className="text-xs font-mono font-bold"
-              style={{ color: themeConfig.colors.accent }}
-            >
-              Terminal Portfolio
-            </div>
-            {!isMobile && (
-              <div
-                className="text-xs px-2 py-1 rounded"
-                style={{
-                  backgroundColor: `${themeConfig.colors.accent}20`,
-                  color: themeConfig.colors.accent,
-                }}
-              >
-                Tablet
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              className="px-4 py-2 text-sm rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 hover:scale-105 active:scale-95"
-              style={{
-                borderColor: themeConfig.colors.border,
-                color: themeConfig.colors.text,
-                backgroundColor: `${themeConfig.colors.accent}15`,
-              }}
-              onClick={handleFocusInput}
-              aria-label="Focus command input"
-            >
-              {t("termFocusInput")}
-            </button>
-            {orientation === "landscape" && (
-              <div
-                className="text-xs px-2 py-1 rounded opacity-75"
-                style={{
-                  color: themeConfig.colors.muted,
-                  backgroundColor: `${themeConfig.colors.muted}20`,
-                }}
-              >
-                Landscape
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {children}
-
-      <div
-        className="fixed bottom-0 left-0 right-0 p-4 border-t backdrop-blur-sm"
-        style={{
-          backgroundColor: `${themeConfig.colors.bg}f5`,
-          borderColor: themeConfig.colors.border,
-          paddingBottom: "calc(1rem + env(safe-area-inset-bottom))",
-        }}
-        role="toolbar"
-        aria-label="Quick commands"
-      >
-        <div className="mb-3">
-          <div
-            className="text-xs font-medium mb-2"
-            style={{ color: themeConfig.colors.muted }}
-          >
-            {t("termQuickCommands")}:
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
-            {["help", "about", "skills", "theme -l", "roadmap", "clear"].map(
-              (cmd) => (
-                <button
-                  key={cmd}
-                  className="px-4 py-3 text-sm rounded-lg border whitespace-nowrap transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 hover:scale-105 active:scale-95 min-h-12 font-mono"
-                  style={{
-                    borderColor: themeConfig.colors.border,
-                    color: themeConfig.colors.text,
-                    backgroundColor: `${themeConfig.colors.accent}15`,
-                  }}
-                  onClick={() => handleCommandClick(cmd)}
-                  aria-label={`Execute command: ${cmd}`}
-                >
-                  {cmd}
-                </button>
-              ),
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center gap-1">
-          <div
-            className="w-12 h-1 rounded-full"
-            style={{ backgroundColor: themeConfig.colors.border }}
-            aria-hidden="true"
-          />
-          <div
-            className="text-xs opacity-60"
-            style={{ color: themeConfig.colors.muted }}
-          >
-            {t("termSwipeMore")}
-          </div>
-        </div>
+          ← Return to Portfolio
+        </a>
       </div>
     </div>
   );

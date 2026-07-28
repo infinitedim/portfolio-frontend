@@ -84,10 +84,25 @@ export function VisitorPresenceBadge() {
       window.addEventListener(evt, onInteract, { once: true }),
     );
 
+    const handleUnload = () => {
+      closed = true;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+        ws.close();
+      }
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+    window.addEventListener("pagehide", handleUnload);
+
     return () => {
       closed = true;
       if (reconnectTimer) clearTimeout(reconnectTimer);
-      ws?.close();
+      window.removeEventListener("beforeunload", handleUnload);
+      window.removeEventListener("pagehide", handleUnload);
+      if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+        ws.close();
+      }
       interactionEvents.forEach((evt) =>
         window.removeEventListener(evt, onInteract),
       );
