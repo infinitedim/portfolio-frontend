@@ -12,13 +12,15 @@ import {
   Save,
   Globe,
   Loader2,
+  Sparkles,
 } from "lucide-react";
+import { getSupportedLocales } from "@/lib/i18n/locales";
 
 interface AboutFormData {
   name: string;
-  title: string;
-  bio: string;
-  location: string;
+  title: Record<string, string>;
+  bio: Record<string, string>;
+  location: Record<string, string>;
   email: string;
   github: string;
   linkedin: string;
@@ -29,17 +31,22 @@ export default function AdminAboutPage(): JSX.Element {
   const { themeConfig } = useTheme();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  
+  const locales = getSupportedLocales();
+  const [activeLocale, setActiveLocale] = useState<string>("en_US");
+
   const [form, setForm] = useState<AboutFormData>({
     name: "",
-    title: "",
-    bio: "",
-    location: "",
+    title: {},
+    bio: {},
+    location: {},
     email: "",
     github: "",
     linkedin: "",
     twitter: "",
   });
-  const [localeCount, setLocaleCount] = useState<number>(0);
+  
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -59,30 +66,21 @@ export default function AdminAboutPage(): JSX.Element {
       const json = await res.json();
       const data = json.data ?? {};
 
-      const extractStr = (val: unknown): string => {
-        if (typeof val === "string") return val;
+      const extractMap = (val: unknown): Record<string, string> => {
         if (typeof val === "object" && val !== null) {
-          const obj = val as Record<string, string>;
-          return obj.id_ID ?? obj.en_US ?? Object.values(obj)[0] ?? "";
+          return val as Record<string, string>;
         }
-        return "";
+        if (typeof val === "string") {
+          return { en_US: val };
+        }
+        return {};
       };
-
-      const titleStr = extractStr(data.title);
-      const bioStr = extractStr(data.bio);
-      const locationStr = extractStr(data.location);
-
-      if (typeof data.bio === "object" && data.bio !== null) {
-        setLocaleCount(Object.keys(data.bio as Record<string, string>).length);
-      } else {
-        setLocaleCount(1);
-      }
 
       setForm({
         name: data.name ?? "Dimas Saputra",
-        title: titleStr,
-        bio: bioStr,
-        location: locationStr,
+        title: extractMap(data.title),
+        bio: extractMap(data.bio),
+        location: extractMap(data.location),
         email: data.contact?.email ?? "",
         github: data.contact?.github ?? "",
         linkedin: data.contact?.linkedin ?? "",
@@ -98,6 +96,51 @@ export default function AdminAboutPage(): JSX.Element {
   useEffect(() => {
     fetchAboutData();
   }, [fetchAboutData]);
+
+  const handleGenerateTranslations = async () => {
+    setTranslating(true);
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      const token = authService.getAccessToken();
+      const body = {
+        sourceLocale: activeLocale,
+        title: form.title[activeLocale] || "",
+        bio: form.bio[activeLocale] || "",
+        location: form.location[activeLocale] || "",
+      };
+
+      const res = await fetch(`${apiUrl}/api/admin/portfolio/about/translate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => null);
+        throw new Error(
+          errJson?.error ?? errJson?.message ?? `HTTP ${res.status}`,
+        );
+      }
+      
+      const translated = await res.json();
+      setForm((prev) => ({
+        ...prev,
+        title: { ...prev.title, ...translated.title },
+        bio: { ...prev.bio, ...translated.bio },
+        location: { ...prev.location, ...translated.location },
+      }));
+
+      setSuccessMessage("Translations generated successfully!");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to generate translations");
+    } finally {
+      setTranslating(false);
+    }
+  };
 
   const handleSubmit = async () => {
     setSaving(true);
@@ -134,15 +177,23 @@ export default function AdminAboutPage(): JSX.Element {
         );
       }
 
-      setSuccessMessage(
-        "About section updated & auto-translated to 17 locales!",
-      );
+      setSuccessMessage("About section saved successfully!");
       await fetchAboutData();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to save");
     } finally {
       setSaving(false);
     }
+  };
+
+  const getMissingLocalesCount = () => {
+    let count = 0;
+    locales.forEach((l) => {
+      if (!form.title[l.code] || !form.bio[l.code] || !form.location[l.code]) {
+        count++;
+      }
+    });
+    return count;
   };
 
   return (
@@ -155,7 +206,7 @@ export default function AdminAboutPage(): JSX.Element {
         }}
       >
         <TerminalHeader />
-        <main className="flex-1 p-4 md:p-6 max-w-4xl mx-auto w-full">
+        <main className="flex-1 p-4 md:p-6 max-w-5xl mx-auto w-full">
           <div
             className="rounded-lg border overflow-hidden"
             style={{ borderColor: themeConfig.colors.border }}
@@ -206,24 +257,36 @@ export default function AdminAboutPage(): JSX.Element {
                     about
                   </h1>
                 </div>
-                {localeCount > 0 && (
+                {getMissingLocalesCount() > 0 ? (
                   <span
                     className="inline-flex items-center gap-1 px-2.5 py-1 rounded font-mono text-xs"
                     style={{
-                      backgroundColor: "rgba(96, 165, 250, 0.1)",
-                      color: "rgb(96, 165, 250)",
-                      border: "1px solid rgba(96, 165, 250, 0.2)",
+                      backgroundColor: "rgba(239, 68, 68, 0.1)",
+                      color: "#ef4444",
+                      border: "1px solid rgba(239, 68, 68, 0.2)",
                     }}
                   >
                     <Globe className="w-3.5 h-3.5" />
-                    {localeCount} locales active
+                    {getMissingLocalesCount()} locales missing
+                  </span>
+                ) : (
+                  <span
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded font-mono text-xs"
+                    style={{
+                      backgroundColor: "rgba(34, 197, 94, 0.1)",
+                      color: "#22c55e",
+                      border: "1px solid rgba(34, 197, 94, 0.2)",
+                    }}
+                  >
+                    <Globe className="w-3.5 h-3.5" />
+                    All {locales.length} locales active
                   </span>
                 )}
               </div>
 
               {/* Messages */}
               {error && (
-                <div
+                 <div
                   className="mb-4 p-3 rounded font-mono text-sm"
                   style={{
                     backgroundColor: "rgba(239, 68, 68, 0.1)",
@@ -253,14 +316,18 @@ export default function AdminAboutPage(): JSX.Element {
                   Loading About section data...
                 </div>
               ) : (
-                <div className="space-y-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-6">
+                  {/* Universal fields */}
+                  <div className="space-y-4">
+                    <h3 className="font-mono text-sm font-semibold" style={{ color: themeConfig.colors.accent }}>
+                      Universal Fields
+                    </h3>
                     <div>
                       <label
                         htmlFor="about-name"
                         className="block font-mono text-xs mb-1 opacity-70"
                       >
-                        Full Name (Universal)
+                        Full Name
                       </label>
                       <input
                         id="about-name"
@@ -278,82 +345,131 @@ export default function AdminAboutPage(): JSX.Element {
                         placeholder="Dimas Saputra"
                       />
                     </div>
+                  </div>
+
+                  {/* Localized fields */}
+                  <div className="space-y-4 pt-4 border-t" style={{ borderColor: `${themeConfig.colors.border}60` }}>
+                    <div className="flex items-center justify-between">
+                       <h3 className="font-mono text-sm font-semibold" style={{ color: themeConfig.colors.accent }}>
+                        Localized Fields
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={handleGenerateTranslations}
+                        disabled={translating || !form.title[activeLocale] || !form.bio[activeLocale]}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs transition-all disabled:opacity-40 hover:opacity-80"
+                        style={{
+                          backgroundColor: `${themeConfig.colors.accent}20`,
+                          color: themeConfig.colors.accent,
+                          border: `1px solid ${themeConfig.colors.accent}40`,
+                        }}
+                      >
+                        {translating ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Sparkles className="w-3.5 h-3.5" />
+                        )}
+                        {translating ? "Translating..." : "Generate Translations"}
+                      </button>
+                    </div>
+
+                    <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin">
+                      {locales.map((l) => (
+                        <button
+                          key={l.code}
+                          type="button"
+                          onClick={() => setActiveLocale(l.code)}
+                          className="px-3 py-1.5 rounded font-mono text-xs whitespace-nowrap transition-colors"
+                          style={{
+                            backgroundColor: activeLocale === l.code ? themeConfig.colors.accent : `${themeConfig.colors.border}30`,
+                            color: activeLocale === l.code ? themeConfig.colors.bg : themeConfig.colors.text,
+                            border: `1px solid ${activeLocale === l.code ? themeConfig.colors.accent : themeConfig.colors.border}`,
+                            opacity: activeLocale === l.code ? 1 : 0.7,
+                          }}
+                        >
+                          {l.flag} {l.name}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label
+                          htmlFor="about-title"
+                          className="block font-mono text-xs mb-1 opacity-70"
+                        >
+                          Professional Title
+                        </label>
+                        <input
+                          id="about-title"
+                          type="text"
+                          value={form.title[activeLocale] || ""}
+                          onChange={(e) =>
+                            setForm({ ...form, title: { ...form.title, [activeLocale]: e.target.value } })
+                          }
+                          className="w-full px-3 py-2 rounded font-mono text-sm"
+                          style={{
+                            backgroundColor: `${themeConfig.colors.border}40`,
+                            border: `1px solid ${themeConfig.colors.border}`,
+                            color: themeConfig.colors.text,
+                          }}
+                          placeholder="Full-Stack Developer"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="about-location"
+                          className="block font-mono text-xs mb-1 opacity-70"
+                        >
+                          Location
+                        </label>
+                        <input
+                          id="about-location"
+                          type="text"
+                          value={form.location[activeLocale] || ""}
+                          onChange={(e) =>
+                            setForm({ ...form, location: { ...form.location, [activeLocale]: e.target.value } })
+                          }
+                          className="w-full px-3 py-2 rounded font-mono text-sm"
+                          style={{
+                            backgroundColor: `${themeConfig.colors.border}40`,
+                            border: `1px solid ${themeConfig.colors.border}`,
+                            color: themeConfig.colors.text,
+                          }}
+                          placeholder="Indonesia"
+                        />
+                      </div>
+                    </div>
 
                     <div>
                       <label
-                        htmlFor="about-title"
+                        htmlFor="about-bio"
                         className="block font-mono text-xs mb-1 opacity-70"
                       >
-                        Professional Title (English — AI Translates)
+                        Bio Description
                       </label>
-                      <input
-                        id="about-title"
-                        type="text"
-                        value={form.title}
+                      <textarea
+                        id="about-bio"
+                        value={form.bio[activeLocale] || ""}
                         onChange={(e) =>
-                          setForm({ ...form, title: e.target.value })
+                          setForm({ ...form, bio: { ...form.bio, [activeLocale]: e.target.value } })
                         }
-                        className="w-full px-3 py-2 rounded font-mono text-sm"
+                        rows={5}
+                        className="w-full px-3 py-2 rounded font-mono text-sm resize-y"
                         style={{
                           backgroundColor: `${themeConfig.colors.border}40`,
                           border: `1px solid ${themeConfig.colors.border}`,
                           color: themeConfig.colors.text,
                         }}
-                        placeholder="Full-Stack Developer"
+                        placeholder="A software developer with nearly three years of professional experience..."
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <label
-                      htmlFor="about-location"
-                      className="block font-mono text-xs mb-1 opacity-70"
-                    >
-                      Location (English — AI Translates)
-                    </label>
-                    <input
-                      id="about-location"
-                      type="text"
-                      value={form.location}
-                      onChange={(e) =>
-                        setForm({ ...form, location: e.target.value })
-                      }
-                      className="w-full px-3 py-2 rounded font-mono text-sm"
-                      style={{
-                        backgroundColor: `${themeConfig.colors.border}40`,
-                        border: `1px solid ${themeConfig.colors.border}`,
-                        color: themeConfig.colors.text,
-                      }}
-                      placeholder="Indonesia"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="about-bio"
-                      className="block font-mono text-xs mb-1 opacity-70"
-                    >
-                      Bio Description (English — AI Translates to 17 locales)
-                    </label>
-                    <textarea
-                      id="about-bio"
-                      value={form.bio}
-                      onChange={(e) =>
-                        setForm({ ...form, bio: e.target.value })
-                      }
-                      rows={5}
-                      className="w-full px-3 py-2 rounded font-mono text-sm resize-y"
-                      style={{
-                        backgroundColor: `${themeConfig.colors.border}40`,
-                        border: `1px solid ${themeConfig.colors.border}`,
-                        color: themeConfig.colors.text,
-                      }}
-                      placeholder="A software developer with nearly three years of professional experience..."
-                    />
-                  </div>
-
-                  <div className="pt-2 border-t" style={{ borderColor: `${themeConfig.colors.border}60` }}>
-                    <h3 className="font-mono text-xs font-semibold mb-3" style={{ color: themeConfig.colors.accent }}>
+                  {/* Contacts */}
+                  <div className="pt-4 border-t" style={{ borderColor: `${themeConfig.colors.border}60` }}>
+                    <h3 className="font-mono text-sm font-semibold mb-3" style={{ color: themeConfig.colors.accent }}>
                       Contact Links (Universal)
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -452,11 +568,12 @@ export default function AdminAboutPage(): JSX.Element {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 pt-4">
+                  {/* Actions */}
+                  <div className="flex items-center gap-3 pt-6 border-t" style={{ borderColor: `${themeConfig.colors.border}60` }}>
                     <button
                       onClick={handleSubmit}
-                      disabled={saving || !form.title || !form.bio}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded font-mono text-sm transition-all disabled:opacity-40"
+                      disabled={saving}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded font-mono text-sm transition-all disabled:opacity-40 hover:opacity-90"
                       style={{
                         backgroundColor: themeConfig.colors.accent,
                         color: themeConfig.colors.bg,
@@ -467,18 +584,8 @@ export default function AdminAboutPage(): JSX.Element {
                       ) : (
                         <Save className="w-4 h-4" />
                       )}
-                      {saving
-                        ? "Translating to 17 locales..."
-                        : "Save & Auto-Translate"}
+                      {saving ? "Saving..." : "Save About Section"}
                     </button>
-                    <span
-                      className="font-mono text-xs opacity-50"
-                      aria-live="polite"
-                    >
-                      {saving
-                        ? "AI is translating Title, Bio & Location..."
-                        : "Input in English — AI translates to 17 languages"}
-                    </span>
                   </div>
                 </div>
               )}
