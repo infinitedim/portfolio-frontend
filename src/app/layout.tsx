@@ -154,7 +154,6 @@ export default function RootLayout({
       suppressHydrationWarning={true}
     >
       <head>
-        {/* TODO: Upload avatar photo as public/avatar.jpg — currently missing, causes 404 in JSON-LD Rich Results */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

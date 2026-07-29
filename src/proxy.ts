@@ -128,6 +128,7 @@ function buildCsp(isDev: boolean): string {
       "https://avatars.githubusercontent.com",
       "https://raw.githubusercontent.com",
       "https://infinitedim.dev",
+      "https://storage.googleapis.com",
     ],
     "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
     "connect-src": [

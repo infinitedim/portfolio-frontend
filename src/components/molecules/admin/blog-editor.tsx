@@ -551,7 +551,12 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   };
 
   const handleImageUpload = useCallback((url: string) => {
-    setContent((prev) => `${prev}<p><img src="${url}" alt="image" /></p>`);
+    const rawFilename = url.split("/").pop()?.replace(/\.[^.]+$/, "") || "blog image";
+    const cleanAlt = decodeURIComponent(rawFilename).replace(/[-_]+/g, " ");
+    setContent(
+      (prev) =>
+        `${prev}\n<figure><img src="${url}" alt="${cleanAlt}" loading="lazy" decoding="async" /></figure>\n`,
+    );
   }, []);
 
   const togglePublish = async () => {

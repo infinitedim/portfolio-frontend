@@ -937,3 +937,18 @@ textarea.terminal-input {
   opacity: 0.35;
   pointer-events: none;
 }
+
+/* Blog content image optimization & CLS prevention */
+.prose img,
+.prose-invert img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin-block: 1.5rem;
+  display: block;
+}
+
+.prose figure {
+  margin: 0;
+}
+

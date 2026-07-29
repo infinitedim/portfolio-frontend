@@ -30,6 +30,7 @@
     "@marsidev/react-turnstile": "^1.5.3",
     "@radix-ui/react-dialog": "^1.1.21",
     "@radix-ui/react-select": "^2.3.5",
+    "@vercel/og": "^0.11.1",
     "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

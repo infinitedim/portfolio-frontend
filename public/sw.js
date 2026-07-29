@@ -2,7 +2,7 @@
 
 const CACHE_NAME = "portfolio-v2";
 const OFFLINE_URL = "/offline";
-const STATIC_PREFIXES = ["/_next/static/", "/icons/"];
+const STATIC_PREFIXES = ["/_next/static/", "/icons/", "/_next/image"];
 
 const urlsToCache = [OFFLINE_URL];
 

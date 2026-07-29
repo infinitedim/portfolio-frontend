@@ -4,6 +4,7 @@ import { JSX, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils/utils";
 import { Folder } from "lucide-react";
+import { DEFAULT_SIZES, getBlurDataUrl } from "@/lib/utils/image-utils";
 
 interface ProjectCardImageProps {
   src: string;
@@ -11,25 +12,6 @@ interface ProjectCardImageProps {
   featured?: boolean;
   className?: string;
 }
-
-const shimmer = (w: number, h: number) => `
-<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <linearGradient id="g">
-      <stop stop-color="#333" offset="20%" />
-      <stop stop-color="#222" offset="50%" />
-      <stop stop-color="#333" offset="70%" />
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="#333" />
-  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
-</svg>`;
-
-const toBase64 = (str: string) =>
-  typeof window === "undefined"
-    ? Buffer.from(str).toString("base64")
-    : window.btoa(str);
 
 export function ProjectCardImage({
   src,
@@ -67,7 +49,7 @@ export function ProjectCardImage({
       alt={alt}
       fill
       preload={featured}
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      sizes={DEFAULT_SIZES}
       className={cn(
         "object-cover duration-700 ease-in-out",
         isLoading
@@ -78,7 +60,8 @@ export function ProjectCardImage({
       onLoad={() => setIsLoading(false)}
       onError={() => setHasError(true)}
       placeholder="blur"
-      blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 192))}`}
+      blurDataURL={getBlurDataUrl(400, 192)}
     />
   );
 }
+

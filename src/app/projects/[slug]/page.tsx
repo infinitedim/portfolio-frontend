@@ -9,6 +9,8 @@ import { BreadcrumbListSchema } from "@/components/molecules/seo/json-ld";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 import { ArrowLeft, ExternalLink, Code, Star } from "lucide-react";
 
+import { getBlurDataUrl } from "@/lib/utils/image-utils";
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -166,6 +168,8 @@ async function ProjectDetailContent({
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 896px"
                   priority
+                  placeholder="blur"
+                  blurDataURL={getBlurDataUrl(896, 504)}
                 />
               </div>
             )}

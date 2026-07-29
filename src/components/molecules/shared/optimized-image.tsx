@@ -3,6 +3,7 @@
 import { JSX, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils/utils";
+import { DEFAULT_SIZES, getBlurDataUrl } from "@/lib/utils/image-utils";
 
 interface OptimizedImageProps {
   src: string;
@@ -13,27 +14,10 @@ interface OptimizedImageProps {
   priority?: boolean;
   preload?: boolean;
   className?: string;
+  containerClassName?: string;
+  aspectRatio?: string;
   sizes?: string;
 }
-
-const shimmer = (w: number, h: number) => `
-<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <linearGradient id="g">
-      <stop stop-color="#333" offset="20%" />
-      <stop stop-color="#222" offset="50%" />
-      <stop stop-color="#333" offset="70%" />
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="#333" />
-  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
-</svg>`;
-
-const toBase64 = (str: string) =>
-  typeof window === "undefined"
-    ? Buffer.from(str).toString("base64")
-    : window.btoa(str);
 
 export function OptimizedImage({
   src,
@@ -44,7 +28,9 @@ export function OptimizedImage({
   priority = false,
   preload = false,
   className,
-  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+  containerClassName,
+  aspectRatio,
+  sizes = DEFAULT_SIZES,
 }: OptimizedImageProps): JSX.Element {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -54,12 +40,12 @@ export function OptimizedImage({
       <div
         className={cn(
           "flex items-center justify-center bg-gray-100 dark:bg-gray-800",
-          className,
+          containerClassName || className,
         )}
-        style={{ width, height }}
+        style={!fill ? { width, height } : undefined}
       >
         <div className="text-center p-4">
-          <span className="text-4xl">️</span>
+          <span className="text-4xl">🖼️</span>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
             Image not available
           </p>
@@ -70,8 +56,11 @@ export function OptimizedImage({
 
   return (
     <div
-      className={cn("relative", className)}
-      style={!fill ? { width, height } : undefined}
+      className={cn("relative overflow-hidden", containerClassName)}
+      style={{
+        ...(!fill ? { width, height } : {}),
+        ...(aspectRatio ? { aspectRatio } : {}),
+      }}
     >
       <Image
         src={src}
@@ -88,12 +77,14 @@ export function OptimizedImage({
             ? "scale-110 blur-2xl grayscale"
             : "scale-100 blur-0 grayscale-0",
           fill ? "object-cover" : "",
+          className,
         )}
-        onLoadingComplete={() => setIsLoading(false)}
+        onLoad={() => setIsLoading(false)}
         onError={() => setHasError(true)}
         placeholder="blur"
-        blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(width, height))}`}
+        blurDataURL={getBlurDataUrl(width, height)}
       />
     </div>
   );
 }
+

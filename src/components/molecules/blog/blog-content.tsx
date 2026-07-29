@@ -8,11 +8,18 @@ export interface BlogContentProps {
   md?: string | null;
 }
 
+function enhanceBlogImages(html: string): string {
+  return html.replace(
+    /<img\s(?![^>]*\bloading=)(?![^>]*\bdecoding=)/gi,
+    '<img loading="lazy" decoding="async" ',
+  );
+}
+
 export function BlogContent({ html, md }: BlogContentProps) {
   const { t } = useI18n();
 
   if (html) {
-    const cleanHtml = sanitize(html);
+    const cleanHtml = enhanceBlogImages(sanitize(html));
     return (
       <div
         dangerouslySetInnerHTML={{ __html: cleanHtml }}
