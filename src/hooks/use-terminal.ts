@@ -168,6 +168,7 @@ export function useTerminal(
 
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [isClearing, setIsClearing] = useState(false);
 
   const parserRef = useRef<CommandParser | null>(null);
   const isMountedRef = useRef(false);
@@ -775,18 +776,24 @@ export function useTerminal(
   const clearHistory = useCallback(() => {
     if (!isMountedRef.current) return;
 
-    setHistory([]);
-    setCommandHistory([]);
-    resetHistoryNavigation();
-    setLastError(null);
+    setIsClearing(true);
+    setTimeout(() => {
+      if (!isMountedRef.current) return;
 
-    clearAdvancedHistory();
+      setHistory([]);
+      setCommandHistory([]);
+      resetHistoryNavigation();
+      setLastError(null);
+      setIsClearing(false);
 
-    try {
-      localStorage.removeItem(STORAGE_KEYS.COMMAND_HISTORY);
-    } catch (error) {
-      console.warn("Failed to clear command history from localStorage:", error);
-    }
+      clearAdvancedHistory();
+
+      try {
+        localStorage.removeItem(STORAGE_KEYS.COMMAND_HISTORY);
+      } catch (error) {
+        console.warn("Failed to clear command history from localStorage:", error);
+      }
+    }, 150);
   }, [clearAdvancedHistory, resetHistoryNavigation]);
 
   const clearError = useCallback(() => {
@@ -839,6 +846,7 @@ export function useTerminal(
     currentInput,
     setCurrentInput: updateCurrentInput,
     isProcessing,
+    isClearing,
     executeCommand,
     addToHistory,
     navigateHistory,

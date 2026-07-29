@@ -61,6 +61,9 @@ export interface TerminalContextType {
   /** True while a command is being processed */
   isProcessing: boolean;
 
+  /** True while the terminal clear animation is running */
+  isClearing?: boolean;
+
   /**
    * Low-level execute that returns raw CommandOutput without side-effects.
    * Prefer `handleSubmit` for high-level orchestration (theme changes, etc.).

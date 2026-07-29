@@ -14,12 +14,16 @@ export interface CommandOutput {
   content: string | ComponentType;
   timestamp?: Date;
   id?: string;
+  isTyping?: boolean;
+  allowAnimation?: boolean;
 }
 
 export interface TerminalHistory {
   input: string;
   output: CommandOutput;
   timestamp: Date;
+  isTyping?: boolean;
+  allowAnimation?: boolean;
 }
 
 export type Theme = "light" | "dark" | "monokai";

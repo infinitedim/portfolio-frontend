@@ -415,13 +415,74 @@ export function useTerminalAnimations() {
   const [isTyping, setIsTyping] = useState(false);
 
   const animateCommandOutput = useCallback(
-    async (element: HTMLElement, content: string) => {
+    async (
+      element: HTMLElement,
+      content: string,
+      skipRef?: React.MutableRefObject<boolean>,
+    ) => {
+      if (animations.isReducedMotion) {
+        element.textContent = content;
+        return;
+      }
+
       setIsTyping(true);
-      await animations.createTypewriterEffect(element, content, {
-        speed: 30,
-        cursor: false,
+
+      // Dynamic speed scaling based on content length
+      let speed = 18;
+      if (content.length > 300) {
+        speed = 4;
+      } else if (content.length > 100) {
+        speed = 10;
+      }
+
+      return new Promise<void>((resolve) => {
+        element.textContent = "";
+        element.classList.add("typing-cursor");
+
+        let i = 0;
+        let _timerId: NodeJS.Timeout | null = null;
+
+        const cleanup = () => {
+          if (_timerId) clearTimeout(_timerId);
+          element.classList.remove("typing-cursor");
+          setIsTyping(false);
+          resolve();
+        };
+
+        const typeNextChar = () => {
+          if (skipRef?.current) {
+            element.textContent = content;
+            cleanup();
+            return;
+          }
+
+          if (i < content.length) {
+            element.textContent = content.slice(0, i + 1);
+            i++;
+            _timerId = setTimeout(typeNextChar, speed);
+          } else {
+            cleanup();
+          }
+        };
+
+        _timerId = setTimeout(typeNextChar, speed);
       });
-      setIsTyping(false);
+    },
+    [animations],
+  );
+
+  const animateScanlineClear = useCallback(
+    (containerElement: HTMLElement, onComplete: () => void) => {
+      if (animations.isReducedMotion) {
+        onComplete();
+        return;
+      }
+
+      containerElement.classList.add("animate-scanline-clear");
+      setTimeout(() => {
+        containerElement.classList.remove("animate-scanline-clear");
+        onComplete();
+      }, 150);
     },
     [animations],
   );
@@ -451,6 +512,7 @@ export function useTerminalAnimations() {
   return {
     ...animations,
     animateCommandOutput,
+    animateScanlineClear,
     animateCommandError,
     animateThemeChange,
     isTyping,

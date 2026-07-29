@@ -77,8 +77,12 @@ export function TurnstileResumeModal({
     >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm animate-fade-in" />
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <Dialog.Content className="relative w-full max-w-md rounded-xl border border-neutral-800 bg-neutral-950 p-6 shadow-2xl focus:outline-none font-mono">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <Dialog.Content className="relative w-full max-w-md rounded-t-2xl sm:rounded-xl border-t sm:border border-neutral-800 bg-neutral-950 p-6 pb-8 sm:pb-6 shadow-2xl focus:outline-none font-mono animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+            <div
+              className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-neutral-800 sm:hidden"
+              aria-hidden="true"
+            />
             <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
               <div className="flex items-center gap-2 text-green-400">
                 <ShieldCheck className="h-5 w-5" />
@@ -96,12 +100,10 @@ export function TurnstileResumeModal({
                 </button>
               </Dialog.Close>
             </div>
-
             <Dialog.Description className="mt-4 text-xs text-neutral-400 leading-relaxed">
               Please complete the Cloudflare security verification below to
               access and download Dimas Saputra&apos;s Resume.
             </Dialog.Description>
-
             <div className="my-6 flex flex-col items-center justify-center min-h-35 rounded-lg border border-neutral-900 bg-neutral-900/50 p-4">
               {isDownloading ? (
                 <div className="flex flex-col items-center gap-2 text-green-400">
@@ -151,7 +153,6 @@ export function TurnstileResumeModal({
                 </div>
               )}
             </div>
-
             <div className="flex justify-between items-center text-[10px] text-neutral-500 border-t border-neutral-900 pt-3">
               <span>Protected by Cloudflare Turnstile</span>
               <span>100% Bot Safe</span>

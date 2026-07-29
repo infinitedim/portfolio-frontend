@@ -8,10 +8,12 @@ import { type JSX } from "react";
 
 interface TerminalHistoryProps {
   history: TerminalHistoryType[];
+  isClearing?: boolean;
 }
 
 export function TerminalHistory({
   history,
+  isClearing = false,
 }: TerminalHistoryProps): JSX.Element | null {
   const { theme, themeConfig } = useTheme();
   const { isReducedMotion } = useAccessibility();
@@ -23,7 +25,7 @@ export function TerminalHistory({
   return (
     <div
       key={`terminal-history-${theme}`}
-      className="space-y-4 terminal-history"
+      className={`space-y-4 terminal-history ${isClearing && !isReducedMotion ? "animate-scanline-clear" : ""}`}
       role="log"
       aria-label="Command history"
     >

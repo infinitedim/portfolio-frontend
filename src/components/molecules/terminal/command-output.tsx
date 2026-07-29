@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useCallback } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
+import { useTerminalAnimations } from "@/hooks/use-animations";
 import type { CommandOutput as CommandOutputType } from "@/types/terminal";
 import type { JSX } from "react";
 
@@ -12,6 +14,9 @@ interface CommandOutputProps {
 export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
   const { themeConfig, theme } = useTheme();
   const { isReducedMotion } = useAccessibility();
+  const { animateCommandOutput } = useTerminalAnimations();
+  const textRef = useRef<HTMLDivElement>(null);
+  const skipRef = useRef<boolean>(false);
 
   const getOutputColor = () => {
     switch (output.type) {
@@ -38,43 +43,47 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
     }
   };
 
-  const getErrorIcon = () => {
-    return "";
-  };
-
-  const getSuccessIcon = () => {
-    return "";
-  };
-
-  const getWarningIcon = () => {
-    return "️";
-  };
-
-  const getInfoIcon = () => {
-    return "ℹ️";
-  };
-
-  const getIcon = () => {
-    switch (output.type) {
-      case "error":
-        return getErrorIcon();
-      case "success":
-        return getSuccessIcon();
-      case "warning":
-        return getWarningIcon();
-      case "info":
-        return getInfoIcon();
-      default:
-        return "";
-    }
-  };
-
   const isError = output.type === "error";
-  const icon = getIcon();
+  const rawText = formatContent(output.content);
+
+  const triggerSkip = useCallback(() => {
+    if (!skipRef.current) {
+      skipRef.current = true;
+      if (textRef.current) {
+        textRef.current.textContent = rawText;
+        textRef.current.classList.remove("typing-cursor");
+      }
+    }
+  }, [rawText]);
+
+  useEffect(() => {
+    skipRef.current = false;
+    if (
+      textRef.current &&
+      rawText &&
+      output.allowAnimation !== false &&
+      !isReducedMotion
+    ) {
+      animateCommandOutput(textRef.current, rawText, skipRef);
+    }
+  }, [rawText, output.allowAnimation, isReducedMotion, animateCommandOutput]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === "Escape") {
+        triggerSkip();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [triggerSkip]);
 
   return (
+    /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
     <div
-      key={`command-output-${theme}`}
+        key={`command-output-${theme}`}
       className={`font-mono whitespace-pre-wrap ${!isReducedMotion ? "transition-colors duration-300" : ""}`}
       style={{
         color: getOutputColor(),
@@ -82,19 +91,16 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
       role="log"
       aria-live={isError ? "assertive" : "polite"}
       aria-label={isError ? "Error output" : "Command output"}
+      onClick={triggerSkip}
     >
       {typeof output.content === "string" || Array.isArray(output.content) ? (
         <div className="flex items-start gap-2">
-          {icon && (
-            <span
-              className="shrink-0 mt-0.5"
-              aria-hidden="true"
-            >
-              {icon}
-            </span>
-          )}
           <div className="flex-1">
-            {formatContent(output.content)}
+            <div ref={textRef}>
+              {isReducedMotion || output.allowAnimation === false
+                ? rawText
+                : ""}
+            </div>
             {isError && (
               <div className="mt-2 text-sm opacity-75">
                 Try typing 'help' to see available commands or 'clear' to reset

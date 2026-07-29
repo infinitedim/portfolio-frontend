@@ -207,8 +207,15 @@ export function resolveGateRedirect(request: NextRequest): NextResponse | null {
   if (hasGateBypass(request)) return null;
 
   const { pathname } = request.nextUrl;
+  const userAgent = request.headers.get("user-agent") || "";
+  const isMobileUserAgent =
+    /mobile|iphone|android|ipod/i.test(userAgent) &&
+    !/ipad|tablet/i.test(userAgent);
 
   if (pathname === "/gate" || pathname.startsWith("/gate/")) {
+    if (isMobileUserAgent) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
     if (hasGateCookie(request)) {
       return NextResponse.redirect(new URL("/terminal", request.url));
     }

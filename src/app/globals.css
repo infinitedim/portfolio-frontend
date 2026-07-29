@@ -952,3 +952,23 @@ textarea.terminal-input {
   margin: 0;
 }
 
+/* Terminal Scanline Wipe Animation for Clear Command */
+@keyframes scanline-wipe {
+  0% {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    clip-path: inset(100% 0 0 0);
+    opacity: 0;
+  }
+}
+
+.animate-scanline-clear {
+  animation: scanline-wipe 150ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+

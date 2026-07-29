@@ -65,6 +65,7 @@ function TerminalContent({
     bottomRef,
     t,
     clearHistory,
+    isClearing,
     handleSubmit,
     changeTheme,
     availableThemes,
@@ -371,7 +372,10 @@ function TerminalContent({
         >
           <div className="relative z-10 w-full max-w-4xl mx-auto space-y-4 sm:space-y-8 mt-2 sm:mt-10">
             <TerminalHeader />
-            <TerminalHistory history={history} />
+            <TerminalHistory
+              history={history}
+              isClearing={isClearing}
+            />
             <TerminalInputSection />
             <div ref={bottomRef} />
           </div>

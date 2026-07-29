@@ -2,6 +2,8 @@
 
 import { useState, type SubmitEvent, type JSX } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { gateClient } from "@/lib/gate/gate-client";
 import { GATE_L1_USERNAME, GATE_L2_USERNAME } from "@/lib/gate/types";
@@ -148,18 +150,28 @@ export function NatasLoginForm({
       </form>
 
       {level === 1 && (
-        <div className="mt-6 border-t border-neutral-800 pt-6 text-center">
+        <div className="mt-6 border-t border-neutral-800 pt-6 text-center space-y-3">
           <p className="text-xs text-neutral-500 font-mono">
-            Hiring manager or recruiter?
+            Looking for the standard portfolio?
           </p>
-          <button
-            type="button"
-            onClick={handleBypass}
-            disabled={submitting || bypassLoading}
-            className="mt-3 w-full rounded border border-green-400 bg-green-400/10 px-4 py-2.5 font-mono text-xs text-green-400 transition-all hover:bg-green-400/20 disabled:opacity-50 cursor-pointer"
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center gap-2 w-full rounded border border-neutral-700 bg-neutral-900/80 px-4 py-2.5 font-mono text-xs text-neutral-300 transition-all hover:border-green-400/50 hover:text-green-400"
           >
-            {bypassLoading ? bypassStatus : "⚡ Recruiter Bypass (Auto Unlock)"}
-          </button>
+            <ArrowLeft size={14} />
+            Back to Standard Portfolio
+          </Link>
+
+          {process.env.NODE_ENV === "development" && (
+            <button
+              type="button"
+              onClick={handleBypass}
+              disabled={submitting || bypassLoading}
+              className="w-full rounded border border-amber-400/40 bg-amber-400/10 px-4 py-2 font-mono text-xs text-amber-400 transition-all hover:bg-amber-400/20 disabled:opacity-50 cursor-pointer"
+            >
+              {bypassLoading ? bypassStatus : "[DEV ONLY] Auto Unlock Gate"}
+            </button>
+          )}
         </div>
       )}
     </div>
