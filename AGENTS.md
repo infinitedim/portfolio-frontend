@@ -164,7 +164,7 @@ flowchart LR
 | Cookie re-home | `gate-proxy.ts`                                              | Copies `gate_progress`, `portfolio_gate` from backend `Set-Cookie`                                 |
 | L2 listing     | `src/app/s3cr3t/page.tsx`                                    | NATAS-style index                                                                                  |
 | L2 secret file | `src/app/s3cr3t/users.txt/route.ts`                          | Proxies `GET /api/gate/challenge/2/users.txt`                                                      |
-| L3 Referer     | `gate-level-3-client.tsx`, `referer-check.ts`                | User must arrive from `/terminal` teaser                                                           |
+| L3 Decode     | `gate-level-3-client.tsx`, `challenge/3/encoded`             | Natas 8 secret string decoding challenge UI & client                                               |
 | UI             | `src/components/organisms/gate/*`                            | Login forms, progress, unlock                                                                      |
 
 **L2 player flow:** `/robots.txt` has `Disallow: /s3cr3t/` → browse `/s3cr3t/` → open `users.txt` → login level 2 on `/gate/2`.

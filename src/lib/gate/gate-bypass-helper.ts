@@ -14,6 +14,17 @@ export interface BypassProgress {
   message: string;
 }
 
+function decodeEncodedSecret(encoded: string): string {
+  // Reverse the encoding: hex -> string -> reverse -> base64 decode
+  const hexPairs = encoded.match(/.{2}/g) ?? [];
+  const chars = hexPairs.map((hex) =>
+    String.fromCharCode(Number.parseInt(hex, 16)),
+  );
+  const reversed = chars.join("");
+  const base64 = reversed.split("").reverse().join("");
+  return atob(base64);
+}
+
 export async function runRecruiterBypass(
   onProgress?: (progress: BypassProgress) => void,
 ): Promise<void> {
@@ -52,12 +63,14 @@ export async function runRecruiterBypass(
       password: l2Password,
     });
 
-    // 4. Level 3
+    // 4. Level 3 — decode the encoded secret
     onProgress?.({
       step: "level3",
-      message: "Completing Level 3 challenge...",
+      message: "Decoding Level 3 challenge...",
     });
-    await gateClient.completeLevel3();
+    const challenge = await gateClient.getLevel3Challenge();
+    const decoded = decodeEncodedSecret(challenge.encodedSecret);
+    await gateClient.completeLevel3(decoded);
 
     // 5. Unlock
     onProgress?.({ step: "unlocking", message: "Unlocking terminal..." });

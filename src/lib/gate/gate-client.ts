@@ -1,6 +1,7 @@
 import type {
   CompleteLevel3Response,
   GateStatus,
+  Level3Challenge,
   LoginRequest,
   LoginResponse,
   UnlockResponse,
@@ -39,10 +40,14 @@ export const gateClient = {
     });
   },
 
-  completeLevel3(): Promise<CompleteLevel3Response> {
+  getLevel3Challenge(): Promise<Level3Challenge> {
+    return gateFetch<Level3Challenge>("/api/gate/challenge/3/encoded");
+  },
+
+  completeLevel3(secret: string): Promise<CompleteLevel3Response> {
     return gateFetch<CompleteLevel3Response>("/api/gate/complete/3", {
       method: "POST",
-      body: JSON.stringify({}),
+      body: JSON.stringify({ secret }),
     });
   },
 

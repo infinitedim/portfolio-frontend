@@ -21,6 +21,13 @@ export interface LoginResponse {
 
 export interface CompleteLevel3Response {
   passed: boolean;
+  attempts?: number;
+  hint?: string;
+}
+
+export interface Level3Challenge {
+  encodedSecret: string;
+  algorithm: string;
 }
 
 export interface UnlockResponse {

@@ -3,19 +3,14 @@
 import { useEffect, useState, type JSX } from "react";
 import { useRouter } from "next/navigation";
 import { gateClient } from "@/lib/gate/gate-client";
-import type { GateStatus } from "@/lib/gate/types";
+import type { GateStatus, Level3Challenge } from "@/lib/gate/types";
 import { gateLevelRoute } from "@/lib/gate/types";
 import { GateLevel3Client } from "@/components/organisms/gate/gate-level-3-client";
 
-interface GateLevel3PageClientProps {
-  refererGranted: boolean;
-}
-
-export function GateLevel3PageClient({
-  refererGranted,
-}: GateLevel3PageClientProps): JSX.Element {
+export function GateLevel3PageClient(): JSX.Element {
   const router = useRouter();
   const [status, setStatus] = useState<GateStatus | null>(null);
+  const [challenge, setChallenge] = useState<Level3Challenge | null>(null);
 
   useEffect(() => {
     gateClient
@@ -30,19 +25,24 @@ export function GateLevel3PageClient({
           return undefined;
         }
         setStatus(s);
+        return gateClient.getLevel3Challenge();
+      })
+      .then((c) => {
+        if (c) setChallenge(c);
         return undefined;
       })
       .catch(() => router.replace("/gate/1"));
   }, [router]);
 
-  if (!status) {
+  if (!status || !challenge) {
     return <p className="text-neutral-400">Loading gate...</p>;
   }
 
   return (
     <GateLevel3Client
       status={status}
-      refererGranted={refererGranted}
+      encodedSecret={challenge.encodedSecret}
+      algorithm={challenge.algorithm}
     />
   );
 }
