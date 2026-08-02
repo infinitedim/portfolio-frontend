@@ -36,7 +36,7 @@ const SelectTrigger = forwardRef<
   <Trigger
     ref={ref}
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-md border border-(--terminal-border) bg-(--terminal-bg) px-3 py-2 text-sm font-mono text-(--terminal-text) ring-offset-(--terminal-bg) focus:outline-none focus:ring-1 focus:ring-(--terminal-accent) focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200",
+      "flex h-10 w-full items-center justify-between rounded-md border border-(--terminal-border) bg-(--terminal-bg) px-3 py-2 text-sm font-mono text-(--terminal-text) ring-offset-(--terminal-bg) focus:outline-none focus:ring-1 focus:ring-(--terminal-accent) focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 transition-[background-color,color] duration-200",
       className,
     )}
     {...props}

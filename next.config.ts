@@ -14,8 +14,8 @@ const nextConfig = {
     typedEnv: true,
     optimizePackageImports: [
       "@radix-ui/react-dialog",
+      "@radix-ui/react-select",
       "lucide-react",
-      "date-fns",
       "@giscus/react",
     ],
   },

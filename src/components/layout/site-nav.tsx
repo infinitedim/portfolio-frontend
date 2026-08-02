@@ -6,7 +6,15 @@ import { type JSX, useState, useEffect } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { LanguageSwitcher } from "@/components/molecules/shared/language-switcher";
 import { VisitorPresenceBadge } from "@/components/molecules/presence/visitor-presence-badge";
-import { TerminalFeaturesModal } from "@/components/molecules/shared/terminal-features-modal";
+import dynamic from "next/dynamic";
+
+const TerminalFeaturesModal = dynamic(
+  () =>
+    import("@/components/molecules/shared/terminal-features-modal").then(
+      (mod) => mod.TerminalFeaturesModal,
+    ),
+  { ssr: false },
+);
 import * as Dialog from "@radix-ui/react-dialog";
 
 const NAV_LINKS = [
@@ -93,7 +101,7 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
             >
               <Dialog.Trigger asChild>
                 <button
-                  className="rounded p-1.5 text-neutral-400 hover:text-neutral-100 sm:hidden focus:outline-none focus:ring-1 focus:ring-green-400 cursor-pointer"
+                  className="min-h-11 min-w-11 inline-flex items-center justify-center rounded text-neutral-400 hover:text-neutral-100 sm:hidden focus:outline-none focus:ring-1 focus:ring-green-400 cursor-pointer"
                   aria-label="Toggle navigation menu"
                 >
                   <svg
