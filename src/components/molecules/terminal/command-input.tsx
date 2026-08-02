@@ -67,12 +67,22 @@ export function CommandInput({
   }, [isProcessing]);
 
   useEffect(() => {
+    let animationFrameId: number;
     if (measureRef.current) {
       const text = value.substring(0, cursorIndex);
       measureRef.current.textContent = text;
-      const rect = measureRef.current.getBoundingClientRect();
-      setCursorPosition(rect.width);
+      animationFrameId = requestAnimationFrame(() => {
+        if (measureRef.current) {
+          const rect = measureRef.current.getBoundingClientRect();
+          setCursorPosition(rect.width);
+        }
+      });
     }
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
   }, [value, cursorIndex]);
 
   useEffect(() => {

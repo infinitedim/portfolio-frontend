@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, type JSX } from "react";
+import { useState, useEffect, useCallback, useRef, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { CustomizationService } from "@/lib/services/customization-service";
 import type { BackgroundSettings } from "@/types/customization";
@@ -19,6 +19,7 @@ export function BackgroundManager({
   const { t } = useI18n();
   const { themeConfig } = useTheme();
   const customizationService = CustomizationService.getInstance();
+  const rafIdRef = useRef<number | null>(null);
   const [backgroundType, setBackgroundType] = useState<
     "letter-glitch" | "none"
   >("letter-glitch");
@@ -31,6 +32,26 @@ export function BackgroundManager({
     characters:
       "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝ",
   });
+
+  useEffect(() => {
+    return () => {
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+    };
+  }, []);
+
+  const handleGlitchSpeedChange = useCallback((newSpeed: number) => {
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+    }
+    rafIdRef.current = requestAnimationFrame(() => {
+      setLetterGlitchSettings((prev) => ({
+        ...prev,
+        glitchSpeed: newSpeed,
+      }));
+    });
+  }, []);
 
   useEffect(() => {
     const settings = customizationService.getBackgroundSettings();
@@ -215,10 +236,7 @@ export function BackgroundManager({
                   max="200"
                   value={letterGlitchSettings.glitchSpeed}
                   onChange={(e) =>
-                    setLetterGlitchSettings((prev) => ({
-                      ...prev,
-                      glitchSpeed: Number.parseInt(e.target.value, 10),
-                    }))
+                    handleGlitchSpeedChange(Number.parseInt(e.target.value, 10))
                   }
                   className="w-full"
                   style={{

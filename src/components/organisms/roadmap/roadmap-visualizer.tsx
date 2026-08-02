@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, JSX } from "react";
+import { useState, startTransition, useDeferredValue, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import type { RoadmapData } from "@/types/roadmap";
 import { SkillCard } from "@/components/molecules/roadmap/skill-card";
@@ -26,13 +26,14 @@ export function RoadmapVisualizer({
   ] as const;
   const [selectedFilter, setSelectedFilter] =
     useState<(typeof statusFilters)[number]>("all");
+  const deferredFilter = useDeferredValue(selectedFilter);
 
   const allSkills = roadmapData.categories.flatMap(
     (category) => category.skills,
   );
   const filteredSkills = allSkills.filter((skill) => {
-    if (selectedFilter === "all") return true;
-    return skill.status === selectedFilter;
+    if (deferredFilter === "all") return true;
+    return skill.status === deferredFilter;
   });
 
   const ViewModeButton = ({
@@ -100,7 +101,7 @@ export function RoadmapVisualizer({
           {statusFilters.map((filter) => (
             <button
               key={filter}
-              onClick={() => setSelectedFilter(filter)}
+              onClick={() => startTransition(() => setSelectedFilter(filter))}
               className={`px-2 py-1 rounded border transition-all duration-200 ${
                 selectedFilter === filter ? "font-bold" : ""
               }`}

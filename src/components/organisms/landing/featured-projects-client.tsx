@@ -20,7 +20,7 @@ export function FeaturedProjectsClient({
   const { t } = useI18n();
 
   return (
-    <section className="border-t border-neutral-800 px-4 py-16">
+    <section className="border-t border-neutral-800 px-4 py-16 cv-auto-section">
       <div className="mx-auto max-w-6xl">
         <FadeIn
           direction="up"

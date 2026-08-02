@@ -64,23 +64,37 @@ export const SplittingStrategies = {
 };
 
 export const addResourceHints = () => {
+  if (typeof document === "undefined") return;
+
   const dnsPrefetch = ["https://cdn.jsdelivr.net"];
 
   dnsPrefetch.forEach((domain) => {
+    if (
+      document.querySelector &&
+      document.querySelector(`link[rel="dns-prefetch"][href="${domain}"]`)
+    ) {
+      return;
+    }
     const link = document.createElement("link");
     link.rel = "dns-prefetch";
     link.href = domain;
-    document.head.appendChild(link);
+    document.head?.appendChild(link);
   });
 
   const preconnect: string[] = [];
 
   preconnect.forEach((origin) => {
+    if (
+      document.querySelector &&
+      document.querySelector(`link[rel="preconnect"][href="${origin}"]`)
+    ) {
+      return;
+    }
     const link = document.createElement("link");
     link.rel = "preconnect";
     link.href = origin;
     link.crossOrigin = "anonymous";
-    document.head.appendChild(link);
+    document.head?.appendChild(link);
   });
 };
 

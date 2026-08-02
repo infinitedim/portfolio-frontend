@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, JSX } from "react";
+import { useState, useDeferredValue, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useFont } from "@/hooks/use-font";
 import { CustomizationService } from "@/lib/services/customization-service";
@@ -28,13 +28,14 @@ export function FontManager({
   const { changeFont } = useFont();
   const [selectedFont, setSelectedFont] = useState<CustomFont | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const deferredSearchQuery = useDeferredValue(searchQuery);
 
   const filteredFonts = fonts
     .filter((font) => {
       const matchesSearch =
-        !searchQuery ||
-        font.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        font.family.toLowerCase().includes(searchQuery.toLowerCase());
+        !deferredSearchQuery ||
+        font.name.toLowerCase().includes(deferredSearchQuery.toLowerCase()) ||
+        font.family.toLowerCase().includes(deferredSearchQuery.toLowerCase());
 
       return matchesSearch;
     })

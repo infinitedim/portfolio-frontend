@@ -10,6 +10,11 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .cv-auto-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 400px;
+  }
 }
 
 @layer base {

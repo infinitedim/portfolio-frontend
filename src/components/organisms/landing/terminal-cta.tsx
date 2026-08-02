@@ -12,7 +12,7 @@ export function TerminalCta(): JSX.Element {
   const { t } = useI18n();
 
   return (
-    <section className="hidden sm:block border-t border-neutral-800 px-4 py-16">
+    <section className="hidden sm:block border-t border-neutral-800 px-4 py-16 cv-auto-section">
       <FadeIn
         direction="up"
         duration={0.6}

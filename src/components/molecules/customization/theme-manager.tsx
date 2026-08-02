@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type JSX } from "react";
+import { useState, useDeferredValue, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 import {
@@ -32,13 +32,14 @@ export function ThemeManager({
   const { themeConfig, changeTheme, isThemeActive } = useTheme();
   const { isReducedMotion } = useAccessibility();
   const [searchQuery, setSearchQuery] = useState("");
+  const deferredSearchQuery = useDeferredValue(searchQuery);
   const [sortBy, setSortBy] = useState<"name" | "created" | "modified">("name");
 
   const filteredThemes = themes
     .filter((theme) => {
       const matchesSearch =
-        theme.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        theme.description?.toLowerCase().includes(searchQuery.toLowerCase());
+        theme.name.toLowerCase().includes(deferredSearchQuery.toLowerCase()) ||
+        theme.description?.toLowerCase().includes(deferredSearchQuery.toLowerCase());
 
       const matchesFilter = true;
 

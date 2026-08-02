@@ -154,6 +154,7 @@ export default function RootLayout({
       suppressHydrationWarning={true}
     >
       <head>
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
