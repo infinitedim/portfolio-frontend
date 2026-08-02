@@ -40,7 +40,20 @@ interface BlogListResponse {
   total: number;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+interface BlogPageMetadataProps {
+  searchParams: Promise<{
+    locale?: string;
+  }>;
+}
+
+export async function generateMetadata({ searchParams }: BlogPageMetadataProps): Promise<Metadata> {
+  const { locale: localeParam } = await searchParams;
+  const locale = localeParam?.trim() || DEFAULT_BLOG_LOCALE;
+  const canonicalPath =
+    locale === DEFAULT_BLOG_LOCALE
+      ? "/blog"
+      : `/blog?locale=${locale}`;
+
   return {
     title: "Blog | Portfolio",
     description: "Read the latest articles and insights from our blog.",
@@ -48,8 +61,24 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "Blog | Portfolio",
       description: "Read the latest articles and insights from our blog.",
       type: "website",
+      locale: locale === "id" ? "id_ID" : "en_US",
+      alternateLocale: locale === "id" ? ["en_US"] : ["id_ID"],
     },
     alternates: {
+      canonical: canonicalPath,
+      languages: {
+        en: "/blog",
+        id: "/blog?locale=id",
+        "zh-CN": "/blog?locale=zh_CN",
+        "ja-JP": "/blog?locale=ja_JP",
+        "ko-KR": "/blog?locale=ko_KR",
+        "es-ES": "/blog?locale=es_ES",
+        "fr-FR": "/blog?locale=fr_FR",
+        "de-DE": "/blog?locale=de_DE",
+        "pt-BR": "/blog?locale=pt_BR",
+        "ru-RU": "/blog?locale=ru_RU",
+        "x-default": "/blog",
+      },
       types: {
         "application/rss+xml": "/rss.xml",
       },

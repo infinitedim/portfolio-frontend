@@ -266,6 +266,7 @@ export function ArticleSchema({
   image,
   url,
   keywords,
+  inLanguage,
 }: {
   headline: string;
   description: string;
@@ -276,6 +277,7 @@ export function ArticleSchema({
   image?: string;
   url?: string;
   keywords?: string;
+  inLanguage?: string;
 }): JSX.Element {
   const data = {
     "@context": "https://schema.org",
@@ -295,6 +297,7 @@ export function ArticleSchema({
     ...(image && { image }),
     ...(url && { url }),
     ...(keywords && { keywords }),
+    ...(inLanguage && { inLanguage }),
   };
 
   return <JsonLd data={data} />;

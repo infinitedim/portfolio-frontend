@@ -33,12 +33,12 @@ vi.mock("@/lib/i18n", () => ({
           flag: "🇮🇩",
           direction: "ltr",
         },
-        ar_SA: {
-          code: "ar_SA",
-          name: "Arabic",
-          nativeName: "العربية",
-          flag: "🇸🇦",
-          direction: "rtl",
+        ja_JP: {
+          code: "ja_JP",
+          name: "Japanese",
+          nativeName: "日本語",
+          flag: "🇯🇵",
+          direction: "ltr",
         },
       };
       return locales[mockCurrentLocale] || locales.en_US;
@@ -48,7 +48,7 @@ vi.mock("@/lib/i18n", () => ({
       { code: "id_ID", name: "Indonesian", flag: "🇮🇩" },
       { code: "es_ES", name: "Spanish", flag: "🇪🇸" },
       { code: "fr_FR", name: "French", flag: "🇫🇷" },
-      { code: "ar_SA", name: "Arabic", flag: "🇸🇦" },
+      { code: "ja_JP", name: "Japanese", flag: "🇯🇵" },
     ],
     setLocale: (code: string) => {
       if (mockSetLocaleResult) {
@@ -97,7 +97,6 @@ vi.mock("@/lib/i18n/locales", () => ({
       de_AT: "de_DE",
       pt_PT: "pt_BR",
       zh_TW: "zh_CN",
-      ar_EG: "ar_SA",
     };
     return fallbacks[code] || "en_US";
   },
@@ -145,19 +144,19 @@ vi.mock("@/lib/i18n/locales", () => ({
         flag: "🇫🇷",
         direction: "ltr",
       },
-      ar_SA: {
-        code: "ar_SA",
-        name: "Arabic",
-        nativeName: "العربية",
-        flag: "🇸🇦",
-        direction: "rtl",
+      ja_JP: {
+        code: "ja_JP",
+        name: "Japanese",
+        nativeName: "日本語",
+        flag: "🇯🇵",
+        direction: "ltr",
       },
-      ar_EG: {
-        code: "ar_EG",
-        name: "Arabic (Egypt)",
-        nativeName: "العربية (مصر)",
-        flag: "🇪🇬",
-        direction: "rtl",
+      zh_TW: {
+        code: "zh_CN",
+        name: "Chinese (Traditional)",
+        nativeName: "繁體中文",
+        flag: "🇹🇼",
+        direction: "ltr",
       },
     };
     return configs[code] || undefined;
@@ -258,10 +257,10 @@ describe("languageCommands", () => {
         expect(result.content).toContain("Direction: LTR");
       });
 
-      it("should show direction information for RTL language", async () => {
-        const result = await languageCommand.execute(["ar_SA"]);
+      it("should show direction information for Japanese language", async () => {
+        const result = await languageCommand.execute(["ja_JP"]);
         expect(result.type).toBe("success");
-        expect(result.content).toContain("Direction: RTL");
+        expect(result.content).toContain("Direction: LTR");
       });
 
       it("should normalize hyphen to underscore", async () => {
@@ -307,7 +306,7 @@ describe("languageCommands", () => {
       });
 
       it("should mention primary language mapping", async () => {
-        const result = await languageCommand.execute(["ar_EG"]);
+        const result = await languageCommand.execute(["zh_TW"]);
         expect(result.type).toBe("success");
         expect(result.content).toContain("automatically mapped");
       });

@@ -13,6 +13,7 @@ import { getBlurDataUrl } from "@/lib/utils/image-utils";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ locale?: string }>;
 }
 
 const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
@@ -37,26 +38,65 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   if (slug === BUILD_PLACEHOLDER_SLUG) {
     return { title: "Project Case Study" };
   }
+  const { locale: localeParam } = (await searchParams) || {};
+  const locale = localeParam?.trim() || "en";
   const project = await findProject(slug);
 
   if (!project) {
     return { title: "Project Not Found" };
   }
 
+  const canonicalPath =
+    locale === "en" ? `/projects/${slug}` : `/projects/${slug}?locale=${locale}`;
+
+  const activeOgLocale =
+    locale === "id" ? "id_ID" : locale.includes("_") ? locale : `${locale}_US`;
+  const allOgLocales = [
+    "en_US",
+    "id_ID",
+    "zh_CN",
+    "ja_JP",
+    "ko_KR",
+    "es_ES",
+    "fr_FR",
+    "de_DE",
+    "pt_BR",
+    "ru_RU",
+  ];
+  const alternateOgLocales = allOgLocales.filter((l) => l !== activeOgLocale);
+
   return {
     title: project.name,
     description: project.description,
-    alternates: { canonical: `/projects/${slug}` },
+    alternates: {
+      canonical: canonicalPath,
+      languages: {
+        en: `/projects/${slug}`,
+        id: `/projects/${slug}?locale=id`,
+        "zh-CN": `/projects/${slug}?locale=zh_CN`,
+        "ja-JP": `/projects/${slug}?locale=ja_JP`,
+        "ko-KR": `/projects/${slug}?locale=ko_KR`,
+        "es-ES": `/projects/${slug}?locale=es_ES`,
+        "fr-FR": `/projects/${slug}?locale=fr_FR`,
+        "de-DE": `/projects/${slug}?locale=de_DE`,
+        "pt-BR": `/projects/${slug}?locale=pt_BR`,
+        "ru-RU": `/projects/${slug}?locale=ru_RU`,
+        "x-default": `/projects/${slug}`,
+      },
+    },
     openGraph: {
       title: `${project.name} | Dimas Saputra`,
       description: project.description,
       type: "article",
-      url: `/projects/${slug}`,
+      url: canonicalPath,
+      locale: activeOgLocale,
+      alternateLocale: alternateOgLocales,
       ...(project.imageUrl && {
         images: [
           {

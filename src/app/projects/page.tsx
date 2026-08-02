@@ -37,6 +37,19 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "/projects",
+    languages: {
+      en: "/projects",
+      id: "/projects?locale=id",
+      "zh-CN": "/projects?locale=zh_CN",
+      "ja-JP": "/projects?locale=ja_JP",
+      "ko-KR": "/projects?locale=ko_KR",
+      "es-ES": "/projects?locale=es_ES",
+      "fr-FR": "/projects?locale=fr_FR",
+      "de-DE": "/projects?locale=de_DE",
+      "pt-BR": "/projects?locale=pt_BR",
+      "ru-RU": "/projects?locale=ru_RU",
+      "x-default": "/projects",
+    },
   },
 };
 

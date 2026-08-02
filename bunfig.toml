@@ -1,4 +1,4 @@
-preload = ["./src/test/bun-setup.ts"]
+# preload = ["./src/test/setup.ts"]
 timeout = 10000
 # Exclude test files that cannot run under Bun's native test runner:
 # - e2e/ uses Playwright (needs playwright test runner)

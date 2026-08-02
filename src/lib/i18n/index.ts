@@ -9,42 +9,28 @@ import {
 } from "./locales";
 import { TranslationKeys } from "./interfaces";
 import {
-  ar_SA_key,
   de_DE_key,
   en_US_key,
   es_ES_key,
   fr_FR_key,
-  hi_IN_key,
   id_ID_key,
-  it_IT_key,
   ja_JP_key,
   ko_KR_key,
-  nl_NL_key,
   pt_BR_key,
   ru_RU_key,
-  th_TH_key,
-  tr_TR_key,
-  vi_VN_key,
   zh_CN_key,
 } from "./dictionaries";
 
 const translations: Record<string, TranslationKeys> = {
-  ar_SA: ar_SA_key,
   de_DE: de_DE_key,
   en_US: en_US_key,
   es_ES: es_ES_key,
   fr_FR: fr_FR_key,
-  hi_IN: hi_IN_key,
   id_ID: id_ID_key,
-  it_IT: it_IT_key,
   ja_JP: ja_JP_key,
   ko_KR: ko_KR_key,
-  nl_NL: nl_NL_key,
   pt_BR: pt_BR_key,
   ru_RU: ru_RU_key,
-  th_TH: th_TH_key,
-  tr_TR: tr_TR_key,
-  vi_VN: vi_VN_key,
   zh_CN: zh_CN_key,
 } as const;
 

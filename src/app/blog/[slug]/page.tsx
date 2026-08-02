@@ -69,15 +69,45 @@ export async function generateMetadata({
     };
   }
 
+  const canonicalPath =
+    locale === DEFAULT_BLOG_LOCALE
+      ? `/blog/${post.slug}`
+      : `/blog/${post.slug}?locale=${locale}`;
+
+  const activeOgLocale =
+    locale === "id" ? "id_ID" : locale.includes("_") ? locale : `${locale}_US`;
+  const allOgLocales = [
+    "en_US",
+    "id_ID",
+    "zh_CN",
+    "ja_JP",
+    "ko_KR",
+    "es_ES",
+    "fr_FR",
+    "de_DE",
+    "pt_BR",
+    "ru_RU",
+  ];
+  const alternateOgLocales = allOgLocales.filter((l) => l !== activeOgLocale);
+
   return {
     title: `${post.title} | Blog`,
     description: post.summary ?? post.title,
     authors: [{ name: "Dimas Saputra" }],
     alternates: {
-      canonical: `/blog/${post.slug}`,
+      canonical: canonicalPath,
       languages: {
-        en: `/blog/${post.slug}?locale=en`,
+        en: `/blog/${post.slug}`,
         id: `/blog/${post.slug}?locale=id`,
+        "zh-CN": `/blog/${post.slug}?locale=zh_CN`,
+        "ja-JP": `/blog/${post.slug}?locale=ja_JP`,
+        "ko-KR": `/blog/${post.slug}?locale=ko_KR`,
+        "es-ES": `/blog/${post.slug}?locale=es_ES`,
+        "fr-FR": `/blog/${post.slug}?locale=fr_FR`,
+        "de-DE": `/blog/${post.slug}?locale=de_DE`,
+        "pt-BR": `/blog/${post.slug}?locale=pt_BR`,
+        "ru-RU": `/blog/${post.slug}?locale=ru_RU`,
+        "x-default": `/blog/${post.slug}`,
       },
     },
     openGraph: {
@@ -86,6 +116,8 @@ export async function generateMetadata({
       type: "article",
       publishedTime: post.createdAt,
       modifiedTime: post.updatedAt,
+      locale: activeOgLocale,
+      alternateLocale: alternateOgLocales,
     },
     twitter: {
       card: "summary_large_image",
@@ -155,6 +187,12 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
     ? addHeadingIdsToHtml(post.contentHtml)
     : null;
 
+  const schemaUrl =
+    locale === DEFAULT_BLOG_LOCALE
+      ? `https://infinitedim.dev/blog/${post.slug}`
+      : `https://infinitedim.dev/blog/${post.slug}?locale=${locale}`;
+  const inLanguage = locale === "id" ? "id-ID" : "en-US";
+
   return (
     <StandardPageLayout>
       <ArticleSchema
@@ -164,8 +202,9 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
         publisher="infinitedim"
         datePublished={post.createdAt}
         dateModified={post.updatedAt}
-        url={`https://infinitedim.dev/blog/${post.slug}`}
+        url={schemaUrl}
         keywords={post.tags?.join(", ")}
+        inLanguage={inLanguage}
       />
       <BreadcrumbListSchema
         items={[

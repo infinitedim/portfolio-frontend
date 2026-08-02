@@ -76,14 +76,6 @@ export const SUPPORTED_LOCALES: LocaleMapping = {
     direction: "ltr",
   },
 
-  ar_SA: {
-    code: "ar_SA",
-    name: "Arabic",
-    nativeName: "العربية",
-    flag: "🇸🇦",
-    direction: "rtl",
-  },
-
   pt_BR: {
     code: "pt_BR",
     name: "Portuguese (Brazil)",
@@ -97,54 +89,6 @@ export const SUPPORTED_LOCALES: LocaleMapping = {
     name: "Russian",
     nativeName: "Русский",
     flag: "🇷🇺",
-    direction: "ltr",
-  },
-
-  it_IT: {
-    code: "it_IT",
-    name: "Italian",
-    nativeName: "Italiano",
-    flag: "🇮🇹",
-    direction: "ltr",
-  },
-
-  nl_NL: {
-    code: "nl_NL",
-    name: "Dutch",
-    nativeName: "Nederlands",
-    flag: "🇳🇱",
-    direction: "ltr",
-  },
-
-  tr_TR: {
-    code: "tr_TR",
-    name: "Turkish",
-    nativeName: "Türkçe",
-    flag: "🇹🇷",
-    direction: "ltr",
-  },
-
-  hi_IN: {
-    code: "hi_IN",
-    name: "Hindi",
-    nativeName: "हिन्दी",
-    flag: "🇮🇳",
-    direction: "ltr",
-  },
-
-  th_TH: {
-    code: "th_TH",
-    name: "Thai",
-    nativeName: "ไทย",
-    flag: "🇹🇭",
-    direction: "ltr",
-  },
-
-  vi_VN: {
-    code: "vi_VN",
-    name: "Vietnamese",
-    nativeName: "Tiếng Việt",
-    flag: "🇻🇳",
     direction: "ltr",
   },
 };
@@ -284,22 +228,6 @@ export const REGIONAL_VARIANTS: LocaleMapping = {
     fallback: "zh_CN",
   },
 
-  ar_EG: {
-    code: "ar_SA",
-    name: "Arabic",
-    nativeName: "العربية",
-    flag: "🇸🇦",
-    direction: "rtl",
-    fallback: "ar_SA",
-  },
-  ar_AE: {
-    code: "ar_SA",
-    name: "Arabic",
-    nativeName: "العربية",
-    flag: "🇸🇦",
-    direction: "rtl",
-    fallback: "ar_SA",
-  },
 };
 
 export const ALL_LOCALES = { ...SUPPORTED_LOCALES, ...REGIONAL_VARIANTS };
@@ -341,6 +269,14 @@ export interface BlogContentLocale {
 export const BLOG_CONTENT_LOCALES: BlogContentLocale[] = [
   { code: "en", label: "English", flag: "🇺🇸" },
   { code: "id", label: "Bahasa Indonesia", flag: "🇮🇩" },
+  { code: "zh_CN", label: "Chinese (Simplified)", flag: "🇨🇳" },
+  { code: "ja_JP", label: "Japanese", flag: "🇯🇵" },
+  { code: "ko_KR", label: "Korean", flag: "🇰🇷" },
+  { code: "es_ES", label: "Spanish", flag: "🇪🇸" },
+  { code: "fr_FR", label: "French", flag: "🇫🇷" },
+  { code: "de_DE", label: "German", flag: "🇩🇪" },
+  { code: "pt_BR", label: "Portuguese (Brazil)", flag: "🇧🇷" },
+  { code: "ru_RU", label: "Russian", flag: "🇷🇺" },
 ];
 
 export const DEFAULT_BLOG_LOCALE = "en";
