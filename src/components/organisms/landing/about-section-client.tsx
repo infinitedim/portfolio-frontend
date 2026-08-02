@@ -15,7 +15,7 @@ export function AboutSectionClient({
 
   return (
     <section className="border-t border-neutral-800 px-4 py-16">
-      <div className="mx-auto max-w-6xl text-left animate-slide-in-up">
+      <div className="mx-auto max-w-6xl text-left">
         <h2 className="mb-6 font-mono text-2xl font-bold text-green-400">
           {t("landingAboutTitle")}
         </h2>

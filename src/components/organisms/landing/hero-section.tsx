@@ -4,7 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
-import { TurnstileResumeModal } from "@/components/molecules/shared/turnstile-resume-modal";
+import dynamic from "next/dynamic";
+
+const TurnstileResumeModal = dynamic(
+  () =>
+    import("@/components/molecules/shared/turnstile-resume-modal").then(
+      (mod) => mod.TurnstileResumeModal,
+    ),
+  { ssr: false },
+);
 
 export function HeroSection(): JSX.Element {
   const { t } = useI18n();
@@ -14,26 +22,17 @@ export function HeroSection(): JSX.Element {
     <section className="relative overflow-hidden px-4 py-20 sm:py-28">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-green-900/20 via-neutral-950 to-neutral-950" />
       <div className="relative mx-auto max-w-4xl text-center">
-        <div
-          className="animate-slide-in-up"
-          style={{ animationDelay: "25ms", animationDuration: "200ms" }}
-        >
+        <div>
           <h1 className="font-mono text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
             {t("landingHeroTitle")}
           </h1>
         </div>
-        <div
-          className="animate-slide-in-up"
-          style={{ animationDelay: "50ms", animationDuration: "200ms" }}
-        >
+        <div>
           <p className="mx-auto mt-6 max-w-2xl font-mono text-base text-neutral-400 sm:text-lg">
             {t("landingHeroTagline")}
           </p>
         </div>
-        <div
-          className="animate-slide-in-up"
-          style={{ animationDelay: "100ms", animationDuration: "200ms" }}
-        >
+        <div>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/projects"

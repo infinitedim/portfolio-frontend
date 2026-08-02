@@ -1,11 +1,6 @@
 import { type JSX } from "react";
 import { getAboutData } from "@/lib/data/data-fetching";
-import dynamic from "next/dynamic";
-
-const AboutSectionClient = dynamic(
-  () => import("./about-section-client").then((mod) => mod.AboutSectionClient),
-  { ssr: true },
-);
+import { AboutSectionClient } from "./about-section-client";
 
 export async function AboutSection(): Promise<JSX.Element | null> {
   const { cookies } = await import("next/headers");

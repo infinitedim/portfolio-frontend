@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactLenis, type LenisRef } from "lenis/react";
-import "lenis/dist/lenis.css";
 import { type ReactNode, useEffect, useRef } from "react";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 
