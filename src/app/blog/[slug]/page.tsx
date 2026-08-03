@@ -74,21 +74,8 @@ export async function generateMetadata({
       ? `/blog/${post.slug}`
       : `/blog/${post.slug}?locale=${locale}`;
 
-  const activeOgLocale =
-    locale === "id" ? "id_ID" : locale.includes("_") ? locale : `${locale}_US`;
-  const allOgLocales = [
-    "en_US",
-    "id_ID",
-    "zh_CN",
-    "ja_JP",
-    "ko_KR",
-    "es_ES",
-    "fr_FR",
-    "de_DE",
-    "pt_BR",
-    "ru_RU",
-  ];
-  const alternateOgLocales = allOgLocales.filter((l) => l !== activeOgLocale);
+  const activeOgLocale = locale === "id" ? "id_ID" : "en_US";
+  const alternateOgLocales = locale === "id" ? ["en_US"] : ["id_ID"];
 
   return {
     title: `${post.title} | Blog`,
@@ -99,14 +86,6 @@ export async function generateMetadata({
       languages: {
         en: `/blog/${post.slug}`,
         id: `/blog/${post.slug}?locale=id`,
-        "zh-CN": `/blog/${post.slug}?locale=zh_CN`,
-        "ja-JP": `/blog/${post.slug}?locale=ja_JP`,
-        "ko-KR": `/blog/${post.slug}?locale=ko_KR`,
-        "es-ES": `/blog/${post.slug}?locale=es_ES`,
-        "fr-FR": `/blog/${post.slug}?locale=fr_FR`,
-        "de-DE": `/blog/${post.slug}?locale=de_DE`,
-        "pt-BR": `/blog/${post.slug}?locale=pt_BR`,
-        "ru-RU": `/blog/${post.slug}?locale=ru_RU`,
         "x-default": `/blog/${post.slug}`,
       },
     },

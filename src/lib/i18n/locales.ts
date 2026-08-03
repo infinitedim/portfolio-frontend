@@ -279,6 +279,16 @@ export const BLOG_CONTENT_LOCALES: BlogContentLocale[] = [
   { code: "ru_RU", label: "Russian", flag: "🇷🇺" },
 ];
 
+/**
+ * Active published content locales for Hreflang and Sitemap metadata.
+ * Only include locales that ACTUALLY have published translated content in production
+ * to prevent Googlebot hreflang return tag errors & duplicate content issues.
+ */
+export const PUBLISHED_CONTENT_LOCALES: BlogContentLocale[] = [
+  { code: "en", label: "English", flag: "🇺🇸" },
+  { code: "id", label: "Bahasa Indonesia", flag: "🇮🇩" },
+];
+
 export const DEFAULT_BLOG_LOCALE = "en";
 
 export function isValidBlogLocale(code: string): boolean {

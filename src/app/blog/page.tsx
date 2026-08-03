@@ -69,14 +69,6 @@ export async function generateMetadata({ searchParams }: BlogPageMetadataProps):
       languages: {
         en: "/blog",
         id: "/blog?locale=id",
-        "zh-CN": "/blog?locale=zh_CN",
-        "ja-JP": "/blog?locale=ja_JP",
-        "ko-KR": "/blog?locale=ko_KR",
-        "es-ES": "/blog?locale=es_ES",
-        "fr-FR": "/blog?locale=fr_FR",
-        "de-DE": "/blog?locale=de_DE",
-        "pt-BR": "/blog?locale=pt_BR",
-        "ru-RU": "/blog?locale=ru_RU",
         "x-default": "/blog",
       },
       types: {
