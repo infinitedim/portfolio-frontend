@@ -65,6 +65,9 @@ export interface CachedBlogPostDetail {
   tags: string[];
   readingTimeMinutes: number;
   viewCount: number;
+  locale?: string;
+  translationGroupId?: string | null;
+  translationStatus?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -92,3 +95,30 @@ export async function getCachedBlogPost(
     return null;
   }
 }
+
+export async function getPublishedLocalesForSlug(slug: string): Promise<string[]> {
+  try {
+    const response = await fetch(
+      `${getServerApiUrl()}/api/blog?published=true&pageSize=500`,
+      { next: { revalidate: 3600, tags: ["blog-translations", slug] } },
+    );
+
+    if (!response.ok) {
+      return [DEFAULT_BLOG_LOCALE];
+    }
+
+    const data = await response.json();
+    const items: Array<{ slug: string; locale: string; translationStatus?: string }> =
+      data.items || [];
+    const matching = items.filter(
+      (i) => i.slug === slug && (i.translationStatus === undefined || i.translationStatus === "published"),
+    );
+
+    const locales = Array.from(new Set(matching.map((i) => i.locale)));
+    return locales.length > 0 ? locales : [DEFAULT_BLOG_LOCALE];
+  } catch (error) {
+    console.error(`Failed to fetch published locales for ${slug}:`, error);
+    return [DEFAULT_BLOG_LOCALE];
+  }
+}
+

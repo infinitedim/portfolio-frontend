@@ -9,6 +9,8 @@ function getBackendUrl(): string {
 
 interface BlogPostItem {
   slug: string;
+  locale?: string;
+  translationStatus?: string;
   updatedAt?: string;
 }
 
@@ -65,19 +67,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     if (response.ok) {
       const data = await response.json();
-      blogRoutes = (data.items || []).map((post: BlogPostItem) => ({
-        url: `${baseUrl}/blog/${post.slug}`,
-        lastModified: post.updatedAt ? new Date(post.updatedAt) : currentDate,
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-        alternates: {
-          languages: {
-            en: `${baseUrl}/blog/${post.slug}`,
-            id: `${baseUrl}/blog/${post.slug}?locale=id`,
-            "x-default": `${baseUrl}/blog/${post.slug}`,
+      const rawItems: BlogPostItem[] = data.items || [];
+
+      // Group items by slug to aggregate published locales
+      const postsBySlug = new Map<string, BlogPostItem[]>();
+      for (const item of rawItems) {
+        const existing = postsBySlug.get(item.slug) || [];
+        existing.push(item);
+        postsBySlug.set(item.slug, existing);
+      }
+
+      blogRoutes = Array.from(postsBySlug.entries()).map(([slug, translations]) => {
+        const primaryPost =
+          translations.find((t) => t.locale === "en" || t.locale === "en_US") ||
+          translations[0];
+
+        const languages: Record<string, string> = {
+          "x-default": `${baseUrl}/blog/${slug}`,
+          en: `${baseUrl}/blog/${slug}`,
+        };
+
+        for (const t of translations) {
+          if (!t.locale || t.locale === "en" || t.locale === "en_US") continue;
+          const isoCode = t.locale.replace("_", "-");
+          languages[isoCode] = `${baseUrl}/blog/${slug}?locale=${t.locale}`;
+        }
+
+        return {
+          url: `${baseUrl}/blog/${slug}`,
+          lastModified: primaryPost?.updatedAt ? new Date(primaryPost.updatedAt) : currentDate,
+          changeFrequency: "monthly" as const,
+          priority: 0.6,
+          alternates: {
+            languages,
           },
-        },
-      }));
+        };
+      });
     }
   } catch (error) {
     console.error("Failed to fetch blog posts for sitemap:", error);

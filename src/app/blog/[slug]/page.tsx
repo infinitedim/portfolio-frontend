@@ -17,7 +17,10 @@ import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { addHeadingIdsToHtml } from "@/lib/blog/html-headings";
 import { BlogLocaleSwitcher } from "@/components/molecules/blog/locale-switcher";
 import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
-import { getCachedBlogPost } from "@/lib/services/cached-blog-fetch";
+import {
+  getCachedBlogPost,
+  getPublishedLocalesForSlug,
+} from "@/lib/services/cached-blog-fetch";
 import { getTranslationsForLocale } from "@/lib/i18n";
 
 const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
@@ -77,18 +80,27 @@ export async function generateMetadata({
   const activeOgLocale = locale === "id" ? "id_ID" : "en_US";
   const alternateOgLocales = locale === "id" ? ["en_US"] : ["id_ID"];
 
+  const publishedLocales = await getPublishedLocalesForSlug(post.slug);
+  const languageAlternates: Record<string, string> = {
+    "x-default": `/blog/${post.slug}`,
+    en: `/blog/${post.slug}`,
+  };
+
+  for (const loc of publishedLocales) {
+    if (loc === "en" || loc === "en_US") continue;
+    const isoCode = loc.replace("_", "-");
+    languageAlternates[isoCode] = `/blog/${post.slug}?locale=${loc}`;
+  }
+
   return {
     title: `${post.title} | Blog`,
     description: post.summary ?? post.title,
     authors: [{ name: "Dimas Saputra" }],
     alternates: {
       canonical: canonicalPath,
-      languages: {
-        en: `/blog/${post.slug}`,
-        id: `/blog/${post.slug}?locale=id`,
-        "x-default": `/blog/${post.slug}`,
-      },
+      languages: languageAlternates,
     },
+
     openGraph: {
       title: post.title,
       description: post.summary ?? post.title,
