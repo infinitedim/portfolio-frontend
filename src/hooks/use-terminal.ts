@@ -68,13 +68,6 @@ const getMiscCommands = async () => {
   }
 };
 
-const getAiCommands = async () => {
-  try {
-    return await import("@/lib/commands/ai-commands");
-  } catch {
-    return null;
-  }
-};
 import type { CommandOutput, TerminalHistory } from "@/types/terminal";
 
 const STORAGE_KEYS = {
@@ -244,14 +237,13 @@ export function useTerminal(
       parser.register(statusCommand);
       parser.register(aliasCommand);
 
-      const [miscCmds, customCmds, demoCmds, techCmds, blogCmds, aiCmds] =
+      const [miscCmds, customCmds, demoCmds, techCmds, blogCmds] =
         await Promise.allSettled([
           getMiscCommands(),
           getCustomizationCommands(),
           getDemoCommands(),
           getTechStackCommands(),
           getBlogCommands(),
-          getAiCommands(),
         ]);
 
       const blog = blogCmds.status === "fulfilled" ? blogCmds.value : null;
@@ -525,9 +517,6 @@ export function useTerminal(
           demo.setDemoCallback(onOpenDemoRef.current || (() => {}));
         if (demo.demoCommand) parser.register(demo.demoCommand);
       }
-
-      const ai = aiCmds.status === "fulfilled" ? aiCmds.value : null;
-      if (ai?.askCommand) parser.register(ai.askCommand);
 
       const tech = techCmds.status === "fulfilled" ? techCmds.value : null;
       if (tech?.techStackCommand) parser.register(tech.techStackCommand);
