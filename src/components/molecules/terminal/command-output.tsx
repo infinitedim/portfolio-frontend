@@ -17,19 +17,24 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
   const { animateCommandOutput } = useTerminalAnimations();
   const textRef = useRef<HTMLDivElement>(null);
   const skipRef = useRef<boolean>(false);
+  const hasAnimatedRef = useRef<boolean>(false);
+  const mountedAtRef = useRef<number>(Date.now());
+
+  useEffect(() => {
+    mountedAtRef.current = Date.now();
+  }, [output.id]);
 
   const getOutputColor = () => {
     switch (output.type) {
       case "success":
-        return themeConfig.colors.success || themeConfig.colors.accent;
+      case "info":
+        return themeConfig.colors.accent || themeConfig.colors.success || "#00ff41";
       case "error":
         return themeConfig.colors.error || "#ff4444";
       case "warning":
         return themeConfig.colors.warning || "#ffaa00";
-      case "info":
-        return themeConfig.colors.info || themeConfig.colors.accent;
       default:
-        return themeConfig.colors.text;
+        return themeConfig.colors.accent || themeConfig.colors.text;
     }
   };
 
@@ -57,6 +62,14 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
   }, [rawText]);
 
   useEffect(() => {
+    if (hasAnimatedRef.current) {
+      if (textRef.current && rawText) {
+        textRef.current.textContent = rawText;
+        textRef.current.classList.remove("typing-cursor");
+      }
+      return;
+    }
+
     skipRef.current = false;
     if (
       textRef.current &&
@@ -64,12 +77,17 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
       output.allowAnimation !== false &&
       !isReducedMotion
     ) {
+      hasAnimatedRef.current = true;
       animateCommandOutput(textRef.current, rawText, skipRef);
     }
   }, [rawText, output.allowAnimation, isReducedMotion, animateCommandOutput]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore submission Enter keydown event within 150ms of output mount
+      if (Date.now() - mountedAtRef.current < 150) {
+        return;
+      }
       if (e.key === "Enter" || e.key === "Escape") {
         triggerSkip();
       }
@@ -83,7 +101,7 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
   return (
     /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
     <div
-        key={`command-output-${theme}`}
+      key={`command-output-${theme}`}
       className={`font-mono whitespace-pre-wrap ${!isReducedMotion ? "transition-colors duration-300" : ""}`}
       style={{
         color: getOutputColor(),

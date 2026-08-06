@@ -658,4 +658,38 @@ export const ja_JP_key: TranslationKeys = {
     "Full keyboard-only experience with arrow navigation (↑/↓) for command logs, typo-tolerance algorithms, command flags parsing, and clear utilities.",
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
+
+  // Terminal Commands & Help
+  termHelpAvailableCommands: "利用可能なコマンド:",
+  termHelpFeaturedCommands: "おすすめコマンド:",
+  termHelpArgsHeader: "コマンドライン引数:",
+  termHelpTipsHeader: "ヒント:",
+  termHelpTipNav: "矢印キー (↑/↓) でコマンド履歴を移動できます",
+  termHelpTipAliases: "エイリアスに対応しています (例: 'clear' の代わりに 'cls')",
+  termHelpTipCase: "大文字・小文字を区別せず、誤字の許容機能があります",
+  termHelpTipFlags: "フラグを使用してリストやプレビューにクイックアクセス",
+  termHelpTipLigatures: "可読性向上のためフォントリガチャをサポート",
+
+  // Terminal About
+  termAboutGreeting: "こんにちは！フルス stack エンジニアです",
+  termAboutPassionate: "革新的なWebソリューションの構築に情熱を注いでいます",
+  termAboutSpecialized: "React、Next.js、およびモダンWeb技術を専門としています",
+  termAboutCreative: "技術的スキルとクリエイティブなデザインの融合を愛しています",
+  termAboutLearning: "常に新しい技術を学び探求し続けています",
+  termAboutShowcaseHeader: "このターミナル風ポートフォリオは以下のスキルを紹介しています:",
+  termAboutFrontendDev: "フロントエンド開発 (React, Next.js, TypeScript)",
+  termAboutUiUx: "UI/UXデザイン (Tailwind CSS, レスポンシブデザイン)",
+  termAboutDevOps: "DevOps (CI/CD, パフォーマンス最適化)",
+  termAboutProblemSolving: "クリエイティブな問題解決",
+  termAboutRoadmapTracked: "学習ロードマップは roadmap.sh で公開しています",
+  termAboutRoadmapVisit: "トップページのロードマップで最新の進行状況をご確認ください！",
+  termAboutTypePrompt: "実績を見るには \"projects\"、連絡を取るには \"contact\" と入力してください！",
+
+  // Terminal Language
+  termLangDirection: "文字方向",
+  termLangCode: "コード",
+  termLangSaved: "言語設定を localStorage に保存しました",
+  termLangUsage: "使用法: lang <locale_id>",
+  termLangExamples: "例: lang id_ID, lang es_ES, lang fr_FR",
+  termLangRegionalNote: "地域バリアント（例: en_GB, es_MX）はメイン言語に自動フォールバックします",
 } as const;

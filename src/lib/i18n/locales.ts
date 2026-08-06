@@ -27,7 +27,6 @@ export const SUPPORTED_LOCALES: LocaleMapping = {
     flag: "🇮🇩",
     direction: "ltr",
   },
-
   es_ES: {
     code: "es_ES",
     name: "Spanish",

@@ -4,6 +4,7 @@ import { ArgumentParser } from "@/lib/utils/arg-parser";
 import { ThemeDisplay } from "@/lib/utils/theme-display";
 import { themes, getSortedThemeNames } from "@/lib/themes/theme-config";
 import type { ThemeName } from "@/types/theme";
+import { t } from "@/lib/i18n";
 
 export const createHelpCommand = (getCommands: () => Command[]): Command => ({
   name: "help",
@@ -12,42 +13,35 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
   async execute() {
     const commands = getCommands();
     const helpText = [
-      "Available Commands:",
+      t("termHelpAvailableCommands"),
       "═".repeat(50),
       "",
       ...commands.map((cmd) => {
         const name = cmd.name.padEnd(12);
         const desc = cmd.description;
         const aliases = cmd.aliases ? ` (${cmd.aliases.join(", ")})` : "";
-
-        if (cmd.name === "theme") {
-          return `  • ${name} - ${desc}${aliases}`;
-        }
-        if (cmd.name === "font") {
-          return `  • ${name} - ${desc}${aliases}`;
-        }
         return `  • ${name} - ${desc}${aliases}`;
       }),
       "",
-      "Featured Commands:",
+      t("termHelpFeaturedCommands"),
       "  theme -l                      - List all available themes",
       "  theme dracula                 - Switch to dracula theme",
       "  font fira-code                - Switch to Fira Code font",
       "  demo list                     - List available project demos",
       "  tech-stack list               - Show technology stack",
       "",
-      "Command-Line Arguments:",
+      t("termHelpArgsHeader"),
       "  theme -l, --list              - Show theme list",
       "  theme -p, --preview <name>    - Preview theme colors",
       "  theme -c, --current           - Show current theme info",
       "  font -l, --list               - Show font list",
       "",
-      "Tips:",
-      "  • Use arrow keys (↑/↓) to navigate command history",
-      "  • Commands support aliases (e.g., 'cls' for 'clear')",
-      "  • Commands are case-insensitive with typo tolerance",
-      "  • Use flags for quick access to lists and previews",
-      "  • Font ligatures supported for enhanced readability",
+      t("termHelpTipsHeader"),
+      `  • ${t("termHelpTipNav")}`,
+      `  • ${t("termHelpTipAliases")}`,
+      `  • ${t("termHelpTipCase")}`,
+      `  • ${t("termHelpTipFlags")}`,
+      `  • ${t("termHelpTipLigatures")}`,
     ].join("\n");
 
     return {
@@ -64,25 +58,24 @@ export const aboutCommand: Command = {
   description: "Learn more about me",
   aliases: ["whoami", "info", "me"],
   async execute() {
-    const projectName = "Project";
     const aboutText = [
-      "Hello! I'm a Full-Stack Developer",
+      t("termAboutGreeting"),
       "",
-      "Passionate about creating innovative web solutions",
-      "Specialized in React, Next.js, and modern web technologies",
-      "Love combining technical skills with creative design",
-      "Always learning and exploring new technologies",
+      t("termAboutPassionate"),
+      t("termAboutSpecialized"),
+      t("termAboutCreative"),
+      t("termAboutLearning"),
       "",
-      "This terminal-themed portfolio showcases my skills in:",
-      "  • Frontend Development (React, Next.js, TypeScript)",
-      "  • UI/UX Design (Tailwind CSS, Responsive Design)",
-      "  • DevOps (CI/CD, Performance Optimization)",
-      "  • Creative Problem Solving",
+      t("termAboutShowcaseHeader"),
+      `  • ${t("termAboutFrontendDev")}`,
+      `  • ${t("termAboutUiUx")}`,
+      `  • ${t("termAboutDevOps")}`,
+      `  • ${t("termAboutProblemSolving")}`,
       "",
-      "My learning journey is tracked on roadmap.sh",
-      "   Visit the homepage roadmap to see my current progress!",
+      t("termAboutRoadmapTracked"),
+      `   ${t("termAboutRoadmapVisit")}`,
       "",
-      `Type "${projectName}" to see my work or "contact" to get in touch!`,
+      t("termAboutTypePrompt"),
     ].join("\n");
 
     return {

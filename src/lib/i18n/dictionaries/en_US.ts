@@ -664,4 +664,38 @@ export const en_US_key: TranslationKeys = {
   terminalWelcomeDescSkills: "View my technical skills",
   terminalWelcomeDescProjects: "Explore my projects",
   terminalWelcomeDescContact: "Get in touch",
+
+  // Terminal Commands & Help
+  termHelpAvailableCommands: "Available Commands:",
+  termHelpFeaturedCommands: "Featured Commands:",
+  termHelpArgsHeader: "Command-Line Arguments:",
+  termHelpTipsHeader: "Tips:",
+  termHelpTipNav: "Use arrow keys (↑/↓) to navigate command history",
+  termHelpTipAliases: "Commands support aliases (e.g., 'cls' for 'clear')",
+  termHelpTipCase: "Commands are case-insensitive with typo tolerance",
+  termHelpTipFlags: "Use flags for quick access to lists and previews",
+  termHelpTipLigatures: "Font ligatures supported for enhanced readability",
+
+  // Terminal About
+  termAboutGreeting: "Hello! I'm a Full-Stack Developer",
+  termAboutPassionate: "Passionate about creating innovative web solutions",
+  termAboutSpecialized: "Specialized in React, Next.js, and modern web technologies",
+  termAboutCreative: "Love combining technical skills with creative design",
+  termAboutLearning: "Always learning and exploring new technologies",
+  termAboutShowcaseHeader: "This terminal-themed portfolio showcases my skills in:",
+  termAboutFrontendDev: "Frontend Development (React, Next.js, TypeScript)",
+  termAboutUiUx: "UI/UX Design (Tailwind CSS, Responsive Design)",
+  termAboutDevOps: "DevOps (CI/CD, Performance Optimization)",
+  termAboutProblemSolving: "Creative Problem Solving",
+  termAboutRoadmapTracked: "My learning journey is tracked on roadmap.sh",
+  termAboutRoadmapVisit: "Visit the homepage roadmap to see my current progress!",
+  termAboutTypePrompt: "Type \"projects\" to see my work or \"contact\" to get in touch!",
+
+  // Terminal Language
+  termLangDirection: "Direction",
+  termLangCode: "Code",
+  termLangSaved: "Language preference saved to localStorage",
+  termLangUsage: "Usage: lang <locale_id>",
+  termLangExamples: "Examples: lang id_ID, lang es_ES, lang fr_FR",
+  termLangRegionalNote: "Regional variants (e.g., en_GB, es_MX) will fall back to their primary language",
 } as const;

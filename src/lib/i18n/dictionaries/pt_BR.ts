@@ -662,4 +662,38 @@ export const pt_BR_key: TranslationKeys = {
     "Full keyboard-only experience with arrow navigation (↑/↓) for command logs, typo-tolerance algorithms, command flags parsing, and clear utilities.",
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
+
+  // Terminal Commands & Help
+  termHelpAvailableCommands: "Comandos Disponíveis:",
+  termHelpFeaturedCommands: "Comandos em Destaque:",
+  termHelpArgsHeader: "Argumentos de Linha de Comando:",
+  termHelpTipsHeader: "Dicas:",
+  termHelpTipNav: "Use as teclas de seta (↑/↓) para navegar pelo histórico",
+  termHelpTipAliases: "Comandos suportam apelidos (ex: 'cls' para 'clear')",
+  termHelpTipCase: "Insensível a maiúsculas com tolerância a erros de digitação",
+  termHelpTipFlags: "Use flags para acesso rápido a listas e visualizações",
+  termHelpTipLigatures: "Suporte a ligaduras de fonte para melhor legibilidade",
+
+  // Terminal About
+  termAboutGreeting: "Olá! Sou um Desenvolvedor Full-Stack",
+  termAboutPassionate: "Apaixonado por criar soluções web inovadoras",
+  termAboutSpecialized: "Especializado em React, Next.js e tecnologias web modernas",
+  termAboutCreative: "Adoro combinar habilidades técnicas com design criativo",
+  termAboutLearning: "Sempre aprendendo e explorando novas tecnologias",
+  termAboutShowcaseHeader: "Este portfólio no estilo terminal destaca minhas habilidades em:",
+  termAboutFrontendDev: "Desenvolvimento Frontend (React, Next.js, TypeScript)",
+  termAboutUiUx: "Design UI/UX (Tailwind CSS, Design Responsivo)",
+  termAboutDevOps: "DevOps (CI/CD, Otimização de Performance)",
+  termAboutProblemSolving: "Resolução Criativa de Problemas",
+  termAboutRoadmapTracked: "Minha jornada de aprendizado é acompanhada no roadmap.sh",
+  termAboutRoadmapVisit: "Visite o roadmap na página inicial para ver meu progresso atual!",
+  termAboutTypePrompt: "Digite \"projects\" para ver meus trabalhos ou \"contact\" para entrar em contato!",
+
+  // Terminal Language
+  termLangDirection: "Direção",
+  termLangCode: "Código",
+  termLangSaved: "Preferência de idioma salva no localStorage",
+  termLangUsage: "Uso: lang <locale_id>",
+  termLangExamples: "Exemplos: lang id_ID, lang es_ES, lang fr_FR",
+  termLangRegionalNote: "Variantes regionais (ex: en_GB, es_MX) usarão seu idioma principal como fallback",
 } as const;

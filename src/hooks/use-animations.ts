@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useRef, useCallback, useEffect, useState, useMemo } from "react";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 import { useMountRef, generateId, withErrorHandling } from "./hooks-utils";
 
@@ -396,23 +396,38 @@ export function useAnimations() {
     [cleanupAnimation],
   );
 
-  return {
-    createTypewriterEffect,
-    createGlitchEffect,
-    createMatrixRain,
-    createPulseAnimation,
-    createSlideIn,
-    createBounceAnimation,
-    createLoadingDots,
-    stopAllAnimations,
-    stopAnimation,
-    isReducedMotion,
-  };
+  return useMemo(
+    () => ({
+      createTypewriterEffect,
+      createGlitchEffect,
+      createMatrixRain,
+      createPulseAnimation,
+      createSlideIn,
+      createBounceAnimation,
+      createLoadingDots,
+      stopAllAnimations,
+      stopAnimation,
+      isReducedMotion,
+    }),
+    [
+      createTypewriterEffect,
+      createGlitchEffect,
+      createMatrixRain,
+      createPulseAnimation,
+      createSlideIn,
+      createBounceAnimation,
+      createLoadingDots,
+      stopAllAnimations,
+      stopAnimation,
+      isReducedMotion,
+    ],
+  );
 }
 
 export function useTerminalAnimations() {
   const animations = useAnimations();
   const [isTyping, setIsTyping] = useState(false);
+  const { isReducedMotion } = animations;
 
   const animateCommandOutput = useCallback(
     async (
@@ -420,7 +435,7 @@ export function useTerminalAnimations() {
       content: string,
       skipRef?: React.MutableRefObject<boolean>,
     ) => {
-      if (animations.isReducedMotion) {
+      if (isReducedMotion) {
         element.textContent = content;
         return;
       }
@@ -468,7 +483,7 @@ export function useTerminalAnimations() {
         _timerId = setTimeout(typeNextChar, speed);
       });
     },
-    [animations],
+    [isReducedMotion],
   );
 
   const animateScanlineClear = useCallback(

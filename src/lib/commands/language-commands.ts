@@ -65,10 +65,10 @@ export const languageCommand: Command = {
           "",
           `${localeConfig.name} (${localeConfig.nativeName})`,
           `️ ${localeConfig.flag}`,
-          `Code: ${localeConfig.code}`,
-          `Direction: ${localeConfig.direction.toUpperCase()}`,
+          `${t("termLangCode")}: ${localeConfig.code}`,
+          `${t("termLangDirection")}: ${localeConfig.direction.toUpperCase()}`,
           "",
-          "Language preference saved to localStorage",
+          t("termLangSaved"),
         ].join("\n");
 
         return {
@@ -98,22 +98,22 @@ function showCurrentLanguage() {
     `${t("currentLanguage")}`,
     "═".repeat(40),
     "",
-    `️ ${currentConfig?.flag} ${currentConfig?.name}`,
-    `${currentConfig?.nativeName}`,
-    `Code: ${currentConfig?.code}`,
-    `Direction: ${currentConfig?.direction.toUpperCase()}`,
+    `  ${currentConfig?.flag} ${currentConfig?.name}`,
+    `  ${currentConfig?.nativeName}`,
+    `  ${t("termLangCode")}: ${currentConfig?.code}`,
+    `  ${t("termLangDirection")}: ${currentConfig?.direction.toUpperCase()}`,
     "",
     `${t("availableLanguages")}:`,
     ...supportedLocales.map((locale: LocaleConfig) => {
       const isCurrent = locale.code === currentLocale;
-      const indicator = isCurrent ? "" : "  ";
-      return `${indicator} ${locale.flag} ${locale.name} (${locale.code})`;
+      const prefix = isCurrent ? "  ► " : "    ";
+      return `${prefix}${locale.flag} ${locale.name} (${locale.code})`;
     }),
     "",
-    "Usage: lang <locale_id>",
-    "Examples: lang id_ID, lang es_ES, lang fr_FR",
+    t("termLangUsage"),
+    t("termLangExamples"),
     "",
-    "Regional variants (e.g., en_GB, es_MX) will fall back to their primary language",
+    t("termLangRegionalNote"),
   ].join("\n");
 
   return {

@@ -635,4 +635,38 @@ export interface TranslationKeys {
   terminalWelcomeDescSkills?: string;
   terminalWelcomeDescProjects?: string;
   terminalWelcomeDescContact?: string;
+
+  // Terminal Commands & Help
+  termHelpAvailableCommands: string;
+  termHelpFeaturedCommands: string;
+  termHelpArgsHeader: string;
+  termHelpTipsHeader: string;
+  termHelpTipNav: string;
+  termHelpTipAliases: string;
+  termHelpTipCase: string;
+  termHelpTipFlags: string;
+  termHelpTipLigatures: string;
+
+  // Terminal About
+  termAboutGreeting: string;
+  termAboutPassionate: string;
+  termAboutSpecialized: string;
+  termAboutCreative: string;
+  termAboutLearning: string;
+  termAboutShowcaseHeader: string;
+  termAboutFrontendDev: string;
+  termAboutUiUx: string;
+  termAboutDevOps: string;
+  termAboutProblemSolving: string;
+  termAboutRoadmapTracked: string;
+  termAboutRoadmapVisit: string;
+  termAboutTypePrompt: string;
+
+  // Terminal Language
+  termLangDirection: string;
+  termLangCode: string;
+  termLangSaved: string;
+  termLangUsage: string;
+  termLangExamples: string;
+  termLangRegionalNote: string;
 }

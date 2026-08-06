@@ -672,4 +672,38 @@ export const de_DE_key: TranslationKeys = {
     "Full keyboard-only experience with arrow navigation (↑/↓) for command logs, typo-tolerance algorithms, command flags parsing, and clear utilities.",
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
+
+  // Terminal Commands & Help
+  termHelpAvailableCommands: "Verfügbare Befehle:",
+  termHelpFeaturedCommands: "Hervorgehobene Befehle:",
+  termHelpArgsHeader: "Befehlszeilenargumente:",
+  termHelpTipsHeader: "Tipps:",
+  termHelpTipNav: "Verwenden Sie die Pfeiltasten (↑/↓), um den Verlauf zu durchsuchen",
+  termHelpTipAliases: "Befehle unterstützen Aliase (z. B. 'cls' für 'clear')",
+  termHelpTipCase: "Groß-/Kleinschreibung wird ignoriert (inkl. Tippfehlertoleranz)",
+  termHelpTipFlags: "Verwenden Sie Flags für den Schnellzugriff auf Listen und Vorschauen",
+  termHelpTipLigatures: "Schriftligaturen werden für bessere Lesbarkeit unterstützt",
+
+  // Terminal About
+  termAboutGreeting: "Hallo! Ich bin ein Full-Stack-Entwickler",
+  termAboutPassionate: "Begeistert von der Entwicklung innovativer Web-Lösungen",
+  termAboutSpecialized: "Spezialisiert auf React, Next.js und moderne Webtechnologien",
+  termAboutCreative: "Liebe die Kombination aus technischem Können und kreativem Design",
+  termAboutLearning: "Immer am Lernen und Erkunden neuer Technologien",
+  termAboutShowcaseHeader: "Dieses Portfolio im Terminal-Design zeigt meine Fähigkeiten in:",
+  termAboutFrontendDev: "Frontend-Entwicklung (React, Next.js, TypeScript)",
+  termAboutUiUx: "UI/UX-Design (Tailwind CSS, Responsives Design)",
+  termAboutDevOps: "DevOps (CI/CD, Leistungsoptimierung)",
+  termAboutProblemSolving: "Kreative Problemlösung",
+  termAboutRoadmapTracked: "Mein Lernweg wird auf roadmap.sh verfolgt",
+  termAboutRoadmapVisit: "Besuchen Sie die Roadmap auf der Startseite, um meinen aktuellen Fortschritt zu sehen!",
+  termAboutTypePrompt: "Geben Sie \"projects\" ein, um meine Arbeiten zu sehen, oder \"contact\", um mich zu kontaktieren!",
+
+  // Terminal Language
+  termLangDirection: "Richtung",
+  termLangCode: "Code",
+  termLangSaved: "Spracheinstellung im localStorage gespeichert",
+  termLangUsage: "Verwendung: lang <locale_id>",
+  termLangExamples: "Beispiele: lang id_ID, lang es_ES, lang fr_FR",
+  termLangRegionalNote: "Regionale Varianten (z. B. en_GB, es_MX) weichen auf ihre Hauptsprache aus",
 } as const;

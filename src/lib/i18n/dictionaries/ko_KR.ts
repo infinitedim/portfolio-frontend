@@ -650,4 +650,38 @@ export const ko_KR_key: TranslationKeys = {
     "Full keyboard-only experience with arrow navigation (↑/↓) for command logs, typo-tolerance algorithms, command flags parsing, and clear utilities.",
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
+
+  // Terminal Commands & Help
+  termHelpAvailableCommands: "사용 가능한 명령어:",
+  termHelpFeaturedCommands: "추천 명령어:",
+  termHelpArgsHeader: "명령줄 인수:",
+  termHelpTipsHeader: "팁:",
+  termHelpTipNav: "화살표 키 (↑/↓)를 사용하여 명령어 기록 탐색",
+  termHelpTipAliases: "별칭 지원 (예: 'clear' 대신 'cls')",
+  termHelpTipCase: "대소문자를 구분하지 않으며 오타 허용 기능 제공",
+  termHelpTipFlags: "플래그를 사용하여 목록 및 미리보기에 빠르게 접근",
+  termHelpTipLigatures: "가독성을 위한 폰트 합자 지원",
+
+  // Terminal About
+  termAboutGreeting: "안녕하세요! 풀스택 개발자입니다",
+  termAboutPassionate: "혁신적인 웹 솔루션 구축에 열정을 가지고 있습니다",
+  termAboutSpecialized: "React, Next.js 및 최신 웹 기술 전문",
+  termAboutCreative: "기술적 역량과 창의적인 디자인의 결합을 지향합니다",
+  termAboutLearning: "항상 새로운 기술을 배우고 탐구합니다",
+  termAboutShowcaseHeader: "이 터미널 테마 포트폴리오는 다음 분야의 역량을 보여줍니다:",
+  termAboutFrontendDev: "프론트엔드 개발 (React, Next.js, TypeScript)",
+  termAboutUiUx: "UI/UX 디자인 (Tailwind CSS, 반응형 디자인)",
+  termAboutDevOps: "DevOps (CI/CD, 성능 최적화)",
+  termAboutProblemSolving: "창의적 문제 해결",
+  termAboutRoadmapTracked: "학습 여정은 roadmap.sh 에서 확인하실 수 있습니다",
+  termAboutRoadmapVisit: "홈페이지 로드맵을 방문하여 현재 진행 상황을 확인해보세요!",
+  termAboutTypePrompt: "작품을 보려면 \"projects\", 문의하려면 \"contact\"를 입력하세요!",
+
+  // Terminal Language
+  termLangDirection: "방향",
+  termLangCode: "코드",
+  termLangSaved: "언어 설정이 localStorage에 저장되었습니다",
+  termLangUsage: "사용법: lang <locale_id>",
+  termLangExamples: "예시: lang id_ID, lang es_ES, lang fr_FR",
+  termLangRegionalNote: "지역 변형(예: en_GB, es_MX)은 기본 언어로 자동 전환됩니다",
 } as const;

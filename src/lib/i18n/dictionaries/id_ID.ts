@@ -671,4 +671,38 @@ export const id_ID_key: TranslationKeys = {
   terminalWelcomeDescSkills: "Lihat keahlian teknis saya",
   terminalWelcomeDescProjects: "Jelajahi proyek-proyek saya",
   terminalWelcomeDescContact: "Hubungi saya",
+
+  // Terminal Commands & Help
+  termHelpAvailableCommands: "Perintah Yang Tersedia:",
+  termHelpFeaturedCommands: "Perintah Unggulan:",
+  termHelpArgsHeader: "Argumen Baris Perintah:",
+  termHelpTipsHeader: "Tips:",
+  termHelpTipNav: "Gunakan tombol panah (↑/↓) untuk menavigasi riwayat perintah",
+  termHelpTipAliases: "Perintah mendukung alias (contoh: 'cls' untuk 'clear')",
+  termHelpTipCase: "Perintah tidak sensitif huruf besar/kecil dengan toleransi tipografi",
+  termHelpTipFlags: "Gunakan bendera (flag) untuk akses cepat ke daftar dan pratinjau",
+  termHelpTipLigatures: "Ligatur font didukung untuk keterbacaan lebih baik",
+
+  // Terminal About
+  termAboutGreeting: "Halo! Saya seorang Pengembang Full-Stack",
+  termAboutPassionate: "Antusias dalam menciptakan solusi web yang inovatif",
+  termAboutSpecialized: "Spesialisasi dalam React, Next.js, dan teknologi web modern",
+  termAboutCreative: "Suka menggabungkan keahlian teknis dengan desain kreatif",
+  termAboutLearning: "Selalu belajar dan mengeksplorasi teknologi baru",
+  termAboutShowcaseHeader: "Portofolio bertema terminal ini menampilkan keahlian saya dalam:",
+  termAboutFrontendDev: "Pengembangan Frontend (React, Next.js, TypeScript)",
+  termAboutUiUx: "Desain UI/UX (Tailwind CSS, Desain Responsif)",
+  termAboutDevOps: "DevOps (CI/CD, Optimasi Performa)",
+  termAboutProblemSolving: "Pemecahan Masalah Kreatif",
+  termAboutRoadmapTracked: "Perjalanan belajar saya dipantau di roadmap.sh",
+  termAboutRoadmapVisit: "Kunjungi peta jalan di beranda untuk melihat progres terbaru saya!",
+  termAboutTypePrompt: "Ketik \"projects\" untuk melihat karya saya atau \"contact\" untuk menghubungi saya!",
+
+  // Terminal Language
+  termLangDirection: "Arah",
+  termLangCode: "Kode",
+  termLangSaved: "Preferensi bahasa disimpan ke localStorage",
+  termLangUsage: "Penggunaan: lang <locale_id>",
+  termLangExamples: "Contoh: lang id_ID, lang es_ES, lang fr_FR",
+  termLangRegionalNote: "Varian regional (misalnya, en_GB, es_MX) akan kembali ke bahasa utama mereka",
 } as const;

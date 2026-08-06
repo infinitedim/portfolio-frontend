@@ -64,6 +64,13 @@ vi.mock("@/lib/i18n", () => ({
       languageChanged: "Language changed successfully",
       currentLanguage: "Current language",
       availableLanguages: "Available languages",
+      termLangCode: "Code",
+      termLangDirection: "Direction",
+      termLangSaved: "Language preference saved to localStorage",
+      termLangUsage: "Usage: lang <locale_id>",
+      termLangExamples: "Examples: lang id_ID, lang es_ES, lang fr_FR",
+      termLangRegionalNote:
+        "Regional variants (e.g., en_GB, es_MX) will fall back to their primary language",
     };
     return translations[key] || key;
   },

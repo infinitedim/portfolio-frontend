@@ -640,4 +640,38 @@ export const zh_CN_key: TranslationKeys = {
     "Full keyboard-only experience with arrow navigation (↑/↓) for command logs, typo-tolerance algorithms, command flags parsing, and clear utilities.",
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
+
+  // Terminal Commands & Help
+  termHelpAvailableCommands: "可用命令：",
+  termHelpFeaturedCommands: "精选命令：",
+  termHelpArgsHeader: "命令行参数：",
+  termHelpTipsHeader: "提示：",
+  termHelpTipNav: "使用方向键 (↑/↓) 浏览历史命令",
+  termHelpTipAliases: "命令支持别名（例如：用 'cls' 代替 'clear'）",
+  termHelpTipCase: "命令不区分大小写，且具有拼写容错功能",
+  termHelpTipFlags: "使用标志快速访问列表和预览",
+  termHelpTipLigatures: "支持字体连字以提升可读性",
+
+  // Terminal About
+  termAboutGreeting: "你好！我是一名全栈开发人员",
+  termAboutPassionate: "热衷于创建创新的 Web 解决方案",
+  termAboutSpecialized: "专注于 React、Next.js 和现代 Web 技术",
+  termAboutCreative: "喜欢将技术能力与创意设计相结合",
+  termAboutLearning: "始终在学习和探索新技术",
+  termAboutShowcaseHeader: "这个终端主题作品集展示了我在以下方面的技能：",
+  termAboutFrontendDev: "前端开发 (React, Next.js, TypeScript)",
+  termAboutUiUx: "UI/UX 设计 (Tailwind CSS, 响应式设计)",
+  termAboutDevOps: "DevOps (CI/CD, 性能优化)",
+  termAboutProblemSolving: "创造性解决问题",
+  termAboutRoadmapTracked: "我的学习历程记录在 roadmap.sh 上",
+  termAboutRoadmapVisit: "访问主页路线图以查看我当前的进度！",
+  termAboutTypePrompt: "输入 \"projects\" 查看我的作品，或输入 \"contact\" 与我联系！",
+
+  // Terminal Language
+  termLangDirection: "方向",
+  termLangCode: "代码",
+  termLangSaved: "语言偏好已保存至 localStorage",
+  termLangUsage: "用法：lang <locale_id>",
+  termLangExamples: "示例：lang id_ID, lang es_ES, lang fr_FR",
+  termLangRegionalNote: "区域变体（例如 en_GB, es_MX）将自动降级为其主语言",
 } as const;

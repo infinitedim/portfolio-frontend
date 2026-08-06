@@ -663,4 +663,38 @@ export const ru_RU_key: TranslationKeys = {
     "Full keyboard-only experience with arrow navigation (↑/↓) for command logs, typo-tolerance algorithms, command flags parsing, and clear utilities.",
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
+
+  // Terminal Commands & Help
+  termHelpAvailableCommands: "Доступные команды:",
+  termHelpFeaturedCommands: "Рекомендуемые команды:",
+  termHelpArgsHeader: "Аргументы командной строки:",
+  termHelpTipsHeader: "Советы:",
+  termHelpTipNav: "Используйте клавиши (↑/↓) для навигации по истории команд",
+  termHelpTipAliases: "Поддержка псевдонимов (например, 'cls' вместо 'clear')",
+  termHelpTipCase: "Регистр не имеет значения, есть толерантность к опечаткам",
+  termHelpTipFlags: "Используйте флаги для быстрого доступа к спискам и просмотру",
+  termHelpTipLigatures: "Поддержка лигатур шрифта для улучшения читаемости",
+
+  // Terminal About
+  termAboutGreeting: "Привет! Я Full-Stack разработчик",
+  termAboutPassionate: "Увлечен созданием инновационных веб-решений",
+  termAboutSpecialized: "Специализируюсь на React, Next.js и современных веб-технологиях",
+  termAboutCreative: "Люблю сочетать технические навыки с креативным дизайном",
+  termAboutLearning: "Всегда учусь и исследую новые технологии",
+  termAboutShowcaseHeader: "Это портфолио в стиле терминала демонстрирует мои навыки в:",
+  termAboutFrontendDev: "Frontend-разработка (React, Next.js, TypeScript)",
+  termAboutUiUx: "UI/UX дизайн (Tailwind CSS, адаптивный дизайн)",
+  termAboutDevOps: "DevOps (CI/CD, оптимизация производительности)",
+  termAboutProblemSolving: "Креативное решение задач",
+  termAboutRoadmapTracked: "Мой путь обучения отслеживается на roadmap.sh",
+  termAboutRoadmapVisit: "Посетите дорожную карту на главной странице, чтобы увидеть текущий прогресс!",
+  termAboutTypePrompt: "Введите \"projects\", чтобы увидеть работы, или \"contact\", чтобы связаться!",
+
+  // Terminal Language
+  termLangDirection: "Направление",
+  termLangCode: "Код",
+  termLangSaved: "Языковые настройки сохранены в localStorage",
+  termLangUsage: "Использование: lang <locale_id>",
+  termLangExamples: "Примеры: lang id_ID, lang es_ES, lang fr_FR",
+  termLangRegionalNote: "Региональные варианты (например, en_GB, es_MX) будут использовать основной язык",
 } as const;
