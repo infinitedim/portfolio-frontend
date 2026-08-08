@@ -4,7 +4,7 @@ import type { Command, CommandOutput } from "@/types/terminal";
 export const techStackCommand: Command = {
   name: "tech-stack",
   description: "Technology stack visualization and analysis",
-  aliases: ["tech", "stack", "technologies"],
+  aliases: ["tech", "stack", "technologies", "skills"],
   async execute(args: string[]): Promise<CommandOutput> {
     const [action, ...params] = args;
 

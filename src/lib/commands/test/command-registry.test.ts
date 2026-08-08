@@ -12,8 +12,6 @@ describe("commandRegistry", () => {
   let clearCommand: Command;
   let themeCommand: Command;
   let fontCommand: Command;
-  let statusCommand: Command;
-  let aliasCommand: Command;
 
   beforeEach(async () => {
     if (typeof vi !== "undefined" && vi.importActual) {
@@ -31,8 +29,6 @@ describe("commandRegistry", () => {
     clearCommand = commandRegistry.clearCommand;
     themeCommand = commandRegistry.themeCommand;
     fontCommand = commandRegistry.fontCommand;
-    statusCommand = commandRegistry.statusCommand;
-    aliasCommand = commandRegistry.aliasCommand;
   });
   describe("createHelpCommand", () => {
     it("returns success and mentions Featured Commands", async () => {
@@ -178,48 +174,6 @@ describe("commandRegistry", () => {
     it("responds to -l flag", async () => {
       const out = await fontCommand.execute(["-l"], "font -l");
       expect(["success", "info", "error"]).toContain(out.type);
-    });
-  });
-
-  describe("statusCommand", () => {
-    it("returns status information", async () => {
-      const out = await statusCommand.execute([]);
-      expect(["success", "info", "text"]).toContain(out.type);
-    });
-
-    it("has name property", () => {
-      expect(statusCommand.name).toBe("status");
-    });
-  });
-
-  describe("aliasCommand", () => {
-    beforeEach(() => {
-      if (typeof window === "undefined") {
-        return;
-      }
-      Object.defineProperty(window, "localStorage", {
-        value: {
-          getItem: vi.fn().mockReturnValue("{}"),
-          setItem: vi.fn(),
-        },
-        writable: true,
-        configurable: true,
-      });
-    });
-
-    it("has correct name", () => {
-      expect(aliasCommand.name).toBe("alias");
-    });
-
-    it("shows help with -h flag", async () => {
-      const out = await aliasCommand.execute(["-h"], "alias -h");
-      expect(out.type).toBe("success");
-      expect(out.content as string).toContain("Command Aliases");
-    });
-
-    it("lists aliases with -l flag", async () => {
-      const out = await aliasCommand.execute(["-l"], "alias -l");
-      expect(["success", "info"]).toContain(out.type);
     });
   });
 });

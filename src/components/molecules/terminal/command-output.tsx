@@ -57,6 +57,9 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
       if (textRef.current) {
         textRef.current.textContent = rawText;
         textRef.current.classList.remove("typing-cursor");
+        if (typeof textRef.current.scrollIntoView === "function") {
+          textRef.current.scrollIntoView({ block: "nearest", behavior: "auto" });
+        }
       }
     }
   }, [rawText]);

@@ -150,7 +150,7 @@ export function TerminalProvider({
     getCommandSuggestions,
     getFrequentCommands,
     commandAnalytics,
-  } = useTerminal(undefined, undefined, themePerformance);
+  } = useTerminal(undefined, themePerformance);
 
   // ── Local UI state ─────────────────────────────────────────────────────
   const [showWelcome, setShowWelcome] = useState(true);
@@ -237,23 +237,6 @@ export function TerminalProvider({
         return;
       }
 
-      // ── OPEN_CUSTOMIZATION_MANAGER ─────────────────────────────────────
-      if (
-        typeof output.content === "string" &&
-        output.content === "OPEN_CUSTOMIZATION_MANAGER"
-      ) {
-        // Signal the terminal UI to open the manager via a custom event
-        window.dispatchEvent(new CustomEvent("terminal:open-customization"));
-        addToHistory(command, {
-          ...output,
-          content: "Opening customization manager...",
-          type: "success",
-        });
-        showNotification("Customization manager opened!", "success");
-        setCurrentInput("");
-        return;
-      }
-
       // ── CHANGE_THEME:* ─────────────────────────────────────────────────
       if (
         typeof output.content === "string" &&
@@ -335,73 +318,6 @@ export function TerminalProvider({
         return;
       }
 
-      // ── SHOW_STATUS ────────────────────────────────────────────────────
-      if (
-        typeof output.content === "string" &&
-        output.content === "SHOW_STATUS"
-      ) {
-        const uptime = new Date().toLocaleString();
-
-        const analytics = commandAnalytics ?? {
-          totalCommands: 0,
-          uniqueCommands: 0,
-          successRate: 100,
-          topCommands: [],
-        };
-
-        const perfReport = getPerformanceReport();
-        const currentMetrics = themeMetrics;
-
-        const statusInfo = [
-          "Terminal Portfolio System Status",
-          "═".repeat(60),
-          "",
-          `Status: ${Math.random() > 0.5 ? "Online" : "Development"}`,
-          `Theme: ${themeConfig?.name ?? "Unknown"} (${theme})`,
-          `Font: ${fontConfig?.name ?? "Unknown"}${fontConfig?.ligatures ? " (ligatures)" : ""}`,
-          `Session Started: ${uptime}`,
-          `Platform: ${mounted && typeof window !== "undefined" ? window.navigator.platform : "Server"}`,
-          "",
-          "Command Analytics:",
-          `   • Total commands executed: ${analytics.totalCommands}`,
-          `   • Unique commands used: ${analytics.uniqueCommands}`,
-          `   • Success rate: ${analytics.successRate.toFixed(1)}%`,
-          `   • Most used: ${analytics.topCommands[0]?.command ?? "N/A"}`,
-          "",
-          "Performance Metrics:",
-          `   • Theme switches: ${perfReport.totalSwitches}`,
-          `   • Average switch time: ${perfReport.averageTime.toFixed(1)}ms`,
-          `   • Current theme render: ${currentMetrics.renderTime.toFixed(1)}ms`,
-          `   • Fastest switch: ${perfReport.fastestSwitch.toFixed(1)}ms`,
-          `   • Most used theme: ${currentMetrics.popularThemes[0]?.theme ?? theme}`,
-          "",
-          "Theme System:",
-          `   • ${availableThemes?.length ?? 0} built-in themes available`,
-          "   • Use 'theme -l' to list all themes",
-          "",
-          "Font System:",
-          `   • ${availableFonts?.length ?? 0} system fonts available`,
-          "   • Use 'font -l' to list all fonts",
-          "",
-          "Enhanced Features:",
-          "   • Smart command suggestions (↑/↓ or Ctrl+R)",
-          "   • Command analytics and favorites",
-          "   • Tab completion with history",
-          "   • Real-time performance monitoring",
-          "",
-          "Development Progress:",
-          "   ▓▓▓▓▓▓▓▓▓░ 95% Complete",
-        ].join("\n");
-
-        addToHistory(command, {
-          ...output,
-          content: statusInfo,
-          type: "success",
-        });
-        setCurrentInput("");
-        return;
-      }
-
       // ── Default: pass through ──────────────────────────────────────────
       addToHistory(command, output);
       setCurrentInput("");
@@ -409,25 +325,17 @@ export function TerminalProvider({
     [
       addToHistory,
       announceMessage,
-      availableFonts?.length,
-      availableThemes?.length,
       changeFont,
       changeTheme,
-      commandAnalytics,
       executeCommand,
       fontConfig?.family,
       fontConfig?.ligatures,
       fontConfig?.name,
-      getPerformanceReport,
-      mounted,
       onFontChange,
       onThemeChange,
       setCurrentInput,
       showNotification,
-      theme,
-      themeConfig?.name,
       themeError,
-      themeMetrics,
     ],
   );
 

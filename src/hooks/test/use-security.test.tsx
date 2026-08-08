@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useSecurity, useSecurityMonitoring } from "@/hooks/use-security";
+import {
+  useSecurity,
+  useSecurityMonitoring,
+  detectSuspiciousActivity,
+} from "@/hooks/use-security";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 if (
@@ -28,6 +32,88 @@ describe("useSecurity hook", () => {
       return;
     }
     vi.useRealTimers();
+  });
+
+  describe("hardened security patterns and limits", () => {
+    it("should detect data URI script injection", () => {
+      if (!canRunTests) return;
+      const { result } = renderHook(() => useSecurity());
+      const validation = result.current.validateInputSync("data:text/html,<script>");
+      expect(validation.isValid).toBe(false);
+      expect(validation.riskLevel).toBe("high");
+    });
+
+    it("should detect dynamic import calls", () => {
+      if (!canRunTests) return;
+      const { result } = renderHook(() => useSecurity());
+      const validation = result.current.validateInputSync("import('malicious.js')");
+      expect(validation.isValid).toBe(false);
+      expect(validation.riskLevel).toBe("high");
+    });
+
+    it("should detect Function constructor calls", () => {
+      if (!canRunTests) return;
+      const { result } = renderHook(() => useSecurity());
+      const validation = result.current.validateInputSync("Function('return process')()");
+      expect(validation.isValid).toBe(false);
+      expect(validation.riskLevel).toBe("high");
+    });
+
+    it("should detect fetch calls", () => {
+      if (!canRunTests) return;
+      const { result } = renderHook(() => useSecurity());
+      const validation = result.current.validateInputSync("fetch('http://evil.com')");
+      expect(validation.isValid).toBe(false);
+      expect(validation.riskLevel).toBe("high");
+    });
+
+    it("should enforce input length limit at 500 characters", () => {
+      if (!canRunTests) return;
+      const { result } = renderHook(() => useSecurity());
+      const longInput = "a".repeat(501);
+      const validation = result.current.validateInputSync(longInput);
+      expect(validation.isValid).toBe(false);
+      expect(validation.error).toBe("Input too long");
+      expect(validation.sanitizedInput.length).toBe(500);
+    });
+  });
+
+  describe("detectSuspiciousActivity unit logic", () => {
+    it("should detect rapid burst of >8 inputs within 5s window", () => {
+      const now = Date.now();
+      const inputs = Array(9)
+        .fill(null)
+        .map((_, i) => ({ input: `cmd${i}`, timestamp: now }));
+
+      const res = detectSuspiciousActivity(inputs);
+      expect(res.isSuspicious).toBe(true);
+      expect(res.riskLevel).toBe("medium");
+    });
+
+    it("should detect extreme rapid burst of >15 inputs within 5s window", () => {
+      const now = Date.now();
+      const inputs = Array(16)
+        .fill(null)
+        .map((_, i) => ({ input: `cmd${i}`, timestamp: now }));
+
+      const res = detectSuspiciousActivity(inputs);
+      expect(res.isSuspicious).toBe(true);
+      expect(res.riskLevel).toBe("high");
+    });
+
+    it("should detect fuzzy repetition with spacing variations", () => {
+      const now = Date.now();
+      const inputs = [
+        "help",
+        "help ",
+        "help  ",
+        "help!",
+      ].map((input) => ({ input, timestamp: now }));
+
+      const res = detectSuspiciousActivity(inputs);
+      expect(res.isSuspicious).toBe(true);
+      expect(res.riskLevel).toBe("medium");
+    });
   });
 
   describe("initialization", () => {

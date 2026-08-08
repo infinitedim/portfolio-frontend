@@ -71,6 +71,17 @@ function validateInputClientSide(input: string): ValidationResult {
     /eval\(/i,
     /document\.cookie/i,
     /window\./i,
+    /data:\s*text\/html/i,
+    /import\s*\(/i,
+    /constructor\s*[[(]/i,
+    /Function\s*\(/i,
+    /\.innerHTML\s*=/i,
+    /\.outerHTML\s*=/i,
+    /fromCharCode/i,
+    /&#x?[0-9a-f]+;/i,
+    /\\u00[0-9a-f]{2}/i,
+    /\bfetch\s*\(/i,
+    /XMLHttpRequest/i,
   ];
 
   const hasDangerousPattern = dangerousPatterns.some((pattern) =>
@@ -86,10 +97,10 @@ function validateInputClientSide(input: string): ValidationResult {
     };
   }
 
-  if (sanitizedInput.length > 10000) {
+  if (sanitizedInput.length > 500) {
     return {
       isValid: false,
-      sanitizedInput: sanitizedInput.substring(0, 1000),
+      sanitizedInput: sanitizedInput.substring(0, 500),
       error: "Input too long",
       riskLevel: "medium",
     };
@@ -101,6 +112,11 @@ function validateInputClientSide(input: string): ValidationResult {
     error: null,
     riskLevel: "low",
   };
+}
+
+export interface TimestampedInput {
+  input: string;
+  timestamp: number;
 }
 
 export function useSecurity() {
@@ -116,7 +132,7 @@ export function useSecurity() {
   });
 
   const [threatAlerts, setThreatAlerts] = useState<ThreatAlert[]>([]);
-  const recentInputs = useRef<string[]>([]);
+  const recentInputs = useRef<TimestampedInput[]>([]);
   const requestHistory = useRef<Array<{ timestamp: number; valid: boolean }>>(
     [],
   );
@@ -137,21 +153,29 @@ export function useSecurity() {
       }
     > => {
       try {
+        if (securityState.isRateLimited) {
+          return {
+            isValid: false,
+            sanitizedInput: "",
+            error: "Rate limited. Please wait before trying again.",
+            riskLevel: "high",
+            shouldProceed: false,
+          };
+        }
+
         const validation: ValidationResult = validateInputClientSide(input);
-        let shouldProceed = false;
+        let shouldProceed = validation.isValid;
         let alert: ThreatAlert | undefined;
 
-        shouldProceed = validation.isValid;
-
         if (isClientSide() && isMountedRef.current) {
-          recentInputs.current.push(input);
+          const now = Date.now();
+          recentInputs.current.push({ input, timestamp: now });
           if (recentInputs.current.length > SECURITY_LIMITS.MAX_RECENT_INPUTS) {
             recentInputs.current = recentInputs.current.slice(
               -SECURITY_LIMITS.MAX_RECENT_INPUTS,
             );
           }
 
-          const now = Date.now();
           requestHistory.current.push({
             timestamp: now,
             valid: validation.isValid,
@@ -176,7 +200,9 @@ export function useSecurity() {
                 suspiciousAnalysis.riskLevel,
                 {
                   pattern: suspiciousAnalysis.reason,
-                  recentInputs: recentInputs.current.slice(-5),
+                  recentInputs: recentInputs.current
+                    .slice(-5)
+                    .map((i) => i.input),
                 },
               );
 
@@ -184,6 +210,12 @@ export function useSecurity() {
                 setSecurityState((prev) => ({
                   ...prev,
                   suspiciousActivity: prev.suspiciousActivity + 1,
+                  blockedAttempts:
+                    prev.blockedAttempts +
+                    (suspiciousAnalysis.riskLevel === "high" ? 1 : 0),
+                  isRateLimited:
+                    prev.isRateLimited ||
+                    suspiciousAnalysis.riskLevel === "high",
                   lastThreatTime: new Date(),
                 }));
 
@@ -218,7 +250,7 @@ export function useSecurity() {
         };
       }
     },
-    [isMountedRef],
+    [isMountedRef, securityState.isRateLimited],
   );
 
   const validateInputSync = useCallback(
@@ -229,19 +261,29 @@ export function useSecurity() {
       alert?: ThreatAlert;
     } => {
       try {
+        if (securityState.isRateLimited) {
+          return {
+            isValid: false,
+            sanitizedInput: "",
+            error: "Rate limited. Please wait before trying again.",
+            riskLevel: "high",
+            shouldProceed: false,
+          };
+        }
+
         const validation = validateInputClientSide(input);
         let shouldProceed = validation.isValid;
         let alert: ThreatAlert | undefined;
 
         if (isClientSide() && isMountedRef.current) {
-          recentInputs.current.push(input);
+          const now = Date.now();
+          recentInputs.current.push({ input, timestamp: now });
           if (recentInputs.current.length > SECURITY_LIMITS.MAX_RECENT_INPUTS) {
             recentInputs.current = recentInputs.current.slice(
               -SECURITY_LIMITS.MAX_RECENT_INPUTS,
             );
           }
 
-          const now = Date.now();
           requestHistory.current.push({
             timestamp: now,
             valid: validation.isValid,
@@ -266,7 +308,9 @@ export function useSecurity() {
                 suspiciousAnalysis.riskLevel,
                 {
                   pattern: suspiciousAnalysis.reason,
-                  recentInputs: recentInputs.current.slice(-5),
+                  recentInputs: recentInputs.current
+                    .slice(-5)
+                    .map((i) => i.input),
                 },
               );
 
@@ -274,6 +318,12 @@ export function useSecurity() {
                 setSecurityState((prev) => ({
                   ...prev,
                   suspiciousActivity: prev.suspiciousActivity + 1,
+                  blockedAttempts:
+                    prev.blockedAttempts +
+                    (suspiciousAnalysis.riskLevel === "high" ? 1 : 0),
+                  isRateLimited:
+                    prev.isRateLimited ||
+                    suspiciousAnalysis.riskLevel === "high",
                   lastThreatTime: new Date(),
                 }));
 
@@ -308,7 +358,7 @@ export function useSecurity() {
         };
       }
     },
-    [isMountedRef],
+    [isMountedRef, securityState.isRateLimited],
   );
 
   const resetRateLimit = useCallback(() => {
@@ -536,7 +586,9 @@ function createThreatAlert(
   };
 }
 
-function detectSuspiciousActivity(recentInputs: string[]): {
+export function detectSuspiciousActivity(
+  recentInputs: Array<string | TimestampedInput>,
+): {
   isSuspicious: boolean;
   reason: string;
   riskLevel: "low" | "medium" | "high";
@@ -545,26 +597,56 @@ function detectSuspiciousActivity(recentInputs: string[]): {
     return { isSuspicious: false, reason: "", riskLevel: "low" };
   }
 
-  const patternCounts: Record<string, number> = {};
-  recentInputs.forEach((input) => {
-    const pattern = input.toLowerCase().trim();
-    patternCounts[pattern] = (patternCounts[pattern] || 0) + 1;
-  });
+  const now = Date.now();
+  const normalizedInputs: TimestampedInput[] = recentInputs.map((item) =>
+    typeof item === "string" ? { input: item, timestamp: now } : item,
+  );
 
-  const maxRepetition = Math.max(...Object.values(patternCounts));
-  if (maxRepetition > 3) {
+  const fiveSecondsAgo = now - 5000;
+  const inputsInLast5s = normalizedInputs.filter(
+    (item) => item.timestamp >= fiveSecondsAgo,
+  );
+
+  // Layer 1: Time-aware Burst Detection
+  if (inputsInLast5s.length > 15) {
     return {
       isSuspicious: true,
-      reason: "Excessive input repetition detected",
+      reason: "Extreme rapid input burst detected",
+      riskLevel: "high",
+    };
+  }
+  if (inputsInLast5s.length > 8) {
+    return {
+      isSuspicious: true,
+      reason: "Rapid input pattern detected",
       riskLevel: "medium",
     };
   }
 
-  const timeSpan = recentInputs.length > 1 ? 10000 : 0;
-  if (timeSpan > 0 && recentInputs.length > 15) {
+  // Layer 2: Fuzzy Repetition Detection (normalize whitespace & punctuation)
+  const patternCounts: Record<string, number> = {};
+  normalizedInputs.forEach((item) => {
+    const normalized = item.input
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, " ")
+      .replace(/[^\w\s]/g, "");
+    const key = normalized || item.input.toLowerCase().trim();
+    patternCounts[key] = (patternCounts[key] || 0) + 1;
+  });
+
+  const maxRepetition = Math.max(0, ...Object.values(patternCounts));
+  if (maxRepetition > 5) {
     return {
       isSuspicious: true,
-      reason: "Rapid input pattern detected",
+      reason: "Excessive input repetition detected",
+      riskLevel: "high",
+    };
+  }
+  if (maxRepetition > 3) {
+    return {
+      isSuspicious: true,
+      reason: "Excessive input repetition detected",
       riskLevel: "medium",
     };
   }

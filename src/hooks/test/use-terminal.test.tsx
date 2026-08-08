@@ -37,9 +37,6 @@ vi.mock("@/lib/commands/command-registry", () => {
     clearCommand: cmd("clear"),
     themeCommand: cmd("theme"),
     fontCommand: cmd("font"),
-    statusCommand: cmd("status"),
-    aliasCommand: cmd("alias"),
-    pwaCommand: cmd("pwa"),
   };
 });
 vi.mock("@/lib/commands/language-commands", () => {
@@ -50,38 +47,10 @@ vi.mock("@/lib/commands/language-commands", () => {
     languageInfoCommand: cmd("language-info"),
   };
 });
-vi.mock("@/lib/commands/customization-commands", () => {
-  const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
-  return {
-    customizeCommand: cmd("customize"),
-    themesCommand: cmd("themes"),
-    fontsCommand: cmd("fonts"),
-  };
-});
-vi.mock("@/lib/commands/demo-commands", () => {
-  const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
-  return { demoCommand: cmd("demo"), setDemoCallback: vi.fn() };
-});
-vi.mock("@/lib/commands/github-commands", () => {
-  const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
-  return { githubCommand: cmd("github") };
-});
-vi.mock("@/lib/commands/tech-stack-commands", () => {
-  const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
-  return { techStackCommand: cmd("tech-stack") };
-});
-vi.mock("@/lib/commands/location-commands", () => {
-  const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
-  return { createLocationCommand: vi.fn(() => cmd("location")) };
-});
 vi.mock("@/lib/commands/commands", () => {
   const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
   return {
     resumeCommand: cmd("resume"),
-    socialCommand: cmd("social"),
-    shortcutsCommand: cmd("shortcuts"),
-    enhancedContactCommand: cmd("enhanced-contact"),
-    easterEggsCommand: cmd("easter-eggs"),
   };
 });
 vi.mock("@/hooks/use-command-history", () => ({

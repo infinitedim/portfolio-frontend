@@ -10,8 +10,6 @@ import {
   clearCommand,
   themeCommand,
   fontCommand,
-  statusCommand,
-  aliasCommand,
 } from "@/lib/commands/command-registry";
 import { languageCommand } from "@/lib/commands/language-commands";
 import { useCommandHistory } from "./use-command-history";
@@ -25,22 +23,6 @@ const getRoadmapCommands = async () => {
   } catch (error) {
     console.error("Failed to load roadmap commands:", error);
     return { roadmapCommand: null };
-  }
-};
-
-const getCustomizationCommands = async () => {
-  try {
-    return await import("@/lib/commands/customization-commands");
-  } catch {
-    return null;
-  }
-};
-
-const getDemoCommands = async () => {
-  try {
-    return await import("@/lib/commands/demo-commands");
-  } catch {
-    return null;
   }
 };
 
@@ -60,7 +42,7 @@ const getBlogCommands = async () => {
   }
 };
 
-const getMiscCommands = async () => {
+const getResumeCommand = async () => {
   try {
     return await import("@/lib/commands/commands");
   } catch {
@@ -82,33 +64,21 @@ const SPECIAL_COMMANDS = {
 
 const ALL_COMMANDS = [
   "help",
-  "skills",
-  "customize",
-  "themes",
-  "fonts",
-  "status",
-  "clear",
-  "alias",
   "about",
-  "contact",
   "projects",
+  "contact",
+  "resume",
+  "blog",
   "roadmap",
+  "tech-stack",
+  "skills",
   "theme",
   "font",
   "language",
-  "demo",
-
-  "ask",
-  "tech-stack",
-  "resume",
-  "social",
-  "blog",
-  "shortcuts",
-  "easter-eggs",
+  "clear",
 ] as const;
 
 export function useTerminal(
-  onOpenDemo?: (projectId: string) => void,
   onOpenAuth?: () => void,
   themePerformance?: {
     getPerformanceReport: () => {
@@ -150,13 +120,11 @@ export function useTerminal(
   const clearAdvancedHistoryRef = useRef(clearAdvancedHistory);
   const analyticsRef = useRef(analytics);
   const advancedHistoryRef = useRef(advancedHistory);
-  const onOpenDemoRef = useRef(onOpenDemo);
   const themePerformanceRef = useRef(themePerformance);
 
   clearAdvancedHistoryRef.current = clearAdvancedHistory;
   analyticsRef.current = analytics;
   advancedHistoryRef.current = advancedHistory;
-  onOpenDemoRef.current = onOpenDemo;
   themePerformanceRef.current = themePerformance;
 
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
@@ -234,14 +202,10 @@ export function useTerminal(
       parser.register(clearCommand);
       parser.register(themeCommand);
       parser.register(fontCommand);
-      parser.register(statusCommand);
-      parser.register(aliasCommand);
 
-      const [miscCmds, customCmds, demoCmds, techCmds, blogCmds] =
+      const [resumeCmds, techCmds, blogCmds] =
         await Promise.allSettled([
-          getMiscCommands(),
-          getCustomizationCommands(),
-          getDemoCommands(),
+          getResumeCommand(),
           getTechStackCommands(),
           getBlogCommands(),
         ]);
@@ -249,274 +213,14 @@ export function useTerminal(
       const blog = blogCmds.status === "fulfilled" ? blogCmds.value : null;
       if (blog?.blogCommand) parser.register(blog.blogCommand);
 
-      const misc = miscCmds.status === "fulfilled" ? miscCmds.value : null;
-      if (misc) {
-        if (misc.resumeCommand) parser.register(misc.resumeCommand);
-        if (misc.socialCommand) parser.register(misc.socialCommand);
-        if (misc.shortcutsCommand) parser.register(misc.shortcutsCommand);
-        if (misc.enhancedContactCommand)
-          parser.register(misc.enhancedContactCommand);
-        if (misc.easterEggsCommand) parser.register(misc.easterEggsCommand);
-      }
-
-      const custom =
-        customCmds.status === "fulfilled" ? customCmds.value : null;
-      if (custom) {
-        if (custom.customizeCommand) parser.register(custom.customizeCommand);
-        if (custom.themesCommand) parser.register(custom.themesCommand);
-        if (custom.fontsCommand) parser.register(custom.fontsCommand);
-      }
-
-      parser.register({
-        name: "history",
-        description: "Show command history and analytics",
-        aliases: ["hist", "analytics"],
-        usage: "history [--clear] [--export] [--stats]",
-        async execute(args) {
-          const hasFlag = (flag: string) => args.includes(`--${flag}`);
-
-          if (hasFlag("clear")) {
-            clearAdvancedHistoryRef.current();
-            return {
-              type: "success",
-              content: "Command history cleared",
-              timestamp: new Date(),
-              id: generateId(),
-            };
-          }
-
-          if (hasFlag("stats")) {
-            const stats = analyticsRef.current || {
-              totalCommands: 0,
-              uniqueCommands: 0,
-              successRate: 100,
-              topCommands: [],
-              commandsByCategory: {},
-            };
-
-            const statsText = [
-              "Command Analytics",
-              "═".repeat(40),
-              "",
-              `Total Commands: ${stats.totalCommands}`,
-              `Unique Commands: ${stats.uniqueCommands}`,
-              `Success Rate: ${stats.successRate.toFixed(1)}%`,
-              "",
-              "Top Commands:",
-              ...stats.topCommands
-                .slice(0, 5)
-                .map(
-                  (cmd, i) => `  ${i + 1}. ${cmd.command} (${cmd.count} times)`,
-                ),
-              "",
-              "By Category:",
-              ...Object.entries(stats.commandsByCategory || {}).map(
-                ([cat, count]) => `  ${cat}: ${count} commands`,
-              ),
-            ].join("\n");
-
-            return {
-              type: "success",
-              content: statsText,
-              timestamp: new Date(),
-              id: generateId(),
-            };
-          }
-
-          const recentHistory = advancedHistoryRef.current.slice(0, 20);
-          if (recentHistory.length === 0) {
-            return {
-              type: "info",
-              content:
-                "No command history found. Start typing commands to build your history!",
-              timestamp: new Date(),
-              id: generateId(),
-            };
-          }
-
-          const historyText = [
-            "Recent Command History",
-            "═".repeat(40),
-            "",
-            ...recentHistory.map((entry, index) => {
-              const status = entry.success ? "✓" : "✗";
-              const time = entry.timestamp.toLocaleTimeString();
-              return `${String(recentHistory.length - index).padStart(3)}. ${status} ${entry.command} (${time})`;
-            }),
-            "",
-            "Tips:",
-            "  history --stats    Show analytics",
-            "  history --clear    Clear history",
-            "  Ctrl+R            Quick search",
-            "  ↑/↓ arrows        Navigate history",
-          ].join("\n");
-
-          return {
-            type: "success",
-            content: historyText,
-            timestamp: new Date(),
-            id: generateId(),
-          };
-        },
-      });
+      const resume = resumeCmds.status === "fulfilled" ? resumeCmds.value : null;
+      if (resume?.resumeCommand) parser.register(resume.resumeCommand);
 
       const { roadmapCommand } = await getRoadmapCommands();
 
       if (roadmapCommand) parser.register(roadmapCommand);
 
       parser.register(languageCommand);
-
-      parser.register({
-        name: "perf",
-        description: "Show performance metrics dashboard",
-        aliases: ["performance", "metrics", "dashboard"],
-        usage: "perf [--detailed] [--reset]",
-        async execute(args) {
-          const hasFlag = (flag: string) => args.includes(`--${flag}`);
-
-          if (hasFlag("reset")) {
-            if (themePerformanceRef.current?.resetMetrics) {
-              themePerformanceRef.current.resetMetrics();
-            }
-
-            return {
-              type: "success",
-              content: "Performance metrics reset successfully",
-              timestamp: new Date(),
-              id: generateId(),
-            };
-          }
-
-          const themeReport =
-            themePerformanceRef.current?.getPerformanceReport() || {
-              totalSwitches: 0,
-              averageTime: 0,
-              fastestSwitch: 0,
-              slowestSwitch: 0,
-              themeUsage: {},
-            };
-
-          interface PerformanceReport {
-            metrics: Array<{ name: string; value: number }>;
-            summary: {
-              totalCommands: number;
-              averageCommandTime: number;
-              averageRenderTime: number;
-              memoryUsage?: number;
-              historySize: number;
-            };
-            recommendations: string[];
-          }
-
-          let monitor: PerformanceReport;
-          try {
-            const { PerformanceMonitor } =
-              await import("@/lib/performance/performance-monitor");
-            monitor = PerformanceMonitor.getInstance().getReport();
-          } catch (error) {
-            console.warn("Failed to load performance monitor:", error);
-            monitor = {
-              summary: {
-                totalCommands: 0,
-                averageCommandTime: 0,
-                averageRenderTime: 0,
-                memoryUsage: undefined,
-                historySize: 0,
-              },
-              recommendations: [],
-              metrics: [],
-            };
-          }
-
-          if (hasFlag("detailed")) {
-            const detailedText = [
-              "Performance Dashboard - Detailed View",
-              "═".repeat(50),
-              "",
-              "Theme Performance:",
-              `  Total Theme Switches: ${themeReport.totalSwitches}`,
-              `  Average Switch Time: ${themeReport.averageTime.toFixed(2)}ms`,
-              `  Fastest Switch: ${themeReport.fastestSwitch.toFixed(2)}ms`,
-              `  Slowest Switch: ${themeReport.slowestSwitch.toFixed(2)}ms`,
-              "",
-              "Theme Usage Statistics:",
-              ...Object.entries(themeReport.themeUsage)
-                .sort(([, a], [, b]) => (b as number) - (a as number))
-                .slice(0, 10)
-                .map(
-                  ([theme, count], i) =>
-                    `  ${i + 1}. ${theme}: ${count} switches`,
-                ),
-              "",
-              "System Performance:",
-              `  Total Commands: ${monitor.summary.totalCommands}`,
-              `  Average Command Time: ${monitor.summary.averageCommandTime.toFixed(2)}ms`,
-              `  Average Render Time: ${monitor.summary.averageRenderTime.toFixed(2)}ms`,
-              `  Memory Usage: ${
-                monitor.summary.memoryUsage
-                  ? `${(monitor.summary.memoryUsage / 1024 / 1024).toFixed(1)}MB`
-                  : "N/A"
-              }`,
-              `  History Size: ${monitor.summary.historySize} items`,
-              "",
-              "Performance Recommendations:",
-              ...monitor.recommendations.slice(0, 5),
-              "",
-              "Commands:",
-              "  perf --reset    Reset all metrics",
-              "  perf            Quick overview",
-            ].join("\n");
-
-            return {
-              type: "success",
-              content: detailedText,
-              timestamp: new Date(),
-              id: generateId(),
-            };
-          }
-
-          const currentMetrics = themePerformanceRef.current?.themeMetrics || {
-            renderTime: 0,
-          };
-
-          const quickText = [
-            "Performance Dashboard",
-            "═".repeat(30),
-            "",
-            `Theme Switches: ${themeReport.totalSwitches} (avg: ${themeReport.averageTime.toFixed(1)}ms)`,
-            `Commands Executed: ${monitor.summary.totalCommands}`,
-            `Current Theme Render: ${currentMetrics.renderTime.toFixed(1)}ms`,
-            `Command Success Rate: ${
-              monitor.summary.totalCommands > 0
-                ? (
-                    ((monitor.summary.totalCommands -
-                      monitor.metrics.filter((m: { name: string }) =>
-                        m.name.includes("error"),
-                      ).length) /
-                      monitor.summary.totalCommands) *
-                    100
-                  ).toFixed(1)
-                : 100
-            }%`,
-            "",
-            "Use 'perf --detailed' for more info",
-          ].join("\n");
-
-          return {
-            type: "success",
-            content: quickText,
-            timestamp: new Date(),
-            id: generateId(),
-          };
-        },
-      });
-
-      const demo = demoCmds.status === "fulfilled" ? demoCmds.value : null;
-      if (demo) {
-        if (demo.setDemoCallback)
-          demo.setDemoCallback(onOpenDemoRef.current || (() => {}));
-        if (demo.demoCommand) parser.register(demo.demoCommand);
-      }
 
       const tech = techCmds.status === "fulfilled" ? techCmds.value : null;
       if (tech?.techStackCommand) parser.register(tech.techStackCommand);

@@ -7,11 +7,6 @@ vi.unmock("@/lib/utils/arg-parser");
 describe("commands.ts", () => {
   let commands: typeof import("../commands");
   let resumeCommand: Command;
-  let socialCommand: Command;
-  let shortcutsCommand: Command;
-  let enhancedContactCommand: Command;
-  let easterEggsCommand: Command;
-  let enhancedCommands: Record<string, Command>;
 
   beforeEach(async () => {
     if (typeof vi !== "undefined" && vi.importActual) {
@@ -22,11 +17,6 @@ describe("commands.ts", () => {
     }
 
     resumeCommand = commands.resumeCommand;
-    socialCommand = commands.socialCommand;
-    shortcutsCommand = commands.shortcutsCommand;
-    enhancedContactCommand = commands.enhancedContactCommand;
-    easterEggsCommand = commands.easterEggsCommand;
-    enhancedCommands = commands.enhancedCommands;
   });
 
   const mockClick = vi.fn();
@@ -91,101 +81,6 @@ describe("commands.ts", () => {
       if (typeof document !== "undefined") {
         expect(mockCreateElement).toHaveBeenCalledWith("a");
       }
-    });
-  });
-
-  describe("socialCommand", () => {
-    it("should execute social command", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await socialCommand.execute([]);
-
-      expect(result.type).toBe("success");
-      expect(result.content).toContain("SOCIAL LINKS");
-    });
-
-    it("should open links when --open flag is used", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      if (typeof window === "undefined") {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await socialCommand.execute(["--open"]);
-
-      expect(result.type).toBe("success");
-      expect(result.content).toContain("Opening all social links");
-      if (typeof window !== "undefined") {
-        expect(mockOpen).toHaveBeenCalled();
-      }
-    });
-  });
-
-  describe("shortcutsCommand", () => {
-    it("should execute shortcuts command", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await shortcutsCommand.execute([]);
-
-      expect(result.type).toBe("success");
-      expect(result.content).toContain("KEYBOARD SHORTCUTS");
-    });
-  });
-
-  describe("enhancedContactCommand", () => {
-    it("should execute contact command", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await enhancedContactCommand.execute([]);
-
-      expect(result.type).toBe("success");
-      expect(result.content).toContain("CONTACT INFORMATION");
-    });
-
-    it("should show form when --form flag is used", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await enhancedContactCommand.execute(["--form"]);
-
-      expect(result.type).toBe("success");
-      expect(result.content).toContain("INTERACTIVE CONTACT FORM");
-    });
-  });
-
-  describe("easterEggsCommand", () => {
-    it("should execute easter eggs command", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await easterEggsCommand.execute([]);
-
-      expect(result.type).toBe("success");
-      expect(result.content).toContain("EASTER EGGS");
-    });
-  });
-
-  describe("enhancedCommands", () => {
-    it("should export all commands", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      expect(enhancedCommands).toHaveProperty("resume");
-      expect(enhancedCommands).toHaveProperty("social");
-      expect(enhancedCommands).toHaveProperty("shortcuts");
-      expect(enhancedCommands).toHaveProperty("contact");
-      expect(enhancedCommands).toHaveProperty("easterEggs");
     });
   });
 });

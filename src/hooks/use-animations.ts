@@ -442,13 +442,14 @@ export function useTerminalAnimations() {
 
       setIsTyping(true);
 
-      // Dynamic speed scaling based on content length
-      let speed = 18;
-      if (content.length > 300) {
-        speed = 4;
-      } else if (content.length > 100) {
-        speed = 10;
-      }
+      // Cap maximum animation duration to 3000ms (3 seconds) for all commands
+      const MAX_DURATION_MS = 3000;
+      const frameDelay = 16; // ~60fps
+      const totalFrames = MAX_DURATION_MS / frameDelay; // ~187 frames
+      const charsPerFrame = Math.max(
+        1,
+        Math.ceil(content.length / totalFrames),
+      );
 
       return new Promise<void>((resolve) => {
         element.textContent = "";
@@ -456,8 +457,34 @@ export function useTerminalAnimations() {
 
         let i = 0;
         let _timerId: NodeJS.Timeout | null = null;
+        let userScrolledUp = false;
+
+        const handleScroll = () => {
+          if (typeof window === "undefined") return;
+          const threshold = 120;
+          const position = window.innerHeight + window.scrollY;
+          const height = document.documentElement.scrollHeight;
+          if (height - position > threshold) {
+            userScrolledUp = true;
+          } else {
+            userScrolledUp = false;
+          }
+        };
+
+        if (typeof window !== "undefined") {
+          window.addEventListener("scroll", handleScroll, { passive: true });
+        }
+
+        const autoScroll = () => {
+          if (!userScrolledUp && element && typeof element.scrollIntoView === "function") {
+            element.scrollIntoView({ block: "nearest", behavior: "auto" });
+          }
+        };
 
         const cleanup = () => {
+          if (typeof window !== "undefined") {
+            window.removeEventListener("scroll", handleScroll);
+          }
           if (_timerId) clearTimeout(_timerId);
           element.classList.remove("typing-cursor");
           setIsTyping(false);
@@ -467,20 +494,23 @@ export function useTerminalAnimations() {
         const typeNextChar = () => {
           if (skipRef?.current) {
             element.textContent = content;
+            autoScroll();
             cleanup();
             return;
           }
 
           if (i < content.length) {
-            element.textContent = content.slice(0, i + 1);
-            i++;
-            _timerId = setTimeout(typeNextChar, speed);
+            i = Math.min(content.length, i + charsPerFrame);
+            element.textContent = content.slice(0, i);
+            autoScroll();
+            _timerId = setTimeout(typeNextChar, frameDelay);
           } else {
+            autoScroll();
             cleanup();
           }
         };
 
-        _timerId = setTimeout(typeNextChar, speed);
+        _timerId = setTimeout(typeNextChar, frameDelay);
       });
     },
     [isReducedMotion],
