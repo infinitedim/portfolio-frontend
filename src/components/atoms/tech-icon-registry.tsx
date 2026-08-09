@@ -28,6 +28,13 @@ import {
   siMongodb,
   siExpress,
   siFastapi,
+  siTerraform,
+  siFlutter,
+  siPrometheus,
+  siGrafana,
+  siRadixui,
+  siFramer,
+  siPwa,
   type SimpleIcon,
 } from "simple-icons";
 
@@ -82,7 +89,7 @@ export function MonogramFallbackIcon({
   className?: string;
 }): JSX.Element {
   const cleanName = name.trim();
-  const words = cleanName.split(/[\s.\-_]+/);
+  const words = cleanName.split(/[\s.\-_/]+/);
   const initials =
     words.length >= 2
       ? words.slice(0, 2).map((word) => word.charAt(0).toUpperCase()).join("")
@@ -327,7 +334,62 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
     hoverAnimation: "group-hover:scale-105 transition-transform duration-200 ease-out",
     category: "framework",
   },
-  // Niche Rust Ecosystem Fallbacks (Axum, Tokio, SQLx, Ammonia) mapped to Rust Icon with emerald code accent
+  terraform: {
+    label: "Terraform",
+    Icon: (props) => renderSimpleIcon(siTerraform, props),
+    color: `#${siTerraform.hex}`, // #844FBA
+    hoverAnimation: "group-hover:-translate-y-0.5 group-hover:scale-105 transition-all duration-200 ease-out",
+    category: "infra",
+  },
+  flutter: {
+    label: "Flutter",
+    Icon: (props) => renderSimpleIcon(siFlutter, props),
+    color: `#${siFlutter.hex}`, // #02569B
+    hoverAnimation: "group-hover:scale-110 transition-transform duration-200 ease-out",
+    category: "framework",
+  },
+  prometheus: {
+    label: "Prometheus",
+    Icon: (props) => renderSimpleIcon(siPrometheus, props),
+    color: `#${siPrometheus.hex}`, // #E6522C
+    hoverAnimation: "group-hover:drop-shadow-[0_0_8px_#e6522c] group-hover:scale-105 transition-all duration-300",
+    category: "infra",
+  },
+  grafana: {
+    label: "Grafana",
+    Icon: (props) => renderSimpleIcon(siGrafana, props),
+    color: `#${siGrafana.hex}`, // #F46800
+    hoverAnimation: "group-hover:drop-shadow-[0_0_8px_#f46800] group-hover:scale-105 transition-all duration-300",
+    category: "infra",
+  },
+  radixui: {
+    label: "Radix UI",
+    Icon: (props) => renderSimpleIcon(siRadixui, props),
+    color: "#ffffff",
+    hoverAnimation: "group-hover:scale-110 transition-transform duration-200 ease-out",
+    category: "framework",
+  },
+  framer: {
+    label: "Framer Motion",
+    Icon: (props) => renderSimpleIcon(siFramer, props),
+    color: `#${siFramer.hex}`, // #0055FF
+    hoverAnimation: "group-hover:rotate-12 group-hover:scale-110 transition-transform duration-200 ease-out",
+    category: "framework",
+  },
+  pwa: {
+    label: "PWA",
+    Icon: (props) => renderSimpleIcon(siPwa, props),
+    color: `#${siPwa.hex}`, // #5A0FC8
+    hoverAnimation: "group-hover:-translate-y-0.5 group-hover:scale-105 transition-all duration-200 ease-out",
+    category: "tool",
+  },
+  githubactions: {
+    label: "GitHub Actions",
+    Icon: (props) => renderSimpleIcon(siGithub, props),
+    color: "#ffffff",
+    hoverAnimation: "group-hover:scale-110 transition-transform duration-200 ease-out",
+    category: "tool",
+  },
   axum: {
     label: "Axum",
     Icon: (props) => renderSimpleIcon(siRust, props),
@@ -352,21 +414,31 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
 };
 
 // ============================================================================
-// KEY NORMALIZATION & LOOKUP FUNCTION
+// KEY NORMALIZATION & LOOKUP FUNCTION (Handles Compound & Alias Names)
 // ============================================================================
 
 export function normalizeTechKey(name: string): string {
-  return name
+  const cleaned = name
     .toLowerCase()
     .trim()
-    .replace(/[\s.\-_/]+/g, "")
+    .replace(/[\s.\-_/&]+/g, "");
+
+  // Compound / Alias Matching
+  if (cleaned.includes("rust") || cleaned.includes("axum")) return "rust";
+  if (cleaned.includes("cloudrun") || cleaned.includes("gcp") || cleaned.includes("googlecloud")) return "gcp";
+  if (cleaned.includes("githubaction")) return "githubactions";
+  if (cleaned.includes("prometheus")) return "prometheus";
+  if (cleaned.includes("grafana")) return "grafana";
+  if (cleaned.includes("radix")) return "radixui";
+  if (cleaned.includes("framer")) return "framer";
+  if (cleaned === "pwa" || cleaned.includes("progressiveweb")) return "pwa";
+
+  return cleaned
     .replace(/js$/, "js")
     .replace(/^postgres$/, "postgresql")
     .replace(/^tailwind$/, "tailwindcss")
     .replace(/^ts$/, "typescript")
-    .replace(/^js$/, "javascript")
-    .replace(/^googlecloud$/, "gcp")
-    .replace(/^googlecloudplatform$/, "gcp");
+    .replace(/^js$/, "javascript");
 }
 
 export function getTechConfig(name: string): TechIconMeta {
@@ -406,6 +478,14 @@ export const POPULAR_TECH_PRESETS: string[] = [
   "Python",
   "Go",
   "GCP",
+  "Terraform",
+  "Flutter",
+  "Prometheus",
+  "Grafana",
+  "GitHub Actions",
+  "Radix UI",
+  "Framer Motion",
+  "PWA",
   "AWS",
   "Git",
   "GitHub",
