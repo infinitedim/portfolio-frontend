@@ -130,60 +130,76 @@ async function AboutContent(): Promise<JSX.Element> {
             <span className="text-green-400">$</span> work --history
           </h2>
 
-          <div className="relative border-l-2 border-neutral-800 pl-6 space-y-10">
-            {experience.map((exp, i) => (
-              <div
-                key={`${exp.company}-${i}`}
-                className="relative"
-              >
-                {/* Timeline dot */}
-                <div className="absolute -left-7.75 top-1 h-4 w-4 rounded-full border-2 border-green-400 bg-neutral-950" />
-
-                <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5">
-                  <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-mono text-lg font-semibold text-white">
-                        {exp.position}
-                      </h3>
-                      {exp.type && (
-                        <span className="rounded border border-green-400/30 bg-green-400/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-green-400">
-                          {exp.type.replace("_", " ")}
-                        </span>
-                      )}
-                    </div>
-                    <span className="font-mono text-xs text-neutral-400">
-                      {exp.duration}
-                    </span>
+          <div className="relative border-l-2 border-neutral-800/80 pl-6 space-y-10">
+            {experience.map((exp, i) => {
+              const isCurrent = exp.duration.toLowerCase().includes("present");
+              return (
+                <div
+                  key={`${exp.company}-${i}`}
+                  className="group relative"
+                >
+                  {/* Cyberpunk Timeline Step Node centered on the vertical line */}
+                  <div className="absolute left-[-33px] top-6 flex h-4 w-4 items-center justify-center">
+                    {isCurrent ? (
+                      <>
+                        {/* Live Signal Pulse Ring for Current Job */}
+                        <span className="absolute inline-flex h-4 w-4 animate-ping rounded-full bg-emerald-400/60 opacity-75" />
+                        <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] transition-transform duration-300 group-hover:scale-125" />
+                      </>
+                    ) : (
+                      <div className="flex h-4 w-4 items-center justify-center rounded-full border border-emerald-500/40 bg-neutral-950 transition-all duration-300 group-hover:scale-125 group-hover:border-emerald-400 group-hover:shadow-[0_0_8px_#34d399]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/60 transition-all duration-300 group-hover:bg-emerald-400 group-hover:scale-125" />
+                      </div>
+                    )}
                   </div>
-                  <p className="mt-1 font-mono text-sm text-green-400">
-                    @ {exp.company}
-                  </p>
-                  <ul className="mt-3 space-y-1.5">
-                    {exp.description.map((item, j) => (
-                      <li
-                        key={j}
-                        className="flex items-start gap-2 font-mono text-sm text-neutral-400"
-                      >
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-green-400/60" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  {exp.technologies.length > 0 && (
-                    <ul
-                      aria-label="Technologies used"
-                      className="mt-3 flex flex-wrap gap-1.5"
-                    >
-                      {exp.technologies.map((tech) => (
-                        <li key={tech}>
-                          <TechBadge name={tech} size="sm" />
+
+                  {/* Experience Card */}
+                  <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-mono text-lg font-semibold text-white">
+                          {exp.position}
+                        </h3>
+                        {exp.type && (
+                          <span className="rounded border border-green-400/30 bg-green-400/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-green-400">
+                            {exp.type.replace("_", " ")}
+                          </span>
+                        )}
+                      </div>
+                      <span className="font-mono text-xs text-neutral-400">
+                        {exp.duration}
+                      </span>
+                    </div>
+                    <p className="mt-1 font-mono text-sm text-green-400 font-semibold">
+                      @ {exp.company}
+                    </p>
+                    <ul className="mt-3 space-y-1.5">
+                      {exp.description.map((item, j) => (
+                        <li
+                          key={j}
+                          className="flex items-start gap-2 font-mono text-sm text-neutral-400"
+                        >
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-400/60" />
+                          {item}
                         </li>
                       ))}
                     </ul>
-                  )}
+                    {exp.technologies.length > 0 && (
+                      <ul
+                        aria-label="Technologies used"
+                        className="mt-3 flex flex-wrap gap-1.5"
+                      >
+                        {exp.technologies.map((tech) => (
+                          <li key={tech}>
+                            <TechBadge name={tech} size="sm" />
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

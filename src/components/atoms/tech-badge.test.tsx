@@ -12,6 +12,10 @@ describe("TechIconRegistry", () => {
     expect(normalizeTechKey("PostgreSQL")).toBe("postgresql");
     expect(normalizeTechKey("TypeScript")).toBe("typescript");
     expect(normalizeTechKey("Docker")).toBe("docker");
+    expect(normalizeTechKey("Tokio")).toBe("tokio");
+    expect(normalizeTechKey("Loki")).toBe("loki");
+    expect(normalizeTechKey("Kubernetes")).toBe("kubernetes");
+    expect(normalizeTechKey("K8s")).toBe("kubernetes");
   });
 
   it("retrieves known technology config", () => {
