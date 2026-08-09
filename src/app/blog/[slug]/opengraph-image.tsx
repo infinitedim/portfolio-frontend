@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getCachedBlogPost } from "@/lib/services/cached-blog-fetch";
 
-export const runtime = "edge";
 export const alt = "Blog Post Preview Banner";
 export const size = {
   width: 1200,

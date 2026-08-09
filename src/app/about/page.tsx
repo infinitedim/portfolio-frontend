@@ -10,6 +10,7 @@ import {
 import { getSiteUrl } from "@/lib/api/get-site-url";
 import { Mail } from "lucide-react";
 import { AboutResumeButton } from "@/components/molecules/about/about-resume-button";
+import { TechBadge } from "@/components/atoms/tech-badge";
 
 export const metadata: Metadata = {
   title: "About",
@@ -174,11 +175,8 @@ async function AboutContent(): Promise<JSX.Element> {
                       className="mt-3 flex flex-wrap gap-1.5"
                     >
                       {exp.technologies.map((tech) => (
-                        <li
-                          key={tech}
-                          className="rounded border border-green-400/20 bg-green-400/5 px-2 py-0.5 font-mono text-xs text-green-400"
-                        >
-                          {tech}
+                        <li key={tech}>
+                          <TechBadge name={tech} size="sm" />
                         </li>
                       ))}
                     </ul>
@@ -214,11 +212,8 @@ async function AboutContent(): Promise<JSX.Element> {
                   className="flex flex-wrap gap-2"
                 >
                   {group.items.map((skill) => (
-                    <li
-                      key={skill}
-                      className="rounded bg-neutral-800 px-2.5 py-1 font-mono text-xs text-neutral-300"
-                    >
-                      {skill}
+                    <li key={skill}>
+                      <TechBadge name={skill} size="sm" variant="outline" />
                     </li>
                   ))}
                 </ul>

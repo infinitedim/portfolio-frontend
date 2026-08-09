@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, useEffect, useCallback, type JSX } from "react";
+import { useState, useEffect, useCallback, type JSX, type KeyboardEvent } from "react";
 import type { ThemeConfig } from "@/types/theme";
 import { authService } from "@/lib/auth/auth-service";
-import { TagChip } from "@/components/atoms/shared/tag-chip";
+import { TechBadge } from "@/components/atoms/tech-badge";
+import {
+  POPULAR_TECH_PRESETS,
+  getTechConfig,
+} from "@/components/atoms/tech-icon-registry";
 import { getApiUrl } from "@/lib/api/get-api-url";
 import { type Project } from "@/lib/data/data-fetching";
-import { Plus, Save, Trash, X, Edit } from "lucide-react";
+import { Plus, Save, Trash, X, Edit, Check } from "lucide-react";
 import { toast } from "sonner";
 import { ProjectImageUpload } from "@/components/molecules/admin/project-image-upload";
 import {
@@ -20,6 +24,10 @@ import {
 interface ProjectsEditorProps {
   themeConfig: ThemeConfig;
 }
+
+const MAX_TAG_LENGTH = 30;
+const MAX_TAGS_PER_PROJECT = 15;
+const TAG_VALIDATION_REGEX = /^[a-zA-Z0-9\s.\-_#+/()]+$/;
 
 export function ProjectsEditor({
   themeConfig,
@@ -40,16 +48,24 @@ export function ProjectsEditor({
   const [featured, setFeatured] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
+  // Compute filtered AutoComplete suggestions
+  const suggestions = tagInput.trim()
+    ? POPULAR_TECH_PRESETS.filter(
+        (tech) =>
+          tech.toLowerCase().includes(tagInput.toLowerCase().trim()) &&
+          !tags.some((t) => t.toLowerCase() === tech.toLowerCase()),
+      )
+    : [];
 
   const loadProjects = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${getApiUrl()}/api/portfolio?section=projects`,
-      );
+      const response = await fetch(`${getApiUrl()}/api/portfolio?section=projects`);
       if (response.ok) {
         const data = await response.json();
-        setProjects(data.data ?? []);
+        setProjects(Array.isArray(data) ? data : []);
       } else {
         toast.error("Failed to load projects");
       }
@@ -62,51 +78,16 @@ export function ProjectsEditor({
   }, []);
 
   useEffect(() => {
-    void loadProjects();
+    loadProjects();
   }, [loadProjects]);
 
-  const generateSlug = (titleText: string, excludeId?: string): string => {
-    const baseSlug = titleText
+  const generateSlug = (text: string): string => {
+    return text
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-
-    let currentSlug = baseSlug;
-    let counter = 2;
-
-    // Check for collisions
-    while (projects.some((p) => p.id === currentSlug && p.id !== excludeId)) {
-      currentSlug = `${baseSlug}-${counter}`;
-      counter++;
-    }
-
-    return currentSlug;
-  };
-
-  const addTag = () => {
-    const trimmed = tagInput.trim();
-    if (
-      trimmed &&
-      !tags.some((t) => t.toLowerCase() === trimmed.toLowerCase())
-    ) {
-      setTags((prev) => [...prev, trimmed]);
-      setTagInput("");
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
-  };
-
-  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addTag();
-    } else if (e.key === "Backspace" && tagInput === "" && tags.length > 0) {
-      setTags((prev) => prev.slice(0, -1));
-    }
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
   };
 
   const handleEdit = (project: Project) => {
@@ -121,11 +102,12 @@ export function ProjectsEditor({
     setFeatured(project.featured);
     setTags([...project.technologies]);
     setTagInput("");
+    setSelectedSuggestionIndex(-1);
   };
 
   const handleCreateNew = () => {
     const newProject: Project = {
-      id: "", // Will be generated on save
+      id: "",
       name: "",
       slug: "",
       description: "",
@@ -144,20 +126,77 @@ export function ProjectsEditor({
     setFeatured(false);
     setTags([]);
     setTagInput("");
+    setSelectedSuggestionIndex(-1);
   };
 
   const handleCancel = () => {
     setEditingProject(null);
     setIsNewProject(false);
+    setSelectedSuggestionIndex(-1);
   };
 
-  const isValidUrl = (url: string) => {
-    if (!url.trim()) return true;
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
+  const addTagValue = (valueToAdd: string) => {
+    const trimmed = valueToAdd.trim();
+    if (!trimmed) return;
+
+    if (trimmed.length > MAX_TAG_LENGTH) {
+      toast.error(`Tag exceeds maximum length of ${MAX_TAG_LENGTH} characters`);
+      return;
+    }
+
+    if (tags.length >= MAX_TAGS_PER_PROJECT) {
+      toast.error(`Maximum of ${MAX_TAGS_PER_PROJECT} tags allowed per project`);
+      return;
+    }
+
+    if (!TAG_VALIDATION_REGEX.test(trimmed)) {
+      toast.error("Tag contains invalid characters");
+      return;
+    }
+
+    if (!tags.some((t) => t.toLowerCase() === trimmed.toLowerCase())) {
+      setTags([...tags, trimmed]);
+      setTagInput("");
+      setSelectedSuggestionIndex(-1);
+    } else {
+      toast.error("Tag already exists");
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter((t) => t !== tagToRemove));
+  };
+
+  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (suggestions.length > 0) {
+        setSelectedSuggestionIndex((prev) =>
+          prev < suggestions.length - 1 ? prev + 1 : 0,
+        );
+      }
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (suggestions.length > 0) {
+        setSelectedSuggestionIndex((prev) =>
+          prev > 0 ? prev - 1 : suggestions.length - 1,
+        );
+      }
+    } else if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      if (
+        selectedSuggestionIndex >= 0 &&
+        selectedSuggestionIndex < suggestions.length
+      ) {
+        const selectedTech = suggestions[selectedSuggestionIndex];
+        if (selectedTech) addTagValue(selectedTech);
+      } else {
+        addTagValue(tagInput);
+      }
+    } else if (e.key === "Escape") {
+      setSelectedSuggestionIndex(-1);
+    } else if (e.key === "Backspace" && !tagInput && tags.length > 0) {
+      removeTag(tags[tags.length - 1]!);
     }
   };
 
@@ -168,14 +207,6 @@ export function ProjectsEditor({
     }
     if (!description.trim()) {
       toast.error("Project description is required");
-      return;
-    }
-    if (demoUrl && !isValidUrl(demoUrl)) {
-      toast.error("Demo URL must be a valid URL");
-      return;
-    }
-    if (githubUrl && !isValidUrl(githubUrl)) {
-      toast.error("GitHub URL must be a valid URL");
       return;
     }
 
@@ -309,6 +340,7 @@ export function ProjectsEditor({
           <span className="text-sm opacity-70">./manage-projects.sh</span>
         </div>
         <button
+          type="button"
           onClick={handleCreateNew}
           disabled={!!editingProject}
           className="px-3 py-1 text-xs border rounded transition-colors disabled:opacity-50"
@@ -318,288 +350,349 @@ export function ProjectsEditor({
           }}
         >
           <span className="flex items-center gap-1">
-            <Plus size={12} /> Add Project
+            <Plus className="h-3.5 w-3.5" />
+            Add Project
           </span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* List View */}
+      {/* Edit Form Modal/Panel */}
+      {editingProject && (
         <div
-          className={`space-y-4 ${editingProject ? "lg:col-span-1" : "lg:col-span-3"}`}
+          className="p-4 border rounded space-y-4"
+          style={{
+            borderColor: themeConfig.colors.accent,
+            backgroundColor: `${themeConfig.colors.bg}ee`,
+          }}
         >
-          {projects.length === 0 && !editingProject ? (
-            <p className="opacity-70 text-sm">
-              No projects found. Add one to get started.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {projects.map((project) => (
-                <div
-                  key={project.id}
-                  className="flex items-center justify-between p-3 border rounded transition-colors"
-                  style={{
-                    borderColor:
-                      editingProject?.id === project.id
-                        ? themeConfig.colors.accent
-                        : themeConfig.colors.border,
-                    backgroundColor:
-                      editingProject?.id === project.id
-                        ? `${themeConfig.colors.accent}10`
-                        : "transparent",
-                  }}
-                >
-                  <div className="flex-1 min-w-0 pr-4">
-                    <div className="font-medium truncate">{project.name}</div>
-                    <div className="flex items-center space-x-2 mt-1 text-xs opacity-70">
-                      <span className="capitalize">{project.status}</span>
-                      <span>•</span>
-                      <span>{project.technologies.length} tags</span>
-                      {project.featured && (
-                        <>
-                          <span>•</span>
-                          <span style={{ color: themeConfig.colors.accent }}>
-                            Featured
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2 shrink-0">
-                    <button
-                      onClick={() => handleEdit(project)}
-                      className="p-1 hover:opacity-100 opacity-70 transition-opacity"
-                      aria-label="Edit project"
-                    >
-                      <Edit size={16} />
-                    </button>
-                    <button
-                      onClick={() => void handleDelete(project.id)}
-                      className="p-1 hover:opacity-100 opacity-70 transition-opacity"
-                      style={{ color: themeConfig.colors.error }}
-                      aria-label="Delete project"
-                    >
-                      <Trash size={16} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Editor Form */}
-        {editingProject && (
-          <div
-            className="lg:col-span-2 p-4 border rounded bg-opacity-50"
-            style={{
-              borderColor: themeConfig.colors.border,
-              backgroundColor: themeConfig.colors.bg,
-            }}
-          >
-            <div
-              className="flex items-center justify-between mb-4 border-b pb-2"
-              style={{ borderColor: themeConfig.colors.border }}
+          <div className="flex items-center justify-between border-b pb-2">
+            <h3
+              className="text-base font-semibold font-mono"
+              style={{ color: themeConfig.colors.accent }}
             >
-              <h3 className="font-semibold text-lg">
-                {isNewProject ? "Add Project" : "Edit Project"}
-              </h3>
-              <button
-                onClick={handleCancel}
-                className="p-1 opacity-70 hover:opacity-100"
-              >
-                <X size={20} />
-              </button>
+              {isNewProject ? "Create New Project" : `Editing: ${editingProject.name}`}
+            </h3>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="text-neutral-400 hover:text-white"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            {/* Name */}
+            <div className="space-y-1">
+              <label htmlFor="project-name" className="block opacity-80">
+                Project Name *
+              </label>
+              <input
+                id="project-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-transparent border rounded p-2 focus:outline-none"
+                style={{ borderColor: themeConfig.colors.border }}
+                placeholder="e.g. Portfolio System"
+              />
             </div>
 
-            <div className="space-y-4 text-sm">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1 md:col-span-2">
-                  <label
-                    htmlFor="project-name"
-                    className="block opacity-80"
+            {/* Status & Featured */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <span className="block opacity-80">Status</span>
+                <Select
+                  value={status}
+                  onValueChange={(val: Project["status"]) => setStatus(val)}
+                >
+                  <SelectTrigger
+                    className="w-full border rounded text-xs bg-transparent"
+                    style={{ borderColor: themeConfig.colors.border }}
                   >
-                    Name *
-                  </label>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-neutral-900 border-neutral-800 text-xs">
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="in-progress">In Progress</SelectItem>
+                    <SelectItem value="planned">Planned</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1 flex flex-col justify-end pb-2">
+                <label className="flex items-center space-x-2 cursor-pointer">
                   <input
-                    id="project-name"
+                    type="checkbox"
+                    checked={featured}
+                    onChange={(e) => setFeatured(e.target.checked)}
+                    className="rounded"
+                    style={{ accentColor: themeConfig.colors.accent }}
+                  />
+                  <span className="opacity-80">Featured Project</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-1 md:col-span-2">
+              <label htmlFor="project-description" className="block opacity-80">
+                Description *
+              </label>
+              <textarea
+                id="project-description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className="w-full bg-transparent border rounded p-2 focus:outline-none resize-y text-xs"
+                style={{ borderColor: themeConfig.colors.border }}
+                placeholder="Brief description of the project..."
+              />
+            </div>
+
+            {/* Tech Stack Input Section */}
+            <div className="space-y-2 md:col-span-2 relative">
+              <div className="flex items-center justify-between">
+                <label htmlFor="project-tech" className="block opacity-80">
+                  Technologies ({tags.length}/{MAX_TAGS_PER_PROJECT})
+                </label>
+                <span className="text-[10px] text-neutral-500">
+                  Press Enter or comma to add
+                </span>
+              </div>
+
+              {/* Tag Chips Container */}
+              <div
+                className="flex flex-wrap gap-2 p-2.5 border rounded min-h-12 bg-black/40"
+                style={{ borderColor: themeConfig.colors.border }}
+              >
+                {tags.map((tag) => (
+                  <TechBadge
+                    key={tag}
+                    name={tag}
+                    size="md"
+                    removable
+                    onRemove={() => removeTag(tag)}
+                  />
+                ))}
+                <div className="relative flex-1 min-w-36">
+                  <input
+                    id="project-tech"
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-transparent border rounded p-2 focus:outline-none"
-                    style={{ borderColor: themeConfig.colors.border }}
-                    placeholder="Project Name"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label
-                    htmlFor="project-status"
-                    className="block opacity-80"
-                  >
-                    Status
-                  </label>
-                  <Select
-                    value={status}
-                    onValueChange={(val) => setStatus(val as Project["status"])}
-                  >
-                    <SelectTrigger
-                      className="w-full h-[38px] bg-transparent border rounded px-3 py-2 text-sm focus:outline-none"
-                      style={{
-                        borderColor: themeConfig.colors.border,
-                        color: themeConfig.colors.text,
-                      }}
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="completed">Completed</SelectItem>
-                      <SelectItem value="in-progress">In Progress</SelectItem>
-                      <SelectItem value="planned">Planned</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-1 flex items-center pt-6">
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={featured}
-                      onChange={(e) => setFeatured(e.target.checked)}
-                      className="form-checkbox h-4 w-4 rounded"
-                      style={{ accentColor: themeConfig.colors.accent }}
-                    />
-                    <span className="opacity-80">Featured Project</span>
-                  </label>
-                </div>
-
-                <div className="space-y-1 md:col-span-2">
-                  <label
-                    htmlFor="project-description"
-                    className="block opacity-80"
-                  >
-                    Description *
-                  </label>
-                  <textarea
-                    id="project-description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={4}
-                    className="w-full bg-transparent border rounded p-2 focus:outline-none resize-y"
-                    style={{ borderColor: themeConfig.colors.border }}
-                    placeholder="Brief description of the project..."
-                  />
-                </div>
-
-                <div className="space-y-1 md:col-span-2">
-                  <label
-                    htmlFor="project-tech"
-                    className="block opacity-80"
-                  >
-                    Technologies
-                  </label>
-                  <div
-                    className="flex flex-wrap gap-2 p-2 border rounded min-h-10.5"
-                    style={{ borderColor: themeConfig.colors.border }}
-                  >
-                    {tags.map((tag) => (
-                      <TagChip
-                        key={tag}
-                        name={tag}
-                        removable
-                        onRemove={() => removeTag(tag)}
-                        active
-                      />
-                    ))}
-                    <input
-                      id="project-tech"
-                      type="text"
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      onKeyDown={handleTagKeyDown}
-                      onBlur={addTag}
-                      className="flex-1 bg-transparent focus:outline-none min-w-30 text-sm"
-                      placeholder={
-                        tags.length === 0 ? "Add tech (press Enter)..." : ""
+                    value={tagInput}
+                    onChange={(e) => {
+                      setTagInput(e.target.value);
+                      setSelectedSuggestionIndex(-1);
+                    }}
+                    onKeyDown={handleTagKeyDown}
+                    onBlur={() => {
+                      if (tagInput.trim() && suggestions.length === 0) {
+                        addTagValue(tagInput);
                       }
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label
-                    htmlFor="project-demo"
-                    className="block opacity-80"
-                  >
-                    Demo URL
-                  </label>
-                  <input
-                    id="project-demo"
-                    type="url"
-                    value={demoUrl}
-                    onChange={(e) => setDemoUrl(e.target.value)}
-                    className="w-full bg-transparent border rounded p-2 focus:outline-none"
-                    style={{ borderColor: themeConfig.colors.border }}
-                    placeholder="https://..."
+                    }}
+                    className="w-full bg-transparent focus:outline-none text-xs text-white"
+                    placeholder={
+                      tags.length === 0 ? "Type tech (e.g. React, Rust)..." : "Add tech..."
+                    }
                   />
-                </div>
 
-                <div className="space-y-1">
-                  <label
-                    htmlFor="project-github"
-                    className="block opacity-80"
-                  >
-                    GitHub URL
-                  </label>
-                  <input
-                    id="project-github"
-                    type="url"
-                    value={githubUrl}
-                    onChange={(e) => setGithubUrl(e.target.value)}
-                    className="w-full bg-transparent border rounded p-2 focus:outline-none"
-                    style={{ borderColor: themeConfig.colors.border }}
-                    placeholder="https://github.com/..."
-                  />
-                </div>
-
-                <div className="space-y-1 md:col-span-2">
-                  <span className="block opacity-80 mb-1 text-xs font-medium">
-                    Project Image
-                  </span>
-                  <ProjectImageUpload
-                    imageUrl={imageUrl || undefined}
-                    onUploadComplete={(url) => setImageUrl(url || "")}
-                    themeConfig={themeConfig}
-                  />
+                  {/* AutoComplete Suggestions Dropdown */}
+                  {suggestions.length > 0 && (
+                    <div className="absolute left-0 top-full z-50 mt-1 max-h-48 w-60 overflow-y-auto rounded-md border border-neutral-800 bg-neutral-900/95 py-1 shadow-xl backdrop-blur-md">
+                      {suggestions.map((tech, idx) => {
+                        const isSelected = idx === selectedSuggestionIndex;
+                        const config = getTechConfig(tech);
+                        const { Icon, color } = config;
+                        return (
+                          <button
+                            key={tech}
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              addTagValue(tech);
+                            }}
+                            className={`flex w-full items-center gap-2 px-3 py-1.5 text-xs text-left transition-colors ${
+                              isSelected
+                                ? "bg-emerald-500/20 text-emerald-300 font-semibold"
+                                : "text-neutral-300 hover:bg-neutral-800 hover:text-white"
+                            }`}
+                          >
+                            <Icon className="h-3.5 w-3.5" style={{ color }} />
+                            <span>{tech}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="pt-4 flex justify-end space-x-2">
-                <button
-                  onClick={handleCancel}
-                  className="px-4 py-2 text-xs border rounded transition-colors"
-                  style={{
-                    borderColor: themeConfig.colors.border,
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => void handleSave()}
-                  disabled={isSaving}
-                  className="px-4 py-2 text-xs border rounded transition-colors flex items-center space-x-2"
-                  style={{
-                    borderColor: themeConfig.colors.accent,
-                    backgroundColor: `${themeConfig.colors.accent}10`,
-                    color: themeConfig.colors.accent,
-                  }}
-                >
-                  <Save size={14} />
-                  <span>{isSaving ? "Saving..." : "Save Project"}</span>
-                </button>
+              {/* Quick Pick Chips Bar */}
+              <div className="space-y-1 pt-1">
+                <span className="text-[11px] text-neutral-400">Quick Pick Presets:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {POPULAR_TECH_PRESETS.slice(0, 12).map((tech) => {
+                    const isSelected = tags.some(
+                      (t) => t.toLowerCase() === tech.toLowerCase(),
+                    );
+                    return (
+                      <button
+                        key={tech}
+                        type="button"
+                        onClick={() => {
+                          if (isSelected) {
+                            removeTag(tags.find((t) => t.toLowerCase() === tech.toLowerCase()) || tech);
+                          } else {
+                            addTagValue(tech);
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1 rounded border px-2 py-0.5 text-[11px] transition-all ${
+                          isSelected
+                            ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
+                            : "border-neutral-800 bg-neutral-900/40 text-neutral-400 hover:border-neutral-600 hover:text-neutral-200"
+                        }`}
+                      >
+                        {isSelected && <Check className="h-3 w-3" />}
+                        <span>{tech}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
+            </div>
+
+            {/* URLs */}
+            <div className="space-y-1">
+              <label htmlFor="project-demo" className="block opacity-80">
+                Demo URL
+              </label>
+              <input
+                id="project-demo"
+                type="url"
+                value={demoUrl}
+                onChange={(e) => setDemoUrl(e.target.value)}
+                className="w-full bg-transparent border rounded p-2 focus:outline-none"
+                style={{ borderColor: themeConfig.colors.border }}
+                placeholder="https://..."
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="project-github" className="block opacity-80">
+                GitHub URL
+              </label>
+              <input
+                id="project-github"
+                type="url"
+                value={githubUrl}
+                onChange={(e) => setGithubUrl(e.target.value)}
+                className="w-full bg-transparent border rounded p-2 focus:outline-none"
+                style={{ borderColor: themeConfig.colors.border }}
+                placeholder="https://github.com/..."
+              />
+            </div>
+
+            {/* Image Upload */}
+            <div className="space-y-1 md:col-span-2">
+              <ProjectImageUpload
+                imageUrl={imageUrl}
+                onUploadComplete={(url) => setImageUrl(url || "")}
+                themeConfig={themeConfig}
+              />
             </div>
           </div>
+
+          {/* Form Actions */}
+          <div className="flex items-center justify-end space-x-2 pt-2 border-t border-neutral-800">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="px-3 py-1.5 text-xs border border-neutral-700 rounded text-neutral-300 hover:bg-neutral-800"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={isSaving}
+              className="px-4 py-1.5 text-xs font-semibold rounded flex items-center gap-1.5 transition-colors disabled:opacity-50"
+              style={{
+                backgroundColor: themeConfig.colors.accent,
+                color: "#000",
+              }}
+            >
+              <Save className="h-3.5 w-3.5" />
+              {isSaving ? "Saving..." : "Save Project"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Projects List */}
+      <div className="space-y-3">
+        {projects.length === 0 ? (
+          <div className="p-8 text-center text-xs opacity-60 font-mono border border-dashed rounded border-neutral-800">
+            No projects found. Click "Add Project" to create one.
+          </div>
+        ) : (
+          projects.map((proj) => (
+            <div
+              key={proj.id}
+              className="p-4 border rounded flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-mono text-xs transition-colors hover:border-neutral-700"
+              style={{
+                borderColor: themeConfig.colors.border,
+                backgroundColor: themeConfig.colors.bg,
+              }}
+            >
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-sm text-white">{proj.name}</span>
+                  {proj.featured && (
+                    <span className="px-1.5 py-0.5 text-[10px] rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      Featured
+                    </span>
+                  )}
+                  <span
+                    className={`px-1.5 py-0.5 text-[10px] rounded ${
+                      proj.status === "completed"
+                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                        : "bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                    }`}
+                  >
+                    {proj.status}
+                  </span>
+                </div>
+                <p className="text-neutral-400 text-xs line-clamp-1">{proj.description}</p>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {proj.technologies.map((t) => (
+                    <TechBadge key={t} name={t} size="sm" variant="minimal" />
+                  ))}
+                  {proj.technologies.length === 0 && (
+                    <span className="text-neutral-600 italic">No tags</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleEdit(proj)}
+                  className="px-3 py-1.5 border border-neutral-700 rounded text-neutral-300 hover:border-neutral-500 hover:text-white flex items-center gap-1"
+                >
+                  <Edit className="h-3.5 w-3.5" />
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(proj.id)}
+                  className="px-3 py-1.5 border border-red-900/50 bg-red-950/20 rounded text-red-400 hover:bg-red-900/30 flex items-center gap-1"
+                >
+                  <Trash className="h-3.5 w-3.5" />
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
         )}
       </div>
     </div>

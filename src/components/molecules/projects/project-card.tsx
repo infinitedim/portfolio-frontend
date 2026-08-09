@@ -7,6 +7,7 @@ import { Star, Folder } from "lucide-react";
 import { HoverCard } from "@/components/atoms/shared/motion-wrappers";
 
 import { useI18n } from "@/hooks/use-i18n";
+import { TechBadge } from "@/components/atoms/tech-badge";
 
 interface ProjectCardProps {
   project: Project;
@@ -129,16 +130,12 @@ export const ProjectCard = memo(function ProjectCard({
               className="flex flex-wrap gap-2"
             >
               {project.technologies.slice(0, 4).map((tech) => (
-                <li
-                  key={tech}
-                  className="rounded border border-terminal-accent/20 bg-terminal-accent/10 px-2 py-1 font-mono text-xs text-terminal-accent"
-                  itemProp="programmingLanguage"
-                >
-                  {tech}
+                <li key={tech} itemProp="programmingLanguage">
+                  <TechBadge name={tech} size="sm" />
                 </li>
               ))}
               {project.technologies.length > 4 && (
-                <li className="rounded border border-terminal-border px-2 py-1 text-xs text-terminal-muted">
+                <li className="rounded border border-terminal-border px-2 py-1 font-mono text-xs text-terminal-muted">
                   +{project.technologies.length - 4} {t("projectMore")}
                 </li>
               )}

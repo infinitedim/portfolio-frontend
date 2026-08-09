@@ -10,6 +10,7 @@ import { getSiteUrl } from "@/lib/api/get-site-url";
 import { ArrowLeft, ExternalLink, Code, Star } from "lucide-react";
 
 import { getBlurDataUrl } from "@/lib/utils/image-utils";
+import { TechBadge } from "@/components/atoms/tech-badge";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -38,25 +39,20 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 
 export async function generateMetadata({
   params,
-  searchParams,
-}: PageProps): Promise<Metadata> {
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   if (slug === BUILD_PLACEHOLDER_SLUG) {
     return { title: "Project Case Study" };
   }
-  const { locale: localeParam } = (await searchParams) || {};
-  const locale = localeParam?.trim() || "en";
   const project = await findProject(slug);
 
   if (!project) {
     return { title: "Project Not Found" };
   }
 
-  const canonicalPath =
-    locale === "en" ? `/projects/${slug}` : `/projects/${slug}?locale=${locale}`;
-
-  const activeOgLocale = locale === "id" ? "id_ID" : "en_US";
-  const alternateOgLocales = locale === "id" ? ["en_US"] : ["id_ID"];
+  const canonicalPath = `/projects/${slug}`;
 
   return {
     title: project.name,
@@ -74,8 +70,8 @@ export async function generateMetadata({
       description: project.description,
       type: "article",
       url: canonicalPath,
-      locale: activeOgLocale,
-      alternateLocale: alternateOgLocales,
+      locale: "en_US",
+      alternateLocale: ["id_ID"],
       ...(project.imageUrl && {
         images: [
           {
@@ -260,12 +256,7 @@ async function ProjectDetailContent({
           </h2>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
-              <span
-                key={tech}
-                className="rounded border border-green-400/20 bg-green-400/10 px-3 py-1.5 font-mono text-sm text-green-400"
-              >
-                {tech}
-              </span>
+              <TechBadge key={tech} name={tech} size="md" />
             ))}
           </div>
         </div>
@@ -291,14 +282,9 @@ async function ProjectDetailContent({
                   <p className="mt-1 text-xs text-neutral-500 line-clamp-2">
                     {rp.description}
                   </p>
-                  <div className="mt-2 flex flex-wrap gap-1">
+                  <div className="mt-2 flex flex-wrap gap-1.5">
                     {rp.technologies.slice(0, 3).map((t) => (
-                      <span
-                        key={t}
-                        className="rounded bg-neutral-800 px-1.5 py-0.5 text-[10px] text-neutral-400"
-                      >
-                        {t}
-                      </span>
+                      <TechBadge key={t} name={t} size="sm" variant="minimal" />
                     ))}
                   </div>
                 </Link>

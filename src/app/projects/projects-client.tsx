@@ -5,6 +5,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { Project } from "@/lib/data/data-fetching";
 import { ProjectCard } from "@/components/molecules/projects/project-card";
 import { PageHeader } from "@/components/atoms/shared/page-header";
+import { TechBadge } from "@/components/atoms/tech-badge";
 
 interface ProjectsClientProps {
   allProjects: Project[];
@@ -39,12 +40,7 @@ export function ProjectsClient({
               {Array.from(new Set(allProjects.flatMap((p) => p.technologies)))
                 .slice(0, 8)
                 .map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-3 py-1 font-mono text-xs bg-green-400/10 text-green-400 rounded-full border border-green-400/20"
-                  >
-                    {tech}
-                  </span>
+                  <TechBadge key={tech} name={tech} size="sm" />
                 ))}
             </div>
           </PageHeader>

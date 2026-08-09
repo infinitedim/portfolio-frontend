@@ -27,6 +27,7 @@ export function VisitorPresenceBadge() {
 
     let ws: WebSocket | null = null;
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+    let pingInterval: ReturnType<typeof setInterval> | null = null;
     let closed = false;
     let hasInteracted = false;
 
@@ -40,6 +41,12 @@ export function VisitorPresenceBadge() {
 
       ws.onopen = () => {
         ws?.send(JSON.stringify({ type: "join", room: "site" }));
+        if (pingInterval) clearInterval(pingInterval);
+        pingInterval = setInterval(() => {
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "ping" }));
+          }
+        }, 15000);
       };
 
       ws.onmessage = (event) => {
@@ -64,6 +71,7 @@ export function VisitorPresenceBadge() {
       };
 
       ws.onclose = () => {
+        if (pingInterval) clearInterval(pingInterval);
         if (!closed) {
           reconnectTimer = setTimeout(connect, 5000);
         }
@@ -87,6 +95,7 @@ export function VisitorPresenceBadge() {
     const handleUnload = () => {
       closed = true;
       if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (pingInterval) clearInterval(pingInterval);
       if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
         ws.close();
       }
@@ -98,6 +107,7 @@ export function VisitorPresenceBadge() {
     return () => {
       closed = true;
       if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (pingInterval) clearInterval(pingInterval);
       window.removeEventListener("beforeunload", handleUnload);
       window.removeEventListener("pagehide", handleUnload);
       if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {

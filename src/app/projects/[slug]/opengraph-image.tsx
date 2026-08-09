@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getProjectsData } from "@/lib/data/data-fetching";
 
-export const runtime = "edge";
 export const alt = "Project Detail Preview Banner";
 export const size = {
   width: 1200,

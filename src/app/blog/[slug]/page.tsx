@@ -58,12 +58,11 @@ async function getBlogPost(
 
 export async function generateMetadata({
   params,
-  searchParams,
-}: BlogPostPageProps): Promise<Metadata> {
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
-  const { locale: localeParam } = await searchParams;
-  const locale = localeParam?.trim() || DEFAULT_BLOG_LOCALE;
-  const post = await getBlogPost(slug, locale);
+  const post = await getBlogPost(slug, DEFAULT_BLOG_LOCALE);
 
   if (!post) {
     return {
@@ -72,13 +71,7 @@ export async function generateMetadata({
     };
   }
 
-  const canonicalPath =
-    locale === DEFAULT_BLOG_LOCALE
-      ? `/blog/${post.slug}`
-      : `/blog/${post.slug}?locale=${locale}`;
-
-  const activeOgLocale = locale === "id" ? "id_ID" : "en_US";
-  const alternateOgLocales = locale === "id" ? ["en_US"] : ["id_ID"];
+  const canonicalPath = `/blog/${post.slug}`;
 
   const publishedLocales = await getPublishedLocalesForSlug(post.slug);
   const languageAlternates: Record<string, string> = {
@@ -107,8 +100,8 @@ export async function generateMetadata({
       type: "article",
       publishedTime: post.createdAt,
       modifiedTime: post.updatedAt,
-      locale: activeOgLocale,
-      alternateLocale: alternateOgLocales,
+      locale: "en_US",
+      alternateLocale: ["id_ID"],
     },
     twitter: {
       card: "summary_large_image",
