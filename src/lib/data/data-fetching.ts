@@ -29,6 +29,15 @@ export interface Skill {
   projects: string[];
 }
 
+export interface ProjectMetrics {
+  latencyP95?: string;
+  testCoverage?: string;
+  lighthouseScore?: number;
+  architectureType?: string;
+  uptimeSla?: string;
+  bundleSize?: string;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -40,6 +49,7 @@ export interface Project {
   imageUrl?: string;
   status: "completed" | "in-progress" | "planned";
   featured: boolean;
+  metrics?: ProjectMetrics;
 }
 
 export type ExperienceType = "intern" | "full-time" | "part-time" | "freelance";

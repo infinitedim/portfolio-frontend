@@ -11,6 +11,7 @@ import { ArrowLeft, ExternalLink, Code, Star } from "lucide-react";
 
 import { getBlurDataUrl } from "@/lib/utils/image-utils";
 import { TechBadge } from "@/components/atoms/tech-badge";
+import { ProjectMetricsGrid } from "@/components/organisms/projects/project-metrics-grid";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -247,6 +248,11 @@ async function ProjectDetailContent({
           </div>
         </div>
       </section>
+
+      {/* Engineering Metrics Benchmark Grid */}
+      <div className="mx-auto max-w-6xl px-4">
+        <ProjectMetricsGrid metrics={project.metrics} />
+      </div>
 
       {/* Tech Stack */}
       <section className="px-4 py-8">
