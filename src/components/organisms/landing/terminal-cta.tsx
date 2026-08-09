@@ -19,7 +19,7 @@ export function TerminalCta(): JSX.Element {
         className="mx-auto max-w-6xl"
       >
         <HoverCard
-          scale={1.01}
+          scale={1}
           className="mx-auto max-w-2xl rounded-lg border border-green-400/20 bg-green-400/5 p-8 text-center"
         >
           <div>

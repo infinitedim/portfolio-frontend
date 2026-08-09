@@ -7,6 +7,7 @@ import { AccessibilityProvider } from "../components/organisms/accessibility/acc
 import { ScreenReaderAnnouncer } from "../components/molecules/accessibility/screen-reader-announcer";
 import { ClientOnlyComponents } from "../components/layout/client-only-components";
 import { LenisProvider } from "@/components/layout/lenis-provider";
+import { CursorProvider, CustomCursor } from "@/components/organisms/cursor";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -212,7 +213,12 @@ export default function RootLayout({
         <ClientOnlyComponents />
         <AccessibilityProvider>
           <ScreenReaderAnnouncer message="Terminal Portfolio" />
-          <LenisProvider>{children}</LenisProvider>
+          <LenisProvider>
+            <CursorProvider>
+              {children}
+              <CustomCursor />
+            </CursorProvider>
+          </LenisProvider>
         </AccessibilityProvider>
       </body>
     </html>

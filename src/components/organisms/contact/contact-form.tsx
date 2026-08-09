@@ -1,11 +1,26 @@
 "use client";
 
-import { useState, useEffect, useRef, type SubmitEvent, type JSX } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  type SubmitEvent,
+  type JSX,
+  type KeyboardEvent,
+} from "react";
 import { toast } from "sonner";
 import {
   submitContactMessage,
   type ContactSubmission,
 } from "@/lib/services/contact-service";
+import {
+  isPlausibleName,
+  isPlausibleEmail,
+  isPlausibleSubject,
+  isPlausibleMessage,
+  containsProfanity,
+} from "@/lib/validation/contact-validation";
 import { useI18n } from "@/hooks/use-i18n";
 import type { TranslationKeys } from "@/lib/i18n";
 
@@ -13,6 +28,7 @@ import { PageHeader } from "@/components/atoms/shared/page-header";
 
 const MIN_MESSAGE_LEN = 10;
 const MAX_MESSAGE_LEN = 5000;
+const DRAFT_KEY = "contact_form_draft";
 
 interface FormState {
   name: string;
@@ -30,18 +46,6 @@ const EMPTY: FormState = {
   website: "",
 };
 
-function isPlausibleEmail(email: string): boolean {
-  const trimmed = email.trim();
-  if (trimmed.length < 3 || trimmed.length > 254) return false;
-  const parts = trimmed.split("@");
-  if (parts.length !== 2) return false;
-  const [local, domain] = parts;
-  if (!local || !domain) return false;
-  if (!domain.includes(".")) return false;
-  if (/[\s<>,]/.test(trimmed)) return false;
-  return true;
-}
-
 function validateForm(
   form: FormState,
   t: (key: keyof TranslationKeys) => string,
@@ -50,16 +54,22 @@ function validateForm(
 
   if (!form.name.trim()) {
     errors.name = t("contactValidationNameRequired");
-  } else if (form.name.length > 100) {
-    errors.name = t("contactValidationNameTooLong");
+  } else if (!isPlausibleName(form.name)) {
+    errors.name = containsProfanity(form.name)
+      ? "Please refrain from using inappropriate language"
+      : "Please enter a valid human name";
   }
 
   if (!isPlausibleEmail(form.email)) {
-    errors.email = t("contactValidationEmailInvalid");
+    errors.email = containsProfanity(form.email)
+      ? "Please refrain from using inappropriate language"
+      : t("contactValidationEmailInvalid");
   }
 
-  if (form.subject.length > 200) {
-    errors.subject = t("contactValidationSubjectTooLong");
+  if (form.subject.trim().length > 0 && !isPlausibleSubject(form.subject)) {
+    errors.subject = containsProfanity(form.subject)
+      ? "Please refrain from using inappropriate language"
+      : t("contactValidationSubjectTooLong");
   }
 
   if (form.message.trim().length < MIN_MESSAGE_LEN) {
@@ -67,11 +77,13 @@ function validateForm(
       "{min}",
       String(MIN_MESSAGE_LEN),
     );
-  } else if (form.message.length > MAX_MESSAGE_LEN) {
-    errors.message = t("contactValidationMessageMax").replace(
-      "{max}",
-      String(MAX_MESSAGE_LEN),
-    );
+  } else if (!isPlausibleMessage(form.message)) {
+    errors.message = containsProfanity(form.message)
+      ? "Please refrain from using inappropriate language"
+      : t("contactValidationMessageMax").replace(
+          "{max}",
+          String(MAX_MESSAGE_LEN),
+        );
   }
 
   return errors;
@@ -83,10 +95,47 @@ export function ContactForm(): JSX.Element {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [draftRestored, setDraftRestored] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
+  // Restore LocalStorage draft on initial mount
   useEffect(() => {
     nameInputRef.current?.focus();
+    try {
+      const saved = localStorage.getItem(DRAFT_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as Partial<FormState>;
+        if (parsed.name || parsed.email || parsed.subject || parsed.message) {
+          setForm((prev) => ({ ...prev, ...parsed }));
+          setDraftRestored(true);
+        }
+      }
+    } catch {
+      // Ignore storage errors
+    }
+  }, []);
+
+  // Save draft to LocalStorage when user changes form values
+  useEffect(() => {
+    if (submitted) return;
+    try {
+      if (form.name || form.email || form.subject || form.message) {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(form));
+      }
+    } catch {
+      // Ignore storage errors
+    }
+  }, [form, submitted]);
+
+  const clearDraft = useCallback(() => {
+    setForm(EMPTY);
+    setErrors({});
+    setDraftRestored(false);
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch {
+      // Ignore storage errors
+    }
   }, []);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
@@ -97,6 +146,19 @@ export function ContactForm(): JSX.Element {
         delete next[key];
         return next;
       });
+    }
+  };
+
+  // Keyboard Shortcut: Ctrl+Enter or Cmd+Enter to submit form
+  const handleKeyDown = (
+    e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      const formEl = (e.currentTarget as HTMLElement).closest("form");
+      if (formEl) {
+        formEl.requestSubmit();
+      }
     }
   };
 
@@ -129,6 +191,12 @@ export function ContactForm(): JSX.Element {
       setSubmitted(true);
       setForm(EMPTY);
       setErrors({});
+      setDraftRestored(false);
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch {
+        // Ignore
+      }
       toast.success(t("contactSendSuccess"));
     } else if (result.status === 429) {
       toast.error(t("contactSendFailure"));
@@ -140,6 +208,17 @@ export function ContactForm(): JSX.Element {
   };
 
   const charsRemaining = MAX_MESSAGE_LEN - form.message.length;
+  const progressPercent = Math.min(
+    100,
+    (form.message.length / MAX_MESSAGE_LEN) * 100,
+  );
+
+  // Field validation checkmark statuses
+  const isNameValid = isPlausibleName(form.name);
+  const isEmailValid = isPlausibleEmail(form.email);
+  const isSubjectValid =
+    form.subject.trim().length > 0 && isPlausibleSubject(form.subject);
+  const isMessageValid = isPlausibleMessage(form.message);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -148,14 +227,27 @@ export function ContactForm(): JSX.Element {
         description={t("contactDesc")}
       />
 
+      {draftRestored && !submitted && (
+        <div className="mb-6 max-w-2xl flex items-center justify-between rounded border border-(--terminal-accent,#00ffc8)/40 bg-(--terminal-accent,#00ffc8)/5 px-4 py-2.5 font-mono text-xs text-(--terminal-accent,#00ffc8)">
+          <span>📝 Restored saved draft from local storage</span>
+          <button
+            type="button"
+            onClick={clearDraft}
+            className="underline opacity-80 hover:opacity-100 cursor-pointer"
+          >
+            Clear Draft
+          </button>
+        </div>
+      )}
+
       {submitted ? (
-        <div className="rounded-lg border border-green-500/40 bg-green-500/5 p-6 font-mono text-sm text-green-400">
+        <div className="rounded-lg border border-(--terminal-accent,#00ffc8)/40 bg-(--terminal-accent,#00ffc8)/5 p-6 font-mono text-sm text-(--terminal-accent,#00ffc8)">
           <p className="font-semibold">{t("contactSendSuccess")}</p>
           <p className="mt-2 text-neutral-300">{t("contactSuccessDesc")}</p>
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="mt-4 text-xs text-green-400 underline cursor-pointer"
+            className="mt-4 text-xs text-(--terminal-accent,#00ffc8) underline cursor-pointer"
           >
             {t("contactSendAnother")}
           </button>
@@ -170,6 +262,7 @@ export function ContactForm(): JSX.Element {
             id="contact-name"
             label={t("contactName")}
             required
+            isValid={isNameValid}
             error={errors.name}
           >
             <input
@@ -178,12 +271,11 @@ export function ContactForm(): JSX.Element {
               type="text"
               value={form.name}
               onChange={(e) => update("name", e.target.value)}
+              onKeyDown={handleKeyDown}
               maxLength={100}
               autoComplete="name"
-              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50 ${
-                errors.name
-                  ? "border-red-500/70 focus:border-red-500"
-                  : "border-neutral-700"
+              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-(--terminal-accent,#00ffc8) focus:ring-1 focus:ring-(--terminal-accent,#00ffc8)/40 ${
+                errors.name ? "focus:border-red-500" : "border-neutral-700"
               }`}
               disabled={submitting}
               aria-invalid={errors.name ? "true" : "false"}
@@ -195,6 +287,7 @@ export function ContactForm(): JSX.Element {
             id="contact-email"
             label={t("contactEmail")}
             required
+            isValid={isEmailValid}
             error={errors.email}
           >
             <input
@@ -202,12 +295,11 @@ export function ContactForm(): JSX.Element {
               type="email"
               value={form.email}
               onChange={(e) => update("email", e.target.value)}
+              onKeyDown={handleKeyDown}
               maxLength={254}
               autoComplete="email"
-              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50 ${
-                errors.email
-                  ? "border-red-500/70 focus:border-red-500"
-                  : "border-neutral-700"
+              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-(--terminal-accent,#00ffc8) focus:ring-1 focus:ring-(--terminal-accent,#00ffc8)/40 ${
+                errors.email ? "focus:border-red-500" : "border-neutral-700"
               }`}
               disabled={submitting}
               aria-invalid={errors.email ? "true" : "false"}
@@ -220,6 +312,7 @@ export function ContactForm(): JSX.Element {
           <Field
             id="contact-subject"
             label={t("contactSubject")}
+            isValid={isSubjectValid}
             error={errors.subject}
           >
             <input
@@ -227,11 +320,10 @@ export function ContactForm(): JSX.Element {
               type="text"
               value={form.subject}
               onChange={(e) => update("subject", e.target.value)}
+              onKeyDown={handleKeyDown}
               maxLength={200}
-              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50 ${
-                errors.subject
-                  ? "border-red-500/70 focus:border-red-500"
-                  : "border-neutral-700"
+              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-(--terminal-accent,#00ffc8) focus:ring-1 focus:ring-(--terminal-accent,#00ffc8)/40 ${
+                errors.subject ? "focus:border-red-500" : "border-neutral-700"
               }`}
               disabled={submitting}
               aria-invalid={errors.subject ? "true" : "false"}
@@ -245,18 +337,18 @@ export function ContactForm(): JSX.Element {
             id="contact-message"
             label={t("contactMessage")}
             required
+            isValid={isMessageValid}
             error={errors.message}
           >
             <textarea
               id="contact-message"
               value={form.message}
               onChange={(e) => update("message", e.target.value)}
+              onKeyDown={handleKeyDown}
               maxLength={MAX_MESSAGE_LEN}
               rows={8}
-              className={`w-full resize-y rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none focus:border-green-400/50 ${
-                errors.message
-                  ? "border-red-500/70 focus:border-red-500"
-                  : "border-neutral-700"
+              className={`w-full resize-y rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-(--terminal-accent,#00ffc8) focus:ring-1 focus:ring-(--terminal-accent,#00ffc8)/40 ${
+                errors.message ? "focus:border-red-500" : "border-neutral-700"
               }`}
               disabled={submitting}
               aria-invalid={errors.message ? "true" : "false"}
@@ -264,8 +356,33 @@ export function ContactForm(): JSX.Element {
                 errors.message ? "contact-message-error" : undefined
               }
             />
-            <div className="mt-1 text-right text-xs text-neutral-400">
-              {charsRemaining} {t("contactCharsLeft")}
+
+            {/* Visual Character Progress Bar & Shortcut Hint */}
+            <div className="mt-2 space-y-1.5">
+              <div className="h-1 w-full overflow-hidden rounded bg-neutral-800">
+                <div
+                  className={`h-full transition-all duration-300 ${
+                    form.message.length > 4500
+                      ? "bg-red-500"
+                      : form.message.length > 3500
+                        ? "bg-amber-400"
+                        : "bg-(--terminal-accent,#00ffc8)"
+                  }`}
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-between text-xs text-neutral-400">
+                <span className="opacity-75">
+                  Tip: Press Ctrl + Enter (or ⌘ + Enter) to send
+                </span>
+                <span
+                  className={
+                    charsRemaining < 500 ? "text-amber-400 font-semibold" : ""
+                  }
+                >
+                  {charsRemaining} {t("contactCharsLeft")}
+                </span>
+              </div>
             </div>
           </Field>
 
@@ -289,7 +406,7 @@ export function ContactForm(): JSX.Element {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded border border-green-400/40 bg-green-400/10 py-2.5 text-green-400 transition-colors hover:bg-green-400/20 disabled:opacity-50 cursor-pointer"
+            className="w-full rounded border border-(--terminal-accent,#00ffc8)/40 bg-(--terminal-accent,#00ffc8)/10 py-2.5 text-(--terminal-accent,#00ffc8) font-semibold transition-colors hover:bg-(--terminal-accent,#00ffc8)/20 disabled:opacity-50 cursor-pointer"
           >
             {submitting ? t("contactSending") : t("contactSend")}
           </button>
@@ -303,6 +420,7 @@ interface FieldProps {
   id: string;
   label: string;
   required?: boolean;
+  isValid?: boolean;
   error?: string;
   children: React.ReactNode;
 }
@@ -311,18 +429,26 @@ function Field({
   id,
   label,
   required,
+  isValid,
   error,
   children,
 }: FieldProps): JSX.Element {
   return (
     <div className="block">
-      <label
-        htmlFor={id}
-        className="mb-1.5 block text-xs text-neutral-400"
-      >
-        {label}
-        {required ? " *" : ""}
-      </label>
+      <div className="mb-1.5 flex items-center justify-between text-xs">
+        <label
+          htmlFor={id}
+          className="text-neutral-400"
+        >
+          {label}
+          {required ? " *" : ""}
+        </label>
+        {isValid && (
+          <span className="font-mono text-xs font-medium text-(--terminal-accent,#00ffc8) flex items-center gap-1">
+            ✓ Valid
+          </span>
+        )}
+      </div>
       {children}
       {error && (
         <span

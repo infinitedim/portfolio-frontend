@@ -52,6 +52,8 @@ export const ProjectCard = memo(function ProjectCard({
         itemScope
         itemType="https://schema.org/CreativeWork"
         className="h-full flex flex-col"
+        data-cursor-text="VIEW"
+        suppressHydrationWarning
       >
         {featured && (
           <div className="absolute right-4 top-4 z-10">
