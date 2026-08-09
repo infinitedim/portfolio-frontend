@@ -81,12 +81,12 @@ export function MonogramFallbackIcon({
   name: string;
   className?: string;
 }): JSX.Element {
-  const initials = name
-    .trim()
-    .split(/[\s.\-_]+/)
-    .slice(0, 2)
-    .map((word) => word.charAt(0).toUpperCase())
-    .join("");
+  const cleanName = name.trim();
+  const words = cleanName.split(/[\s.\-_]+/);
+  const initials =
+    words.length >= 2
+      ? words.slice(0, 2).map((word) => word.charAt(0).toUpperCase()).join("")
+      : cleanName.slice(0, 2).toUpperCase();
 
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className={className}>

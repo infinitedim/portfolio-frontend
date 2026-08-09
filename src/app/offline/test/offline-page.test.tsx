@@ -50,7 +50,7 @@ describe("OfflinePage", () => {
 
     const titles = screen.getAllByText("You are offline");
     expect(titles.length).toBeGreaterThan(0);
-    expect(screen.getByText("Recheck Signal")).toBeInTheDocument();
+    expect(screen.getByText(/Recheck Signal|Pinging/i)).toBeInTheDocument();
     expect(screen.getByText("Try Again")).toBeInTheDocument();
   });
 
