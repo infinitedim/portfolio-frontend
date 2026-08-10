@@ -38,6 +38,13 @@ export interface ProjectMetrics {
   bundleSize?: string;
 }
 
+export interface ProjectHighlight {
+  readonly id: string;
+  readonly category: string;
+  readonly title: string;
+  readonly detail?: string;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -50,6 +57,7 @@ export interface Project {
   status: "completed" | "in-progress" | "planned";
   featured: boolean;
   metrics?: ProjectMetrics;
+  highlights?: ProjectHighlight[];
 }
 
 export type ExperienceType = "intern" | "full-time" | "part-time" | "freelance";

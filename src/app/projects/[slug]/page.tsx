@@ -2,16 +2,20 @@ import { type Metadata } from "next";
 import { type JSX, Suspense } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
-import { getProjectsData, type Project } from "@/lib/data/data-fetching";
+import {
+  getProjectsData,
+  type Project,
+  type ProjectHighlight,
+} from "@/lib/data/data-fetching";
 import { BreadcrumbListSchema } from "@/components/molecules/seo/json-ld";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 import { ArrowLeft, ExternalLink, Code, Star } from "lucide-react";
 
-import { getBlurDataUrl } from "@/lib/utils/image-utils";
 import { TechBadge } from "@/components/atoms/tech-badge";
 import { ProjectMetricsGrid } from "@/components/organisms/projects/project-metrics-grid";
+import { ProjectMockupFrame } from "@/components/organisms/projects/project-mockup-frame";
+import { ProjectEngineeringHighlights } from "@/components/organisms/projects/project-engineering-highlights";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -87,6 +91,113 @@ export async function generateMetadata({
   };
 }
 
+// ── Tech stack categorization ──────────────────────────────────────────
+
+const FRONTEND_KEYS = new Set([
+  "react",
+  "next.js",
+  "nextjs",
+  "typescript",
+  "javascript",
+  "tailwind",
+  "tailwindcss",
+  "tailwind css",
+  "html",
+  "css",
+  "vue",
+  "angular",
+  "svelte",
+  "framer motion",
+  "radix",
+  "radix ui",
+]);
+
+const DATA_KEYS = new Set([
+  "postgresql",
+  "postgres",
+  "mysql",
+  "mongodb",
+  "redis",
+  "sqlite",
+  "prisma",
+  "drizzle",
+  "sqlx",
+  "graphql",
+  "supabase",
+  "firebase",
+  "pgvector",
+]);
+
+interface TechCategory {
+  readonly label: string;
+  readonly items: string[];
+}
+
+function categorizeTechnologies(technologies: string[]): TechCategory[] {
+  const frontend: string[] = [];
+  const data: string[] = [];
+  const infra: string[] = [];
+
+  for (const tech of technologies) {
+    const key = tech.toLowerCase().trim();
+    if (FRONTEND_KEYS.has(key)) {
+      frontend.push(tech);
+    } else if (DATA_KEYS.has(key)) {
+      data.push(tech);
+    } else {
+      infra.push(tech);
+    }
+  }
+
+  const categories: TechCategory[] = [];
+  if (frontend.length > 0) categories.push({ label: "Core Stack", items: frontend });
+  if (data.length > 0) categories.push({ label: "Data & Cache", items: data });
+  if (infra.length > 0)
+    categories.push({ label: "Infrastructure & Tooling", items: infra });
+
+  return categories;
+}
+
+// ── Default engineering highlights for portfolio projects ──────────────
+
+function getDefaultHighlights(project: Project): ProjectHighlight[] | undefined {
+  if (project.highlights && project.highlights.length > 0) {
+    return project.highlights;
+  }
+
+  // Only provide default highlights for projects with metrics (case study projects)
+  if (!project.metrics) return undefined;
+
+  return [
+    {
+      id: "arch",
+      category: "Architecture",
+      title: "Full-stack monorepo with Rust/Axum backend and Next.js 16 frontend",
+      detail: "PostgreSQL, Redis rate limiting, WebSocket presence, PPR streaming",
+    },
+    {
+      id: "perf",
+      category: "Performance",
+      title: "All API routes verified P95 < 35ms against documented SLA",
+      detail: "CI smoke tests validate latency on every deploy",
+    },
+    {
+      id: "security",
+      category: "Security",
+      title: "NATAS-style multi-level gate with session-based puzzle progression",
+      detail: "JWT unlock tokens, bcrypt admin auth, TOTP 2FA",
+    },
+    {
+      id: "observability",
+      category: "Observability",
+      title: "Prometheus metrics, structured tracing, and Grafana dashboards",
+      detail: "Custom SLO rules with alert thresholds",
+    },
+  ];
+}
+
+// ── Main content ───────────────────────────────────────────────────────
+
 async function ProjectDetailContent({
   params,
 }: {
@@ -129,6 +240,18 @@ async function ProjectDetailContent({
     },
   };
   const status = statusConfig[project.status] ?? statusConfig.completed;
+  const techCategories = categorizeTechnologies(project.technologies);
+  const highlights = getDefaultHighlights(project);
+
+  // Extract domain from demo URL for mockup frame
+  let domain: string | undefined;
+  if (project.demoUrl) {
+    try {
+      domain = new URL(project.demoUrl).hostname;
+    } catch {
+      // Invalid URL — skip domain display
+    }
+  }
 
   return (
     <>
@@ -163,61 +286,55 @@ async function ProjectDetailContent({
       <div className="mx-auto max-w-6xl px-4 pt-8">
         <Link
           href="/projects"
-          className="inline-flex items-center gap-1.5 font-mono text-sm text-neutral-400 transition-colors hover:text-green-400"
+          className="inline-flex items-center gap-1.5 font-mono text-sm text-neutral-400 transition-colors duration-200 hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 rounded-sm"
         >
-          <ArrowLeft size={14} />
+          <ArrowLeft size={14} aria-hidden="true" />
           All projects
         </Link>
       </div>
 
-      {/* Hero */}
-      <section className="px-4 py-8">
+      {/* ── Asymmetric Split Hero ─────────────────────────────────── */}
+      <article className="px-4 py-8">
         <div className="mx-auto max-w-6xl">
-          <div className="flex flex-col gap-6">
-            {/* Project image */}
-            {project.imageUrl && (
-              <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-neutral-800">
-                <Image
-                  src={project.imageUrl}
-                  alt={`Screenshot of ${project.name}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 896px"
-                  priority
-                  placeholder="blur"
-                  blurDataURL={getBlurDataUrl(896, 504)}
-                />
-              </div>
-            )}
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[7fr_5fr] lg:gap-12">
+            {/* Left column: Narrative */}
+            <div className="flex flex-col">
+              {/* Eyebrow + Title */}
+              <div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                    {project.name}
+                  </h1>
+                  {project.featured && (
+                    <span className="inline-flex items-center gap-1 rounded bg-emerald-400/10 px-2 py-1 text-xs font-medium text-emerald-400">
+                      <Star
+                        size={12}
+                        className="fill-current"
+                        aria-hidden="true"
+                      />
+                      Featured
+                    </span>
+                  )}
+                </div>
 
-            {/* Title & meta */}
-            <div>
-              <div className="flex items-start gap-3">
-                <h1 className="font-mono text-3xl font-bold text-white sm:text-4xl">
-                  {project.name}
-                </h1>
-                {project.featured && (
-                  <span className="mt-1 inline-flex items-center gap-1 rounded bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400">
-                    <Star
-                      size={12}
-                      className="fill-current"
-                    />
-                    Featured
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  <span
+                    className={`inline-flex items-center rounded border px-2.5 py-1 font-mono text-xs ${status.color} ${status.bg}`}
+                  >
+                    {status.label}
                   </span>
-                )}
+                </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-3">
-                <span
-                  className={`inline-flex items-center rounded border px-2.5 py-1 font-mono text-xs ${status.color} ${status.bg}`}
-                >
-                  {status.label}
-                </span>
-              </div>
-
-              <p className="mt-4 text-base leading-relaxed text-neutral-400 sm:text-lg">
+              {/* Description */}
+              <p className="mt-4 max-w-prose text-base leading-relaxed text-neutral-400 sm:text-lg">
                 {project.description}
               </p>
+
+              {/* Compact Stat Strip (inline in hero) */}
+              <div className="mt-6">
+                <ProjectMetricsGrid metrics={project.metrics} />
+              </div>
 
               {/* Action buttons */}
               <div className="mt-6 flex flex-wrap gap-3">
@@ -226,9 +343,9 @@ async function ProjectDetailContent({
                     href={project.demoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded bg-green-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-colors hover:bg-green-300"
+                    className="inline-flex items-center gap-2 rounded bg-emerald-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-emerald-300 hover:shadow-[0_0_20px_rgba(52,211,153,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
                   >
-                    <ExternalLink size={14} />
+                    <ExternalLink size={14} aria-hidden="true" />
                     Live Demo
                   </a>
                 )}
@@ -237,52 +354,81 @@ async function ProjectDetailContent({
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white"
+                    className="inline-flex items-center gap-2 rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-neutral-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
                   >
-                    <Code size={14} />
+                    <Code size={14} aria-hidden="true" />
                     Source Code
                   </a>
                 )}
               </div>
             </div>
+
+            {/* Right column: Mockup Frame */}
+            {project.imageUrl && (
+              <div className="flex items-start lg:pt-2">
+                <ProjectMockupFrame
+                  imageUrl={project.imageUrl}
+                  projectName={project.name}
+                  domain={domain}
+                  className="w-full"
+                />
+              </div>
+            )}
           </div>
         </div>
-      </section>
+      </article>
 
-      {/* Engineering Metrics Benchmark Grid */}
-      <div className="mx-auto max-w-6xl px-4">
-        <ProjectMetricsGrid metrics={project.metrics} />
+      {/* ── Engineering Highlights ─────────────────────────────────── */}
+      <div className="mx-auto max-w-6xl px-4 pb-2">
+        <ProjectEngineeringHighlights highlights={highlights} />
       </div>
 
-      {/* Tech Stack */}
+      {/* ── Categorized Tech Stack ────────────────────────────────── */}
       <section className="px-4 py-8">
         <div className="mx-auto max-w-6xl">
-          <h2 className="mb-4 font-mono text-xl font-bold text-white">
-            <span className="text-green-400">$</span> tech --stack
+          <h2 className="mb-5 font-mono text-xl font-bold text-white">
+            <span className="text-emerald-400">$</span> tech --stack
           </h2>
-          <div className="flex flex-wrap gap-2">
-            {project.technologies.map((tech) => (
-              <TechBadge key={tech} name={tech} size="md" />
-            ))}
-          </div>
+          {techCategories.length > 0 ? (
+            <div className="space-y-5">
+              {techCategories.map((category) => (
+                <div key={category.label}>
+                  <h3 className="mb-2 font-mono text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    {category.label}
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {category.items.map((tech) => (
+                      <TechBadge key={tech} name={tech} size="md" />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {project.technologies.map((tech) => (
+                <TechBadge key={tech} name={tech} size="md" />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Related projects */}
+      {/* ── Related projects ──────────────────────────────────────── */}
       {related.length > 0 && (
-        <section className="px-4 py-8 border-t border-neutral-800">
+        <aside className="px-4 py-8 border-t border-neutral-800">
           <div className="mx-auto max-w-6xl">
             <h2 className="mb-6 font-mono text-xl font-bold text-white">
-              <span className="text-green-400">$</span> ls --related
+              <span className="text-emerald-400">$</span> ls --related
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((rp) => (
                 <Link
                   key={rp.slug}
                   href={`/projects/${rp.slug}`}
-                  className="group rounded-lg border border-neutral-800 bg-neutral-900/50 p-4 transition-colors hover:border-green-400/40"
+                  className="group rounded-lg border border-neutral-800 bg-neutral-900/50 p-4 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-emerald-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
                 >
-                  <h3 className="font-mono text-sm font-semibold text-white group-hover:text-green-400 transition-colors">
+                  <h3 className="font-mono text-sm font-semibold text-white transition-colors duration-200 group-hover:text-emerald-400">
                     {rp.name}
                   </h3>
                   <p className="mt-1 text-xs text-neutral-500 line-clamp-2">
@@ -297,7 +443,7 @@ async function ProjectDetailContent({
               ))}
             </div>
           </div>
-        </section>
+        </aside>
       )}
     </>
   );
@@ -308,10 +454,16 @@ function ProjectDetailFallback(): JSX.Element {
     <div className="px-4 py-16">
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="h-6 w-24 animate-pulse rounded bg-neutral-800" />
-        <div className="aspect-video animate-pulse rounded-lg bg-neutral-800" />
-        <div className="h-8 w-64 animate-pulse rounded bg-neutral-800" />
-        <div className="h-4 w-full animate-pulse rounded bg-neutral-800" />
-        <div className="h-4 w-3/4 animate-pulse rounded bg-neutral-800" />
+        <div className="grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-8">
+          <div className="space-y-4">
+            <div className="h-10 w-80 animate-pulse rounded bg-neutral-800" />
+            <div className="h-5 w-20 animate-pulse rounded bg-neutral-800" />
+            <div className="h-4 w-full animate-pulse rounded bg-neutral-800" />
+            <div className="h-4 w-3/4 animate-pulse rounded bg-neutral-800" />
+            <div className="h-16 w-full animate-pulse rounded-lg bg-neutral-800" />
+          </div>
+          <div className="aspect-video animate-pulse rounded-lg bg-neutral-800" />
+        </div>
       </div>
     </div>
   );

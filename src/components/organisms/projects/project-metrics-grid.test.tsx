@@ -9,17 +9,22 @@ describe("ProjectMetricsGrid Component", () => {
     ensureDocumentBody();
   });
 
-  it("renders section title with terminal $ metrics --benchmark header", () => {
+  it("returns null when metrics prop is undefined", () => {
     if (!canRunTests) return;
-    render(<ProjectMetricsGrid />);
-
-    expect(screen.getByText("$")).toBeInTheDocument();
-    expect(screen.getByText("metrics --benchmark")).toBeInTheDocument();
+    const { container } = render(<ProjectMetricsGrid />);
+    expect(container.firstChild).toBeNull();
   });
 
-  it("renders default SLA metrics when metrics prop is undefined", () => {
+  it("renders metric cells with correct values", () => {
     if (!canRunTests) return;
-    render(<ProjectMetricsGrid />);
+    const metrics = {
+      latencyP95: "< 35ms",
+      testCoverage: "94%",
+      lighthouseScore: 100,
+      architectureType: "Rust / Axum / PPR",
+    };
+
+    render(<ProjectMetricsGrid metrics={metrics} />);
 
     expect(screen.getByText("< 35ms")).toBeInTheDocument();
     expect(screen.getByText("94%")).toBeInTheDocument();
@@ -27,7 +32,34 @@ describe("ProjectMetricsGrid Component", () => {
     expect(screen.getByText("Rust / Axum / PPR")).toBeInTheDocument();
   });
 
-  it("renders custom metric values when metrics prop is provided", () => {
+  it("renders metric labels as uppercase text", () => {
+    if (!canRunTests) return;
+    render(
+      <ProjectMetricsGrid
+        metrics={{ latencyP95: "< 35ms" }}
+      />,
+    );
+
+    expect(screen.getByText("P95 SLA")).toBeInTheDocument();
+    expect(screen.getByText("Coverage")).toBeInTheDocument();
+    expect(screen.getByText("Lighthouse")).toBeInTheDocument();
+    expect(screen.getByText("Stack")).toBeInTheDocument();
+  });
+
+  it("has accessible list role and label", () => {
+    if (!canRunTests) return;
+    render(
+      <ProjectMetricsGrid
+        metrics={{ latencyP95: "< 35ms" }}
+      />,
+    );
+
+    expect(
+      screen.getByRole("list", { name: /key engineering metrics/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders custom metric values when provided", () => {
     if (!canRunTests) return;
     const customMetrics = {
       latencyP95: "< 20ms",
