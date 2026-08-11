@@ -2,7 +2,7 @@
  * Custom Cursor System (E-Commerce Port) - Type Definitions
  */
 
-export type CursorState = "default" | "text" | "hide";
+export type CursorState = "default" | "hover" | "hide";
 
 export type CursorTheme = "standard" | "terminal";
 

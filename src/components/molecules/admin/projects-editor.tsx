@@ -81,13 +81,15 @@ export function ProjectsEditor({
     loadProjects();
   }, [loadProjects]);
 
-  const generateSlug = (text: string): string => {
-    return text
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
-      .replace(/^-+|-+$/g, "");
+  const generateUuid = (): string => {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   };
 
   const handleEdit = (project: Project) => {
@@ -218,12 +220,13 @@ export function ProjectsEditor({
 
     setIsSaving(true);
     try {
-      const projectId = isNewProject ? generateSlug(name) : editingProject!.id;
+      const projectId = isNewProject ? generateUuid() : editingProject!.id;
+      const projectSlug = isNewProject ? projectId : (editingProject!.slug || projectId);
 
       const projectToSave: Project = {
         id: projectId,
         name: name.trim(),
-        slug: generateSlug(name.trim()),
+        slug: projectSlug,
         description: description.trim(),
         demoUrl: demoUrl.trim() || undefined,
         githubUrl: githubUrl.trim() || undefined,

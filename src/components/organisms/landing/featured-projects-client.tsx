@@ -27,13 +27,13 @@ export function FeaturedProjectsClient({
           duration={0.5}
           className="mb-8 flex items-end justify-between gap-4"
         >
-          <h2 className="font-mono text-2xl font-bold text-green-400">
-            {t("landingProjectsTitle")}
+          <h2 className="font-mono text-xl font-bold text-white">
+            <span className="text-emerald-400">$</span> ls --featured
           </h2>
           <Link
             href="/projects"
             prefetch={false}
-            className="font-mono text-xs text-neutral-400 transition-colors hover:text-green-400"
+            className="font-mono text-xs text-neutral-400 transition-colors duration-200 hover:text-emerald-400"
           >
             {t("projectsViewAll")} →
           </Link>

@@ -50,8 +50,7 @@ export function NewsletterSignup() {
       <button
         type="submit"
         disabled={loading}
-        data-cursor-text="SUBSCRIBE"
-        className="rounded border border-green-400/40 px-4 py-2 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/10 disabled:opacity-50"
+        className="rounded border border-emerald-400/40 px-4 py-2 font-mono text-xs text-emerald-400 transition-colors hover:bg-emerald-400/10 disabled:opacity-50"
       >
         {loading ? "…" : "Subscribe"}
       </button>

@@ -77,23 +77,18 @@ export function useCursor(
     if (typeof window === "undefined") return;
 
     const interactiveSelector =
-      '[data-cursor-text], [data-cursor], a, button, [role="button"], input[type="submit"], input[type="button"]';
+      '[data-cursor], a, button, [role="button"], input[type="submit"], input[type="button"]';
 
     const handlePointerOver = (e: PointerEvent) => {
       const target = (e.target as HTMLElement)?.closest<HTMLElement>(interactiveSelector);
       if (!target) return;
 
-      const textAttr = target.getAttribute("data-cursor-text");
       const cursorAttr = target.getAttribute("data-cursor") as CursorState | null;
 
-      if (textAttr) {
-        setCursorState("text", textAttr);
-      } else if (cursorAttr === "hide") {
+      if (cursorAttr === "hide") {
         setCursorState("hide");
-      } else if (cursorAttr === "text") {
-        setCursorState("text", textAttr || "");
       } else {
-        setCursorState("hide");
+        setCursorState("hover");
       }
     };
 

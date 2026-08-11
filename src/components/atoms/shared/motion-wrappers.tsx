@@ -117,9 +117,7 @@ export function HoverCard({
   }
 
   return (
-    <div
-      className={`transition-transform duration-200 ease-out hover:scale-[1.02] hover:-translate-y-1 active:scale-[0.98] ${className}`}
-    >
+    <div className={className}>
       {children}
     </div>
   );

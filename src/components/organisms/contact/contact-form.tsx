@@ -10,6 +10,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { toast } from "sonner";
+import { Mail, ExternalLink, Clock } from "lucide-react";
 import {
   submitContactMessage,
   type ContactSubmission,
@@ -226,10 +227,53 @@ export function ContactForm(): JSX.Element {
         title="contact"
         description={t("contactDesc")}
       />
+      <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-8 lg:gap-12">
+        {/* Left Column */}
+        <div className="space-y-6">
+          <h2 className="mb-5 font-mono text-xl font-bold text-white">
+            <span className="text-emerald-400">$</span> contact --info
+          </h2>
+          <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5 font-mono text-sm text-neutral-400">
+            <div className="mb-6 flex items-center gap-3">
+              <span className="relative flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-400"></span>
+              </span>
+              <span>Currently open for freelance & collaboration</span>
+            </div>
+            
+            <div className="mb-6 flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              <span>&lt; 24 hours average response time</span>
+            </div>
+            
+            <div className="mb-6 space-y-3">
+              <a href="mailto:hello@dimassaputra.com" className="flex items-center gap-2 hover:text-white transition-colors duration-200">
+                <Mail className="h-4 w-4" /> Email
+              </a>
+              <a href="https://github.com/dimassaputra" className="flex items-center gap-2 hover:text-white transition-colors duration-200">
+                <ExternalLink className="h-4 w-4" /> GitHub
+              </a>
+              <a href="https://linkedin.com/in/dimassaputra" className="flex items-center gap-2 hover:text-white transition-colors duration-200">
+                <ExternalLink className="h-4 w-4" /> LinkedIn
+              </a>
+            </div>
+            
+            <p className="leading-relaxed">
+              I'm interested in full-stack projects, open source collaboration, and technical consulting.
+            </p>
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div>
+          <h2 className="mb-5 font-mono text-xl font-bold text-white">
+            <span className="text-emerald-400">$</span> send --message
+          </h2>
 
       {draftRestored && !submitted && (
-        <div className="mb-6 max-w-2xl flex items-center justify-between rounded border border-(--terminal-accent,#00ffc8)/40 bg-(--terminal-accent,#00ffc8)/5 px-4 py-2.5 font-mono text-xs text-(--terminal-accent,#00ffc8)">
-          <span>📝 Restored saved draft from local storage</span>
+        <div className="mb-6 max-w-2xl flex items-center justify-between rounded border border-emerald-400/40 bg-emerald-400/5 px-4 py-2.5 font-mono text-xs text-emerald-400">
+          <span>[draft] Restored saved draft from local storage</span>
           <button
             type="button"
             onClick={clearDraft}
@@ -241,13 +285,13 @@ export function ContactForm(): JSX.Element {
       )}
 
       {submitted ? (
-        <div className="rounded-lg border border-(--terminal-accent,#00ffc8)/40 bg-(--terminal-accent,#00ffc8)/5 p-6 font-mono text-sm text-(--terminal-accent,#00ffc8)">
+        <div className="rounded-lg border border-emerald-400/40 bg-emerald-400/5 p-6 font-mono text-sm text-emerald-400">
           <p className="font-semibold">{t("contactSendSuccess")}</p>
           <p className="mt-2 text-neutral-300">{t("contactSuccessDesc")}</p>
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="mt-4 text-xs text-(--terminal-accent,#00ffc8) underline cursor-pointer"
+            className="mt-4 text-xs text-emerald-400 underline cursor-pointer"
           >
             {t("contactSendAnother")}
           </button>
@@ -274,7 +318,7 @@ export function ContactForm(): JSX.Element {
               onKeyDown={handleKeyDown}
               maxLength={100}
               autoComplete="name"
-              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-(--terminal-accent,#00ffc8) focus:ring-1 focus:ring-(--terminal-accent,#00ffc8)/40 ${
+              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
                 errors.name ? "focus:border-red-500" : "border-neutral-700"
               }`}
               disabled={submitting}
@@ -298,7 +342,7 @@ export function ContactForm(): JSX.Element {
               onKeyDown={handleKeyDown}
               maxLength={254}
               autoComplete="email"
-              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-(--terminal-accent,#00ffc8) focus:ring-1 focus:ring-(--terminal-accent,#00ffc8)/40 ${
+              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
                 errors.email ? "focus:border-red-500" : "border-neutral-700"
               }`}
               disabled={submitting}
@@ -322,7 +366,7 @@ export function ContactForm(): JSX.Element {
               onChange={(e) => update("subject", e.target.value)}
               onKeyDown={handleKeyDown}
               maxLength={200}
-              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-(--terminal-accent,#00ffc8) focus:ring-1 focus:ring-(--terminal-accent,#00ffc8)/40 ${
+              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
                 errors.subject ? "focus:border-red-500" : "border-neutral-700"
               }`}
               disabled={submitting}
@@ -347,7 +391,7 @@ export function ContactForm(): JSX.Element {
               onKeyDown={handleKeyDown}
               maxLength={MAX_MESSAGE_LEN}
               rows={8}
-              className={`w-full resize-y rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-(--terminal-accent,#00ffc8) focus:ring-1 focus:ring-(--terminal-accent,#00ffc8)/40 ${
+              className={`w-full resize-y rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
                 errors.message ? "focus:border-red-500" : "border-neutral-700"
               }`}
               disabled={submitting}
@@ -366,7 +410,7 @@ export function ContactForm(): JSX.Element {
                       ? "bg-red-500"
                       : form.message.length > 3500
                         ? "bg-amber-400"
-                        : "bg-(--terminal-accent,#00ffc8)"
+                        : "bg-emerald-400"
                   }`}
                   style={{ width: `${progressPercent}%` }}
                 />
@@ -406,13 +450,14 @@ export function ContactForm(): JSX.Element {
           <button
             type="submit"
             disabled={submitting}
-            data-cursor-text="SEND"
-            className="w-full rounded border border-(--terminal-accent,#00ffc8)/40 bg-(--terminal-accent,#00ffc8)/10 py-2.5 text-(--terminal-accent,#00ffc8) font-semibold transition-colors hover:bg-(--terminal-accent,#00ffc8)/20 disabled:opacity-50 cursor-pointer"
+            className="w-full rounded border border-emerald-400/40 bg-emerald-400/10 py-2.5 text-emerald-400 font-semibold transition-colors duration-200 hover:bg-emerald-400/20 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
           >
             {submitting ? t("contactSending") : t("contactSend")}
           </button>
         </form>
       )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -445,7 +490,7 @@ function Field({
           {required ? " *" : ""}
         </label>
         {isValid && (
-          <span className="font-mono text-xs font-medium text-(--terminal-accent,#00ffc8) flex items-center gap-1">
+          <span className="font-mono text-xs font-medium text-emerald-400 flex items-center gap-1">
             ✓ Valid
           </span>
         )}

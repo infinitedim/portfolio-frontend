@@ -343,7 +343,6 @@ async function ProjectDetailContent({
                     href={project.demoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    data-cursor-text="DEMO"
                     className="inline-flex items-center gap-2 rounded bg-emerald-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-emerald-300 hover:shadow-[0_0_20px_rgba(52,211,153,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
                   >
                     <ExternalLink size={14} aria-hidden="true" />
@@ -355,7 +354,6 @@ async function ProjectDetailContent({
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    data-cursor-text="CODE"
                     className="inline-flex items-center gap-2 rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-neutral-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
                   >
                     <Code size={14} aria-hidden="true" />

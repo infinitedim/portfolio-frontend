@@ -53,36 +53,13 @@
   opacity: 0 !important;
 }
 
-/* State Hover pada Button / Link (Membesar 2.25rem / 36px dengan Color Inversion) */
+.ecommerce-cursor[data-state="hover"],
 .ecommerce-cursor[data-state="hide"] {
-  --w: 2.25rem;
-  --h: 2.25rem;
+  --w: 3rem;
+  --h: 3rem;
   mix-blend-mode: difference;
   background-color: var(--terminal-accent, #00ffc8);
   opacity: 1 !important;
-}
-
-/* State Hover ke Card (Membesar 5rem / 80px dengan Teks Aksi di Tengah) */
-.ecommerce-cursor[data-state="text"] {
-  --w: 5rem;
-  --h: 5rem;
-  mix-blend-mode: normal;
-  background-color: var(--terminal-accent, #00ffc8);
-  color: var(--terminal-bg, #050b14);
-  opacity: 1;
-}
-
-/* Label Teks di Tengah Lingkaran */
-.ecommerce-cursor-text {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  user-select: none;
-  pointer-events: none;
-  text-align: center;
-  color: var(--terminal-bg, #050b14);
-  font-family: var(--font-mono, monospace);
 }
 
 /* Hide native OS cursor when custom cursor is active on desktop */

@@ -399,7 +399,6 @@ export function CommandInput({
             onFocus={handleInputFocus}
             onClick={handleInputClick}
             onKeyUp={handleInputKeyUp}
-            data-cursor-text="EXECUTE"
             className="w-full bg-transparent border-0 outline-none font-mono text-sm p-0 m-0 resize-none"
             style={{
               color: themeConfig.colors.text,

@@ -7,15 +7,7 @@ import { LatestPosts } from "@/components/organisms/landing/latest-posts";
 import { LandingSectionSkeleton } from "@/components/organisms/landing/landing-section-skeleton";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { getSiteUrl } from "@/lib/api/get-site-url";
-import dynamic from "next/dynamic";
-
-const TerminalCta = dynamic(
-  () =>
-    import("@/components/organisms/landing/terminal-cta").then(
-      (mod) => mod.TerminalCta,
-    ),
-  { ssr: true },
-);
+import { TerminalCta } from "@/components/organisms/landing/terminal-cta";
 
 export const metadata: Metadata = {
   title: "Dimas Saputra | Full-Stack Developer",

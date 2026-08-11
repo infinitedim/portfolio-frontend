@@ -295,14 +295,15 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     };
   }, [title, content, currentPost]);
 
-  const generateSlug = (titleText: string): string => {
-    return titleText
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "")
-      .substring(0, 50);
+  const generateUuidSlug = (): string => {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   };
 
   const saveDraft = async () => {
@@ -311,7 +312,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       return;
     }
 
-    const postSlug = slug.trim() || generateSlug(title);
+    const postSlug = slug.trim() || generateUuidSlug();
     if (!postSlug) {
       setError("Slug is required");
       return;
@@ -578,7 +579,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         return;
       }
 
-      const postSlug = slug.trim() || generateSlug(title);
+      const postSlug = slug.trim() || generateUuidSlug();
       if (!postSlug) {
         setError("Slug is required");
         setIsSaving(false);
@@ -938,8 +939,8 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                 onChange={(e) => {
                   setTitle(e.target.value);
 
-                  if (isNewPost || !slug) {
-                    setSlug(generateSlug(e.target.value));
+                  if (isNewPost && !slug) {
+                    setSlug(generateUuidSlug());
                   }
                 }}
                 className="w-full px-3 py-2 text-sm border rounded bg-transparent font-mono"

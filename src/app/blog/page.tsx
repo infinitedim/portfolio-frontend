@@ -7,6 +7,7 @@ import {
 } from "@/components/molecules/blog/tag-filter";
 import { SeriesFilter } from "@/components/molecules/blog/series-filter";
 import { BlogLocaleSwitcher } from "@/components/molecules/blog/locale-switcher";
+import { BlogEmptyState } from "@/components/molecules/blog/blog-empty-state";
 import { listPublicSeries } from "@/lib/services/series-service";
 import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
@@ -46,13 +47,13 @@ interface BlogPageMetadataProps {
   }>;
 }
 
-export async function generateMetadata({ searchParams }: BlogPageMetadataProps): Promise<Metadata> {
+export async function generateMetadata({
+  searchParams,
+}: BlogPageMetadataProps): Promise<Metadata> {
   const { locale: localeParam } = await searchParams;
   const locale = localeParam?.trim() || DEFAULT_BLOG_LOCALE;
   const canonicalPath =
-    locale === DEFAULT_BLOG_LOCALE
-      ? "/blog"
-      : `/blog?locale=${locale}`;
+    locale === DEFAULT_BLOG_LOCALE ? "/blog" : `/blog?locale=${locale}`;
 
   return {
     title: "Blog | Portfolio",
@@ -201,222 +202,197 @@ async function BlogPageContent({
   };
 
   return (
-    <StandardPageLayout>
-      <div className="min-h-screen bg-terminal-bg text-terminal-text">
-        <div className="mx-auto max-w-6xl px-4 py-8">
-          <PageHeader
-            title="blog"
-            description={t.blogLatestArticles}
-            actions={
-              <a
-                href="/rss.xml"
-                className="text-xs text-terminal-muted hover:text-orange-400 transition-colors border border-terminal-border hover:border-orange-400/50 px-2 py-1 rounded font-mono"
-              >
-                RSS
-              </a>
-            }
+    <div className="mx-auto max-w-6xl px-4 py-8">
+      <PageHeader
+        title="blog"
+        description={t.blogLatestArticles}
+        actions={
+          <a
+            href="/rss.xml"
+            className="text-xs text-neutral-500 hover:text-orange-400 border border-neutral-800 hover:border-orange-400/40 transition-colors duration-200 px-2 py-1 rounded font-mono"
           >
-            <BlogLocaleSwitcher className="mb-4" />
-          </PageHeader>
+            RSS
+          </a>
+        }
+      >
+        <BlogLocaleSwitcher className="mb-4" />
+      </PageHeader>
 
-          <form
-            method="GET"
-            action="/blog"
-            className="flex gap-2 mb-4"
+      <form
+        method="GET"
+        action="/blog"
+        className="flex gap-2 mb-4"
+      >
+        <input
+          type="text"
+          name="search"
+          defaultValue={search ?? ""}
+          placeholder={t.blogSearchPlaceholder}
+          className="flex-1 rounded border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-100 font-mono outline-none transition-colors duration-200"
+        />
+        {tag && (
+          <input
+            type="hidden"
+            name="tag"
+            value={tag}
+          />
+        )}
+        {series && (
+          <input
+            type="hidden"
+            name="series"
+            value={series}
+          />
+        )}
+        {locale !== DEFAULT_BLOG_LOCALE && (
+          <input
+            type="hidden"
+            name="locale"
+            value={locale}
+          />
+        )}
+        <button
+          type="submit"
+          className="px-4 py-2 rounded border border-emerald-400/40 bg-emerald-400/10 text-emerald-400 text-sm font-mono transition-colors duration-200 hover:bg-emerald-400/20 cursor-pointer"
+        >
+          {t.blogSearchButton}
+        </button>
+        {(search || tag || series) && (
+          <Link
+            href={buildUrl({
+              page: 1,
+              search: undefined,
+              tag: undefined,
+              series: undefined,
+            })}
+            className="px-4 py-2 rounded border border-neutral-800 text-neutral-400 text-sm font-mono transition-colors duration-200 hover:border-neutral-600 hover:text-neutral-300"
           >
-            <input
-              type="text"
-              name="search"
-              defaultValue={search ?? ""}
-              placeholder={t.blogSearchPlaceholder}
-              className="flex-1 bg-terminal-bg/50 border border-terminal-border rounded px-3 py-2 text-sm text-terminal-text placeholder-terminal-muted/40 focus:outline-none focus:border-terminal-accent font-mono"
-            />
-            {tag && (
-              <input
-                type="hidden"
-                name="tag"
-                value={tag}
-              />
-            )}
-            {series && (
-              <input
-                type="hidden"
-                name="series"
-                value={series}
-              />
-            )}
-            {locale !== DEFAULT_BLOG_LOCALE && (
-              <input
-                type="hidden"
-                name="locale"
-                value={locale}
-              />
-            )}
-            <button
-              type="submit"
-              className="px-4 py-2 bg-terminal-accent/10 border border-terminal-accent/40 text-terminal-accent rounded text-sm hover:bg-terminal-accent/20 transition-colors font-mono cursor-pointer"
+            {t.blogClearButton}
+          </Link>
+        )}
+      </form>
+
+      <SeriesFilter
+        series={seriesList}
+        activeSeries={series}
+        search={search}
+      />
+
+      {availableTags.length > 0 && (
+        <TagFilter
+          tags={availableTags}
+          activeTag={tag}
+          searchParam={search}
+        />
+      )}
+
+      {posts.length === 0 ? (
+        <BlogEmptyState
+          search={search}
+          tag={tag}
+          series={series}
+          resetUrl={buildUrl({
+            page: 1,
+            search: undefined,
+            tag: undefined,
+            series: undefined,
+          })}
+          t={t}
+        />
+      ) : (
+        <div className="space-y-8">
+          {posts.map((post) => (
+            <article
+              key={post.id}
+              className="group rounded-lg border border-neutral-800 bg-neutral-900/50 p-6 transition-colors duration-200 hover:border-emerald-400/40 border-l-2 border-l-emerald-400/30"
             >
-              {t.blogSearchButton}
-            </button>
-            {(search || tag || series) && (
-              <Link
-                href={buildUrl({
-                  page: 1,
-                  search: undefined,
-                  tag: undefined,
-                  series: undefined,
-                })}
-                className="px-4 py-2 border border-terminal-border text-terminal-muted rounded text-sm hover:border-terminal-muted transition-colors font-mono"
-              >
-                {t.blogClearButton}
+              <Link href={`/blog/${post.slug}`}>
+                <h2 className="text-xl font-bold font-mono text-white transition-colors duration-200 group-hover:text-emerald-400 mb-2">
+                  {post.title}
+                </h2>
               </Link>
-            )}
-          </form>
-
-            <SeriesFilter
-              series={seriesList}
-              activeSeries={series}
-              search={search}
-            />
-
-            {availableTags.length > 0 && (
-              <TagFilter
-                tags={availableTags}
-                activeTag={tag}
-                searchParam={search}
-              />
-            )}
-
-          {posts.length === 0 ? (
-            <div className="text-center py-12 text-terminal-muted font-mono">
-              {search || tag || series ? (
-                <p>
-                  {t.blogNoPostsFound}{" "}
-                  {search && <span>&ldquo;{search}&rdquo;</span>}
-                  {search && (tag || series) && " in "}
-                  {tag && <span className="text-terminal-accent">#{tag}</span>}
-                  {tag && series && " in "}
-                  {series && (
-                    <span className="text-terminal-accent">
-                      series:{series}
+              {post.summary && (
+                <p className="text-neutral-400 mb-3">{post.summary}</p>
+              )}
+              {(post.tags?.length ?? 0) > 0 && (
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {post.tags!.map((t) => (
+                    <Link
+                      key={t}
+                      href={buildUrl({ tag: t, page: 1 })}
+                    >
+                      <TagChip
+                        key={t}
+                        name={t}
+                        size="sm"
+                        active={t === tag}
+                      />
+                    </Link>
+                  ))}
+                </div>
+              )}
+              <div className="flex items-center justify-between font-mono text-xs text-neutral-500">
+                <div className="flex items-center gap-3">
+                  <time dateTime={post.createdAt}>
+                    {new Date(post.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </time>
+                  {post.readingTimeMinutes > 0 && (
+                    <span>
+                      {post.readingTimeMinutes} {t.blogMinRead}
                     </span>
                   )}
-                  .{" "}
-                  <Link
-                    href={buildUrl({
-                      page: 1,
-                      search: undefined,
-                      tag: undefined,
-                      series: undefined,
-                    })}
-                    className="text-terminal-accent hover:underline"
-                  >
-                    {t.blogViewAllPosts}
-                  </Link>
-                </p>
-              ) : (
-                <p>{t.blogNoPostsMessage}</p>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-8">
-              {posts.map((post) => (
-                <article
-                  key={post.id}
-                  data-cursor-text="READ"
-                  className="border border-terminal-border rounded-lg p-6 hover:border-terminal-accent/50 transition-colors"
-                >
-                  <Link href={`/blog/${post.slug}`}>
-                    <h2 className="text-2xl font-semibold text-terminal-accent hover:text-terminal-accent/90 mb-2">
-                      {post.title}
-                    </h2>
-                  </Link>
-                  {post.summary && (
-                    <p className="text-terminal-muted mb-3">{post.summary}</p>
-                  )}
-                  {(post.tags?.length ?? 0) > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {post.tags!.map((t) => (
-                        <Link
-                          key={t}
-                          href={buildUrl({ tag: t, page: 1 })}
-                        >
-                          <TagChip
-                            key={t}
-                            name={t}
-                            size="sm"
-                            active={t === tag}
-                          />
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between text-sm text-terminal-muted">
-                    <div className="flex items-center gap-3">
-                      <time dateTime={post.createdAt}>
-                        {new Date(post.createdAt).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </time>
-                      {post.readingTimeMinutes > 0 && (
-                        <span>
-                          {post.readingTimeMinutes} {t.blogMinRead}
-                        </span>
-                      )}
-                    </div>
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="text-terminal-accent hover:text-terminal-accent/90"
-                    >
-                      {t.blogReadMore}
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-
-          {totalPages > 1 && (
-            <nav className="mt-12 flex justify-center gap-2 font-mono">
-              {page > 1 && (
+                </div>
                 <Link
-                  href={buildUrl({ page: page - 1 })}
-                  className="px-4 py-2 border border-terminal-border rounded hover:border-terminal-accent transition-colors"
+                  href={`/blog/${post.slug}`}
+                  className="font-mono text-xs text-emerald-400 transition-colors duration-200 hover:text-emerald-300"
                 >
-                  ← {t.previous}
+                  {t.blogReadMore}
                 </Link>
-              )}
-              <span className="px-4 py-2 text-terminal-muted">
-                {t.blogPageOf
-                  .replace("{page}", String(page))
-                  .replace("{totalPages}", String(totalPages))}
-              </span>
-              {page < totalPages && (
-                <Link
-                  href={buildUrl({ page: page + 1 })}
-                  className="px-4 py-2 border border-terminal-border rounded hover:border-terminal-accent transition-colors"
-                >
-                  {t.next} →
-                </Link>
-              )}
-            </nav>
-          )}
+              </div>
+            </article>
+          ))}
         </div>
-      </div>
-    </StandardPageLayout>
+      )}
+
+      {totalPages > 1 && (
+        <nav className="mt-12 flex justify-center gap-2 font-mono">
+          {page > 1 && (
+            <Link
+              href={buildUrl({ page: page - 1 })}
+              className="px-4 py-2 rounded border border-neutral-800 font-mono text-sm text-neutral-300 transition-colors duration-200 hover:border-emerald-400/40 hover:text-emerald-400"
+            >
+              ← {t.previous}
+            </Link>
+          )}
+          <span className="px-4 py-2 text-neutral-400">
+            {t.blogPageOf
+              .replace("{page}", String(page))
+              .replace("{totalPages}", String(totalPages))}
+          </span>
+          {page < totalPages && (
+            <Link
+              href={buildUrl({ page: page + 1 })}
+              className="px-4 py-2 rounded border border-neutral-800 font-mono text-sm text-neutral-300 transition-colors duration-200 hover:border-emerald-400/40 hover:text-emerald-400"
+            >
+              {t.next} →
+            </Link>
+          )}
+        </nav>
+      )}
+    </div>
   );
 }
 
 function BlogListSkeleton() {
   const t = getTranslationsForLocale(DEFAULT_BLOG_LOCALE);
   return (
-    <StandardPageLayout>
-      <div className="mx-auto max-w-6xl px-4 py-8">
-        <p className="text-gray-400">{t.blogLoadingBlog}</p>
-      </div>
-    </StandardPageLayout>
+    <div className="mx-auto max-w-6xl px-4 py-8">
+      <p className="text-neutral-400 font-mono">{t.blogLoadingBlog}</p>
+    </div>
   );
 }
 
@@ -430,8 +406,10 @@ export default function BlogPage(props: {
   }>;
 }) {
   return (
-    <Suspense fallback={<BlogListSkeleton />}>
-      <BlogPageContent {...props} />
-    </Suspense>
+    <StandardPageLayout>
+      <Suspense fallback={<BlogListSkeleton />}>
+        <BlogPageContent {...props} />
+      </Suspense>
+    </StandardPageLayout>
   );
 }

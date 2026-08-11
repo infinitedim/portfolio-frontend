@@ -71,6 +71,7 @@ export function OptimizedImage({
         height={!fill ? height : undefined}
         fill={fill}
         priority={isPriority}
+        loading={isPriority ? "eager" : "lazy"}
         sizes={sizes}
         className={cn(
           "duration-700 ease-in-out",

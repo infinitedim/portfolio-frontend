@@ -49,6 +49,7 @@ export function ProjectCardImage({
       alt={alt}
       fill
       priority={featured}
+      loading={featured ? "eager" : "lazy"}
       sizes={DEFAULT_SIZES}
       className={cn(
         "object-cover duration-700 ease-in-out",

@@ -66,8 +66,7 @@ const SKILL_GROUPS = [
 async function AboutContent(): Promise<JSX.Element> {
   const { cookies } = await import("next/headers");
   const cookieStore = await cookies();
-  const locale =
-    cookieStore.get("portfolio_locale")?.value ?? "en_US";
+  const locale = cookieStore.get("portfolio_locale")?.value ?? "en_US";
 
   const [about, experience] = await Promise.all([
     getAboutData(locale),
@@ -104,7 +103,7 @@ async function AboutContent(): Promise<JSX.Element> {
 
       {/* Hero */}
       <section className="relative overflow-hidden px-4 py-12 sm:py-16">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-green-900/20 via-neutral-950 to-neutral-950" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-emerald-950/20 via-neutral-950 to-neutral-950" />
         <div className="relative mx-auto max-w-6xl">
           <PageHeader
             title="about"
@@ -113,7 +112,7 @@ async function AboutContent(): Promise<JSX.Element> {
             <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-neutral-400">
               <a
                 href={`mailto:${about.contact.email}`}
-                className="inline-flex items-center gap-1.5 text-green-400 hover:text-green-300 transition-colors"
+                className="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 transition-colors duration-200"
               >
                 <Mail className="h-3.5 w-3.5" />
                 {about.contact.email}
@@ -127,7 +126,7 @@ async function AboutContent(): Promise<JSX.Element> {
       <section className="px-4 py-12">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-8 font-mono text-2xl font-bold text-white">
-            <span className="text-green-400">$</span> work --history
+            <span className="text-emerald-400">$</span> work --history
           </h2>
 
           <div className="relative border-l-2 border-neutral-800/80 pl-6 space-y-10">
@@ -139,7 +138,7 @@ async function AboutContent(): Promise<JSX.Element> {
                   className="group relative"
                 >
                   {/* Cyberpunk Timeline Step Node centered on the vertical line */}
-                  <div className="absolute left-[-33px] top-6 flex h-4 w-4 items-center justify-center">
+                  <div className="absolute -left-8.25 top-6 flex h-4 w-4 items-center justify-center">
                     {isCurrent ? (
                       <>
                         {/* Live Signal Pulse Ring for Current Job */}
@@ -147,8 +146,8 @@ async function AboutContent(): Promise<JSX.Element> {
                         <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] transition-transform duration-300 group-hover:scale-125" />
                       </>
                     ) : (
-                      <div className="flex h-4 w-4 items-center justify-center rounded-full border border-emerald-500/40 bg-neutral-950 transition-all duration-300 group-hover:scale-125 group-hover:border-emerald-400 group-hover:shadow-[0_0_8px_#34d399]">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/60 transition-all duration-300 group-hover:bg-emerald-400 group-hover:scale-125" />
+                      <div className="flex h-4 w-4 items-center justify-center rounded-full border border-emerald-400/40 bg-neutral-950 transition-all duration-300 group-hover:scale-125 group-hover:border-emerald-400 group-hover:shadow-[0_0_8px_#34d399]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/60 transition-all duration-300 group-hover:bg-emerald-400 group-hover:scale-125" />
                       </div>
                     )}
                   </div>
@@ -161,7 +160,7 @@ async function AboutContent(): Promise<JSX.Element> {
                           {exp.position}
                         </h3>
                         {exp.type && (
-                          <span className="rounded border border-green-400/30 bg-green-400/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-green-400">
+                          <span className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-emerald-400">
                             {exp.type.replace("_", " ")}
                           </span>
                         )}
@@ -170,7 +169,7 @@ async function AboutContent(): Promise<JSX.Element> {
                         {exp.duration}
                       </span>
                     </div>
-                    <p className="mt-1 font-mono text-sm text-green-400 font-semibold">
+                    <p className="mt-1 font-mono text-sm text-emerald-400 font-semibold">
                       @ {exp.company}
                     </p>
                     <ul className="mt-3 space-y-1.5">
@@ -179,7 +178,7 @@ async function AboutContent(): Promise<JSX.Element> {
                           key={j}
                           className="flex items-start gap-2 font-mono text-sm text-neutral-400"
                         >
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-400/60" />
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400/60" />
                           {item}
                         </li>
                       ))}
@@ -191,7 +190,10 @@ async function AboutContent(): Promise<JSX.Element> {
                       >
                         {exp.technologies.map((tech) => (
                           <li key={tech}>
-                            <TechBadge name={tech} size="sm" />
+                            <TechBadge
+                              name={tech}
+                              size="sm"
+                            />
                           </li>
                         ))}
                       </ul>
@@ -211,7 +213,7 @@ async function AboutContent(): Promise<JSX.Element> {
       >
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-8 font-mono text-2xl font-bold text-white">
-            <span className="text-green-400">$</span> skills --list
+            <span className="text-emerald-400">$</span> skills --list
           </h2>
 
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
@@ -220,7 +222,7 @@ async function AboutContent(): Promise<JSX.Element> {
                 key={group.label}
                 className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5"
               >
-                <h3 className="mb-3 font-mono text-sm font-bold text-green-400">
+                <h3 className="mb-3 font-mono text-sm font-bold text-emerald-400">
                   {group.label}
                 </h3>
                 <ul
@@ -229,7 +231,11 @@ async function AboutContent(): Promise<JSX.Element> {
                 >
                   {group.items.map((skill) => (
                     <li key={skill}>
-                      <TechBadge name={skill} size="sm" variant="outline" />
+                      <TechBadge
+                        name={skill}
+                        size="sm"
+                        variant="outline"
+                      />
                     </li>
                   ))}
                 </ul>
@@ -242,6 +248,9 @@ async function AboutContent(): Promise<JSX.Element> {
       {/* CTA */}
       <section className="px-4 py-12">
         <div className="mx-auto max-w-6xl text-center">
+          <h2 className="mb-5 font-mono text-xl font-bold text-white">
+            <span className="text-emerald-400">$</span> next --step
+          </h2>
           <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-8">
             <p className="font-mono text-sm text-neutral-400">
               Interested in working together?
@@ -250,8 +259,7 @@ async function AboutContent(): Promise<JSX.Element> {
               <AboutResumeButton />
               <a
                 href="/contact"
-                data-cursor-text="CONTACT"
-                className="rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white"
+                className="rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors duration-200 hover:border-neutral-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
               >
                 Get in touch
               </a>

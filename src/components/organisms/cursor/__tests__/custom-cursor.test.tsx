@@ -17,16 +17,15 @@ describe("CursorContext", () => {
     <CursorProvider>{children}</CursorProvider>
   );
 
-  it("should initialize with default state and allow setting text state", () => {
+  it("should initialize with default state and allow setting hover state", () => {
     const { result } = renderHook(() => useCursor(), { wrapper });
 
     expect(result.current.cursorState).toBe("default");
 
     act(() => {
-      result.current.setCursorState("text", "VIEW");
+      result.current.setCursorState("hover");
     });
 
-    expect(result.current.cursorState).toBe("text");
-    expect(result.current.cursorText).toBe("VIEW");
+    expect(result.current.cursorState).toBe("hover");
   });
 });

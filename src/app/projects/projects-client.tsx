@@ -6,6 +6,7 @@ import { Project } from "@/lib/data/data-fetching";
 import { ProjectCard } from "@/components/molecules/projects/project-card";
 import { PageHeader } from "@/components/atoms/shared/page-header";
 import { TechBadge } from "@/components/atoms/tech-badge";
+import { Folder, Star, Cpu, CheckCircle2 } from "lucide-react";
 
 interface ProjectsClientProps {
   allProjects: Project[];
@@ -29,7 +30,7 @@ export function ProjectsClient({
   };
 
   return (
-    <div className="min-h-screen bg-terminal-bg text-terminal-text">
+    <div className="w-full text-neutral-100">
       <section className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <PageHeader
@@ -50,8 +51,8 @@ export function ProjectsClient({
       {featuredProjects.length > 0 && (
         <section className="py-12 px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold font-mono mb-8 text-terminal-accent">
-              {t("projectFeatured")} {t("projectsTitle")}
+            <h2 className="mb-6 font-mono text-xl font-bold text-white">
+              <span className="text-emerald-400">$</span> ls --featured
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredProjects.map((project) => (
@@ -68,8 +69,8 @@ export function ProjectsClient({
 
       <section className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold font-mono mb-8 text-terminal-text">
-            {t("projectsAllProjects")}
+          <h2 className="mb-6 font-mono text-xl font-bold text-white">
+            <span className="text-emerald-400">$</span> ls --all
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -84,43 +85,47 @@ export function ProjectsClient({
         </div>
       </section>
 
-      <section className="py-12 px-4 border-t border-terminal-border">
+      <section className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-terminal-accent font-mono">
+          <div className="grid grid-cols-2 sm:grid-cols-4 rounded-lg border border-neutral-800 bg-neutral-900/40 overflow-hidden">
+            <div className="border-b sm:border-b-0 sm:border-r border-neutral-800 p-6 flex flex-col items-center justify-center gap-2 text-center">
+              <div className="flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+                <Folder size={14} />
+                <span>{t("projectsTotalProjects")}</span>
+              </div>
+              <div className="font-mono text-sm font-bold text-emerald-400 tabular-nums">
                 {allProjects.length}
               </div>
-              <div className="text-terminal-muted">
-                {t("projectsTotalProjects")}
-              </div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-terminal-accent font-mono">
+            <div className="border-b sm:border-b-0 sm:border-r border-neutral-800 p-6 flex flex-col items-center justify-center gap-2 text-center">
+              <div className="flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+                <Star size={14} />
+                <span>{t("projectsFeaturedStatus")}</span>
+              </div>
+              <div className="font-mono text-sm font-bold text-emerald-400 tabular-nums">
                 {featuredProjects.length}
               </div>
-              <div className="text-terminal-muted">
-                {t("projectsFeaturedStatus")}
-              </div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-terminal-accent font-mono">
+            <div className="border-b sm:border-b-0 sm:border-r border-neutral-800 p-6 flex flex-col items-center justify-center gap-2 text-center">
+              <div className="flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+                <Cpu size={14} />
+                <span>{t("projectsTechnologiesStatus")}</span>
+              </div>
+              <div className="font-mono text-sm font-bold text-emerald-400 tabular-nums">
                 {
                   Array.from(
                     new Set(allProjects.flatMap((p) => p.technologies)),
                   ).length
                 }
               </div>
-              <div className="text-terminal-muted">
-                {t("projectsTechnologiesStatus")}
-              </div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-terminal-accent font-mono">
-                {allProjects.filter((p) => p.status === "completed").length}
+            <div className="p-6 flex flex-col items-center justify-center gap-2 text-center">
+              <div className="flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+                <CheckCircle2 size={14} />
+                <span>{t("projectsCompletedStatus")}</span>
               </div>
-              <div className="text-terminal-muted">
-                {t("projectsCompletedStatus")}
+              <div className="font-mono text-sm font-bold text-emerald-400 tabular-nums">
+                {allProjects.filter((p) => p.status === "completed").length}
               </div>
             </div>
           </div>

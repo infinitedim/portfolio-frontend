@@ -11,7 +11,7 @@ export function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const deviceInfo = usePointerDevice();
 
-  const { cursorState, cursorText, cursorTheme } = useCursor(cursorRef);
+  const { cursorState, cursorTheme } = useCursor(cursorRef);
 
   useEffect(() => {
     setMounted(true);
@@ -59,11 +59,7 @@ export function CustomCursor() {
       className={`ecommerce-cursor cursor-theme-${cursorTheme}`}
       data-state={cursorState}
       data-moved={hasMoved ? "true" : "false"}
-    >
-      {cursorState === "text" && cursorText && (
-        <span className="ecommerce-cursor-text">{cursorText}</span>
-      )}
-    </div>
+    />
   );
 }
 

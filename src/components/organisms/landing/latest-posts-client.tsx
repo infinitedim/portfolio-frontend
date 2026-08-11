@@ -52,25 +52,25 @@ export function LatestPostsClient({
           duration={0.5}
           className="mb-8 flex items-end justify-between gap-4"
         >
-          <h2 className="font-mono text-2xl font-bold text-green-400">
-            {t("landingBlogTitle")}
+          <h2 className="font-mono text-xl font-bold text-white">
+            <span className="text-emerald-400">$</span> cat --latest-posts
           </h2>
           <Link
             href="/blog"
             prefetch={false}
-            className="font-mono text-xs text-neutral-500 transition-colors hover:text-green-400"
+            className="font-mono text-xs text-neutral-400 transition-colors duration-200 hover:text-emerald-400"
           >
             {t("blogAllPosts")} →
           </Link>
         </FadeIn>
 
         {posts.length === 0 ? (
-          <p className="font-mono text-sm text-terminal-muted">
+          <p className="font-mono text-sm text-neutral-400">
             {t("blogNoPosts")}{" "}
             <Link
               href="/blog"
               prefetch={false}
-              className="text-green-400 hover:underline"
+              className="text-emerald-400 hover:underline"
             >
               {t("blogVisit")}
             </Link>
@@ -90,10 +90,9 @@ export function LatestPostsClient({
                       <Link
                         href={`/blog/${post.slug}`}
                         prefetch={false}
-                        data-cursor-text="READ"
-                        className="group block rounded-lg border border-neutral-800 bg-neutral-900/30 p-4 transition-colors hover:border-green-400/30"
+                        className="group block rounded-lg border border-neutral-800 bg-neutral-900/50 p-5 transition-colors duration-200 hover:border-emerald-400/40 border-l-2 border-l-emerald-400/30"
                       >
-                        <h3 className="font-mono text-base font-semibold text-white group-hover:text-green-400">
+                        <h3 className="font-mono text-base font-bold text-white transition-colors duration-200 group-hover:text-emerald-400">
                           {post.title}
                         </h3>
                         {post.summary && (
@@ -101,7 +100,7 @@ export function LatestPostsClient({
                             {post.summary}
                           </p>
                         )}
-                        <p className="mt-2 font-mono text-xs text-terminal-muted/80">
+                        <p className="mt-2 font-mono text-xs text-neutral-500">
                           {post.readingTimeMinutes} {t("blogMinRead")} ·{" "}
                           {formattedDate(post.createdAt)}
                         </p>

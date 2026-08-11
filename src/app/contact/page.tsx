@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch — send a message and I'll reply via email.",
   alternates: { canonical: "/contact" },
+  openGraph: {
+    title: "Contact | Dimas Saputra",
+    description: "Get in touch — send a message and I'll reply via email.",
+    type: "website",
+    url: "/contact",
+  },
 };
 
 export default function ContactPage(): JSX.Element {
