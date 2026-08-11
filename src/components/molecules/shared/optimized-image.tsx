@@ -54,6 +54,8 @@ export function OptimizedImage({
     );
   }
 
+  const isPriority = priority || preload;
+
   return (
     <div
       className={cn("relative overflow-hidden", containerClassName)}
@@ -68,8 +70,7 @@ export function OptimizedImage({
         width={!fill ? width : undefined}
         height={!fill ? height : undefined}
         fill={fill}
-        priority={priority}
-        preload={preload || priority}
+        priority={isPriority}
         sizes={sizes}
         className={cn(
           "duration-700 ease-in-out",

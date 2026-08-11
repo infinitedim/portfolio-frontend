@@ -37,6 +37,7 @@ export function HeroSection(): JSX.Element {
             <Link
               href="/projects"
               prefetch={false}
+              data-cursor-text="EXPLORE"
               className="rounded border border-green-400/40 bg-green-400/10 px-5 py-2.5 font-mono text-sm text-green-400 transition-colors hover:bg-green-400/20"
             >
               {t("landingCtaProjects")}
@@ -44,6 +45,7 @@ export function HeroSection(): JSX.Element {
             <button
               type="button"
               onClick={() => setIsResumeModalOpen(true)}
+              data-cursor-text="DOWNLOAD"
               className="rounded bg-green-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-colors hover:bg-green-300 cursor-pointer"
             >
               ↓ Resume
@@ -51,6 +53,7 @@ export function HeroSection(): JSX.Element {
             <Link
               href="/contact"
               prefetch={false}
+              data-cursor-text="CONTACT"
               className="rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white"
             >
               {t("landingCtaContact")}

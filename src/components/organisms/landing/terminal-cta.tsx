@@ -34,6 +34,7 @@ export function TerminalCta(): JSX.Element {
             </p>
             <button
               onClick={() => setIsModalOpen(true)}
+              data-cursor-text="LAUNCH"
               className="mt-6 inline-block rounded border border-green-400 bg-green-400/10 px-6 py-2.5 font-mono text-sm text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
             >
               {t("landingCtaTerminalButton")} →

@@ -323,6 +323,7 @@ async function BlogPageContent({
               {posts.map((post) => (
                 <article
                   key={post.id}
+                  data-cursor-text="READ"
                   className="border border-terminal-border rounded-lg p-6 hover:border-terminal-accent/50 transition-colors"
                 >
                   <Link href={`/blog/${post.slug}`}>

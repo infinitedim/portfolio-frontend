@@ -90,6 +90,7 @@ export function LatestPostsClient({
                       <Link
                         href={`/blog/${post.slug}`}
                         prefetch={false}
+                        data-cursor-text="READ"
                         className="group block rounded-lg border border-neutral-800 bg-neutral-900/30 p-4 transition-colors hover:border-green-400/30"
                       >
                         <h3 className="font-mono text-base font-semibold text-white group-hover:text-green-400">

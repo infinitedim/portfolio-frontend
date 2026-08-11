@@ -21,7 +21,7 @@ describe("ProjectMetricsGrid Component", () => {
       latencyP95: "< 35ms",
       testCoverage: "94%",
       lighthouseScore: 100,
-      architectureType: "Rust / Axum / PPR",
+      uptimeSla: "99.9%",
     };
 
     render(<ProjectMetricsGrid metrics={metrics} />);
@@ -29,7 +29,7 @@ describe("ProjectMetricsGrid Component", () => {
     expect(screen.getByText("< 35ms")).toBeInTheDocument();
     expect(screen.getByText("94%")).toBeInTheDocument();
     expect(screen.getByText("100/100")).toBeInTheDocument();
-    expect(screen.getByText("Rust / Axum / PPR")).toBeInTheDocument();
+    expect(screen.getByText("99.9%")).toBeInTheDocument();
   });
 
   it("renders metric labels as uppercase text", () => {
@@ -43,7 +43,7 @@ describe("ProjectMetricsGrid Component", () => {
     expect(screen.getByText("P95 SLA")).toBeInTheDocument();
     expect(screen.getByText("Coverage")).toBeInTheDocument();
     expect(screen.getByText("Lighthouse")).toBeInTheDocument();
-    expect(screen.getByText("Stack")).toBeInTheDocument();
+    expect(screen.getByText("Uptime")).toBeInTheDocument();
   });
 
   it("has accessible list role and label", () => {
@@ -65,7 +65,7 @@ describe("ProjectMetricsGrid Component", () => {
       latencyP95: "< 20ms",
       testCoverage: "98%",
       lighthouseScore: 99,
-      architectureType: "Next.js / FastAPI",
+      uptimeSla: "99.99%",
     };
 
     render(<ProjectMetricsGrid metrics={customMetrics} />);
@@ -73,6 +73,6 @@ describe("ProjectMetricsGrid Component", () => {
     expect(screen.getByText("< 20ms")).toBeInTheDocument();
     expect(screen.getByText("98%")).toBeInTheDocument();
     expect(screen.getByText("99/100")).toBeInTheDocument();
-    expect(screen.getByText("Next.js / FastAPI")).toBeInTheDocument();
+    expect(screen.getByText("99.99%")).toBeInTheDocument();
   });
 });

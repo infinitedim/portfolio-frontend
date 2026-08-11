@@ -406,6 +406,7 @@ export function ContactForm(): JSX.Element {
           <button
             type="submit"
             disabled={submitting}
+            data-cursor-text="SEND"
             className="w-full rounded border border-(--terminal-accent,#00ffc8)/40 bg-(--terminal-accent,#00ffc8)/10 py-2.5 text-(--terminal-accent,#00ffc8) font-semibold transition-colors hover:bg-(--terminal-accent,#00ffc8)/20 disabled:opacity-50 cursor-pointer"
           >
             {submitting ? t("contactSending") : t("contactSend")}

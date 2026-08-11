@@ -150,6 +150,7 @@ export const ProjectCard = memo(function ProjectCard({
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-cursor-text="DEMO"
                 className="flex-1 rounded bg-terminal-accent px-4 py-2 text-center text-sm font-medium text-terminal-bg transition-colors hover:bg-terminal-accent/90"
                 aria-label={`View live demo of ${project.name}`}
               >
@@ -161,6 +162,7 @@ export const ProjectCard = memo(function ProjectCard({
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-cursor-text="CODE"
                 className="flex-1 rounded border border-terminal-border px-4 py-2 text-center text-sm font-medium text-terminal-text transition-colors hover:border-terminal-accent hover:text-terminal-accent"
                 aria-label={`View source code of ${project.name}`}
               >

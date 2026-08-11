@@ -250,6 +250,7 @@ async function AboutContent(): Promise<JSX.Element> {
               <AboutResumeButton />
               <a
                 href="/contact"
+                data-cursor-text="CONTACT"
                 className="rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white"
               >
                 Get in touch

@@ -1,5 +1,5 @@
 import { type JSX } from "react";
-import { Zap, ShieldCheck, Gauge, Layers } from "lucide-react";
+import { Zap, ShieldCheck, Gauge, Activity } from "lucide-react";
 import { type ProjectMetrics } from "@/lib/data/data-fetching";
 
 interface MetricCell {
@@ -23,7 +23,7 @@ export function ProjectMetricsGrid({
   const latency = metrics.latencyP95 ?? "< 35ms";
   const coverage = metrics.testCoverage ?? "94%";
   const lighthouse = metrics.lighthouseScore ?? 100;
-  const architecture = metrics.architectureType ?? "Rust / Axum / PPR";
+  const uptime = metrics.uptimeSla ?? "99.9%";
 
   const cells: readonly MetricCell[] = [
     { id: "latency", label: "P95 SLA", value: latency, icon: Zap },
@@ -35,10 +35,10 @@ export function ProjectMetricsGrid({
       icon: Gauge,
     },
     {
-      id: "architecture",
-      label: "Stack",
-      value: architecture,
-      icon: Layers,
+      id: "uptime",
+      label: "Uptime",
+      value: uptime,
+      icon: Activity,
     },
   ];
 
