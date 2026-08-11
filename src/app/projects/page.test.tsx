@@ -181,7 +181,7 @@ describe("ProjectsPage", () => {
       }
 
       const { getByText } = await renderProjectsPage();
-      expect(getByText(/Featured Projects/i)).toBeInTheDocument();
+      expect(getByText(/ls --featured/i)).toBeInTheDocument();
     });
 
     it("should render all projects section", async () => {
@@ -191,7 +191,7 @@ describe("ProjectsPage", () => {
       }
 
       const { getByText } = await renderProjectsPage();
-      expect(getByText(/All Projects/i)).toBeInTheDocument();
+      expect(getByText(/ls --all/i)).toBeInTheDocument();
     });
 
     it("should render project statistics", async () => {
