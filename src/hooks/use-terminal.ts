@@ -10,6 +10,7 @@ import {
   clearCommand,
   themeCommand,
   fontCommand,
+  gitCommand,
 } from "@/lib/commands/command-registry";
 import { languageCommand } from "@/lib/commands/language-commands";
 import { useCommandHistory } from "./use-command-history";
@@ -221,6 +222,7 @@ export function useTerminal(
       if (roadmapCommand) parser.register(roadmapCommand);
 
       parser.register(languageCommand);
+      parser.register(gitCommand);
 
       const tech = techCmds.status === "fulfilled" ? techCmds.value : null;
       if (tech?.techStackCommand) parser.register(tech.techStackCommand);

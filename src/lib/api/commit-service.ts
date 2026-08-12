@@ -1,0 +1,155 @@
+import { getApiUrl } from "@/lib/api/get-api-url";
+
+export interface GitHubCommitSummary {
+  sha: string;
+  shortSha: string;
+  message: string;
+  authorName: string;
+  authorEmail: string;
+  authorDate: string;
+  authorAvatar?: string;
+  authorLogin?: string;
+  authorUrl?: string;
+  htmlUrl: string;
+}
+
+export interface GitHubCommitStats {
+  additions: number;
+  deletions: number;
+  total: number;
+}
+
+export interface GitHubCommitFile {
+  filename: string;
+  status: string;
+  additions: number;
+  deletions: number;
+  changes: number;
+  patch?: string;
+}
+
+export interface GitHubCommitDetail {
+  sha: string;
+  shortSha: string;
+  message: string;
+  authorName: string;
+  authorEmail: string;
+  authorDate: string;
+  authorAvatar?: string;
+  authorLogin?: string;
+  authorUrl?: string;
+  htmlUrl: string;
+  stats?: GitHubCommitStats;
+  files?: GitHubCommitFile[];
+}
+
+export interface GitHubBranchResponse {
+  name: string;
+  commitSha: string;
+  protected: boolean;
+}
+
+export interface ParsedRepoUrl {
+  owner: string;
+  repo: string;
+}
+
+/**
+ * Extracts owner and repo name from a GitHub URL or string.
+ * Examples:
+ * - "https://github.com/infinitedim/portfolio-frontend" -> { owner: "infinitedim", repo: "portfolio-frontend" }
+ * - "github.com/infinitedim/medmind" -> { owner: "infinitedim", repo: "medmind" }
+ * - "infinitedim/portfolio-backend" -> { owner: "infinitedim", repo: "portfolio-backend" }
+ */
+export function parseGitHubUrl(urlInput: string): ParsedRepoUrl | null {
+  if (!urlInput) return null;
+  const cleaned = urlInput.trim().replace(/\/+$/, "");
+
+  // Match full URL or owner/repo pattern
+  const match = cleaned.match(
+    /(?:https?:\/\/)?(?:www\.)?github\.com\/([^/]+)\/([^/#?]+)||^([^/]+)\/([^/]+)$/,
+  );
+
+  if (!match) return null;
+
+  const owner = (match[1] || match[3] || "").trim();
+  const repo = (match[2] || match[4] || "").replace(/\.git$/, "").trim();
+
+  if (!owner || !repo) return null;
+  return { owner, repo };
+}
+
+/**
+ * Fetches commits for a given repository.
+ */
+export async function fetchRepoCommits(
+  owner: string,
+  repo: string,
+  branch?: string,
+  page: number = 1,
+  perPage: number = 20,
+): Promise<GitHubCommitSummary[]> {
+  const baseUrl = getApiUrl();
+  const params = new URLSearchParams({
+    page: String(page),
+    per_page: String(perPage),
+  });
+  if (branch) {
+    params.set("sha", branch);
+  }
+
+  const res = await fetch(
+    `${baseUrl}/api/github/repos/${encodeURIComponent(owner)}/${encodeURIComponent(
+      repo,
+    )}/commits?${params.toString()}`,
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch commits: HTTP ${res.status}`);
+  }
+
+  return res.json();
+}
+
+/**
+ * Fetches single commit details including file diff patches.
+ */
+export async function fetchCommitDetail(
+  owner: string,
+  repo: string,
+  ref: string,
+): Promise<GitHubCommitDetail> {
+  const baseUrl = getApiUrl();
+  const res = await fetch(
+    `${baseUrl}/api/github/repos/${encodeURIComponent(owner)}/${encodeURIComponent(
+      repo,
+    )}/commits/${encodeURIComponent(ref)}`,
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch commit detail: HTTP ${res.status}`);
+  }
+
+  return res.json();
+}
+
+/**
+ * Fetches branches for a repository.
+ */
+export async function fetchRepoBranches(
+  owner: string,
+  repo: string,
+): Promise<GitHubBranchResponse[]> {
+  const baseUrl = getApiUrl();
+  const res = await fetch(
+    `${baseUrl}/api/github/repos/${encodeURIComponent(owner)}/${encodeURIComponent(
+      repo,
+    )}/branches`,
+  );
+
+  if (!res.ok) {
+    return [];
+  }
+
+  return res.json();
+}

@@ -16,6 +16,8 @@ import { TechBadge } from "@/components/atoms/tech-badge";
 import { ProjectMetricsGrid } from "@/components/organisms/projects/project-metrics-grid";
 import { ProjectMockupFrame } from "@/components/organisms/projects/project-mockup-frame";
 import { ProjectEngineeringHighlights } from "@/components/organisms/projects/project-engineering-highlights";
+import { ProjectCommitTracker } from "@/components/organisms/projects/project-commit-tracker";
+
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -413,6 +415,12 @@ async function ProjectDetailContent({
           )}
         </div>
       </section>
+
+      {/* ── Interactive GitHub Commit Tracker ─────────────────────── */}
+      <ProjectCommitTracker
+        repoUrl={project.githubUrl}
+        projectName={project.name}
+      />
 
       {/* ── Related projects ──────────────────────────────────────── */}
       {related.length > 0 && (

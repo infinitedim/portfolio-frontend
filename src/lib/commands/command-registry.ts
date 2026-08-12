@@ -597,3 +597,62 @@ export const fontCommand: Command = {
     };
   },
 };
+
+export const gitCommand: Command = {
+  name: "git",
+  description: "View repository git log and recent commits",
+  aliases: ["git-log", "commits"],
+  async execute(args: string[]) {
+    const subCommand = args[0]?.toLowerCase() || "log";
+
+    if (subCommand !== "log" && args.length > 0 && !args[0]?.startsWith("-")) {
+      return {
+        type: "error",
+        content: `git sub-command '${subCommand}' is not supported. Usage: 'git log' or 'git log -n 5'.`,
+        timestamp: new Date(),
+        id: generateId(),
+      };
+    }
+
+    try {
+      const { fetchRepoCommits } = await import("@/lib/api/commit-service");
+      const owner = "infinitedim";
+      const repo = "portfolio-frontend";
+      const commits = await fetchRepoCommits(owner, repo, "main", 1, 10);
+
+      const lines = [
+        `$ git log --oneline -n ${commits.length} (${owner}/${repo})`,
+        "═".repeat(60),
+        "",
+        ...commits.map(
+          (c) =>
+            `* ${c.shortSha} ${c.message} (${c.authorName}, ${new Date(
+              c.authorDate,
+            ).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })})`,
+        ),
+        "",
+        "For interactive timeline with file diffs, visit any Project Detail page (/projects/[slug]).",
+      ];
+
+      return {
+        type: "success",
+        content: lines.join("\n"),
+        timestamp: new Date(),
+        id: generateId(),
+      };
+    } catch (err) {
+      return {
+        type: "error",
+        content: `Failed to fetch git log: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+        timestamp: new Date(),
+        id: generateId(),
+      };
+    }
+  },
+};
+
