@@ -16,6 +16,7 @@ import {
   ChevronRight,
   GitCommit,
 } from "lucide-react";
+import { LenisScroll } from "@/components/layout/lenis-scroll";
 
 interface CommitDetailDrawerProps {
   owner: string;
@@ -52,6 +53,18 @@ export function CommitDetailDrawer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
+
+  // Lock background body scrolling when modal is open
+  useEffect(() => {
+    if (refSha) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [refSha]);
 
   useEffect(() => {
     if (!refSha || !owner || !repo) {
@@ -180,8 +193,11 @@ export function CommitDetailDrawer({
           </button>
         </header>
 
-        {/* Content Body */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-6">
+        {/* Content Body with Lenis Scroll */}
+        <LenisScroll
+          className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)"
+          data-lenis-prevent
+        >
           {loading && (
             <div className="space-y-4 py-8">
               <div className="h-6 w-3/4 animate-pulse rounded bg-neutral-800" />
@@ -221,127 +237,104 @@ export function CommitDetailDrawer({
                     <span className="font-medium text-neutral-200">
                       {detail.authorName}
                     </span>
-                    {detail.authorLogin && (
-                      <span className="text-neutral-500">
-                        (@{detail.authorLogin})
-                      </span>
-                    )}
                   </div>
 
-                  <time dateTime={detail.authorDate} className="text-neutral-400">
-                    <span aria-hidden="true">
-                      {new Date(detail.authorDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                    <span className="sr-only">
-                      Committed on {detail.authorDate}
-                    </span>
-                  </time>
+                  <div className="flex items-center gap-3">
+                    <time dateTime={detail.authorDate}>
+                      {new Date(detail.authorDate).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )}
+                    </time>
+
+                    <button
+                      type="button"
+                      onClick={() => copyToClipboard(detail.sha)}
+                      className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition-colors"
+                      title="Copy full commit SHA"
+                    >
+                      {copied ? <Check size={12} /> : <Copy size={12} />}
+                      <span className="text-[11px] font-mono">
+                        {detail.sha.substring(0, 7)}
+                      </span>
+                    </button>
+
+                    <a
+                      href={detail.htmlUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-neutral-400 hover:text-white transition-colors"
+                      title="View commit on GitHub"
+                    >
+                      <ExternalLink size={13} />
+                    </a>
+                  </div>
                 </div>
               </div>
 
-              {/* SHA Actions & Links */}
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-neutral-800/80 bg-neutral-950/40 px-4 py-2.5 text-xs font-mono">
-                <div className="flex items-center gap-2 text-neutral-400">
-                  <span>SHA:</span>
-                  <code className="rounded bg-neutral-800 px-2 py-0.5 text-emerald-400">
-                    {detail.sha}
-                  </code>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => copyToClipboard(detail.sha)}
-                    className="inline-flex items-center gap-1.5 rounded border border-neutral-700 bg-neutral-800 px-2.5 py-1 text-neutral-300 transition-colors duration-150 hover:border-neutral-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
-                  >
-                    {copied ? (
-                      <>
-                        <Check size={12} className="text-emerald-400" aria-hidden="true" />
-                        <span>Copied</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={12} aria-hidden="true" />
-                        <span>Copy SHA</span>
-                      </>
-                    )}
-                  </button>
-
-                  <a
-                    href={detail.htmlUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded border border-neutral-700 bg-neutral-800 px-2.5 py-1 text-neutral-300 transition-colors duration-150 hover:border-neutral-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
-                  >
-                    <ExternalLink size={12} aria-hidden="true" />
-                    <span>View on GitHub</span>
-                  </a>
-                </div>
-              </div>
-
-              {/* Aggregate Stats Bar */}
+              {/* Commit Stats Bar */}
               {detail.stats && (
-                <div className="flex items-center gap-4 rounded-lg border border-neutral-800 bg-neutral-950/40 px-4 py-3 text-xs font-mono">
-                  <span className="text-neutral-400">Stats:</span>
-                  <span className="font-semibold text-emerald-400">
-                    +{detail.stats.additions} additions
+                <div className="flex items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-950/40 px-4 py-3 font-mono text-xs">
+                  <span className="text-neutral-400">
+                    Showing{" "}
+                    <strong className="text-white">
+                      {detail.files ? detail.files.length : 0}
+                    </strong>{" "}
+                    changed files
                   </span>
-                  <span className="font-semibold text-rose-400">
-                    -{detail.stats.deletions} deletions
-                  </span>
-                  <span className="text-neutral-500">
-                    ({detail.files?.length || 0} files changed)
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-emerald-400 font-semibold">
+                      +{detail.stats.additions}
+                    </span>
+                    <span className="text-rose-400 font-semibold">
+                      -{detail.stats.deletions}
+                    </span>
+                  </div>
                 </div>
               )}
 
-              {/* Modified Files & Diff Snippets */}
+              {/* Files List with Diff View */}
               {detail.files && detail.files.length > 0 && (
                 <div className="space-y-3">
-                  <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                  <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-400">
                     Changed Files ({detail.files.length})
                   </h3>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-3">
                     {detail.files.map((file: GitHubCommitFile) => {
                       const isExpanded = !!expandedFiles[file.filename];
                       return (
                         <div
                           key={file.filename}
-                          className="rounded-lg border border-neutral-800 bg-neutral-950/80 overflow-hidden"
+                          className="rounded-lg border border-neutral-800 bg-neutral-950/70 overflow-hidden transition-colors duration-150 hover:border-neutral-700"
                         >
-                          {/* File Header Accordion Toggle */}
+                          {/* File Header / Accordion Trigger */}
                           <button
                             type="button"
                             onClick={() => toggleFileExpand(file.filename)}
-                            aria-expanded={isExpanded}
-                            aria-label={`Toggle diff for ${file.filename}`}
-                            className="flex w-full items-center justify-between px-3.5 py-2.5 text-left font-mono text-xs transition-colors duration-150 hover:bg-neutral-800/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                            className="flex w-full items-center justify-between gap-3 px-3.5 py-2.5 text-left font-mono text-xs hover:bg-neutral-900/60 transition-colors"
                           >
-                            <div className="flex items-center gap-2 truncate pr-2">
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
                               {isExpanded ? (
                                 <ChevronDown
                                   size={14}
                                   className="text-neutral-400 shrink-0"
-                                  aria-hidden="true"
                                 />
                               ) : (
                                 <ChevronRight
                                   size={14}
                                   className="text-neutral-400 shrink-0"
-                                  aria-hidden="true"
                                 />
                               )}
                               <FileCode
                                 size={14}
                                 className="text-emerald-400 shrink-0"
-                                aria-hidden="true"
                               />
                               <span className="font-medium text-neutral-200 truncate">
                                 {file.filename}
@@ -349,41 +342,41 @@ export function CommitDetailDrawer({
                             </div>
 
                             <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-emerald-400 font-semibold">
-                                +{file.additions}
-                              </span>
-                              <span className="text-rose-400 font-semibold">
-                                -{file.deletions}
+                              <span className="text-[11px] text-neutral-400 font-mono">
+                                <span className="text-emerald-400">
+                                  +{file.additions}
+                                </span>{" "}
+                                <span className="text-rose-400">
+                                  -{file.deletions}
+                                </span>
                               </span>
                               {renderFileStatusBadge(file.status)}
                             </div>
                           </button>
 
-                          {/* Diff Snippet Content */}
+                          {/* Collapsible Diff Patch View */}
                           {isExpanded && (
-                            <div className="border-t border-neutral-800 bg-neutral-950 p-3 font-mono text-[11px] leading-snug overflow-x-auto">
+                            <div className="border-t border-neutral-800/80 bg-neutral-950 p-3 overflow-x-auto text-[11px] font-mono leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)">
                               {file.patch ? (
-                                <pre className="whitespace-pre">
+                                <pre className="whitespace-pre overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)">
                                   {file.patch
                                     .split("\n")
                                     .map((line, idx) => {
-                                      let lineStyle = "text-neutral-400";
-                                      let bgStyle = "";
+                                      let lineClass = "text-neutral-300";
                                       if (line.startsWith("+")) {
-                                        lineStyle = "text-emerald-300";
-                                        bgStyle = "bg-emerald-950/30";
+                                        lineClass =
+                                          "bg-emerald-950/40 text-emerald-300";
                                       } else if (line.startsWith("-")) {
-                                        lineStyle = "text-rose-300";
-                                        bgStyle = "bg-rose-950/30";
+                                        lineClass =
+                                          "bg-rose-950/40 text-rose-300";
                                       } else if (line.startsWith("@@")) {
-                                        lineStyle = "text-blue-400 font-semibold";
-                                        bgStyle = "bg-blue-950/20";
+                                        lineClass =
+                                          "text-blue-400 font-bold bg-blue-950/20";
                                       }
-
                                       return (
                                         <div
                                           key={idx}
-                                          className={`px-2 py-0.5 rounded-xs ${lineStyle} ${bgStyle}`}
+                                          className={`px-2 py-0.5 ${lineClass}`}
                                         >
                                           {line}
                                         </div>
@@ -405,7 +398,7 @@ export function CommitDetailDrawer({
               )}
             </>
           )}
-        </div>
+        </LenisScroll>
       </aside>
     </div>
   );

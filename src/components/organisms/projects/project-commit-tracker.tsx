@@ -10,6 +10,14 @@ import {
   fetchRepoBranches,
 } from "@/lib/api/commit-service";
 import { CommitDetailDrawer } from "./commit-detail-drawer";
+import { DeployDetailDrawer } from "./deploy-detail-drawer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   GitCommit,
   GitBranch,
@@ -19,8 +27,11 @@ import {
   ExternalLink,
   Copy,
   Check,
+  CheckCircle2,
   AlertCircle,
   ChevronRight,
+  ChevronDown,
+  RefreshCw,
 } from "lucide-react";
 
 interface ProjectCommitTrackerProps {
@@ -44,10 +55,18 @@ export function ProjectCommitTracker({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Pagination states
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+
   // Filters & Views
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [viewMode, setViewMode] = useState<"cards" | "terminal">("cards");
   const [selectedCommitSha, setSelectedCommitSha] = useState<string | null>(
+    null,
+  );
+  const [selectedDeploySha, setSelectedDeploySha] = useState<string | null>(
     null,
   );
   const [copiedSha, setCopiedSha] = useState<string | null>(null);
@@ -67,12 +86,14 @@ export function ProjectCommitTracker({
     setSelectedBranch("");
   };
 
-  // Load branches & initial commits when parsedRepo changes
+  // Load branches & initial 10 commits when parsedRepo / selectedBranch changes
   const loadRepoData = useCallback(async () => {
     if (!parsedRepo) return;
 
     setLoading(true);
     setError(null);
+    setPage(1);
+    setHasMore(true);
 
     try {
       // 1. Fetch branches
@@ -90,16 +111,22 @@ export function ProjectCommitTracker({
 
       const branchToUse = selectedBranch || defaultBranch;
 
-      // 2. Fetch commits
+      if (!selectedBranch && defaultBranch) {
+        setSelectedBranch(defaultBranch);
+      }
+
+      // 2. Fetch initial 10 commits (compare against defaultBranch for feature branches)
       const fetchedCommits = await fetchRepoCommits(
         parsedRepo.owner,
         parsedRepo.repo,
         branchToUse,
         1,
-        30,
+        10,
+        defaultBranch,
       );
 
       setCommits(fetchedCommits);
+      setHasMore(fetchedCommits.length >= 10);
     } catch (err) {
       setError(
         err instanceof Error
@@ -107,10 +134,53 @@ export function ProjectCommitTracker({
           : "Failed to fetch repository commits",
       );
       setCommits([]);
+      setHasMore(false);
     } finally {
       setLoading(false);
     }
   }, [parsedRepo, selectedBranch]);
+
+  // Load next batch of 10 commits
+  const handleLoadMore = async () => {
+    if (!parsedRepo || loadingMore || !hasMore) return;
+
+    setLoadingMore(true);
+    const nextPage = page + 1;
+
+    const defaultBranch =
+      branches.find((b) => b.name === "main" || b.name === "master")?.name ||
+      branches[0]?.name ||
+      "";
+
+    try {
+      const newCommits = await fetchRepoCommits(
+        parsedRepo.owner,
+        parsedRepo.repo,
+        selectedBranch || defaultBranch,
+        nextPage,
+        10,
+        defaultBranch,
+      );
+
+      if (newCommits.length === 0) {
+        setHasMore(false);
+      } else {
+        setCommits((prev) => {
+          const existingShas = new Set(prev.map((c) => c.sha));
+          const uniqueNew = newCommits.filter((c) => !existingShas.has(c.sha));
+          return [...prev, ...uniqueNew];
+        });
+        setPage(nextPage);
+        if (newCommits.length < 10) {
+          setHasMore(false);
+        }
+      }
+    } catch {
+      setHasMore(false);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   useEffect(() => {
     loadRepoData();
@@ -211,10 +281,10 @@ export function ProjectCommitTracker({
                 onChange={(e) => setUrlInput(e.target.value)}
                 placeholder="https://github.com/owner/repository"
                 aria-label="GitHub Repository URL"
-                className="w-full rounded-lg border border-neutral-800 bg-neutral-950/80 py-2 pl-9 pr-3 font-mono text-xs placeholder-neutral-500 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                disabled
+                className="w-full rounded-lg border border-neutral-800/80 bg-neutral-950/40 py-2 pl-9 pr-3 font-mono text-xs text-neutral-400 opacity-75 cursor-not-allowed select-none"
               />
             </div>
-
             <button
               type="submit"
               className="inline-flex items-center gap-1.5 rounded-lg bg-neutral-800 px-4 py-2 font-mono text-xs font-medium text-neutral-200 transition-colors duration-150 hover:bg-neutral-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
@@ -227,35 +297,36 @@ export function ProjectCommitTracker({
           {parsedRepo && (
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800/80 pt-3 text-xs font-mono">
               <div className="flex flex-wrap items-center gap-3">
-                {/* Branch selector */}
+                {/* Branch selection using custom Select component */}
                 {branches.length > 0 && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <GitBranch
                       size={14}
-                      className="text-emerald-400"
+                      className="text-emerald-400 shrink-0"
                       aria-hidden="true"
                     />
-                    <label
-                      htmlFor="branch-select"
-                      className="sr-only"
-                    >
-                      Select Repository Branch
-                    </label>
-                    <select
-                      id="branch-select"
+                    <Select
                       value={selectedBranch}
-                      onChange={(e) => setSelectedBranch(e.target.value)}
-                      className="rounded-md border border-neutral-800 bg-neutral-950/90 px-2.5 py-1 text-xs text-white font-mono transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                      onValueChange={(val) => setSelectedBranch(val)}
                     >
-                      {branches.map((b) => (
-                        <option
-                          key={b.name}
-                          value={b.name}
-                        >
-                          {b.name}
-                        </option>
-                      ))}
-                    </select>
+                      <SelectTrigger
+                        aria-label="Select Repository Branch"
+                        className="h-7 w-auto min-w-35 max-w-65 border-neutral-800 bg-neutral-950/90 px-2.5 py-1 text-xs text-white font-mono transition-all duration-150 hover:border-neutral-700 focus:ring-1 focus:ring-emerald-400"
+                      >
+                        <SelectValue placeholder="Select branch" />
+                      </SelectTrigger>
+                      <SelectContent className="border-neutral-800 bg-neutral-950 text-white font-mono">
+                        {branches.map((b) => (
+                          <SelectItem
+                            key={b.name}
+                            value={b.name}
+                            className="text-xs font-mono focus:bg-neutral-900 focus:text-emerald-400"
+                          >
+                            {b.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 )}
 
@@ -324,116 +395,134 @@ export function ProjectCommitTracker({
           !error &&
           viewMode === "cards" &&
           filteredCommits.length > 0 && (
-            <div className="relative border-l-2 border-neutral-800 ml-3 pl-6 space-y-4">
+            <div className="relative space-y-4 pl-7 sm:pl-8">
+              {/* Vertical timeline track line in the left gutter */}
+              <div
+                className="absolute top-4 bottom-4 left-3 sm:left-3.5 w-0.5 bg-neutral-800"
+                aria-hidden="true"
+              />
+
               {filteredCommits.map((commit: GitHubCommitSummary) => (
-                <article
+                <div
                   key={commit.sha}
-                  className="group relative rounded-xl border border-neutral-800 bg-neutral-900/60 p-4 transition-all duration-200 hover:border-emerald-400/50 hover:bg-neutral-900"
+                  className="group relative"
                 >
-                  {/* Timeline node icon */}
-                  <div className="absolute -left-7.75 top-5 flex h-4 w-4 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950 text-emerald-400 group-hover:border-emerald-400 group-hover:bg-emerald-950">
+                  {/* Timeline node icon in the left gutter centered on the track line */}
+                  <div className="absolute -left-5.25 sm:-left-6.25 top-5 flex h-4 w-4 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950 text-emerald-400 group-hover:border-emerald-400 group-hover:bg-emerald-950 z-10">
                     <GitCommit
                       size={10}
                       aria-hidden="true"
                     />
                   </div>
 
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="space-y-1.5 flex-1 min-w-60">
-                      {/* Commit Message */}
-                      <p className="font-mono text-sm font-semibold text-white leading-snug">
-                        {commit.message}
-                      </p>
+                  <article className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4 transition-all duration-200 group-hover:border-emerald-400/50 group-hover:bg-neutral-900">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="space-y-1.5 flex-1 min-w-60">
+                        {/* Commit Message */}
+                        <p className="font-mono text-sm font-semibold text-white leading-snug">
+                          {commit.message}
+                        </p>
 
-                      {/* Author & Timestamp */}
-                      <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs text-neutral-400">
-                        <div className="flex items-center gap-1.5">
-                          {commit.authorAvatar ? (
-                            <img
-                              src={commit.authorAvatar}
-                              alt={commit.authorName}
-                              className="h-4 w-4 rounded-full border border-neutral-700"
+                        {/* Author & Timestamp */}
+                        <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs text-neutral-400">
+                          <div className="flex items-center gap-1.5">
+                            {commit.authorAvatar ? (
+                              <img
+                                src={commit.authorAvatar}
+                                alt={commit.authorName}
+                                className="h-4 w-4 rounded-full border border-neutral-700"
+                              />
+                            ) : (
+                              <span className="font-bold text-emerald-400">
+                                {commit.authorName.charAt(0).toUpperCase()}
+                              </span>
+                            )}
+                            <span className="text-neutral-300">
+                              {commit.authorName}
+                            </span>
+                          </div>
+
+                          <span>•</span>
+
+                          <time
+                            dateTime={commit.authorDate}
+                            className="text-neutral-400"
+                          >
+                            <span aria-hidden="true">
+                              {new Date(commit.authorDate).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                },
+                              )}
+                            </span>
+                            <span className="sr-only">
+                              Committed on {commit.authorDate}
+                            </span>
+                          </time>
+                          {/* Deploy / CI Status Button */}
+                          <button
+                            type="button"
+                            onClick={() => setSelectedDeploySha(commit.sha)}
+                            aria-label={`View deployment runs for commit ${commit.shortSha}`}
+                            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-800/60 bg-emerald-950/40 px-2.5 py-0.5 text-[10px] font-mono font-medium text-emerald-400 transition-all duration-150 hover:border-emerald-500 hover:bg-emerald-900/60 hover:text-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                          >
+                            <CheckCircle2 size={11} aria-hidden="true" />
+                            <span>Deploy Success</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* SHA Badge & Actions */}
+                      <div className="flex items-center gap-2 font-mono text-xs shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => copySha(commit.sha)}
+                          aria-label={`Copy commit hash ${commit.shortSha}`}
+                          className="inline-flex items-center gap-1 rounded border border-neutral-800 bg-neutral-950 px-2 py-1 text-neutral-400 transition-colors duration-150 hover:border-neutral-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                        >
+                          {copiedSha === commit.sha ? (
+                            <Check
+                              size={12}
+                              className="text-emerald-400"
                             />
                           ) : (
-                            <span className="font-bold text-emerald-400">
-                              {commit.authorName.charAt(0).toUpperCase()}
-                            </span>
+                            <Copy size={12} />
                           )}
-                          <span className="text-neutral-300">
-                            {commit.authorName}
-                          </span>
-                        </div>
+                          <span>{commit.shortSha}</span>
+                        </button>
 
-                        <span>•</span>
-
-                        <time
-                          dateTime={commit.authorDate}
-                          className="text-neutral-400"
+                        {/* Inspect File Diff Details Button */}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCommitSha(commit.sha)}
+                          className="inline-flex items-center gap-1 rounded border border-emerald-800/60 bg-emerald-950/40 px-2.5 py-1 text-emerald-400 font-medium transition-all duration-150 hover:bg-emerald-900/60 hover:text-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                         >
-                          <span aria-hidden="true">
-                            {new Date(commit.authorDate).toLocaleDateString(
-                              "en-US",
-                              {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              },
-                            )}
-                          </span>
-                          <span className="sr-only">
-                            Committed on {commit.authorDate}
-                          </span>
-                        </time>
+                          <span>View Diff</span>
+                          <ChevronRight
+                            size={12}
+                            aria-hidden="true"
+                          />
+                        </button>
+
+                        <a
+                          href={commit.htmlUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`View commit ${commit.shortSha} on GitHub`}
+                          className="p-1 text-neutral-500 hover:text-white transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 rounded"
+                        >
+                          <ExternalLink
+                            size={14}
+                            aria-hidden="true"
+                          />
+                        </a>
                       </div>
                     </div>
-
-                    {/* SHA Badge & Actions */}
-                    <div className="flex items-center gap-2 font-mono text-xs shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => copySha(commit.sha)}
-                        aria-label={`Copy commit hash ${commit.shortSha}`}
-                        className="inline-flex items-center gap-1 rounded border border-neutral-800 bg-neutral-950 px-2 py-1 text-neutral-400 transition-colors duration-150 hover:border-neutral-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
-                      >
-                        {copiedSha === commit.sha ? (
-                          <Check
-                            size={12}
-                            className="text-emerald-400"
-                          />
-                        ) : (
-                          <Copy size={12} />
-                        )}
-                        <span>{commit.shortSha}</span>
-                      </button>
-
-                      {/* Inspect File Diff Details Button */}
-                      <button
-                        type="button"
-                        onClick={() => setSelectedCommitSha(commit.sha)}
-                        className="inline-flex items-center gap-1 rounded border border-emerald-800/60 bg-emerald-950/40 px-2.5 py-1 text-emerald-400 font-medium transition-all duration-150 hover:bg-emerald-900/60 hover:text-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
-                      >
-                        <span>Details</span>
-                        <ChevronRight
-                          size={12}
-                          aria-hidden="true"
-                        />
-                      </button>
-
-                      <a
-                        href={commit.htmlUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`View commit ${commit.shortSha} on GitHub`}
-                        className="p-1 text-neutral-500 hover:text-white transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 rounded"
-                      >
-                        <ExternalLink
-                          size={14}
-                          aria-hidden="true"
-                        />
-                      </a>
-                    </div>
-                  </div>
-                </article>
+                  </article>
+                </div>
               ))}
             </div>
           )}
@@ -455,7 +544,7 @@ export function ProjectCommitTracker({
                     className="flex flex-wrap items-baseline gap-2 hover:bg-neutral-900/80 px-2 py-1 rounded transition-colors duration-150"
                   >
                     <span className="text-emerald-400 font-semibold shrink-0">
-                      * {c.shortSha}
+                      {c.shortSha}
                     </span>
                     <span className="text-white font-medium flex-1 min-w-50">
                       {c.message}
@@ -481,6 +570,40 @@ export function ProjectCommitTracker({
             </div>
           )}
 
+        {/* Load More Commits Button */}
+        {!loading &&
+          !error &&
+          filteredCommits.length > 0 &&
+          hasMore &&
+          !searchQuery && (
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+                className="inline-flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900/80 px-5 py-2.5 font-mono text-xs font-medium text-neutral-300 transition-all duration-200 hover:border-emerald-400/50 hover:bg-neutral-900 hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              >
+                {loadingMore ? (
+                  <>
+                    <RefreshCw
+                      size={14}
+                      className="animate-spin text-emerald-400"
+                    />
+                    <span>Loading more commits...</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown
+                      size={14}
+                      className="text-emerald-400"
+                    />
+                    <span>Load More Commits</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
         {/* Expandable Commit File Diff Drawer */}
         {selectedCommitSha && parsedRepo && (
           <CommitDetailDrawer
@@ -488,6 +611,16 @@ export function ProjectCommitTracker({
             repo={parsedRepo.repo}
             refSha={selectedCommitSha}
             onClose={() => setSelectedCommitSha(null)}
+          />
+        )}
+
+        {/* Expandable Deployment CI/CD Runs Drawer (Scaffold) */}
+        {selectedDeploySha && parsedRepo && (
+          <DeployDetailDrawer
+            owner={parsedRepo.owner}
+            repo={parsedRepo.repo}
+            refSha={selectedDeploySha}
+            onClose={() => setSelectedDeploySha(null)}
           />
         )}
       </div>

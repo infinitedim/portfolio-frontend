@@ -11,6 +11,7 @@ export interface GitHubCommitSummary {
   authorLogin?: string;
   authorUrl?: string;
   htmlUrl: string;
+  statusState?: string;
 }
 
 export interface GitHubCommitStats {
@@ -39,6 +40,7 @@ export interface GitHubCommitDetail {
   authorLogin?: string;
   authorUrl?: string;
   htmlUrl: string;
+  statusState?: string;
   stats?: GitHubCommitStats;
   files?: GitHubCommitFile[];
 }
@@ -88,6 +90,7 @@ export async function fetchRepoCommits(
   branch?: string,
   page: number = 1,
   perPage: number = 20,
+  baseBranch?: string,
 ): Promise<GitHubCommitSummary[]> {
   const baseUrl = getApiUrl();
   const params = new URLSearchParams({
@@ -95,7 +98,11 @@ export async function fetchRepoCommits(
     per_page: String(perPage),
   });
   if (branch) {
-    params.set("sha", branch);
+    if (baseBranch && branch !== baseBranch && !branch.includes("...")) {
+      params.set("sha", `${baseBranch}...${branch}`);
+    } else {
+      params.set("sha", branch);
+    }
   }
 
   const res = await fetch(
