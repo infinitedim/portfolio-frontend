@@ -352,13 +352,7 @@ export default function RoadmapPage(): JSX.Element {
             title="roadmap"
             description="My learning progress across various technology roadmaps tracked on roadmap.sh"
           />
-          <Suspense
-            fallback={
-              <div className="font-mono text-sm text-neutral-400 animate-pulse">
-                Loading roadmap data…
-              </div>
-            }
-          >
+          <Suspense fallback={<RoadmapPhantomSkeleton />}>
             <RoadmapContent />
           </Suspense>
         </div>
@@ -366,3 +360,92 @@ export default function RoadmapPage(): JSX.Element {
     </StandardPageLayout>
   );
 }
+
+function RoadmapPhantomSkeleton(): JSX.Element {
+  return (
+    <div
+      className="space-y-6"
+      aria-busy="true"
+      aria-label="Loading roadmap progress data"
+    >
+      {/* Profile Header Phantom */}
+      <div className="flex items-center gap-4 font-mono">
+        <div>
+          <div className="h-6 w-48 animate-pulse rounded bg-neutral-800/70" />
+          <div className="mt-1.5 h-4 w-36 animate-pulse rounded bg-neutral-800/50" />
+        </div>
+      </div>
+
+      {/* Streak Card Phantom */}
+      <div className="rounded-lg border border-neutral-700 bg-neutral-900 p-5 font-mono">
+        <div className="mb-4 flex items-center gap-1.5">
+          <div className="h-4 w-4 animate-pulse rounded bg-orange-950/60" />
+          <div className="h-4 w-16 animate-pulse rounded bg-neutral-800/70" />
+        </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {["Current", "Longest", "Previous", "Referrals"].map((label) => (
+            <div key={label} className="text-center space-y-1.5">
+              <div className="h-8 w-12 mx-auto animate-pulse rounded bg-neutral-800/70" />
+              <div className="h-3 w-16 mx-auto animate-pulse rounded bg-neutral-800/50" />
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 flex justify-between">
+          <div className="h-3 w-36 animate-pulse rounded bg-neutral-800/50" />
+          <div className="h-3 w-36 animate-pulse rounded bg-neutral-800/50" />
+        </div>
+      </div>
+
+      {/* Overall Progress Phantom */}
+      <div className="rounded-lg border border-neutral-700 bg-neutral-900 p-5 font-mono">
+        <div className="mb-4 h-4 w-32 animate-pulse rounded bg-neutral-800/70" />
+        <div className="mb-3 flex items-center gap-4">
+          <div className="h-12 w-16 animate-pulse rounded bg-neutral-800/70" />
+          <div className="space-y-1.5">
+            <div className="h-3.5 w-36 animate-pulse rounded bg-neutral-800/50" />
+            <div className="h-3.5 w-28 animate-pulse rounded bg-neutral-800/50" />
+          </div>
+        </div>
+        <div className="h-3 w-full overflow-hidden rounded-full bg-neutral-700">
+          <div className="h-full w-1/3 animate-pulse rounded-full bg-neutral-600" />
+        </div>
+      </div>
+
+      {/* Roadmaps Grid Phantom (4 Cards) */}
+      <div className="h-4 w-32 animate-pulse rounded bg-neutral-800/70" />
+      <div className="grid gap-3 sm:grid-cols-2">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="rounded border border-neutral-800 bg-neutral-900 p-4 font-mono space-y-3"
+          >
+            {/* Title + percentage */}
+            <div className="flex items-start justify-between gap-2">
+              <div className="h-4 w-40 animate-pulse rounded bg-neutral-800/70" />
+              <div className="h-4 w-10 animate-pulse rounded bg-neutral-800/60" />
+            </div>
+            {/* Progress bar */}
+            <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-700">
+              <div
+                className="h-full animate-pulse rounded-full bg-neutral-600"
+                style={{ width: `${20 + i * 15}%` }}
+              />
+            </div>
+            {/* Stats: done, learning, total */}
+            <div className="flex gap-4">
+              <div className="h-3 w-16 animate-pulse rounded bg-neutral-800/50" />
+              <div className="h-3 w-20 animate-pulse rounded bg-neutral-800/50" />
+              <div className="ml-auto h-3 w-20 animate-pulse rounded bg-neutral-800/50" />
+            </div>
+            {/* Footer: date + detail button */}
+            <div className="flex items-center justify-between">
+              <div className="h-3 w-28 animate-pulse rounded bg-neutral-800/50" />
+              <div className="h-6 w-16 animate-pulse rounded border border-neutral-700 bg-neutral-800" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+

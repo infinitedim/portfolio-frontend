@@ -360,14 +360,8 @@ export function ProjectCommitTracker({
           )}
         </div>
 
-        {/* Loading Skeleton */}
-        {loading && (
-          <div className="space-y-3 py-4">
-            <div className="h-16 w-full animate-pulse rounded-lg bg-neutral-900" />
-            <div className="h-16 w-full animate-pulse rounded-lg bg-neutral-900" />
-            <div className="h-16 w-full animate-pulse rounded-lg bg-neutral-900" />
-          </div>
-        )}
+        {/* Loading Phantom Skeleton */}
+        {loading && <CommitTrackerPhantomSkeleton />}
 
         {/* Error Display */}
         {error && !loading && (
@@ -654,5 +648,56 @@ export function ProjectCommitTracker({
         )}
       </div>
     </section>
+  );
+}
+
+function CommitTrackerPhantomSkeleton() {
+  return (
+    <div
+      className="relative space-y-4 pl-7 sm:pl-8 font-mono"
+      aria-busy="true"
+      aria-label="Loading repository commits"
+    >
+      {/* Vertical timeline track line */}
+      <div
+        className="absolute top-4 bottom-4 left-3 sm:left-3.5 w-0.5 bg-neutral-800"
+        aria-hidden="true"
+      />
+
+      {[1, 2, 3, 4].map((i) => (
+        <div
+          key={i}
+          className="group relative"
+        >
+          {/* Timeline node icon placeholder */}
+          <div className="absolute -left-5.25 sm:-left-6.25 top-5 flex h-4 w-4 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950 z-10">
+            <div className="h-1.5 w-1.5 rounded-full bg-neutral-700 animate-pulse" />
+          </div>
+
+          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4 space-y-3">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="space-y-2 flex-1 min-w-60">
+                {/* Commit message line */}
+                <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-800/70" />
+
+                {/* Author & Timestamp info */}
+                <div className="flex flex-wrap items-center gap-2.5 pt-0.5">
+                  <div className="h-4 w-4 rounded-full bg-neutral-800 animate-pulse" />
+                  <div className="h-3.5 w-28 rounded bg-neutral-800/60 animate-pulse" />
+                  <div className="h-3 w-20 rounded bg-neutral-800/50 animate-pulse" />
+                  <div className="h-5 w-20 rounded-full bg-neutral-800/70 animate-pulse" />
+                </div>
+              </div>
+
+              {/* SHA Hash & Action buttons */}
+              <div className="flex items-center gap-2">
+                <div className="h-6 w-20 rounded bg-neutral-800/70 animate-pulse" />
+                <div className="h-6 w-20 rounded bg-neutral-800/70 animate-pulse" />
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

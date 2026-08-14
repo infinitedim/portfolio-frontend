@@ -198,13 +198,7 @@ export function CommitDetailDrawer({
           className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)"
           data-lenis-prevent
         >
-          {loading && (
-            <div className="space-y-4 py-8">
-              <div className="h-6 w-3/4 animate-pulse rounded bg-neutral-800" />
-              <div className="h-4 w-1/2 animate-pulse rounded bg-neutral-800" />
-              <div className="h-24 w-full animate-pulse rounded-lg bg-neutral-800" />
-            </div>
-          )}
+          {loading && <CommitDetailPhantomSkeleton />}
 
           {error && (
             <div className="rounded-lg border border-rose-800/50 bg-rose-950/20 p-4 text-sm text-rose-300">
@@ -400,6 +394,65 @@ export function CommitDetailDrawer({
           )}
         </LenisScroll>
       </aside>
+    </div>
+  );
+}
+
+function CommitDetailPhantomSkeleton() {
+  return (
+    <div
+      className="space-y-6 font-mono"
+      aria-busy="true"
+      aria-label="Loading commit file diff details"
+    >
+      {/* Commit Info Card Phantom */}
+      <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4 space-y-3">
+        <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-800/70" />
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          <div className="flex items-center gap-2">
+            <div className="h-4 w-4 rounded-full bg-neutral-800 animate-pulse" />
+            <div className="h-3 w-28 rounded bg-neutral-800/70 animate-pulse" />
+          </div>
+          <div className="h-3 w-3 rounded-full bg-neutral-800/50" />
+          <div className="h-3 w-24 rounded bg-neutral-800/70 animate-pulse" />
+          <div className="h-3 w-3 rounded-full bg-neutral-800/50" />
+          <div className="h-5 w-20 rounded bg-neutral-800/70 animate-pulse" />
+        </div>
+      </div>
+
+      {/* Stats Summary Bar Phantom */}
+      <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4 flex items-center justify-between">
+        <div className="h-4 w-40 rounded bg-neutral-800/70 animate-pulse" />
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-16 rounded bg-neutral-800/70 animate-pulse" />
+          <div className="h-4 w-16 rounded bg-neutral-800/70 animate-pulse" />
+        </div>
+      </div>
+
+      {/* File Diff Expanders Phantom (2 Cards) */}
+      <div className="space-y-3">
+        <div className="h-4 w-44 rounded bg-neutral-800/70 animate-pulse" />
+        {[1, 2].map((i) => (
+          <div
+            key={i}
+            className="rounded-lg border border-neutral-800 bg-neutral-950/60 overflow-hidden space-y-2 p-3.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 rounded bg-neutral-800/60 animate-pulse" />
+                <div className="h-4 w-48 sm:w-64 rounded bg-neutral-800/70 animate-pulse" />
+              </div>
+              <div className="h-4 w-14 rounded bg-neutral-800/70 animate-pulse" />
+            </div>
+            <div className="mt-2 rounded bg-neutral-900 p-3 space-y-1.5 border border-neutral-800/50">
+              <div className="h-3 w-3/4 rounded bg-neutral-800/50 animate-pulse" />
+              <div className="h-3 w-1/2 rounded bg-emerald-950/40 animate-pulse" />
+              <div className="h-3 w-2/3 rounded bg-rose-950/40 animate-pulse" />
+              <div className="h-3 w-4/5 rounded bg-neutral-800/50 animate-pulse" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -270,16 +270,8 @@ export function DeployDetailDrawer({
             </div>
           </div>
 
-          {/* Loading Skeleton State */}
-          {loading && (
-            <div className="space-y-3 py-8 text-center text-xs text-neutral-400">
-              <RefreshCw
-                size={20}
-                className="animate-spin text-emerald-400 mx-auto mb-2"
-              />
-              <span>Loading deployment check runs...</span>
-            </div>
-          )}
+          {/* Loading Phantom Skeleton State */}
+          {loading && <DeployDetailPhantomSkeleton />}
 
           {/* Error Banner */}
           {!loading && error && (
@@ -379,6 +371,42 @@ export function DeployDetailDrawer({
             )}
         </LenisScroll>
       </aside>
+    </div>
+  );
+}
+
+function DeployDetailPhantomSkeleton() {
+  return (
+    <div
+      className="space-y-5 font-mono"
+      aria-busy="true"
+      aria-label="Loading deployment check runs"
+    >
+      {/* CI/CD Workflow Checks Section Phantom (3 Items) */}
+      <div className="space-y-3">
+        <div className="h-4 w-48 rounded bg-neutral-800/70 animate-pulse" />
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="rounded-lg border border-neutral-800 bg-neutral-950/80 p-3.5 space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 rounded-full bg-neutral-800/60 animate-pulse" />
+                <div className="h-4 w-44 sm:w-56 rounded bg-neutral-800/70 animate-pulse" />
+              </div>
+              <div className="h-5 w-20 rounded-full bg-neutral-800/70 animate-pulse" />
+            </div>
+
+            <div className="h-3.5 w-5/6 rounded bg-neutral-800/50 animate-pulse" />
+
+            <div className="flex items-center justify-between pt-1 border-t border-neutral-800/60">
+              <div className="h-3 w-28 rounded bg-neutral-800/50 animate-pulse" />
+              <div className="h-3 w-16 rounded bg-neutral-800/50 animate-pulse" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
