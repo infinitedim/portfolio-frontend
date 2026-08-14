@@ -45,14 +45,16 @@ test.describe("Security Headers", () => {
       }
     });
 
-    await page.goto("/roadmap", { waitUntil: "domcontentloaded" });
-
-    const chunkResponse = await page.waitForResponse(
+    const chunkResponsePromise = page.waitForResponse(
       (res) =>
         res.url().includes("/_next/static/chunks/") &&
         res.url().endsWith(".js"),
       { timeout: 15_000 },
     );
+
+    await page.goto("/roadmap", { waitUntil: "domcontentloaded" });
+
+    const chunkResponse = await chunkResponsePromise;
     expect(chunkResponse.status()).toBe(200);
     expect(cspViolations).toEqual([]);
   });

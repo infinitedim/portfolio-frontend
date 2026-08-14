@@ -27,9 +27,11 @@ if (typeof Bun !== "undefined") {
 vi.mock("@/lib/commands/roadmap-commands", () => ({
   roadmapCommand: null,
 }));
-vi.mock("@/lib/commands/command-registry", () => {
+vi.mock("@/lib/commands/command-registry", async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>;
   const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
   return {
+    ...actual,
     createHelpCommand: vi.fn(() => cmd("help")),
     aboutCommand: cmd("about"),
     projectsCommand: cmd("projects"),
@@ -37,6 +39,7 @@ vi.mock("@/lib/commands/command-registry", () => {
     clearCommand: cmd("clear"),
     themeCommand: cmd("theme"),
     fontCommand: cmd("font"),
+    gitCommand: cmd("git"),
   };
 });
 vi.mock("@/lib/commands/language-commands", () => {

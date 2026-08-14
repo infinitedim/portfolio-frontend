@@ -463,15 +463,44 @@ export function ProjectCommitTracker({
                             </span>
                           </time>
                           {/* Deploy / CI Status Button */}
-                          <button
-                            type="button"
-                            onClick={() => setSelectedDeploySha(commit.sha)}
-                            aria-label={`View deployment runs for commit ${commit.shortSha}`}
-                            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-800/60 bg-emerald-950/40 px-2.5 py-0.5 text-[10px] font-mono font-medium text-emerald-400 transition-all duration-150 hover:border-emerald-500 hover:bg-emerald-900/60 hover:text-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
-                          >
-                            <CheckCircle2 size={11} aria-hidden="true" />
-                            <span>Deploy Success</span>
-                          </button>
+                          {commit.statusState === "unconfigured" ? (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDeploySha(commit.sha)}
+                              aria-label={`View CI status for commit ${commit.shortSha}`}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-800 bg-neutral-950 px-2.5 py-0.5 text-[10px] font-mono font-medium text-neutral-400 transition-all duration-150 hover:border-neutral-700 hover:text-neutral-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                            >
+                              <span>No CI Checks</span>
+                            </button>
+                          ) : commit.statusState === "failure" ? (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDeploySha(commit.sha)}
+                              aria-label={`View failed CI status for commit ${commit.shortSha}`}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-rose-800/60 bg-rose-950/40 px-2.5 py-0.5 text-[10px] font-mono font-medium text-rose-400 transition-all duration-150 hover:border-rose-500 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                            >
+                              <span>Deploy Failed</span>
+                            </button>
+                          ) : commit.statusState === "running" ? (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDeploySha(commit.sha)}
+                              aria-label={`View running CI status for commit ${commit.shortSha}`}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-amber-800/60 bg-amber-950/40 px-2.5 py-0.5 text-[10px] font-mono font-medium text-amber-400 transition-all duration-150 hover:border-amber-500 hover:text-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                            >
+                              <span>Running</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedDeploySha(commit.sha)}
+                              aria-label={`View deployment runs for commit ${commit.shortSha}`}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-emerald-800/60 bg-emerald-950/40 px-2.5 py-0.5 text-[10px] font-mono font-medium text-emerald-400 transition-all duration-150 hover:border-emerald-500 hover:bg-emerald-900/60 hover:text-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                            >
+                              <CheckCircle2 size={11} aria-hidden="true" />
+                              <span>Deploy Success</span>
+                            </button>
+                          )}
                         </div>
                       </div>
 

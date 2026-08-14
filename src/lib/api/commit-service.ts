@@ -51,6 +51,28 @@ export interface GitHubBranchResponse {
   protected: boolean;
 }
 
+export interface GitHubCheckApp {
+  name: string;
+}
+
+export interface GitHubCheckRun {
+  id: number;
+  name: string;
+  headSha: string;
+  status: string;
+  conclusion?: string | null;
+  startedAt: string;
+  completedAt?: string | null;
+  htmlUrl: string;
+  app: GitHubCheckApp;
+}
+
+export interface GitHubCheckRunsResponse {
+  totalCount: number;
+  combinedState: string;
+  checkRuns: GitHubCheckRun[];
+}
+
 export interface ParsedRepoUrl {
   owner: string;
   repo: string;
@@ -156,6 +178,32 @@ export async function fetchRepoBranches(
 
   if (!res.ok) {
     return [];
+  }
+
+  return res.json();
+}
+
+/**
+ * Fetches check runs and deployment status for a commit.
+ */
+export async function fetchCommitCheckRuns(
+  owner: string,
+  repo: string,
+  refSha: string,
+  force: boolean = false,
+): Promise<GitHubCheckRunsResponse> {
+  const baseUrl = getApiUrl();
+  const query = force ? "?force=true" : "";
+  const res = await fetch(
+    `${baseUrl}/api/github/repos/${encodeURIComponent(
+      owner,
+    )}/${encodeURIComponent(repo)}/commits/${encodeURIComponent(
+      refSha,
+    )}/check-runs${query}`,
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch commit check runs: HTTP ${res.status}`);
   }
 
   return res.json();
