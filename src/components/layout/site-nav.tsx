@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { type JSX, useState, useEffect } from "react";
+import { type JSX, useState, useEffect, Suspense } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { useGateStatus } from "@/hooks/use-gate-status";
 import { LanguageSwitcher } from "@/components/molecules/shared/language-switcher";
@@ -32,7 +32,7 @@ interface SiteNavProps {
   currentPath?: string;
 }
 
-export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
+function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
   const pathname = usePathname();
   const router = useRouter();
   const activePath = currentPath ?? pathname ?? "";
@@ -251,3 +251,72 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
     </>
   );
 }
+
+function SiteNavFallback({ currentPath }: SiteNavProps): JSX.Element {
+  const { t } = useI18n();
+  const activePath = currentPath ?? "";
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur supports-backdrop-filter:bg-neutral-950/80">
+      <nav
+        aria-label="Main navigation"
+        className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
+      >
+        <div className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="font-mono text-sm font-bold text-green-400 hover:text-green-300"
+          >
+            infinitedim
+          </Link>
+        </div>
+
+        <ul className="hidden h-8 items-center gap-1 sm:flex">
+          {NAV_LINKS.map(({ key, href }) => {
+            const isActive =
+              href === "/" ? activePath === "/" : activePath.startsWith(href);
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={`rounded px-3 py-1.5 font-mono text-xs transition-colors ${
+                    isActive
+                      ? "bg-green-400/10 text-green-400"
+                      : "text-neutral-400 hover:text-neutral-100"
+                  }`}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {t(key)}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="flex items-center gap-2">
+          <VisitorPresenceBadge />
+          <LanguageSwitcher
+            variant="dropdown"
+            showFlags={false}
+            className="hidden sm:block"
+          />
+          <Link
+            href="/gate"
+            className="hidden sm:inline-flex rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
+          >
+            {t("navTerminal")} →
+          </Link>
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+export function SiteNav(props: SiteNavProps): JSX.Element {
+  return (
+    <Suspense fallback={<SiteNavFallback {...props} />}>
+      <SiteNavInner {...props} />
+    </Suspense>
+  );
+}
+

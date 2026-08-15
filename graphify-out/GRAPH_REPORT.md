@@ -1,21 +1,21 @@
 # Graph Report - portfolio-frontend  (2026-08-15)
 
 ## Corpus Check
-- 669 files · ~376,748 words
+- 669 files · ~376,935 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5143 nodes · 8684 edges · 398 communities (324 shown, 74 thin omitted)
+- 5146 nodes · 8673 edges · 396 communities (323 shown, 73 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 31 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c3743008`
+- Built from commit: `3973baaf`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- locales.ts
+- i18n/index.ts
 - dedup-recs.mjs
 - extract-claims.mjs
 - terminal.tsx
@@ -25,22 +25,22 @@
 - use-terminal.ts
 - utility-types.ts
 - lib/render-report.mjs
-- use-theme.ts
+- theme.ts
 - RoadmapService
 - SEO Audit
-- blog-editor.tsx
+- series/[slug]/page.tsx
 - errors.ts
 - useTheme
-- lineOf
+- scanners/index.mjs
 - select.tsx
-- customization-manager.tsx
+- useI18n
 - projects/[slug]/page.tsx
 - PerformanceMonitor
 - Next.js Optimization Guide
 - TypeScript Expert
 - gate-client.ts
 - terminal-context.tsx
-- hooks-utils.test.ts
+- use-security.ts
 - logger/index.ts
 - app/blog/page.tsx
 - blog/[slug]/page.tsx
@@ -57,7 +57,7 @@
 - Hreflang & International SEO
 - contact-form.tsx
 - AuthService
-- project-card.tsx
+- projects-editor.tsx
 - GitHubService
 - Senior Architect
 - Senior Fullstack
@@ -70,7 +70,7 @@
 - commit-service.ts
 - TypeScript Advanced Types
 - lib/reconcile-candidates.mjs
-- getServerApiUrl
+- getSiteUrl
 - Categories
 - collect-signals.mjs
 - error-types.ts
@@ -78,7 +78,7 @@
 - compilerOptions
 - sanitizers/index.mjs
 - terminal.ts
-- use-security.ts
+- renderReport
 - getProjectsData
 - ServerLogger
 - AI Search / GEO Optimization (February 2026)
@@ -100,13 +100,13 @@
 - gates/index.mjs
 - withRouteShapeWarnings
 - scripts
-- detailed_roadmap.ts
+- getServerApiUrl
 - E-commerce SEO Strategy Template
 - Local Service Business SEO Strategy Template
 - Schema Markup Analysis & Generation
 - ts_diagnostic.py
 - route-normalize.mjs
-- verifyClaim
+- language-commands.ts
 - web-vitals.test.ts
 - Next.js SEO Indexing & Crawl Budget Skill
 - Senior Devops
@@ -148,8 +148,8 @@
 - TypeScript Cheatsheet
 - Recommendations
 - Subagent Orchestrator
-- verifyNextCacheLifetimeFreshnessSupported
-- site-footer.tsx
+- app/page.tsx
+- social-links.ts
 - pageview/test/route.test.ts
 - EnhancedError
 - ValidationUtils
@@ -170,7 +170,7 @@
 - Security Penetration Testing
 - Doctrine
 - cursor-context.tsx
-- projects-editor.tsx
+- PerformanceMonitor
 - hook-error-handler.ts
 - i18n_checker.py
 - impact-label.mjs
@@ -206,11 +206,11 @@
 - UX Audit
 - scanner-driven.mjs
 - select-candidates.mjs
-- readClaimFile
+- use-gestures.ts
 - login/page.test.tsx
 - use-mobile.ts
-- verify-and-regen.mjs
-- use-cursor.ts
+- offline-page-content.tsx
+- custom-cursor.tsx
 - EnhancedErrorBoundary
 - Senior SecOps Engineer
 - Quota Reference Card
@@ -224,7 +224,7 @@
 - Vulnerability Scanner
 - giscus-comments.tsx
 - faq.tsx
-- grade-recommendation.mjs
+- formatCandidateLabel
 - Example: Backend API Agent + Frontend UI Agent in Parallel
 - Example: Repair Mission for a Broken Build
 - TypeScript Advanced Types
@@ -232,7 +232,7 @@
 - lib
 - ArgumentParser
 - framework-support.mjs
-- command-input.tsx
+- cwv-poor.mjs
 - cache-components-suspense-dedupe.mjs
 - edge-heavy-import.mjs
 - turbo-force-bypass.mjs
@@ -244,7 +244,7 @@
 - Example: Building a Full Next.js Feature with 3 Parallel Agents
 - queries.mjs
 - TypoTolerance
-- extractHeaderValues
+- table-of-contents.tsx
 - API service
 - Content site
 - E-commerce
@@ -254,7 +254,7 @@
 - SvelteKit
 - undeclared-dep.mjs
 - overrides
-- layout.test.tsx
+- verify-contrast.test.ts
 - server-static-commands.tsx
 - Compliance Frameworks
 - Workflows
@@ -317,9 +317,7 @@
 - cold-start.mjs
 - isr-overrevalidation.mjs
 - middleware-heavy.mjs
-- observability-events-attribution.mjs
 - middleware-broad-matcher.mjs
-- missing-cache-headers.mjs
 - Support Topics
 - robots.test.ts
 - AsyncUtils
@@ -394,16 +392,16 @@
 - @vitest/ui
 - postcss.config.mjs
 - @vitest/utils
-- i18n/index.ts
+- dictionaries/index.ts
 - error-boundary-root.tsx
 - roadmap-dashboard.tsx
-- app/newsletter/page.tsx
+- roadmap/page.tsx
 - errors/error-handler.tsx
 - letter-glitch.tsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `useTheme()` - 113 edges
-2. `useI18n()` - 92 edges
+2. `useI18n()` - 93 edges
 3. `getApiUrl()` - 55 edges
 4. `verifyClaim()` - 42 edges
 5. `canRunTests` - 37 edges
@@ -416,35 +414,35 @@
 ## Surprising Connections (you probably didn't know these)
 - `exclude` --extends--> `node_modules/**/*`  [EXTRACTED]
   .agents/skills/typescript-expert/references/tsconfig-strict.json → tsconfig.json
+- `SiteNavFallback()` --calls--> `useI18n()`  [EXTRACTED]
+  src/components/layout/site-nav.tsx → src/hooks/use-i18n.ts
+- `PerformanceMonitorProps` --references--> `ThemeConfig`  [EXTRACTED]
+  src/components/organisms/admin/performance-monitor.tsx → src/types/theme.ts
 - `SetupPanelProps` --references--> `useTheme()`  [EXTRACTED]
   src/app/admin/2fa/page.tsx → src/hooks/use-theme.ts
 - `TimerManager` --references--> `EnhancedError`  [EXTRACTED]
   src/hooks/use-timer-manager.ts → src/lib/errors/error-types.ts
-- `PerformanceMonitorProps` --references--> `ThemeConfig`  [EXTRACTED]
-  src/components/organisms/admin/performance-monitor.tsx → src/types/theme.ts
-- `TranslationReviewProps` --references--> `ThemeConfig`  [EXTRACTED]
-  src/components/molecules/admin/translation-review.tsx → src/types/theme.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (398 total, 74 thin omitted)
+## Communities (396 total, 73 thin omitted)
 
-### Community 0 - "locales.ts"
-Cohesion: 0.10
-Nodes (17): languageCommand, showCurrentLanguage(), LocaleConfig, I18nService, t(), ALL_LOCALES, BlogContentLocale, DEFAULT_LOCALE (+9 more)
+### Community 0 - "i18n/index.ts"
+Cohesion: 0.13
+Nodes (15): I18nService, translations, tWithFallback(), ALL_LOCALES, BlogContentLocale, DEFAULT_LOCALE, getFallbackLocale(), getLocaleConfig() (+7 more)
 
 ### Community 1 - "dedup-recs.mjs"
 Cohesion: 0.08
 Nodes (57): affectedFiles(), appliesAlsoEntry(), cacheLifeIntent(), dedupEditTarget(), dedupeRecommendations(), dedupIntent(), firstAffectedFile(), fixShape() (+49 more)
 
 ### Community 2 - "extract-claims.mjs"
-Cohesion: 0.18
-Nodes (31): asArray(), cacheRecommendationFiles(), extractClaims(), isCacheCandidate(), mentionsAuthSensitiveParallelization(), mentionsCachedNotFoundOr404(), mentionsCacheLifeCdnHeaderClaim(), mentionsCacheLifetimeChange() (+23 more)
+Cohesion: 0.09
+Nodes (54): asArray(), cacheRecommendationFiles(), extractClaims(), isCacheCandidate(), mentionsAuthSensitiveParallelization(), mentionsCachedNotFoundOr404(), mentionsCacheLifeCdnHeaderClaim(), mentionsCacheLifetimeChange() (+46 more)
 
 ### Community 3 - "terminal.tsx"
 Cohesion: 0.08
-Nodes (28): Terminal, TerminalClient(), SkipLinks(), SkipLinksProps, SkipToContent(), SkipToContentProps, CustomizationButton(), ASCIIBanner (+20 more)
+Nodes (26): Terminal, TerminalClient(), CustomizationButton(), ASCIIBanner, NotificationToast(), NotificationToastProps, CommandLoadingIndicator(), CommandLoadingIndicatorProps (+18 more)
 
 ### Community 4 - "workspace-resolver.mjs"
 Cohesion: 0.07
@@ -455,24 +453,24 @@ Cohesion: 0.07
 Nodes (32): getBackendUrl(), handleAuthProxy(), POST, mockFetch, POST(), ALLOWED, Endpoint, GET (+24 more)
 
 ### Community 6 - "data-fetching.ts"
-Cohesion: 0.07
-Nodes (44): AboutContent(), metadata, RoadmapContent(), AboutSection(), AboutSectionClient(), AboutSectionClientProps, FeaturedProjectsClient(), FeaturedProjects() (+36 more)
+Cohesion: 0.10
+Nodes (31): AboutContent(), RoadmapContent(), CACHE_DURATIONS, checkDataHealth(), Experience, ExperienceType, fetchRoadmapBackend(), generateSlug() (+23 more)
 
 ### Community 7 - "use-terminal.ts"
-Cohesion: 0.11
-Nodes (21): ALL_COMMANDS, getBlogCommands(), getResumeCommand(), getRoadmapCommands(), getTechStackCommands(), SPECIAL_COMMANDS, STORAGE_KEYS, useTerminal() (+13 more)
+Cohesion: 0.17
+Nodes (17): ALL_COMMANDS, getBlogCommands(), getResumeCommand(), getRoadmapCommands(), getTechStackCommands(), SPECIAL_COMMANDS, STORAGE_KEYS, useTerminal() (+9 more)
 
 ### Community 8 - "utility-types.ts"
 Cohesion: 0.04
 Nodes (45): Arguments, AssertEqual, AsyncFunction, AtLeast, Brand, DeepMutable, DeepPartial, DeepReadonly (+37 more)
 
 ### Community 9 - "lib/render-report.mjs"
-Cohesion: 0.10
-Nodes (51): formatCandidateLabel(), formatKind(), asArray(), assertValidObservations(), buildFinalReportMessage(), candidateForDisplay(), canonicalRefOf(), compactFinalText() (+43 more)
+Cohesion: 0.13
+Nodes (27): buildFinalReportMessage(), canonicalRefOf(), compactFinalText(), costRoundsToCents(), displayCandidate(), enrichRecFromCandidates(), extractCoverageLine(), formatBytes() (+19 more)
 
-### Community 10 - "use-theme.ts"
-Cohesion: 0.07
-Nodes (39): BlogEditorProps, CustomEditorProps, ProjectImageUploadProps, ProjectsEditorProps, TerminalLoginFormProps, LazyThemeLoader(), LazyThemeLoaderProps, API_URL (+31 more)
+### Community 10 - "theme.ts"
+Cohesion: 0.14
+Nodes (19): AccessibilityMenu(), ThemeManagerProps, LazyThemeLoader(), LazyThemeLoaderProps, ThemeState, defaultTheme, getSortedThemeNames(), getThemeConfig() (+11 more)
 
 ### Community 11 - "RoadmapService"
 Cohesion: 0.09
@@ -482,9 +480,9 @@ Nodes (28): b642buf(), buf2b64(), clientDecrypt(), clientEncrypt(), ClientSessio
 Cohesion: 0.04
 Nodes (44): Audit Framework (Priority Order), Authoritativeness, Calculation, Category Breakdown, Category Scoring Rules, Change Tracking (Optional but Recommended), Confidence Modifier, Content Optimization (+36 more)
 
-### Community 13 - "blog-editor.tsx"
+### Community 13 - "series/[slug]/page.tsx"
 Cohesion: 0.14
-Nodes (19): BlogEditor(), BlogPost, BlogStatus, CustomEditor, LocalBlogPost, BlogContent(), BlogContentProps, enhanceBlogImages() (+11 more)
+Nodes (17): BlogListSkeleton(), BlogSeriesContent(), BlogSeriesSkeleton(), generateMetadata(), SeriesPageProps, BlogPostSkeleton(), SeriesFilter(), SeriesFilterInner() (+9 more)
 
 ### Community 14 - "errors.ts"
 Cohesion: 0.07
@@ -492,27 +490,27 @@ Nodes (14): AppError, AuthenticationError, AuthorizationError, ConflictError, Da
 
 ### Community 15 - "useTheme"
 Cohesion: 0.07
-Nodes (45): AboutFormData, AdminAboutPage(), AdminBlogPage(), AdminCmsPage(), CMS_ENDPOINTS, AdminExperiencePage(), EMPTY_FORM, ExperienceEntry (+37 more)
+Nodes (46): AboutFormData, AdminAboutPage(), AdminBlogPage(), PendingTranslationItem, PendingTranslationsResponse, TranslationsPage(), AdminCmsPage(), CMS_ENDPOINTS (+38 more)
 
-### Community 16 - "lineOf"
+### Community 16 - "scanners/index.mjs"
 Cohesion: 0.11
-Nodes (21): isApplicable(), metadata, scan(), isApplicable(), metadata, scan(), metadata, scan() (+13 more)
+Nodes (22): isApplicable(), metadata, scan(), isApplicable(), metadata, scan(), scanners, metadata (+14 more)
 
 ### Community 17 - "select.tsx"
-Cohesion: 0.10
-Nodes (28): ImagePlaceholder(), ImagePlaceholderProps, CommandNode, CommandRelationship, CommandRelationshipVisualizer(), CommandRelationshipVisualizerProps, HistorySearchPanelProps, ExecutionPattern (+20 more)
+Cohesion: 0.09
+Nodes (31): ImagePlaceholder(), ImagePlaceholderProps, LanguageSwitcherProps, CommandNode, CommandRelationship, CommandRelationshipVisualizer(), CommandRelationshipVisualizerProps, HistorySearchPanel() (+23 more)
 
-### Community 18 - "customization-manager.tsx"
-Cohesion: 0.12
-Nodes (20): LenisScroll(), LenisScrollProps, BackgroundManager(), BackgroundManagerProps, FontManager(), FontManagerProps, SettingsManager(), ThemeManager() (+12 more)
+### Community 18 - "useI18n"
+Cohesion: 0.09
+Nodes (31): LenisScroll(), LenisScrollProps, ShareButtons(), ShareButtonsProps, BackgroundManager(), BackgroundManagerProps, FontManager(), FontManagerProps (+23 more)
 
 ### Community 19 - "projects/[slug]/page.tsx"
 Cohesion: 0.11
 Nodes (18): categorizeTechnologies(), DATA_KEYS, findProject(), FRONTEND_KEYS, generateMetadata(), generateStaticParams(), getDefaultHighlights(), PageProps (+10 more)
 
 ### Community 20 - "PerformanceMonitor"
-Cohesion: 0.10
-Nodes (10): PerformanceDashboard(), PerformanceDashboardProps, PerformanceMonitor, PerformanceProfiler(), PerformanceProfilerProps, usePerfMeasure(), PerformanceMetric, PerformanceMonitor (+2 more)
+Cohesion: 0.16
+Nodes (4): PerformanceMetric, PerformanceMonitor, PerformanceReport, usePerformanceMonitor()
 
 ### Community 21 - "Next.js Optimization Guide"
 Cohesion: 0.05
@@ -527,28 +525,28 @@ Cohesion: 0.14
 Nodes (24): GateLevel1Page(), GateLevel2Page(), GateLevel3PageClient(), GateIndexPage(), GateProgress(), GateProgressProps, LEVELS, GateLevel3Client() (+16 more)
 
 ### Community 24 - "terminal-context.tsx"
-Cohesion: 0.09
-Nodes (30): NAV_LINKS, SiteNav(), SiteNavProps, TerminalFeaturesModal, UnlockedCustomizationProvider(), RootCustomizationModal(), RootCustomizationModalProps, Feature (+22 more)
+Cohesion: 0.08
+Nodes (32): NAV_LINKS, SiteNav(), SiteNavFallback(), SiteNavInner(), SiteNavProps, TerminalFeaturesModal, UnlockedCustomizationProvider(), RootCustomizationModal() (+24 more)
 
-### Community 25 - "hooks-utils.test.ts"
-Cohesion: 0.12
-Nodes (24): generateId(), isClientSide(), safeDOMManipulation(), useIntervalManager(), useLocalStorage(), useMountRef(), useTimerManager(), withErrorHandling() (+16 more)
+### Community 25 - "use-security.ts"
+Cohesion: 0.11
+Nodes (30): generateId(), isClientSide(), safeDOMManipulation(), useIntervalManager(), useLocalStorage(), useMountRef(), useTimerManager(), withErrorHandling() (+22 more)
 
 ### Community 26 - "logger/index.ts"
 Cohesion: 0.16
-Nodes (26): LogBuffer, clientConfig, DEFAULT_BATCH_CONFIG, getEnvironment(), getLogLevel(), LOG_PATHS, PERFORMANCE_THRESHOLDS, PII_PATTERNS (+18 more)
+Nodes (27): LogBuffer, clientConfig, DEFAULT_BATCH_CONFIG, getEnvironment(), getLogLevel(), LOG_PATHS, PERFORMANCE_THRESHOLDS, PII_PATTERNS (+19 more)
 
 ### Community 27 - "app/blog/page.tsx"
-Cohesion: 0.06
-Nodes (39): BlogListResponse, BlogListSkeleton(), BlogPageContent(), BlogPageMetadataProps, BlogPostItem, getAvailableTags(), getBackendUrl(), getBlogPosts() (+31 more)
+Cohesion: 0.14
+Nodes (17): BlogListResponse, BlogPageContent(), BlogPageMetadataProps, BlogPostItem, getAvailableTags(), getBackendUrl(), getBlogPosts(), TagChip() (+9 more)
 
 ### Community 28 - "blog/[slug]/page.tsx"
-Cohesion: 0.09
-Nodes (24): alt, contentType, Image(), size, BlogPost, BlogPostContent(), BlogPostPageProps, generateMetadata() (+16 more)
+Cohesion: 0.08
+Nodes (27): alt, contentType, Image(), size, BlogPost, BlogPostContent(), BlogPostPageProps, generateMetadata() (+19 more)
 
 ### Community 29 - "test-helpers.ts"
-Cohesion: 0.13
-Nodes (12): metadata, OfflinePage(), mockHighlights, localStorageMock, localStorageMock, commandHistoryMock, mockLocalStorage, mockFetch (+4 more)
+Cohesion: 0.11
+Nodes (14): MockAuthState, mockPathname, mockPush, mockRouter, mockHighlights, localStorageMock, localStorageMock, commandHistoryMock (+6 more)
 
 ### Community 30 - "Senior Frontend"
 Cohesion: 0.06
@@ -556,11 +554,11 @@ Nodes (32): Accessibility and Testing, Accessibility Checklist, Bundle Analysis,
 
 ### Community 31 - "standard-page-layout.tsx"
 Cohesion: 0.09
-Nodes (13): metadata, ProjectsPage(), mockFeaturedProjects, mockProjects, mockUseSyncContent, ProjectsClient(), ProjectsPageContent(), PageviewBeacon() (+5 more)
+Nodes (12): metadata, ProjectsPage(), mockFeaturedProjects, mockProjects, mockUseSyncContent, PageviewBeacon(), PageviewBeaconInner(), StandardPageLayout() (+4 more)
 
 ### Community 32 - "getApiUrl"
-Cohesion: 0.07
-Nodes (28): PendingTranslationItem, PendingTranslationsResponse, TranslationsPage(), ACCEPTED_TYPES, ImageDropZone(), ImageDropZoneProps, ImageUploadButton(), ImageUploadButtonProps (+20 more)
+Cohesion: 0.05
+Nodes (49): BlogEditor(), BlogEditorProps, BlogPost, BlogStatus, CustomEditor, LocalBlogPost, CustomEditorProps, ACCEPTED_TYPES (+41 more)
 
 ### Community 33 - "Content Quality & E-E-A-T Analysis"
 Cohesion: 0.06
@@ -595,12 +593,16 @@ Cohesion: 0.13
 Nodes (26): RFC-5322, metadata, ContactForm(), EMPTY, FieldProps, FormState, validateForm(), ContactFailure (+18 more)
 
 ### Community 41 - "AuthService"
-Cohesion: 0.08
-Nodes (20): AdminLayoutInner(), AdminLayoutInnerProps, isPublicPath(), PUBLIC_ADMIN_PATHS, AdminLayout(), AdminLayoutProps, AuthContext, AuthContextType (+12 more)
+Cohesion: 0.09
+Nodes (18): AdminLayoutInner(), AdminLayoutInnerProps, isPublicPath(), PUBLIC_ADMIN_PATHS, AdminLayout(), AdminLayoutProps, AuthContextType, AuthProvider() (+10 more)
 
-### Community 42 - "project-card.tsx"
-Cohesion: 0.18
-Nodes (8): ProjectsClientProps, ProjectCard, ProjectCardProps, ImageErrorBoundary, Props, State, FeaturedProjectsClientProps, Project
+### Community 42 - "projects-editor.tsx"
+Cohesion: 0.10
+Nodes (17): ProjectsClient(), ProjectsClientProps, TechBadge(), TechBadgeProps, getTechConfig(), normalizeTechKey(), POPULAR_TECH_PRESETS, TECH_REGISTRY (+9 more)
+
+### Community 43 - "GitHubService"
+Cohesion: 0.08
+Nodes (7): GitHubCommit, GitHubRepo, GitHubRepoSummary, GitHubService, GitHubStatsResponse, GitHubUser, GitHubUserResponse
 
 ### Community 44 - "Senior Architect"
 Cohesion: 0.07
@@ -611,8 +613,8 @@ Cohesion: 0.07
 Nodes (28): 1. Fullstack Scaffolder, 1. Setup and Configuration, 2. Project Scaffolder, 2. Run Quality Checks, 3. Code Quality Analyzer, 3. Implement Best Practices, Architecture Patterns, Best Practices Summary (+20 more)
 
 ### Community 46 - "verify-claim.mjs"
-Cohesion: 0.11
-Nodes (28): isKnownUrl(), findRecContradictions(), asArray(), buildScriptHasMigrationSideEffect(), cacheInvalidationFileCache, firstAccessiblePath(), firstDynamicRouteChainReason(), normalizeProjectRootDirectory() (+20 more)
+Cohesion: 0.07
+Nodes (68): findRecContradictions(), buildScriptHasMigrationSideEffect(), cacheInvalidationFileCache, cacheLifeNeedsContentFreshnessProof(), cleanHeaderValue(), compilePattern(), configContainsTag(), dedupeCacheTags() (+60 more)
 
 ### Community 47 - "Portfolio Frontend"
 Cohesion: 0.07
@@ -631,8 +633,8 @@ Cohesion: 0.13
 Nodes (26): citationApplies(), HERE, KNOWN_CANDIDATE_KINDS, loadSupportTopics(), matchesCandidateKind(), matchesCandidateMetrics(), matchesCandidateRoutePatterns(), matchesFrameworks() (+18 more)
 
 ### Community 51 - "use-command-suggestions.ts"
-Cohesion: 0.13
-Nodes (13): COMMAND_METADATA, CommandMetadata, FuzzyMatcher, SuggestionCache, SuggestionItem, useCommandSuggestions(), UserContext, useDebouncedCallback() (+5 more)
+Cohesion: 0.12
+Nodes (15): CommandSuggestions(), CommandSuggestionsProps, COMMAND_METADATA, CommandMetadata, FuzzyMatcher, SuggestionCache, SuggestionItem, useCommandSuggestions() (+7 more)
 
 ### Community 52 - "commit-service.ts"
 Cohesion: 0.13
@@ -646,9 +648,9 @@ Nodes (25): 1. Generics, 1. Infer Keyword, 2. Conditional Types, 2. Type Guards,
 Cohesion: 0.26
 Nodes (24): arrayAt(), deploymentRegressionDecision(), dropWithObservation(), formatInteger(), formatMs(), formatPct(), isrOverrevalidationDecision(), numberAt() (+16 more)
 
-### Community 55 - "getServerApiUrl"
-Cohesion: 0.09
-Nodes (23): fetchRawPdfResponse(), GET(), POST(), TurnstileVerifyResponse, HomePage(), metadata, generateMetadata(), PageProps (+15 more)
+### Community 55 - "getSiteUrl"
+Cohesion: 0.17
+Nodes (12): HomePage(), BlogPostItem, escapeXml(), GET(), BlogPostItem, getBackendUrl(), sitemap(), mockFetch (+4 more)
 
 ### Community 56 - "Categories"
 Cohesion: 0.08
@@ -663,8 +665,8 @@ Cohesion: 0.13
 Nodes (14): AsyncErrorHandlerConfig, DEFAULT_RETRY_CONFIG, RetryConfig, APIError, AuthenticationError, BusinessLogicError, ErrorContext, ErrorMetadata (+6 more)
 
 ### Community 59 - "investigation-brief.mjs"
-Cohesion: 0.17
-Nodes (24): absoluteBriefPath(), briefRoots(), buildBrief(), cachePolicyGuidance(), capBriefFiles(), closestAncestorLayoutFiles(), isCatchAllPlaceholder(), isDynamicPlaceholder() (+16 more)
+Cohesion: 0.19
+Nodes (23): absoluteBriefPath(), briefRoots(), buildBrief(), cachePolicyGuidance(), capBriefFiles(), closestAncestorLayoutFiles(), isCatchAllPlaceholder(), isDynamicPlaceholder() (+15 more)
 
 ### Community 60 - "compilerOptions"
 Cohesion: 0.09
@@ -675,16 +677,16 @@ Cohesion: 0.11
 Nodes (14): applyDollarStrip(), stripDollarLiterals(), metadata, STRING_FIELDS, metadata, STRING_FIELDS, metadata, STRING_FIELDS (+6 more)
 
 ### Community 62 - "terminal.ts"
-Cohesion: 0.19
-Nodes (13): CommandOutputProps, ChainOperator, CommandParser, isSuccessOutput(), ParsedSegment, splitCommandChain(), splitPipeChain(), resumeCommand (+5 more)
+Cohesion: 0.21
+Nodes (10): ChainOperator, CommandParser, isSuccessOutput(), ParsedSegment, splitCommandChain(), splitPipeChain(), Command, CommandOutput (+2 more)
 
-### Community 63 - "use-security.ts"
-Cohesion: 0.22
-Nodes (13): createThreatAlert(), detectSuspiciousActivity(), isClientSide(), SECURITY_LIMITS, SecurityMetrics, SecurityState, ThreatAlert, TimestampedInput (+5 more)
+### Community 63 - "renderReport"
+Cohesion: 0.18
+Nodes (18): asArray(), assertValidObservations(), candidateForDisplay(), displayCandidateObject(), displayCandidateRef(), formatEvidenceText(), formatRecommendationText(), isPlatformScope() (+10 more)
 
 ### Community 64 - "getProjectsData"
-Cohesion: 0.18
-Nodes (13): alt, contentType, Image(), size, categorizeTechnologies(), categorizeTechnologiesData(), getProjectsByTech(), getTechStats() (+5 more)
+Cohesion: 0.15
+Nodes (16): ProjectsPageContent(), alt, contentType, Image(), size, FeaturedProjects(), categorizeTechnologies(), categorizeTechnologiesData() (+8 more)
 
 ### Community 66 - "AI Search / GEO Optimization (February 2026)"
 Cohesion: 0.09
@@ -703,8 +705,8 @@ Cohesion: 0.16
 Nodes (18): escapeODataString(), mergeIntoEvidence(), odataEq(), SCANNER_KINDS, simplify(), SPEC_GENERATORS, specsForCandidate(), TIME_WINDOW (+10 more)
 
 ### Community 70 - "display-labels.mjs"
-Cohesion: 0.15
-Nodes (18): formatNumberLike(), formatPublicText(), formatRoute(), formatSignal(), formatSignalPart(), formatSignalValue(), humanizeKey(), KIND_LABELS (+10 more)
+Cohesion: 0.17
+Nodes (16): formatNumberLike(), formatPublicText(), formatSignal(), formatSignalPart(), formatSignalValue(), humanizeKey(), KIND_LABELS, normalizeObservedWindowUnits() (+8 more)
 
 ### Community 71 - "vercel.mjs"
 Cohesion: 0.15
@@ -747,24 +749,24 @@ Cohesion: 0.10
 Nodes (20): Content Priorities, Content Quality Standards, Customization Points, E-E-A-T Essentials, Every Page Should Have, Generative Engine Optimization (GEO) Checklist, Generic Business SEO Strategy Template, Key Metrics to Track (+12 more)
 
 ### Community 81 - "citations.mjs"
-Cohesion: 0.18
-Nodes (18): compareVersion(), HERE, LIBRARY_PATH, libraryForStack(), loadLibrary(), lookupSkillRule(), lookupUrl(), matchesFrameworkVersion() (+10 more)
+Cohesion: 0.17
+Nodes (19): compareVersion(), HERE, isKnownUrl(), LIBRARY_PATH, libraryForStack(), loadLibrary(), lookupSkillRule(), lookupUrl() (+11 more)
 
 ### Community 82 - "gates/index.mjs"
 Cohesion: 0.13
-Nodes (18): GATE_VERSION, gates, MAX_CODE_CANDIDATES, metadata, scanners, metadata, HERE, main() (+10 more)
+Nodes (19): GATE_VERSION, gates, MAX_CODE_CANDIDATES, gate(), metadata, sumBilled(), metadata, HERE (+11 more)
 
 ### Community 83 - "withRouteShapeWarnings"
-Cohesion: 0.11
-Nodes (23): byRoute(), gate(), metadata, ratioOverThreshold(), round2(), sumRows(), extractErrors(), extractFromStatusRows() (+15 more)
+Cohesion: 0.14
+Nodes (17): extractErrors(), extractFromStatusRows(), gate(), metadata, extractErrorRatesByRoute(), extractFunctionRoutes(), gate(), metadata (+9 more)
 
 ### Community 84 - "scripts"
 Cohesion: 0.10
 Nodes (21): scripts, build, clean, dev, dev:clean, format, lint, lint:fix (+13 more)
 
-### Community 85 - "detailed_roadmap.ts"
-Cohesion: 0.12
-Nodes (16): Data, Data2, Dimensions, Edge, Legend, Legend2, Measured, Node (+8 more)
+### Community 85 - "getServerApiUrl"
+Cohesion: 0.08
+Nodes (27): fetchRawPdfResponse(), GET(), POST(), TurnstileVerifyResponse, generateMetadata(), PageProps, RoadmapDetailContent(), ProgressResponse (+19 more)
 
 ### Community 86 - "E-commerce SEO Strategy Template"
 Cohesion: 0.10
@@ -786,9 +788,9 @@ Nodes (19): check_any_usage(), check_monorepo(), check_performance(), check_tool
 Cohesion: 0.21
 Nodes (18): candidateKey(), canonicalizeBranchPrefix(), canonicalizeRoute(), decodeSegmentToken(), dedupeCandidates(), firstRouteSegment(), isBase64FlagState(), isDynamicPlaceholder() (+10 more)
 
-### Community 91 - "verifyClaim"
-Cohesion: 0.18
-Nodes (19): recText(), verifyAuthGuardParallelizationSafety(), verifyCache404LongTtlSafety(), verifyCachePolicyPositiveOrNoReadyRec(), verifyCacheVaryCardinalitySafe(), verifyClaim(), verifyImmutableDynamicRouteSafety(), verifyNextCacheComponentsRouteSegmentConfig() (+11 more)
+### Community 91 - "language-commands.ts"
+Cohesion: 0.16
+Nodes (10): blogCommand, BlogPostItem, blogReadCommand, fetchRecentPosts(), languageCommand, showCurrentLanguage(), roadmapCommand, LocaleConfig (+2 more)
 
 ### Community 92 - "web-vitals.test.ts"
 Cohesion: 0.15
@@ -831,16 +833,16 @@ Cohesion: 0.11
 Nodes (18): Acknowledgments, After Reporting, Authentication & Authorization, Contact, How to Report, In Scope, Infrastructure Security, Input Validation & Sanitization (+10 more)
 
 ### Community 102 - "newsletter-service.ts"
-Cohesion: 0.14
-Nodes (17): AdminNewsletterPage(), ConfirmContent(), LoadingFallback(), LoadingFallback(), UnsubscribeContent(), NewsletterSignup(), apiBase(), authedFetch() (+9 more)
+Cohesion: 0.16
+Nodes (15): AdminNewsletterPage(), ConfirmContent(), LoadingFallback(), LoadingFallback(), UnsubscribeContent(), apiBase(), authedFetch(), broadcastNewsletter() (+7 more)
 
 ### Community 103 - "LocationService"
 Cohesion: 0.14
 Nodes (7): TimeDisplay(), TimeDisplayProps, LocationInfo, LocationService, TimeInfo, sampleIpApiFallback, sampleIpApiResponse
 
 ### Community 105 - "logger/utils.ts"
-Cohesion: 0.20
-Nodes (16): formatError(), generateCorrelationId(), getCookie(), getDeviceType(), getObjectSize(), getRequestContext(), isServer(), maskCreditCard() (+8 more)
+Cohesion: 0.22
+Nodes (15): formatError(), generateCorrelationId(), getCookie(), getDeviceType(), getObjectSize(), getRequestContext(), maskCreditCard(), maskEmail() (+7 more)
 
 ### Community 106 - "i18n & Localization"
 Cohesion: 0.11
@@ -871,8 +873,8 @@ Cohesion: 0.25
 Nodes (15): formatDate(), MessageDetail(), MessageList(), MessagesInbox(), AdminContactMessage, AdminMessagesListResponse, authedFetch(), bulkDeleteMessages() (+7 more)
 
 ### Community 113 - "useAccessibility"
-Cohesion: 0.11
-Nodes (21): AnimatedButton(), AnimatedButtonProps, FadeIn(), FadeInProps, HoverCard(), HoverCardProps, StaggerContainer(), StaggerContainerProps (+13 more)
+Cohesion: 0.09
+Nodes (25): AnimatedButton(), AnimatedButtonProps, FadeIn(), FadeInProps, HoverCard(), HoverCardProps, StaggerContainer(), StaggerContainerProps (+17 more)
 
 ### Community 114 - "proxy.ts"
 Cohesion: 0.21
@@ -895,8 +897,8 @@ Cohesion: 0.21
 Nodes (14): AdminTwoFactorPage(), SetupPanelProps, Stage, authedGet(), authedJson(), disableTwoFactor(), getApiBase(), getAuthToken() (+6 more)
 
 ### Community 119 - "app/about/page.tsx"
-Cohesion: 0.11
-Nodes (10): metadata, SKILL_GROUPS, AboutResumeButton(), ArticleSchema(), BreadcrumbListSchema(), JsonLdProps, PersonSchema(), TurnstileResumeModal() (+2 more)
+Cohesion: 0.12
+Nodes (9): metadata, SKILL_GROUPS, AboutResumeButton(), ArticleSchema(), BreadcrumbListSchema(), JsonLdProps, PersonSchema(), TurnstileResumeModal() (+1 more)
 
 ### Community 120 - "result.test.ts"
 Cohesion: 0.28
@@ -950,13 +952,13 @@ Nodes (15): Before/after code fences required, Cite at least one URL from the li
 Cohesion: 0.14
 Nodes (13): Communication Rules, Do not use this skill when, Examples, Limitations, Phase 1 — DECOMPOSE (before any agent runs), Phase 2 — QUOTA ROUTING, Phase 3 — CONTEXT ISOLATION, Phase 4 — PARALLEL EXECUTION (+5 more)
 
-### Community 133 - "verifyNextCacheLifetimeFreshnessSupported"
-Cohesion: 0.19
-Nodes (14): cacheLifeNeedsContentFreshnessProof(), configContainsTag(), dedupeCacheTags(), escapeRegExp(), execFileP, extractCacheTags(), extractCacheTagsFromFiles(), hasConfigDrivenInvalidation() (+6 more)
+### Community 133 - "app/page.tsx"
+Cohesion: 0.17
+Nodes (10): metadata, AboutSection(), AboutSectionClient(), AboutSectionClientProps, LandingSectionSkeleton(), BlogPostItem, getLatestPosts(), LatestPosts() (+2 more)
 
-### Community 134 - "site-footer.tsx"
-Cohesion: 0.21
-Nodes (8): CopyrightYear(), SiteFooter(), FooterResumeButton(), getSocialLink(), SOCIAL_LINKS, SocialLink, SEO_CONFIG, SEO_HELPERS
+### Community 134 - "social-links.ts"
+Cohesion: 0.36
+Nodes (5): getSocialLink(), SOCIAL_LINKS, SocialLink, SEO_CONFIG, SEO_HELPERS
 
 ### Community 135 - "pageview/test/route.test.ts"
 Cohesion: 0.47
@@ -1035,12 +1037,12 @@ Cohesion: 0.17
 Nodes (12): Cost framing is magnitude, never precise, Doctrine, Four-check first-pass (Enterprise), Out of scope, Performance citations cite observed data, Rule 1: Observability before investigation, Rule 2: Deterministic gate before every sub-agent investigation, Rule 3: Candidate-bound investigation scope (+4 more)
 
 ### Community 154 - "cursor-context.tsx"
-Cohesion: 0.38
-Nodes (5): CursorContext, CursorProvider(), CursorProviderProps, useCursor(), CursorContextValue
+Cohesion: 0.29
+Nodes (8): CursorContext, CursorProvider(), CursorProviderProps, useCursor(), CursorContextValue, CursorState, CursorTheme, UseCursorReturn
 
-### Community 155 - "projects-editor.tsx"
-Cohesion: 0.21
-Nodes (9): TechBadge(), TechBadgeProps, getTechConfig(), normalizeTechKey(), POPULAR_TECH_PRESETS, TECH_REGISTRY, TechIconMeta, TechIconProps (+1 more)
+### Community 155 - "PerformanceMonitor"
+Cohesion: 0.33
+Nodes (4): PerformanceMonitor, PerformanceProfiler(), PerformanceProfilerProps, usePerfMeasure()
 
 ### Community 156 - "hook-error-handler.ts"
 Cohesion: 0.26
@@ -1051,8 +1053,8 @@ Cohesion: 0.29
 Nodes (10): check_hardcoded_strings(), check_locale_completeness(), find_locale_files(), flatten_keys(), main(), Path, Flatten nested dict keys., Check for hardcoded strings in code files. (+2 more)
 
 ### Community 158 - "impact-label.mjs"
-Cohesion: 0.38
-Nodes (10): computeImpactLabel(), cwvIssue(), formatCwvIssue(), formatInteger(), joinEnglish(), parseSigNumber(), round1(), round2() (+2 more)
+Cohesion: 0.33
+Nodes (11): computeImpactLabel(), cwvIssue(), formatCwvIssue(), formatInteger(), joinEnglish(), parseSigNumber(), round1(), round2() (+3 more)
 
 ### Community 159 - "OWASP Top 10 Audit Checklist"
 Cohesion: 0.18
@@ -1071,8 +1073,8 @@ Cohesion: 0.36
 Nodes (9): AdminPortfolioPage(), apiBase(), authedFetch(), listPortfolioVersions(), PORTFOLIO_SECTIONS, PortfolioSection, PortfolioVersionSummary, RestorePortfolioResponse (+1 more)
 
 ### Community 163 - "app/layout.tsx"
-Cohesion: 0.18
-Nodes (9): jetbrainsMono, metadata, viewport, LenisProvider(), LenisProviderProps, ThemeInitScript(), ScreenReaderAnnouncer(), ScreenReaderAnnouncerProps (+1 more)
+Cohesion: 0.22
+Nodes (7): jetbrainsMono, metadata, viewport, ThemeInitScript(), ScreenReaderAnnouncer(), ScreenReaderAnnouncerProps, JetBrains_Mono
 
 ### Community 164 - "seo-keyword-strategist/SKILL.md"
 Cohesion: 0.20
@@ -1091,8 +1093,8 @@ Cohesion: 0.27
 Nodes (8): apply(), COUNT_CLAIM_TYPES, metadata, rewriteCount(), apply(), metadata, STRIP_DIRECTIVES, escapeRegex()
 
 ### Community 169 - "verifyNextCacheComponentsRouteChainFile"
-Cohesion: 0.22
-Nodes (10): formatPct(), functionStatusForRoute(), isCatchAllPlaceholder(), isDynamicPlaceholder(), layoutAppliesToCandidateRoute(), normalizeRouteForLayoutMatch(), numberValue(), routeFromCandidateRef() (+2 more)
+Cohesion: 0.13
+Nodes (17): asArray(), firstDynamicRouteChainReason(), formatPct(), functionStatusForRoute(), isCatchAllPlaceholder(), isDynamicPlaceholder(), layoutAppliesToCandidateRoute(), normalizeProjectRootDirectory() (+9 more)
 
 ### Community 170 - "scoring.md"
 Cohesion: 0.20
@@ -1127,7 +1129,7 @@ Cohesion: 0.33
 Nodes (3): AsyncErrorHandler, handleAsync(), useAsyncErrorHandler()
 
 ### Community 180 - "project-card-image.tsx"
-Cohesion: 0.25
+Cohesion: 0.23
 Nodes (10): ProjectCardImage(), ProjectCardImageProps, OptimizedImage(), OptimizedImageProps, ProjectMockupFrame(), ProjectMockupFrameProps, DEFAULT_SIZES, getBlurDataUrl() (+2 more)
 
 ### Community 181 - "Performance Profiler"
@@ -1170,9 +1172,9 @@ Nodes (8): candidateForGroup(), gate(), groupFindings(), metadata, observedCache
 Cohesion: 0.36
 Nodes (8): candidateIdentity(), DEFAULT_KIND_CAPS, DIVERSITY_ELIGIBILITY, durationMsFromSignal(), isDiversityEligible(), numberFromEvidence(), numberFromSignal(), selectLaunchCandidates()
 
-### Community 191 - "readClaimFile"
-Cohesion: 0.31
-Nodes (9): compilePattern(), readClaimFile(), snippetFoundElsewhere(), verifyCodeSnippet(), verifyPatternAbsent(), verifyPatternCount(), verifyPatternExists(), verifyRepoCount() (+1 more)
+### Community 191 - "use-gestures.ts"
+Cohesion: 0.27
+Nodes (6): DEFAULT_CONFIG, GestureCallbacks, GestureConfig, TouchState, useGestures(), useTerminalGestures()
 
 ### Community 192 - "login/page.test.tsx"
 Cohesion: 0.22
@@ -1182,13 +1184,13 @@ Nodes (8): mockComplete2FA, mockLogin, mockLogout, mockPush, mockRefresh, mockRo
 Cohesion: 0.33
 Nodes (6): GateLayout(), MobileTerminal(), MobileTerminalProps, BREAKPOINTS, MobileState, useMobile()
 
-### Community 194 - "verify-and-regen.mjs"
-Cohesion: 0.31
-Nodes (11): summarizeClaimResults(), applyQualityFloor(), deriveRootFromSignals(), detectRepoRoot(), fileResolvesAt(), pickProbeFile(), resolveRepoRoot(), log() (+3 more)
+### Community 194 - "offline-page-content.tsx"
+Cohesion: 0.32
+Nodes (5): OfflinePageContent(), metadata, OfflinePage(), OfflineRadar(), OfflineRadarProps
 
-### Community 195 - "use-cursor.ts"
-Cohesion: 0.27
-Nodes (7): CursorState, CursorTheme, CustomCursor(), useCursor(), UseCursorReturn, PointerDeviceInfo, usePointerDevice()
+### Community 195 - "custom-cursor.tsx"
+Cohesion: 0.36
+Nodes (4): CustomCursor(), useCursor(), PointerDeviceInfo, usePointerDevice()
 
 ### Community 197 - "Senior SecOps Engineer"
 Cohesion: 0.25
@@ -1238,9 +1240,9 @@ Nodes (6): CATEGORY_ENV_MAP, CommentsSkeleton(), GiscusComments, GiscusCategoryK
 Cohesion: 0.25
 Nodes (3): CommonFAQItems, FAQItem, FAQProps
 
-### Community 209 - "grade-recommendation.mjs"
-Cohesion: 0.39
-Nodes (11): grade(), gradeRecommendation(), isAccountScope(), roundTo(), scoreActionability(), scoreEvidence(), scoreEvidenceAccount(), scoreGrounding() (+3 more)
+### Community 209 - "formatCandidateLabel"
+Cohesion: 0.38
+Nodes (7): formatCandidateLabel(), formatKind(), formatRoute(), escape(), formatGatedTargets(), groupGatedCandidates(), renderGatedTable()
 
 ### Community 210 - "Example: Backend API Agent + Frontend UI Agent in Parallel"
 Cohesion: 0.29
@@ -1266,9 +1268,9 @@ Nodes (7): lib, DOM, ES2022, lib, dom, dom.iterable, es2022
 Cohesion: 0.43
 Nodes (6): classifyFrameworkSupport(), CORE_SUPPORTED_FRAMEWORKS, frameworkLabel(), LABELS, LIMITED_FRAMEWORKS, normalizeFramework()
 
-### Community 217 - "command-input.tsx"
-Cohesion: 0.28
-Nodes (6): CommandInput(), CommandInputProps, CommandSuggestions(), CommandSuggestionsProps, TabCompletion(), TabCompletionProps
+### Community 217 - "cwv-poor.mjs"
+Cohesion: 0.48
+Nodes (6): byRoute(), gate(), metadata, ratioOverThreshold(), round2(), sumRows()
 
 ### Community 218 - "cache-components-suspense-dedupe.mjs"
 Cohesion: 0.48
@@ -1310,9 +1312,9 @@ Nodes (5): Example: Building a Full Next.js Feature with 3 Parallel Agents, Exec
 Cohesion: 0.53
 Nodes (5): defaultNormalize(), normalizeColdStart(), normalizerFor(), QUERIES, normalizeSummary()
 
-### Community 229 - "extractHeaderValues"
-Cohesion: 0.33
-Nodes (6): cleanHeaderValue(), extractHeaderValues(), hasEmptyCacheDirective(), hasHeaderValue(), verifyCacheControlHeaderSyntax(), verifyCacheVaryMatchesDynamicInputs()
+### Community 229 - "table-of-contents.tsx"
+Cohesion: 0.50
+Nodes (4): extractHeadings(), Heading, TableOfContents(), TableOfContentsProps
 
 ### Community 230 - "API service"
 Cohesion: 0.33
@@ -1350,9 +1352,9 @@ Nodes (5): apply(), extractCodeBlocks(), metadata, NODE_BUILTINS, pkgRoot()
 Cohesion: 0.33
 Nodes (6): overrides, csstype, postcss, sharp, tmp, uuid
 
-### Community 239 - "layout.test.tsx"
-Cohesion: 0.33
-Nodes (4): MockAuthState, mockPathname, mockPush, mockRouter
+### Community 239 - "verify-contrast.test.ts"
+Cohesion: 0.83
+Nodes (3): getContrastRatio(), getLuminance(), hexToRgb()
 
 ### Community 240 - "server-static-commands.tsx"
 Cohesion: 0.53
@@ -1590,17 +1592,9 @@ Nodes (3): extractRows(), gate(), metadata
 Cohesion: 0.67
 Nodes (3): gate(), metadata, sumRows()
 
-### Community 302 - "observability-events-attribution.mjs"
-Cohesion: 0.67
-Nodes (3): gate(), metadata, sumBilled()
-
 ### Community 303 - "middleware-broad-matcher.mjs"
-Cohesion: 0.67
-Nodes (3): isApplicable(), metadata, scan()
-
-### Community 304 - "missing-cache-headers.mjs"
-Cohesion: 0.67
-Nodes (3): isApplicable(), metadata, scan()
+Cohesion: 0.18
+Nodes (7): isApplicable(), metadata, scan(), isApplicable(), metadata, scan(), metadata
 
 ### Community 305 - "Support Topics"
 Cohesion: 0.50
@@ -1650,21 +1644,21 @@ Nodes (3): 9. Cloud Security Considerations, Cloud-Specific Checks, Shared Respo
 Cohesion: 0.33
 Nodes (6): resolutions, csstype, postcss, sharp, tmp, uuid
 
-### Community 394 - "i18n/index.ts"
-Cohesion: 0.20
-Nodes (13): de_DE_key, en_US_key, es_ES_key, fr_FR_key, id_ID_key, ja_JP_key, ko_KR_key, pt_BR_key (+5 more)
+### Community 394 - "dictionaries/index.ts"
+Cohesion: 0.18
+Nodes (11): de_DE_key, en_US_key, es_ES_key, fr_FR_key, id_ID_key, ja_JP_key, ko_KR_key, pt_BR_key (+3 more)
 
 ### Community 397 - "error-boundary-root.tsx"
 Cohesion: 0.13
 Nodes (5): AsyncErrorBoundaryProps, DefaultErrorFallbackProps, ErrorBoundary, ErrorBoundaryProps, ErrorBoundaryState
 
 ### Community 399 - "roadmap-dashboard.tsx"
-Cohesion: 0.25
-Nodes (10): RoadmapCard(), RoadmapCardProps, RoadmapProgressBar(), RoadmapProgressBarProps, RoadmapStreakCard(), RoadmapStreakCardProps, RoadmapDashboardProps, RoadmapDashboard (+2 more)
+Cohesion: 0.23
+Nodes (11): RoadmapCard(), RoadmapCardProps, RoadmapProgressBar(), RoadmapProgressBarProps, RoadmapStreakCard(), RoadmapStreakCardProps, RoadmapDashboardOrganism(), RoadmapDashboardProps (+3 more)
 
-### Community 400 - "app/newsletter/page.tsx"
-Cohesion: 0.24
-Nodes (5): metadata, MODULES, PageHeader(), PageHeaderProps, RoadmapSkeleton()
+### Community 400 - "roadmap/page.tsx"
+Cohesion: 0.14
+Nodes (11): metadata, MODULES, metadata, PageHeader(), PageHeaderProps, NewsletterSignup(), RoadmapEmptyState(), RoadmapEmptyStateProps (+3 more)
 
 ### Community 405 - "errors/error-handler.tsx"
 Cohesion: 0.20
@@ -1675,24 +1669,24 @@ Cohesion: 0.33
 Nodes (4): LetterGlitchClientProps, LetterGlitch(), LetterGlitchClient, LetterGlitchProps
 
 ## Knowledge Gaps
-- **2022 isolated node(s):** `jetbrainsMono`, `viewport`, `metadata`, `ProgressResponse`, `RoadmapDetailClientProps` (+2017 more)
+- **2022 isolated node(s):** `NAV_LINKS`, `SiteNavProps`, `LocaleConfig`, `BlogContentLocale`, `LocaleMapping` (+2017 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **74 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **73 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `useI18n()` connect `useTheme` to `locales.ts`, `terminal.tsx`, `newsletter-service.ts`, `data-fetching.ts`, `contact-form.tsx`, `project-card.tsx`, `blog-editor.tsx`, `roadmap-dashboard.tsx`, `useAccessibility`, `customization-manager.tsx`, `getServerApiUrl`, `gate-client.ts`, `terminal-context.tsx`, `app/blog/page.tsx`, `test-helpers.ts`, `standard-page-layout.tsx`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
-- **Why does `useTheme()` connect `useTheme` to `getApiUrl`, `portfolio/page.tsx`, `terminal.tsx`, `newsletter-service.ts`, `use-theme.ts`, `messages/page.tsx`, `useAccessibility`, `customization-manager.tsx`, `select.tsx`, `PerformanceMonitor`, `errors/error-handler.tsx`, `2fa/page.tsx`, `terminal-context.tsx`, `command-input.tsx`, `test-helpers.ts`, `hooks-utils.test.ts`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
-- **Why does `canRunTests` connect `test-helpers.ts` to `login/page.test.tsx`, `use-timer-manager.ts`, `locales.ts`, `data-fetching.ts`, `use-toast.ts`, `errors.ts`, `giscus-comments.tsx`, `layout.test.tsx`, `use-command-suggestions.ts`, `result.test.ts`, `hooks-utils.test.ts`, `standard-page-layout.tsx`, `use-security.ts`, `terminal.ts`, `test/page.test.tsx`?**
+- **Why does `useI18n()` connect `useI18n` to `getApiUrl`, `offline-page-content.tsx`, `terminal.tsx`, `newsletter-service.ts`, `contact-form.tsx`, `projects-editor.tsx`, `language-commands.ts`, `series/[slug]/page.tsx`, `useTheme`, `roadmap-dashboard.tsx`, `select.tsx`, `useAccessibility`, `roadmap/page.tsx`, `getServerApiUrl`, `gate-client.ts`, `terminal-context.tsx`, `app/blog/page.tsx`, `test-helpers.ts`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `canRunTests` connect `test-helpers.ts` to `login/page.test.tsx`, `use-gestures.ts`, `test/page.test.tsx`, `use-timer-manager.ts`, `i18n/index.ts`, `data-fetching.ts`, `projects-editor.tsx`, `errors.ts`, `giscus-comments.tsx`, `use-command-suggestions.ts`, `project-card-image.tsx`, `result.test.ts`, `use-security.ts`, `standard-page-layout.tsx`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **What connects `jetbrainsMono`, `viewport`, `metadata` to the rest of the system?**
+- **Why does `useTheme()` connect `useTheme` to `portfolio/page.tsx`, `terminal.tsx`, `offline-page-content.tsx`, `newsletter-service.ts`, `theme.ts`, `messages/page.tsx`, `useAccessibility`, `useI18n`, `select.tsx`, `use-command-suggestions.ts`, `getServerApiUrl`, `2fa/page.tsx`, `errors/error-handler.tsx`, `terminal-context.tsx`, `use-security.ts`, `test-helpers.ts`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **What connects `NAV_LINKS`, `SiteNavProps`, `LocaleConfig` to the rest of the system?**
   _2022 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `locales.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.10158730158730159 - nodes in this community are weakly interconnected._
+- **Should `i18n/index.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.12688172043010754 - nodes in this community are weakly interconnected._
 - **Should `dedup-recs.mjs` be split into smaller, more focused modules?**
   _Cohesion score 0.07796610169491526 - nodes in this community are weakly interconnected._
-- **Should `terminal.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.07505285412262157 - nodes in this community are weakly interconnected._
+- **Should `extract-claims.mjs` be split into smaller, more focused modules?**
+  _Cohesion score 0.08825248392752776 - nodes in this community are weakly interconnected._

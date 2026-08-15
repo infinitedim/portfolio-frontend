@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense, type JSX } from "react";
 import { usePathname } from "next/navigation";
 import { recordPageview } from "@/lib/services/analytics-service";
 
-export function PageviewBeacon(): null {
+function PageviewBeaconInner(): null {
   const pathname = usePathname();
 
   useEffect(() => {
@@ -19,3 +19,12 @@ export function PageviewBeacon(): null {
 
   return null;
 }
+
+export function PageviewBeacon(): JSX.Element {
+  return (
+    <Suspense fallback={null}>
+      <PageviewBeaconInner />
+    </Suspense>
+  );
+}
+

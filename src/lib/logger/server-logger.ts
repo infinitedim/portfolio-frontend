@@ -75,7 +75,7 @@ class FileTransport {
       const oldFile = `${this.filePath}.${i}`;
       const newFile = `${this.filePath}.${i + 1}`;
 
-      if (existsSync(oldFile)) {
+      if (existsSync(/*turbopackIgnore: true*/ oldFile)) {
         if (i === this.maxFiles - 1) {
           try {
             require("fs").unlinkSync(oldFile);
