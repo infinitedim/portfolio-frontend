@@ -29,7 +29,7 @@ export function NewsletterSignup() {
   return (
     <form
       onSubmit={(e) => void handleSubmit(e)}
-      className="flex w-full max-w-md flex-col gap-2.5 sm:flex-row font-mono"
+      className="flex w-full max-w-md flex-col gap-2.5 sm:flex-row font-mono items-center"
     >
       <label
         htmlFor="newsletter-email"
@@ -37,8 +37,13 @@ export function NewsletterSignup() {
       >
         Email for newsletter
       </label>
-      <div className="relative flex-1">
-        <span className="absolute left-3 top-2.5 text-emerald-400 text-xs select-none">$</span>
+      <div className="relative w-full flex-1 flex items-center">
+        <span
+          className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-xs text-emerald-400 select-none pointer-events-none flex items-center justify-center"
+          aria-hidden="true"
+        >
+          $
+        </span>
         <input
           id="newsletter-email"
           type="email"
@@ -47,13 +52,13 @@ export function NewsletterSignup() {
           placeholder="you@example.com"
           required
           disabled={loading}
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-900/90 pl-7 pr-3 py-2 text-xs text-neutral-100 placeholder-neutral-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors"
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900/90 pl-7 pr-3 py-2 text-xs text-neutral-100 placeholder-neutral-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors font-mono"
         />
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg bg-emerald-400 text-neutral-950 font-semibold px-4 py-2 text-xs hover:bg-emerald-300 transition-colors disabled:opacity-50 shadow-md shadow-emerald-500/10 cursor-pointer select-none"
+        className="w-full sm:w-auto rounded-lg bg-emerald-400 text-neutral-950 font-semibold px-4 py-2 text-xs hover:bg-emerald-300 transition-colors disabled:opacity-50 shadow-md shadow-emerald-500/10 cursor-pointer select-none whitespace-nowrap"
       >
         {loading ? "$ Submitting..." : "$ dispatch --submit"}
       </button>

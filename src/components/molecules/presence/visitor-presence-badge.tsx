@@ -126,10 +126,7 @@ export function VisitorPresenceBadge() {
       className="inline-flex items-center gap-1.5 rounded-full border border-green-400/30 bg-green-400/5 px-2 py-0.5 font-mono text-xs text-green-400"
       title="Visitors currently on site"
     >
-      <span className="relative flex h-2 w-2">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
-      </span>
+      <span className="h-2 w-2 rounded-full bg-green-400 inline-block" />
       {count} online
     </span>
   );

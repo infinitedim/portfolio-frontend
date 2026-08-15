@@ -362,6 +362,27 @@ export const getGitHubData = cache(
   },
 );
 
+export const getGitHubAvatar = cache(
+  async (username?: string): Promise<string | null> => {
+    const targetUsername = username || process.env.GH_USERNAME || "infinitedim";
+    const backendUrl = getBackendUrl();
+
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/github/user/${encodeURIComponent(targetUsername)}`,
+        { next: { revalidate: 3600 } },
+      );
+
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      return data.avatarUrl || data.avatar_url || null;
+    } catch {
+      return null;
+    }
+  },
+);
+
 function getFallbackPortfolioData(): PortfolioData {
   return {
     projects: [],

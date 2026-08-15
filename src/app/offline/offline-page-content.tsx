@@ -39,7 +39,7 @@ export function OfflinePageContent(): JSX.Element {
       {/* Auto-Reconnect Banner Notice */}
       {isOnline && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 flex items-center gap-3 rounded-full border border-emerald-500/40 bg-emerald-950/90 px-4 py-2 text-xs text-emerald-300 shadow-2xl backdrop-blur-md animate-bounce">
-          <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+          <span className="h-2 w-2 rounded-full bg-emerald-400" />
           <span>Network Signal Restored! You are back online.</span>
           <button
             type="button"

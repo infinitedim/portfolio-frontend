@@ -235,32 +235,38 @@ export function ContactForm(): JSX.Element {
           </h2>
           <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5 font-mono text-sm text-neutral-400">
             <div className="mb-6 flex items-center gap-3">
-              <span className="relative flex h-3 w-3">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-400"></span>
-              </span>
               <span>Currently open for freelance & collaboration</span>
             </div>
-            
+
             <div className="mb-6 flex items-center gap-2">
               <Clock className="h-4 w-4" />
               <span>&lt; 24 hours average response time</span>
             </div>
-            
+
             <div className="mb-6 space-y-3">
-              <a href="mailto:hello@dimassaputra.com" className="flex items-center gap-2 hover:text-white transition-colors duration-200">
+              <a
+                href="mailto:hello@dimassaputra.com"
+                className="flex items-center gap-2 hover:text-white transition-colors duration-200"
+              >
                 <Mail className="h-4 w-4" /> Email
               </a>
-              <a href="https://github.com/dimassaputra" className="flex items-center gap-2 hover:text-white transition-colors duration-200">
+              <a
+                href="https://github.com/dimassaputra"
+                className="flex items-center gap-2 hover:text-white transition-colors duration-200"
+              >
                 <ExternalLink className="h-4 w-4" /> GitHub
               </a>
-              <a href="https://linkedin.com/in/dimassaputra" className="flex items-center gap-2 hover:text-white transition-colors duration-200">
+              <a
+                href="https://linkedin.com/in/dimassaputra"
+                className="flex items-center gap-2 hover:text-white transition-colors duration-200"
+              >
                 <ExternalLink className="h-4 w-4" /> LinkedIn
               </a>
             </div>
-            
+
             <p className="leading-relaxed">
-              I'm interested in full-stack projects, open source collaboration, and technical consulting.
+              I'm interested in full-stack projects, open source collaboration,
+              and technical consulting.
             </p>
           </div>
         </div>
@@ -271,191 +277,199 @@ export function ContactForm(): JSX.Element {
             <span className="text-emerald-400">$</span> send --message
           </h2>
 
-      {draftRestored && !submitted && (
-        <div className="mb-6 max-w-2xl flex items-center justify-between rounded border border-emerald-400/40 bg-emerald-400/5 px-4 py-2.5 font-mono text-xs text-emerald-400">
-          <span>[draft] Restored saved draft from local storage</span>
-          <button
-            type="button"
-            onClick={clearDraft}
-            className="underline opacity-80 hover:opacity-100 cursor-pointer"
-          >
-            Clear Draft
-          </button>
-        </div>
-      )}
-
-      {submitted ? (
-        <div className="rounded-lg border border-emerald-400/40 bg-emerald-400/5 p-6 font-mono text-sm text-emerald-400">
-          <p className="font-semibold">{t("contactSendSuccess")}</p>
-          <p className="mt-2 text-neutral-300">{t("contactSuccessDesc")}</p>
-          <button
-            type="button"
-            onClick={() => setSubmitted(false)}
-            className="mt-4 text-xs text-emerald-400 underline cursor-pointer"
-          >
-            {t("contactSendAnother")}
-          </button>
-        </div>
-      ) : (
-        <form
-          onSubmit={handleSubmit}
-          className="max-w-2xl space-y-5 font-mono text-sm"
-          noValidate
-        >
-          <Field
-            id="contact-name"
-            label={t("contactName")}
-            required
-            isValid={isNameValid}
-            error={errors.name}
-          >
-            <input
-              id="contact-name"
-              ref={nameInputRef}
-              type="text"
-              value={form.name}
-              onChange={(e) => update("name", e.target.value)}
-              onKeyDown={handleKeyDown}
-              maxLength={100}
-              autoComplete="name"
-              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
-                errors.name ? "focus:border-red-500" : "border-neutral-700"
-              }`}
-              disabled={submitting}
-              aria-invalid={errors.name ? "true" : "false"}
-              aria-describedby={errors.name ? "contact-name-error" : undefined}
-            />
-          </Field>
-
-          <Field
-            id="contact-email"
-            label={t("contactEmail")}
-            required
-            isValid={isEmailValid}
-            error={errors.email}
-          >
-            <input
-              id="contact-email"
-              type="email"
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              onKeyDown={handleKeyDown}
-              maxLength={254}
-              autoComplete="email"
-              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
-                errors.email ? "focus:border-red-500" : "border-neutral-700"
-              }`}
-              disabled={submitting}
-              aria-invalid={errors.email ? "true" : "false"}
-              aria-describedby={
-                errors.email ? "contact-email-error" : undefined
-              }
-            />
-          </Field>
-
-          <Field
-            id="contact-subject"
-            label={t("contactSubject")}
-            isValid={isSubjectValid}
-            error={errors.subject}
-          >
-            <input
-              id="contact-subject"
-              type="text"
-              value={form.subject}
-              onChange={(e) => update("subject", e.target.value)}
-              onKeyDown={handleKeyDown}
-              maxLength={200}
-              className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
-                errors.subject ? "focus:border-red-500" : "border-neutral-700"
-              }`}
-              disabled={submitting}
-              aria-invalid={errors.subject ? "true" : "false"}
-              aria-describedby={
-                errors.subject ? "contact-subject-error" : undefined
-              }
-            />
-          </Field>
-
-          <Field
-            id="contact-message"
-            label={t("contactMessage")}
-            required
-            isValid={isMessageValid}
-            error={errors.message}
-          >
-            <textarea
-              id="contact-message"
-              value={form.message}
-              onChange={(e) => update("message", e.target.value)}
-              onKeyDown={handleKeyDown}
-              maxLength={MAX_MESSAGE_LEN}
-              rows={8}
-              className={`w-full resize-y rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
-                errors.message ? "focus:border-red-500" : "border-neutral-700"
-              }`}
-              disabled={submitting}
-              aria-invalid={errors.message ? "true" : "false"}
-              aria-describedby={
-                errors.message ? "contact-message-error" : undefined
-              }
-            />
-
-            {/* Visual Character Progress Bar & Shortcut Hint */}
-            <div className="mt-2 space-y-1.5">
-              <div className="h-1 w-full overflow-hidden rounded bg-neutral-800">
-                <div
-                  className={`h-full transition-all duration-300 ${
-                    form.message.length > 4500
-                      ? "bg-red-500"
-                      : form.message.length > 3500
-                        ? "bg-amber-400"
-                        : "bg-emerald-400"
-                  }`}
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-              <div className="flex items-center justify-between text-xs text-neutral-400">
-                <span className="opacity-75">
-                  Tip: Press Ctrl + Enter (or ⌘ + Enter) to send
-                </span>
-                <span
-                  className={
-                    charsRemaining < 500 ? "text-amber-400 font-semibold" : ""
-                  }
-                >
-                  {charsRemaining} {t("contactCharsLeft")}
-                </span>
-              </div>
+          {draftRestored && !submitted && (
+            <div className="mb-6 max-w-2xl flex items-center justify-between rounded border border-emerald-400/40 bg-emerald-400/5 px-4 py-2.5 font-mono text-xs text-emerald-400">
+              <span>[draft] Restored saved draft from local storage</span>
+              <button
+                type="button"
+                onClick={clearDraft}
+                className="underline opacity-80 hover:opacity-100 cursor-pointer"
+              >
+                Clear Draft
+              </button>
             </div>
-          </Field>
+          )}
 
-          <div
-            aria-hidden="true"
-            className="absolute h-px w-px overflow-hidden"
-            style={{ left: "-10000px" }}
-          >
-            <label>
-              {t("contactSpamLabel")}
-              <input
-                type="text"
-                tabIndex={-1}
-                autoComplete="off"
-                value={form.website}
-                onChange={(e) => update("website", e.target.value)}
-              />
-            </label>
-          </div>
+          {submitted ? (
+            <div className="rounded-lg border border-emerald-400/40 bg-emerald-400/5 p-6 font-mono text-sm text-emerald-400">
+              <p className="font-semibold">{t("contactSendSuccess")}</p>
+              <p className="mt-2 text-neutral-300">{t("contactSuccessDesc")}</p>
+              <button
+                type="button"
+                onClick={() => setSubmitted(false)}
+                className="mt-4 text-xs text-emerald-400 underline cursor-pointer"
+              >
+                {t("contactSendAnother")}
+              </button>
+            </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit}
+              className="max-w-2xl space-y-5 font-mono text-sm"
+              noValidate
+            >
+              <Field
+                id="contact-name"
+                label={t("contactName")}
+                required
+                isValid={isNameValid}
+                error={errors.name}
+              >
+                <input
+                  id="contact-name"
+                  ref={nameInputRef}
+                  type="text"
+                  value={form.name}
+                  onChange={(e) => update("name", e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  maxLength={100}
+                  autoComplete="name"
+                  className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
+                    errors.name ? "focus:border-red-500" : "border-neutral-700"
+                  }`}
+                  disabled={submitting}
+                  aria-invalid={errors.name ? "true" : "false"}
+                  aria-describedby={
+                    errors.name ? "contact-name-error" : undefined
+                  }
+                />
+              </Field>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full rounded border border-emerald-400/40 bg-emerald-400/10 py-2.5 text-emerald-400 font-semibold transition-colors duration-200 hover:bg-emerald-400/20 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-          >
-            {submitting ? t("contactSending") : t("contactSend")}
-          </button>
-        </form>
-      )}
+              <Field
+                id="contact-email"
+                label={t("contactEmail")}
+                required
+                isValid={isEmailValid}
+                error={errors.email}
+              >
+                <input
+                  id="contact-email"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => update("email", e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  maxLength={254}
+                  autoComplete="email"
+                  className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
+                    errors.email ? "focus:border-red-500" : "border-neutral-700"
+                  }`}
+                  disabled={submitting}
+                  aria-invalid={errors.email ? "true" : "false"}
+                  aria-describedby={
+                    errors.email ? "contact-email-error" : undefined
+                  }
+                />
+              </Field>
+
+              <Field
+                id="contact-subject"
+                label={t("contactSubject")}
+                isValid={isSubjectValid}
+                error={errors.subject}
+              >
+                <input
+                  id="contact-subject"
+                  type="text"
+                  value={form.subject}
+                  onChange={(e) => update("subject", e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  maxLength={200}
+                  className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
+                    errors.subject
+                      ? "focus:border-red-500"
+                      : "border-neutral-700"
+                  }`}
+                  disabled={submitting}
+                  aria-invalid={errors.subject ? "true" : "false"}
+                  aria-describedby={
+                    errors.subject ? "contact-subject-error" : undefined
+                  }
+                />
+              </Field>
+
+              <Field
+                id="contact-message"
+                label={t("contactMessage")}
+                required
+                isValid={isMessageValid}
+                error={errors.message}
+              >
+                <textarea
+                  id="contact-message"
+                  value={form.message}
+                  onChange={(e) => update("message", e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  maxLength={MAX_MESSAGE_LEN}
+                  rows={8}
+                  className={`w-full resize-y rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
+                    errors.message
+                      ? "focus:border-red-500"
+                      : "border-neutral-700"
+                  }`}
+                  disabled={submitting}
+                  aria-invalid={errors.message ? "true" : "false"}
+                  aria-describedby={
+                    errors.message ? "contact-message-error" : undefined
+                  }
+                />
+
+                {/* Visual Character Progress Bar & Shortcut Hint */}
+                <div className="mt-2 space-y-1.5">
+                  <div className="h-1 w-full overflow-hidden rounded bg-neutral-800">
+                    <div
+                      className={`h-full transition-all duration-300 ${
+                        form.message.length > 4500
+                          ? "bg-red-500"
+                          : form.message.length > 3500
+                            ? "bg-amber-400"
+                            : "bg-emerald-400"
+                      }`}
+                      style={{ width: `${progressPercent}%` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-neutral-400">
+                    <span className="opacity-75">
+                      Tip: Press Ctrl + Enter (or ⌘ + Enter) to send
+                    </span>
+                    <span
+                      className={
+                        charsRemaining < 500
+                          ? "text-amber-400 font-semibold"
+                          : ""
+                      }
+                    >
+                      {charsRemaining} {t("contactCharsLeft")}
+                    </span>
+                  </div>
+                </div>
+              </Field>
+
+              <div
+                aria-hidden="true"
+                className="absolute h-px w-px overflow-hidden"
+                style={{ left: "-10000px" }}
+              >
+                <label>
+                  {t("contactSpamLabel")}
+                  <input
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={form.website}
+                    onChange={(e) => update("website", e.target.value)}
+                  />
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full rounded border border-emerald-400/40 bg-emerald-400/10 py-2.5 text-emerald-400 font-semibold transition-colors duration-200 hover:bg-emerald-400/20 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+              >
+                {submitting ? t("contactSending") : t("contactSend")}
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </div>

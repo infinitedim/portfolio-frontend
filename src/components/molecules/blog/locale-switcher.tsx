@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
@@ -8,8 +8,6 @@ import {
   DEFAULT_BLOG_LOCALE,
   isValidBlogLocale,
 } from "@/lib/i18n/locales";
-
-import { useI18n } from "@/hooks/use-i18n";
 
 interface BlogLocaleSwitcherProps {
   slug?: string;
@@ -20,13 +18,18 @@ function BlogLocaleSwitcherInner({
   slug,
   className = "",
 }: BlogLocaleSwitcherProps) {
-  const { t } = useI18n();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentLocale = searchParams.get("locale") ?? DEFAULT_BLOG_LOCALE;
   const activeLocale = isValidBlogLocale(currentLocale)
     ? currentLocale
     : DEFAULT_BLOG_LOCALE;
+
+  const currentConfig =
+    BLOG_CONTENT_LOCALES.find((l) => l.code === activeLocale) ??
+    BLOG_CONTENT_LOCALES[0];
 
   const buildHref = (locale: string): string => {
     const params = new URLSearchParams(searchParams.toString());
@@ -44,26 +47,89 @@ function BlogLocaleSwitcherInner({
     return qs ? `${base}?${qs}` : base;
   };
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
-    <div className={`flex flex-wrap items-center gap-2 font-mono ${className}`}>
-      <span className="text-xs text-terminal-muted">{t("blogLanguage")}</span>
-      {BLOG_CONTENT_LOCALES.map((locale) => {
-        const isActive = locale.code === activeLocale;
-        return (
-          <Link
-            key={locale.code}
-            href={buildHref(locale.code) as never}
-            className={`rounded border px-2 py-0.5 text-xs transition-colors ${
-              isActive
-                ? "border-terminal-accent/60 bg-terminal-accent/10 text-terminal-accent"
-                : "border-terminal-border text-terminal-muted hover:border-terminal-muted"
-            }`}
-            aria-current={isActive ? "true" : undefined}
+    <div
+      ref={dropdownRef}
+      className={`relative inline-block font-mono text-xs ${className}`}
+    >
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900/90 px-3 py-1.5 text-neutral-300 hover:border-emerald-500/50 hover:text-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400/50 transition-colors cursor-pointer select-none"
+        aria-expanded={isOpen}
+        aria-label="Select blog language"
+      >
+        <span className="text-emerald-400 font-bold">$ lang</span>
+        <span className="text-neutral-500">--select</span>
+        <span className="flex items-center gap-1.5 text-neutral-200">
+          <span>{currentConfig.flag}</span>
+          <span className="font-medium">{currentConfig.label}</span>
+        </span>
+        <span className="text-neutral-500 text-[10px]">
+          {isOpen ? "▲" : "▼"}
+        </span>
+      </button>
+
+      {isOpen && (
+        <div
+          data-lenis-prevent
+          data-lenis-prevent-wheel
+          className="absolute right-0 sm:left-0 sm:right-auto top-full mt-1.5 z-40 w-56 rounded-xl border border-neutral-800 bg-neutral-900/95 py-1.5 shadow-2xl backdrop-blur-md overscroll-contain"
+        >
+          <div className="px-3 py-1 text-[10px] text-neutral-500 uppercase tracking-wider font-semibold border-b border-neutral-800/80 mb-1">
+            Available Locales ({BLOG_CONTENT_LOCALES.length})
+          </div>
+          <div
+            data-lenis-prevent
+            data-lenis-prevent-wheel
+            className="max-h-60 overflow-y-auto py-0.5 overscroll-contain"
           >
-            {locale.flag} {locale.label}
-          </Link>
-        );
-      })}
+            {BLOG_CONTENT_LOCALES.map((locale) => {
+              const isActive = locale.code === activeLocale;
+              return (
+                <Link
+                  key={locale.code}
+                  href={buildHref(locale.code) as never}
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center justify-between px-3 py-2 text-xs transition-colors ${
+                    isActive
+                      ? "bg-emerald-500/10 text-emerald-400 font-semibold"
+                      : "text-neutral-300 hover:bg-neutral-800/80 hover:text-emerald-300"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>{locale.flag}</span>
+                    <span>{locale.label}</span>
+                  </span>
+                  {isActive && <span className="text-emerald-400">✓</span>}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

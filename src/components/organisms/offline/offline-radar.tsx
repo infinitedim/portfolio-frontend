@@ -69,7 +69,7 @@ export function OfflineRadar({
         <div
           className={`h-3 w-3 rounded-full transition-all duration-300 ${
             isOnline
-              ? "bg-emerald-400 shadow-[0_0_12px_#10b981] animate-ping"
+              ? "bg-emerald-400 shadow-[0_0_12px_#10b981]"
               : "bg-amber-500 shadow-[0_0_12px_#f59e0b]"
           }`}
         />

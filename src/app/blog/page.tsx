@@ -207,16 +207,18 @@ async function BlogPageContent({
         title="blog"
         description={t.blogLatestArticles}
         actions={
-          <a
-            href="/rss.xml"
-            className="text-xs text-neutral-500 hover:text-orange-400 border border-neutral-800 hover:border-orange-400/40 transition-colors duration-200 px-2 py-1 rounded font-mono"
-          >
-            RSS
-          </a>
+          <div className="flex items-center gap-3">
+            <BlogLocaleSwitcher />
+            <a
+              href="/rss.xml"
+              className="text-xs text-neutral-400 hover:text-orange-400 border border-neutral-800 hover:border-orange-400/40 transition-colors duration-200 px-2.5 py-1.5 rounded-lg font-mono flex items-center gap-1.5 bg-neutral-900/90"
+            >
+              <span className="text-orange-400 font-bold">$</span>
+              <span>RSS</span>
+            </a>
+          </div>
         }
-      >
-        <BlogLocaleSwitcher className="mb-4" />
-      </PageHeader>
+      />
 
       <form
         method="GET"
