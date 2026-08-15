@@ -14,9 +14,9 @@ export function CopyCodeButton() {
       pre.style.position = "relative";
 
       const btn = document.createElement("button");
-      btn.textContent = "Copy";
+      btn.textContent = "$ copy --clip";
       btn.className =
-        "copy-code-btn absolute top-2 right-2 bg-terminal-border/80 hover:bg-terminal-muted text-terminal-text text-xs px-2 py-1 rounded transition-colors select-none font-mono cursor-pointer";
+        "copy-code-btn absolute top-2.5 right-3 bg-neutral-800/90 hover:bg-neutral-700 border border-neutral-700 text-neutral-300 hover:text-white text-[11px] px-2.5 py-1 rounded font-mono transition-colors select-none cursor-pointer shadow-sm";
       btn.setAttribute("aria-label", "Copy code");
 
       btn.addEventListener("click", async () => {
@@ -24,14 +24,14 @@ export function CopyCodeButton() {
         const text = code?.innerText ?? pre.innerText ?? "";
         try {
           await navigator.clipboard.writeText(text);
-          btn.textContent = "Copied!";
-          btn.classList.add("text-terminal-accent");
+          btn.textContent = "[ COPIED ]";
+          btn.classList.add("text-emerald-400", "border-emerald-500/40");
         } catch {
-          btn.textContent = "Failed";
+          btn.textContent = "[ ERROR ]";
         } finally {
           setTimeout(() => {
-            btn.textContent = "Copy";
-            btn.classList.remove("text-terminal-accent");
+            btn.textContent = "$ copy --clip";
+            btn.classList.remove("text-emerald-400", "border-emerald-500/40");
           }, 2000);
         }
       });

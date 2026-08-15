@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useI18n } from "@/hooks/use-i18n";
+import { Share2, Link as LinkIcon, Check } from "lucide-react";
 
 interface ShareButtonsProps {
   title: string;
@@ -19,7 +20,7 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
 
   const handleCopyLink = async () => {
     try {
-      if (navigator.share) {
+      if (typeof navigator !== "undefined" && navigator.share) {
         await navigator.share({ title, text: summary ?? title, url });
         return;
       }
@@ -27,7 +28,7 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      throw new Error("Failed to copy link", { cause: "clipboard" });
+      // Fallback
     }
   };
 
@@ -36,36 +37,47 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-3 font-mono">
-      <span className="text-sm text-terminal-muted font-mono">
-        {t("blogShare")}
+      <span className="text-xs text-neutral-500 font-mono flex items-center gap-1.5">
+        <Share2 className="w-3.5 h-3.5 text-emerald-400" />
+        <span>{t("blogShare")}</span>
       </span>
 
       <a
         href={twitterUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-xs px-3 py-1.5 border border-terminal-border rounded hover:border-sky-400/80 text-terminal-muted hover:text-sky-400 transition-colors"
+        className="text-xs px-3 py-1.5 border border-neutral-800 bg-neutral-900/60 rounded-md hover:border-sky-400/50 hover:bg-neutral-800 text-neutral-300 hover:text-sky-400 transition-colors inline-flex items-center gap-1.5"
         aria-label={t("blogShareTwitter")}
       >
-        𝕏 Twitter
+        <span>$ share --twitter</span>
       </a>
 
       <a
         href={linkedinUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-xs px-3 py-1.5 border border-terminal-border rounded hover:border-blue-400/80 text-terminal-muted hover:text-blue-400 transition-colors"
+        className="text-xs px-3 py-1.5 border border-neutral-800 bg-neutral-900/60 rounded-md hover:border-blue-400/50 hover:bg-neutral-800 text-neutral-300 hover:text-blue-400 transition-colors inline-flex items-center gap-1.5"
         aria-label={t("blogShareLinkedin")}
       >
-        LinkedIn
+        <span>$ share --linkedin</span>
       </a>
 
       <button
         onClick={handleCopyLink}
-        className="text-xs px-3 py-1.5 border border-terminal-border rounded hover:border-terminal-accent text-terminal-muted hover:text-terminal-accent transition-colors cursor-pointer"
+        className="text-xs px-3 py-1.5 border border-neutral-800 bg-neutral-900/60 rounded-md hover:border-emerald-400/50 hover:bg-neutral-800 text-neutral-300 hover:text-emerald-400 transition-colors cursor-pointer inline-flex items-center gap-1.5"
         aria-label={t("blogCopyLink")}
       >
-        {copied ? t("blogCopied") : t("blogCopyLink")}
+        {copied ? (
+          <>
+            <Check className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-emerald-400">[ COPIED ]</span>
+          </>
+        ) : (
+          <>
+            <LinkIcon className="w-3.5 h-3.5 text-neutral-400" />
+            <span>$ copy --url</span>
+          </>
+        )}
       </button>
     </div>
   );

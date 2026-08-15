@@ -160,21 +160,20 @@ export function CommitDetailDrawer({
       aria-modal="true"
       aria-labelledby="commit-detail-heading"
     >
-      {/* Backdrop click to close */}
+      {/* Backdrop overlay (non-clickable: user must click explicit close button) */}
       <div
         className="absolute inset-0"
-        onClick={onClose}
         aria-hidden="true"
       />
 
-      <aside className="relative flex h-full max-h-[92vh] w-full max-w-2xl flex-col rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl overflow-hidden z-10">
+      <aside className="relative flex h-full max-h-[92vh] w-full max-w-2xl md:max-w-3xl lg:max-w-4xl flex-col rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl overflow-hidden z-10 font-mono">
         {/* Header */}
         <header className="flex items-center justify-between border-b border-neutral-800 px-5 py-4 bg-neutral-900/90">
           <div className="flex items-center gap-2.5">
             <GitCommit className="h-5 w-5 text-emerald-400" aria-hidden="true" />
             <h2
               id="commit-detail-heading"
-              className="font-mono text-base font-bold text-white flex items-center gap-2"
+              className="text-base font-bold text-white flex items-center gap-2"
             >
               Commit Details
               <span className="text-xs font-normal text-neutral-400 font-mono">
@@ -187,7 +186,7 @@ export function CommitDetailDrawer({
             type="button"
             onClick={onClose}
             aria-label="Close commit details modal"
-            className="rounded-lg p-2 text-neutral-400 transition-colors duration-150 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+            className="rounded-lg p-2 text-neutral-400 transition-colors duration-150 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer"
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -195,7 +194,7 @@ export function CommitDetailDrawer({
 
         {/* Content Body with Lenis Scroll */}
         <LenisScroll
-          className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)"
+          className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)"
           data-lenis-prevent
         >
           {loading && <CommitDetailPhantomSkeleton />}
@@ -210,12 +209,12 @@ export function CommitDetailDrawer({
           {detail && !loading && (
             <>
               {/* Commit Message & Author info */}
-              <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4">
+              <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4 space-y-3">
                 <p className="font-mono text-sm font-medium leading-relaxed text-white whitespace-pre-wrap">
                   {detail.message}
                 </p>
 
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800/80 pt-3 text-xs text-neutral-400 font-mono">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800/80 pt-3.5 text-xs text-neutral-400 font-mono">
                   <div className="flex items-center gap-2">
                     {detail.authorAvatar ? (
                       <img
@@ -250,7 +249,7 @@ export function CommitDetailDrawer({
                     <button
                       type="button"
                       onClick={() => copyToClipboard(detail.sha)}
-                      className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition-colors"
+                      className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
                       title="Copy full commit SHA"
                     >
                       {copied ? <Check size={12} /> : <Copy size={12} />}
@@ -274,7 +273,7 @@ export function CommitDetailDrawer({
 
               {/* Commit Stats Bar */}
               {detail.stats && (
-                <div className="flex items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-950/40 px-4 py-3 font-mono text-xs">
+                <div className="flex items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-950/40 px-4 py-3.5 font-mono text-xs my-1">
                   <span className="text-neutral-400">
                     Showing{" "}
                     <strong className="text-white">
@@ -295,12 +294,12 @@ export function CommitDetailDrawer({
 
               {/* Files List with Diff View */}
               {detail.files && detail.files.length > 0 && (
-                <div className="space-y-3">
-                  <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-400">
+                <div className="pt-3 space-y-4">
+                  <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-400 pb-1.5 pt-2">
                     Changed Files ({detail.files.length})
                   </h3>
 
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {detail.files.map((file: GitHubCommitFile) => {
                       const isExpanded = !!expandedFiles[file.filename];
                       return (
@@ -312,31 +311,31 @@ export function CommitDetailDrawer({
                           <button
                             type="button"
                             onClick={() => toggleFileExpand(file.filename)}
-                            className="flex w-full items-center justify-between gap-3 px-3.5 py-2.5 text-left font-mono text-xs hover:bg-neutral-900/60 transition-colors"
+                            className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left font-mono text-xs hover:bg-neutral-900/60 transition-colors cursor-pointer"
                           >
                             <div className="flex items-center gap-2 min-w-0 flex-1">
                               {isExpanded ? (
                                 <ChevronDown
                                   size={14}
-                                  className="text-neutral-400 shrink-0"
+                                  className="shrink-0 text-neutral-400"
                                 />
                               ) : (
                                 <ChevronRight
                                   size={14}
-                                  className="text-neutral-400 shrink-0"
+                                  className="shrink-0 text-neutral-400"
                                 />
                               )}
                               <FileCode
                                 size={14}
-                                className="text-emerald-400 shrink-0"
+                                className="shrink-0 text-emerald-400"
                               />
-                              <span className="font-medium text-neutral-200 truncate">
+                              <span className="font-semibold text-neutral-200 truncate">
                                 {file.filename}
                               </span>
                             </div>
 
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-[11px] text-neutral-400 font-mono">
+                            <div className="flex items-center gap-2 font-mono text-[11px] shrink-0">
+                              <span className="text-neutral-400">
                                 <span className="text-emerald-400">
                                   +{file.additions}
                                 </span>{" "}
@@ -352,7 +351,7 @@ export function CommitDetailDrawer({
                           {isExpanded && (
                             <div className="border-t border-neutral-800/80 bg-neutral-950 p-3 overflow-x-auto text-[11px] font-mono leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)">
                               {file.patch ? (
-                                <pre className="whitespace-pre overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)">
+                                <div className="w-max min-w-full font-mono">
                                   {file.patch
                                     .split("\n")
                                     .map((line, idx) => {
@@ -370,13 +369,13 @@ export function CommitDetailDrawer({
                                       return (
                                         <div
                                           key={idx}
-                                          className={`px-2 py-0.5 ${lineClass}`}
+                                          className={`w-full px-2 py-0.5 ${lineClass}`}
                                         >
                                           {line}
                                         </div>
                                       );
                                     })}
-                                </pre>
+                                </div>
                               ) : (
                                 <p className="text-neutral-500 italic px-2 py-1">
                                   Binary file or diff unavailable.

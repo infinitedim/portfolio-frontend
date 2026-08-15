@@ -201,12 +201,12 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
         <ScrollProgress />
 
         <div className="mx-auto max-w-6xl px-4 py-8">
-          <nav className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between font-mono">
+          <nav className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between font-mono text-sm">
             <Link
               href="/blog"
-              className="text-terminal-accent hover:text-terminal-accent/90 transition-colors"
+              className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors"
             >
-              {t.blogBackToBlog}
+              <span>$ cd /blog</span>
             </Link>
             <BlogLocaleSwitcher slug={slug} />
           </nav>
@@ -217,19 +217,34 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
             </div>
           )}
 
-          <div className="lg:grid lg:grid-cols-[1fr_240px] lg:gap-8 lg:items-start">
+          <div className="lg:grid lg:grid-cols-[1fr_260px] lg:gap-8 lg:items-start">
             <article className="prose prose-invert max-w-none min-w-0">
               <header className="mb-8 not-prose">
-                <h1 className="text-4xl font-bold text-terminal-accent mb-4">
+                {/* Status Pill Header */}
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-mono text-xs mb-4">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  <span>post.status :: published</span>
+                </div>
+
+                <div className="text-emerald-400/80 font-mono text-xs sm:text-sm mb-2">
+                  $ cat /blog/{post.slug}.md
+                </div>
+
+                <h1 className="text-3xl sm:text-4xl font-bold font-mono text-white tracking-tight mb-4 leading-tight">
                   {post.title}
                 </h1>
+
                 {post.summary && (
-                  <p className="text-xl text-terminal-muted mb-4">
+                  <p className="text-lg text-neutral-300 mb-5 leading-relaxed">
                     {post.summary}
                   </p>
                 )}
+
                 {(post.tags?.length ?? 0) > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-4">
+                  <div className="flex flex-wrap gap-1.5 mb-5">
                     {post.tags!.map((tag) => (
                       <Link
                         key={tag}
@@ -243,46 +258,47 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                     ))}
                   </div>
                 )}
-                <div className="flex flex-wrap items-center gap-4 text-sm text-terminal-muted font-mono">
-                  <time dateTime={post.createdAt}>
+
+                <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-400 font-mono pt-3 border-t border-neutral-800/80">
+                  <span className="px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300">
                     {t.blogPublishedPrefix}
                     {new Date(post.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
                     })}
-                  </time>
+                  </span>
                   {post.updatedAt !== post.createdAt && (
-                    <time dateTime={post.updatedAt}>
+                    <span className="px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300">
                       {t.blogUpdatedPrefix}
                       {new Date(post.updatedAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
                       })}
-                    </time>
+                    </span>
                   )}
                   {post.readingTimeMinutes > 0 && (
-                    <span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
                       {post.readingTimeMinutes} {t.blogMinRead}
                     </span>
                   )}
                   {post.viewCount > 0 && (
-                    <span>
+                    <span className="px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400">
                       {post.viewCount.toLocaleString()} {t.blogViews}
                     </span>
                   )}
                 </div>
               </header>
 
-              <div className="border-t border-terminal-border pt-8">
+              <div className="border-t border-neutral-800 pt-8">
                 <BlogContent
                   html={contentHtml}
                   md={post.contentMd}
                 />
               </div>
 
-              {}
+              {/* Imperative Code Copy button handler */}
               <CopyCodeButton />
             </article>
 
@@ -296,14 +312,20 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
             )}
           </div>
 
-          <section className="mt-12 pt-8 border-t border-terminal-border max-w-4xl">
-            <h2 className="text-xl font-semibold text-terminal-text mb-6">
-              {t.blogComments}
-            </h2>
+          <section className="mt-14 pt-8 border-t border-neutral-800 max-w-4xl">
+            <div className="flex items-center gap-2 mb-6 font-mono text-sm">
+              <span className="text-emerald-400">$</span>
+              <h2 className="text-lg font-bold text-white tracking-tight">
+                comments --stream
+              </h2>
+              <span className="text-xs px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-500">
+                giscus.active
+              </span>
+            </div>
             <GiscusComments slug={post.slug} />
           </section>
 
-          <footer className="mt-12 pt-8 border-t border-terminal-border space-y-6 max-w-4xl font-mono">
+          <footer className="mt-12 pt-8 border-t border-neutral-800 space-y-6 max-w-4xl font-mono text-sm">
             <ShareButtons
               title={post.title}
               slug={post.slug}
@@ -312,9 +334,9 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
 
             <Link
               href="/blog"
-              className="block text-terminal-accent hover:text-terminal-accent/90 transition-colors"
+              className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors"
             >
-              {t.blogBackToBlog}
+              <span>$ cd /blog</span>
             </Link>
           </footer>
         </div>

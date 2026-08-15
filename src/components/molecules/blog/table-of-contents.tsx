@@ -56,23 +56,32 @@ export function TableOfContents({
 
   return (
     <nav
-      className={`border border-terminal-border rounded-lg p-4 font-mono ${className}`}
+      className={`border border-neutral-800 bg-neutral-900/60 backdrop-blur-md rounded-xl p-4 font-mono ${className}`}
       aria-label="Table of contents"
     >
-      <p className="text-xs font-semibold text-terminal-muted uppercase tracking-widest mb-3">
-        Contents
-      </p>
-      <ol className="space-y-1.5">
-        {headings.map((h) => (
+      <div className="flex items-center justify-between text-xs font-semibold text-neutral-400 pb-2.5 mb-3 border-b border-neutral-800/80">
+        <span className="flex items-center gap-1.5 text-emerald-400">
+          <span>&gt;</span>
+          <span>[ TOC :: index ]</span>
+        </span>
+        <span className="text-[10px] text-neutral-500 font-mono">
+          {headings.length}_sections
+        </span>
+      </div>
+      <ol className="space-y-2 text-xs">
+        {headings.map((h, i) => (
           <li
             key={h.id}
-            className={h.level === 3 ? "ml-4" : ""}
+            className={h.level === 3 ? "ml-3.5 border-l border-neutral-800 pl-2" : ""}
           >
             <a
               href={`#${h.id}`}
-              className="text-sm text-terminal-muted hover:text-terminal-accent transition-colors line-clamp-1"
+              className="text-neutral-400 hover:text-emerald-400 transition-colors line-clamp-1 flex items-center gap-1.5"
             >
-              {h.text}
+              <span className="text-emerald-500/60 text-[10px]">
+                {String(i + 1).padStart(2, "0")}.
+              </span>
+              <span>{h.text}</span>
             </a>
           </li>
         ))}

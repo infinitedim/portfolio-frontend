@@ -22,6 +22,28 @@ Next.js 16 App Router UI for [portfolio-backend](../portfolio-backend) (Rust/Axu
 
 ---
 
+## Anti-"AI Slop" Design Guidelines & HCI Research Standards
+
+All agents and developers modifying UI/UX in `portfolio-frontend` MUST adhere to these design rules grounded in Human-Computer Interaction (HCI) research and Nielsen Norman Group (NN/g) usability studies:
+
+1. **No Generic Emojis or Decorative Glyphs**
+   - **Rule**: NEVER use emojis (🚀, 💻, ✨, 🔥, 🎯) as UI icons, list bullets, or section decor.
+   - **HCI Rationale (NN/g Developer Portfolio Authenticity)**: Technical visitors judge portfolio credibility by craftsmanship. Emojis trigger an instant "AI template slop" perception. Use official SVG icons from `@/components/atoms/tech-icon-registry` or `lucide-react`.
+
+2. **Intentional Micro-Interactions Only (No Global Card Scale/Zoom)**
+   - **Rule**: DO NOT apply global zoom/scale hover effects (`hover:scale-105 transition-all`) to large containers, cards, or grid items. Keep cards steady and apply subtle border/shadow glows (`hover:border-emerald-400/40`).
+   - **HCI Rationale (Cognitive Load Theory — Sweller, 1988; Dan Saffer, *Microinteractions*)**: Hover triggers must be intentional and targeted to specific sub-elements (e.g., hovering an individual `TechBadge` to trigger a 360° gear spin or whale animation), preventing visual noise and layout shaking.
+
+3. **No Cluttery Cursor Text Overlays (Clean 6rem Inversion Lens)**
+   - **Rule**: Avoid floating text tags on custom cursors (`data-cursor-text`). Use a clean 6rem color-inversion lens (`mix-blend-mode: difference`).
+   - **HCI Rationale (Foveal Focus & Visual Noise)**: Floating text near the mouse pointer causes foveal distraction, obstructing text directly under the cursor. High-contrast color inversion lens provides clear state feedback without visual clutter.
+
+4. **Authentic Cyberpunk / Terminal Aesthetics & Custom Empty States**
+   - **Rule**: Maintain monospaced CLI argument conventions (`$ ls --featured`, `$ ls --all`, `$ cat /dev/null > articles.log`) and handcrafted empty states with live diagnostic status pills (`repository.status :: queue_in_draft`) and clean `$`-prefixed navigation buttons (`$ cd /projects`, `$ cat /about`).
+   - **HCI Rationale (Domain-Specific Context Consistency)**: Authentic CLI syntax reinforces the domain identity of a Systems/Fullstack engineer rather than generic SaaS template copy.
+
+---
+
 ## Multi-repo map
 
 | Repo                        | Role                                    | Default port |

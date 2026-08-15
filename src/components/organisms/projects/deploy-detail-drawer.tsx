@@ -129,7 +129,10 @@ export function DeployDetailDrawer({
     if (run.status === "in_progress" || run.status === "queued") {
       return (
         <span className="inline-flex items-center gap-1 rounded border border-amber-800/60 bg-amber-950/40 px-2 py-0.5 text-[10px] text-amber-400 font-medium font-mono">
-          <Clock size={10} aria-hidden="true" />
+          <Clock
+            size={10}
+            aria-hidden="true"
+          />
           <span>Running</span>
         </span>
       );
@@ -140,7 +143,10 @@ export function DeployDetailDrawer({
     if (conclusion === "success") {
       return (
         <span className="inline-flex items-center gap-1 rounded border border-emerald-800/60 bg-emerald-950/40 px-2 py-0.5 text-[10px] text-emerald-400 font-medium font-mono">
-          <CheckCircle2 size={10} aria-hidden="true" />
+          <CheckCircle2
+            size={10}
+            aria-hidden="true"
+          />
           <span>Success</span>
         </span>
       );
@@ -153,7 +159,10 @@ export function DeployDetailDrawer({
     ) {
       return (
         <span className="inline-flex items-center gap-1 rounded border border-rose-800/60 bg-rose-950/40 px-2 py-0.5 text-[10px] text-rose-400 font-medium font-mono">
-          <XCircle size={10} aria-hidden="true" />
+          <XCircle
+            size={10}
+            aria-hidden="true"
+          />
           <span>Failed</span>
         </span>
       );
@@ -162,7 +171,10 @@ export function DeployDetailDrawer({
     if (conclusion === "cancelled") {
       return (
         <span className="inline-flex items-center gap-1 rounded border border-neutral-700/80 bg-neutral-900/80 px-2 py-0.5 text-[10px] text-neutral-400 font-medium font-mono">
-          <Ban size={10} aria-hidden="true" />
+          <Ban
+            size={10}
+            aria-hidden="true"
+          />
           <span>Cancelled</span>
         </span>
       );
@@ -171,7 +183,10 @@ export function DeployDetailDrawer({
     if (conclusion === "skipped") {
       return (
         <span className="inline-flex items-center gap-1 rounded border border-sky-800/60 bg-sky-950/40 px-2 py-0.5 text-[10px] text-sky-400 font-medium font-mono">
-          <MinusCircle size={10} aria-hidden="true" />
+          <MinusCircle
+            size={10}
+            aria-hidden="true"
+          />
           <span>Skipped</span>
         </span>
       );
@@ -191,10 +206,9 @@ export function DeployDetailDrawer({
       aria-modal="true"
       aria-labelledby="deploy-detail-heading"
     >
-      {/* Backdrop click to close */}
+      {/* Backdrop overlay (non-clickable: user must click explicit close button) */}
       <div
         className="absolute inset-0"
-        onClick={onClose}
         aria-hidden="true"
       />
 
@@ -202,7 +216,10 @@ export function DeployDetailDrawer({
         {/* Modal Header */}
         <header className="flex items-center justify-between border-b border-neutral-800 px-5 py-4 bg-neutral-900/90">
           <div className="flex items-center gap-2.5">
-            <Rocket className="h-5 w-5 text-emerald-400" aria-hidden="true" />
+            <Rocket
+              className="h-5 w-5 text-emerald-400"
+              aria-hidden="true"
+            />
             <h2
               id="deploy-detail-heading"
               className="text-base font-bold text-white flex items-center gap-2"
@@ -239,23 +256,29 @@ export function DeployDetailDrawer({
               type="button"
               onClick={onClose}
               aria-label="Close deployment details modal"
-              className="rounded-lg p-1.5 text-neutral-400 transition-colors duration-150 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+              className="rounded-lg p-1.5 text-neutral-400 transition-colors duration-150 hover:bg-neutral-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer"
             >
-              <X size={18} aria-hidden="true" />
+              <X
+                size={18}
+                aria-hidden="true"
+              />
             </button>
           </div>
         </header>
 
         {/* Content Body with Lenis Scroll */}
         <LenisScroll
-          className="flex-1 overflow-y-auto p-5 space-y-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)"
+          className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)"
           data-lenis-prevent
         >
           {/* Target Repo Info Banner */}
           <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4">
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-neutral-400">
               <span className="flex items-center gap-1.5">
-                <GitCommit size={14} className="text-emerald-400" />
+                <GitCommit
+                  size={14}
+                  className="text-emerald-400"
+                />
                 <span>Target Commit:</span>
                 <code className="text-emerald-400 font-semibold">
                   {refSha.substring(0, 7)}
@@ -276,7 +299,10 @@ export function DeployDetailDrawer({
           {/* Error Banner */}
           {!loading && error && (
             <div className="rounded-lg border border-rose-800/60 bg-rose-950/30 p-4 text-xs text-rose-300 flex items-start gap-2.5">
-              <AlertCircle size={16} className="shrink-0 mt-0.5 text-rose-400" />
+              <AlertCircle
+                size={16}
+                className="shrink-0 mt-0.5 text-rose-400"
+              />
               <div>
                 <p className="font-bold">Failed to load check runs</p>
                 <p className="text-rose-400/80 mt-1">{error}</p>
@@ -308,7 +334,10 @@ export function DeployDetailDrawer({
                   .
                 </p>
                 <div className="pt-2 text-[11px] text-neutral-500">
-                  Tip: Add a <code className="text-neutral-400">.github/workflows</code> YAML or connect Vercel to trigger automated checks on future commits.
+                  Tip: Add a{" "}
+                  <code className="text-neutral-400">.github/workflows</code>{" "}
+                  YAML or connect Vercel to trigger automated checks on future
+                  commits.
                 </div>
               </div>
             )}
@@ -318,11 +347,16 @@ export function DeployDetailDrawer({
             !error &&
             checkRunsData &&
             checkRunsData.totalCount > 0 && (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-neutral-400">
+              <div className="space-y-4 pt-1">
+                <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-neutral-400 pb-1">
                   <span className="flex items-center gap-2">
-                    <ShieldCheck size={14} className="text-emerald-400" />
-                    <span>CI/CD Workflow Checks ({checkRunsData.totalCount})</span>
+                    <ShieldCheck
+                      size={14}
+                      className="text-emerald-400"
+                    />
+                    <span>
+                      CI/CD Workflow Checks ({checkRunsData.totalCount})
+                    </span>
                   </span>
                   <span className="text-[11px] text-neutral-500 capitalize">
                     State:{" "}
@@ -332,21 +366,24 @@ export function DeployDetailDrawer({
                   </span>
                 </div>
 
-                <div className="space-y-2.5">
+                <div className="space-y-3">
                   {checkRunsData.checkRuns.map((run: GitHubCheckRun) => (
                     <div
                       key={run.id}
-                      className="rounded-lg border border-neutral-800 bg-neutral-950/80 p-3.5 space-y-2 transition-colors duration-150 hover:border-neutral-700"
+                      className="rounded-lg border border-neutral-800 bg-neutral-950/80 p-4 space-y-2.5 transition-colors duration-150 hover:border-neutral-700"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2 text-xs font-semibold text-white">
-                          <Rocket size={14} className="text-emerald-400" />
+                          <Rocket
+                            size={14}
+                            className="text-emerald-400"
+                          />
                           <span>{run.name}</span>
                         </div>
                         {renderStatusBadge(run)}
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px] text-neutral-400 border-t border-neutral-800/60">
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 text-[11px] text-neutral-400 border-t border-neutral-800/60">
                         <span className="text-neutral-400">
                           App:{" "}
                           <strong className="text-neutral-200">
@@ -361,7 +398,10 @@ export function DeployDetailDrawer({
                           className="inline-flex items-center gap-1 text-emerald-400 hover:underline hover:text-emerald-300 transition-colors duration-150"
                         >
                           <span>View Logs</span>
-                          <ExternalLink size={10} aria-hidden="true" />
+                          <ExternalLink
+                            size={10}
+                            aria-hidden="true"
+                          />
                         </a>
                       </div>
                     </div>
