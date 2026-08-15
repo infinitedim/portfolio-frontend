@@ -4,8 +4,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { type JSX, useState, useEffect } from "react";
 import { useI18n } from "@/hooks/use-i18n";
+import { useGateStatus } from "@/hooks/use-gate-status";
 import { LanguageSwitcher } from "@/components/molecules/shared/language-switcher";
 import { VisitorPresenceBadge } from "@/components/molecules/presence/visitor-presence-badge";
+import { RootCustomizationModal } from "@/components/molecules/customization/root-customization-modal";
 import dynamic from "next/dynamic";
 
 const TerminalFeaturesModal = dynamic(
@@ -35,7 +37,9 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
   const router = useRouter();
   const activePath = currentPath ?? pathname ?? "";
   const { t } = useI18n();
+  const { isUnlocked } = useGateStatus();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRootConfigOpen, setIsRootConfigOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Close mobile navigation menu on route changes
@@ -50,12 +54,19 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
           aria-label="Main navigation"
           className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
         >
-          <Link
-            href="/"
-            className="font-mono text-sm font-bold text-green-400 hover:text-green-300"
-          >
-            infinitedim
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="font-mono text-sm font-bold text-green-400 hover:text-green-300"
+            >
+              infinitedim
+            </Link>
+            {isUnlocked && (
+              <span className="rounded border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10px] text-emerald-400 font-semibold sm:hidden">
+                ROOT
+              </span>
+            )}
+          </div>
 
           <ul className="hidden h-8 items-center gap-1 sm:flex">
             {NAV_LINKS.map(({ key, href }) => {
@@ -65,7 +76,6 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
                 <li key={href}>
                   <Link
                     href={href}
-                    prefetch={false}
                     className={`rounded px-3 py-1.5 font-mono text-xs transition-colors ${
                       isActive
                         ? "bg-green-400/10 text-green-400"
@@ -87,6 +97,16 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
               showFlags={false}
               className="hidden sm:block"
             />
+            {isUnlocked && (
+              <button
+                onClick={() => setIsRootConfigOpen(true)}
+                className="hidden sm:inline-flex items-center gap-1.5 rounded border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1.5 font-mono text-xs text-emerald-400 transition-colors hover:bg-emerald-500/20 cursor-pointer"
+                title="Open Root Theme & Font Configuration"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>{t("navRootConfigButton")}</span>
+              </button>
+            )}
             <button
               onClick={() => setIsModalOpen(true)}
               className="hidden sm:inline-flex rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
@@ -125,14 +145,14 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
                 <Dialog.Overlay className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm sm:hidden animate-fade-in" />
 
                 {/* Mobile Menu Drawer */}
-                <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-64 bg-neutral-950 border-l border-neutral-800 p-6 sm:hidden flex flex-col font-mono focus:outline-none">
+                <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-64 bg-neutral-950 border-l border-neutral-800 p-6 sm:hidden flex flex-col font-mono focus:outline-none overflow-y-auto">
                   <div className="flex items-center justify-between mb-6">
                     <Dialog.Title className="text-sm font-bold text-green-400">
                       Navigation
                     </Dialog.Title>
                     <Dialog.Close asChild>
                       <button
-                        className="rounded p-1.5 text-neutral-400 hover:text-neutral-100 focus:outline-none cursor-pointer"
+                        className="rounded p-1.5 text-neutral-400 hover:text-neutral-100 focus:outline-none cursor-pointer min-h-11 min-w-11 flex items-center justify-center"
                         aria-label="Close menu"
                       >
                         <svg
@@ -166,10 +186,9 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
                         <li key={href}>
                           <Link
                             href={href}
-                            prefetch={false}
-                            className={`block rounded px-3 py-2 text-sm transition-colors ${
+                            className={`block rounded px-3 py-2.5 text-sm transition-colors min-h-11 items-center ${
                               isActive
-                                ? "bg-green-400/10 text-green-400"
+                                ? "bg-green-400/10 text-green-400 font-bold"
                                 : "text-neutral-400 hover:text-neutral-100"
                             }`}
                             aria-current={isActive ? "page" : undefined}
@@ -180,6 +199,28 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
                       );
                     })}
                   </ul>
+
+                  {/* Unlocked Root Customization Section for Mobile */}
+                  {isUnlocked && (
+                    <div className="mt-6 pt-5 border-t border-neutral-800/80 font-mono">
+                      <div className="flex items-center gap-2 text-xs text-emerald-400 font-bold mb-3">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>{t("navRootAccess")}</span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          setIsRootConfigOpen(true);
+                        }}
+                        className="w-full min-h-11 rounded border border-emerald-500/40 bg-emerald-500/10 px-3 py-2.5 text-xs text-emerald-400 font-semibold transition-colors hover:bg-emerald-500/20 flex items-center justify-between cursor-pointer"
+                      >
+                        <span>
+                          ⚙️ {t("navSelectTheme")} / {t("navSelectFont")}
+                        </span>
+                        <span>→</span>
+                      </button>
+                    </div>
+                  )}
 
                   <div className="mt-auto pt-6 border-t border-neutral-800 flex justify-end">
                     <LanguageSwitcher
@@ -201,6 +242,11 @@ export function SiteNav({ currentPath }: SiteNavProps): JSX.Element {
           setIsModalOpen(false);
           router.push("/gate");
         }}
+      />
+
+      <RootCustomizationModal
+        isOpen={isRootConfigOpen}
+        onClose={() => setIsRootConfigOpen(false)}
       />
     </>
   );

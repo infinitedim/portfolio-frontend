@@ -8,6 +8,7 @@ import { ScreenReaderAnnouncer } from "../components/molecules/accessibility/scr
 import { ClientOnlyComponents } from "../components/layout/client-only-components";
 import { LenisProvider } from "@/components/layout/lenis-provider";
 import { CursorProvider, CustomCursor } from "@/components/organisms/cursor";
+import { UnlockedCustomizationProvider } from "@/components/layout/unlocked-customization-provider";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -151,11 +152,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`antialiased ${jetbrainsMono.variable}`}
-      suppressHydrationWarning={true}
+      className={`${jetbrainsMono.variable} dark`}
+      suppressHydrationWarning
     >
       <head>
-        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+        <meta name="format-detection" content="telephone=no" />
+        <link rel="icon" href="/avatar.jpg" />
+        <link rel="apple-touch-icon" href="/avatar.jpg" />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -163,18 +167,19 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               name: "Dimas Saputra",
+              alternateName: ["infinitedim"],
               url: "https://infinitedim.dev",
               image: "https://infinitedim.dev/avatar.jpg",
-              sameAs: [
-                "https://github.com/infinitedim",
-                "https://linkedin.com/in/infinitedim",
-                "https://twitter.com/yourblooo",
-              ],
               jobTitle: "Full-Stack Developer",
               worksFor: {
                 "@type": "Organization",
                 name: "Freelance",
               },
+              sameAs: [
+                "https://github.com/infinitedim",
+                "https://linkedin.com/in/infinitedim",
+                "https://twitter.com/infinitedim",
+              ],
               knowsAbout: [
                 "React",
                 "Next.js",
@@ -210,16 +215,18 @@ export default function RootLayout({
         <ThemeInitScript />
       </head>
       <body className={"antialiased bg-background text-foreground"}>
-        <ClientOnlyComponents />
-        <AccessibilityProvider>
-          <ScreenReaderAnnouncer message="Terminal Portfolio" />
-          <LenisProvider>
-            <CursorProvider>
-              {children}
-              <CustomCursor />
-            </CursorProvider>
-          </LenisProvider>
-        </AccessibilityProvider>
+        <UnlockedCustomizationProvider>
+          <ClientOnlyComponents />
+          <AccessibilityProvider>
+            <ScreenReaderAnnouncer message="Terminal Portfolio" />
+            <LenisProvider>
+              <CursorProvider>
+                {children}
+                <CustomCursor />
+              </CursorProvider>
+            </LenisProvider>
+          </AccessibilityProvider>
+        </UnlockedCustomizationProvider>
       </body>
     </html>
   );

@@ -11,9 +11,13 @@ import {
   SkipForward,
   Loader2,
   AlertCircle,
+  AlertTriangle,
   RefreshCw,
   ArrowLeft,
   Info,
+  Layers,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 
@@ -41,6 +45,7 @@ export function RoadmapDetailClient({
   const [progress, setProgress] = useState<ProgressResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCanvasMobile, setShowCanvasMobile] = useState<boolean>(false);
 
   // Canvas scaling & scroll prevent refs
   const containerRef = useRef<HTMLDivElement>(null);
@@ -584,11 +589,115 @@ export function RoadmapDetailClient({
             </div>
           )}
 
+          {/* Mobile Notice Banner & Simplified Outline View */}
+          <div className="md:hidden space-y-4 mb-4">
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-300">
+              <div className="flex items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-wider font-semibold text-amber-400 mb-1">
+                <div className="flex items-center gap-1.5">
+                  <AlertTriangle size={14} className="shrink-0 text-amber-400" />
+                  <span>$ notice :: mobile_viewport_detected</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCanvasMobile((prev) => !prev)}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 transition-colors text-[10px] font-mono border border-amber-400/30 cursor-pointer"
+                >
+                  {showCanvasMobile ? (
+                    <>
+                      <EyeOff size={11} />
+                      <span>Hide Canvas</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye size={11} />
+                      <span>Toggle Canvas</span>
+                    </>
+                  )}
+                </button>
+              </div>
+              <p className="text-amber-200/90 leading-relaxed text-[11px]">
+                Interactive 2D graph view is optimized for desktop & tablet viewports. Showing simplified topic outline below.
+              </p>
+            </div>
+
+            {/* Mobile Outline Summary List */}
+            {!showCanvasMobile && (
+              <div
+                className="rounded-lg border p-4 space-y-3 font-mono text-xs"
+                style={{ borderColor: borderColor, backgroundColor: bgColor }}
+              >
+                <div className="flex items-center justify-between border-b pb-2.5" style={{ borderColor: `${borderColor}66` }}>
+                  <h3 className="font-bold uppercase tracking-wider flex items-center gap-2" style={{ color: successColor }}>
+                    <Layers size={14} />
+                    Topic Outline Summary
+                  </h3>
+                  <span className="text-[10px] text-neutral-400 font-normal">
+                    {initialStructure.nodes.filter((n) => n.type === "topic" || n.type === "subtopic").length} topics
+                  </span>
+                </div>
+
+                <div className="divide-y max-h-[60vh] overflow-y-auto pr-1" style={{ borderColor: `${borderColor}33` }}>
+                  {initialStructure.nodes
+                    .filter((n) => n.type === "topic" || n.type === "subtopic")
+                    .map((node) => {
+                      const isDone = doneSet.has(node.id);
+                      const isLearning = learningSet.has(node.id);
+                      const isSkipped = skippedSet.has(node.id);
+                      const label = (node.data as { label?: string })?.label || node.id;
+                      const isSubtopic = node.type === "subtopic";
+
+                      return (
+                        <div
+                          key={node.id}
+                          className={`py-2.5 flex items-center justify-between gap-3 text-xs ${
+                            isSubtopic ? "pl-3 text-neutral-400 text-[11px]" : "text-neutral-200 font-medium"
+                          }`}
+                        >
+                          <span className="truncate">{label}</span>
+                          {isDone ? (
+                            <span
+                              className="shrink-0 px-2 py-0.5 rounded text-[10px] font-semibold border"
+                              style={{ borderColor: successColor, backgroundColor: `${successColor}1a`, color: successColor }}
+                            >
+                              Done
+                            </span>
+                          ) : isLearning ? (
+                            <span
+                              className="shrink-0 px-2 py-0.5 rounded text-[10px] font-semibold border"
+                              style={{ borderColor: infoColor, backgroundColor: `${infoColor}1a`, color: infoColor }}
+                            >
+                              Learning
+                            </span>
+                          ) : isSkipped ? (
+                            <span
+                              className="shrink-0 px-2 py-0.5 rounded text-[10px] border"
+                              style={{ borderColor: `${mutedColor}66`, backgroundColor: `${bgColor}66`, color: mutedColor }}
+                            >
+                              Skipped
+                            </span>
+                          ) : (
+                            <span
+                              className="shrink-0 px-2 py-0.5 rounded text-[10px] border opacity-60"
+                              style={{ borderColor: `${borderColor}66`, color: mutedColor }}
+                            >
+                              Pending
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Map Visualizer Canvas Container */}
           <div
             ref={containerRef}
             data-lenis-prevent
-            className="relative border rounded-lg overflow-auto max-h-[75vh] min-h-100 shadow-inner select-none"
+            className={`relative border rounded-lg overflow-auto max-h-[75vh] min-h-100 shadow-inner select-none ${
+              showCanvasMobile ? "block" : "hidden md:block"
+            }`}
             style={{
               borderColor: borderColor,
               backgroundColor: bgColor,

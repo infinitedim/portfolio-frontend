@@ -15,6 +15,7 @@ import {
   ChevronDown,
   ChevronRight,
   GitCommit,
+  AlertTriangle,
 } from "lucide-react";
 import { LenisScroll } from "@/components/layout/lenis-scroll";
 
@@ -291,6 +292,28 @@ export function CommitDetailDrawer({
                   </div>
                 </div>
               )}
+
+              {/* Mobile Notice Banner for Code Diffs */}
+              <div className="sm:hidden rounded-lg border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-300 font-mono space-y-2">
+                <div className="flex items-center gap-2 font-semibold text-amber-400 text-[11px] uppercase tracking-wider">
+                  <AlertTriangle size={13} className="shrink-0" />
+                  <span>$ notice :: mobile_diff_limit</span>
+                </div>
+                <p className="text-[11px] leading-relaxed text-amber-200/90 font-sans">
+                  Detailed code diff patches are optimized for desktop & tablet viewports. You can inspect full line changes directly on GitHub.
+                </p>
+                {detail.htmlUrl && (
+                  <a
+                    href={detail.htmlUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 transition-colors text-[11px] font-mono font-medium border border-amber-400/30 cursor-pointer"
+                  >
+                    <ExternalLink size={12} />
+                    <span>View Full Diff on GitHub</span>
+                  </a>
+                )}
+              </div>
 
               {/* Files List with Diff View */}
               {detail.files && detail.files.length > 0 && (

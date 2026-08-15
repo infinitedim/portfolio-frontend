@@ -342,6 +342,10 @@ export interface TranslationKeys {
   navProjects: string;
   navRoadmap: string;
   navTerminal: string;
+  navRootAccess: string;
+  navRootConfigButton: string;
+  navSelectTheme: string;
+  navSelectFont: string;
   newsletterConfirmBack: string;
   newsletterConfirmLoading: string;
   newsletterConfirmTitle: string;

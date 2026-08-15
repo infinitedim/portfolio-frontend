@@ -53,6 +53,7 @@ interface GiscusCommentsProps {
   categoryKey?: GiscusCategoryKey;
   category?: string;
   categoryId?: string;
+  theme?: string;
 }
 
 export function CommentsSkeleton() {
@@ -64,16 +65,16 @@ export function CommentsSkeleton() {
       {[1, 2].map((i) => (
         <div
           key={i}
-          className="rounded-lg border border-gray-800 p-4 space-y-3"
+          className="rounded-lg border border-neutral-800 p-4 space-y-3"
         >
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gray-800" />
-            <div className="h-3 w-32 rounded bg-gray-800" />
-            <div className="h-3 w-16 rounded bg-gray-800 ml-auto" />
+            <div className="w-8 h-8 rounded-full bg-neutral-800" />
+            <div className="h-3 w-32 rounded bg-neutral-800" />
+            <div className="h-3 w-16 rounded bg-neutral-800 ml-auto" />
           </div>
           <div className="space-y-2">
-            <div className="h-3 w-full rounded bg-gray-800" />
-            <div className="h-3 w-4/5 rounded bg-gray-800" />
+            <div className="h-3 w-full rounded bg-neutral-800" />
+            <div className="h-3 w-4/5 rounded bg-neutral-800" />
           </div>
         </div>
       ))}
@@ -86,6 +87,7 @@ export function GiscusComments({
   categoryKey = "blog-comments",
   category: categoryProp,
   categoryId: categoryIdProp,
+  theme: themeProp,
 }: GiscusCommentsProps) {
   const { resolvedTheme } = useTheme();
 
@@ -102,6 +104,11 @@ export function GiscusComments({
     process.env[categoryIdEnvKey] ??
     process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID;
 
+  const activeTheme =
+    themeProp ??
+    process.env.NEXT_PUBLIC_GISCUS_THEME ??
+    (resolvedTheme === "light" ? "light" : "transparent_dark");
+
   if (!repo || !repoId || !resolvedCategory || !resolvedCategoryId) {
     return null;
   }
@@ -117,7 +124,7 @@ export function GiscusComments({
       reactionsEnabled="1"
       emitMetadata="0"
       inputPosition="top"
-      theme={resolvedTheme === "dark" ? "dark_tritanopia" : "light"}
+      theme={activeTheme}
       lang="en"
       loading="lazy"
     />
