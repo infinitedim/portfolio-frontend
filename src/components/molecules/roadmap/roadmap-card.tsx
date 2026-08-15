@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import type { RoadmapProgress } from "@/lib/data/data-fetching";
 import { RoadmapProgressBar } from "./roadmap-progress-bar";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface RoadmapCardProps {
   progress: RoadmapProgress;
@@ -11,25 +12,25 @@ interface RoadmapCardProps {
 }
 
 export function RoadmapCard({ progress, index }: RoadmapCardProps) {
+  const { t } = useI18n();
+
   const percent =
-    progress.total > 0
-      ? Math.round((progress.done / progress.total) * 100)
-      : 0;
+    progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0;
 
   const isCompleted = percent >= 100;
   const isInProgress = percent > 0 && percent < 100;
 
   const statusBadge = isCompleted ? (
     <span className="rounded border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
-      [100% EXECUTED]
+      [100% {t("roadmapStatusExecuted")}]
     </span>
   ) : isInProgress ? (
     <span className="rounded border border-cyan-500/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-semibold text-cyan-400">
-      [EXECUTING :: {percent}%]
+      [{t("roadmapStatusExecuting")} :: {percent}%]
     </span>
   ) : (
     <span className="rounded border border-neutral-800 bg-neutral-900 px-2 py-0.5 text-[10px] font-semibold text-neutral-400">
-      [PLANNED]
+      [{t("roadmapStatusPlanned")}]
     </span>
   );
 
@@ -45,7 +46,7 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
             href={`https://roadmap.sh/${progress.resourceId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-neutral-300 hover:text-emerald-400 transition-colors font-semibold truncate max-w-[200px] sm:max-w-[240px]"
+            className="text-neutral-300 hover:text-emerald-400 transition-colors font-semibold truncate max-w-50 sm:max-w-60"
             title={`View ${progress.resourceTitle} on roadmap.sh`}
           >
             ~/roadmap.sh/{progress.resourceId}
@@ -72,19 +73,27 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
         {/* Counter Pills */}
         <div className="grid grid-cols-4 gap-2 text-center text-[11px] border-t border-neutral-800/60 pt-3">
           <div className="rounded border border-emerald-500/20 bg-emerald-500/5 py-1 text-emerald-400">
-            <span className="block text-[9px] text-neutral-400 font-sans uppercase">Done</span>
+            <span className="block text-[9px] text-neutral-400 font-sans uppercase">
+              {t("roadmapDone")}
+            </span>
             <span className="font-bold">{progress.done}</span>
           </div>
           <div className="rounded border border-cyan-500/20 bg-cyan-500/5 py-1 text-cyan-400">
-            <span className="block text-[9px] text-neutral-400 font-sans uppercase">Learning</span>
+            <span className="block text-[9px] text-neutral-400 font-sans uppercase">
+              {t("roadmapLearning")}
+            </span>
             <span className="font-bold">{progress.learning}</span>
           </div>
           <div className="rounded border border-amber-500/20 bg-amber-500/5 py-1 text-amber-400">
-            <span className="block text-[9px] text-neutral-400 font-sans uppercase">Skipped</span>
+            <span className="block text-[9px] text-neutral-400 font-sans uppercase">
+              {t("roadmapSkipped")}
+            </span>
             <span className="font-bold">{progress.skipped ?? 0}</span>
           </div>
           <div className="rounded border border-neutral-800 bg-neutral-950 py-1 text-neutral-400">
-            <span className="block text-[9px] text-neutral-400 font-sans uppercase">Total</span>
+            <span className="block text-[9px] text-neutral-400 font-sans uppercase">
+              {t("roadmapCardTotal")}
+            </span>
             <span className="font-bold">{progress.total}</span>
           </div>
         </div>
@@ -99,7 +108,9 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
             className="flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors font-semibold group cursor-pointer"
           >
             <span>$ cd /roadmap/{progress.resourceId}</span>
-            <span className="transition-transform group-hover:translate-x-0.5">→</span>
+            <span className="transition-transform group-hover:translate-x-0.5">
+              →
+            </span>
           </Link>
         </div>
       </div>

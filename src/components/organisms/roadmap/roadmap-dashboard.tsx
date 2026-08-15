@@ -4,6 +4,7 @@ import type { RoadmapDashboard, RoadmapStreak } from "@/lib/data/data-fetching";
 import { RoadmapCard } from "@/components/molecules/roadmap/roadmap-card";
 import { RoadmapProgressBar } from "@/components/molecules/roadmap/roadmap-progress-bar";
 import { RoadmapStreakCard } from "@/components/molecules/roadmap/roadmap-streak-card";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface RoadmapDashboardProps {
   dashboard: RoadmapDashboard;
@@ -14,6 +15,8 @@ export function RoadmapDashboardOrganism({
   dashboard,
   streak,
 }: RoadmapDashboardProps) {
+  const { t } = useI18n();
+
   const rawProgresses = dashboard.progresses ?? [];
   const progresses = [...rawProgresses].sort((a, b) => {
     const pctA = a.total > 0 ? a.done / a.total : 0;
@@ -34,7 +37,7 @@ export function RoadmapDashboardOrganism({
     <div className="flex flex-col gap-8 font-mono">
       {/* Profile Header Telemetry Banner */}
       <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500/0 via-emerald-400 to-emerald-500/0" />
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-emerald-500/0 via-emerald-400 to-emerald-500/0" />
 
         <div className="flex items-center gap-4">
           {dashboard.avatar ? (
@@ -58,7 +61,7 @@ export function RoadmapDashboardOrganism({
               </span>
             </div>
             <p className="text-xs text-neutral-400 max-w-md">
-              {dashboard.headline || "Continuous Learning & Skill Telemetry"}
+              {dashboard.headline || t("roadmapProfileHeadline")}
             </p>
           </div>
         </div>
@@ -66,10 +69,10 @@ export function RoadmapDashboardOrganism({
         <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span>SYNCED :: roadmap.sh</span>
+            <span>{t("roadmapStatusSynced")}</span>
           </div>
           <span className="text-[11px] text-neutral-400">
-            {progresses.length} Active Trackers
+            {progresses.length} {t("roadmapActiveTrackers")}
           </span>
         </div>
       </div>
@@ -86,7 +89,11 @@ export function RoadmapDashboardOrganism({
             <span className="text-neutral-500 text-sm">--overview</span>
           </div>
           <span className="text-xs text-neutral-400">
-            Completed: <strong className="text-emerald-400 font-bold">{totalDone}</strong> · Skipped: <strong className="text-amber-400 font-bold">{totalSkipped}</strong> / {totalTopics} Topics
+            {t("roadmapCompleted")}:{" "}
+            <strong className="text-emerald-400 font-bold">{totalDone}</strong>{" "}
+            · {t("roadmapSkipped")}:{" "}
+            <strong className="text-amber-400 font-bold">{totalSkipped}</strong>{" "}
+            / {totalTopics} {t("roadmapTotalTopics")}
           </span>
         </div>
 
@@ -95,7 +102,7 @@ export function RoadmapDashboardOrganism({
           activeSegments={totalDone}
           showAscii
           size="lg"
-          label={`OVERALL :: ${overallPercent}% COMPLETED`}
+          label={`OVERALL :: ${overallPercent}% ${t("roadmapCompleted").toUpperCase()}`}
         />
       </div>
 
@@ -109,7 +116,11 @@ export function RoadmapDashboardOrganism({
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {progresses.map((p, idx) => (
-            <RoadmapCard key={p.resourceId} progress={p} index={idx} />
+            <RoadmapCard
+              key={p.resourceId}
+              progress={p}
+              index={idx}
+            />
           ))}
         </div>
       </div>

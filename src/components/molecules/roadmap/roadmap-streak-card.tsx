@@ -1,6 +1,7 @@
 "use client";
 
 import type { RoadmapStreak } from "@/lib/data/data-fetching";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface RoadmapStreakCardProps {
   streak: RoadmapStreak | null;
@@ -11,6 +12,8 @@ export function RoadmapStreakCard({
   streak,
   className = "",
 }: RoadmapStreakCardProps) {
+  const { t } = useI18n();
+
   if (!streak) return null;
 
   const formatDate = (raw?: string | null) => {
@@ -26,28 +29,30 @@ export function RoadmapStreakCard({
     }
   };
 
+  const daysLabel = t("roadmapStreakDays");
+
   const metrics = [
     {
       code: "CURRENT",
-      label: "Active Streak",
-      value: `${streak.count} DAYS`,
+      label: t("roadmapStreakActive"),
+      value: `${streak.count} ${daysLabel}`,
       highlight: true,
     },
     {
       code: "LONGEST",
-      label: "Personal Record",
-      value: `${streak.longestCount} DAYS`,
+      label: t("roadmapStreakRecord"),
+      value: `${streak.longestCount} ${daysLabel}`,
       highlight: false,
     },
     {
       code: "PREVIOUS",
-      label: "Prior Session",
-      value: `${streak.previousCount} DAYS`,
+      label: t("roadmapStreakPrior"),
+      value: `${streak.previousCount} ${daysLabel}`,
       highlight: false,
     },
     {
       code: "REFERRALS",
-      label: "Invited Peers",
+      label: t("roadmapStreakPeers"),
       value: `${streak.refByUserCount}`,
       highlight: false,
     },
@@ -57,7 +62,7 @@ export function RoadmapStreakCard({
     <div
       className={`rounded-xl border border-neutral-800 bg-neutral-900/60 p-5 font-mono shadow-xl backdrop-blur-md relative overflow-hidden ${className}`}
     >
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500/0 via-emerald-400 to-emerald-500/0" />
+      <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-emerald-500/0 via-emerald-400 to-emerald-500/0" />
 
       {/* CLI Section Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4 border-b border-neutral-800/80 pb-3">
@@ -86,12 +91,8 @@ export function RoadmapStreakCard({
             <span className="text-[10px] text-neutral-500 font-semibold tracking-wider">
               [{m.code}]
             </span>
-            <span className="text-lg font-bold tracking-tight">
-              {m.value}
-            </span>
-            <span className="text-[10px] text-neutral-400">
-              {m.label}
-            </span>
+            <span className="text-lg font-bold tracking-tight">{m.value}</span>
+            <span className="text-[10px] text-neutral-400">{m.label}</span>
           </div>
         ))}
       </div>
