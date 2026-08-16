@@ -12,7 +12,7 @@ export function AboutResumeButton() {
         type="button"
         onClick={() => setIsOpen(true)}
         suppressHydrationWarning
-        className="rounded bg-emerald-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-colors hover:bg-emerald-300 cursor-pointer"
+        className="rounded bg-(--terminal-accent) px-5 py-2.5 font-mono text-sm font-medium text-(--terminal-bg) transition-opacity hover:opacity-90 cursor-pointer"
       >
         ↓ Download Resume
       </button>

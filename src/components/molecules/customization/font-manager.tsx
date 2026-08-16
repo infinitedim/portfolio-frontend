@@ -55,6 +55,7 @@ export function FontManager({
     } else {
       const root = document.documentElement;
       root.style.setProperty("--terminal-font-family", font.family);
+      root.style.setProperty("--font-mono", font.family);
       root.style.setProperty("--terminal-font-weight", font.weight);
       root.style.setProperty(
         "--terminal-font-ligatures",

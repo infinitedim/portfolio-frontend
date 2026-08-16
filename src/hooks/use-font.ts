@@ -53,6 +53,10 @@ export function useFont() {
         currentFontConfig.family,
       );
       root.style.setProperty(
+        "--font-mono",
+        currentFontConfig.family,
+      );
+      root.style.setProperty(
         "--terminal-font-weight",
         currentFontConfig.weight,
       );

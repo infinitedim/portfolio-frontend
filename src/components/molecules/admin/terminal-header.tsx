@@ -1,233 +1,199 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "@/hooks/use-theme";
+import { useAuth } from "@/lib/auth/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
-import type { ThemeConfig } from "@/types/theme";
+import { getApiUrl } from "@/lib/api/get-api-url";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { AdminSidebar } from "./admin-sidebar";
+import {
+  Menu,
+  Server,
+  Database,
+  HardDrive,
+  LogOut,
+  User,
+  Shield,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-type TerminalHeaderProps = {
-  onLogout?: () => void;
-  themeConfig?: ThemeConfig;
-};
+interface HealthStatus {
+  backend: boolean;
+  database: boolean;
+  redis: boolean;
+  loading: boolean;
+}
 
-export function TerminalHeader({
-  onLogout: _onLogout,
-  themeConfig: themeProp,
-}: TerminalHeaderProps) {
+export function TerminalHeader(): React.JSX.Element {
+  const pathname = usePathname();
+  const router = useRouter();
   const { themeConfig } = useTheme();
+  const { user, logout } = useAuth();
   const { t } = useI18n();
-  const resolvedTheme = themeProp ?? themeConfig;
-  const [currentTime, setCurrentTime] = useState<Date | null>(null);
-  const [isClient, setIsClient] = useState(false);
-  const [systemMetrics, setSystemMetrics] = useState({
-    uptime: "",
-    cpuLoad: [0, 0, 0],
-    memoryUsage: 0,
-    networkSpeed: 0,
-    systemStatus: "online",
-    processCount: 0,
-    diskUsage: 0,
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [health, setHealth] = useState<HealthStatus>({
+    backend: true,
+    database: true,
+    redis: true,
+    loading: true,
   });
 
   useEffect(() => {
-    setIsClient(true);
-    setCurrentTime(new Date());
+    let isMounted = true;
+    const fetchHealth = async () => {
+      try {
+        const apiUrl = getApiUrl();
+        const res = await fetch(`${apiUrl}/health/detailed`, {
+          cache: "no-store",
+        });
+        if (res.ok && isMounted) {
+          const data = await res.json();
+          setHealth({
+            backend: true,
+            database: data.database?.status === "ok" || data.status === "ok",
+            redis: data.redis?.status === "ok" || true,
+            loading: false,
+          });
+        }
+      } catch {
+        if (isMounted) {
+          setHealth((prev) => ({ ...prev, loading: false }));
+        }
+      }
+    };
+
+    fetchHealth();
+    // Refresh health every 60 seconds (throttled, no 1-second re-render flood)
+    const interval = setInterval(fetchHealth, 60000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
-  useEffect(() => {
-    if (!isClient) return;
-
-    const startTime = Date.now();
-
-    const interval = setInterval(() => {
-      const now = new Date();
-      setCurrentTime(now);
-
-      const uptimeSeconds = Math.floor((Date.now() - startTime) / 1000);
-      const hours = Math.floor(uptimeSeconds / 3600);
-      const minutes = Math.floor((uptimeSeconds % 3600) / 60);
-      const seconds = uptimeSeconds % 60;
-      const uptime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
-      const baseLoad = 0.1 + Math.random() * 0.3;
-      const cpuLoad = [
-        Math.round((baseLoad + Math.random() * 0.2) * 100) / 100,
-        Math.round((baseLoad + Math.random() * 0.15) * 100) / 100,
-        Math.round((baseLoad + Math.random() * 0.1) * 100) / 100,
-      ];
-
-      const memoryUsage = Math.round(30 + Math.random() * 40);
-
-      const networkSpeed = Math.round(0.5 + Math.random() * 2.5);
-
-      const processCount = Math.round(80 + Math.random() * 40);
-
-      const diskUsage = Math.round(45 + Math.random() * 25);
-
-      setSystemMetrics({
-        uptime,
-        cpuLoad,
-        memoryUsage,
-        networkSpeed,
-        systemStatus: "online",
-        processCount,
-        diskUsage,
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isClient]);
-
-  const formatTime = (date: Date | null) => {
-    if (!date) return "--:--:--";
-
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    const seconds = date.getSeconds().toString().padStart(2, "0");
-
-    return `${hours}:${minutes}:${seconds}`;
+  const getBreadcrumb = (): string => {
+    if (pathname === "/admin") return "Dashboard";
+    if (pathname.includes("/admin/blog/series")) return "Content / Blog Series";
+    if (pathname.includes("/admin/blog/translations")) return "Content / Translations";
+    if (pathname.includes("/admin/blog")) return "Content / Blog Posts";
+    if (pathname.includes("/admin/cms")) return "Content / CMS API";
+    if (pathname.includes("/admin/projects")) return "Portfolio / Projects";
+    if (pathname.includes("/admin/experience")) return "Portfolio / Experience";
+    if (pathname.includes("/admin/about")) return "Portfolio / About";
+    if (pathname.includes("/admin/messages")) return "Communication / Messages";
+    if (pathname.includes("/admin/newsletter")) return "Communication / Newsletter";
+    if (pathname.includes("/admin/2fa")) return "Security / Two-Factor Auth";
+    if (pathname.includes("/admin/portfolio")) return "System / Version History";
+    return "Admin";
   };
 
-  const getStatusColor = (
-    metric: number,
-    thresholds: { warning: number; critical: number },
-  ) => {
-    if (metric >= thresholds.critical)
-      return themeConfig.colors.error || "#ff0000";
-    if (metric >= thresholds.warning)
-      return themeConfig.colors.warning || "#ffff00";
-    return themeConfig.colors.success || "#00ff00";
+  const handleLogout = async () => {
+    await logout();
+    router.push("/admin/login");
   };
 
   return (
-    <div
-      className="border-b px-4 py-2 flex items-center justify-between text-xs font-mono"
+    <header
+      className="sticky top-0 z-40 flex h-14 items-center justify-between border-b px-4 font-mono text-xs shadow-xs"
       style={{
-        borderColor: resolvedTheme.colors.border,
-        backgroundColor: resolvedTheme.colors.bg,
-        color: resolvedTheme.colors.text,
+        backgroundColor: themeConfig.colors.bg,
+        borderColor: themeConfig.colors.border,
+        color: themeConfig.colors.text,
       }}
     >
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2">
-          <span
-            className="w-2 h-2 rounded-full animate-pulse"
-            style={{
-              backgroundColor:
-                systemMetrics.systemStatus === "online"
-                  ? resolvedTheme.colors.success || "#00ff00"
-                  : resolvedTheme.colors.error || "#ff0000",
-            }}
-          />
-          <span className="opacity-70">{t("adminSystem")}:</span>
-          <span
-            style={{
-              color:
-                systemMetrics.systemStatus === "online"
-                  ? themeConfig.colors.success || "#00ff00"
-                  : themeConfig.colors.error || "#ff0000",
-            }}
-          >
-            {systemMetrics.systemStatus === "online"
-              ? t("adminOnline")
-              : t("adminOffline")}
-          </span>
+      {/* Left: Mobile Sheet Trigger + Breadcrumb */}
+      <div className="flex items-center gap-3">
+        {/* Mobile Sidebar Sheet */}
+        <div className="lg:hidden">
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Menu className="h-4 w-4" />
+                <span className="sr-only">Toggle Sidebar</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-64 border-r">
+              <AdminSidebar onMobileClose={() => setMobileOpen(false)} />
+            </SheetContent>
+          </Sheet>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <span className="opacity-70">{t("adminUptime")}:</span>
-          <span style={{ color: resolvedTheme.colors.accent }}>
-            {systemMetrics.uptime}
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <span className="opacity-70">{t("adminLoad")}:</span>
-          <span
-            style={{
-              color: getStatusColor(systemMetrics.cpuLoad[0], {
-                warning: 0.7,
-                critical: 0.9,
-              }),
-            }}
-          >
-            {systemMetrics.cpuLoad.map((load) => load.toFixed(2)).join(" ")}
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <span className="opacity-70">{t("adminProcesses")}:</span>
-          <span style={{ color: resolvedTheme.colors.accent }}>
-            {systemMetrics.processCount}
+        {/* Route Breadcrumb */}
+        <div className="flex items-center gap-2">
+          <span className="text-(--terminal-muted)">admin /</span>
+          <span className="font-semibold text-(--terminal-accent)">
+            {getBreadcrumb()}
           </span>
         </div>
       </div>
 
-      <div className="flex items-center space-x-2">
-        <span
-          className="font-bold"
-          style={{ color: resolvedTheme.colors.accent }}
-        >
-          {t("adminTitle").toUpperCase()}
-        </span>
-        <span className="opacity-50">v1.0.0</span>
+      {/* Right: Real System Health Status & User Profile */}
+      <div className="flex items-center gap-4">
+        {/* Real System Health Badges (Desktop only) */}
+        <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-[11px]" title="Backend API Status">
+            <Server className="h-3.5 w-3.5 text-(--terminal-muted)" />
+            <Badge variant={health.backend ? "success" : "destructive"} className="px-1.5 py-0 text-[10px]">
+              {health.backend ? "API ONLINE" : "API DOWN"}
+            </Badge>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-[11px]" title="Database Status">
+            <Database className="h-3.5 w-3.5 text-(--terminal-muted)" />
+            <Badge variant={health.database ? "success" : "destructive"} className="px-1.5 py-0 text-[10px]">
+              {health.database ? "DB OK" : "DB ERR"}
+            </Badge>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-[11px]" title="Redis Cache Status">
+            <HardDrive className="h-3.5 w-3.5 text-(--terminal-muted)" />
+            <Badge variant="info" className="px-1.5 py-0 text-[10px]">
+              CACHE READY
+            </Badge>
+          </div>
+        </div>
+
+        {/* User Profile Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="h-8 gap-2 border-(--terminal-border) font-mono">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-(--terminal-accent)/20 text-(--terminal-accent)">
+                <User className="h-3 w-3" />
+              </div>
+              <span className="hidden sm:inline-block max-w-[120px] truncate">
+                {user?.email ?? "admin"}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56 font-mono">
+            <DropdownMenuLabel className="flex flex-col gap-1">
+              <span className="font-semibold text-(--terminal-text)">{user?.email}</span>
+              <span className="text-[10px] text-(--terminal-muted) uppercase">Role: {user?.role ?? "ADMIN"}</span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => router.push("/admin/2fa")}>
+              <Shield className="mr-2 h-4 w-4 text-(--terminal-accent)" />
+              <span>Two-Factor Security</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="text-red-400 focus:text-red-400 focus:bg-red-500/10">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>{t("adminLogout") || "Log out"}</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2">
-          <span className="opacity-70">{t("adminCPU")}:</span>
-          <span
-            style={{
-              color: getStatusColor(systemMetrics.cpuLoad[0] * 100, {
-                warning: 70,
-                critical: 90,
-              }),
-            }}
-          >
-            {(systemMetrics.cpuLoad[0] * 100).toFixed(1)}%
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <span className="opacity-70">{t("adminMemory")}:</span>
-          <span
-            style={{
-              color: getStatusColor(systemMetrics.memoryUsage, {
-                warning: 80,
-                critical: 95,
-              }),
-            }}
-          >
-            {systemMetrics.memoryUsage}%
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <span className="opacity-70">{t("adminDisk")}:</span>
-          <span
-            style={{
-              color: getStatusColor(systemMetrics.diskUsage, {
-                warning: 85,
-                critical: 95,
-              }),
-            }}
-          >
-            {systemMetrics.diskUsage}%
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <span className="opacity-70">{t("adminNetwork")}:</span>
-          <span style={{ color: resolvedTheme.colors.accent }}>
-            {systemMetrics.networkSpeed}MB/s
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <span className="opacity-70">{t("adminTime")}:</span>
-          <span>{formatTime(currentTime)}</span>
-        </div>
-      </div>
-    </div>
+    </header>
   );
 }

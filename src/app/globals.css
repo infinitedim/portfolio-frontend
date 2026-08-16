@@ -19,6 +19,8 @@ body {
 
 @layer base {
   :root {
+    --terminal-font-family: var(--font-mono);
+    --font-mono: var(--terminal-font-family, var(--font-mono));
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -124,6 +126,15 @@ body {
   /* Ensure the main scrollbar for the body is always themed */
   html {
     scrollbar-color: var(--terminal-accent) var(--terminal-bg);
+  }
+
+  /* Content-theme layer: Remaps terminal CSS variables to softened content versions for readability */
+  .content-theme {
+    --terminal-bg: var(--content-bg);
+    --terminal-text: var(--content-text);
+    --terminal-accent: var(--content-accent);
+    --terminal-muted: var(--content-muted);
+    --terminal-border: var(--content-border);
   }
 }
 

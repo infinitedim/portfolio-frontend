@@ -39,7 +39,7 @@ export function NewsletterSignup() {
       </label>
       <div className="relative w-full flex-1 flex items-center">
         <span
-          className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-xs text-emerald-400 select-none pointer-events-none flex items-center justify-center"
+          className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-xs text-(--terminal-accent) select-none pointer-events-none flex items-center justify-center"
           aria-hidden="true"
         >
           $
@@ -52,13 +52,13 @@ export function NewsletterSignup() {
           placeholder="you@example.com"
           required
           disabled={loading}
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-900/90 pl-7 pr-3 py-2 text-xs text-neutral-100 placeholder-neutral-500 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none transition-colors font-mono"
+          className="w-full rounded-lg border border-(--terminal-border) bg-(--terminal-bg) pl-7 pr-3 py-2 text-xs text-(--terminal-text) placeholder-(--terminal-muted)/60 focus:border-(--terminal-accent) focus:ring-1 focus:ring-(--terminal-accent) focus:outline-none transition-colors font-mono"
         />
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="w-full sm:w-auto rounded-lg bg-emerald-400 text-neutral-950 font-semibold px-4 py-2 text-xs hover:bg-emerald-300 transition-colors disabled:opacity-50 shadow-md shadow-emerald-500/10 cursor-pointer select-none whitespace-nowrap"
+        className="w-full sm:w-auto rounded-lg bg-(--terminal-accent) text-(--terminal-bg) font-semibold px-4 py-2 text-xs hover:opacity-90 transition-colors disabled:opacity-50 shadow-md shadow-(--terminal-accent)/10 cursor-pointer select-none whitespace-nowrap"
       >
         {loading ? "$ Submitting..." : "$ dispatch --submit"}
       </button>

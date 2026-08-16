@@ -37,7 +37,11 @@ import {
   Clock,
   Info,
   EyeOff,
+  RefreshCw,
 } from "lucide-react";
+import { ConfirmDialog } from "./confirm-dialog";
+import { toast } from "sonner";
+
 
 const CustomEditor = dynamic(
   () =>
@@ -452,12 +456,15 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     clearDraft();
   };
 
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+
+  const handleDeletePostClick = () => {
+    if (!currentPost || isNewPost) return;
+    setDeleteConfirmOpen(true);
+  };
+
   const deletePost = async () => {
     if (!currentPost || isNewPost) return;
-
-    if (!confirm(`Delete "${currentPost.title}"? This cannot be undone.`)) {
-      return;
-    }
 
     setIsSaving(true);
     setError(null);
@@ -475,28 +482,21 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         {
           method: "DELETE",
           headers: {
-            Accept: "application/json",
             Authorization: `Bearer ${token}`,
           },
         },
       );
 
       if (response.ok) {
-        setPosts((prev) => prev.filter((p) => p.slug !== currentPost.slug));
-
-        const remaining = posts.filter((p) => p.slug !== currentPost.slug);
-        if (remaining.length > 0) {
-          loadDraft(remaining[0]);
-        } else {
-          createNewDraft();
-        }
+        toast.success("Post deleted successfully");
+        createNewDraft();
+        await loadPosts();
       } else {
-        const errData = await response.json();
-        setError(errData.error || "Failed to delete post");
+        const data = await response.json();
+        setError(data.error || "Failed to delete post");
       }
-    } catch (err) {
-      console.error("Delete error:", err);
-      setError("Network error while deleting");
+    } catch (_err) {
+      setError("Network error failed to delete post");
     } finally {
       setIsSaving(false);
     }
@@ -781,7 +781,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
             </button>
             {currentPost && !isNewPost && (
               <button
-                onClick={deletePost}
+                onClick={handleDeletePostClick}
                 disabled={isSaving}
                 className="px-3 py-1 text-xs border rounded transition-colors"
                 style={{
@@ -846,11 +846,13 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
               </div>
               <button
                 onClick={loadPosts}
-                className="text-xs opacity-70 hover:opacity-100"
+                className="text-xs opacity-70 hover:opacity-100 flex items-center gap-1 text-(--terminal-accent)"
                 title="Refresh posts"
-              ></button>
+              >
+                <RefreshCw className="h-3 w-3" /> Refresh
+              </button>
             </div>
-            <div className="space-y-2 max-h-96 overflow-y-auto">
+            <div className="space-y-2 flex-1 overflow-y-auto min-h-[300px]">
               {posts.length === 0 ? (
                 <div className="text-xs opacity-50 text-center py-4">
                   No posts yet. Create your first post!
@@ -863,18 +865,13 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
                     <button
                       key={post.id}
                       onClick={() => loadDraft(post)}
-                      className={`w-full p-3 text-left border rounded transition-all duration-200 ${
-                        isSelected ? "scale-[1.02]" : "hover:scale-[1.01]"
+                      className={`w-full p-3 text-left border rounded transition-colors ${
+                        isSelected
+                          ? "border-(--terminal-accent) bg-(--terminal-accent)/15"
+                          : "border-(--terminal-border) hover:border-(--terminal-accent)/40 hover:bg-(--terminal-accent)/5"
                       }`}
-                      style={{
-                        borderColor: isSelected
-                          ? themeConfig.colors.accent
-                          : themeConfig.colors.border,
-                        backgroundColor: isSelected
-                          ? `${themeConfig.colors.accent}20`
-                          : themeConfig.colors.bg,
-                      }}
                     >
+
                       <div className="text-xs font-mono truncate">
                         {post.title}
                       </div>
@@ -1288,6 +1285,17 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteConfirmOpen}
+        onOpenChange={setDeleteConfirmOpen}
+        title="Delete Blog Post"
+        description={`Are you sure you want to delete "${currentPost?.title || "this post"}"? This action cannot be undone.`}
+        confirmLabel="Delete Post"
+        variant="destructive"
+        onConfirm={deletePost}
+        isLoading={isSaving}
+      />
     </div>
   );
 }

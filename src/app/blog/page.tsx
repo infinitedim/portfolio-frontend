@@ -230,7 +230,7 @@ async function BlogPageContent({
           name="search"
           defaultValue={search ?? ""}
           placeholder={t.blogSearchPlaceholder}
-          className="flex-1 rounded border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-100 font-mono outline-none transition-colors duration-200"
+          className="flex-1 rounded border border-(--terminal-border) bg-(--terminal-bg)/90 px-3 py-2 text-sm text-(--terminal-text) font-mono outline-none transition-colors duration-200 focus:border-(--terminal-accent)"
         />
         {tag && (
           <input
@@ -255,7 +255,7 @@ async function BlogPageContent({
         )}
         <button
           type="submit"
-          className="px-4 py-2 rounded border border-emerald-400/40 bg-emerald-400/10 text-emerald-400 text-sm font-mono transition-colors duration-200 hover:bg-emerald-400/20 cursor-pointer"
+          className="px-4 py-2 rounded border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 text-(--terminal-accent) text-sm font-mono transition-colors duration-200 hover:bg-(--terminal-accent)/20 cursor-pointer"
         >
           {t.blogSearchButton}
         </button>
@@ -267,7 +267,7 @@ async function BlogPageContent({
               tag: undefined,
               series: undefined,
             })}
-            className="px-4 py-2 rounded border border-neutral-800 text-neutral-400 text-sm font-mono transition-colors duration-200 hover:border-neutral-600 hover:text-neutral-300"
+            className="px-4 py-2 rounded border border-(--terminal-border) text-(--terminal-muted) text-sm font-mono transition-colors duration-200 hover:border-(--terminal-accent)/40 hover:text-(--terminal-text)"
           >
             {t.blogClearButton}
           </Link>
@@ -302,19 +302,19 @@ async function BlogPageContent({
           t={t}
         />
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-8 font-mono">
           {posts.map((post) => (
             <article
               key={post.id}
-              className="group rounded-lg border border-neutral-800 bg-neutral-900/50 p-6 transition-colors duration-200 hover:border-emerald-400/40 border-l-2 border-l-emerald-400/30"
+              className="group rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/70 p-6 transition-colors duration-200 hover:border-(--terminal-accent)/60 border-l-2 border-l-(--terminal-accent)/50"
             >
               <Link href={`/blog/${post.slug}`}>
-                <h2 className="text-xl font-bold font-mono text-white transition-colors duration-200 group-hover:text-emerald-400 mb-2">
+                <h2 className="text-xl font-bold font-mono text-(--terminal-text) transition-colors duration-200 group-hover:text-(--terminal-accent) mb-2">
                   {post.title}
                 </h2>
               </Link>
               {post.summary && (
-                <p className="text-neutral-400 mb-3">{post.summary}</p>
+                <p className="text-(--terminal-muted) mb-3">{post.summary}</p>
               )}
               {(post.tags?.length ?? 0) > 0 && (
                 <div className="flex flex-wrap gap-1 mb-3">
@@ -333,7 +333,7 @@ async function BlogPageContent({
                   ))}
                 </div>
               )}
-              <div className="flex items-center justify-between font-mono text-xs text-neutral-500">
+              <div className="flex items-center justify-between font-mono text-xs text-(--terminal-muted)">
                 <div className="flex items-center gap-3">
                   <time dateTime={post.createdAt}>
                     {new Date(post.createdAt).toLocaleDateString("en-US", {
@@ -350,7 +350,7 @@ async function BlogPageContent({
                 </div>
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="font-mono text-xs text-emerald-400 transition-colors duration-200 hover:text-emerald-300"
+                  className="font-mono text-xs text-(--terminal-accent) transition-colors duration-200 hover:opacity-80"
                 >
                   {t.blogReadMore}
                 </Link>
@@ -365,12 +365,12 @@ async function BlogPageContent({
           {page > 1 && (
             <Link
               href={buildUrl({ page: page - 1 })}
-              className="px-4 py-2 rounded border border-neutral-800 font-mono text-sm text-neutral-300 transition-colors duration-200 hover:border-emerald-400/40 hover:text-emerald-400"
+              className="px-4 py-2 rounded border border-(--terminal-border) font-mono text-sm text-(--terminal-muted) transition-colors duration-200 hover:border-(--terminal-accent)/60 hover:text-(--terminal-accent)"
             >
               ← {t.previous}
             </Link>
           )}
-          <span className="px-4 py-2 text-neutral-400">
+          <span className="px-4 py-2 text-(--terminal-muted)">
             {t.blogPageOf
               .replace("{page}", String(page))
               .replace("{totalPages}", String(totalPages))}
@@ -378,7 +378,7 @@ async function BlogPageContent({
           {page < totalPages && (
             <Link
               href={buildUrl({ page: page + 1 })}
-              className="px-4 py-2 rounded border border-neutral-800 font-mono text-sm text-neutral-300 transition-colors duration-200 hover:border-emerald-400/40 hover:text-emerald-400"
+              className="px-4 py-2 rounded border border-(--terminal-border) font-mono text-sm text-(--terminal-muted) transition-colors duration-200 hover:border-(--terminal-accent)/60 hover:text-(--terminal-accent)"
             >
               {t.next} →
             </Link>

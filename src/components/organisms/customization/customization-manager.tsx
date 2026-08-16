@@ -158,6 +158,8 @@ export function CustomizationManager({
   return (
     <div
       data-lenis-prevent
+      data-lenis-prevent-wheel
+      data-lenis-prevent-touch
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm"
     >
       <div

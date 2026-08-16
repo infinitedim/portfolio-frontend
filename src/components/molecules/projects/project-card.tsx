@@ -16,7 +16,7 @@ interface ProjectCardProps {
 }
 
 const ProjectImageLoader = () => (
-  <div className="h-48 animate-pulse bg-neutral-800/30" />
+  <div className="h-48 animate-pulse bg-(--terminal-border)/30" />
 );
 
 export const ProjectCard = memo(function ProjectCard({
@@ -27,7 +27,7 @@ export const ProjectCard = memo(function ProjectCard({
 
   const statusConfig = {
     completed: {
-      color: "text-emerald-400",
+      color: "text-(--terminal-accent)",
       icon: "",
       label: t("projectsCompletedStatus"),
     },
@@ -47,83 +47,81 @@ export const ProjectCard = memo(function ProjectCard({
   return (
     <HoverCard
       className={`
-        h-full group relative overflow-hidden rounded-lg border border-neutral-800 bg-neutral-950
-        transition-colors duration-200 hover:border-emerald-400/40 hover:shadow-[0_0_30px_rgba(16,185,129,0.06)]
-        ${featured ? "ring-2 ring-emerald-400 ring-opacity-20" : ""}
+        h-full group relative overflow-hidden rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/90
+        transition-colors duration-200 hover:border-(--terminal-accent)/60
+        ${featured ? "ring-2 ring-(--terminal-accent) ring-opacity-30" : ""}
       `}
     >
       <article
         itemScope
         itemType="https://schema.org/CreativeWork"
-        className="h-full flex flex-col"
+        className="h-full flex flex-col p-5"
         suppressHydrationWarning
       >
-        {featured && (
-          <div className="absolute right-4 top-4 z-10">
-            <span className="rounded bg-emerald-400 px-2 py-1 text-xs font-bold text-neutral-950 flex items-center gap-1">
-              <Star
-                size={12}
-                className="fill-current"
-              />{" "}
-              {t("projectFeatured")}
-            </span>
-          </div>
-        )}
-
-        <div className="relative h-48 overflow-hidden bg-neutral-800/30">
-          <Suspense fallback={<ProjectImageLoader />}>
-            <ImageErrorBoundary>
-              {displayImage ? (
+        {/* Card Header Media or Icon */}
+        <div className="relative mb-4 overflow-hidden rounded border border-(--terminal-border) bg-(--terminal-bg)">
+          {displayImage ? (
+            <ImageErrorBoundary
+              fallback={
+                <div className="h-48 flex flex-col items-center justify-center bg-(--terminal-bg) p-4 text-center font-mono border border-(--terminal-border)">
+                  <Folder className="h-8 w-8 text-(--terminal-accent) mb-2 opacity-60" />
+                  <span className="text-xs text-(--terminal-muted) truncate max-w-full">
+                    {project.name}
+                  </span>
+                </div>
+              }
+            >
+              <Suspense fallback={<ProjectImageLoader />}>
                 <ProjectCardImage
                   src={displayImage}
-                  alt={`Screenshot of ${project.name}`}
+                  alt={project.name}
                   featured={featured}
+                  className="h-48 w-full object-cover object-top transition-transform duration-300 group-hover:scale-102"
                 />
-              ) : (
-                <div className="flex h-full items-center justify-center text-neutral-400">
-                  <div className="text-center flex flex-col items-center">
-                    <div className="mb-2 text-neutral-400">
-                      <Folder
-                        size={36}
-                        className="stroke-[1.5]"
-                      />
-                    </div>
-                    <div className="text-sm">{t("projectPreview")}</div>
-                  </div>
-                </div>
-              )}
+              </Suspense>
             </ImageErrorBoundary>
-          </Suspense>
+          ) : (
+            <div className="h-48 flex flex-col items-center justify-center bg-(--terminal-bg) p-4 text-center font-mono border border-(--terminal-border) group-hover:border-(--terminal-accent)/40 transition-colors">
+              <Folder className="h-10 w-10 text-(--terminal-accent) mb-2 opacity-80 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-semibold text-(--terminal-text) truncate max-w-full">
+                {project.name}
+              </span>
+              <span className="text-[10px] text-(--terminal-muted) mt-1">
+                {project.category}
+              </span>
+            </div>
+          )}
 
-          <div className="absolute bottom-2 right-2 rounded bg-neutral-950/80 px-2 py-1 backdrop-blur-sm">
-            <span
-              className={`${status.color} flex items-center gap-1 font-mono text-sm`}
-            >
-              <span>{status.icon}</span>
-              <span>{status.label}</span>
+          {/* Badges Overlay */}
+          <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
+            {project.featured && (
+              <span className="inline-flex items-center gap-1 rounded bg-(--terminal-accent)/20 border border-(--terminal-accent)/40 px-2 py-0.5 font-mono text-[10px] font-medium text-(--terminal-accent) backdrop-blur-md">
+                <Star className="h-3 w-3 fill-current" />
+                Featured
+              </span>
+            )}
+            <span className="inline-flex items-center rounded bg-(--terminal-bg)/80 border border-(--terminal-border) px-2 py-0.5 font-mono text-[10px] text-(--terminal-muted) backdrop-blur-md">
+              {project.category}
             </span>
           </div>
 
-          {project.category && (
-            <div className="absolute top-2 left-2 rounded bg-neutral-950/80 px-2 py-0.5 backdrop-blur-sm border border-neutral-800 font-mono text-[10px] uppercase text-neutral-300">
-              {project.category}
-            </div>
-          )}
+          <div className="absolute bottom-2 left-2 flex items-center gap-1.5 z-10">
+            {project.platforms?.map((platform) => (
+              <PlatformBadge key={platform} platform={platform} />
+            ))}
+          </div>
         </div>
 
-        <div className="p-6 flex flex-1 flex-col">
-          {/* Target Platform Badges */}
-          {project.platforms && project.platforms.length > 0 && (
-            <div className="mb-3 flex flex-wrap gap-1">
-              {project.platforms.map((platform) => (
-                <PlatformBadge key={platform} platform={platform} size="sm" />
-              ))}
+        {/* Title & Description */}
+        <div className="flex flex-col flex-grow">
+          <div className="mb-2">
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <span className={`font-mono text-[10px] ${status.color}`}>
+                ● {status.label}
+              </span>
             </div>
-          )}
-
-          <div className="mb-4">
             <h3
-              className="mb-2 text-xl font-bold text-white transition-colors group-hover:text-emerald-400"
+              className="font-mono text-lg font-bold tracking-tight text-(--terminal-text) transition-colors group-hover:text-(--terminal-accent)"
               itemProp="name"
             >
               <Link
@@ -134,7 +132,7 @@ export const ProjectCard = memo(function ProjectCard({
               </Link>
             </h3>
             <p
-              className="text-sm leading-relaxed text-neutral-400"
+              className="text-sm leading-relaxed text-(--terminal-muted)"
               itemProp="description"
             >
               {project.description}
@@ -145,7 +143,7 @@ export const ProjectCard = memo(function ProjectCard({
           {project.metrics && (
             <div className="mb-4 flex flex-wrap gap-1.5 font-mono text-[11px]">
               {project.metrics.latencyP95 && (
-                <span className="inline-flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-950/20 px-2 py-0.5 text-emerald-400">
+                <span className="inline-flex items-center gap-1 rounded border border-(--terminal-accent)/30 bg-(--terminal-accent)/10 px-2 py-0.5 text-(--terminal-accent)">
                   <Zap className="h-3 w-3" /> P95: {project.metrics.latencyP95}
                 </span>
               )}
@@ -173,7 +171,7 @@ export const ProjectCard = memo(function ProjectCard({
           )}
 
           <div className="mb-4">
-            <div className="mb-2 font-mono text-xs text-neutral-500">
+            <div className="mb-2 font-mono text-xs text-(--terminal-muted)">
               {t("projectTechStack")}:
             </div>
             <ul
@@ -186,7 +184,7 @@ export const ProjectCard = memo(function ProjectCard({
                 </li>
               ))}
               {project.technologies.length > 4 && (
-                <li className="rounded border border-neutral-800 px-2 py-1 font-mono text-xs text-neutral-500">
+                <li className="rounded border border-(--terminal-border) px-2 py-1 font-mono text-xs text-(--terminal-muted)">
                   +{project.technologies.length - 4} {t("projectMore")}
                 </li>
               )}
@@ -199,7 +197,7 @@ export const ProjectCard = memo(function ProjectCard({
                 href={project.apiDocsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-emerald-500/20 border border-emerald-500/40 px-3 py-1.5 text-xs font-medium text-emerald-300 transition-colors hover:bg-emerald-500/30"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-(--terminal-accent)/20 border border-(--terminal-accent)/40 px-3 py-1.5 text-xs font-medium text-(--terminal-accent) transition-colors hover:bg-(--terminal-accent)/30"
                 aria-label={`API Docs for ${project.name}`}
               >
                 <FileCode className="h-3.5 w-3.5" /> API Docs
@@ -210,7 +208,7 @@ export const ProjectCard = memo(function ProjectCard({
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-emerald-400 px-3 py-1.5 text-center text-xs font-medium text-neutral-950 transition-colors hover:bg-emerald-300"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-(--terminal-accent) px-3 py-1.5 text-center text-xs font-medium text-(--terminal-bg) transition-colors hover:opacity-90 font-semibold"
                 aria-label={`View live demo of ${project.name}`}
               >
                 <ExternalLink className="h-3.5 w-3.5" /> {t("projectLiveDemo")}
@@ -261,7 +259,7 @@ export const ProjectCard = memo(function ProjectCard({
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-1 rounded border border-neutral-700 px-3 py-1.5 text-center text-xs font-medium text-neutral-300 transition-colors hover:border-emerald-400/40 hover:text-emerald-400"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded border border-(--terminal-border) px-3 py-1.5 text-center text-xs font-medium text-(--terminal-muted) transition-colors hover:border-(--terminal-accent)/60 hover:text-(--terminal-accent)"
                 aria-label={`View source code of ${project.name}`}
               >
                 {t("projectCode")}

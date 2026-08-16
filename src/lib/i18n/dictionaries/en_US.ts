@@ -725,4 +725,16 @@ export const en_US_key: TranslationKeys = {
   termLangUsage: "Usage: lang <locale_id>",
   termLangExamples: "Examples: lang id_ID, lang es_ES, lang fr_FR",
   termLangRegionalNote: "Regional variants (e.g., en_GB, es_MX) will fall back to their primary language",
+
+  // Admin Navigation
+  adminSidebarDashboard: "Dashboard Overview",
+  adminSidebarBlog: "Articles & Drafts",
+  adminSidebarProjects: "Projects Catalog",
+  adminSidebarExperience: "Work Experience",
+  adminSidebarAbout: "Profile & Bio",
+  adminSidebarMessages: "Contact Inbox",
+  adminSidebarNewsletter: "Newsletter & Audience",
+  adminSidebarPortfolio: "Version Snapshots",
+  adminSidebarSeries: "Blog Series",
+  adminSidebarTranslations: "i18n Translation Audit",
 } as const;

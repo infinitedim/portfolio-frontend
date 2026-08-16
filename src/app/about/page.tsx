@@ -103,16 +103,16 @@ async function AboutContent(): Promise<JSX.Element> {
 
       {/* Hero */}
       <section className="relative overflow-hidden px-4 py-12 sm:py-16">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-emerald-950/20 via-neutral-950 to-neutral-950" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-(--terminal-accent)/10 via-(--terminal-bg) to-(--terminal-bg)" />
         <div className="relative mx-auto max-w-6xl">
           <PageHeader
             title="about"
             description={about.bio}
           >
-            <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-neutral-400">
+            <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-(--terminal-muted)">
               <a
                 href={`mailto:${about.contact.email}`}
-                className="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 transition-colors duration-200"
+                className="inline-flex items-center gap-1.5 text-(--terminal-accent) hover:opacity-80 transition-opacity duration-200"
               >
                 <Mail className="h-3.5 w-3.5" />
                 {about.contact.email}
@@ -125,11 +125,11 @@ async function AboutContent(): Promise<JSX.Element> {
       {/* Experience Timeline */}
       <section className="px-4 py-12">
         <div className="mx-auto max-w-6xl">
-          <h2 className="mb-8 font-mono text-2xl font-bold text-white">
-            <span className="text-emerald-400">$</span> work --history
+          <h2 className="mb-8 font-mono text-2xl font-bold text-(--terminal-text)">
+            <span className="text-(--terminal-accent)">$</span> work --history
           </h2>
 
-          <div className="relative border-l-2 border-neutral-800/80 pl-6 space-y-10">
+          <div className="relative border-l-2 border-(--terminal-border)/80 pl-6 space-y-10">
             {experience.map((exp, i) => {
               const isCurrent = exp.duration.toLowerCase().includes("present");
               return (
@@ -142,43 +142,43 @@ async function AboutContent(): Promise<JSX.Element> {
                     {isCurrent ? (
                       <>
                         {/* Live Signal Pulse Ring for Current Job */}
-                        <span className="absolute inline-flex h-4 w-4 animate-ping rounded-full bg-emerald-400/60 opacity-75" />
-                        <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] transition-transform duration-300 group-hover:scale-125" />
+                        <span className="absolute inline-flex h-4 w-4 animate-ping rounded-full bg-(--terminal-accent)/60 opacity-75" />
+                        <span className="relative inline-flex h-3 w-3 rounded-full bg-(--terminal-accent) shadow-[0_0_10px_var(--terminal-accent)] transition-transform duration-300 group-hover:scale-125" />
                       </>
                     ) : (
-                      <div className="flex h-4 w-4 items-center justify-center rounded-full border border-emerald-400/40 bg-neutral-950 transition-all duration-300 group-hover:scale-125 group-hover:border-emerald-400 group-hover:shadow-[0_0_8px_#34d399]">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/60 transition-all duration-300 group-hover:bg-emerald-400 group-hover:scale-125" />
+                      <div className="flex h-4 w-4 items-center justify-center rounded-full border border-(--terminal-accent)/40 bg-(--terminal-bg) transition-all duration-300 group-hover:scale-125 group-hover:border-(--terminal-accent)">
+                        <span className="h-1.5 w-1.5 rounded-full bg-(--terminal-accent)/60 transition-all duration-300 group-hover:bg-(--terminal-accent) group-hover:scale-125" />
                       </div>
                     )}
                   </div>
 
                   {/* Experience Card */}
-                  <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5">
+                  <div className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/50 p-5">
                     <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-mono text-lg font-semibold text-white">
+                        <h3 className="font-mono text-lg font-semibold text-(--terminal-text)">
                           {exp.position}
                         </h3>
                         {exp.type && (
-                          <span className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-emerald-400">
+                          <span className="rounded border border-(--terminal-accent)/30 bg-(--terminal-accent)/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-(--terminal-accent)">
                             {exp.type.replace("_", " ")}
                           </span>
                         )}
                       </div>
-                      <span className="font-mono text-xs text-neutral-400">
+                      <span className="font-mono text-xs text-(--terminal-muted)">
                         {exp.duration}
                       </span>
                     </div>
-                    <p className="mt-1 font-mono text-sm text-emerald-400 font-semibold">
+                    <p className="mt-1 font-mono text-sm text-(--terminal-accent) font-semibold">
                       @ {exp.company}
                     </p>
                     <ul className="mt-3 space-y-1.5">
                       {exp.description.map((item, j) => (
                         <li
                           key={j}
-                          className="flex items-start gap-2 font-mono text-sm text-neutral-400"
+                          className="flex items-start gap-2 font-mono text-sm text-(--terminal-muted)"
                         >
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400/60" />
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-(--terminal-accent)/60" />
                           {item}
                         </li>
                       ))}
@@ -212,17 +212,17 @@ async function AboutContent(): Promise<JSX.Element> {
         className="px-4 py-12 scroll-mt-24"
       >
         <div className="mx-auto max-w-6xl">
-          <h2 className="mb-8 font-mono text-2xl font-bold text-white">
-            <span className="text-emerald-400">$</span> skills --list
+          <h2 className="mb-8 font-mono text-2xl font-bold text-(--terminal-text)">
+            <span className="text-(--terminal-accent)">$</span> skills --list
           </h2>
 
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             {SKILL_GROUPS.map((group) => (
               <div
                 key={group.label}
-                className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5"
+                className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/50 p-5"
               >
-                <h3 className="mb-3 font-mono text-sm font-bold text-emerald-400">
+                <h3 className="mb-3 font-mono text-sm font-bold text-(--terminal-accent)">
                   {group.label}
                 </h3>
                 <ul
@@ -248,18 +248,18 @@ async function AboutContent(): Promise<JSX.Element> {
       {/* CTA */}
       <section className="px-4 py-12">
         <div className="mx-auto max-w-6xl text-center">
-          <h2 className="mb-5 font-mono text-xl font-bold text-white">
-            <span className="text-emerald-400">$</span> next --step
+          <h2 className="mb-5 font-mono text-xl font-bold text-(--terminal-text)">
+            <span className="text-(--terminal-accent)">$</span> next --step
           </h2>
-          <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-8">
-            <p className="font-mono text-sm text-neutral-400">
+          <div className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/50 p-8">
+            <p className="font-mono text-sm text-(--terminal-muted)">
               Interested in working together?
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
               <AboutResumeButton />
               <a
                 href="/contact"
-                className="rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-colors duration-200 hover:border-neutral-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                className="rounded border border-(--terminal-border) px-5 py-2.5 font-mono text-sm text-(--terminal-text) transition-colors duration-200 hover:border-(--terminal-accent) hover:text-(--terminal-accent) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--terminal-bg)"
               >
                 Get in touch
               </a>
@@ -275,14 +275,14 @@ function AboutFallback(): JSX.Element {
   return (
     <div className="px-4 py-16">
       <div className="mx-auto max-w-6xl space-y-6">
-        <div className="h-10 w-48 animate-pulse rounded bg-neutral-800" />
-        <div className="h-4 w-full animate-pulse rounded bg-neutral-800" />
-        <div className="h-4 w-3/4 animate-pulse rounded bg-neutral-800" />
+        <div className="h-10 w-48 animate-pulse rounded bg-(--terminal-border)" />
+        <div className="h-4 w-full animate-pulse rounded bg-(--terminal-border)" />
+        <div className="h-4 w-3/4 animate-pulse rounded bg-(--terminal-border)" />
         <div className="mt-12 space-y-4">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-32 animate-pulse rounded-lg border border-neutral-800 bg-neutral-900/50"
+              className="h-32 animate-pulse rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/50"
             />
           ))}
         </div>

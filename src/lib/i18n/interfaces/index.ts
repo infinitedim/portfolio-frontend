@@ -38,6 +38,16 @@ export interface TranslationKeys {
   adminTitle: string;
   adminUptime: string;
   adminWritePostPlaceholder: string;
+  adminSidebarDashboard?: string;
+  adminSidebarBlog?: string;
+  adminSidebarProjects?: string;
+  adminSidebarExperience?: string;
+  adminSidebarAbout?: string;
+  adminSidebarMessages?: string;
+  adminSidebarNewsletter?: string;
+  adminSidebarPortfolio?: string;
+  adminSidebarSeries?: string;
+  adminSidebarTranslations?: string;
   allSources: string;
   apply: string;
   applyFont: string;

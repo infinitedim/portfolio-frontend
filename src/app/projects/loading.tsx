@@ -12,16 +12,16 @@ export default function ProjectsPageLoading(): JSX.Element {
       >
         {/* Page Header Phantom */}
         <div className="mb-8 space-y-2">
-          <div className="h-8 w-36 animate-pulse rounded bg-neutral-800/70" />
-          <div className="h-4 w-72 animate-pulse rounded bg-neutral-800/50" />
+          <div className="h-8 w-36 animate-pulse rounded bg-(--terminal-border)/70" />
+          <div className="h-4 w-72 animate-pulse rounded bg-(--terminal-border)/50" />
         </div>
 
         {/* Filter & Search Bar Phantom */}
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="flex-1 h-10 animate-pulse rounded border border-neutral-800 bg-neutral-900" />
+          <div className="flex-1 h-10 animate-pulse rounded border border-(--terminal-border) bg-(--terminal-bg)/90" />
           <div className="flex gap-2">
-            <div className="h-10 w-24 animate-pulse rounded bg-neutral-800/60" />
-            <div className="h-10 w-24 animate-pulse rounded bg-neutral-800/60" />
+            <div className="h-10 w-24 animate-pulse rounded bg-(--terminal-border)/60" />
+            <div className="h-10 w-24 animate-pulse rounded bg-(--terminal-border)/60" />
           </div>
         </div>
 

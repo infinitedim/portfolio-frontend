@@ -20,27 +20,27 @@ export function FeaturedProjectsClient({
   const { t } = useI18n();
 
   return (
-    <section className="border-t border-neutral-800 px-4 py-16 cv-auto-section">
+    <section className="border-t border-(--terminal-border) px-4 py-16 cv-auto-section transition-colors duration-300">
       <div className="mx-auto max-w-6xl">
         <FadeIn
           direction="up"
           duration={0.5}
-          className="mb-8 flex items-end justify-between gap-4"
+          className="mb-8 flex items-end justify-between gap-4 font-mono"
         >
-          <h2 className="font-mono text-xl font-bold text-white">
-            <span className="text-emerald-400">$</span> ls --featured
+          <h2 className="font-mono text-xl font-bold text-(--terminal-text)">
+            <span className="text-(--terminal-accent)">$</span> ls --featured
           </h2>
           <Link
             href="/projects"
             prefetch={false}
-            className="font-mono text-xs text-neutral-400 transition-colors duration-200 hover:text-emerald-400"
+            className="font-mono text-xs text-(--terminal-muted) transition-colors duration-200 hover:text-(--terminal-accent)"
           >
             {t("projectsViewAll")} →
           </Link>
         </FadeIn>
 
         {projects.length === 0 ? (
-          <p className="font-mono text-sm text-neutral-400">
+          <p className="font-mono text-sm text-(--terminal-muted)">
             {t("projectsNone")}
           </p>
         ) : (

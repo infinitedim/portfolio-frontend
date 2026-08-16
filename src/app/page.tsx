@@ -115,36 +115,36 @@ export default function HomePage(): JSX.Element {
 function FeaturedProjectsPhantomSkeleton(): JSX.Element {
   return (
     <section
-      className="border-t border-neutral-800 px-4 py-16 cv-auto-section font-mono"
+      className="border-t border-(--terminal-border) px-4 py-16 cv-auto-section font-mono"
       aria-busy="true"
       aria-label="Loading featured projects"
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex items-end justify-between gap-4">
-          <div className="h-6 w-44 animate-pulse rounded bg-neutral-800/70" />
-          <div className="h-4 w-24 animate-pulse rounded bg-neutral-800/50" />
+          <div className="h-6 w-44 animate-pulse rounded bg-(--terminal-border)/70" />
+          <div className="h-4 w-24 animate-pulse rounded bg-(--terminal-border)/50" />
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="rounded-lg border border-neutral-800 bg-neutral-950 p-4 space-y-4 overflow-hidden"
+              className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/80 p-4 space-y-4 overflow-hidden"
             >
               {/* Image Preview Box Phantom */}
-              <div className="h-44 w-full animate-pulse rounded-md bg-neutral-900" />
+              <div className="h-44 w-full animate-pulse rounded-md bg-(--terminal-border)/40" />
               {/* Title Phantom */}
-              <div className="h-6 w-3/4 animate-pulse rounded bg-neutral-800/70" />
+              <div className="h-6 w-3/4 animate-pulse rounded bg-(--terminal-border)/70" />
               {/* Description Lines Phantom */}
               <div className="space-y-1.5">
-                <div className="h-3.5 w-full animate-pulse rounded bg-neutral-800/50" />
-                <div className="h-3.5 w-4/5 animate-pulse rounded bg-neutral-800/50" />
+                <div className="h-3.5 w-full animate-pulse rounded bg-(--terminal-border)/50" />
+                <div className="h-3.5 w-4/5 animate-pulse rounded bg-(--terminal-border)/50" />
               </div>
               {/* Tech Badges Phantom */}
               <div className="flex gap-2 pt-2">
-                <div className="h-5 w-16 animate-pulse rounded bg-neutral-800/60" />
-                <div className="h-5 w-20 animate-pulse rounded bg-neutral-800/60" />
-                <div className="h-5 w-14 animate-pulse rounded bg-neutral-800/60" />
+                <div className="h-5 w-16 animate-pulse rounded bg-(--terminal-border)/60" />
+                <div className="h-5 w-20 animate-pulse rounded bg-(--terminal-border)/60" />
+                <div className="h-5 w-14 animate-pulse rounded bg-(--terminal-border)/60" />
               </div>
             </div>
           ))}
@@ -157,25 +157,25 @@ function FeaturedProjectsPhantomSkeleton(): JSX.Element {
 function LatestPostsPhantomSkeleton(): JSX.Element {
   return (
     <section
-      className="border-t border-neutral-800 px-4 py-16 cv-auto-section font-mono"
+      className="border-t border-(--terminal-border) px-4 py-16 cv-auto-section font-mono"
       aria-busy="true"
       aria-label="Loading latest blog posts"
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex items-end justify-between gap-4">
-          <div className="h-6 w-48 animate-pulse rounded bg-neutral-800/70" />
-          <div className="h-4 w-24 animate-pulse rounded bg-neutral-800/50" />
+          <div className="h-6 w-48 animate-pulse rounded bg-(--terminal-border)/70" />
+          <div className="h-4 w-24 animate-pulse rounded bg-(--terminal-border)/50" />
         </div>
 
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5 space-y-2.5 border-l-2 border-l-neutral-800"
+              className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/50 p-5 space-y-2.5 border-l-2 border-l-(--terminal-border)"
             >
-              <div className="h-5 w-3/4 animate-pulse rounded bg-neutral-800/70" />
-              <div className="h-4 w-5/6 animate-pulse rounded bg-neutral-800/50" />
-              <div className="h-3 w-40 animate-pulse rounded bg-neutral-800/40" />
+              <div className="h-5 w-3/4 animate-pulse rounded bg-(--terminal-border)/70" />
+              <div className="h-4 w-5/6 animate-pulse rounded bg-(--terminal-border)/50" />
+              <div className="h-3 w-40 animate-pulse rounded bg-(--terminal-border)/40" />
             </div>
           ))}
         </div>

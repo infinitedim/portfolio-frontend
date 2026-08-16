@@ -95,3 +95,46 @@ export async function listAdminSeries(): Promise<BlogSeriesSummary[]> {
   }
   return response.json();
 }
+
+export async function createAdminSeries(data: {
+  title: string;
+  slug: string;
+  description?: string;
+}): Promise<BlogSeriesSummary> {
+  const response = await authedFetch("/api/admin/series", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error ?? "Failed to create series");
+  }
+  return response.json();
+}
+
+export async function updateAdminSeries(
+  id: string,
+  data: { title?: string; slug?: string; description?: string },
+): Promise<BlogSeriesSummary> {
+  const response = await authedFetch(`/api/admin/series/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error ?? "Failed to update series");
+  }
+  return response.json();
+}
+
+export async function deleteAdminSeries(id: string): Promise<void> {
+  const response = await authedFetch(`/api/admin/series/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error ?? "Failed to delete series");
+  }
+}

@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type { ThemeConfig } from "@/types/theme";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useI18n } from "@/hooks/use-i18n";
-import { Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Eye, EyeOff, Loader2, ArrowRight, ShieldCheck } from "lucide-react";
 
 interface TerminalLoginFormProps {
   onLoginSuccess?: () => void;
@@ -13,97 +16,34 @@ interface TerminalLoginFormProps {
 
 export function TerminalLoginForm({
   onLoginSuccess,
-  themeConfig,
+  themeConfig: _themeConfig,
 }: TerminalLoginFormProps) {
   const { login, complete2FA } = useAuth();
   const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [currentField, setCurrentField] = useState<"email" | "password">(
-    "email",
-  );
   const [showPassword, setShowPassword] = useState(false);
-  const [cursorVisible, setCursorVisible] = useState(true);
-  const [isTyping, _setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isFocused, setIsFocused] = useState(false);
-  const [buttonHover, setButtonHover] = useState(false);
 
-  // 2FA state. When a challenge token is set we hide the email/password
-  // form and render a code input instead.
+  // 2FA state
   const [challengeToken, setChallengeToken] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [useBackupCode, setUseBackupCode] = useState(false);
 
   const emailInputRef = useRef<HTMLInputElement>(null);
-  const passwordInputRef = useRef<HTMLInputElement>(null);
   const codeInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const interval = setInterval(() => {
-      setCursorVisible((prev) => !prev);
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [isLoading]);
 
   useEffect(() => {
     if (challengeToken) {
       codeInputRef.current?.focus();
-      return;
-    }
-    if (currentField === "email" && emailInputRef.current) {
-      emailInputRef.current.focus();
-    } else if (currentField === "password" && passwordInputRef.current) {
-      passwordInputRef.current.focus();
-    }
-  }, [currentField, challengeToken]);
-
-  const handleFieldChange = (field: "email" | "password", value: string) => {
-    setError(null);
-
-    if (field === "email") {
-      setEmail(value);
     } else {
-      setPassword(value);
+      emailInputRef.current?.focus();
     }
-  };
+  }, [challengeToken]);
 
-  const handleFieldFocus = (field: "email" | "password") => {
-    setCurrentField(field);
-    setIsFocused(true);
-    setError(null);
-  };
-
-  const handleFieldBlur = () => {
-    setIsFocused(false);
-  };
-
-  const handleKeyDown = (
-    e: React.KeyboardEvent,
-    field: "email" | "password",
-  ) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (field === "email" && email.trim()) {
-        setCurrentField("password");
-      } else if (field === "password" && password.trim()) {
-        handleSubmit();
-      }
-    } else if (e.key === "Tab") {
-      e.preventDefault();
-      if (field === "email") {
-        setCurrentField("password");
-      } else {
-        setCurrentField("email");
-      }
-    }
-  };
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!email.trim() || !password.trim() || isLoading) return;
 
     setIsLoading(true);
@@ -122,22 +62,19 @@ export function TerminalLoginForm({
       if (result.success) {
         setEmail("");
         setPassword("");
-        setCurrentField("email");
-
         onLoginSuccess?.();
       } else {
-        setError(result.error || t("adminLoginFailed"));
-        setCurrentField("password");
+        setError(result.error || t("adminLoginFailed") || "Login failed. Please check credentials.");
       }
     } catch (_err) {
-      setError(t("adminLoginUnexpectedError"));
-      setCurrentField("password");
+      setError(t("adminLoginUnexpectedError") || "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleTwoFASubmit = async () => {
+  const handleTwoFASubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!challengeToken || !code.trim() || isLoading) return;
 
     setIsLoading(true);
@@ -154,13 +91,12 @@ export function TerminalLoginForm({
         setPassword("");
         setCode("");
         setChallengeToken(null);
-        setCurrentField("email");
         onLoginSuccess?.();
       } else {
-        setError(result.error || t("admin2FAInvalidCode"));
+        setError(result.error || t("admin2FAInvalidCode") || "Invalid 2FA verification code.");
       }
     } catch (_err) {
-      setError(t("adminLoginUnexpectedError"));
+      setError(t("adminLoginUnexpectedError") || "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
@@ -170,340 +106,163 @@ export function TerminalLoginForm({
     setChallengeToken(null);
     setCode("");
     setError(null);
-    setCurrentField("password");
-  };
-
-  const renderInputField = (
-    field: "email" | "password",
-    value: string,
-    placeholder: string,
-    ref: React.RefObject<HTMLInputElement | null>,
-  ) => {
-    const isActive = currentField === field;
-    const isPassword = field === "password";
-
-    return (
-      <div
-        className={`flex items-center gap-2 w-full transition-all duration-300 ease-out ${isFocused ? "scale-[1.02]" : "scale-100"}`}
-        style={{
-          filter: isFocused
-            ? `drop-shadow(0 0 8px ${themeConfig.colors.accent}30)`
-            : "none",
-        }}
-      >
-        <span
-          className={`font-mono text-sm shrink-0 transition-all duration-300 ${isFocused ? "opacity-100" : "opacity-80"}`}
-          style={{
-            color: themeConfig.colors.accent,
-            transform: isFocused ? "translateX(4px)" : "translateX(0)",
-          }}
-        >
-          {field}@portfolio:~$
-        </span>
-
-        <div className="flex-1 relative min-w-0 flex items-center">
-          <input
-            ref={ref}
-            type={isPassword && !showPassword ? "password" : "text"}
-            value={value}
-            onChange={(e) => handleFieldChange(field, e.target.value)}
-            onFocus={() => handleFieldFocus(field)}
-            onBlur={handleFieldBlur}
-            onKeyDown={(e) => handleKeyDown(e, field)}
-            placeholder={placeholder}
-            disabled={isLoading}
-            className={`w-full bg-transparent border-0 outline-none font-mono text-sm p-0 m-0 resize-none transition-all duration-200 ${isFocused ? "opacity-100" : "opacity-90"}`}
-            style={{
-              color: themeConfig.colors.text,
-              caretColor: "transparent",
-            }}
-            autoComplete={isPassword ? "current-password" : "email"}
-            spellCheck="false"
-          />
-
-          {isActive && cursorVisible && !isLoading && (
-            <span
-              className={`absolute top-0 font-mono text-sm pointer-events-none select-none transition-all duration-150 ${isTyping ? "animate-pulse" : ""}`}
-              style={{
-                color: themeConfig.colors.accent,
-                left: `${value.length * 8}px`,
-                animation: isTyping ? "pulse 1s infinite" : "none",
-              }}
-            >
-              ▋
-            </span>
-          )}
-
-          {isPassword && value && (
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label="Toggle password visibility"
-              className={`absolute right-0 top-0 text-xs transition-all duration-200 px-2 py-1 rounded ${showPassword ? "opacity-80" : "opacity-50"} hover:opacity-100 hover:scale-110 active:scale-95`}
-              style={{
-                color: themeConfig.colors.muted,
-                backgroundColor: showPassword
-                  ? `${themeConfig.colors.accent}10`
-                  : "transparent",
-              }}
-            >
-              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          )}
-        </div>
-
-        {isFocused && (
-          <div
-            className="absolute bottom-0 left-0 h-0.5 transition-all duration-300 ease-out"
-            style={{
-              backgroundColor: themeConfig.colors.accent,
-              width: "100%",
-              transform: "scaleX(1)",
-            }}
-          />
-        )}
-      </div>
-    );
   };
 
   if (challengeToken) {
     return (
-      <div className="space-y-6">
+      <form onSubmit={handleTwoFASubmit} className="space-y-4 font-mono text-sm">
+        <div className="flex items-center gap-2 mb-2 text-(--terminal-accent)">
+          <ShieldCheck className="h-5 w-5" />
+          <h2 className="font-semibold text-base">Two-Factor Authentication</h2>
+        </div>
+        <p className="text-xs text-(--terminal-muted)">
+          {useBackupCode
+            ? "Enter a single-use 8-character backup verification code."
+            : "Enter the 6-digit TOTP code from your authenticator app."}
+        </p>
+
         {error && (
-          <div
-            className="p-3 rounded border text-sm font-mono"
-            style={{
-              backgroundColor: `${themeConfig.colors.error}10`,
-              borderColor: themeConfig.colors.error,
-              color: themeConfig.colors.error,
-            }}
-          >
+          <div className="p-3 text-xs rounded border border-red-500/40 bg-red-500/10 text-red-400">
             {error}
           </div>
         )}
 
-        <div
-          className="p-3 rounded border text-sm font-mono"
-          style={{
-            backgroundColor: `${themeConfig.colors.accent}10`,
-            borderColor: themeConfig.colors.accent,
-            color: themeConfig.colors.text,
-          }}
-        >
-          {t("admin2FACodeHint").replace(
-            "{codeType}",
-            useBackupCode
-              ? t("admin2FACodeTypeBackup")
-              : t("admin2FACodeType6Digit"),
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 w-full">
-          <span
-            className="font-mono text-sm shrink-0"
-            style={{ color: themeConfig.colors.accent }}
-          >
-            {useBackupCode ? "backup" : "code"}@portfolio:~$
-          </span>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="twofa-code">
+            {useBackupCode ? "Backup Code" : "Verification Code"}
+          </Label>
+          <Input
+            id="twofa-code"
             ref={codeInputRef}
             type="text"
-            inputMode={useBackupCode ? "text" : "numeric"}
-            autoComplete="one-time-code"
             value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder={useBackupCode ? "a1b2c3d4" : "123456"}
             disabled={isLoading}
-            onChange={(e) => {
-              setError(null);
-              const next = useBackupCode
-                ? e.target.value.trim()
-                : e.target.value.replace(/\D/g, "").slice(0, 6);
-              setCode(next);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleTwoFASubmit();
-              }
-            }}
-            placeholder={useBackupCode ? "xxxx-xxxx-xxxx" : "123456"}
-            className="flex-1 bg-transparent border-0 outline-none font-mono text-sm tracking-widest"
-            style={{ color: themeConfig.colors.text }}
-            spellCheck={false}
+            autoComplete="one-time-code"
+            aria-label={useBackupCode ? "Backup Code" : "Verification Code"}
           />
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between text-xs pt-2">
           <button
             type="button"
-            onClick={handleTwoFASubmit}
-            disabled={isLoading || !code.trim()}
-            className="flex-1 p-3 font-mono text-sm transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60"
-            style={{
-              color:
-                !code.trim() || isLoading
-                  ? themeConfig.colors.muted
-                  : themeConfig.colors.accent,
-              backgroundColor:
-                !code.trim() || isLoading
-                  ? `${themeConfig.colors.muted}20`
-                  : `${themeConfig.colors.accent}20`,
-              border: `1px solid ${
-                !code.trim() || isLoading
-                  ? themeConfig.colors.muted
-                  : themeConfig.colors.accent
-              }`,
-            }}
+            onClick={() => setUseBackupCode(!useBackupCode)}
+            className="text-(--terminal-accent) hover:underline"
           >
-            {isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2
-                  className="animate-spin"
-                  size={14}
-                />{" "}
-                {t("admin2FAVerifying")}
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <ArrowRight size={14} /> {t("admin2FAVerify")}
-              </span>
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={handleCancel2FA}
-            disabled={isLoading}
-            className="p-3 font-mono text-xs"
-            style={{
-              color: themeConfig.colors.muted,
-              border: `1px solid ${themeConfig.colors.border}`,
-            }}
-          >
-            {t("admin2FACancel")}
+            {useBackupCode ? "Use TOTP app code" : "Use a backup code"}
           </button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => {
-            setUseBackupCode((v) => !v);
-            setCode("");
-            setError(null);
-          }}
-          className="text-xs underline opacity-70 hover:opacity-100"
-          style={{ color: themeConfig.colors.accent }}
-        >
-          {useBackupCode
-            ? t("admin2FAUseAuthenticator")
-            : t("admin2FAUseBackup")}
-        </button>
-      </div>
+        <div className="flex items-center gap-3 pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleCancel2FA}
+            disabled={isLoading}
+            className="flex-1"
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            variant="terminal"
+            size="sm"
+            disabled={isLoading || !code.trim()}
+            className="flex-1"
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Verify Code"
+            )}
+          </Button>
+        </div>
+      </form>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4 font-mono text-sm">
       {error && (
-        <div
-          className="p-3 rounded border text-sm font-mono"
-          style={{
-            backgroundColor: `${themeConfig.colors.error}10`,
-            borderColor: themeConfig.colors.error,
-            color: themeConfig.colors.error,
-          }}
-        >
+        <div className="p-3 text-xs rounded border border-red-500/40 bg-red-500/10 text-red-400">
           {error}
         </div>
       )}
 
-      <div className="relative">
-        {renderInputField(
-          "email",
-          email,
-          t("adminLoginEmailPlaceholder"),
-          emailInputRef,
-        )}
-      </div>
-
-      <div className="relative">
-        {renderInputField(
-          "password",
-          password,
-          t("adminLoginPasswordPlaceholder"),
-          passwordInputRef,
-        )}
-      </div>
-
-      <div className="flex items-center space-x-2">
-        <span
-          className={`text-sm font-mono transition-all duration-300 ${buttonHover ? "opacity-100" : "opacity-80"}`}
-          style={{
-            color: themeConfig.colors.accent,
-            transform: buttonHover ? "translateX(4px)" : "translateX(0)",
+      {/* Email Field */}
+      <div className="space-y-1.5">
+        <Label htmlFor="admin-email" className="text-xs text-(--terminal-muted)">
+          Email Address
+        </Label>
+        <Input
+          id="admin-email"
+          ref={emailInputRef}
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setError(null);
+            setEmail(e.target.value);
           }}
+          placeholder="admin@example.com"
+          disabled={isLoading}
+          autoComplete="email"
+          aria-label="Email address"
+          required
+        />
+      </div>
+
+      {/* Password Field */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="admin-password" className="text-xs text-(--terminal-muted)">
+            Password
+          </Label>
+        </div>
+        <div className="relative">
+          <Input
+            id="admin-password"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => {
+              setError(null);
+              setPassword(e.target.value);
+            }}
+            placeholder="••••••••••••"
+            disabled={isLoading}
+            autoComplete="current-password"
+            aria-label="Password"
+            required
+            className="pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-(--terminal-muted) hover:text-(--terminal-text) transition-colors"
+          >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Submit Button */}
+      <div className="pt-2">
+        <Button
+          type="submit"
+          variant="terminal"
+          className="w-full justify-between"
+          disabled={isLoading || !email.trim() || !password.trim()}
         >
-          $ login
-        </span>
-
-        {(() => {
-          const isDisabled = isLoading || !email || !password;
-          const buttonClassName = `w-full p-3 text-left font-mono text-sm transition-all duration-300 ease-out ${
-            isDisabled
-              ? "cursor-not-allowed opacity-60"
-              : "cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
-          }`;
-
-          return (
-            <button
-              onClick={handleSubmit}
-              disabled={isDisabled}
-              onMouseEnter={() => setButtonHover(true)}
-              onMouseLeave={() => setButtonHover(false)}
-              className={buttonClassName}
-              style={{
-                color: isDisabled
-                  ? themeConfig.colors.muted
-                  : themeConfig.colors.accent,
-                backgroundColor: isDisabled
-                  ? `${themeConfig.colors.muted}20`
-                  : `${themeConfig.colors.accent}20`,
-                border: `1px solid ${
-                  isDisabled
-                    ? themeConfig.colors.muted
-                    : themeConfig.colors.accent
-                }`,
-                filter:
-                  buttonHover && !isDisabled
-                    ? `drop-shadow(0 0 12px ${themeConfig.colors.accent}40)`
-                    : "none",
-                transform:
-                  buttonHover && !isDisabled
-                    ? "translateY(-2px)"
-                    : "translateY(0)",
-              }}
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2
-                    className="animate-spin"
-                    size={14}
-                  />
-                  {t("loading")}
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <ArrowRight size={14} />
-                  {t("submit")}
-                </span>
-              )}
-            </button>
-          );
-        })()}
+          <span>{isLoading ? "Authenticating..." : "Sign In to Dashboard"}</span>
+          {isLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ArrowRight className="h-4 w-4" />
+          )}
+        </Button>
       </div>
-
-      <div className="text-xs opacity-60 text-center">
-        <div>{t("adminLoginTabHint")}</div>
-        <div>{t("adminLoginCtrlHint")}</div>
-      </div>
-    </div>
+    </form>
   );
 }

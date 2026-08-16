@@ -11,7 +11,8 @@ import {
 import { getApiUrl } from "@/lib/api/get-api-url";
 import { PlatformBadge } from "@/components/atoms/platform-badge";
 import { type Project, type ProjectCategory, type TargetPlatform } from "@/lib/data/data-fetching";
-import { Plus, Save, Trash, X, Edit, Check } from "lucide-react";
+import { Plus, Save, Trash, X, Edit, Check, ChevronUp, ChevronDown } from "lucide-react";
+import { ConfirmDialog } from "@/components/molecules/admin/confirm-dialog";
 import { toast } from "sonner";
 import { ProjectImageUpload } from "@/components/molecules/admin/project-image-upload";
 import {
@@ -322,7 +323,10 @@ export function ProjectsEditor({
           latencyP95: latencyP95.trim() || undefined,
           throughputRps: throughputRps.trim() || undefined,
           uptimeSla: uptimeSla.trim() || undefined,
-          lighthouseScore: lighthouseScore.trim() ? Number(lighthouseScore) : undefined,
+          lighthouseScore:
+            lighthouseScore.trim() && Number.isFinite(Number(lighthouseScore))
+              ? Number(lighthouseScore)
+              : undefined,
           bundleSize: bundleSize.trim() || undefined,
           appSize: appSize.trim() || undefined,
           minOsVersion: minOsVersion.trim() || undefined,
@@ -363,9 +367,42 @@ export function ProjectsEditor({
     }
   };
 
-  const handleDelete = async (idToDelete: string) => {
-    if (!confirm("Delete this project? This cannot be undone.")) return;
+  // Delete & Reorder States
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
+  const handleMoveProject = async (index: number, direction: "up" | "down") => {
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= projects.length) return;
+
+    const token = authService.getAccessToken();
+    if (!token) return;
+
+    const newProjects = [...projects];
+    const temp = newProjects[index]!;
+    newProjects[index] = newProjects[targetIndex]!;
+    newProjects[targetIndex] = temp;
+
+    setProjects(newProjects);
+
+    try {
+      await fetch(`${getApiUrl()}/api/portfolio`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          section: "projects",
+          data: newProjects,
+        }),
+      });
+      toast.success("Project order updated");
+    } catch {
+      toast.error("Failed to persist project order");
+    }
+  };
+
+  const handleDelete = async (idToDelete: string) => {
     const token = authService.getAccessToken();
     if (!token) {
       toast.error("Please log in to delete projects");
@@ -391,6 +428,7 @@ export function ProjectsEditor({
       if (response.ok) {
         toast.success("Project deleted successfully");
         setProjects(updatedProjects);
+        setDeleteConfirmId(null);
         if (editingProject?.id === idToDelete) {
           setEditingProject(null);
           setIsNewProject(false);
@@ -986,7 +1024,7 @@ export function ProjectsEditor({
             No projects found. Click "Add Project" to create one.
           </div>
         ) : (
-          projects.map((proj) => (
+          projects.map((proj, index) => (
             <div
               key={proj.id}
               className="p-4 border rounded flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-mono text-xs transition-colors hover:border-neutral-700"
@@ -1038,6 +1076,27 @@ export function ProjectsEditor({
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
+                <div className="flex flex-col gap-0.5">
+                  <button
+                    type="button"
+                    disabled={index === 0}
+                    onClick={() => handleMoveProject(index, "up")}
+                    className="p-1 border border-neutral-800 rounded text-neutral-400 hover:text-white disabled:opacity-30"
+                    title="Move project up"
+                  >
+                    <ChevronUp className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    disabled={index === projects.length - 1}
+                    onClick={() => handleMoveProject(index, "down")}
+                    className="p-1 border border-neutral-800 rounded text-neutral-400 hover:text-white disabled:opacity-30"
+                    title="Move project down"
+                  >
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => handleEdit(proj)}
@@ -1048,7 +1107,7 @@ export function ProjectsEditor({
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDelete(proj.id)}
+                  onClick={() => setDeleteConfirmId(proj.id)}
                   className="px-3 py-1.5 border border-red-900/50 bg-red-950/20 rounded text-red-400 hover:bg-red-900/30 flex items-center gap-1"
                 >
                   <Trash className="h-3.5 w-3.5" />
@@ -1059,6 +1118,18 @@ export function ProjectsEditor({
           ))
         )}
       </div>
+
+      <ConfirmDialog
+        open={Boolean(deleteConfirmId)}
+        onOpenChange={(open) => !open && setDeleteConfirmId(null)}
+        title="Delete Project"
+        description="Are you sure you want to delete this project? This action cannot be undone."
+        confirmLabel="Delete Project"
+        variant="destructive"
+        onConfirm={() => {
+          if (deleteConfirmId) void handleDelete(deleteConfirmId);
+        }}
+      />
     </div>
   );
 }

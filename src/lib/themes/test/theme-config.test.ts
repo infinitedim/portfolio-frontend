@@ -162,10 +162,12 @@ describe("themeConfig", () => {
       expect(result.length).toBe(expectedCount);
     });
 
-    it("should return sorted theme names", () => {
+    it("should return defaultTheme first followed by sorted theme names", () => {
       const result = getSortedThemeNames();
-      const sortedResult = [...result].sort();
-      expect(result).toEqual(sortedResult);
+      expect(result[0]).toBe(defaultTheme);
+      const rest = result.slice(1);
+      const sortedRest = [...rest].sort();
+      expect(rest).toEqual(sortedRest);
     });
 
     it("should return theme names as strings", () => {

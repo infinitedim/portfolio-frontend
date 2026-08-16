@@ -4,8 +4,11 @@ import React, { useState } from "react";
 import { ThemeConfig } from "@/types/theme";
 import { getApiUrl } from "@/lib/api/get-api-url";
 import { authService } from "@/lib/auth/auth-service";
-import { Check, RefreshCw, ExternalLink, Globe, FileText } from "lucide-react";
+import { Check, RefreshCw, Globe, FileText } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ConfirmDialog } from "./confirm-dialog";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export interface BlogPostResponse {
   id: string;
@@ -53,6 +56,7 @@ export function TranslationReview({
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [retranslateDialogOpen, setRetranslateDialogOpen] = useState(false);
 
   const allChecked = Object.values(checks).every(Boolean);
 
@@ -74,28 +78,22 @@ export function TranslationReview({
       if (!res.ok) {
         throw new Error(`Failed to approve: ${res.status}`);
       }
+      toast.success("Translation approved & published");
       onAction();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : String(err));
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
 
   const handleRetranslate = async () => {
-    if (
-      !confirm(
-        "Are you sure you want to trigger a re-translation? This will overwrite the current draft.",
-      )
-    )
-      return;
     try {
       setLoading(true);
       setError(null);
       const token = authService.getAccessToken();
-      // Wait, is it id of translated or id of source?
-      // The prompt says: POST /api/admin/blog/{id}/translate?target={locale}
-      // Assuming {id} is the source post ID since we translate the source TO a target locale.
       const sourceId = source ? source.id : translated.id;
       const res = await fetch(
         `${getApiUrl()}/api/admin/blog/${sourceId}/translate?target=${translated.locale}`,
@@ -110,9 +108,12 @@ export function TranslationReview({
       if (!res.ok) {
         throw new Error(`Failed to re-translate: ${res.status}`);
       }
+      toast.success("Re-translation triggered successfully");
       onAction();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : String(err));
+      const msg = err instanceof Error ? err.message : String(err);
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -120,229 +121,193 @@ export function TranslationReview({
 
   return (
     <div
-      className="flex flex-col h-full border rounded-md overflow-hidden"
+      className="flex flex-col h-full border rounded-lg overflow-hidden font-mono text-sm"
       style={{
-        backgroundColor: themeConfig.colors.bg,
         borderColor: themeConfig.colors.border,
-        color: themeConfig.colors.text,
+        backgroundColor: themeConfig.colors.bg,
       }}
     >
-      {/* Header Bar */}
+      {/* Header */}
       <div
-        className="flex items-center justify-between p-4 border-b"
+        className="p-4 border-b flex flex-wrap items-center justify-between gap-4"
         style={{ borderColor: themeConfig.colors.border }}
       >
-        <div className="flex items-center gap-3">
-          <Globe
-            size={18}
-            style={{ color: themeConfig.colors.accent }}
-          />
-          <span className="font-bold font-mono">
-            Reviewing translation: {translated.slug}
-          </span>
-          <span
-            className="px-2 py-0.5 text-xs rounded border font-mono uppercase"
-            style={{
-              borderColor: themeConfig.colors.accent,
-              color: themeConfig.colors.accent,
-            }}
-          >
-            {translated.locale}
-          </span>
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Globe className="w-4 h-4 text-(--terminal-accent)" />
+            <h2 className="font-bold text-base text-(--terminal-accent)">
+              Review Translation: {translated.title}
+            </h2>
+          </div>
+          <p className="text-xs text-(--terminal-muted)">
+            Target Locale: <span className="uppercase text-(--terminal-text)">{translated.locale}</span> | Status:{" "}
+            <span className="uppercase text-amber-400 font-semibold">{translated.translationStatus}</span>
+          </p>
         </div>
-        <div
-          className="text-sm font-mono"
-          style={{ color: themeConfig.colors.muted }}
-        >
-          Status: {translated.translationStatus}
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setRetranslateDialogOpen(true)}
+            disabled={loading}
+            className="text-xs gap-1 border-(--terminal-border)"
+          >
+            <RefreshCw className="h-3 w-3" /> Re-translate
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/admin/blog`)}
+            className="text-xs gap-1 border-(--terminal-border)"
+          >
+            <FileText className="h-3 w-3" /> Edit in Post Editor
+          </Button>
         </div>
       </div>
 
-      {/* Main Content Side-by-Side */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
-        {/* Left: Source */}
-        <div
-          className="flex flex-col border-b lg:border-b-0 lg:border-r overflow-hidden"
-          style={{ borderColor: themeConfig.colors.border }}
-        >
-          <div
-            className="p-3 border-b font-mono font-bold flex items-center gap-2 text-sm"
-            style={{
-              backgroundColor: `${themeConfig.colors.muted}20`,
-              borderColor: themeConfig.colors.border,
-            }}
-          >
-            <FileText size={16} /> Source (en)
+      {/* Main Diff Content */}
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-(--terminal-border) min-h-[400px]">
+        {/* Source Column */}
+        <div className="p-4 overflow-y-auto space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-(--terminal-border)">
+            <span className="font-bold text-xs text-(--terminal-muted) uppercase">
+              Original Source ({source?.locale ?? "en"})
+            </span>
+            <span className="text-xs text-(--terminal-muted)">{source?.title}</span>
           </div>
-          <div className="p-4 overflow-y-auto font-mono text-sm space-y-4">
-            {source ? (
-              <>
-                <div>
-                  <div style={{ color: themeConfig.colors.muted }}>TITLE</div>
-                  <div className="font-bold mt-1">{source.title}</div>
-                </div>
-                {source.summary && (
-                  <div>
-                    <div style={{ color: themeConfig.colors.muted }}>
-                      SUMMARY
-                    </div>
-                    <div className="mt-1">{source.summary}</div>
-                  </div>
-                )}
-                <div>
-                  <div style={{ color: themeConfig.colors.muted }}>CONTENT</div>
-                  <pre
-                    className="mt-2 p-3 rounded overflow-x-auto whitespace-pre-wrap text-xs"
-                    style={{
-                      backgroundColor: `${themeConfig.colors.bg}80`,
-                      borderColor: themeConfig.colors.border,
-                      borderWidth: 1,
-                    }}
-                  >
-                    {source.contentMd}
-                  </pre>
-                </div>
-              </>
-            ) : (
-              <div style={{ color: themeConfig.colors.warning }}>
-                Source not available.
+
+          <div className="space-y-3 text-xs">
+            <div>
+              <span className="text-(--terminal-muted) block mb-1">Title:</span>
+              <div className="font-semibold p-2 rounded bg-(--terminal-accent)/5 border border-(--terminal-border)">
+                {source?.title ?? "N/A"}
               </div>
-            )}
+            </div>
+
+            <div>
+              <span className="text-(--terminal-muted) block mb-1">Summary:</span>
+              <div className="p-2 rounded bg-(--terminal-accent)/5 border border-(--terminal-border)">
+                {source?.summary ?? "N/A"}
+              </div>
+            </div>
+
+            <div>
+              <span className="text-(--terminal-muted) block mb-1">Markdown Content:</span>
+              <pre className="p-3 rounded bg-black/30 border border-(--terminal-border) font-mono text-[11px] whitespace-pre-wrap max-h-[300px] overflow-y-auto">
+                {source?.contentMd ?? "N/A"}
+              </pre>
+            </div>
           </div>
         </div>
 
-        {/* Right: Translated */}
-        <div className="flex flex-col overflow-hidden">
-          <div
-            className="p-3 border-b font-mono font-bold flex items-center gap-2 text-sm"
-            style={{
-              backgroundColor: `${themeConfig.colors.accent}20`,
-              borderColor: themeConfig.colors.border,
-            }}
-          >
-            <FileText size={16} /> Translated ({translated.locale})
+        {/* Target Translated Column */}
+        <div className="p-4 overflow-y-auto space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-(--terminal-border)">
+            <span className="font-bold text-xs text-(--terminal-accent) uppercase">
+              AI Translation ({translated.locale})
+            </span>
+            <span className="text-xs text-(--terminal-accent)">{translated.title}</span>
           </div>
-          <div className="p-4 overflow-y-auto font-mono text-sm space-y-4">
+
+          <div className="space-y-3 text-xs">
             <div>
-              <div style={{ color: themeConfig.colors.muted }}>TITLE</div>
-              <div className="font-bold mt-1">{translated.title}</div>
-            </div>
-            {translated.summary && (
-              <div>
-                <div style={{ color: themeConfig.colors.muted }}>SUMMARY</div>
-                <div className="mt-1">{translated.summary}</div>
+              <span className="text-(--terminal-muted) block mb-1">Translated Title:</span>
+              <div className="font-semibold p-2 rounded bg-(--terminal-accent)/10 border border-(--terminal-accent)/30 text-(--terminal-accent)">
+                {translated.title}
               </div>
-            )}
+            </div>
+
             <div>
-              <div style={{ color: themeConfig.colors.muted }}>CONTENT</div>
-              <pre
-                className="mt-2 p-3 rounded overflow-x-auto whitespace-pre-wrap text-xs"
-                style={{
-                  backgroundColor: `${themeConfig.colors.bg}80`,
-                  borderColor: themeConfig.colors.border,
-                  borderWidth: 1,
-                }}
-              >
-                {translated.contentMd}
+              <span className="text-(--terminal-muted) block mb-1">Translated Summary:</span>
+              <div className="p-2 rounded bg-(--terminal-accent)/10 border border-(--terminal-accent)/30">
+                {translated.summary ?? "N/A"}
+              </div>
+            </div>
+
+            <div>
+              <span className="text-(--terminal-muted) block mb-1">Translated Markdown Content:</span>
+              <pre className="p-3 rounded bg-black/30 border border-(--terminal-accent)/30 font-mono text-[11px] whitespace-pre-wrap max-h-[300px] overflow-y-auto text-(--terminal-text)">
+                {translated.contentMd ?? "N/A"}
               </pre>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Footer / Actions */}
-      <div
-        className="p-4 border-t font-mono text-sm"
-        style={{ borderColor: themeConfig.colors.border }}
-      >
-        <div className="mb-4">
-          <div className="font-bold mb-2">Pre-approval Checklist</div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {[
-              {
-                id: "format",
-                label:
-                  "Markdown formatting intact (headings, code blocks, lists, links)",
-              },
-              {
-                id: "glossary",
-                label:
-                  "DNT glossary terms preserved (technical terms in English/as-is)",
-              },
-              { id: "artifacts", label: "No artifacts or placeholder text" },
-              {
-                id: "length",
-                label: "Content length is reasonable (not truncated)",
-              },
-            ].map((item) => (
-              <label
-                key={item.id}
-                className="flex items-center gap-2 cursor-pointer p-2 rounded border border-transparent hover:border-current transition-colors"
-              >
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  checked={checks[item.id as keyof typeof checks]}
-                  onChange={(e) =>
-                    setChecks({ ...checks, [item.id]: e.target.checked })
-                  }
-                />
-                <span>{item.label}</span>
-              </label>
-            ))}
-          </div>
+      {/* Pre-approval Checklist */}
+      <div className="p-4 border-t border-(--terminal-border) space-y-4 bg-(--terminal-bg)">
+        <h3 className="font-bold text-xs text-(--terminal-accent) uppercase">
+          Pre-Approval Safety Checklist
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+          {[
+            {
+              id: "format",
+              label: "Markdown formatting intact (headings, code blocks, lists, links)",
+            },
+            {
+              id: "glossary",
+              label: "DNT glossary terms preserved (technical terms in English/as-is)",
+            },
+            { id: "artifacts", label: "No AI artifacts or placeholder text" },
+            {
+              id: "length",
+              label: "Content length is reasonable (not truncated)",
+            },
+          ].map((item) => (
+            <label
+              key={item.id}
+              className="flex items-center gap-2.5 cursor-pointer p-2 rounded border border-(--terminal-border) hover:border-(--terminal-accent)/40 transition-colors"
+            >
+              <input
+                type="checkbox"
+                className="w-4 h-4 rounded border-(--terminal-border) text-(--terminal-accent) focus:ring-(--terminal-accent) bg-transparent accent-(--terminal-accent)"
+                checked={checks[item.id as keyof typeof checks]}
+                onChange={(e) =>
+                  setChecks({ ...checks, [item.id]: e.target.checked })
+                }
+              />
+              <span>{item.label}</span>
+            </label>
+          ))}
         </div>
 
         {error && (
-          <div
-            className="mb-4 p-2 border rounded"
-            style={{
-              borderColor: themeConfig.colors.error,
-              color: themeConfig.colors.error,
-            }}
-          >
+          <div className="p-3 border rounded text-xs border-red-500/40 bg-red-500/10 text-red-400">
             {error}
           </div>
         )}
 
-        <div className="flex flex-wrap items-center gap-3">
-          <button
+        <div className="flex items-center gap-3 pt-2">
+          <Button
+            variant="terminal"
             onClick={handleApprove}
             disabled={!allChecked || loading}
-            className="flex items-center gap-2 px-4 py-2 font-bold rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              backgroundColor: allChecked
-                ? themeConfig.colors.success
-                : themeConfig.colors.muted,
-              color: themeConfig.colors.bg,
-            }}
+            className="gap-2"
           >
-            <Check size={16} /> [ Approve & Publish ]
-          </button>
-          <button
-            onClick={handleRetranslate}
-            disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 font-bold rounded border transition-colors hover:opacity-80 disabled:opacity-50"
-            style={{
-              borderColor: themeConfig.colors.warning,
-              color: themeConfig.colors.warning,
-            }}
-          >
-            <RefreshCw size={16} /> [ Re-translate ]
-          </button>
-          <button
-            onClick={() => router.push(`/admin/blog?id=${translated.id}`)}
-            disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 font-bold rounded border transition-colors hover:opacity-80 disabled:opacity-50 ml-auto"
-            style={{
-              borderColor: themeConfig.colors.border,
-              color: themeConfig.colors.text,
-            }}
-          >
-            <ExternalLink size={16} /> [ Edit Manually ]
-          </button>
+            <Check className="h-4 w-4" />
+            {loading ? "Approving..." : "[ Approve & Publish Translation ]"}
+          </Button>
+
+          {!allChecked && (
+            <span className="text-xs text-amber-400">
+              ⚠️ Check all 4 safety criteria before publishing.
+            </span>
+          )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={retranslateDialogOpen}
+        onOpenChange={setRetranslateDialogOpen}
+        title="Trigger Re-Translation"
+        description="Are you sure you want to re-translate this article? This will overwrite the current translated draft."
+        confirmLabel="Re-Translate"
+        variant="destructive"
+        onConfirm={handleRetranslate}
+        isLoading={loading}
+      />
     </div>
   );
 }

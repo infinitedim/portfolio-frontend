@@ -102,6 +102,13 @@ const generateCSSVariables = (colors: ThemeColors) => ({
   "--terminal-info": colors.info || "#00aaff",
   "--terminal-prompt": colors.prompt || colors.accent,
 
+  // Content-softened theme variables via OKLAB color-mix for non-terminal pages
+  "--content-bg": `color-mix(in oklab, ${colors.bg} 92%, #1a1a2e)`,
+  "--content-text": `color-mix(in oklab, ${colors.text} 45%, #d4d4d4)`,
+  "--content-accent": `color-mix(in oklab, ${colors.accent} 60%, #d4d4d4)`,
+  "--content-muted": `color-mix(in oklab, ${colors.muted} 65%, #9ca3af)`,
+  "--content-border": `color-mix(in oklab, ${colors.border} 25%, #374151)`,
+
   "--background": hexToHsl(colors.bg),
   "--foreground": hexToHsl(colors.text),
   "--primary": hexToHsl(colors.accent),

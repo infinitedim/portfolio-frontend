@@ -3,6 +3,10 @@
 import { useRef, useCallback, useState, type JSX } from "react";
 import type { ThemeConfig } from "@/types/theme";
 import { BlogContent } from "@/components/molecules/blog/blog-content";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import {
   Bold,
   Italic,
@@ -34,7 +38,7 @@ export function CustomEditor({
   value,
   onChange,
   themeConfig,
-  placeholder = "Tulis artikel atau konten MDX di sini…",
+  placeholder = "Write your article or MDX content here...",
   onImageUpload,
   minHeight = "400px",
 }: CustomEditorProps): JSX.Element {
@@ -42,6 +46,14 @@ export function CustomEditor({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [isUploading, setIsUploading] = useState(false);
+
+  // Dialog State for Link & Image Insertion
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("https://infinitedim.dev");
+  const [linkText, setLinkText] = useState("");
+
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState("https://");
 
   const applyFormatting = useCallback(
     (prefix: string, suffix: string = "", defaultText: string = "") => {
@@ -61,7 +73,7 @@ export function CustomEditor({
         newSelectionStart = start;
         newSelectionEnd = start + replacement.length;
       } else {
-        const textToInsert = defaultText || "teks";
+        const textToInsert = defaultText || "text";
         replacement = `${prefix}${textToInsert}${suffix}`;
         newSelectionStart = start + prefix.length;
         newSelectionEnd = newSelectionStart + textToInsert.length;
@@ -133,40 +145,46 @@ export function CustomEditor({
     [value, onChange],
   );
 
-  const applyLink = useCallback(() => {
+  const openLinkDialog = useCallback(() => {
     const textarea = textareaRef.current;
-    if (!textarea) return;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selected = value.substring(start, end);
+      setLinkText(selected || "Link Text");
+    }
+    setLinkDialogOpen(true);
+  }, [value]);
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selected = value.substring(start, end);
+  const confirmInsertLink = () => {
+    if (!linkUrl) return;
+    const textarea = textareaRef.current;
+    const start = textarea?.selectionStart ?? value.length;
+    const end = textarea?.selectionEnd ?? value.length;
 
-    const url = window.prompt("Masukkan URL Link:", "https://infinitedim.dev");
-    if (!url) return;
-
-    const linkText = selected.length > 0 ? selected : "Nama Link";
-    const replacement = `[${linkText}](${url})`;
-
-    const newValue =
-      value.substring(0, start) + replacement + value.substring(end);
+    const replacement = `[${linkText || "Link Text"}](${linkUrl})`;
+    const newValue = value.substring(0, start) + replacement + value.substring(end);
     onChange(newValue);
 
+    setLinkDialogOpen(false);
     requestAnimationFrame(() => {
-      textarea.focus();
-      const newPos = start + replacement.length;
-      textarea.setSelectionRange(newPos, newPos);
+      textarea?.focus();
     });
-  }, [value, onChange]);
+  };
 
   const handleImageClick = useCallback(() => {
     if (onImageUpload && fileInputRef.current) {
       fileInputRef.current.click();
     } else {
-      const url = window.prompt("Masukkan URL Gambar:", "https://");
-      if (!url) return;
-      applyFormatting("![Deskripsi Gambar](", ")", url);
+      setImageDialogOpen(true);
     }
-  }, [onImageUpload, applyFormatting]);
+  }, [onImageUpload]);
+
+  const confirmInsertImage = () => {
+    if (!imageUrl) return;
+    applyFormatting("![Image Description](", ")", imageUrl);
+    setImageDialogOpen(false);
+  };
 
   const handleFileChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -175,9 +193,9 @@ export function CustomEditor({
 
       setIsUploading(true);
       try {
-        const imageUrl = await onImageUpload(file);
-        if (imageUrl) {
-          applyFormatting(`![${file.name}](`, ")", imageUrl);
+        const url = await onImageUpload(file);
+        if (url) {
+          applyFormatting(`![${file.name}](`, ")", url);
         }
       } catch (err) {
         console.error("Image upload failed:", err);
@@ -193,11 +211,11 @@ export function CustomEditor({
     (type: "callout" | "codeblock" | "details") => {
       let snippet = "";
       if (type === "callout") {
-        snippet = `\n<Callout type="info">\n  Tulis catatan penting MDX di sini...\n</Callout>\n`;
+        snippet = `\n<Callout type="info">\n  Write important MDX note here...\n</Callout>\n`;
       } else if (type === "codeblock") {
-        snippet = `\n\`\`\`tsx\n// Kode TSX / React di sini\nconsole.log("Hello MDX");\n\`\`\`\n`;
+        snippet = `\n\`\`\`tsx\n// TSX / React code example\nconsole.log("Hello MDX");\n\`\`\`\n`;
       } else if (type === "details") {
-        snippet = `\n<details>\n  <summary>Klik untuk membuka detail</summary>\n  Konten tersembunyi...\n</details>\n`;
+        snippet = `\n<details>\n  <summary>Click to expand details</summary>\n  Hidden content here...\n</details>\n`;
       }
 
       applyFormatting(snippet);
@@ -211,19 +229,19 @@ export function CustomEditor({
 
       if (isMod && e.key.toLowerCase() === "b") {
         e.preventDefault();
-        applyFormatting("**", "**", "teks tebal");
+        applyFormatting("**", "**", "bold text");
       } else if (isMod && e.key.toLowerCase() === "i") {
         e.preventDefault();
-        applyFormatting("*", "*", "teks miring");
+        applyFormatting("*", "*", "italic text");
       } else if (isMod && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        applyLink();
+        openLinkDialog();
       } else if (e.key === "Tab") {
         e.preventDefault();
         applyFormatting("  ");
       }
     },
-    [applyFormatting, applyLink],
+    [applyFormatting, openLinkDialog],
   );
 
   return (
@@ -242,6 +260,7 @@ export function CustomEditor({
         className="hidden"
       />
 
+      {/* Toolbar */}
       <div
         className="flex flex-wrap items-center justify-between gap-2 p-2 border-b text-xs font-mono select-none"
         style={{
@@ -251,22 +270,25 @@ export function CustomEditor({
       >
         <div className="flex flex-wrap items-center gap-1">
           <ToolbarButton
-            title="Judul Utama H1 (#)"
+            title="Heading 1 (#)"
             icon={<Heading1 size={14} />}
             onClick={() => applyHeading(1)}
             themeConfig={themeConfig}
+            ariaLabel="Insert Heading 1"
           />
           <ToolbarButton
-            title="Sub Judul H2 (##)"
+            title="Heading 2 (##)"
             icon={<Heading2 size={14} />}
             onClick={() => applyHeading(2)}
             themeConfig={themeConfig}
+            ariaLabel="Insert Heading 2"
           />
           <ToolbarButton
-            title="Sub Bagian H3 (###)"
+            title="Heading 3 (###)"
             icon={<Heading3 size={14} />}
             onClick={() => applyHeading(3)}
             themeConfig={themeConfig}
+            ariaLabel="Insert Heading 3"
           />
 
           <div
@@ -275,22 +297,25 @@ export function CustomEditor({
           />
 
           <ToolbarButton
-            title="Teks Tebal (Ctrl+B)"
+            title="Bold Text (Ctrl+B)"
             icon={<Bold size={14} />}
-            onClick={() => applyFormatting("**", "**", "teks tebal")}
+            onClick={() => applyFormatting("**", "**", "bold text")}
             themeConfig={themeConfig}
+            ariaLabel="Bold Text"
           />
           <ToolbarButton
-            title="Teks Miring (Ctrl+I)"
+            title="Italic Text (Ctrl+I)"
             icon={<Italic size={14} />}
-            onClick={() => applyFormatting("*", "*", "teks miring")}
+            onClick={() => applyFormatting("*", "*", "italic text")}
             themeConfig={themeConfig}
+            ariaLabel="Italic Text"
           />
           <ToolbarButton
-            title="Kode Inline (`code`)"
+            title="Inline Code (`code`)"
             icon={<Code size={14} />}
-            onClick={() => applyFormatting("`", "`", "kode")}
+            onClick={() => applyFormatting("`", "`", "code")}
             themeConfig={themeConfig}
+            ariaLabel="Inline Code"
           />
 
           <div
@@ -303,18 +328,21 @@ export function CustomEditor({
             icon={<List size={14} />}
             onClick={() => applyBlockPrefix("- ")}
             themeConfig={themeConfig}
+            ariaLabel="Bullet List"
           />
           <ToolbarButton
             title="Numbered List (1.)"
             icon={<ListOrdered size={14} />}
             onClick={() => applyBlockPrefix("1. ")}
             themeConfig={themeConfig}
+            ariaLabel="Numbered List"
           />
           <ToolbarButton
-            title="Kutipan Quote (>)"
+            title="Blockquote (>)"
             icon={<Quote size={14} />}
             onClick={() => applyBlockPrefix("> ")}
             themeConfig={themeConfig}
+            ariaLabel="Blockquote"
           />
 
           <div
@@ -323,17 +351,19 @@ export function CustomEditor({
           />
 
           <ToolbarButton
-            title="Tautan Link (Ctrl+K)"
+            title="Hyperlink (Ctrl+K)"
             icon={<LinkIcon size={14} />}
-            onClick={applyLink}
+            onClick={openLinkDialog}
             themeConfig={themeConfig}
+            ariaLabel="Insert Link"
           />
           <ToolbarButton
-            title={isUploading ? "Mengunggah Gambar…" : "Sisipkan Gambar"}
+            title={isUploading ? "Uploading Image..." : "Insert Image"}
             icon={<ImageIcon size={14} />}
             onClick={handleImageClick}
             themeConfig={themeConfig}
             disabled={isUploading}
+            ariaLabel="Insert Image"
           />
 
           <div
@@ -342,33 +372,29 @@ export function CustomEditor({
           />
 
           <ToolbarButton
-            title="Sisipkan Komponen MDX Callout"
+            title="Insert MDX Callout Component"
             label="MDX Callout"
-            icon={
-              <Sparkles
-                size={13}
-                className="text-amber-400"
-              />
-            }
+            icon={<Sparkles size={13} className="text-amber-400" />}
             onClick={() => insertMdxSnippet("callout")}
             themeConfig={themeConfig}
+            ariaLabel="Insert MDX Callout"
           />
           <ToolbarButton
-            title="Sisipkan MDX Code Block"
+            title="Insert MDX Code Block"
             icon={<FileCode2 size={14} />}
             onClick={() => insertMdxSnippet("codeblock")}
             themeConfig={themeConfig}
+            ariaLabel="Insert MDX Code Block"
           />
         </div>
 
+        {/* Tab Switcher */}
         <div className="flex items-center gap-1 rounded bg-black/20 p-1">
           <button
             type="button"
             onClick={() => setActiveTab("edit")}
             className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs transition-colors ${
-              activeTab === "edit"
-                ? "font-bold"
-                : "opacity-70 hover:opacity-100"
+              activeTab === "edit" ? "font-bold" : "opacity-70 hover:opacity-100"
             }`}
             style={{
               backgroundColor:
@@ -387,9 +413,7 @@ export function CustomEditor({
             type="button"
             onClick={() => setActiveTab("preview")}
             className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs transition-colors ${
-              activeTab === "preview"
-                ? "font-bold"
-                : "opacity-70 hover:opacity-100"
+              activeTab === "preview" ? "font-bold" : "opacity-70 hover:opacity-100"
             }`}
             style={{
               backgroundColor:
@@ -426,10 +450,75 @@ export function CustomEditor({
           style={{ minHeight, color: themeConfig.colors.text }}
         >
           <BlogContent
-            html={value || "<p>Belum ada konten untuk dipreview...</p>"}
+            html={value || "<p>No content available to preview...</p>"}
           />
         </div>
       )}
+
+      {/* Link Dialog */}
+      <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Insert Hyperlink</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2 font-mono text-xs">
+            <div className="space-y-1.5">
+              <Label htmlFor="link-text">Display Text</Label>
+              <Input
+                id="link-text"
+                value={linkText}
+                onChange={(e) => setLinkText(e.target.value)}
+                placeholder="Link Text"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="link-url">URL Destination</Label>
+              <Input
+                id="link-url"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                placeholder="https://example.com"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" size="sm" onClick={() => setLinkDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="terminal" size="sm" onClick={confirmInsertLink}>
+              Insert Link
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Image Dialog */}
+      <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Insert Image URL</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2 font-mono text-xs">
+            <div className="space-y-1.5">
+              <Label htmlFor="img-url">Image Resource URL</Label>
+              <Input
+                id="img-url"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" size="sm" onClick={() => setImageDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="terminal" size="sm" onClick={confirmInsertImage}>
+              Insert Image
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -441,6 +530,7 @@ function ToolbarButton({
   onClick,
   themeConfig,
   disabled = false,
+  ariaLabel,
 }: {
   title: string;
   icon?: JSX.Element;
@@ -448,17 +538,19 @@ function ToolbarButton({
   onClick: () => void;
   themeConfig: ThemeConfig;
   disabled?: boolean;
+  ariaLabel?: string;
 }) {
   return (
     <button
       type="button"
       title={title}
+      aria-label={ariaLabel || title}
       disabled={disabled}
       onMouseDown={(e) => {
         e.preventDefault();
         if (!disabled) onClick();
       }}
-      className="flex items-center gap-1.5 px-2 py-1 rounded transition-colors disabled:opacity-40"
+      className="flex items-center gap-1.5 px-2 py-1 rounded transition-colors disabled:opacity-40 hover:bg-(--terminal-accent)/10 hover:text-(--terminal-accent)"
       style={{
         border: `1px solid ${themeConfig.colors.border}40`,
         color: themeConfig.colors.text,

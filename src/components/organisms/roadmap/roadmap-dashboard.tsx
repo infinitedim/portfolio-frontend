@@ -34,44 +34,44 @@ export function RoadmapDashboardOrganism({
     totalTopics > 0 ? Math.round((totalDone / totalTopics) * 100) : 0;
 
   return (
-    <div className="flex flex-col gap-8 font-mono">
+    <div className="flex flex-col gap-8 font-mono transition-colors duration-300">
       {/* Profile Header Telemetry Banner */}
-      <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-emerald-500/0 via-emerald-400 to-emerald-500/0" />
+      <div className="rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/70 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-(--terminal-accent)/0 via-(--terminal-accent) to-(--terminal-accent)/0" />
 
         <div className="flex items-center gap-4">
           {dashboard.avatar ? (
             <img
               src={dashboard.avatar}
               alt={dashboard.name || "Roadmap Profile"}
-              className="h-14 w-14 rounded-xl border border-emerald-500/30 object-cover shadow-md"
+              className="h-14 w-14 rounded-xl border border-(--terminal-accent)/30 object-cover shadow-md"
             />
           ) : (
-            <div className="h-14 w-14 rounded-xl border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-center font-bold text-emerald-400 text-xl">
+            <div className="h-14 w-14 rounded-xl border border-(--terminal-accent)/30 bg-(--terminal-accent)/10 flex items-center justify-center font-bold text-(--terminal-accent) text-xl">
               {dashboard.name?.charAt(0) || "D"}
             </div>
           )}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold text-white tracking-tight">
+              <h2 className="text-lg font-bold text-(--terminal-text) tracking-tight">
                 {dashboard.name}
               </h2>
-              <span className="text-xs text-emerald-400 font-mono">
+              <span className="text-xs text-(--terminal-accent) font-mono">
                 @{dashboard.username}
               </span>
             </div>
-            <p className="text-xs text-neutral-400 max-w-md">
+            <p className="text-xs text-(--terminal-muted) max-w-md">
               {dashboard.headline || t("roadmapProfileHeadline")}
             </p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-(--terminal-accent)/30 bg-(--terminal-accent)/10 text-(--terminal-accent) text-xs">
+            <span className="h-2 w-2 rounded-full bg-(--terminal-accent)" />
             <span>{t("roadmapStatusSynced")}</span>
           </div>
-          <span className="text-[11px] text-neutral-400">
+          <span className="text-[11px] text-(--terminal-muted)">
             {progresses.length} {t("roadmapActiveTrackers")}
           </span>
         </div>
@@ -81,18 +81,18 @@ export function RoadmapDashboardOrganism({
       <RoadmapStreakCard streak={streak} />
 
       {/* Overall Progress Summary Box */}
-      <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col gap-4">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between border-b border-neutral-800/80 pb-3">
+      <div className="rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/70 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col gap-4">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between border-b border-(--terminal-border)/80 pb-3">
           <div className="flex items-center gap-2">
-            <span className="text-emerald-400 font-bold">$</span>
-            <span className="text-white font-semibold text-sm">roadmap</span>
-            <span className="text-neutral-500 text-sm">--overview</span>
+            <span className="text-(--terminal-accent) font-bold">$</span>
+            <span className="text-(--terminal-text) font-semibold text-sm">roadmap</span>
+            <span className="text-(--terminal-muted) text-sm">--overview</span>
           </div>
-          <span className="text-xs text-neutral-400">
+          <span className="text-xs text-(--terminal-muted)">
             {t("roadmapCompleted")}:{" "}
-            <strong className="text-emerald-400 font-bold">{totalDone}</strong>{" "}
+            <strong className="text-(--terminal-accent) font-bold">{totalDone}</strong>{" "}
             · {t("roadmapSkipped")}:{" "}
-            <strong className="text-amber-400 font-bold">{totalSkipped}</strong>{" "}
+            <strong className="text-(--terminal-muted) font-bold">{totalSkipped}</strong>{" "}
             / {totalTopics} {t("roadmapTotalTopics")}
           </span>
         </div>
@@ -108,10 +108,10 @@ export function RoadmapDashboardOrganism({
 
       {/* Roadmaps Grid */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 text-xs text-neutral-400">
-          <span className="text-emerald-400 font-bold">$</span>
-          <span className="text-neutral-300 font-semibold">roadmap</span>
-          <span className="text-neutral-500">--list --sort=progress_desc</span>
+        <div className="flex items-center gap-2 text-xs text-(--terminal-muted)">
+          <span className="text-(--terminal-accent) font-bold">$</span>
+          <span className="text-(--terminal-text) font-semibold">roadmap</span>
+          <span className="text-(--terminal-muted)">--list --sort=progress_desc</span>
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

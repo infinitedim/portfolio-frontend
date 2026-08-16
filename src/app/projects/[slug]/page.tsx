@@ -288,7 +288,7 @@ async function ProjectDetailContent({
       <div className="mx-auto max-w-6xl px-4 pt-8">
         <Link
           href="/projects"
-          className="inline-flex items-center gap-1.5 font-mono text-sm text-neutral-400 transition-colors duration-200 hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 rounded-sm"
+          className="inline-flex items-center gap-1.5 font-mono text-sm text-(--terminal-muted) transition-colors duration-200 hover:text-(--terminal-accent) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--terminal-bg) rounded-sm"
         >
           <ArrowLeft size={14} aria-hidden="true" />
           All projects
@@ -304,11 +304,11 @@ async function ProjectDetailContent({
               {/* Eyebrow + Title */}
               <div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  <h1 className="font-mono text-3xl font-bold tracking-tight text-(--terminal-text) sm:text-4xl">
                     {project.name}
                   </h1>
                   {project.featured && (
-                    <span className="inline-flex items-center gap-1 rounded bg-emerald-400/10 px-2 py-1 text-xs font-medium text-emerald-400">
+                    <span className="inline-flex items-center gap-1 rounded bg-(--terminal-accent)/10 px-2 py-1 text-xs font-medium text-(--terminal-accent)">
                       <Star
                         size={12}
                         className="fill-current"
@@ -329,7 +329,7 @@ async function ProjectDetailContent({
               </div>
 
               {/* Description */}
-              <p className="mt-4 max-w-prose text-base leading-relaxed text-neutral-400 sm:text-lg">
+              <p className="mt-4 max-w-prose text-base leading-relaxed text-(--terminal-muted) sm:text-lg">
                 {project.description}
               </p>
 
@@ -345,7 +345,7 @@ async function ProjectDetailContent({
                     href={project.demoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded bg-emerald-400 px-5 py-2.5 font-mono text-sm font-medium text-neutral-950 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-emerald-300 hover:shadow-[0_0_20px_rgba(52,211,153,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                    className="inline-flex items-center gap-2 rounded bg-(--terminal-accent) px-5 py-2.5 font-mono text-sm font-medium text-(--terminal-bg) transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--terminal-bg)"
                   >
                     <ExternalLink size={14} aria-hidden="true" />
                     Live Demo
@@ -356,7 +356,7 @@ async function ProjectDetailContent({
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-neutral-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                    className="inline-flex items-center gap-2 rounded border border-(--terminal-border) px-5 py-2.5 font-mono text-sm text-(--terminal-text) transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-(--terminal-accent) hover:text-(--terminal-accent) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--terminal-bg)"
                   >
                     <Code size={14} aria-hidden="true" />
                     Source Code
@@ -388,14 +388,14 @@ async function ProjectDetailContent({
       {/* ── Categorized Tech Stack ────────────────────────────────── */}
       <section className="px-4 py-8">
         <div className="mx-auto max-w-6xl">
-          <h2 className="mb-5 font-mono text-xl font-bold text-white">
-            <span className="text-emerald-400">$</span> tech --stack
+          <h2 className="mb-5 font-mono text-xl font-bold text-(--terminal-text)">
+            <span className="text-(--terminal-accent)">$</span> tech --stack
           </h2>
           {techCategories.length > 0 ? (
             <div className="space-y-5">
               {techCategories.map((category) => (
                 <div key={category.label}>
-                  <h3 className="mb-2 font-mono text-xs font-medium uppercase tracking-wider text-neutral-500">
+                  <h3 className="mb-2 font-mono text-xs font-medium uppercase tracking-wider text-(--terminal-muted)">
                     {category.label}
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -424,22 +424,22 @@ async function ProjectDetailContent({
 
       {/* ── Related projects ──────────────────────────────────────── */}
       {related.length > 0 && (
-        <aside className="px-4 py-8 border-t border-neutral-800">
+        <aside className="px-4 py-8 border-t border-(--terminal-border)">
           <div className="mx-auto max-w-6xl">
-            <h2 className="mb-6 font-mono text-xl font-bold text-white">
-              <span className="text-emerald-400">$</span> ls --related
+            <h2 className="mb-6 font-mono text-xl font-bold text-(--terminal-text)">
+              <span className="text-(--terminal-accent)">$</span> ls --related
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((rp) => (
                 <Link
                   key={rp.slug}
                   href={`/projects/${rp.slug}`}
-                  className="group rounded-lg border border-neutral-800 bg-neutral-900/50 p-4 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-emerald-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                  className="group rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/50 p-4 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-(--terminal-accent)/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--terminal-bg)"
                 >
-                  <h3 className="font-mono text-sm font-semibold text-white transition-colors duration-200 group-hover:text-emerald-400">
+                  <h3 className="font-mono text-sm font-semibold text-(--terminal-text) transition-colors duration-200 group-hover:text-(--terminal-accent)">
                     {rp.name}
                   </h3>
-                  <p className="mt-1 text-xs text-neutral-500 line-clamp-2">
+                  <p className="mt-1 text-xs text-(--terminal-muted) line-clamp-2">
                     {rp.description}
                   </p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
@@ -461,16 +461,16 @@ function ProjectDetailFallback(): JSX.Element {
   return (
     <div className="px-4 py-16">
       <div className="mx-auto max-w-6xl space-y-6">
-        <div className="h-6 w-24 animate-pulse rounded bg-neutral-800" />
+        <div className="h-6 w-24 animate-pulse rounded bg-(--terminal-border)" />
         <div className="grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-8">
           <div className="space-y-4">
-            <div className="h-10 w-80 animate-pulse rounded bg-neutral-800" />
-            <div className="h-5 w-20 animate-pulse rounded bg-neutral-800" />
-            <div className="h-4 w-full animate-pulse rounded bg-neutral-800" />
-            <div className="h-4 w-3/4 animate-pulse rounded bg-neutral-800" />
-            <div className="h-16 w-full animate-pulse rounded-lg bg-neutral-800" />
+            <div className="h-10 w-80 animate-pulse rounded bg-(--terminal-border)" />
+            <div className="h-5 w-20 animate-pulse rounded bg-(--terminal-border)" />
+            <div className="h-4 w-full animate-pulse rounded bg-(--terminal-border)" />
+            <div className="h-4 w-3/4 animate-pulse rounded bg-(--terminal-border)" />
+            <div className="h-16 w-full animate-pulse rounded-lg bg-(--terminal-border)" />
           </div>
-          <div className="aspect-video animate-pulse rounded-lg bg-neutral-800" />
+          <div className="aspect-video animate-pulse rounded-lg bg-(--terminal-border)" />
         </div>
       </div>
     </div>

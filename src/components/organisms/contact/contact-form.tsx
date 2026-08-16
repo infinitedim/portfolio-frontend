@@ -222,7 +222,7 @@ export function ContactForm(): JSX.Element {
   const isMessageValid = isPlausibleMessage(form.message);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10 font-mono transition-colors duration-300">
       <PageHeader
         title="contact"
         description={t("contactDesc")}
@@ -230,10 +230,10 @@ export function ContactForm(): JSX.Element {
       <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-8 lg:gap-12">
         {/* Left Column */}
         <div className="space-y-6">
-          <h2 className="mb-5 font-mono text-xl font-bold text-white">
-            <span className="text-emerald-400">$</span> contact --info
+          <h2 className="mb-5 font-mono text-xl font-bold text-(--terminal-text)">
+            <span className="text-(--terminal-accent)">$</span> contact --info
           </h2>
-          <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-5 font-mono text-sm text-neutral-400">
+          <div className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/70 p-5 font-mono text-sm text-(--terminal-muted)">
             <div className="mb-6 flex items-center gap-3">
               <span>Currently open for freelance & collaboration</span>
             </div>
@@ -246,19 +246,19 @@ export function ContactForm(): JSX.Element {
             <div className="mb-6 space-y-3">
               <a
                 href="mailto:hello@dimassaputra.com"
-                className="flex items-center gap-2 hover:text-white transition-colors duration-200"
+                className="flex items-center gap-2 hover:text-(--terminal-accent) transition-colors duration-200"
               >
                 <Mail className="h-4 w-4" /> Email
               </a>
               <a
                 href="https://github.com/dimassaputra"
-                className="flex items-center gap-2 hover:text-white transition-colors duration-200"
+                className="flex items-center gap-2 hover:text-(--terminal-accent) transition-colors duration-200"
               >
                 <ExternalLink className="h-4 w-4" /> GitHub
               </a>
               <a
                 href="https://linkedin.com/in/dimassaputra"
-                className="flex items-center gap-2 hover:text-white transition-colors duration-200"
+                className="flex items-center gap-2 hover:text-(--terminal-accent) transition-colors duration-200"
               >
                 <ExternalLink className="h-4 w-4" /> LinkedIn
               </a>
@@ -273,12 +273,12 @@ export function ContactForm(): JSX.Element {
 
         {/* Right Column */}
         <div>
-          <h2 className="mb-5 font-mono text-xl font-bold text-white">
-            <span className="text-emerald-400">$</span> send --message
+          <h2 className="mb-5 font-mono text-xl font-bold text-(--terminal-text)">
+            <span className="text-(--terminal-accent)">$</span> send --message
           </h2>
 
           {draftRestored && !submitted && (
-            <div className="mb-6 max-w-2xl flex items-center justify-between rounded border border-emerald-400/40 bg-emerald-400/5 px-4 py-2.5 font-mono text-xs text-emerald-400">
+            <div className="mb-6 max-w-2xl flex items-center justify-between rounded border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 px-4 py-2.5 font-mono text-xs text-(--terminal-accent)">
               <span>[draft] Restored saved draft from local storage</span>
               <button
                 type="button"
@@ -291,13 +291,13 @@ export function ContactForm(): JSX.Element {
           )}
 
           {submitted ? (
-            <div className="rounded-lg border border-emerald-400/40 bg-emerald-400/5 p-6 font-mono text-sm text-emerald-400">
+            <div className="rounded-lg border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 p-6 font-mono text-sm text-(--terminal-accent)">
               <p className="font-semibold">{t("contactSendSuccess")}</p>
-              <p className="mt-2 text-neutral-300">{t("contactSuccessDesc")}</p>
+              <p className="mt-2 text-(--terminal-muted)">{t("contactSuccessDesc")}</p>
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="mt-4 text-xs text-emerald-400 underline cursor-pointer"
+                className="mt-4 text-xs text-(--terminal-accent) underline cursor-pointer"
               >
                 {t("contactSendAnother")}
               </button>
@@ -324,8 +324,8 @@ export function ContactForm(): JSX.Element {
                   onKeyDown={handleKeyDown}
                   maxLength={100}
                   autoComplete="name"
-                  className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
-                    errors.name ? "focus:border-red-500" : "border-neutral-700"
+                  className={`w-full rounded border bg-(--terminal-bg) px-3 py-2 text-(--terminal-text) outline-none transition-all focus:border-(--terminal-accent) focus:ring-1 focus:ring-(--terminal-accent)/40 ${
+                    errors.name ? "focus:border-red-500" : "border-(--terminal-border)"
                   }`}
                   disabled={submitting}
                   aria-invalid={errors.name ? "true" : "false"}
@@ -350,8 +350,8 @@ export function ContactForm(): JSX.Element {
                   onKeyDown={handleKeyDown}
                   maxLength={254}
                   autoComplete="email"
-                  className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
-                    errors.email ? "focus:border-red-500" : "border-neutral-700"
+                  className={`w-full rounded border bg-(--terminal-bg) px-3 py-2 text-(--terminal-text) outline-none transition-all focus:border-(--terminal-accent) focus:ring-1 focus:ring-(--terminal-accent)/40 ${
+                    errors.email ? "focus:border-red-500" : "border-(--terminal-border)"
                   }`}
                   disabled={submitting}
                   aria-invalid={errors.email ? "true" : "false"}
@@ -374,10 +374,10 @@ export function ContactForm(): JSX.Element {
                   onChange={(e) => update("subject", e.target.value)}
                   onKeyDown={handleKeyDown}
                   maxLength={200}
-                  className={`w-full rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
+                  className={`w-full rounded border bg-(--terminal-bg) px-3 py-2 text-(--terminal-text) outline-none transition-all focus:border-(--terminal-accent) focus:ring-1 focus:ring-(--terminal-accent)/40 ${
                     errors.subject
                       ? "focus:border-red-500"
-                      : "border-neutral-700"
+                      : "border-(--terminal-border)"
                   }`}
                   disabled={submitting}
                   aria-invalid={errors.subject ? "true" : "false"}
@@ -401,10 +401,10 @@ export function ContactForm(): JSX.Element {
                   onKeyDown={handleKeyDown}
                   maxLength={MAX_MESSAGE_LEN}
                   rows={8}
-                  className={`w-full resize-y rounded border bg-neutral-900 px-3 py-2 text-neutral-100 outline-none transition-all focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/40 ${
+                  className={`w-full resize-y rounded border bg-(--terminal-bg) px-3 py-2 text-(--terminal-text) outline-none transition-all focus:border-(--terminal-accent) focus:ring-1 focus:ring-(--terminal-accent)/40 ${
                     errors.message
                       ? "focus:border-red-500"
-                      : "border-neutral-700"
+                      : "border-(--terminal-border)"
                   }`}
                   disabled={submitting}
                   aria-invalid={errors.message ? "true" : "false"}
@@ -415,19 +415,19 @@ export function ContactForm(): JSX.Element {
 
                 {/* Visual Character Progress Bar & Shortcut Hint */}
                 <div className="mt-2 space-y-1.5">
-                  <div className="h-1 w-full overflow-hidden rounded bg-neutral-800">
+                  <div className="h-1 w-full overflow-hidden rounded bg-(--terminal-border)">
                     <div
                       className={`h-full transition-all duration-300 ${
                         form.message.length > 4500
                           ? "bg-red-500"
                           : form.message.length > 3500
                             ? "bg-amber-400"
-                            : "bg-emerald-400"
+                            : "bg-(--terminal-accent)"
                       }`}
                       style={{ width: `${progressPercent}%` }}
                     />
                   </div>
-                  <div className="flex items-center justify-between text-xs text-neutral-400">
+                  <div className="flex items-center justify-between text-xs text-(--terminal-muted)">
                     <span className="opacity-75">
                       Tip: Press Ctrl + Enter (or ⌘ + Enter) to send
                     </span>
@@ -464,7 +464,7 @@ export function ContactForm(): JSX.Element {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded border border-emerald-400/40 bg-emerald-400/10 py-2.5 text-emerald-400 font-semibold transition-colors duration-200 hover:bg-emerald-400/20 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                className="w-full rounded border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 py-2.5 text-(--terminal-accent) font-semibold transition-colors duration-200 hover:bg-(--terminal-accent)/20 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent)"
               >
                 {submitting ? t("contactSending") : t("contactSend")}
               </button>
@@ -498,13 +498,13 @@ function Field({
       <div className="mb-1.5 flex items-center justify-between text-xs">
         <label
           htmlFor={id}
-          className="text-neutral-400"
+          className="text-(--terminal-muted)"
         >
           {label}
           {required ? " *" : ""}
         </label>
         {isValid && (
-          <span className="font-mono text-xs font-medium text-emerald-400 flex items-center gap-1">
+          <span className="font-mono text-xs font-medium text-(--terminal-accent) flex items-center gap-1">
             ✓ Valid
           </span>
         )}

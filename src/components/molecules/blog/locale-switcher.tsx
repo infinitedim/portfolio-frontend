@@ -77,17 +77,17 @@ function BlogLocaleSwitcherInner({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900/90 px-3 py-1.5 text-neutral-300 hover:border-emerald-500/50 hover:text-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400/50 transition-colors cursor-pointer select-none"
+        className="flex items-center gap-2 rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/90 px-3 py-1.5 text-(--terminal-text) hover:border-(--terminal-accent)/50 hover:text-(--terminal-accent) focus:outline-none focus:ring-1 focus:ring-(--terminal-accent)/50 transition-colors cursor-pointer select-none"
         aria-expanded={isOpen}
         aria-label="Select blog language"
       >
-        <span className="text-emerald-400 font-bold">$ lang</span>
-        <span className="text-neutral-500">--select</span>
-        <span className="flex items-center gap-1.5 text-neutral-200">
+        <span className="text-(--terminal-accent) font-bold">$ lang</span>
+        <span className="text-(--terminal-muted)">--select</span>
+        <span className="flex items-center gap-1.5 text-(--terminal-text)">
           <span>{currentConfig.flag}</span>
           <span className="font-medium">{currentConfig.label}</span>
         </span>
-        <span className="text-neutral-500 text-[10px]">
+        <span className="text-(--terminal-muted) text-[10px]">
           {isOpen ? "▲" : "▼"}
         </span>
       </button>
@@ -96,9 +96,9 @@ function BlogLocaleSwitcherInner({
         <div
           data-lenis-prevent
           data-lenis-prevent-wheel
-          className="absolute right-0 sm:left-0 sm:right-auto top-full mt-1.5 z-40 w-56 rounded-xl border border-neutral-800 bg-neutral-900/95 py-1.5 shadow-2xl backdrop-blur-md overscroll-contain"
+          className="absolute right-0 sm:left-0 sm:right-auto top-full mt-1.5 z-40 w-56 rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/95 py-1.5 shadow-2xl backdrop-blur-md overscroll-contain"
         >
-          <div className="px-3 py-1 text-[10px] text-neutral-500 uppercase tracking-wider font-semibold border-b border-neutral-800/80 mb-1">
+          <div className="px-3 py-1 text-[10px] text-(--terminal-muted) uppercase tracking-wider font-semibold border-b border-(--terminal-border)/80 mb-1">
             Available Locales ({BLOG_CONTENT_LOCALES.length})
           </div>
           <div

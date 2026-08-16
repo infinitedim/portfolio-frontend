@@ -49,7 +49,7 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur supports-backdrop-filter:bg-neutral-950/80">
+      <header className="sticky top-0 z-50 border-b border-(--terminal-border) bg-(--terminal-bg)/95 backdrop-blur supports-backdrop-filter:bg-(--terminal-bg)/80 transition-colors duration-300">
         <nav
           aria-label="Main navigation"
           className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
@@ -57,12 +57,12 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
           <div className="flex items-center gap-2">
             <Link
               href="/"
-              className="font-mono text-sm font-bold text-green-400 hover:text-green-300"
+              className="font-mono text-sm font-bold text-(--terminal-accent) hover:opacity-80 transition-opacity"
             >
               infinitedim
             </Link>
             {isUnlocked && (
-              <span className="rounded border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10px] text-emerald-400 font-semibold sm:hidden">
+              <span className="rounded border border-(--terminal-accent)/30 bg-(--terminal-accent)/10 px-1.5 py-0.5 font-mono text-[10px] text-(--terminal-accent) font-semibold sm:hidden">
                 ROOT
               </span>
             )}
@@ -78,8 +78,8 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
                     href={href}
                     className={`rounded px-3 py-1.5 font-mono text-xs transition-colors ${
                       isActive
-                        ? "bg-green-400/10 text-green-400"
-                        : "text-neutral-400 hover:text-neutral-100"
+                        ? "bg-(--terminal-accent)/10 text-(--terminal-accent) font-bold"
+                        : "text-(--terminal-muted) hover:text-(--terminal-text)"
                     }`}
                     aria-current={isActive ? "page" : undefined}
                   >
@@ -100,16 +100,16 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
             {isUnlocked && (
               <button
                 onClick={() => setIsRootConfigOpen(true)}
-                className="hidden sm:inline-flex items-center gap-1.5 rounded border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1.5 font-mono text-xs text-emerald-400 transition-colors hover:bg-emerald-500/20 cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-1.5 rounded border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 px-2.5 py-1.5 font-mono text-xs text-(--terminal-accent) transition-colors hover:bg-(--terminal-accent)/20 cursor-pointer"
                 title="Open Root Theme & Font Configuration"
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="h-1.5 w-1.5 rounded-full bg-(--terminal-accent) animate-pulse" />
                 <span>{t("navRootConfigButton")}</span>
               </button>
             )}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="hidden sm:inline-flex rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
+              className="hidden sm:inline-flex rounded border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 px-3 py-1.5 font-mono text-xs text-(--terminal-accent) transition-colors hover:bg-(--terminal-accent)/20 cursor-pointer"
             >
               {t("navTerminal")} →
             </button>
@@ -121,7 +121,7 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
             >
               <Dialog.Trigger asChild>
                 <button
-                  className="min-h-11 min-w-11 inline-flex items-center justify-center rounded text-neutral-400 hover:text-neutral-100 sm:hidden focus:outline-none focus:ring-1 focus:ring-green-400 cursor-pointer"
+                  className="min-h-11 min-w-11 inline-flex items-center justify-center rounded text-(--terminal-muted) hover:text-(--terminal-text) sm:hidden focus:outline-none focus:ring-1 focus:ring-(--terminal-accent) cursor-pointer"
                   aria-label="Toggle navigation menu"
                 >
                   <svg
@@ -145,14 +145,19 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
                 <Dialog.Overlay className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm sm:hidden animate-fade-in" />
 
                 {/* Mobile Menu Drawer */}
-                <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-64 bg-neutral-950 border-l border-neutral-800 p-6 sm:hidden flex flex-col font-mono focus:outline-none overflow-y-auto">
+                <Dialog.Content
+                  data-lenis-prevent
+                  data-lenis-prevent-wheel
+                  data-lenis-prevent-touch
+                  className="fixed inset-y-0 right-0 z-50 w-64 bg-(--terminal-bg) border-l border-(--terminal-border) p-6 sm:hidden flex flex-col font-mono focus:outline-none overflow-y-auto"
+                >
                   <div className="flex items-center justify-between mb-6">
-                    <Dialog.Title className="text-sm font-bold text-green-400">
+                    <Dialog.Title className="text-sm font-bold text-(--terminal-accent)">
                       Navigation
                     </Dialog.Title>
                     <Dialog.Close asChild>
                       <button
-                        className="rounded p-1.5 text-neutral-400 hover:text-neutral-100 focus:outline-none cursor-pointer min-h-11 min-w-11 flex items-center justify-center"
+                        className="rounded p-1.5 text-(--terminal-muted) hover:text-(--terminal-text) focus:outline-none cursor-pointer min-h-11 min-w-11 flex items-center justify-center"
                         aria-label="Close menu"
                       >
                         <svg
@@ -188,8 +193,8 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
                             href={href}
                             className={`block rounded px-3 py-2.5 text-sm transition-colors min-h-11 items-center ${
                               isActive
-                                ? "bg-green-400/10 text-green-400 font-bold"
-                                : "text-neutral-400 hover:text-neutral-100"
+                                ? "bg-(--terminal-accent)/10 text-(--terminal-accent) font-bold"
+                                : "text-(--terminal-muted) hover:text-(--terminal-text)"
                             }`}
                             aria-current={isActive ? "page" : undefined}
                           >
@@ -202,9 +207,9 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
 
                   {/* Unlocked Root Customization Section for Mobile */}
                   {isUnlocked && (
-                    <div className="mt-6 pt-5 border-t border-neutral-800/80 font-mono">
-                      <div className="flex items-center gap-2 text-xs text-emerald-400 font-bold mb-3">
-                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <div className="mt-6 pt-5 border-t border-(--terminal-border)/80 font-mono">
+                      <div className="flex items-center gap-2 text-xs text-(--terminal-accent) font-bold mb-3">
+                        <span className="h-2 w-2 rounded-full bg-(--terminal-accent) animate-pulse" />
                         <span>{t("navRootAccess")}</span>
                       </div>
                       <button
@@ -212,7 +217,7 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
                           setIsMobileMenuOpen(false);
                           setIsRootConfigOpen(true);
                         }}
-                        className="w-full min-h-11 rounded border border-emerald-500/40 bg-emerald-500/10 px-3 py-2.5 text-xs text-emerald-400 font-semibold transition-colors hover:bg-emerald-500/20 flex items-center justify-between cursor-pointer"
+                        className="w-full min-h-11 rounded border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 px-3 py-2.5 text-xs text-(--terminal-accent) font-semibold transition-colors hover:bg-(--terminal-accent)/20 flex items-center justify-between cursor-pointer"
                       >
                         <span>
                           ⚙️ {t("navSelectTheme")} / {t("navSelectFont")}
@@ -222,7 +227,7 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
                     </div>
                   )}
 
-                  <div className="mt-auto pt-6 border-t border-neutral-800 flex justify-end">
+                  <div className="mt-auto pt-6 border-t border-(--terminal-border) flex justify-end">
                     <LanguageSwitcher
                       variant="dropdown"
                       showFlags={false}
@@ -257,7 +262,7 @@ function SiteNavFallback({ currentPath }: SiteNavProps): JSX.Element {
   const activePath = currentPath ?? "";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur supports-backdrop-filter:bg-neutral-950/80">
+    <header className="sticky top-0 z-50 border-b border-(--terminal-border) bg-(--terminal-bg)/95 backdrop-blur supports-backdrop-filter:bg-(--terminal-bg)/80">
       <nav
         aria-label="Main navigation"
         className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
@@ -265,7 +270,7 @@ function SiteNavFallback({ currentPath }: SiteNavProps): JSX.Element {
         <div className="flex items-center gap-2">
           <Link
             href="/"
-            className="font-mono text-sm font-bold text-green-400 hover:text-green-300"
+            className="font-mono text-sm font-bold text-(--terminal-accent) hover:opacity-80 transition-opacity"
           >
             infinitedim
           </Link>
@@ -281,8 +286,8 @@ function SiteNavFallback({ currentPath }: SiteNavProps): JSX.Element {
                   href={href}
                   className={`rounded px-3 py-1.5 font-mono text-xs transition-colors ${
                     isActive
-                      ? "bg-green-400/10 text-green-400"
-                      : "text-neutral-400 hover:text-neutral-100"
+                      ? "bg-(--terminal-accent)/10 text-(--terminal-accent) font-bold"
+                      : "text-(--terminal-muted) hover:text-(--terminal-text)"
                   }`}
                   aria-current={isActive ? "page" : undefined}
                 >
@@ -302,7 +307,7 @@ function SiteNavFallback({ currentPath }: SiteNavProps): JSX.Element {
           />
           <Link
             href="/gate"
-            className="hidden sm:inline-flex rounded border border-green-400/40 bg-green-400/10 px-3 py-1.5 font-mono text-xs text-green-400 transition-colors hover:bg-green-400/20 cursor-pointer"
+            className="hidden sm:inline-flex rounded border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 px-3 py-1.5 font-mono text-xs text-(--terminal-accent) transition-colors hover:bg-(--terminal-accent)/20 cursor-pointer"
           >
             {t("navTerminal")} →
           </Link>

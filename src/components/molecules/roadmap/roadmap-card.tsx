@@ -21,15 +21,15 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
   const isInProgress = percent > 0 && percent < 100;
 
   const statusBadge = isCompleted ? (
-    <span className="rounded border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+    <span className="rounded border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 px-2 py-0.5 text-[10px] font-semibold text-(--terminal-accent)">
       [100% {t("roadmapStatusExecuted")}]
     </span>
   ) : isInProgress ? (
-    <span className="rounded border border-cyan-500/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-semibold text-cyan-400">
+    <span className="rounded border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 px-2 py-0.5 text-[10px] font-semibold text-(--terminal-accent)">
       [{t("roadmapStatusExecuting")} :: {percent}%]
     </span>
   ) : (
-    <span className="rounded border border-neutral-800 bg-neutral-900 px-2 py-0.5 text-[10px] font-semibold text-neutral-400">
+    <span className="rounded border border-(--terminal-border) bg-(--terminal-bg) px-2 py-0.5 text-[10px] font-semibold text-(--terminal-muted)">
       [{t("roadmapStatusPlanned")}]
     </span>
   );
@@ -37,16 +37,16 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
   const orderNum = String(index + 1).padStart(2, "0");
 
   return (
-    <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 font-mono shadow-xl backdrop-blur-md overflow-hidden flex flex-col transition-all duration-200 hover:border-neutral-700">
+    <div className="rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/70 font-mono shadow-xl backdrop-blur-md overflow-hidden flex flex-col transition-all duration-200 hover:border-(--terminal-accent)/40">
       {/* Terminal Window Header */}
-      <div className="flex items-center justify-between border-b border-neutral-800/80 bg-neutral-950/80 px-3.5 py-2 text-xs">
+      <div className="flex items-center justify-between border-b border-(--terminal-border)/80 bg-(--terminal-bg)/90 px-3.5 py-2 text-xs">
         <div className="flex items-center gap-2 text-[11px]">
-          <span className="text-emerald-500 font-bold">{orderNum} ::</span>
+          <span className="text-(--terminal-accent) font-bold">{orderNum} ::</span>
           <a
             href={`https://roadmap.sh/${progress.resourceId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-neutral-300 hover:text-emerald-400 transition-colors font-semibold truncate max-w-50 sm:max-w-60"
+            className="text-(--terminal-text) hover:text-(--terminal-accent) transition-colors font-semibold truncate max-w-50 sm:max-w-60"
             title={`View ${progress.resourceTitle} on roadmap.sh`}
           >
             ~/roadmap.sh/{progress.resourceId}
@@ -58,7 +58,7 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
       {/* Card Content */}
       <div className="p-4 sm:p-5 flex flex-col gap-4 flex-1 justify-between">
         <div className="space-y-3">
-          <h3 className="text-base font-bold text-white tracking-tight">
+          <h3 className="text-base font-bold text-(--terminal-text) tracking-tight">
             {progress.resourceTitle}
           </h3>
 
@@ -71,27 +71,27 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
         </div>
 
         {/* Counter Pills */}
-        <div className="grid grid-cols-4 gap-2 text-center text-[11px] border-t border-neutral-800/60 pt-3">
-          <div className="rounded border border-emerald-500/20 bg-emerald-500/5 py-1 text-emerald-400">
-            <span className="block text-[9px] text-neutral-400 font-sans uppercase">
+        <div className="grid grid-cols-4 gap-2 text-center text-[11px] border-t border-(--terminal-border)/60 pt-3">
+          <div className="rounded border border-(--terminal-accent)/30 bg-(--terminal-accent)/10 py-1 text-(--terminal-accent)">
+            <span className="block text-[9px] text-(--terminal-muted) font-sans uppercase">
               {t("roadmapDone")}
             </span>
             <span className="font-bold">{progress.done}</span>
           </div>
-          <div className="rounded border border-cyan-500/20 bg-cyan-500/5 py-1 text-cyan-400">
-            <span className="block text-[9px] text-neutral-400 font-sans uppercase">
+          <div className="rounded border border-(--terminal-accent)/20 bg-(--terminal-accent)/5 py-1 text-(--terminal-accent)">
+            <span className="block text-[9px] text-(--terminal-muted) font-sans uppercase">
               {t("roadmapLearning")}
             </span>
             <span className="font-bold">{progress.learning}</span>
           </div>
-          <div className="rounded border border-amber-500/20 bg-amber-500/5 py-1 text-amber-400">
-            <span className="block text-[9px] text-neutral-400 font-sans uppercase">
+          <div className="rounded border border-(--terminal-border) bg-(--terminal-bg)/50 py-1 text-(--terminal-muted)">
+            <span className="block text-[9px] text-(--terminal-muted) font-sans uppercase">
               {t("roadmapSkipped")}
             </span>
             <span className="font-bold">{progress.skipped ?? 0}</span>
           </div>
-          <div className="rounded border border-neutral-800 bg-neutral-950 py-1 text-neutral-400">
-            <span className="block text-[9px] text-neutral-400 font-sans uppercase">
+          <div className="rounded border border-(--terminal-border) bg-(--terminal-bg) py-1 text-(--terminal-muted)">
+            <span className="block text-[9px] text-(--terminal-muted) font-sans uppercase">
               {t("roadmapCardTotal")}
             </span>
             <span className="font-bold">{progress.total}</span>
@@ -100,12 +100,12 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
 
         {/* Card Footer Actions */}
         <div className="flex items-center justify-between pt-1 text-xs">
-          <span className="text-[10px] text-neutral-400">
+          <span className="text-[10px] text-(--terminal-muted)">
             ID: {progress.resourceId}
           </span>
           <Link
             href={`/roadmap/${progress.resourceId}` as Route}
-            className="flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors font-semibold group cursor-pointer"
+            className="flex items-center gap-1.5 text-xs text-(--terminal-accent) hover:opacity-80 transition-colors font-semibold group cursor-pointer"
           >
             <span>$ cd /roadmap/{progress.resourceId}</span>
             <span className="transition-transform group-hover:translate-x-0.5">

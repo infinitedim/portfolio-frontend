@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ProtectedRoute } from "@/components/molecules/admin/protected-route";
 import { useTheme } from "@/hooks/use-theme";
-import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { authService } from "@/lib/auth/auth-service";
 import { getApiUrl } from "@/lib/api/get-api-url";
 import {
   TranslationReview,
   BlogPostResponse,
 } from "@/components/molecules/admin/translation-review";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { RefreshCw, Languages, Inbox } from "lucide-react";
 
 interface PendingTranslationItem {
   translated: BlogPostResponse;
@@ -51,7 +52,6 @@ export default function TranslationsPage() {
       setItems(data.items);
       setTotal(data.total);
 
-      // Clear selected item if it no longer exists in the fetched list
       if (selectedItem) {
         const stillExists = data.items.find(
           (i) => i.translated.id === selectedItem.translated.id,
@@ -79,148 +79,132 @@ export default function TranslationsPage() {
   }
 
   return (
-    <ProtectedRoute>
+    <div className="space-y-6 font-mono text-sm max-w-7xl mx-auto">
+      {/* Header Bar */}
       <div
-        className="min-h-screen flex flex-col p-4 md:p-8 font-mono"
+        className="p-4 rounded-lg border flex flex-wrap items-center justify-between gap-4"
         style={{
           backgroundColor: themeConfig.colors.bg,
-          color: themeConfig.colors.text,
+          borderColor: themeConfig.colors.border,
         }}
       >
-        <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col space-y-4">
-          <TerminalHeader themeConfig={themeConfig} />
-
-          <div
-            className="flex items-center justify-between p-2 rounded border text-sm"
-            style={{
-              borderColor: themeConfig.colors.border,
-              backgroundColor: `${themeConfig.colors.muted}10`,
-            }}
-          >
-            <span>
-              Pending Translations:{" "}
-              <strong style={{ color: themeConfig.colors.accent }}>
-                {total}
-              </strong>
-            </span>
-            <button
-              onClick={fetchTranslations}
-              className="px-2 py-1 border rounded hover:opacity-80 transition-opacity"
-              style={{ borderColor: themeConfig.colors.border }}
-            >
-              [ Refresh ]
-            </button>
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-md bg-(--terminal-accent)/10 text-(--terminal-accent)">
+            <Languages className="h-5 w-5" />
           </div>
-
-          {error && (
-            <div
-              className="p-4 rounded border text-sm"
-              style={{
-                borderColor: themeConfig.colors.error,
-                color: themeConfig.colors.error,
-                backgroundColor: `${themeConfig.colors.error}10`,
-              }}
-            >
-              {error}
-            </div>
-          )}
-
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
-            {/* List panel */}
-            <div
-              className="flex flex-col border rounded-md overflow-hidden lg:col-span-1"
-              style={{ borderColor: themeConfig.colors.border }}
-            >
-              <div
-                className="p-3 border-b font-bold"
-                style={{
-                  borderColor: themeConfig.colors.border,
-                  backgroundColor: `${themeConfig.colors.muted}20`,
-                }}
-              >
-                Queue
-              </div>
-              <div className="flex-1 overflow-y-auto p-2 space-y-2">
-                {loading ? (
-                  <div className="text-center p-4 text-sm opacity-70 animate-pulse">
-                    Loading...
-                  </div>
-                ) : items.length === 0 ? (
-                  <div className="text-center p-4 text-sm opacity-70">
-                    No pending translations.
-                  </div>
-                ) : (
-                  items.map((item) => (
-                    <button
-                      key={item.translated.id}
-                      onClick={() => setSelectedItem(item)}
-                      className="w-full text-left p-3 rounded border transition-colors flex flex-col gap-2"
-                      style={{
-                        borderColor:
-                          selectedItem?.translated.id === item.translated.id
-                            ? themeConfig.colors.accent
-                            : themeConfig.colors.border,
-                        backgroundColor:
-                          selectedItem?.translated.id === item.translated.id
-                            ? `${themeConfig.colors.accent}10`
-                            : "transparent",
-                      }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span
-                          className="px-1.5 py-0.5 text-xs rounded border font-mono uppercase"
-                          style={{
-                            borderColor: themeConfig.colors.accent,
-                            color: themeConfig.colors.accent,
-                          }}
-                        >
-                          {item.translated.locale}
-                        </span>
-                        <span className="text-xs opacity-60">
-                          {new Date(
-                            item.translated.createdAt,
-                          ).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div
-                        className="font-bold truncate"
-                        title={item.translated.title}
-                      >
-                        {item.translated.title}
-                      </div>
-                      <div
-                        className="text-xs truncate opacity-70"
-                        title={item.translated.slug}
-                      >
-                        {item.translated.slug}
-                      </div>
-                    </button>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Review panel */}
-            <div
-              className="lg:col-span-2 h-200 lg:h-auto border rounded-md"
-              style={{ borderColor: themeConfig.colors.border }}
-            >
-              {selectedItem ? (
-                <TranslationReview
-                  translated={selectedItem.translated}
-                  source={selectedItem.source}
-                  onAction={fetchTranslations}
-                  themeConfig={themeConfig}
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-sm opacity-50">
-                  Select a translation from the queue to review.
-                </div>
-              )}
-            </div>
+          <div>
+            <h1 className="text-lg font-bold text-(--terminal-accent)">
+              AI Translations Queue
+            </h1>
+            <p className="text-xs text-(--terminal-muted)">
+              Review and approve auto-generated translations before publishing.
+            </p>
           </div>
         </div>
+
+        <div className="flex items-center gap-3">
+          <Badge variant="terminal" className="text-xs px-2.5 py-1">
+            Pending Queue: {total}
+          </Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={fetchTranslations}
+            disabled={loading}
+            className="gap-2 border-(--terminal-border)"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} /> Refresh
+          </Button>
+        </div>
       </div>
-    </ProtectedRoute>
+
+      {error && (
+        <div className="p-4 rounded-lg border border-red-500/40 bg-red-500/10 text-red-400 text-xs">
+          {error}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-[600px]">
+        {/* Queue List Panel */}
+        <div
+          className="flex flex-col border rounded-lg overflow-hidden lg:col-span-1"
+          style={{
+            backgroundColor: themeConfig.colors.bg,
+            borderColor: themeConfig.colors.border,
+          }}
+        >
+          <div className="p-3 border-b font-bold text-xs text-(--terminal-muted) uppercase bg-(--terminal-accent)/5 flex items-center justify-between">
+            <span>Translation Queue</span>
+            <span>{items.length} items</span>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-2 space-y-2 max-h-[600px]">
+            {loading ? (
+              <div className="text-center p-6 text-xs text-(--terminal-muted) animate-pulse">
+                Loading pending queue...
+              </div>
+            ) : items.length === 0 ? (
+              <div className="text-center p-8 text-xs text-(--terminal-muted) space-y-2">
+                <Inbox className="h-8 w-8 mx-auto text-(--terminal-muted) opacity-50" />
+                <p>No pending translations in queue.</p>
+              </div>
+            ) : (
+              items.map((item) => {
+                const isSelected = selectedItem?.translated.id === item.translated.id;
+                return (
+                  <button
+                    key={item.translated.id}
+                    onClick={() => setSelectedItem(item)}
+                    className={`w-full text-left p-3 rounded-md border transition-colors flex flex-col gap-1.5 ${
+                      isSelected
+                        ? "border-(--terminal-accent) bg-(--terminal-accent)/15 text-(--terminal-accent)"
+                        : "border-(--terminal-border) hover:border-(--terminal-accent)/40 hover:bg-(--terminal-accent)/5"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <Badge variant="terminal" className="uppercase text-[10px] px-1.5 py-0">
+                        {item.translated.locale}
+                      </Badge>
+                      <span className="text-[10px] opacity-60">
+                        {new Date(item.translated.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="font-bold text-xs truncate">
+                      {item.translated.title}
+                    </div>
+                    <div className="text-[11px] truncate opacity-60">
+                      slug: {item.translated.slug}
+                    </div>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Review Panel (Fixed invalid h-200 class with min-h-[600px]) */}
+        <div
+          className="lg:col-span-2 min-h-[600px] border rounded-lg overflow-hidden flex flex-col"
+          style={{
+            backgroundColor: themeConfig.colors.bg,
+            borderColor: themeConfig.colors.border,
+          }}
+        >
+          {selectedItem ? (
+            <TranslationReview
+              translated={selectedItem.translated}
+              source={selectedItem.source}
+              onAction={fetchTranslations}
+              themeConfig={themeConfig}
+            />
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-xs text-(--terminal-muted) space-y-2">
+              <Languages className="h-10 w-10 text-(--terminal-muted) opacity-40" />
+              <p>Select a pending translation from the queue to start reviewing.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

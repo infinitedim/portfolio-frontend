@@ -732,4 +732,16 @@ export const id_ID_key: TranslationKeys = {
   termLangUsage: "Penggunaan: lang <locale_id>",
   termLangExamples: "Contoh: lang id_ID, lang es_ES, lang fr_FR",
   termLangRegionalNote: "Varian regional (misalnya, en_GB, es_MX) akan kembali ke bahasa utama mereka",
+
+  // Admin Navigation
+  adminSidebarDashboard: "Ikhtisar Dasbor",
+  adminSidebarBlog: "Artikel & Draf",
+  adminSidebarProjects: "Katalog Proyek",
+  adminSidebarExperience: "Pengalaman Kerja",
+  adminSidebarAbout: "Profil & Biodata",
+  adminSidebarMessages: "Kotak Masuk Pesan",
+  adminSidebarNewsletter: "Buletin & Pemirsa",
+  adminSidebarPortfolio: "Riwayat Versi",
+  adminSidebarSeries: "Seri Blog",
+  adminSidebarTranslations: "Audit Penerjemahan i18n",
 } as const;

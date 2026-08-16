@@ -197,14 +197,14 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
           { name: post.title, item: `https://infinitedim.dev/blog/${post.slug}` },
         ]}
       />
-      <div className="min-h-screen bg-terminal-bg text-terminal-text">
+      <div className="min-h-screen bg-(--terminal-bg) text-(--terminal-text)">
         <ScrollProgress />
 
         <div className="mx-auto max-w-6xl px-4 py-8">
           <nav className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between font-mono text-sm">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors"
+              className="inline-flex items-center gap-2 text-(--terminal-accent) hover:opacity-80 transition-opacity"
             >
               <span>$ cd /blog</span>
             </Link>
@@ -221,21 +221,21 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
             <article className="prose prose-invert max-w-none min-w-0">
               <header className="mb-8 not-prose">
                 {/* Status Pill Header */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-mono text-xs mb-4">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-(--terminal-accent)/30 bg-(--terminal-accent)/10 text-(--terminal-accent) font-mono text-xs mb-4">
+                  <span className="h-2 w-2 rounded-full bg-(--terminal-accent)" />
                   <span>post.status :: published</span>
                 </div>
 
-                <div className="text-emerald-400/80 font-mono text-xs sm:text-sm mb-2">
+                <div className="text-(--terminal-accent)/80 font-mono text-xs sm:text-sm mb-2">
                   $ cat /blog/{post.slug}.md
                 </div>
 
-                <h1 className="text-3xl sm:text-4xl font-bold font-mono text-white tracking-tight mb-4 leading-tight">
+                <h1 className="text-3xl sm:text-4xl font-bold font-mono text-(--terminal-text) tracking-tight mb-4 leading-tight">
                   {post.title}
                 </h1>
 
                 {post.summary && (
-                  <p className="text-lg text-neutral-300 mb-5 leading-relaxed">
+                  <p className="text-lg text-(--terminal-muted) mb-5 leading-relaxed">
                     {post.summary}
                   </p>
                 )}
@@ -256,8 +256,8 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                   </div>
                 )}
 
-                <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-400 font-mono pt-3 border-t border-neutral-800/80">
-                  <span className="px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-(--terminal-muted) font-mono pt-3 border-t border-(--terminal-border)/80">
+                  <span className="px-2 py-0.5 rounded bg-(--terminal-bg) border border-(--terminal-border) text-(--terminal-text)">
                     {t.blogPublishedPrefix}
                     {new Date(post.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
@@ -266,7 +266,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                     })}
                   </span>
                   {post.updatedAt !== post.createdAt && (
-                    <span className="px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-300">
+                    <span className="px-2 py-0.5 rounded bg-(--terminal-bg) border border-(--terminal-border) text-(--terminal-text)">
                       {t.blogUpdatedPrefix}
                       {new Date(post.updatedAt).toLocaleDateString("en-US", {
                         year: "numeric",
@@ -276,19 +276,19 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                     </span>
                   )}
                   {post.readingTimeMinutes > 0 && (
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                    <span className="px-2 py-0.5 rounded bg-(--terminal-accent)/10 border border-(--terminal-accent)/20 text-(--terminal-accent)">
                       {post.readingTimeMinutes} {t.blogMinRead}
                     </span>
                   )}
                   {post.viewCount > 0 && (
-                    <span className="px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400">
+                    <span className="px-2 py-0.5 rounded bg-(--terminal-bg) border border-(--terminal-border) text-(--terminal-muted)">
                       {post.viewCount.toLocaleString()} {t.blogViews}
                     </span>
                   )}
                 </div>
               </header>
 
-              <div className="border-t border-neutral-800 pt-8">
+              <div className="border-t border-(--terminal-border) pt-8">
                 <BlogContent
                   html={contentHtml}
                   md={post.contentMd}
@@ -309,20 +309,20 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
             )}
           </div>
 
-          <section className="mt-14 pt-8 border-t border-neutral-800 max-w-4xl">
+          <section className="mt-14 pt-8 border-t border-(--terminal-border) max-w-4xl">
             <div className="flex items-center gap-2 mb-6 font-mono text-sm">
-              <span className="text-emerald-400">$</span>
-              <h2 className="text-lg font-bold text-white tracking-tight">
+              <span className="text-(--terminal-accent)">$</span>
+              <h2 className="text-lg font-bold text-(--terminal-text) tracking-tight">
                 comments --stream
               </h2>
-              <span className="text-xs px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-500">
+              <span className="text-xs px-2 py-0.5 rounded bg-(--terminal-bg) border border-(--terminal-border) text-(--terminal-muted)">
                 giscus.active
               </span>
             </div>
             <GiscusComments slug={post.slug} />
           </section>
 
-          <footer className="mt-12 pt-8 border-t border-neutral-800 space-y-6 max-w-4xl font-mono text-sm">
+          <footer className="mt-12 pt-8 border-t border-(--terminal-border) space-y-6 max-w-4xl font-mono text-sm">
             <ShareButtons
               title={post.title}
               slug={post.slug}
@@ -331,7 +331,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
 
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors"
+              className="inline-flex items-center gap-2 text-(--terminal-accent) hover:opacity-80 transition-opacity"
             >
               <span>$ cd /blog</span>
             </Link>

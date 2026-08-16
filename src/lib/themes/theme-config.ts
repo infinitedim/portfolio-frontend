@@ -7,7 +7,7 @@ export const themes: ThemeRegistry = {
       bg: "#0a0a0a",
       text: "#e5e5e5",
       accent: "#00ff41",
-      muted: "#7a7a7a",
+      muted: "#8c8c8c",
       border: "#333333",
       success: "#00ff41",
       error: "#ff4444",
@@ -39,7 +39,7 @@ export const themes: ThemeRegistry = {
       bg: "#0f0f23",
       text: "#ff00ff",
       accent: "#00ffff",
-      muted: "#7a7aa6",
+      muted: "#8d8dba",
       border: "#ff00ff",
       success: "#00ff00",
       error: "#ff0040",
@@ -55,7 +55,7 @@ export const themes: ThemeRegistry = {
       bg: "#282a36",
       text: "#f8f8f2",
       accent: "#bd93f9",
-      muted: "#8692b9",
+      muted: "#94a0c8",
       border: "#44475a",
       success: "#50fa7b",
       error: "#ff5555",
@@ -71,7 +71,7 @@ export const themes: ThemeRegistry = {
       bg: "#272822",
       text: "#f8f8f2",
       accent: "#a6e22e",
-      muted: "#94907a",
+      muted: "#a29e88",
       border: "#49483e",
       success: "#a6e22e",
       error: "#f92672",
@@ -86,8 +86,8 @@ export const themes: ThemeRegistry = {
     colors: {
       bg: "#002b36",
       text: "#839496",
-      accent: "#268bd2",
-      muted: "#7a939b",
+      accent: "#389de3",
+      muted: "#8fa8b0",
       border: "#073642",
       success: "#859900",
       error: "#dc322f",
@@ -135,7 +135,7 @@ export const themes: ThemeRegistry = {
       bg: "#1a1b26",
       text: "#c0caf5",
       accent: "#7aa2f7",
-      muted: "#7a83ac",
+      muted: "#8a94bd",
       border: "#292e42",
       success: "#9ece6a",
       error: "#f7768e",
@@ -311,7 +311,7 @@ export const themes: ThemeRegistry = {
       bg: "#0f1419",
       text: "#b3b1ad",
       accent: "#39bae6",
-      muted: "#76808a",
+      muted: "#85909a",
       border: "#1f2430",
       success: "#7fd962",
       error: "#ff3333",
@@ -342,7 +342,9 @@ export const themes: ThemeRegistry = {
 export const defaultTheme: ThemeName = "default";
 
 export const getSortedThemeNames = (): ThemeName[] => {
-  return Object.keys(themes).sort() as ThemeName[];
+  const allThemes = Object.keys(themes) as ThemeName[];
+  const rest = allThemes.filter((t) => t !== defaultTheme).sort();
+  return [defaultTheme, ...rest];
 };
 
 export const getThemeConfig = (themeName: ThemeName): ThemeConfig => {

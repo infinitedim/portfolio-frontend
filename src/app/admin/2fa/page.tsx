@@ -1,12 +1,14 @@
 "use client";
 
 import { JSX, useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
-import { ProtectedRoute } from "@/components/molecules/admin/protected-route";
-import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
-import { useTheme } from "@/hooks/use-theme";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ShieldCheck, ShieldAlert, KeyRound, Copy, CheckCircle2, ArrowLeft } from "lucide-react";
 import {
   disableTwoFactor,
   getTwoFactorStatus,
@@ -27,8 +29,6 @@ type Stage =
   | { kind: "enabled"; backupRemaining: number };
 
 export default function AdminTwoFactorPage(): JSX.Element {
-  const { themeConfig } = useTheme();
-  const router = useRouter();
 
   const [stage, setStage] = useState<Stage>({ kind: "loading" });
   const [busy, setBusy] = useState(false);
@@ -80,7 +80,7 @@ export default function AdminTwoFactorPage(): JSX.Element {
     setError(null);
     try {
       await verifyTwoFactor(code);
-      toast.success("Two-factor authentication enabled");
+      toast.success("Two-factor authentication enabled successfully");
       await refreshStatus();
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Verification failed";
@@ -113,275 +113,177 @@ export default function AdminTwoFactorPage(): JSX.Element {
   const copyToClipboard = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(`${label} copied`);
+      toast.success(`${label} copied to clipboard`);
     } catch {
-      toast.error("Clipboard unavailable");
+      toast.error("Clipboard permission unavailable");
     }
   };
 
   return (
-    <ProtectedRoute>
-      <div
-        className="min-h-screen flex flex-col"
-        style={{
-          backgroundColor: themeConfig.colors.bg,
-          color: themeConfig.colors.text,
-        }}
-      >
-        <TerminalHeader />
+    <div className="max-w-3xl mx-auto space-y-6 font-mono text-sm">
+      {/* Header Bar */}
+      <div className="flex items-center justify-between pb-4 border-b border-(--terminal-border)">
+        <div>
+          <h1 className="text-xl font-bold text-(--terminal-accent) flex items-center gap-2">
+            <ShieldCheck className="h-6 w-6" /> Two-Factor Authentication
+          </h1>
+          <p className="text-xs text-(--terminal-muted) mt-1">
+            Enforce secondary TOTP verification for all administrator sign-ins.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" asChild className="h-8 gap-2">
+          <Link href="/admin">
+            <ArrowLeft className="h-4 w-4" /> Back to Dashboard
+          </Link>
+        </Button>
+      </div>
 
-        <div className="flex-1 p-6">
-          <div
-            className="max-w-3xl mx-auto"
-            style={{
-              backgroundColor: themeConfig.colors.bg,
-              border: `1px solid ${themeConfig.colors.border}`,
-              borderRadius: "8px",
-              boxShadow: `0 4px 20px ${themeConfig.colors.border}20`,
-            }}
-          >
-            <div
-              className="flex items-center justify-between p-3 border-b"
-              style={{ borderColor: themeConfig.colors.border }}
-            >
-              <span
-                className="text-sm font-mono"
-                style={{ color: themeConfig.colors.muted }}
-              >
-                admin@portfolio:~$ 2fa
-              </span>
-              <button
-                onClick={() => router.push("/admin")}
-                className="px-3 py-1 text-xs font-mono rounded"
-                style={{
-                  backgroundColor: `${themeConfig.colors.accent}20`,
-                  color: themeConfig.colors.accent,
-                  border: `1px solid ${themeConfig.colors.accent}`,
-                }}
-              >
-                ← Back to dashboard
-              </button>
-            </div>
+      {error && (
+        <div className="p-4 rounded-lg border border-red-500/40 bg-red-500/10 text-red-400 text-xs">
+          {error}
+        </div>
+      )}
 
-            <div className="p-6 space-y-6">
+      {stage.kind === "loading" && (
+        <div className="p-8 text-center text-xs text-(--terminal-muted)">
+          Loading 2FA status...
+        </div>
+      )}
+
+      {stage.kind === "disabled" && (
+        <div className="p-6 rounded-lg border border-(--terminal-border) bg-(--terminal-bg) space-y-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <ShieldAlert className="h-6 w-6 text-amber-400" />
               <div>
-                <h1
-                  className="text-xl font-bold mb-1"
-                  style={{ color: themeConfig.colors.accent }}
-                >
-                  Two-Factor Authentication
-                </h1>
-                <p
-                  className="text-sm"
-                  style={{ color: themeConfig.colors.muted }}
-                >
-                  Add a second factor (TOTP) to admin sign-in. After enrollment,
-                  every login asks for a 6-digit code from your authenticator
-                  app.
+                <h3 className="font-semibold text-base">2FA Status: Disabled</h3>
+                <p className="text-xs text-(--terminal-muted)">
+                  Your admin account relies only on a single password for authentication.
                 </p>
               </div>
-
-              {error && (
-                <div
-                  className="p-3 rounded border text-sm font-mono"
-                  style={{
-                    backgroundColor: `${themeConfig.colors.error}10`,
-                    borderColor: themeConfig.colors.error,
-                    color: themeConfig.colors.error,
-                  }}
-                >
-                  {error}
-                </div>
-              )}
-
-              {stage.kind === "loading" && (
-                <div
-                  className="text-sm font-mono"
-                  style={{ color: themeConfig.colors.muted }}
-                >
-                  Loading current 2FA status…
-                </div>
-              )}
-
-              {stage.kind === "disabled" && (
-                <div
-                  className="p-4 rounded border space-y-3"
-                  style={{ borderColor: themeConfig.colors.border }}
-                >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="px-2 py-1 rounded text-xs font-mono"
-                      style={{
-                        backgroundColor: `${themeConfig.colors.warning}20`,
-                        color: themeConfig.colors.warning,
-                      }}
-                    >
-                      DISABLED
-                    </span>
-                    <span
-                      className="text-sm"
-                      style={{ color: themeConfig.colors.muted }}
-                    >
-                      2FA is currently off for your account.
-                    </span>
-                  </div>
-                  <button
-                    onClick={handleStartSetup}
-                    disabled={busy}
-                    className="px-4 py-2 font-mono text-sm rounded disabled:opacity-60 disabled:cursor-not-allowed"
-                    style={{
-                      backgroundColor: `${themeConfig.colors.accent}20`,
-                      color: themeConfig.colors.accent,
-                      border: `1px solid ${themeConfig.colors.accent}`,
-                    }}
-                  >
-                    {busy ? "Generating…" : "Start setup"}
-                  </button>
-                </div>
-              )}
-
-              {stage.kind === "setup" && (
-                <SetupPanel
-                  stage={stage}
-                  busy={busy}
-                  themeConfig={themeConfig}
-                  onChangeCode={(code) => setStage({ ...stage, code })}
-                  onAcknowledgeCodes={() =>
-                    setStage({ ...stage, acknowledgedCodes: true })
-                  }
-                  onCopy={copyToClipboard}
-                  onVerify={handleVerifySetup}
-                  onCancel={() => setStage({ kind: "disabled" })}
-                />
-              )}
-
-              {stage.kind === "enabled" && (
-                <div className="space-y-4">
-                  <div
-                    className="p-4 rounded border"
-                    style={{ borderColor: themeConfig.colors.border }}
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <span
-                        className="px-2 py-1 rounded text-xs font-mono"
-                        style={{
-                          backgroundColor: `${themeConfig.colors.success}20`,
-                          color: themeConfig.colors.success,
-                        }}
-                      >
-                        ENABLED
-                      </span>
-                      <span
-                        className="text-sm"
-                        style={{ color: themeConfig.colors.muted }}
-                      >
-                        {stage.backupRemaining} backup code
-                        {stage.backupRemaining === 1 ? "" : "s"} remaining
-                      </span>
-                    </div>
-                    <p
-                      className="text-sm"
-                      style={{ color: themeConfig.colors.muted }}
-                    >
-                      Future logins will require a 6-digit TOTP code after your
-                      password.
-                    </p>
-                  </div>
-
-                  <div
-                    className="p-4 rounded border space-y-3"
-                    style={{ borderColor: themeConfig.colors.border }}
-                  >
-                    <h3
-                      className="text-sm font-semibold"
-                      style={{ color: themeConfig.colors.accent }}
-                    >
-                      Disable 2FA
-                    </h3>
-                    <p
-                      className="text-xs"
-                      style={{ color: themeConfig.colors.muted }}
-                    >
-                      Confirm with your password and a current TOTP/backup code
-                      to turn 2FA off and wipe enrollment data.
-                    </p>
-
-                    <input
-                      type="password"
-                      placeholder="Current password"
-                      value={disablePassword}
-                      onChange={(e) => setDisablePassword(e.target.value)}
-                      autoComplete="current-password"
-                      className="w-full bg-transparent border rounded px-3 py-2 font-mono text-sm outline-none"
-                      style={{
-                        borderColor: themeConfig.colors.border,
-                        color: themeConfig.colors.text,
-                      }}
-                    />
-
-                    <input
-                      type="text"
-                      inputMode={disableUseBackup ? "text" : "numeric"}
-                      placeholder={
-                        disableUseBackup ? "Backup code" : "6-digit code"
-                      }
-                      value={disableCode}
-                      onChange={(e) => {
-                        const v = disableUseBackup
-                          ? e.target.value.trim()
-                          : e.target.value.replace(/\D/g, "").slice(0, 6);
-                        setDisableCode(v);
-                      }}
-                      className="w-full bg-transparent border rounded px-3 py-2 font-mono text-sm outline-none tracking-widest"
-                      style={{
-                        borderColor: themeConfig.colors.border,
-                        color: themeConfig.colors.text,
-                      }}
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDisableUseBackup((v) => !v);
-                        setDisableCode("");
-                      }}
-                      className="text-xs underline"
-                      style={{ color: themeConfig.colors.accent }}
-                    >
-                      {disableUseBackup
-                        ? "Use 6-digit authenticator code"
-                        : "Use a backup code instead"}
-                    </button>
-
-                    <button
-                      onClick={handleDisable}
-                      disabled={
-                        busy || !disablePassword.trim() || !disableCode.trim()
-                      }
-                      className="px-4 py-2 font-mono text-sm rounded disabled:opacity-60 disabled:cursor-not-allowed"
-                      style={{
-                        backgroundColor: `${themeConfig.colors.error}20`,
-                        color: themeConfig.colors.error,
-                        border: `1px solid ${themeConfig.colors.error}`,
-                      }}
-                    >
-                      {busy ? "Disabling…" : "Disable 2FA"}
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
+            <Badge variant="warning">DISABLED</Badge>
+          </div>
+
+          <div className="pt-2">
+            <Button
+              variant="terminal"
+              onClick={handleStartSetup}
+              disabled={busy}
+            >
+              {busy ? "Generating QR Key..." : "Start 2FA Setup"}
+            </Button>
           </div>
         </div>
-      </div>
-    </ProtectedRoute>
+      )}
+
+      {stage.kind === "setup" && (
+        <SetupPanel
+          stage={stage}
+          busy={busy}
+          onChangeCode={(code) => setStage({ ...stage, code })}
+          onAcknowledgeCodes={() => setStage({ ...stage, acknowledgedCodes: true })}
+          onCopy={copyToClipboard}
+          onVerify={handleVerifySetup}
+          onCancel={() => setStage({ kind: "disabled" })}
+        />
+      )}
+
+      {stage.kind === "enabled" && (
+        <div className="space-y-6">
+          <div className="p-6 rounded-lg border border-emerald-500/40 bg-emerald-500/5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="h-6 w-6 text-emerald-400" />
+                <div>
+                  <h3 className="font-semibold text-base text-emerald-400">2FA Active & Protected</h3>
+                  <p className="text-xs text-(--terminal-muted)">
+                    {stage.backupRemaining} single-use backup code{stage.backupRemaining === 1 ? "" : "s"} remaining.
+                  </p>
+                </div>
+              </div>
+              <Badge variant="success">ENABLED</Badge>
+            </div>
+          </div>
+
+          <div className="p-6 rounded-lg border border-(--terminal-border) bg-(--terminal-bg) space-y-4">
+            <h3 className="text-base font-semibold text-red-400 flex items-center gap-2">
+              <KeyRound className="h-5 w-5" /> Disable 2FA Protection
+            </h3>
+            <p className="text-xs text-(--terminal-muted)">
+              Disabling 2FA removes the TOTP requirement. You must confirm your password and a valid code.
+            </p>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleDisable();
+              }}
+              className="space-y-4 max-w-md pt-2"
+            >
+              <div className="space-y-1.5">
+                <Label htmlFor="disable-pass">Current Password</Label>
+                <Input
+                  id="disable-pass"
+                  type="password"
+                  value={disablePassword}
+                  onChange={(e) => setDisablePassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  autoComplete="current-password"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="disable-code">
+                  {disableUseBackup ? "Backup Code (8 chars)" : "TOTP Code (6 digits)"}
+                </Label>
+                <Input
+                  id="disable-code"
+                  type="text"
+                  value={disableCode}
+                  onChange={(e) => {
+                    const v = disableUseBackup
+                      ? e.target.value.trim()
+                      : e.target.value.replace(/\D/g, "").slice(0, 6);
+                    setDisableCode(v);
+                  }}
+                  placeholder={disableUseBackup ? "a1b2c3d4" : "123456"}
+                  required
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setDisableUseBackup(!disableUseBackup);
+                  setDisableCode("");
+                }}
+                className="text-xs text-(--terminal-accent) underline hover:no-underline"
+              >
+                {disableUseBackup ? "Use 6-digit TOTP code" : "Use a backup code instead"}
+              </button>
+
+              <div>
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  disabled={busy || !disablePassword.trim() || !disableCode.trim()}
+                >
+                  {busy ? "Disabling..." : "Disable 2FA"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
 interface SetupPanelProps {
   stage: Extract<Stage, { kind: "setup" }>;
   busy: boolean;
-  themeConfig: ReturnType<typeof useTheme>["themeConfig"];
   onChangeCode: (code: string) => void;
   onAcknowledgeCodes: () => void;
   onCopy: (text: string, label: string) => void;
@@ -392,7 +294,6 @@ interface SetupPanelProps {
 function SetupPanel({
   stage,
   busy,
-  themeConfig,
   onChangeCode,
   onAcknowledgeCodes,
   onCopy,
@@ -403,181 +304,109 @@ function SetupPanel({
 
   return (
     <div className="space-y-6">
-      <div
-        className="p-4 rounded border space-y-4"
-        style={{ borderColor: themeConfig.colors.border }}
-      >
-        <h3
-          className="text-sm font-semibold"
-          style={{ color: themeConfig.colors.accent }}
-        >
-          Step 1 — Scan the QR with your authenticator app
+      {/* Step 1 */}
+      <div className="p-6 rounded-lg border border-(--terminal-border) bg-(--terminal-bg) space-y-4">
+        <h3 className="text-base font-semibold text-(--terminal-accent)">
+          Step 1 — Scan QR Code with Authenticator App
         </h3>
-        <p
-          className="text-xs"
-          style={{ color: themeConfig.colors.muted }}
-        >
-          Use Google Authenticator, 1Password, Authy, or any RFC-6238 TOTP app.
-          If you can't scan, use the manual key below.
+        <p className="text-xs text-(--terminal-muted)">
+          Use Google Authenticator, 1Password, Authy, or any TOTP authenticator app.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 items-start">
-          <div
-            className="p-3 rounded bg-white"
-            style={{ border: `1px solid ${themeConfig.colors.border}` }}
-          >
-            <QRCodeSVG
-              value={data.otpauthUri}
-              size={176}
-              level="M"
-              marginSize={0}
-            />
+        <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start pt-2">
+          <div className="p-3 bg-white rounded-lg border border-(--terminal-border) shrink-0">
+            <QRCodeSVG value={data.otpauthUri} size={160} level="M" />
           </div>
 
-          <div className="flex-1 space-y-2 w-full">
-            <div className="text-xs font-mono">
-              <span style={{ color: themeConfig.colors.muted }}>
-                Manual key:{" "}
-              </span>
-              <span
-                className="break-all"
-                style={{ color: themeConfig.colors.text }}
-              >
-                {data.secret}
-              </span>
-            </div>
-            <button
-              onClick={() => onCopy(data.secret, "Secret")}
-              className="text-xs underline"
-              style={{ color: themeConfig.colors.accent }}
-            >
-              Copy secret
-            </button>
+          <div className="space-y-3 flex-1 text-xs">
             <div>
-              <button
-                onClick={() => onCopy(data.otpauthUri, "otpauth URI")}
-                className="text-xs underline"
-                style={{ color: themeConfig.colors.accent }}
-              >
-                Copy otpauth URI
-              </button>
+              <span className="text-(--terminal-muted) block mb-1">Secret Key (Manual Entry):</span>
+              <code className="px-2 py-1 bg-(--terminal-accent)/10 border border-(--terminal-accent)/30 rounded font-mono text-xs text-(--terminal-accent) break-all">
+                {data.secret}
+              </code>
+            </div>
+            <div className="flex gap-3">
+              <Button variant="outline" size="sm" onClick={() => onCopy(data.secret, "Secret Key")} className="gap-1 text-xs">
+                <Copy className="h-3 w-3" /> Copy Secret
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => onCopy(data.otpauthUri, "otpauth URI")} className="gap-1 text-xs">
+                <Copy className="h-3 w-3" /> Copy URI
+              </Button>
             </div>
           </div>
         </div>
       </div>
 
-      <div
-        className="p-4 rounded border space-y-3"
-        style={{
-          borderColor: themeConfig.colors.warning,
-          backgroundColor: `${themeConfig.colors.warning}08`,
-        }}
-      >
-        <h3
-          className="text-sm font-semibold"
-          style={{ color: themeConfig.colors.warning }}
-        >
-          Step 2 — Save your backup codes
-        </h3>
-        <p
-          className="text-xs"
-          style={{ color: themeConfig.colors.muted }}
-        >
-          Each code can be used once if you lose access to your authenticator.
-          They will not be shown again.
+      {/* Step 2 */}
+      <div className="p-6 rounded-lg border border-amber-500/40 bg-amber-500/5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-semibold text-amber-400">
+            Step 2 — Backup Recovery Codes
+          </h3>
+          <Badge variant="warning">IMPORTANT</Badge>
+        </div>
+        <p className="text-xs text-(--terminal-muted)">
+          Save these single-use codes in a password manager. If you lose your TOTP app, you need a backup code to log in.
         </p>
-        <div
-          className="grid grid-cols-2 gap-2 font-mono text-xs p-3 rounded"
-          style={{
-            backgroundColor: `${themeConfig.colors.bg}`,
-            border: `1px dashed ${themeConfig.colors.warning}`,
-          }}
-        >
+
+        <div className="grid grid-cols-2 gap-2 font-mono text-xs p-4 rounded-md bg-(--terminal-bg) border border-amber-500/30">
           {data.backupCodes.map((c) => (
-            <code
-              key={c}
-              className="select-all"
-              style={{ color: themeConfig.colors.text }}
-            >
+            <code key={c} className="select-all text-amber-300">
               {c}
             </code>
           ))}
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => onCopy(data.backupCodes.join("\n"), "Backup codes")}
-            className="text-xs underline"
-            style={{ color: themeConfig.colors.accent }}
-          >
-            Copy all
-          </button>
-          <button
+
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm" onClick={() => onCopy(data.backupCodes.join("\n"), "Backup codes")} className="gap-1 text-xs">
+            <Copy className="h-3 w-3" /> Copy All Codes
+          </Button>
+          <Button
+            variant={acknowledgedCodes ? "outline" : "default"}
+            size="sm"
             onClick={onAcknowledgeCodes}
             disabled={acknowledgedCodes}
-            className="text-xs underline disabled:opacity-50"
-            style={{ color: themeConfig.colors.success }}
+            className="text-xs"
           >
-            {acknowledgedCodes ? "✓ Saved" : "I have saved them"}
-          </button>
+            {acknowledgedCodes ? "✓ Backup Codes Saved" : "I Have Saved These Codes"}
+          </Button>
         </div>
       </div>
 
-      <div
-        className="p-4 rounded border space-y-3"
-        style={{ borderColor: themeConfig.colors.border }}
-      >
-        <h3
-          className="text-sm font-semibold"
-          style={{ color: themeConfig.colors.accent }}
-        >
-          Step 3 — Enter the current 6-digit code to enable 2FA
+      {/* Step 3 */}
+      <div className="p-6 rounded-lg border border-(--terminal-border) bg-(--terminal-bg) space-y-4">
+        <h3 className="text-base font-semibold text-(--terminal-accent)">
+          Step 3 — Verify TOTP Code & Enable
         </h3>
-        <input
-          type="text"
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          value={code}
-          onChange={(e) =>
-            onChangeCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-          }
-          placeholder="123456"
-          className="w-full bg-transparent border rounded px-3 py-2 font-mono text-sm outline-none tracking-widest"
-          style={{
-            borderColor: themeConfig.colors.border,
-            color: themeConfig.colors.text,
-          }}
-        />
-        <div className="flex gap-3">
-          <button
+        <div className="max-w-xs space-y-2">
+          <Label htmlFor="setup-totp-code">Enter 6-digit Code</Label>
+          <Input
+            id="setup-totp-code"
+            type="text"
+            inputMode="numeric"
+            value={code}
+            onChange={(e) => onChangeCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            placeholder="123456"
+            className="tracking-widest font-bold"
+          />
+        </div>
+
+        <div className="flex gap-3 pt-2">
+          <Button
+            variant="terminal"
             onClick={() => onVerify(code)}
             disabled={busy || code.length !== 6 || !acknowledgedCodes}
-            className="flex-1 px-4 py-2 font-mono text-sm rounded disabled:opacity-60 disabled:cursor-not-allowed"
-            style={{
-              backgroundColor: `${themeConfig.colors.accent}20`,
-              color: themeConfig.colors.accent,
-              border: `1px solid ${themeConfig.colors.accent}`,
-            }}
           >
-            {busy ? "Verifying…" : "Verify and enable"}
-          </button>
-          <button
-            onClick={onCancel}
-            disabled={busy}
-            className="px-4 py-2 font-mono text-xs"
-            style={{
-              color: themeConfig.colors.muted,
-              border: `1px solid ${themeConfig.colors.border}`,
-            }}
-          >
+            {busy ? "Verifying..." : "Verify & Enable 2FA"}
+          </Button>
+          <Button variant="outline" onClick={onCancel} disabled={busy}>
             Cancel
-          </button>
+          </Button>
         </div>
+
         {!acknowledgedCodes && (
-          <p
-            className="text-xs"
-            style={{ color: themeConfig.colors.warning }}
-          >
-            Confirm you have saved the backup codes before enabling.
+          <p className="text-xs text-amber-400 font-semibold">
+            ⚠️ You must click "I Have Saved These Codes" in Step 2 before enabling.
           </p>
         )}
       </div>

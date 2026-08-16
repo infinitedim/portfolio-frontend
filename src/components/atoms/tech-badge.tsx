@@ -46,16 +46,16 @@ export function TechBadge({
   // Visual variant styling
   const variantConfig = {
     default:
-      "border border-neutral-800 bg-neutral-900/60 text-neutral-300 backdrop-blur-sm hover:border-neutral-600 hover:bg-neutral-800/80 hover:text-white",
+      "border border-(--terminal-border) bg-(--terminal-bg)/60 text-(--terminal-text) backdrop-blur-sm hover:border-(--terminal-accent)/60 hover:bg-(--terminal-bg)/80 hover:text-(--terminal-accent)",
     minimal:
-      "bg-neutral-800/70 text-neutral-300 hover:bg-neutral-800 hover:text-white",
+      "bg-(--terminal-border)/40 text-(--terminal-text) hover:bg-(--terminal-border)/70 hover:text-(--terminal-accent)",
     outline:
-      "border border-neutral-700/60 bg-transparent text-neutral-300 hover:border-neutral-500 hover:text-white",
+      "border border-(--terminal-border) bg-transparent text-(--terminal-text) hover:border-(--terminal-accent) hover:text-(--terminal-accent)",
   }[variant];
 
   return (
     <span
-      className={`group/tech inline-flex items-center rounded-md font-mono transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transform-none motion-reduce:transition-none ${sizeConfig.badge} ${variantConfig} ${className}`}
+      className={`group/tech inline-flex items-center rounded-md font-mono transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--terminal-bg) motion-reduce:transform-none motion-reduce:transition-none ${sizeConfig.badge} ${variantConfig} ${className}`}
       style={{
         // Dynamically expose --tech-color for CSS hover glow effect
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,7 +81,7 @@ export function TechBadge({
             e.stopPropagation();
             onRemove?.();
           }}
-          className={`ml-1 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-red-400 focus:outline-none focus:ring-1 focus:ring-red-400 min-h-6 min-w-6 sm:min-h-0 sm:min-w-0 ${sizeConfig.removeBtn}`}
+          className={`ml-1 flex items-center justify-center rounded text-(--terminal-muted) hover:bg-(--terminal-border) hover:text-red-400 focus:outline-none focus:ring-1 focus:ring-red-400 min-h-6 min-w-6 sm:min-h-0 sm:min-w-0 ${sizeConfig.removeBtn}`}
           aria-label={`Remove ${label}`}
         >
           <X className="h-3 w-3" aria-hidden="true" />
