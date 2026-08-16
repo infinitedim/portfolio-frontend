@@ -622,7 +622,7 @@ export const id_ID_key: TranslationKeys = {
   adminGrafana: "Grafana",
   adminGrafanaDesc: "Buka dasbor analitik",
   adminApiDocs: "Dokumentasi API",
-  adminApiDocsDesc: "Buka Swagger UI (tab baru)",
+  adminApiDocsDesc: "Buka Dokumentasi API Scalar (tab baru)",
   adminFooterHint:
     "Dasbor Admin • Tekan Ctrl+L untuk keluar • Tekan Ctrl+H untuk ke beranda",
   adminHome: "Beranda",

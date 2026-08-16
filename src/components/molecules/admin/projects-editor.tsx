@@ -746,7 +746,7 @@ export function ProjectsEditor({
                 {(category === "backend" || category === "fullstack") && (
                   <div className="space-y-1">
                     <label htmlFor="project-apidocs" className="block opacity-80 text-emerald-400">
-                      API Docs / Swagger URL
+                      API Docs / Scalar URL
                     </label>
                     <input
                       id="project-apidocs"

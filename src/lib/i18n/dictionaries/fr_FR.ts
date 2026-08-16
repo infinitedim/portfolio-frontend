@@ -627,7 +627,7 @@ export const fr_FR_key: TranslationKeys = {
   adminGrafana: "Grafana",
   adminGrafanaDesc: "Open analytics dashboards",
   adminApiDocs: "API Docs",
-  adminApiDocsDesc: "Open Swagger UI (new tab)",
+  adminApiDocsDesc: "Open Scalar API Docs (new tab)",
   adminFooterHint:
     "Admin Dashboard • Press Ctrl+L to logout • Press Ctrl+H to go home",
   adminHome: "Home",
