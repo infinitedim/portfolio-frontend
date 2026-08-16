@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Project } from "@/lib/data/data-fetching";
 import { ProjectCardImage } from "@/components/molecules/projects/project-card-image";
 import { ImageErrorBoundary } from "@/components/organisms/error/image-error-boundary";
-import { Star, Folder } from "lucide-react";
+import { PlatformBadge } from "@/components/atoms/platform-badge";
+import { Star, Folder, ExternalLink, Download, FileCode, Package, Gauge, Zap, ShieldCheck } from "lucide-react";
 import { HoverCard } from "@/components/atoms/shared/motion-wrappers";
 
 import { useI18n } from "@/hooks/use-i18n";
@@ -40,6 +41,9 @@ export const ProjectCard = memo(function ProjectCard({
 
   const status = statusConfig[project.status] ?? statusConfig.completed;
 
+  // Determine main media image (Architecture image for backend if available, or imageUrl)
+  const displayImage = project.imageUrl || project.architectureImageUrl;
+
   return (
     <HoverCard
       className={`
@@ -69,9 +73,9 @@ export const ProjectCard = memo(function ProjectCard({
         <div className="relative h-48 overflow-hidden bg-neutral-800/30">
           <Suspense fallback={<ProjectImageLoader />}>
             <ImageErrorBoundary>
-              {project.imageUrl ? (
+              {displayImage ? (
                 <ProjectCardImage
-                  src={project.imageUrl}
+                  src={displayImage}
                   alt={`Screenshot of ${project.name}`}
                   featured={featured}
                 />
@@ -99,9 +103,24 @@ export const ProjectCard = memo(function ProjectCard({
               <span>{status.label}</span>
             </span>
           </div>
+
+          {project.category && (
+            <div className="absolute top-2 left-2 rounded bg-neutral-950/80 px-2 py-0.5 backdrop-blur-sm border border-neutral-800 font-mono text-[10px] uppercase text-neutral-300">
+              {project.category}
+            </div>
+          )}
         </div>
 
         <div className="p-6 flex flex-1 flex-col">
+          {/* Target Platform Badges */}
+          {project.platforms && project.platforms.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-1">
+              {project.platforms.map((platform) => (
+                <PlatformBadge key={platform} platform={platform} size="sm" />
+              ))}
+            </div>
+          )}
+
           <div className="mb-4">
             <h3
               className="mb-2 text-xl font-bold text-white transition-colors group-hover:text-emerald-400"
@@ -121,6 +140,37 @@ export const ProjectCard = memo(function ProjectCard({
               {project.description}
             </p>
           </div>
+
+          {/* Key Metrics Pills */}
+          {project.metrics && (
+            <div className="mb-4 flex flex-wrap gap-1.5 font-mono text-[11px]">
+              {project.metrics.latencyP95 && (
+                <span className="inline-flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-950/20 px-2 py-0.5 text-emerald-400">
+                  <Zap className="h-3 w-3" /> P95: {project.metrics.latencyP95}
+                </span>
+              )}
+              {project.metrics.throughputRps && (
+                <span className="inline-flex items-center gap-1 rounded border border-sky-500/30 bg-sky-950/20 px-2 py-0.5 text-sky-400">
+                  <Gauge className="h-3 w-3" /> {project.metrics.throughputRps}
+                </span>
+              )}
+              {project.metrics.uptimeSla && (
+                <span className="inline-flex items-center gap-1 rounded border border-indigo-500/30 bg-indigo-950/20 px-2 py-0.5 text-indigo-400">
+                  <ShieldCheck className="h-3 w-3" /> SLA: {project.metrics.uptimeSla}
+                </span>
+              )}
+              {project.metrics.appSize && (
+                <span className="inline-flex items-center gap-1 rounded border border-amber-500/30 bg-amber-950/20 px-2 py-0.5 text-amber-400">
+                  <Package className="h-3 w-3" /> Size: {project.metrics.appSize}
+                </span>
+              )}
+              {project.metrics.lighthouseScore !== undefined && (
+                <span className="inline-flex items-center gap-1 rounded border border-teal-500/30 bg-teal-950/20 px-2 py-0.5 text-teal-400">
+                  <Zap className="h-3 w-3" /> LH: {project.metrics.lighthouseScore}
+                </span>
+              )}
+            </div>
+          )}
 
           <div className="mb-4">
             <div className="mb-2 font-mono text-xs text-neutral-500">
@@ -143,16 +193,67 @@ export const ProjectCard = memo(function ProjectCard({
             </ul>
           </div>
 
-          <div className="mt-auto flex gap-4 relative z-10">
+          <div className="mt-auto flex flex-wrap gap-2 relative z-10">
+            {project.apiDocsUrl && (
+              <a
+                href={project.apiDocsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-emerald-500/20 border border-emerald-500/40 px-3 py-1.5 text-xs font-medium text-emerald-300 transition-colors hover:bg-emerald-500/30"
+                aria-label={`API Docs for ${project.name}`}
+              >
+                <FileCode className="h-3.5 w-3.5" /> API Docs
+              </a>
+            )}
             {project.demoUrl && (
               <a
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 rounded bg-emerald-400 px-4 py-2 text-center text-sm font-medium text-neutral-950 transition-colors hover:bg-emerald-300"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-emerald-400 px-3 py-1.5 text-center text-xs font-medium text-neutral-950 transition-colors hover:bg-emerald-300"
                 aria-label={`View live demo of ${project.name}`}
               >
-                {t("projectLiveDemo")}
+                <ExternalLink className="h-3.5 w-3.5" /> {t("projectLiveDemo")}
+              </a>
+            )}
+            {project.playStoreUrl && (
+              <a
+                href={project.playStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 text-xs font-medium text-emerald-300 transition-colors hover:bg-emerald-900/60"
+              >
+                Google Play
+              </a>
+            )}
+            {project.appStoreUrl && (
+              <a
+                href={project.appStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-indigo-950/60 border border-indigo-500/40 px-3 py-1.5 text-xs font-medium text-indigo-300 transition-colors hover:bg-indigo-900/60"
+              >
+                App Store
+              </a>
+            )}
+            {project.downloadUrl && (
+              <a
+                href={project.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-sky-950/60 border border-sky-500/40 px-3 py-1.5 text-xs font-medium text-sky-300 transition-colors hover:bg-sky-900/60"
+              >
+                <Download className="h-3.5 w-3.5" /> Download
+              </a>
+            )}
+            {project.packageUrl && (
+              <a
+                href={project.packageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded bg-amber-950/60 border border-amber-500/40 px-3 py-1.5 text-xs font-medium text-amber-300 transition-colors hover:bg-amber-900/60"
+              >
+                <Package className="h-3.5 w-3.5" /> Package
               </a>
             )}
             {project.githubUrl && (
@@ -160,7 +261,7 @@ export const ProjectCard = memo(function ProjectCard({
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 rounded border border-neutral-700 px-4 py-2 text-center text-sm font-medium text-neutral-300 transition-colors hover:border-emerald-400/40 hover:text-emerald-400"
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded border border-neutral-700 px-3 py-1.5 text-center text-xs font-medium text-neutral-300 transition-colors hover:border-emerald-400/40 hover:text-emerald-400"
                 aria-label={`View source code of ${project.name}`}
               >
                 {t("projectCode")}
@@ -170,7 +271,7 @@ export const ProjectCard = memo(function ProjectCard({
 
           <meta
             itemProp="url"
-            content={project.demoUrl || project.githubUrl}
+            content={project.demoUrl || project.githubUrl || project.apiDocsUrl}
           />
           <meta
             itemProp="creativeWorkStatus"

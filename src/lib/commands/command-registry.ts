@@ -24,6 +24,7 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
       }),
       "",
       t("termHelpFeaturedCommands"),
+      "  home                          - Return to standard homepage",
       "  theme -l                      - List all available themes",
       "  theme dracula                 - Switch to dracula theme",
       "  font fira-code                - Switch to Fira Code font",
@@ -52,6 +53,25 @@ export const createHelpCommand = (getCommands: () => Command[]): Command => ({
     };
   },
 });
+
+export const homeCommand: Command = {
+  name: "home",
+  description: "Return to standard homepage",
+  aliases: ["exit", "gui", "main", "landing"],
+  async execute() {
+    if (typeof window !== "undefined") {
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 250);
+    }
+    return {
+      type: "success",
+      content: "Navigating to homepage...",
+      timestamp: new Date(),
+      id: generateId(),
+    };
+  },
+};
 
 export const aboutCommand: Command = {
   name: "about",

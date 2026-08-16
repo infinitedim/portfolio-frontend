@@ -1,5 +1,9 @@
 import { getApiUrl } from "@/lib/api/get-api-url";
 
+export interface GitHubCommitParent {
+  sha: string;
+}
+
 export interface GitHubCommitSummary {
   sha: string;
   shortSha: string;
@@ -12,6 +16,7 @@ export interface GitHubCommitSummary {
   authorUrl?: string;
   htmlUrl: string;
   statusState?: string;
+  parents: GitHubCommitParent[];
 }
 
 export interface GitHubCommitStats {

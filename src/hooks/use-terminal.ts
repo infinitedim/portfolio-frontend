@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { CommandParser } from "@/lib/commands/command-parser";
 import {
   createHelpCommand,
+  homeCommand,
   aboutCommand,
   projectsCommand,
   contactCommand,
@@ -197,6 +198,7 @@ export function useTerminal(
     const initializeParser = async () => {
       const parser = new CommandParser();
 
+      parser.register(homeCommand);
       parser.register(aboutCommand);
       parser.register(projectsCommand);
       parser.register(contactCommand);

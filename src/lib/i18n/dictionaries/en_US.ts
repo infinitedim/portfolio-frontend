@@ -685,6 +685,7 @@ export const en_US_key: TranslationKeys = {
   terminalWelcomeTip:
     "Tip: Use Tab for auto-completion and ↑↓ for command history",
   terminalWelcomeSkip: "Skip intro",
+  terminalWelcomeDescHome: "Return to standard homepage",
   terminalWelcomeDescHelp: "View all available commands",
   terminalWelcomeDescAbout: "Learn about me",
   terminalWelcomeDescSkills: "View my technical skills",

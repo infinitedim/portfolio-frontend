@@ -3,7 +3,7 @@
 import { useState, memo, JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
-import { HelpCircle, User, FolderGit2, Mail } from "lucide-react";
+import { HelpCircle, User, FolderGit2, Mail, Home as HomeIcon } from "lucide-react";
 
 interface InteractiveWelcomeProps {
   onCommandSelect: (command: string) => void;
@@ -20,11 +20,17 @@ export const InteractiveWelcome = memo(function InteractiveWelcome({
 
   const quickCommands = [
     {
+      command: "home",
+      description:
+        t("terminalWelcomeDescHome") || "Return to standard homepage",
+      icon: HomeIcon,
+      highlight: true,
+    },
+    {
       command: "help",
       description:
         t("terminalWelcomeDescHelp") || "View all available commands",
       icon: HelpCircle,
-      highlight: true,
     },
     {
       command: "about",

@@ -9,7 +9,8 @@ import {
   getTechConfig,
 } from "@/components/atoms/tech-icon-registry";
 import { getApiUrl } from "@/lib/api/get-api-url";
-import { type Project } from "@/lib/data/data-fetching";
+import { PlatformBadge } from "@/components/atoms/platform-badge";
+import { type Project, type ProjectCategory, type TargetPlatform } from "@/lib/data/data-fetching";
 import { Plus, Save, Trash, X, Edit, Check } from "lucide-react";
 import { toast } from "sonner";
 import { ProjectImageUpload } from "@/components/molecules/admin/project-image-upload";
@@ -29,6 +30,15 @@ const MAX_TAG_LENGTH = 30;
 const MAX_TAGS_PER_PROJECT = 15;
 const TAG_VALIDATION_REGEX = /^[a-zA-Z0-9\s.\-_#+/()]+$/;
 
+const PLATFORM_OPTIONS: { id: TargetPlatform; label: string }[] = [
+  { id: "android", label: "Android" },
+  { id: "ios", label: "iOS" },
+  { id: "windows", label: "Windows" },
+  { id: "macos", label: "macOS" },
+  { id: "linux", label: "Linux" },
+  { id: "web", label: "Web" },
+];
+
 export function ProjectsEditor({
   themeConfig,
 }: ProjectsEditorProps): JSX.Element {
@@ -41,14 +51,32 @@ export function ProjectsEditor({
   // Form states
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState<ProjectCategory>("frontend");
+  const [platforms, setPlatforms] = useState<TargetPlatform[]>([]);
   const [demoUrl, setDemoUrl] = useState("");
   const [githubUrl, setGithubUrl] = useState("");
+  const [apiDocsUrl, setApiDocsUrl] = useState("");
+  const [playStoreUrl, setPlayStoreUrl] = useState("");
+  const [appStoreUrl, setAppStoreUrl] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState("");
+  const [packageUrl, setPackageUrl] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [architectureImageUrl, setArchitectureImageUrl] = useState("");
   const [status, setStatus] = useState<Project["status"]>("completed");
   const [featured, setFeatured] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
+  // Metrics form states
+  const [latencyP95, setLatencyP95] = useState("");
+  const [throughputRps, setThroughputRps] = useState("");
+  const [uptimeSla, setUptimeSla] = useState("");
+  const [lighthouseScore, setLighthouseScore] = useState<string>("");
+  const [bundleSize, setBundleSize] = useState("");
+  const [appSize, setAppSize] = useState("");
+  const [minOsVersion, setMinOsVersion] = useState("");
+  const [testCoverage, setTestCoverage] = useState("");
 
   // Compute filtered AutoComplete suggestions
   const suggestions = tagInput.trim()
@@ -97,14 +125,36 @@ export function ProjectsEditor({
     setIsNewProject(false);
     setName(project.name);
     setDescription(project.description);
+    setCategory(project.category || "frontend");
+    setPlatforms(project.platforms || []);
     setDemoUrl(project.demoUrl || "");
     setGithubUrl(project.githubUrl || "");
+    setApiDocsUrl(project.apiDocsUrl || "");
+    setPlayStoreUrl(project.playStoreUrl || "");
+    setAppStoreUrl(project.appStoreUrl || "");
+    setDownloadUrl(project.downloadUrl || "");
+    setPackageUrl(project.packageUrl || "");
     setImageUrl(project.imageUrl || "");
+    setArchitectureImageUrl(project.architectureImageUrl || "");
     setStatus(project.status);
     setFeatured(project.featured);
     setTags([...project.technologies]);
     setTagInput("");
     setSelectedSuggestionIndex(-1);
+
+    // Metrics
+    setLatencyP95(project.metrics?.latencyP95 || "");
+    setThroughputRps(project.metrics?.throughputRps || "");
+    setUptimeSla(project.metrics?.uptimeSla || "");
+    setLighthouseScore(
+      project.metrics?.lighthouseScore !== undefined
+        ? String(project.metrics.lighthouseScore)
+        : "",
+    );
+    setBundleSize(project.metrics?.bundleSize || "");
+    setAppSize(project.metrics?.appSize || "");
+    setMinOsVersion(project.metrics?.minOsVersion || "");
+    setTestCoverage(project.metrics?.testCoverage || "");
   };
 
   const handleCreateNew = () => {
@@ -114,6 +164,7 @@ export function ProjectsEditor({
       slug: "",
       description: "",
       technologies: [],
+      category: "frontend",
       status: "completed",
       featured: false,
     };
@@ -121,14 +172,39 @@ export function ProjectsEditor({
     setIsNewProject(true);
     setName("");
     setDescription("");
+    setCategory("frontend");
+    setPlatforms([]);
     setDemoUrl("");
     setGithubUrl("");
+    setApiDocsUrl("");
+    setPlayStoreUrl("");
+    setAppStoreUrl("");
+    setDownloadUrl("");
+    setPackageUrl("");
     setImageUrl("");
+    setArchitectureImageUrl("");
     setStatus("completed");
     setFeatured(false);
     setTags([]);
     setTagInput("");
     setSelectedSuggestionIndex(-1);
+
+    setLatencyP95("");
+    setThroughputRps("");
+    setUptimeSla("");
+    setLighthouseScore("");
+    setBundleSize("");
+    setAppSize("");
+    setMinOsVersion("");
+    setTestCoverage("");
+  };
+
+  const togglePlatform = (platformId: TargetPlatform) => {
+    setPlatforms((prev) =>
+      prev.includes(platformId)
+        ? prev.filter((p) => p !== platformId)
+        : [...prev, platformId],
+    );
   };
 
   const handleCancel = () => {
@@ -228,12 +304,30 @@ export function ProjectsEditor({
         name: name.trim(),
         slug: projectSlug,
         description: description.trim(),
+        category,
+        platforms: platforms.length > 0 ? platforms : undefined,
         demoUrl: demoUrl.trim() || undefined,
         githubUrl: githubUrl.trim() || undefined,
+        apiDocsUrl: apiDocsUrl.trim() || undefined,
+        playStoreUrl: playStoreUrl.trim() || undefined,
+        appStoreUrl: appStoreUrl.trim() || undefined,
+        downloadUrl: downloadUrl.trim() || undefined,
+        packageUrl: packageUrl.trim() || undefined,
         imageUrl: imageUrl.trim() || undefined,
+        architectureImageUrl: architectureImageUrl.trim() || undefined,
         status,
         featured,
         technologies: tags,
+        metrics: {
+          latencyP95: latencyP95.trim() || undefined,
+          throughputRps: throughputRps.trim() || undefined,
+          uptimeSla: uptimeSla.trim() || undefined,
+          lighthouseScore: lighthouseScore.trim() ? Number(lighthouseScore) : undefined,
+          bundleSize: bundleSize.trim() || undefined,
+          appSize: appSize.trim() || undefined,
+          minOsVersion: minOsVersion.trim() || undefined,
+          testCoverage: testCoverage.trim() || undefined,
+        },
       };
 
       const updatedProjects = isNewProject
@@ -401,8 +495,31 @@ export function ProjectsEditor({
               />
             </div>
 
-            {/* Status & Featured */}
+            {/* Category & Status & Featured */}
             <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <span className="block opacity-80">Project Category *</span>
+                <Select
+                  value={category}
+                  onValueChange={(val: ProjectCategory) => setCategory(val)}
+                >
+                  <SelectTrigger
+                    className="w-full border rounded text-xs bg-transparent"
+                    style={{ borderColor: themeConfig.colors.border }}
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-neutral-900 border-neutral-800 text-xs">
+                    <SelectItem value="frontend">Frontend Web</SelectItem>
+                    <SelectItem value="backend">Backend Service / API</SelectItem>
+                    <SelectItem value="fullstack">Fullstack Web</SelectItem>
+                    <SelectItem value="mobile-native">Mobile Native (Android/iOS)</SelectItem>
+                    <SelectItem value="desktop-native">Desktop Native</SelectItem>
+                    <SelectItem value="library">Library / CLI Tool</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="space-y-1">
                 <span className="block opacity-80">Status</span>
                 <Select
@@ -422,8 +539,11 @@ export function ProjectsEditor({
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
-              <div className="space-y-1 flex flex-col justify-end pb-2">
+            {/* Featured Checkbox & Target Platforms (if Native or Library) */}
+            <div className="space-y-2 md:col-span-2 p-2.5 border rounded bg-black/20 border-neutral-800">
+              <div className="flex items-center justify-between">
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -432,8 +552,33 @@ export function ProjectsEditor({
                     className="rounded"
                     style={{ accentColor: themeConfig.colors.accent }}
                   />
-                  <span className="opacity-80">Featured Project</span>
+                  <span className="font-semibold text-emerald-400">Featured Project (Highlight on Landing)</span>
                 </label>
+              </div>
+
+              {/* Target Platforms selector */}
+              <div className="pt-1">
+                <span className="block text-[11px] opacity-70 mb-1">Target Platforms:</span>
+                <div className="flex flex-wrap gap-2">
+                  {PLATFORM_OPTIONS.map((opt) => {
+                    const isChecked = platforms.includes(opt.id);
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => togglePlatform(opt.id)}
+                        className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs border transition-all ${
+                          isChecked
+                            ? "border-emerald-500/60 bg-emerald-500/20 text-emerald-300 font-semibold"
+                            : "border-neutral-800 bg-neutral-900/60 text-neutral-400 hover:border-neutral-700"
+                        }`}
+                      >
+                        {isChecked && <Check className="h-3 w-3" />}
+                        <span>{opt.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
@@ -564,35 +709,238 @@ export function ProjectsEditor({
               </div>
             </div>
 
-            {/* URLs */}
-            <div className="space-y-1">
-              <label htmlFor="project-demo" className="block opacity-80">
-                Demo URL
-              </label>
-              <input
-                id="project-demo"
-                type="url"
-                value={demoUrl}
-                onChange={(e) => setDemoUrl(e.target.value)}
-                className="w-full bg-transparent border rounded p-2 focus:outline-none"
-                style={{ borderColor: themeConfig.colors.border }}
-                placeholder="https://..."
-              />
+            {/* Specialized Links Section */}
+            <div className="space-y-2 md:col-span-2 pt-2 border-t border-neutral-800">
+              <span className="block font-semibold text-neutral-300">Project Links & Access</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label htmlFor="project-github" className="block opacity-80">
+                    GitHub URL
+                  </label>
+                  <input
+                    id="project-github"
+                    type="url"
+                    value={githubUrl}
+                    onChange={(e) => setGithubUrl(e.target.value)}
+                    className="w-full bg-transparent border rounded p-2 focus:outline-none"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="https://github.com/..."
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="project-demo" className="block opacity-80">
+                    Demo URL (Live Web)
+                  </label>
+                  <input
+                    id="project-demo"
+                    type="url"
+                    value={demoUrl}
+                    onChange={(e) => setDemoUrl(e.target.value)}
+                    className="w-full bg-transparent border rounded p-2 focus:outline-none"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="https://my-app.com"
+                  />
+                </div>
+
+                {(category === "backend" || category === "fullstack") && (
+                  <div className="space-y-1">
+                    <label htmlFor="project-apidocs" className="block opacity-80 text-emerald-400">
+                      API Docs / Swagger URL
+                    </label>
+                    <input
+                      id="project-apidocs"
+                      type="url"
+                      value={apiDocsUrl}
+                      onChange={(e) => setApiDocsUrl(e.target.value)}
+                      className="w-full bg-transparent border rounded p-2 focus:outline-none border-emerald-500/40"
+                      placeholder="https://api.my-app.com/docs"
+                    />
+                  </div>
+                )}
+
+                {(category === "mobile-native" || category === "desktop-native") && (
+                  <>
+                    <div className="space-y-1">
+                      <label htmlFor="project-playstore" className="block opacity-80 text-emerald-400">
+                        Google Play Store URL
+                      </label>
+                      <input
+                        id="project-playstore"
+                        type="url"
+                        value={playStoreUrl}
+                        onChange={(e) => setPlayStoreUrl(e.target.value)}
+                        className="w-full bg-transparent border rounded p-2 focus:outline-none"
+                        style={{ borderColor: themeConfig.colors.border }}
+                        placeholder="https://play.google.com/store/apps/details?id=..."
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label htmlFor="project-appstore" className="block opacity-80 text-indigo-400">
+                        Apple App Store URL
+                      </label>
+                      <input
+                        id="project-appstore"
+                        type="url"
+                        value={appStoreUrl}
+                        onChange={(e) => setAppStoreUrl(e.target.value)}
+                        className="w-full bg-transparent border rounded p-2 focus:outline-none"
+                        style={{ borderColor: themeConfig.colors.border }}
+                        placeholder="https://apps.apple.com/app/..."
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label htmlFor="project-download" className="block opacity-80 text-sky-400">
+                        Direct Download URL (.apk / .exe / .dmg)
+                      </label>
+                      <input
+                        id="project-download"
+                        type="url"
+                        value={downloadUrl}
+                        onChange={(e) => setDownloadUrl(e.target.value)}
+                        className="w-full bg-transparent border rounded p-2 focus:outline-none"
+                        style={{ borderColor: themeConfig.colors.border }}
+                        placeholder="https://github.com/.../releases/download/v1.0.apk"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {category === "library" && (
+                  <div className="space-y-1">
+                    <label htmlFor="project-package" className="block opacity-80 text-amber-400">
+                      Package Registry URL (crates.io / npm)
+                    </label>
+                    <input
+                      id="project-package"
+                      type="url"
+                      value={packageUrl}
+                      onChange={(e) => setPackageUrl(e.target.value)}
+                      className="w-full bg-transparent border rounded p-2 focus:outline-none border-amber-500/40"
+                      placeholder="https://crates.io/crates/..."
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="space-y-1">
-              <label htmlFor="project-github" className="block opacity-80">
-                GitHub URL
-              </label>
-              <input
-                id="project-github"
-                type="url"
-                value={githubUrl}
-                onChange={(e) => setGithubUrl(e.target.value)}
-                className="w-full bg-transparent border rounded p-2 focus:outline-none"
-                style={{ borderColor: themeConfig.colors.border }}
-                placeholder="https://github.com/..."
-              />
+            {/* Performance Metrics Inputs */}
+            <div className="space-y-2 md:col-span-2 pt-2 border-t border-neutral-800">
+              <span className="block font-semibold text-neutral-300">Engineering Metrics (Optional)</span>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div className="space-y-1">
+                  <label htmlFor="metric-p95" className="block text-[11px] opacity-70">
+                    P95 Latency
+                  </label>
+                  <input
+                    id="metric-p95"
+                    type="text"
+                    value={latencyP95}
+                    onChange={(e) => setLatencyP95(e.target.value)}
+                    className="w-full bg-transparent border rounded p-1.5 focus:outline-none text-xs"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="e.g. < 45ms"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="metric-rps" className="block text-[11px] opacity-70">
+                    Throughput RPS
+                  </label>
+                  <input
+                    id="metric-rps"
+                    type="text"
+                    value={throughputRps}
+                    onChange={(e) => setThroughputRps(e.target.value)}
+                    className="w-full bg-transparent border rounded p-1.5 focus:outline-none text-xs"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="e.g. 10k req/sec"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="metric-sla" className="block text-[11px] opacity-70">
+                    Uptime SLA
+                  </label>
+                  <input
+                    id="metric-sla"
+                    type="text"
+                    value={uptimeSla}
+                    onChange={(e) => setUptimeSla(e.target.value)}
+                    className="w-full bg-transparent border rounded p-1.5 focus:outline-none text-xs"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="e.g. 99.9%"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="metric-coverage" className="block text-[11px] opacity-70">
+                    Test Coverage
+                  </label>
+                  <input
+                    id="metric-coverage"
+                    type="text"
+                    value={testCoverage}
+                    onChange={(e) => setTestCoverage(e.target.value)}
+                    className="w-full bg-transparent border rounded p-1.5 focus:outline-none text-xs"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="e.g. 94%"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="metric-lighthouse" className="block text-[11px] opacity-70">
+                    Lighthouse (1-100)
+                  </label>
+                  <input
+                    id="metric-lighthouse"
+                    type="number"
+                    value={lighthouseScore}
+                    onChange={(e) => setLighthouseScore(e.target.value)}
+                    className="w-full bg-transparent border rounded p-1.5 focus:outline-none text-xs"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="98"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="metric-appsize" className="block text-[11px] opacity-70">
+                    App Size
+                  </label>
+                  <input
+                    id="metric-appsize"
+                    type="text"
+                    value={appSize}
+                    onChange={(e) => setAppSize(e.target.value)}
+                    className="w-full bg-transparent border rounded p-1.5 focus:outline-none text-xs"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="e.g. 14 MB"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="metric-bundle" className="block text-[11px] opacity-70">
+                    Bundle Size
+                  </label>
+                  <input
+                    id="metric-bundle"
+                    type="text"
+                    value={bundleSize}
+                    onChange={(e) => setBundleSize(e.target.value)}
+                    className="w-full bg-transparent border rounded p-1.5 focus:outline-none text-xs"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="e.g. 45 KB"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="metric-minos" className="block text-[11px] opacity-70">
+                    Min OS Version
+                  </label>
+                  <input
+                    id="metric-minos"
+                    type="text"
+                    value={minOsVersion}
+                    onChange={(e) => setMinOsVersion(e.target.value)}
+                    className="w-full bg-transparent border rounded p-1.5 focus:outline-none text-xs"
+                    style={{ borderColor: themeConfig.colors.border }}
+                    placeholder="e.g. Android 10+"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Image Upload */}
@@ -648,8 +996,13 @@ export function ProjectsEditor({
               }}
             >
               <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-semibold text-sm text-white">{proj.name}</span>
+                  {proj.category && (
+                    <span className="px-1.5 py-0.5 text-[10px] uppercase font-mono tracking-wider rounded bg-teal-500/10 text-teal-300 border border-teal-500/30">
+                      {proj.category}
+                    </span>
+                  )}
                   {proj.featured && (
                     <span className="px-1.5 py-0.5 text-[10px] rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
                       Featured
@@ -666,6 +1019,14 @@ export function ProjectsEditor({
                   </span>
                 </div>
                 <p className="text-neutral-400 text-xs line-clamp-1">{proj.description}</p>
+                {proj.platforms && proj.platforms.length > 0 && (
+                  <div className="flex flex-wrap gap-1 items-center pt-0.5">
+                    <span className="text-[10px] text-neutral-500">Platforms:</span>
+                    {proj.platforms.map((p) => (
+                      <PlatformBadge key={p} platform={p} size="sm" />
+                    ))}
+                  </div>
+                )}
                 <div className="flex flex-wrap gap-1.5 pt-1">
                   {proj.technologies.map((t) => (
                     <TechBadge key={t} name={t} size="sm" variant="minimal" />

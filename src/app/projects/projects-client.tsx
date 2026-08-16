@@ -1,6 +1,6 @@
 "use client";
 
-import { type JSX } from "react";
+import { useState, type JSX } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { Project } from "@/lib/data/data-fetching";
 import { ProjectCard } from "@/components/molecules/projects/project-card";
@@ -28,6 +28,12 @@ export function ProjectsClient({
     }
     return `A collection of ${allProjects.length} web development projects showcasing modern technologies and creative solutions.`;
   };
+
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  const filteredProjects = selectedCategory === "all"
+    ? allProjects
+    : allProjects.filter((p) => (p.category || "frontend") === selectedCategory);
 
   return (
     <div className="w-full text-neutral-100">
@@ -69,19 +75,53 @@ export function ProjectsClient({
 
       <section className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="mb-6 font-mono text-xl font-bold text-white">
-            <span className="text-emerald-400">$</span> ls --all
-          </h2>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <h2 className="font-mono text-xl font-bold text-white">
+              <span className="text-emerald-400">$</span> ls --category={selectedCategory}
+            </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {allProjects.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                featured={false}
-              />
-            ))}
+            {/* Category Filter Tabs */}
+            <div className="flex flex-wrap gap-1.5 font-mono text-xs">
+              {[
+                { id: "all", label: "All" },
+                { id: "frontend", label: "Frontend" },
+                { id: "backend", label: "Backend" },
+                { id: "fullstack", label: "Fullstack" },
+                { id: "mobile-native", label: "Mobile" },
+                { id: "desktop-native", label: "Desktop" },
+                { id: "library", label: "Libraries" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(tab.id)}
+                  className={`px-3 py-1 rounded transition-colors border ${
+                    selectedCategory === tab.id
+                      ? "bg-emerald-400 text-neutral-950 border-emerald-400 font-bold"
+                      : "bg-neutral-900/60 text-neutral-400 border-neutral-800 hover:border-neutral-700 hover:text-white"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
+
+          {filteredProjects.length === 0 ? (
+            <div className="p-12 text-center border border-dashed rounded-lg border-neutral-800 text-neutral-500 font-mono text-sm">
+              No projects found for category &quot;{selectedCategory}&quot;.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProjects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  featured={false}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

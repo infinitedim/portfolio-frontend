@@ -29,6 +29,22 @@ export interface Skill {
   projects: string[];
 }
 
+export type ProjectCategory =
+  | "frontend"
+  | "backend"
+  | "fullstack"
+  | "mobile-native"
+  | "desktop-native"
+  | "library";
+
+export type TargetPlatform =
+  | "android"
+  | "ios"
+  | "windows"
+  | "macos"
+  | "linux"
+  | "web";
+
 export interface ProjectMetrics {
   latencyP95?: string;
   testCoverage?: string;
@@ -36,6 +52,10 @@ export interface ProjectMetrics {
   architectureType?: string;
   uptimeSla?: string;
   bundleSize?: string;
+  throughputRps?: string;
+  appSize?: string;
+  minOsVersion?: string;
+  downloadsCount?: string;
 }
 
 export interface ProjectHighlight {
@@ -51,9 +71,17 @@ export interface Project {
   slug: string;
   description: string;
   technologies: string[];
+  category?: ProjectCategory;
+  platforms?: TargetPlatform[];
   demoUrl?: string;
   githubUrl?: string;
+  apiDocsUrl?: string;
+  playStoreUrl?: string;
+  appStoreUrl?: string;
+  downloadUrl?: string;
+  packageUrl?: string;
   imageUrl?: string;
+  architectureImageUrl?: string;
   status: "completed" | "in-progress" | "planned";
   featured: boolean;
   metrics?: ProjectMetrics;

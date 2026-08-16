@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef, useLayoutEffect } from "react";
 import {
   type GitHubCommitSummary,
   type GitHubBranchResponse,
@@ -11,6 +11,12 @@ import {
 } from "@/lib/api/commit-service";
 import { CommitDetailDrawer } from "./commit-detail-drawer";
 import { DeployDetailDrawer } from "./deploy-detail-drawer";
+import { GitGraphColumn, BranchLabel } from "@/components/molecules/projects/git-graph-column";
+import {
+  computeGraphLayout,
+  buildBranchRefsMap,
+  type GraphLayout,
+} from "@/lib/git-graph";
 import {
   Select,
   SelectContent,
@@ -70,6 +76,12 @@ export function ProjectCommitTracker({
     null,
   );
   const [copiedSha, setCopiedSha] = useState<string | null>(null);
+
+  // Git graph layout constants
+  const GRAPH_LANE_WIDTH = 20;
+  const GRAPH_ROW_HEIGHT_CARDS = 88; // ~height of a commit card + gap
+  const GRAPH_ROW_HEIGHT_TERMINAL = 32; // ~height of a terminal row
+
 
   // Update parsed repo when urlInput changes
   const handleUrlSubmit = (e: React.FormEvent) => {
@@ -197,6 +209,63 @@ export function ProjectCommitTracker({
         c.shortSha.toLowerCase().includes(q),
     );
   }, [commits, searchQuery]);
+
+  // Dynamic card position measurement
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const [nodeYMap, setNodeYMap] = useState<Map<string, number>>(new Map());
+
+  // Measure dynamic DOM card Y positions to align graph nodes with 100% accuracy
+  useLayoutEffect(() => {
+    if (viewMode !== "cards" || !cardsContainerRef.current) return;
+    const container = cardsContainerRef.current;
+
+    const measure = () => {
+      const cardElements = container.querySelectorAll<HTMLElement>("[data-commit-sha]");
+      if (cardElements.length === 0) return;
+
+      const newMap = new Map<string, number>();
+      cardElements.forEach((el) => {
+        const sha = el.getAttribute("data-commit-sha");
+        if (sha) {
+          // 26px offset aligns graph node with card header title line
+          const nodeY = el.offsetTop + 26;
+          newMap.set(sha, nodeY);
+        }
+      });
+
+      setNodeYMap((prev) => {
+        if (prev.size !== newMap.size) return newMap;
+        for (const [k, v] of newMap) {
+          if (Math.abs((prev.get(k) ?? -1) - v) > 1) {
+            return newMap;
+          }
+        }
+        return prev;
+      });
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+
+    // Also observe each individual card for multiline text wrapping
+    const cardElements = container.querySelectorAll<HTMLElement>("[data-commit-sha]");
+    cardElements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [filteredCommits, viewMode]);
+
+  // Compute graph layout from commits + branch refs
+  const graphLayout = useMemo<GraphLayout | null>(() => {
+    if (filteredCommits.length === 0) return null;
+    const branchRefsMap = buildBranchRefsMap(branches);
+    return computeGraphLayout(filteredCommits, branchRefsMap, {
+      laneWidth: GRAPH_LANE_WIDTH,
+      rowHeight: viewMode === "cards" ? GRAPH_ROW_HEIGHT_CARDS : GRAPH_ROW_HEIGHT_TERMINAL,
+      nodeYOffset: viewMode === "cards" ? 26 : 16,
+      customNodeYMap: viewMode === "cards" && nodeYMap.size > 0 ? nodeYMap : undefined,
+    });
+  }, [filteredCommits, branches, viewMode, nodeYMap]);
 
   const copySha = (sha: string) => {
     navigator.clipboard.writeText(sha);
@@ -389,20 +458,32 @@ export function ProjectCommitTracker({
           !error &&
           viewMode === "cards" &&
           filteredCommits.length > 0 && (
-            <div className="relative space-y-4 pl-7 sm:pl-8">
-              {/* Vertical timeline track line in the left gutter */}
+            <div className="flex">
+              {/* Git Graph Column (hidden on mobile) */}
+              {graphLayout && (
+                <GitGraphColumn
+                  layout={graphLayout}
+                  rowHeight={GRAPH_ROW_HEIGHT_CARDS}
+                  laneWidth={GRAPH_LANE_WIDTH}
+                  onNodeClick={(sha) => setSelectedCommitSha(sha)}
+                />
+              )}
+
+              <div ref={cardsContainerRef} className="relative flex-1 space-y-4 pl-7 sm:pl-8">
+              {/* Vertical timeline track line in the left gutter (mobile fallback) */}
               <div
-                className="absolute top-4 bottom-4 left-3 sm:left-3.5 w-0.5 bg-neutral-800"
+                className="absolute top-4 bottom-4 left-3 sm:left-3.5 w-0.5 bg-neutral-800 sm:hidden"
                 aria-hidden="true"
               />
 
               {filteredCommits.map((commit: GitHubCommitSummary) => (
                 <div
                   key={commit.sha}
+                  data-commit-sha={commit.sha}
                   className="group relative"
                 >
-                  {/* Timeline node icon in the left gutter centered on the track line */}
-                  <div className="absolute -left-5.25 sm:-left-6.25 top-5 flex h-4 w-4 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950 text-emerald-400 group-hover:border-emerald-400 group-hover:bg-emerald-950 z-10">
+                  {/* Timeline node icon in the left gutter (mobile fallback) */}
+                  <div className="absolute -left-5.25 sm:-left-6.25 top-5 flex h-4 w-4 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950 text-emerald-400 group-hover:border-emerald-400 group-hover:bg-emerald-950 z-10 sm:hidden">
                     <GitCommit
                       size={10}
                       aria-hidden="true"
@@ -413,8 +494,21 @@ export function ProjectCommitTracker({
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="space-y-1.5 flex-1 min-w-60">
                         {/* Commit Message */}
-                        <p className="font-mono text-sm font-semibold text-white leading-snug">
+                    <p className="font-mono text-sm font-semibold text-white leading-snug">
                           {commit.message}
+                          {/* Branch ref labels on branch tip commits */}
+                          {graphLayout && (() => {
+                            const node = graphLayout.nodes.get(commit.sha);
+                            if (node && node.branchRefs.length > 0) {
+                              return (
+                                <BranchLabel
+                                  branchNames={node.branchRefs}
+                                  color={node.branchColor}
+                                />
+                              );
+                            }
+                            return null;
+                          })()}
                         </p>
 
                         {/* Author & Timestamp */}
@@ -547,6 +641,7 @@ export function ProjectCommitTracker({
                   </article>
                 </div>
               ))}
+              </div>
             </div>
           )}
 
@@ -560,16 +655,38 @@ export function ProjectCommitTracker({
                 $ git log --oneline --graph -n {filteredCommits.length}
               </div>
 
-              <div className="space-y-2">
-                {filteredCommits.map((c) => (
+              <div className="flex">
+                {/* Git Graph Column for terminal (hidden on mobile) */}
+                {graphLayout && (
+                  <GitGraphColumn
+                    layout={graphLayout}
+                    rowHeight={GRAPH_ROW_HEIGHT_TERMINAL}
+                    laneWidth={GRAPH_LANE_WIDTH}
+                    onNodeClick={(sha) => setSelectedCommitSha(sha)}
+                    terminalMode
+                  />
+                )}
+
+                <div className="flex-1 space-y-0">
+                {filteredCommits.map((c) => {
+                  const node = graphLayout?.nodes.get(c.sha);
+                  return (
                   <div
                     key={c.sha}
-                    className="flex flex-wrap items-baseline gap-2 hover:bg-neutral-900/80 px-2 py-1 rounded transition-colors duration-150"
+                    className="flex flex-wrap items-baseline gap-2 hover:bg-neutral-900/80 px-2 rounded transition-colors duration-150"
+                    style={{ height: GRAPH_ROW_HEIGHT_TERMINAL, alignItems: "center" }}
                   >
                     <span className="text-emerald-400 font-semibold shrink-0">
                       {c.shortSha}
                     </span>
-                    <span className="text-white font-medium flex-1 min-w-50">
+                    {/* Branch ref labels in terminal view */}
+                    {node && node.branchRefs.length > 0 && (
+                      <BranchLabel
+                        branchNames={node.branchRefs}
+                        color={node.branchColor}
+                      />
+                    )}
+                    <span className="text-white font-medium flex-1 min-w-50 truncate">
                       {c.message}
                     </span>
                     <span className="text-neutral-400 shrink-0">
@@ -588,7 +705,9 @@ export function ProjectCommitTracker({
                       [diff]
                     </button>
                   </div>
-                ))}
+                  );
+                })}
+                </div>
               </div>
             </div>
           )}

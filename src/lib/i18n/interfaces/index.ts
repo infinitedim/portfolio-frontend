@@ -653,6 +653,7 @@ export interface TranslationKeys {
   terminalWelcomeSubtitle?: string;
   terminalWelcomeTip?: string;
   terminalWelcomeSkip?: string;
+  terminalWelcomeDescHome?: string;
   terminalWelcomeDescHelp?: string;
   terminalWelcomeDescAbout?: string;
   terminalWelcomeDescSkills?: string;

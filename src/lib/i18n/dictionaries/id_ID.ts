@@ -692,6 +692,7 @@ export const id_ID_key: TranslationKeys = {
   terminalWelcomeTip:
     "Tips: Gunakan Tab untuk melengkapi otomatis dan ↑↓ untuk riwayat perintah",
   terminalWelcomeSkip: "Lewati intro",
+  terminalWelcomeDescHome: "Kembali ke halaman utama",
   terminalWelcomeDescHelp: "Lihat semua perintah yang tersedia",
   terminalWelcomeDescAbout: "Pelajari tentang saya",
   terminalWelcomeDescSkills: "Lihat keahlian teknis saya",
