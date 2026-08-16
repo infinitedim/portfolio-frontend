@@ -65,12 +65,6 @@ vi.mock("@/lib/auth/auth-context", () => ({
   })),
 }));
 
-vi.mock("@/components/molecules/admin/terminal-header", () => ({
-  TerminalHeader: () => (
-    <div data-testid="terminal-header">Terminal Header</div>
-  ),
-}));
-
 vi.mock("@/components/molecules/admin/terminal-login-form", () => ({
   TerminalLoginForm: ({
     onLoginSuccess,
@@ -123,16 +117,6 @@ describe("AdminLoginPage", () => {
       expect(container).toBeTruthy();
     });
 
-    it("should render TerminalHeader", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminLoginPage />);
-      expect(screen.getByTestId("terminal-header")).toBeInTheDocument();
-    });
-
     it("should render login form", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
@@ -161,25 +145,23 @@ describe("AdminLoginPage", () => {
 
       render(<AdminLoginPage />);
       expect(
-        screen.getByText(/Enter your credentials to access the admin panel/i),
+        screen.getByText(/Enter your credentials/i),
       ).toBeInTheDocument();
     });
 
-    it("should render back button", () => {
+    it("should render back link", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       render(<AdminLoginPage />);
-      // The footer instructions also contain "← Back", so match the
-      // standalone button by its accessible name.
       expect(
-        screen.getByRole("button", { name: /^← Back$/i }),
+        screen.getByRole("link", { name: /← Back/i }),
       ).toBeInTheDocument();
     });
 
-    it("should render terminal window decorations", () => {
+    it("should render terminal header text", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
@@ -200,25 +182,10 @@ describe("AdminLoginPage", () => {
       expect(
         screen.getByText(/Press ← Back to return to home/i),
       ).toBeInTheDocument();
-      expect(screen.getByText(/Use Tab to navigate/i)).toBeInTheDocument();
-      expect(screen.getByText(/Enter to submit/i)).toBeInTheDocument();
     });
   });
 
   describe("Navigation", () => {
-    it("should navigate to home when back button is clicked", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminLoginPage />);
-      const backButton = screen.getByRole("button", { name: /^← Back$/i });
-      fireEvent.click(backButton);
-
-      expect(mockPush).toHaveBeenCalledWith("/");
-    });
-
     it("should navigate to admin dashboard on successful login", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
@@ -302,26 +269,6 @@ describe("AdminLoginPage", () => {
     });
   });
 
-  describe("Hover States", () => {
-    it("should handle back button hover state", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminLoginPage />);
-      const backButton = screen.getByRole("button", { name: /^← Back$/i });
-
-      fireEvent.mouseEnter(backButton);
-
-      expect(backButton).toBeInTheDocument();
-
-      fireEvent.mouseLeave(backButton);
-
-      expect(backButton).toBeInTheDocument();
-    });
-  });
-
   describe("Loading States", () => {
     it("should not redirect while loading", () => {
       if (!canRunTests) {
@@ -367,15 +314,15 @@ describe("AdminLoginPage", () => {
       expect(headings.length).toBeGreaterThan(0);
     });
 
-    it("should have accessible button labels", () => {
+    it("should have accessible back link", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       render(<AdminLoginPage />);
-      const backButton = screen.getByRole("button", { name: /^← Back$/i });
-      expect(backButton).toBeInTheDocument();
+      const backLink = screen.getByRole("link", { name: /← Back/i });
+      expect(backLink).toBeInTheDocument();
     });
   });
 });

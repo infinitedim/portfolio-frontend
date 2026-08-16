@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 const mockPush = vi.fn();
@@ -62,18 +62,6 @@ vi.mock("@/lib/auth/auth-context", () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-vi.mock("@/components/molecules/admin/protected-route", () => ({
-  ProtectedRoute: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="protected-route">{children}</div>
-  ),
-}));
-
-vi.mock("@/components/molecules/admin/terminal-header", () => ({
-  TerminalHeader: () => (
-    <div data-testid="terminal-header">Terminal Header</div>
-  ),
-}));
-
 import AdminDashboardPage from "../page";
 
 describe("AdminDashboardPage", () => {
@@ -98,26 +86,6 @@ describe("AdminDashboardPage", () => {
       expect(container).toBeTruthy();
     });
 
-    it("should render ProtectedRoute wrapper", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      expect(screen.getByTestId("protected-route")).toBeInTheDocument();
-    });
-
-    it("should render TerminalHeader", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      expect(screen.getByTestId("terminal-header")).toBeInTheDocument();
-    });
-
     it("should render dashboard title", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
@@ -125,8 +93,6 @@ describe("AdminDashboardPage", () => {
       }
 
       render(<AdminDashboardPage />);
-      // "Admin Dashboard" appears in both the H1 heading and the footer
-      // instructions, so scope to the heading explicitly.
       expect(
         screen.getByRole("heading", { level: 1, name: /Admin Dashboard/i }),
       ).toBeInTheDocument();
@@ -140,155 +106,58 @@ describe("AdminDashboardPage", () => {
 
       render(<AdminDashboardPage />);
       expect(
-        screen.getByText(/Welcome back, admin@example.com!/i),
+        screen.getByText("admin@example.com"),
       ).toBeInTheDocument();
     });
 
-    it("should render user information section", () => {
+    it("should display user role badge", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       render(<AdminDashboardPage />);
-      expect(screen.getByText(/User Information/i)).toBeInTheDocument();
-      expect(screen.getByText(/User ID:/i)).toBeInTheDocument();
-      expect(screen.getByText(/Email:/i)).toBeInTheDocument();
-      expect(screen.getByText(/Role:/i)).toBeInTheDocument();
-    });
-
-    it("should display user data", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      expect(screen.getByText("test-user-id")).toBeInTheDocument();
-      expect(screen.getByText("admin@example.com")).toBeInTheDocument();
       expect(screen.getByText("admin")).toBeInTheDocument();
     });
 
-    it("should render system status section", () => {
+    it("should render stats cards section", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       render(<AdminDashboardPage />);
-      expect(screen.getByText(/System Status/i)).toBeInTheDocument();
-      expect(screen.getByText(/Status:/i)).toBeInTheDocument();
-      expect(screen.getByText(/Last Login:/i)).toBeInTheDocument();
-      expect(screen.getByText(/Session:/i)).toBeInTheDocument();
+      expect(screen.getByText(/Blog Articles/i)).toBeInTheDocument();
+      expect(screen.getByText(/Unread Messages/i)).toBeInTheDocument();
+      expect(screen.getByText("Subscribers", { exact: true })).toBeInTheDocument();
+      expect(screen.getByText(/Portfolio Projects/i)).toBeInTheDocument();
     });
 
-    it("should display system status values", () => {
+    it("should render management groups", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       render(<AdminDashboardPage />);
-      expect(screen.getByText(/Online/i)).toBeInTheDocument();
-      expect(screen.getByText(/Active/i)).toBeInTheDocument();
+      expect(screen.getByText(/Content Workspace/i)).toBeInTheDocument();
+      expect(screen.getByText(/Portfolio & Profile/i)).toBeInTheDocument();
+      expect(screen.getByText(/Security & Outreach/i)).toBeInTheDocument();
     });
 
-    it("should render quick actions section", () => {
+    it("should render quick links with correct hrefs", () => {
       if (!canRunTests) {
         expect(true).toBe(true);
         return;
       }
 
       render(<AdminDashboardPage />);
-      expect(screen.getByText(/Quick Actions/i)).toBeInTheDocument();
-      expect(screen.getByText(/Manage Posts/i)).toBeInTheDocument();
-      expect(screen.getByText(/^Inbox$/i)).toBeInTheDocument();
-      expect(screen.getByText(/Two-Factor Auth/i)).toBeInTheDocument();
-    });
 
-    it("should render navigation buttons", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
+      const newPostBtn = screen.getByText(/New Blog Post/i).closest("a");
+      const inboxBtn = screen.getByText(/View Inbox/i).closest("a");
 
-      render(<AdminDashboardPage />);
-      expect(screen.getByRole("button", { name: /home/i })).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: /logout/i }),
-      ).toBeInTheDocument();
-    });
-
-    it("should render terminal window decorations", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      const { container } = render(<AdminDashboardPage />);
-      expect(container.textContent).toContain("admin@portfolio:~$ dashboard");
-    });
-
-    it("should render footer instructions", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      expect(screen.getByText(/Press Ctrl\+L to logout/i)).toBeInTheDocument();
-      expect(screen.getByText(/Press Ctrl\+H to go home/i)).toBeInTheDocument();
-    });
-  });
-
-  describe("Navigation", () => {
-    it("should navigate to home when home button is clicked", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      const homeButton = screen.getByRole("button", { name: /home/i });
-      fireEvent.click(homeButton);
-
-      expect(mockPush).toHaveBeenCalledWith("/");
-    });
-
-    it("should logout and navigate to login when logout button is clicked", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      const logoutButton = screen.getByRole("button", { name: /logout/i });
-      fireEvent.click(logoutButton);
-
-      await waitFor(() => {
-        expect(mockLogout).toHaveBeenCalled();
-        expect(mockPush).toHaveBeenCalledWith("/admin/login");
-      });
-    });
-  });
-
-  describe("Hover States", () => {
-    it("should handle logout button hover state", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      const logoutButton = screen.getByRole("button", { name: /logout/i });
-
-      fireEvent.mouseEnter(logoutButton);
-
-      expect(logoutButton).toBeInTheDocument();
-
-      fireEvent.mouseLeave(logoutButton);
-
-      expect(logoutButton).toBeInTheDocument();
+      expect(newPostBtn).toHaveAttribute("href", "/admin/blog");
+      expect(inboxBtn).toHaveAttribute("href", "/admin/messages");
     });
   });
 
@@ -303,87 +172,6 @@ describe("AdminDashboardPage", () => {
       const mainDiv = container.querySelector("div[style*='background-color']");
       expect(mainDiv).toBeTruthy();
     });
-
-    it("should use theme colors for borders and text", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      const { container } = render(<AdminDashboardPage />);
-      const styledElements = container.querySelectorAll("[style*='border']");
-      expect(styledElements.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe("User Data Display", () => {
-    it("should handle missing user data gracefully", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      mockUseAuth.mockReturnValueOnce({
-        user: null,
-        logout: mockLogout,
-        isAuthenticated: false,
-        isLoading: false,
-        login: vi.fn(),
-        refresh: vi.fn(),
-      } as unknown as ReturnType<typeof mockUseAuth>);
-
-      render(<AdminDashboardPage />);
-
-      expect(
-        screen.getByRole("heading", { level: 1, name: /Admin Dashboard/i }),
-      ).toBeInTheDocument();
-    });
-
-    it("should display user role badge", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      const roleBadge = screen.getByText("admin");
-      expect(roleBadge).toBeInTheDocument();
-    });
-  });
-
-  describe("Quick Actions", () => {
-    it("should render all quick action buttons", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      expect(screen.getByText(/Manage Posts/i)).toBeInTheDocument();
-      expect(screen.getByText(/^Inbox$/i)).toBeInTheDocument();
-      expect(screen.getByText(/Two-Factor Auth/i)).toBeInTheDocument();
-    });
-
-    it("should have proper styling for quick action buttons", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-
-      // Manage Posts is still a <button>, while Inbox and Two-Factor Auth are
-      // now Next.js <Link> components rendered as <a>.
-      const managePostsButton = screen.getByText(/Manage Posts/i).closest("a");
-      const inboxLink = screen.getByText(/^Inbox$/i).closest("a");
-      const twoFactorLink = screen.getByText(/Two-Factor Auth/i).closest("a");
-
-      expect(managePostsButton).toBeInTheDocument();
-      expect(inboxLink).toBeInTheDocument();
-      expect(inboxLink).toHaveAttribute("href", "/admin/messages");
-      expect(twoFactorLink).toBeInTheDocument();
-      expect(twoFactorLink).toHaveAttribute("href", "/admin/2fa");
-    });
   });
 
   describe("Accessibility", () => {
@@ -394,19 +182,8 @@ describe("AdminDashboardPage", () => {
       }
 
       const { container } = render(<AdminDashboardPage />);
-      const headings = container.querySelectorAll("h1, h3");
+      const headings = container.querySelectorAll("h1, h2");
       expect(headings.length).toBeGreaterThan(0);
-    });
-
-    it("should have accessible button labels", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-
-      render(<AdminDashboardPage />);
-      const buttons = screen.getAllByRole("button");
-      expect(buttons.length).toBeGreaterThan(0);
     });
   });
 });

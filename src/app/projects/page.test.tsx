@@ -191,7 +191,7 @@ describe("ProjectsPage", () => {
       }
 
       const { getByText } = await renderProjectsPage();
-      expect(getByText(/ls --all/i)).toBeInTheDocument();
+      expect(getByText(/ls --category=/i)).toBeInTheDocument();
     });
 
     it("should render project statistics", async () => {
