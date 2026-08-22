@@ -33,7 +33,10 @@ const mockDocument = {
 
 const mockWindow = {
   performance: {
-    getEntriesByType: jest.fn(),
+    now: () => Date.now(),
+    getEntriesByType: jest.fn(() => []),
+    mark: jest.fn(),
+    measure: jest.fn(),
   },
   localStorage: {
     getItem: jest.fn(),

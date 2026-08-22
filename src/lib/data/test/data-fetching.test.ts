@@ -167,6 +167,7 @@ describe("data-fetching.ts", () => {
         expect(true).toBe(true);
         return;
       }
+      const spy = jest.spyOn(console, "error").mockImplementation(() => {});
       mockFetch.mockRejectedValue(new Error("Network error"));
 
       const result = await getExperienceData();
@@ -174,6 +175,7 @@ describe("data-fetching.ts", () => {
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBe(1);
       expect(result[0].company).toBe("Freelance");
+      spy.mockRestore();
     });
   });
 
@@ -207,12 +209,14 @@ describe("data-fetching.ts", () => {
         expect(true).toBe(true);
         return;
       }
+      const spy = jest.spyOn(console, "error").mockImplementation(() => {});
       mockFetch.mockRejectedValue(new Error("Network error"));
 
       const result = await getAboutData();
 
       expect(result).toHaveProperty("name");
       expect(result.name).toBe("Dimas Saputra");
+      spy.mockRestore();
     });
   });
 
@@ -266,6 +270,7 @@ describe("data-fetching.ts", () => {
         expect(true).toBe(true);
         return;
       }
+      const spy = jest.spyOn(console, "error").mockImplementation(() => {});
       mockFetch.mockRejectedValue(new Error("Network error"));
 
       const result = await getGitHubData();
@@ -276,6 +281,7 @@ describe("data-fetching.ts", () => {
         following: 0,
         publicRepos: 0,
       });
+      spy.mockRestore();
     });
   });
 

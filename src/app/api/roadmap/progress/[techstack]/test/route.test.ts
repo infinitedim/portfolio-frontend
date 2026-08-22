@@ -96,6 +96,7 @@ describe("GET /api/roadmap/progress/[techstack]", () => {
   });
 
   it("should return 502 Bad Gateway when fetch throws", async () => {
+    const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     mockFetch.mockImplementationOnce(async () => {
       throw new Error("unreachable");
     });
@@ -115,5 +116,6 @@ describe("GET /api/roadmap/progress/[techstack]", () => {
     expect(res.status).toBe(502);
     const data = await res.json();
     expect(data.error).toBe("upstream unreachable");
+    errorSpy.mockRestore();
   });
 });

@@ -162,11 +162,15 @@ describe("SecureAuth", () => {
         expect(true).toBe(true);
         return;
       }
-      mockFetch.mockRejectedValue(new Error("Network error"));
+      const spy = jest.spyOn(console, "error").mockImplementation(() => {});
+      mockFetch.mockImplementationOnce(async () => {
+        throw new Error("Network error");
+      });
 
       const result = await SecureAuth.verifyAuthentication();
 
       expect(result.isValid).toBe(false);
+      spy.mockRestore();
     });
 
     it("should login successfully", async () => {

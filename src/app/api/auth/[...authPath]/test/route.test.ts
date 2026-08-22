@@ -129,6 +129,7 @@ describe("POST /api/auth/[...authPath]", () => {
   });
 
   it("should return 502 when fetch throws", async () => {
+    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
     mockFetch.mockImplementationOnce(async () => {
       throw new Error("Upstream failed");
     });
@@ -146,5 +147,6 @@ describe("POST /api/auth/[...authPath]", () => {
     expect(res.status).toBe(502);
     const data = await res.json();
     expect(data.error).toBe("Auth service temporarily unavailable");
+    spy.mockRestore();
   });
 });

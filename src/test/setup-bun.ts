@@ -447,6 +447,21 @@ beforeEach(() => {
   ensureDOMReady();
 });
 
+// Filter out React act() warnings that pollute test runner output during component async state updates
+const originalConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+  const msg = typeof args[0] === "string" ? args[0] : "";
+  if (
+    msg.includes("was not wrapped in act(...)") ||
+    msg.includes("not wrapped in act") ||
+    msg.includes("React state update") ||
+    msg.includes("An update to ")
+  ) {
+    return;
+  }
+  originalConsoleError(...args);
+};
+
 afterEach(() => {
   jest.clearAllMocks();
   localStorageMock.clear();

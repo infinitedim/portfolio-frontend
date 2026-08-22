@@ -65,6 +65,7 @@ describe("POST /api/analytics/pageview", () => {
   });
 
   it("should return upstream error status code when backend fails", async () => {
+    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
     mockFetch.mockResolvedValueOnce(
       new Response(JSON.stringify({ error: "bad request" }), { status: 400 }),
     );
@@ -76,10 +77,14 @@ describe("POST /api/analytics/pageview", () => {
     const data = await res.json();
     expect(data.error).toBe("upstream error");
     expect(data.status).toBe(400);
+    spy.mockRestore();
   });
 
   it("should return 502 Bad Gateway when fetch throws (upstream unreachable)", async () => {
-    mockFetch.mockRejectedValueOnce(new Error("Network error"));
+    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
+    mockFetch.mockImplementationOnce(async () => {
+      throw new Error("Network error");
+    });
 
     const req = createMockRequest({ path: "/" });
     const res = await POST(req as unknown as import("next/server").NextRequest);
@@ -87,5 +92,6 @@ describe("POST /api/analytics/pageview", () => {
     expect(res.status).toBe(502);
     const data = await res.json();
     expect(data.error).toBe("upstream unreachable");
+    spy.mockRestore();
   });
 });

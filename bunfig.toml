@@ -1,5 +1,6 @@
 [test]
 preload = ["./src/test/env-bun.ts", "./src/test/setup-bun.ts"]
 timeout = 10000
+root = "src"
 include = ["src/**/*.test.ts", "src/**/*.test.tsx"]
-exclude = ["node_modules/**", "e2e/**"]
+exclude = ["node_modules/**", "e2e/**", "**/*.spec.ts", "**/*.spec.tsx"]

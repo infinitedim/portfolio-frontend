@@ -158,4 +158,15 @@ if (typeof g.document === "undefined") {
       (caf as (handle: number) => void)(id);
     }
   };
+  if (!g.performance || typeof (g.performance as Record<string, unknown>).now !== "function") {
+    g.performance = {
+      now: () => Date.now(),
+      getEntriesByType: () => [],
+      mark: () => {},
+      measure: () => {},
+      timeOrigin: Date.now(),
+      clearMarks: () => {},
+      clearMeasures: () => {},
+    };
+  }
 }
