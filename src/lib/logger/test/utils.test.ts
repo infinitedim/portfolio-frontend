@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, jest } from "bun:test";
 import {
   maskPII,
   maskPIIString,
@@ -154,7 +154,7 @@ describe("Logger Utils", () => {
 
   describe("generateCorrelationId", () => {
     it("should generate unique IDs", () => {
-      vi.mocked(crypto.randomUUID)
+      (crypto.randomUUID as unknown as ReturnType<typeof jest.fn>)
         .mockReturnValueOnce("test-uuid-aaaa")
         .mockReturnValueOnce("test-uuid-bbbb");
       const id1 = generateCorrelationId();

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import { useI18n } from "../use-i18n";
 import { i18n } from "@/lib/i18n";
@@ -7,14 +7,14 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
-    getItem: vi.fn((key: string) => store[key] || null),
-    setItem: vi.fn((key: string, value: string) => {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
       store[key] = value;
     }),
-    removeItem: vi.fn((key: string) => {
+    removeItem: jest.fn((key: string) => {
       delete store[key];
     }),
-    clear: vi.fn(() => {
+    clear: jest.fn(() => {
       store = {};
     }),
   };
@@ -44,7 +44,7 @@ describe("useI18n", () => {
 
     ensureDocumentBody();
     localStorageMock.clear();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     i18n.setLocale("en_US");
   });

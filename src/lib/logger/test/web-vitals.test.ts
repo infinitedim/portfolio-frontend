@@ -1,20 +1,20 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach, mock } from "bun:test";
 import {
   initWebVitals,
   reportWebVitals,
   getWebVitalsSummary,
 } from "../web-vitals";
 
-const mockOnCLS = vi.fn();
-const mockOnFCP = vi.fn();
-const mockOnINP = vi.fn();
-const mockOnLCP = vi.fn();
-const mockOnTTFB = vi.fn();
+const mockOnCLS = jest.fn();
+const mockOnFCP = jest.fn();
+const mockOnINP = jest.fn();
+const mockOnLCP = jest.fn();
+const mockOnTTFB = jest.fn();
 
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function")
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (typeof (jest as unknown as Record<string, unknown>).mock !== "function")
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("web-vitals", () => ({
+mock.module("web-vitals", () => ({
   onCLS: (cb: (m: unknown) => void) => mockOnCLS(cb),
   onFCP: (cb: (m: unknown) => void) => mockOnFCP(cb),
   onINP: (cb: (m: unknown) => void) => mockOnINP(cb),
@@ -22,11 +22,11 @@ vi.mock("web-vitals", () => ({
   onTTFB: (cb: (m: unknown) => void) => mockOnTTFB(cb),
 }));
 
-const mockLogPerformance = vi.fn();
-const mockDebug = vi.fn();
-const mockError = vi.fn();
+const mockLogPerformance = jest.fn();
+const mockDebug = jest.fn();
+const mockError = jest.fn();
 
-vi.mock("../client-logger", () => ({
+mock.module("../client-logger", () => ({
   default: {
     logPerformance: (...args: Array<unknown>) => mockLogPerformance(...args),
     debug: (...args: Array<unknown>) => mockDebug(...args),
@@ -38,7 +38,7 @@ describe("web-vitals", () => {
   const _savedWindow = (globalThis as Record<string, unknown>).window;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     if (typeof Bun !== "undefined") return;
     Object.defineProperty(global, "window", {
@@ -94,7 +94,7 @@ describe("web-vitals", () => {
         expect(true).toBe(true);
         return;
       }
-      const onPerfEntry = vi.fn();
+      const onPerfEntry = jest.fn();
       reportWebVitals(onPerfEntry);
       expect(mockOnCLS).toHaveBeenCalledWith(onPerfEntry);
       expect(mockOnFCP).toHaveBeenCalledWith(onPerfEntry);

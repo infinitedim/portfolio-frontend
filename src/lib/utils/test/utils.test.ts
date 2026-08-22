@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 
-vi.unmock("@/lib/utils/utils");
+// bun:test does not need unmock: // vi.unmock("@/lib/utils/utils");
 
 describe("utils", () => {
   let utils: typeof import("../utils");
@@ -9,33 +9,15 @@ describe("utils", () => {
   let formatTimestamp: typeof import("../utils").formatTimestamp;
 
   beforeEach(async () => {
-    if (typeof vi !== "undefined" && vi.resetModules) {
-      vi.resetModules();
-    }
-
-    vi.clearAllMocks();
-
-    if (typeof vi !== "undefined" && vi.importActual) {
-      utils = await vi.importActual<typeof import("../utils")>("../utils");
-    } else {
-      if (typeof require !== "undefined" && require.cache) {
-        try {
-          const modulePath = require.resolve("../utils");
-          delete require.cache[modulePath];
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      utils = await import("../utils");
-    }
-
+    jest.clearAllMocks();
+    utils = await import("../utils");
     cn = utils.cn;
     generateId = utils.generateId;
     formatTimestamp = utils.formatTimestamp;
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("cn function", () => {

@@ -58,9 +58,8 @@ export function TechBadge({
       className={`group/tech inline-flex items-center rounded-md font-mono transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--terminal-bg) motion-reduce:transform-none motion-reduce:transition-none ${sizeConfig.badge} ${variantConfig} ${className}`}
       style={{
         // Dynamically expose --tech-color for CSS hover glow effect
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ["--tech-color" as any]: color,
-      }}
+        "--tech-color": color,
+      } as React.CSSProperties}
     >
       {/* SVG Icon with per-category micro-animation */}
       <Icon

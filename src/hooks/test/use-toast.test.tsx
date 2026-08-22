@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import { useToast, toast } from "@/hooks/use-toast";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
@@ -11,7 +11,7 @@ describe("useToast", () => {
 
     ensureDocumentBody();
 
-    vi.useFakeTimers();
+    jest.useFakeTimers();
 
     if (!document.body) {
       const body = document.createElement("body");
@@ -25,7 +25,7 @@ describe("useToast", () => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   describe("toast creation", () => {

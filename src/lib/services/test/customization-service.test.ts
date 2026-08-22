@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 import { CustomizationService } from "@/lib/services/customization-service";
 
 const storage: Record<string, string> = {};
@@ -16,13 +16,19 @@ const localStorageMock = {
   },
 };
 
-const mockRemove = vi.fn();
-const mockQuerySelectorAll = vi.fn(() => {
+const mockRemove = jest.fn();
+const mockQuerySelectorAll = jest.fn(() => {
   return Array.from({ length: 0 }, () => ({ remove: mockRemove }));
 });
 
 describe("CustomizationService", () => {
+  let originalDocument: Document;
+  let originalWindow: Window & typeof globalThis;
+
   beforeEach(() => {
+    originalDocument = globalThis.document;
+    originalWindow = globalThis.window;
+
     if (typeof window === "undefined") {
       Object.defineProperty(global, "window", {
         value: {},
@@ -60,6 +66,19 @@ describe("CustomizationService", () => {
 
     (CustomizationService as unknown as { instance: unknown })["instance"] =
       undefined;
+  });
+
+  afterEach(() => {
+    Object.defineProperty(globalThis, "document", {
+      value: originalDocument,
+      configurable: true,
+      writable: true,
+    });
+    Object.defineProperty(globalThis, "window", {
+      value: originalWindow,
+      configurable: true,
+      writable: true,
+    });
   });
 
   it("returns built-in themes plus custom themes via getAllThemes", () => {

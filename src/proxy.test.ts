@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 import {
   proxy,
   resolveGateRedirect,
@@ -15,7 +15,7 @@ describe("proxy", () => {
   let mockResponse: NextResponse;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     mockRequest = new NextRequest("http://127.0.0.1:3000", {
       method: "GET",
@@ -33,7 +33,7 @@ describe("proxy", () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("basic functionality", () => {

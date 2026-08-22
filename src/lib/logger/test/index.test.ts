@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import * as logger from "../index";
 
 describe("logger index exports", () => {
@@ -18,7 +18,7 @@ describe("logger index exports", () => {
 
   it("should export LogLevel", () => {
     expect(logger.LogLevel).toBeDefined();
-    expect(logger.LogLevel.INFO).toBe("info");
+    expect(logger.LogLevel.INFO as string).toBe("info");
   });
 
   it("should export config (clientConfig, serverConfig, etc.)", () => {

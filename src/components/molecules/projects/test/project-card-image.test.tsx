@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "bun:test";
 import { render, screen } from "@testing-library/react";
 import { ProjectCardImage } from "../project-card-image";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";

@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, jest } from "bun:test";
 import type { AuthUser } from "@/lib/auth/auth-service";
 
-vi.unmock("@/lib/auth/auth-service");
+// bun:test does not need unmock: // vi.unmock("@/lib/auth/auth-service");
 
 interface MockAuthService {
   accessToken: string | null;
@@ -72,30 +72,9 @@ describe("AuthService", () => {
   let authService: typeof import("@/lib/auth/auth-service").authService;
 
   beforeEach(async () => {
-    vi.clearAllMocks();
-
-    let module;
-    if (
-      typeof vi !== "undefined" &&
-      vi.importActual &&
-      typeof vi.importActual === "function"
-    ) {
-      module = await vi.importActual<typeof import("@/lib/auth/auth-service")>(
-        "@/lib/auth/auth-service",
-      );
-    } else {
-      if (typeof require !== "undefined" && require.cache) {
-        try {
-          const modulePath = require.resolve("@/lib/auth/auth-service");
-          delete require.cache[modulePath];
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      module = await import("@/lib/auth/auth-service");
-    }
+    jest.clearAllMocks();
+    const module = await import("@/lib/auth/auth-service");
     authService = module.authService;
-
     (authService as unknown as MockAuthService).accessToken = null;
     (authService as unknown as MockAuthService).user = null;
   });

@@ -1,14 +1,14 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 import { ThemeDisplay, ThemeDisplayOptions } from "../theme-display";
 import type { ThemeName } from "@/types/theme";
 
 describe("themeDisplay", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("ThemeDisplay class", () => {
@@ -44,7 +44,7 @@ describe("themeDisplay", () => {
       };
 
       expect(options.showCurrent).toBe(true);
-      expect(options.currentTheme).toBe("dark");
+      expect(options.currentTheme as string).toBe("dark");
       expect(options.compact).toBe(false);
       expect(options.showColors).toBe(true);
       expect(options.columns).toBe(2);

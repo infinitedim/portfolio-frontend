@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import {
@@ -32,11 +32,11 @@ interface IntervalManagerResult {
 const mockLocalStorage = (() => {
   let store: Record<string, string> = {};
   return {
-    getItem: vi.fn((key: string) => store[key] || null),
-    setItem: vi.fn((key: string, value: string) => {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
       store[key] = value;
     }),
-    removeItem: vi.fn((key: string) => {
+    removeItem: jest.fn((key: string) => {
       delete store[key];
     }),
     clear: () => {
@@ -52,6 +52,11 @@ describe("hookUtils", () => {
     }
     ensureDocumentBody();
 
+    Object.defineProperty(globalThis, "localStorage", {
+      value: mockLocalStorage,
+      writable: true,
+      configurable: true,
+    });
     if (typeof window !== "undefined") {
       Object.defineProperty(window, "localStorage", {
         value: mockLocalStorage,
@@ -60,16 +65,16 @@ describe("hookUtils", () => {
       });
     }
 
-    vi.useFakeTimers();
+    jest.useFakeTimers();
     mockLocalStorage.clear();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   describe("isClientSide", () => {
@@ -235,7 +240,7 @@ describe("hookUtils", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback = vi.fn();
+      const callback = jest.fn();
 
       act(() => {
         const current = result.current as TimerManagerResult;
@@ -243,7 +248,7 @@ describe("hookUtils", () => {
       });
 
       act(() => {
-        vi.advanceTimersByTime(1000);
+        jest.advanceTimersByTime(1000);
       });
 
       expect(callback).toHaveBeenCalledTimes(1);
@@ -255,7 +260,7 @@ describe("hookUtils", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback = vi.fn();
+      const callback = jest.fn();
 
       act(() => {
         const current = result.current as TimerManagerResult;
@@ -264,7 +269,7 @@ describe("hookUtils", () => {
       });
 
       act(() => {
-        vi.advanceTimersByTime(1000);
+        jest.advanceTimersByTime(1000);
       });
 
       expect(callback).not.toHaveBeenCalled();
@@ -276,8 +281,8 @@ describe("hookUtils", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
+      const callback1 = jest.fn();
+      const callback2 = jest.fn();
 
       act(() => {
         const current = result.current as TimerManagerResult;
@@ -287,7 +292,7 @@ describe("hookUtils", () => {
       });
 
       act(() => {
-        vi.advanceTimersByTime(2000);
+        jest.advanceTimersByTime(2000);
       });
 
       expect(callback1).not.toHaveBeenCalled();
@@ -300,8 +305,8 @@ describe("hookUtils", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
+      const callback1 = jest.fn();
+      const callback2 = jest.fn();
 
       act(() => {
         const current = result.current as TimerManagerResult;
@@ -310,7 +315,7 @@ describe("hookUtils", () => {
       });
 
       act(() => {
-        vi.advanceTimersByTime(1000);
+        jest.advanceTimersByTime(1000);
       });
 
       expect(callback1).not.toHaveBeenCalled();
@@ -338,7 +343,7 @@ describe("hookUtils", () => {
         expect(true).toBe(true);
         return;
       }
-      const mockRAF = vi.fn((cb: FrameRequestCallback) => {
+      const mockRAF = jest.fn((cb: FrameRequestCallback) => {
         cb(0);
         return 0;
       });
@@ -348,7 +353,7 @@ describe("hookUtils", () => {
         configurable: true,
       });
 
-      const callback = vi.fn();
+      const callback = jest.fn();
       safeDOMManipulation(callback);
 
       expect(mockRAF).toHaveBeenCalled();

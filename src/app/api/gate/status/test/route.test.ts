@@ -1,45 +1,26 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { GET } from "../route";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { proxyGateRequest } from "@/lib/gate/gate-proxy";
 import { NextRequest } from "next/server";
 
-if (
-  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
-)
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
-
-vi.mock("next/server", () => ({
-  NextRequest: class {},
-  NextResponse: {
-    json: (data: unknown, init?: ResponseInit) =>
-      new Response(JSON.stringify(data), {
-        ...init,
-        headers: {
-          "Content-Type": "application/json",
-          ...(init?.headers as Record<string, string>),
-        },
-      }),
-  },
+mock.module("@/lib/gate/gate-proxy", () => ({
+  proxyGateRequest: jest.fn(),
 }));
 
-vi.mock("@/lib/gate/gate-proxy", () => ({
-  proxyGateRequest: vi.fn(),
-}));
+import { GET } from "../route";
 
 describe("GET /api/gate/status", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("should call proxyGateRequest with GET method", async () => {
     const mockResponse = new Response(JSON.stringify({ unlocked: false }));
-    vi.mocked(proxyGateRequest).mockResolvedValueOnce(mockResponse as any);
+    (proxyGateRequest as unknown as ReturnType<typeof jest.fn>).mockResolvedValueOnce(mockResponse as unknown as Response);
 
     const req = new NextRequest("http://localhost:3000/api/gate/status");
     const res = await GET(req);
 
-    expect(res).toBe(mockResponse);
+    expect(res as unknown as Response).toBe(mockResponse);
     expect(proxyGateRequest).toHaveBeenCalledWith({
       method: "GET",
       backendPath: "/api/gate/status",

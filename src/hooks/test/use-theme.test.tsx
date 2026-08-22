@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import { useTheme } from "@/hooks/use-theme";
 import type { ThemeName } from "@/types/theme";
@@ -7,11 +7,11 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 const mockLocalStorage = (() => {
   let store: Record<string, string> = {};
   return {
-    getItem: vi.fn((key: string) => store[key] || null),
-    setItem: vi.fn((key: string, value: string) => {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
       store[key] = value;
     }),
-    removeItem: vi.fn((key: string) => {
+    removeItem: jest.fn((key: string) => {
       delete store[key];
     }),
     clear: () => {
@@ -28,9 +28,9 @@ describe("useTheme", () => {
 
     ensureDocumentBody();
 
-    vi.useFakeTimers();
+    jest.useFakeTimers();
     mockLocalStorage.clear();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     if (typeof window !== "undefined") {
       try {
@@ -67,7 +67,7 @@ describe("useTheme", () => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   describe("initialization", () => {

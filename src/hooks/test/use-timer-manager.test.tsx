@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import {
   useTimerManager,
@@ -14,13 +14,13 @@ describe("useTimerManager", () => {
       return;
     }
     ensureDocumentBody();
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
   afterEach(() => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   describe("setTimeout", () => {
@@ -30,14 +30,14 @@ describe("useTimerManager", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback = vi.fn();
+      const callback = jest.fn();
 
       const id = result.current.setTimeout(callback, 1000, "t1");
       expect(typeof id).toBe("string");
       expect(id).toBe("t1");
 
       act(() => {
-        vi.advanceTimersByTime(1000);
+        jest.advanceTimersByTime(1000);
       });
 
       expect(callback).toHaveBeenCalledTimes(1);
@@ -64,13 +64,13 @@ describe("useTimerManager", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback = vi.fn();
+      const callback = jest.fn();
 
       const id = result.current.setTimeout(callback, 1000);
       result.current.clearTimeout(id);
 
       act(() => {
-        vi.advanceTimersByTime(1000);
+        jest.advanceTimersByTime(1000);
       });
 
       expect(callback).not.toHaveBeenCalled();
@@ -82,14 +82,14 @@ describe("useTimerManager", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
+      const callback1 = jest.fn();
+      const callback2 = jest.fn();
 
       result.current.setTimeout(callback1, 1000, "same-id");
       result.current.setTimeout(callback2, 1000, "same-id");
 
       act(() => {
-        vi.advanceTimersByTime(1000);
+        jest.advanceTimersByTime(1000);
       });
 
       expect(callback1).not.toHaveBeenCalled();
@@ -109,7 +109,7 @@ describe("useTimerManager", () => {
       result.current.setTimeout(errorCallback, 100);
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       expect(result.current.hasErrors).toBe(true);
@@ -124,14 +124,14 @@ describe("useTimerManager", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback = vi.fn();
+      const callback = jest.fn();
 
       const id = result.current.setInterval(callback, 500, "interval1");
       expect(typeof id).toBe("string");
       expect(id).toBe("interval1");
 
       act(() => {
-        vi.advanceTimersByTime(1500);
+        jest.advanceTimersByTime(1500);
       });
 
       expect(callback).toHaveBeenCalledTimes(3);
@@ -156,12 +156,12 @@ describe("useTimerManager", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback = vi.fn();
+      const callback = jest.fn();
 
       const id = result.current.setInterval(callback, 500);
 
       act(() => {
-        vi.advanceTimersByTime(1000);
+        jest.advanceTimersByTime(1000);
       });
 
       expect(callback).toHaveBeenCalledTimes(2);
@@ -169,7 +169,7 @@ describe("useTimerManager", () => {
       result.current.clearInterval(id);
 
       act(() => {
-        vi.advanceTimersByTime(1000);
+        jest.advanceTimersByTime(1000);
       });
 
       expect(callback).toHaveBeenCalledTimes(2);
@@ -181,14 +181,14 @@ describe("useTimerManager", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
+      const callback1 = jest.fn();
+      const callback2 = jest.fn();
 
       result.current.setInterval(callback1, 500, "same-interval");
       result.current.setInterval(callback2, 500, "same-interval");
 
       act(() => {
-        vi.advanceTimersByTime(500);
+        jest.advanceTimersByTime(500);
       });
 
       expect(callback1).not.toHaveBeenCalled();
@@ -203,15 +203,15 @@ describe("useTimerManager", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
+      const callback1 = jest.fn();
+      const callback2 = jest.fn();
 
       result.current.setTimeout(callback1, 1000, "t1");
       result.current.setTimeout(callback2, 2000, "t2");
       result.current.clearAllTimeouts();
 
       act(() => {
-        vi.advanceTimersByTime(3000);
+        jest.advanceTimersByTime(3000);
       });
 
       expect(callback1).not.toHaveBeenCalled();
@@ -224,15 +224,15 @@ describe("useTimerManager", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
+      const callback1 = jest.fn();
+      const callback2 = jest.fn();
 
       result.current.setInterval(callback1, 500, "i1");
       result.current.setInterval(callback2, 500, "i2");
       result.current.clearAllIntervals();
 
       act(() => {
-        vi.advanceTimersByTime(1000);
+        jest.advanceTimersByTime(1000);
       });
 
       expect(callback1).not.toHaveBeenCalled();
@@ -245,8 +245,8 @@ describe("useTimerManager", () => {
         return;
       }
       const { result } = renderHook(() => useTimerManager());
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
+      const callback1 = jest.fn();
+      const callback2 = jest.fn();
 
       result.current.setTimeout(callback1, 1000);
       result.current.setInterval(callback2, 500);
@@ -255,7 +255,7 @@ describe("useTimerManager", () => {
       });
 
       act(() => {
-        vi.advanceTimersByTime(2000);
+        jest.advanceTimersByTime(2000);
       });
 
       expect(callback1).not.toHaveBeenCalled();
@@ -276,7 +276,7 @@ describe("useTimerManager", () => {
       }, 100);
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       expect(result.current.hasErrors).toBe(true);
@@ -295,7 +295,7 @@ describe("useTimerManager", () => {
       }, 100);
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       expect(result.current.hasErrors).toBe(true);
@@ -328,13 +328,13 @@ describe("useTimerManager", () => {
       );
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       expect(result.current.hasErrors).toBe(true);
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       expect(result.current.hasErrors).toBe(false);
@@ -347,7 +347,7 @@ describe("useTimerManager", () => {
         expect(true).toBe(true);
         return;
       }
-      const callback = vi.fn();
+      const callback = jest.fn();
       const { result, unmount } = renderHook(() => useTimerManager());
 
       result.current.setTimeout(callback, 1000);
@@ -356,7 +356,7 @@ describe("useTimerManager", () => {
       unmount();
 
       act(() => {
-        vi.advanceTimersByTime(2000);
+        jest.advanceTimersByTime(2000);
       });
 
       expect(callback).not.toHaveBeenCalled();
@@ -365,19 +365,19 @@ describe("useTimerManager", () => {
 });
 
 describe("useAnimationFrame", () => {
-  let mockRequestAnimationFrame: ReturnType<typeof vi.fn>;
-  let mockCancelAnimationFrame: ReturnType<typeof vi.fn>;
+  let mockRequestAnimationFrame: ReturnType<typeof jest.fn>;
+  let mockCancelAnimationFrame: ReturnType<typeof jest.fn>;
 
   beforeEach(() => {
     if (!canRunTests) {
       return;
     }
     ensureDocumentBody();
-    mockRequestAnimationFrame = vi.fn().mockImplementation((_cb) => {
+    mockRequestAnimationFrame = jest.fn().mockImplementation((_cb) => {
       const id = Math.random();
       return id;
     });
-    mockCancelAnimationFrame = vi.fn();
+    mockCancelAnimationFrame = jest.fn();
     Object.defineProperty(globalThis, "requestAnimationFrame", {
       value: mockRequestAnimationFrame,
       writable: true,
@@ -398,7 +398,7 @@ describe("useAnimationFrame", () => {
       return;
     }
     const { result } = renderHook(() => useAnimationFrame());
-    const callback = vi.fn();
+    const callback = jest.fn();
 
     const id = result.current.requestFrame(callback);
 
@@ -453,13 +453,13 @@ describe("useDebounce", () => {
       return;
     }
     ensureDocumentBody();
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
   afterEach(() => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   it("debounces function calls", () => {
@@ -467,7 +467,7 @@ describe("useDebounce", () => {
       expect(true).toBe(true);
       return;
     }
-    const callback = vi.fn();
+    const callback = jest.fn();
     const { result } = renderHook(() => useDebounce(callback, 300));
 
     act(() => {
@@ -479,7 +479,7 @@ describe("useDebounce", () => {
     expect(callback).not.toHaveBeenCalled();
 
     act(() => {
-      vi.advanceTimersByTime(300);
+      jest.advanceTimersByTime(300);
     });
 
     expect(callback).toHaveBeenCalledTimes(1);
@@ -490,7 +490,7 @@ describe("useDebounce", () => {
       expect(true).toBe(true);
       return;
     }
-    const callback = vi.fn();
+    const callback = jest.fn();
     const { result } = renderHook(() => useDebounce(callback, 300));
 
     act(() => {
@@ -498,7 +498,7 @@ describe("useDebounce", () => {
     });
 
     act(() => {
-      vi.advanceTimersByTime(200);
+      jest.advanceTimersByTime(200);
     });
 
     act(() => {
@@ -506,13 +506,13 @@ describe("useDebounce", () => {
     });
 
     act(() => {
-      vi.advanceTimersByTime(200);
+      jest.advanceTimersByTime(200);
     });
 
     expect(callback).not.toHaveBeenCalled();
 
     act(() => {
-      vi.advanceTimersByTime(100);
+      jest.advanceTimersByTime(100);
     });
 
     expect(callback).toHaveBeenCalledTimes(1);
@@ -523,7 +523,7 @@ describe("useDebounce", () => {
       expect(true).toBe(true);
       return;
     }
-    const callback = vi.fn();
+    const callback = jest.fn();
     const { result } = renderHook(() => useDebounce(callback, 300));
 
     act(() => {
@@ -533,7 +533,7 @@ describe("useDebounce", () => {
     });
 
     act(() => {
-      vi.advanceTimersByTime(300);
+      jest.advanceTimersByTime(300);
     });
 
     expect(callback).toHaveBeenCalledWith("third");
@@ -546,13 +546,13 @@ describe("useThrottle", () => {
       return;
     }
     ensureDocumentBody();
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
   afterEach(() => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   it("executes immediately on first call", () => {
@@ -560,7 +560,7 @@ describe("useThrottle", () => {
       expect(true).toBe(true);
       return;
     }
-    const callback = vi.fn();
+    const callback = jest.fn();
     const { result } = renderHook(() => useThrottle(callback, 300));
 
     act(() => {
@@ -575,7 +575,7 @@ describe("useThrottle", () => {
       expect(true).toBe(true);
       return;
     }
-    const callback = vi.fn();
+    const callback = jest.fn();
     const { result } = renderHook(() => useThrottle(callback, 300));
 
     act(() => {
@@ -592,7 +592,7 @@ describe("useThrottle", () => {
       expect(true).toBe(true);
       return;
     }
-    const callback = vi.fn();
+    const callback = jest.fn();
     const { result } = renderHook(() => useThrottle(callback, 300));
 
     act(() => {
@@ -603,7 +603,7 @@ describe("useThrottle", () => {
     expect(callback).toHaveBeenCalledTimes(1);
 
     act(() => {
-      vi.advanceTimersByTime(300);
+      jest.advanceTimersByTime(300);
     });
 
     expect(callback).toHaveBeenCalledTimes(2);
@@ -614,7 +614,7 @@ describe("useThrottle", () => {
       expect(true).toBe(true);
       return;
     }
-    const callback = vi.fn();
+    const callback = jest.fn();
     const { result } = renderHook(() => useThrottle(callback, 300));
 
     act(() => {
@@ -624,7 +624,7 @@ describe("useThrottle", () => {
     expect(callback).toHaveBeenCalledTimes(1);
 
     act(() => {
-      vi.advanceTimersByTime(300);
+      jest.advanceTimersByTime(300);
     });
 
     act(() => {

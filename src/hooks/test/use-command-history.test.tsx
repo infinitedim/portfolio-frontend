@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, jest } from "bun:test";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useCommandHistory } from "@/hooks/use-command-history";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
@@ -6,14 +6,14 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
-    getItem: vi.fn((key: string) => store[key] || null),
-    setItem: vi.fn((key: string, value: string) => {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
       store[key] = value;
     }),
-    removeItem: vi.fn((key: string) => {
+    removeItem: jest.fn((key: string) => {
       delete store[key];
     }),
-    clear: vi.fn(() => {
+    clear: jest.fn(() => {
       store = {};
     }),
   };
@@ -39,8 +39,21 @@ describe("useCommandHistory", () => {
 
     ensureDocumentBody();
 
+    Object.defineProperty(globalThis, "localStorage", {
+      value: localStorageMock,
+      writable: true,
+      configurable: true,
+    });
+    if (typeof window !== "undefined") {
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+        writable: true,
+        configurable: true,
+      });
+    }
+
     localStorageMock.clear();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     if (!document.body) {
       const body = document.createElement("body");

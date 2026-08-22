@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 
 const dashboardResponse = {
   username: "testuser",
@@ -25,14 +25,10 @@ describe("RoadmapService", () => {
 
   beforeEach(async () => {
     originalWindow = globalThis.window;
-    Object.defineProperty(globalThis, "window", {
-      value: undefined,
-      configurable: true,
-      writable: true,
-    });
+    delete (globalThis as unknown as { window?: unknown }).window;
 
     Object.defineProperty(globalThis, "fetch", {
-      value: vi.fn((url: string) => {
+      value: jest.fn((url: string) => {
         if (String(url).includes("dashboard")) {
           return Promise.resolve({
             ok: true,
@@ -60,16 +56,20 @@ describe("RoadmapService", () => {
   });
 
   afterEach(() => {
-    Object.defineProperty(globalThis, "window", {
-      value: originalWindow,
-      configurable: true,
-      writable: true,
-    });
+    if (originalWindow !== undefined) {
+      Object.defineProperty(globalThis, "window", {
+        value: originalWindow,
+        configurable: true,
+        writable: true,
+      });
+    } else {
+      delete (globalThis as unknown as { window?: unknown }).window;
+    }
     if (RoadmapService) {
       (RoadmapService as unknown as { instance?: unknown }).instance =
         undefined;
     }
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("initializes and loads fallback/api data", async () => {

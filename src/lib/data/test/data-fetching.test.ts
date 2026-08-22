@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach } from "bun:test";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import {
   getPortfolioData,
@@ -11,7 +11,7 @@ import {
   checkDataHealth,
 } from "../data-fetching";
 
-const mockFetch = vi.fn();
+const mockFetch = jest.fn();
 globalThis.fetch = mockFetch as unknown as typeof fetch;
 
 global.Blob = class Blob {
@@ -25,7 +25,7 @@ describe("data-fetching.ts", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockFetch.mockReset();
     mockFetch.mockImplementation(async (url: string) => {
       if (url.includes("section=projects")) {

@@ -1,44 +1,26 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { POST } from "../route";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { serverHandshake } from "@/lib/crypto/server";
 
-if (
-  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
-)
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
-
-vi.mock("next/server", () => ({
-  NextRequest: class {},
-  NextResponse: {
-    json: (data: unknown, init?: ResponseInit) =>
-      new Response(JSON.stringify(data), {
-        ...init,
-        headers: {
-          "Content-Type": "application/json",
-          ...(init?.headers as Record<string, string>),
-        },
-      }),
-  },
+mock.module("@/lib/crypto/server", () => ({
+  serverHandshake: jest.fn(),
 }));
 
-vi.mock("@/lib/crypto/server", () => ({
-  serverHandshake: vi.fn(),
-}));
+import { POST } from "../route";
+import { NextRequest } from "next/server";
 
 function createMockRequest(body: unknown): Request {
-  return new Request("http://localhost:3000/api/crypto/handshake", {
+  return new NextRequest("http://localhost:3000/api/crypto/handshake", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
-  });
+  }) as unknown as Request;
 }
 
 describe("POST /api/crypto/handshake", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("should return 400 when clientPublicKey is missing or not a string", async () => {
@@ -54,7 +36,7 @@ describe("POST /api/crypto/handshake", () => {
       serverPublicKey: "server_key",
       sessionId: "session_123",
     };
-    vi.mocked(serverHandshake).mockReturnValueOnce(mockResult as any);
+    (serverHandshake as unknown as ReturnType<typeof jest.fn>).mockReturnValueOnce(mockResult as unknown as ReturnType<typeof serverHandshake>);
 
     const req = createMockRequest({ clientPublicKey: "client_key" });
     const res = await POST(req as unknown as import("next/server").NextRequest);
@@ -70,7 +52,8 @@ describe("POST /api/crypto/handshake", () => {
   });
 
   it("should return 500 when serverHandshake throws an error", async () => {
-    vi.mocked(serverHandshake).mockImplementationOnce(() => {
+    const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    (serverHandshake as unknown as ReturnType<typeof jest.fn>).mockImplementationOnce(() => {
       throw new Error("Handshake logic failed");
     });
 
@@ -81,5 +64,6 @@ describe("POST /api/crypto/handshake", () => {
     const data = await res.json();
     expect(data.error).toBe("handshake failed");
     expect(data.detail).toBe("Handshake logic failed");
+    errSpy.mockRestore();
   });
 });

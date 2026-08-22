@@ -1,24 +1,24 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { render, screen } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-const mockPush = vi.fn();
+const mockPush = jest.fn();
 const mockRouter = {
   push: mockPush,
-  replace: vi.fn(),
-  prefetch: vi.fn(),
-  back: vi.fn(),
-  forward: vi.fn(),
-  refresh: vi.fn(),
+  replace: jest.fn(),
+  prefetch: jest.fn(),
+  back: jest.fn(),
+  forward: jest.fn(),
+  refresh: jest.fn(),
 };
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+  typeof (jest as unknown as Record<string, unknown>).mock !== "function"
 )
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("next/navigation", () => ({
+mock.module("next/navigation", () => ({
   useRouter: () => mockRouter,
 }));
 
@@ -36,29 +36,29 @@ const mockThemeConfig = {
   },
 };
 
-vi.mock("@/hooks/use-theme", () => ({
+mock.module("@/hooks/use-theme", () => ({
   useTheme: () => ({
     themeConfig: mockThemeConfig,
   }),
 }));
 
-const mockLogout = vi.fn();
+const mockLogout = jest.fn();
 const mockUser = {
   userId: "test-user-id",
   email: "admin@example.com",
   role: "admin",
 };
 
-const mockUseAuth = vi.fn(() => ({
+const mockUseAuth = jest.fn(() => ({
   user: mockUser,
   logout: mockLogout,
   isAuthenticated: true,
   isLoading: false,
-  login: vi.fn(),
-  refresh: vi.fn(),
+  login: jest.fn(),
+  refresh: jest.fn(),
 }));
 
-vi.mock("@/lib/auth/auth-context", () => ({
+mock.module("@/lib/auth/auth-context", () => ({
   useAuth: () => mockUseAuth(),
 }));
 
@@ -70,7 +70,7 @@ describe("AdminDashboardPage", () => {
       return;
     }
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockPush.mockClear();
     mockLogout.mockClear();
   });

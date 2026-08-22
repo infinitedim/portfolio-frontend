@@ -1,21 +1,12 @@
-import { vi, beforeEach, afterEach, describe, it, expect } from "vitest";
-
-vi.unmock("@/lib/github/github-service");
+import { jest, beforeEach, afterEach, describe, it, expect } from "bun:test";
 
 describe("GitHubService", () => {
   let originalFetch: typeof globalThis.fetch | undefined;
   let GitHubService: typeof import("@/lib/github/github-service").GitHubService;
-  let mockFetch: ReturnType<typeof vi.fn>;
+  let mockFetch: ReturnType<typeof jest.fn>;
 
   beforeEach(async () => {
-    let module;
-    if (typeof vi !== "undefined" && vi.importActual) {
-      module = await vi.importActual<
-        typeof import("@/lib/github/github-service")
-      >("@/lib/github/github-service");
-    } else {
-      module = await import("@/lib/github/github-service");
-    }
+    const module = await import("@/lib/github/github-service");
     GitHubService = module.GitHubService;
 
     (GitHubService as unknown as { instance: unknown })["instance"] = undefined;
@@ -25,7 +16,7 @@ describe("GitHubService", () => {
 
     originalFetch = globalThis.fetch;
 
-    mockFetch = vi.fn(async (url: string) => {
+    mockFetch = jest.fn(async (url: string) => {
       const path = typeof url === "string" ? url : String(url);
       if (path.includes("/user/")) {
         return {
@@ -62,7 +53,7 @@ describe("GitHubService", () => {
         undefined;
     }
     if (originalFetch) globalThis.fetch = originalFetch;
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("fetches user and caches the response", async () => {

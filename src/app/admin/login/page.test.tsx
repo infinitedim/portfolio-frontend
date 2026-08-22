@@ -1,25 +1,18 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
-import { useAuth } from "@/lib/auth/auth-context";
 
-const mockPush = vi.fn();
+const mockPush = jest.fn();
 const mockRouter = {
   push: mockPush,
-  replace: vi.fn(),
-  prefetch: vi.fn(),
-  back: vi.fn(),
-  forward: vi.fn(),
-  refresh: vi.fn(),
+  replace: jest.fn(),
+  prefetch: jest.fn(),
+  back: jest.fn(),
+  forward: jest.fn(),
+  refresh: jest.fn(),
 };
 
-if (
-  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
-)
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
-
-vi.mock("next/navigation", () => ({
+mock.module("next/navigation", () => ({
   useRouter: () => mockRouter,
 }));
 
@@ -37,24 +30,24 @@ const mockThemeConfig = {
   },
 };
 
-vi.mock("@/hooks/use-theme", () => ({
+mock.module("@/hooks/use-theme", () => ({
   useTheme: () => ({
     themeConfig: mockThemeConfig,
   }),
 }));
 
-const mockLogout = vi.fn();
-const mockLogin = vi.fn();
-const mockRefresh = vi.fn();
-const mockComplete2FA = vi.fn();
+const mockLogout = jest.fn();
+const mockLogin = jest.fn();
+const mockRefresh = jest.fn();
+const mockComplete2FA = jest.fn();
 const mockUser = {
   userId: "test-user-id",
   email: "admin@example.com",
   role: "admin" as const,
 };
 
-vi.mock("@/lib/auth/auth-context", () => ({
-  useAuth: vi.fn(() => ({
+mock.module("@/lib/auth/auth-context", () => ({
+  useAuth: jest.fn(() => ({
     isAuthenticated: false,
     isLoading: false,
     user: null,
@@ -65,7 +58,7 @@ vi.mock("@/lib/auth/auth-context", () => ({
   })),
 }));
 
-vi.mock("@/components/molecules/admin/terminal-login-form", () => ({
+mock.module("@/components/molecules/admin/terminal-login-form", () => ({
   TerminalLoginForm: ({
     onLoginSuccess,
     themeConfig,
@@ -85,6 +78,7 @@ vi.mock("@/components/molecules/admin/terminal-login-form", () => ({
   ),
 }));
 
+import { useAuth } from "@/lib/auth/auth-context";
 import AdminLoginPage from "./page";
 
 describe("AdminLoginPage", () => {
@@ -93,9 +87,9 @@ describe("AdminLoginPage", () => {
       return;
     }
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockPush.mockClear();
-    vi.mocked(useAuth).mockReturnValue({
+    (useAuth as unknown as ReturnType<typeof jest.fn>).mockReturnValue({
       isAuthenticated: false,
       isLoading: false,
       user: null,
@@ -205,7 +199,7 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      vi.mocked(useAuth).mockReturnValue({
+      (useAuth as unknown as ReturnType<typeof jest.fn>).mockReturnValue({
         isAuthenticated: true,
         isLoading: false,
         user: mockUser,
@@ -228,7 +222,7 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      vi.mocked(useAuth).mockReturnValue({
+      (useAuth as unknown as ReturnType<typeof jest.fn>).mockReturnValue({
         isAuthenticated: true,
         isLoading: false,
         user: mockUser,
@@ -276,7 +270,7 @@ describe("AdminLoginPage", () => {
         return;
       }
 
-      vi.mocked(useAuth).mockReturnValueOnce({
+      (useAuth as unknown as ReturnType<typeof jest.fn>).mockReturnValueOnce({
         isAuthenticated: false,
         isLoading: true,
         user: null,

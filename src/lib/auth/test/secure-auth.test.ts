@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import { renderHook, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import { SecureAuth, useSecureAuth } from "../secure-auth";
 
-const mockFetch = vi.fn();
+const mockFetch = jest.fn();
 globalThis.fetch = mockFetch as unknown as typeof fetch;
 
 // `secure-auth` calls `getApiUrl()` which falls back to
@@ -28,13 +28,13 @@ describe("SecureAuth", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockCookies = "";
     mockFetch.mockClear();
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   describe("Cookie Management", () => {

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, jest, mock } from "bun:test";
 import { techStackCommand } from "../tech-stack-commands";
 
 const mockProjects = [
@@ -12,13 +12,13 @@ const mockProjects = [
   },
 ];
 
-vi.mock("@/lib/data/data-fetching", () => ({
-  getProjectsData: vi.fn(async () => mockProjects),
+mock.module("@/lib/data/data-fetching", () => ({
+  getProjectsData: jest.fn(async () => mockProjects),
 }));
 
 describe("techStackCommand", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("list returns success when technologies exist", async () => {

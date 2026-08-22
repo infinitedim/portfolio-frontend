@@ -1,10 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, jest } from "bun:test";
 import { createServerLogger, ServerLogger } from "../server-logger";
 import { LogLevel } from "../types";
 
 describe("createServerLogger", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
+    jest.spyOn(process.stdout, "write").mockImplementation(() => true);
+    jest.spyOn(process.stderr, "write").mockImplementation(() => true);
   });
 
   it("should return a ServerLogger instance", () => {

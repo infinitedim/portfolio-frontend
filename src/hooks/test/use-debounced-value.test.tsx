@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import {
   useDebouncedValue,
@@ -13,13 +13,13 @@ describe("useDebouncedValue", () => {
     }
 
     ensureDocumentBody();
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
   afterEach(() => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   it("debounces a changing value", () => {
@@ -40,7 +40,7 @@ describe("useDebouncedValue", () => {
     expect(result.current).toBe("a");
 
     act(() => {
-      vi.advanceTimersByTime(200);
+      jest.advanceTimersByTime(200);
     });
 
     expect(result.current).toBe("b");
@@ -51,7 +51,7 @@ describe("useDebouncedValue", () => {
       expect(true).toBe(true);
       return;
     }
-    const cb = vi.fn();
+    const cb = jest.fn();
     const { result } = renderHook(() => useDebouncedCallback(cb, 100));
 
     act(() => {
@@ -60,7 +60,7 @@ describe("useDebouncedValue", () => {
     });
 
     act(() => {
-      vi.advanceTimersByTime(100);
+      jest.advanceTimersByTime(100);
     });
 
     expect(cb).toHaveBeenCalledTimes(1);

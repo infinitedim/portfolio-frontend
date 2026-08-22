@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import { useGestures, useTerminalGestures } from "@/hooks/use-gestures";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
@@ -30,8 +30,8 @@ function createTouchEvent(
     touches: activeTouches,
     changedTouches: touchList,
     targetTouches: activeTouches,
-    preventDefault: vi.fn(),
-    stopPropagation: vi.fn(),
+    preventDefault: jest.fn(),
+    stopPropagation: jest.fn(),
   } as unknown as React.TouchEvent;
 }
 
@@ -48,14 +48,14 @@ describe("useGestures", () => {
     }
 
     ensureDocumentBody();
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   it("provides gesture handlers and pull state", () => {
@@ -92,7 +92,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onSwipeRight = vi.fn();
+    const onSwipeRight = jest.fn();
     const { result } = renderHook(() => useGestures({ onSwipeRight }));
     const handlers = result.current.getGestureHandlers();
 
@@ -121,7 +121,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onSwipeLeft = vi.fn();
+    const onSwipeLeft = jest.fn();
     const { result } = renderHook(() => useGestures({ onSwipeLeft }));
     const handlers = result.current.getGestureHandlers();
 
@@ -150,7 +150,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onSwipeUp = vi.fn();
+    const onSwipeUp = jest.fn();
     const { result } = renderHook(() => useGestures({ onSwipeUp }));
     const handlers = result.current.getGestureHandlers();
 
@@ -179,7 +179,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onSwipeDown = vi.fn();
+    const onSwipeDown = jest.fn();
     const { result } = renderHook(() => useGestures({ onSwipeDown }));
     const handlers = result.current.getGestureHandlers();
 
@@ -208,7 +208,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onLongPress = vi.fn();
+    const onLongPress = jest.fn();
     const { result } = renderHook(() => useGestures({ onLongPress }));
     const handlers = result.current.getGestureHandlers();
 
@@ -219,7 +219,7 @@ describe("useGestures", () => {
     });
 
     act(() => {
-      vi.advanceTimersByTime(600);
+      jest.advanceTimersByTime(600);
     });
 
     expect(onLongPress).toHaveBeenCalled();
@@ -231,7 +231,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onLongPress = vi.fn();
+    const onLongPress = jest.fn();
     const { result } = renderHook(() => useGestures({ onLongPress }));
     const handlers = result.current.getGestureHandlers();
 
@@ -248,7 +248,7 @@ describe("useGestures", () => {
     });
 
     act(() => {
-      vi.advanceTimersByTime(600);
+      jest.advanceTimersByTime(600);
     });
 
     expect(onLongPress).not.toHaveBeenCalled();
@@ -260,7 +260,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onDoubleTap = vi.fn();
+    const onDoubleTap = jest.fn();
     const { result } = renderHook(() => useGestures({ onDoubleTap }));
     const handlers = result.current.getGestureHandlers();
 
@@ -272,7 +272,7 @@ describe("useGestures", () => {
     });
 
     act(() => {
-      vi.advanceTimersByTime(100);
+      jest.advanceTimersByTime(100);
     });
 
     act(() => {
@@ -291,7 +291,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onPinchOut = vi.fn();
+    const onPinchOut = jest.fn();
     const { result } = renderHook(() => useGestures({ onPinchOut }));
     const handlers = result.current.getGestureHandlers();
 
@@ -322,7 +322,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onPinchIn = vi.fn();
+    const onPinchIn = jest.fn();
     const { result } = renderHook(() => useGestures({ onPinchIn }));
     const handlers = result.current.getGestureHandlers();
 
@@ -353,7 +353,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onPullToRefresh = vi.fn();
+    const onPullToRefresh = jest.fn();
     const { result } = renderHook(() => useGestures({ onPullToRefresh }));
     const handlers = result.current.getGestureHandlers();
 
@@ -401,7 +401,7 @@ describe("useGestures", () => {
       return;
     }
 
-    const onSwipeRight = vi.fn();
+    const onSwipeRight = jest.fn();
     const customConfig = { swipeThreshold: 100 };
     const { result } = renderHook(() =>
       useGestures({ onSwipeRight }, customConfig),
@@ -437,7 +437,7 @@ describe("useGestures", () => {
     const handlers = result.current.getGestureHandlers();
 
     const mockEvent = {
-      preventDefault: vi.fn(),
+      preventDefault: jest.fn(),
     } as unknown as React.MouseEvent;
     handlers.onContextMenu(mockEvent);
 
@@ -484,7 +484,7 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-    const executeCommand = vi.fn();
+    const executeCommand = jest.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
 
     expect(result.current.showQuickCommands).toBe(false);
@@ -502,7 +502,7 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-    const executeCommand = vi.fn();
+    const executeCommand = jest.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
 
     expect(result.current.isPullRefreshing).toBe(false);
@@ -515,7 +515,7 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-    const executeCommand = vi.fn();
+    const executeCommand = jest.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
 
     act(() => {
@@ -537,7 +537,7 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-    const executeCommand = vi.fn();
+    const executeCommand = jest.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
 
     act(() => {
@@ -555,7 +555,7 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-    const executeCommand = vi.fn();
+    const executeCommand = jest.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
 
     const handlers = result.current.getGestureHandlers();
@@ -571,7 +571,7 @@ describe("useTerminalGestures", () => {
       return;
     }
 
-    const executeCommand = vi.fn();
+    const executeCommand = jest.fn();
     const { result } = renderHook(() => useTerminalGestures(executeCommand));
 
     act(() => {

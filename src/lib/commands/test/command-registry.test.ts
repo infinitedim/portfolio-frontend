@@ -1,7 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach } from "bun:test";
 import type { Command } from "@/types/terminal";
-
-vi.unmock("@/lib/utils/arg-parser");
 
 describe("commandRegistry", () => {
   let commandRegistry: typeof import("@/lib/commands/command-registry");
@@ -14,13 +12,7 @@ describe("commandRegistry", () => {
   let fontCommand: Command;
 
   beforeEach(async () => {
-    if (typeof vi !== "undefined" && vi.importActual) {
-      commandRegistry = await vi.importActual<
-        typeof import("@/lib/commands/command-registry")
-      >("@/lib/commands/command-registry");
-    } else {
-      commandRegistry = await import("@/lib/commands/command-registry");
-    }
+    commandRegistry = await import("@/lib/commands/command-registry");
 
     createHelpCommand = commandRegistry.createHelpCommand;
     aboutCommand = commandRegistry.aboutCommand;
@@ -119,8 +111,8 @@ describe("commandRegistry", () => {
 
       Object.defineProperty(window, "localStorage", {
         value: {
-          getItem: vi.fn().mockReturnValue("default"),
-          setItem: vi.fn(),
+          getItem: jest.fn().mockReturnValue("default"),
+          setItem: jest.fn(),
         },
         writable: true,
         configurable: true,
@@ -154,8 +146,8 @@ describe("commandRegistry", () => {
       }
       Object.defineProperty(window, "localStorage", {
         value: {
-          getItem: vi.fn().mockReturnValue(null),
-          setItem: vi.fn(),
+          getItem: jest.fn().mockReturnValue(null),
+          setItem: jest.fn(),
         },
         writable: true,
         configurable: true,

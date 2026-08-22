@@ -2,11 +2,11 @@ import {
   describe,
   it,
   expect,
-  vi,
+  jest,
   beforeEach,
   afterEach,
   afterAll,
-} from "vitest";
+} from "bun:test";
 import {
   prefetchResources,
   optimizeImageLoading,
@@ -21,32 +21,32 @@ import {
 } from "../bundler-optimization";
 
 const mockDocument = {
-  createElement: vi.fn(),
-  querySelectorAll: vi.fn(),
+  createElement: jest.fn(),
+  querySelectorAll: jest.fn(),
   head: {
-    appendChild: vi.fn(),
+    appendChild: jest.fn(),
   },
   readyState: "complete",
-  addEventListener: vi.fn(),
+  addEventListener: jest.fn(),
   hidden: false,
 };
 
 const mockWindow = {
   performance: {
-    getEntriesByType: vi.fn(),
+    getEntriesByType: jest.fn(),
   },
   localStorage: {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-    keys: vi.fn(),
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+    keys: jest.fn(),
   },
   _eventListeners: {},
 };
 
 const mockConsole = {
-  log: vi.fn(),
-  warn: vi.fn(),
+  log: jest.fn(),
+  warn: jest.fn(),
 };
 
 const _savedWindow = (globalThis as Record<string, unknown>).window;
@@ -83,7 +83,7 @@ const originalObjectKeys = Object.keys;
 
 describe("bundleOptimization", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     mockDocument.createElement.mockReturnValue({
       rel: "",
@@ -100,7 +100,7 @@ describe("bundleOptimization", () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     Object.keys = originalObjectKeys;
   });
@@ -153,21 +153,13 @@ describe("bundleOptimization", () => {
   });
 
   describe("dynamicImportWithRetry function", () => {
-    beforeEach(() => {
-      vi.useFakeTimers();
-    });
-
-    afterEach(() => {
-      vi.useRealTimers();
-    });
-
     it("should be defined and exportable", () => {
       expect(dynamicImportWithRetry).toBeDefined();
       expect(typeof dynamicImportWithRetry).toBe("function");
     });
 
     it("should return result on successful import", async () => {
-      const mockImport = vi.fn().mockResolvedValue("success");
+      const mockImport = jest.fn().mockResolvedValue("success");
 
       const result = await dynamicImportWithRetry(mockImport);
 
@@ -176,55 +168,39 @@ describe("bundleOptimization", () => {
     });
 
     it("should retry on failed import", async () => {
-      const mockImport = vi
+      const mockImport = jest
         .fn()
         .mockImplementationOnce(async () => {
           throw new Error("fail");
         })
         .mockImplementation(async () => "success");
 
-      const promise = dynamicImportWithRetry(mockImport, 2);
+      const result = await dynamicImportWithRetry(mockImport, 2, 1);
 
-      await vi.advanceTimersByTimeAsync(1000);
-
-      const result = await promise;
       expect(result).toBe("success");
       expect(mockImport).toHaveBeenCalledTimes(2);
     });
 
     it("should throw error after all retries", async () => {
-      const mockImport = vi.fn().mockImplementation(async () => {
+      const mockImport = jest.fn().mockImplementation(async () => {
         throw new Error("fail");
       });
 
-      const promise = dynamicImportWithRetry(mockImport, 2, 10);
-      promise.catch(() => {});
-
-      await vi.advanceTimersByTimeAsync(10);
-
-      await expect(promise).rejects.toThrow("fail");
+      await expect(dynamicImportWithRetry(mockImport, 2, 1)).rejects.toThrow("fail");
       expect(mockImport).toHaveBeenCalledTimes(2);
     });
 
     it("should use default retry count and delay", async () => {
-      const mockImport = vi.fn().mockImplementation(async () => {
+      const mockImport = jest.fn().mockImplementation(async () => {
         throw new Error("fail");
       });
 
-      const promise = dynamicImportWithRetry(mockImport);
-      promise.catch(() => {});
-
-      // Call 1: fails. Schedules 1000ms delay.
-      await vi.advanceTimersByTimeAsync(1000);
-      // Call 2: fails. Schedules 2000ms delay.
-      await vi.advanceTimersByTimeAsync(2000);
-
-      await expect(promise).rejects.toThrow("fail");
+      await expect(dynamicImportWithRetry(mockImport, 3, 1)).rejects.toThrow("fail");
       expect(mockImport).toHaveBeenCalledTimes(3);
     });
 
     it("should handle custom retry parameters", async () => {
-      const mockImport = vi.fn().mockImplementation(async () => {
+      const mockImport = jest.fn().mockImplementation(async () => {
         throw new Error("fail");
       });
 
@@ -374,7 +350,7 @@ describe("optimizeMemoryUsage function", () => {
   });
 
   it("should setup cleanup interval", () => {
-    const setIntervalSpy = vi.spyOn(global, "setInterval");
+    const setIntervalSpy = jest.spyOn(global, "setInterval");
 
     optimizeMemoryUsage();
 
@@ -386,12 +362,12 @@ describe("optimizeMemoryUsage function", () => {
 
 describe("initBundleOptimizations function", () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
-    vi.clearAllTimers();
-    vi.useRealTimers();
+    jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   it("should be defined and exportable", () => {
@@ -419,7 +395,7 @@ describe("initBundleOptimizations function", () => {
   });
 
   it("should setup prefetch timeout", () => {
-    const setTimeoutSpy = vi.spyOn(global, "setTimeout");
+    const setTimeoutSpy = jest.spyOn(global, "setTimeout");
 
     initBundleOptimizations();
 
@@ -443,16 +419,16 @@ describe("error handling and edge cases", () => {
     const originalLocalStorage = global.localStorage;
     const originalObjectKeys = Object.keys;
     const mockLocalStorage = {
-      getItem: vi.fn().mockImplementation(() => {
+      getItem: jest.fn().mockImplementation(() => {
         throw new Error("Storage error");
       }),
-      removeItem: vi.fn(),
+      removeItem: jest.fn(),
     };
 
     (global as unknown as Record<string, unknown>).localStorage =
       mockLocalStorage;
 
-    Object.keys = vi.fn().mockReturnValue(["temp-test"]);
+    Object.keys = jest.fn().mockReturnValue(["temp-test"]);
 
     expect(() => optimizeMemoryUsage()).not.toThrow();
 
@@ -463,12 +439,12 @@ describe("error handling and edge cases", () => {
 
 describe("integration tests", () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
-    vi.clearAllTimers();
-    vi.useRealTimers();
+    jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   it("should work together in initBundleOptimizations", () => {

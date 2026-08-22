@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { SEO_HELPERS, SEO_CONFIG } from "../config";
 
 describe("SEO_HELPERS", () => {

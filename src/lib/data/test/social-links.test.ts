@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 import { SOCIAL_LINKS, getSocialLink } from "../social-links";
 
 describe("social-links", () => {

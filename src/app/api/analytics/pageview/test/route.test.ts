@@ -1,13 +1,13 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { POST } from "../route";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+  typeof (jest as unknown as Record<string, unknown>).mock !== "function"
 )
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("next/server", () => ({
+mock.module("next/server", () => ({
   NextRequest: class {},
   NextResponse: {
     json: (data: unknown, init?: ResponseInit) =>
@@ -21,8 +21,8 @@ vi.mock("next/server", () => ({
   },
 }));
 
-const mockFetch = vi.fn();
-globalThis.fetch = mockFetch;
+const mockFetch = jest.fn();
+globalThis.fetch = mockFetch as unknown as typeof fetch;
 
 function createMockRequest(
   body: unknown,
@@ -40,7 +40,7 @@ function createMockRequest(
 
 describe("POST /api/analytics/pageview", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("should forward request to backend and return success 200 on success", async () => {

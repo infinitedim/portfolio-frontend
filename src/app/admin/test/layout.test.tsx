@@ -1,26 +1,26 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach, mock } from "bun:test";
 import { render, screen, waitFor } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-const mockPush = vi.fn();
-const mockPathname = vi.fn(() => "/admin");
+const mockPush = jest.fn();
+const mockPathname = jest.fn(() => "/admin");
 
 const mockRouter = {
   push: mockPush,
-  replace: vi.fn(),
-  prefetch: vi.fn(),
-  back: vi.fn(),
-  forward: vi.fn(),
-  refresh: vi.fn(),
+  replace: jest.fn(),
+  prefetch: jest.fn(),
+  back: jest.fn(),
+  forward: jest.fn(),
+  refresh: jest.fn(),
 };
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+  typeof (jest as unknown as Record<string, unknown>).mock !== "function"
 )
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("next/navigation", () => ({
+mock.module("next/navigation", () => ({
   useRouter: () => mockRouter,
   usePathname: () => mockPathname(),
 }));
@@ -35,15 +35,15 @@ const mockAuthState: MockAuthState = {
   isLoading: false,
 };
 
-vi.mock("@/lib/auth/auth-context", () => ({
+mock.module("@/lib/auth/auth-context", () => ({
   useAuth: () => ({
     isAuthenticated: mockAuthState.isAuthenticated,
     isLoading: mockAuthState.isLoading,
     user: null,
-    login: vi.fn(),
-    complete2FA: vi.fn(),
-    logout: vi.fn(),
-    refresh: vi.fn(),
+    login: jest.fn(),
+    complete2FA: jest.fn(),
+    logout: jest.fn(),
+    refresh: jest.fn(),
   }),
   AuthProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
@@ -61,14 +61,14 @@ describe("AdminLayout", () => {
       return;
     }
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockPush.mockClear();
     mockPathname.mockReturnValue("/admin");
     setAuthState({ isAuthenticated: false, isLoading: false });
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("Public Routes", () => {

@@ -1,9 +1,9 @@
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, mock } from "bun:test";
 import { render, screen } from "@testing-library/react";
 import { ProjectMockupFrame } from "./project-mockup-frame";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-vi.mock("next/image", () => ({
+mock.module("next/image", () => ({
   default: (props: Record<string, unknown>) => {
     const { fill: _fill, priority: _priority, placeholder: _placeholder, blurDataURL: _blurDataURL, ...rest } = props;
     return <img {...rest} alt={(rest.alt as string) ?? ""} />;

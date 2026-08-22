@@ -1,15 +1,15 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import { useTerminalShortcuts } from "@/hooks/use-terminal-shortcuts";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+  typeof (jest as unknown as Record<string, unknown>).mock !== "function"
 )
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("@/hooks/use-command-history", () => ({
+mock.module("@/hooks/use-command-history", () => ({
   useCommandHistory: () => ({ getSuggestions: () => [] }),
 }));
 
@@ -17,7 +17,7 @@ describe("useTerminalShortcuts", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     if (typeof window !== "undefined" && window.localStorage) {
       (window.localStorage as { clear: () => void }).clear();
     }

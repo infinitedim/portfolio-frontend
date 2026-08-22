@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 
 const { LocationService } = await import("@/lib/location/location-service");
 
@@ -85,11 +85,18 @@ describe("LocationService", () => {
       } as Response);
     }) as typeof fetch;
 
-    const svc = LocationService.getInstance();
-    const loc = await svc.getLocation();
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const svc = LocationService.getInstance();
+      const loc = await svc.getLocation();
 
-    expect(loc).not.toBeNull();
-    expect(loc?.city).toBe("Fallback City");
+      expect(loc).not.toBeNull();
+      expect(loc?.city).toBe("Fallback City");
+    } finally {
+      warnSpy.mockRestore();
+      errSpy.mockRestore();
+    }
   });
 
   it("returns null when both services fail", async () => {
@@ -101,10 +108,17 @@ describe("LocationService", () => {
     globalThis.fetch = (() =>
       Promise.resolve({ ok: false } as Response)) as unknown as typeof fetch;
 
-    const svc = LocationService.getInstance();
-    const loc = await svc.getLocation();
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const svc = LocationService.getInstance();
+      const loc = await svc.getLocation();
 
-    expect(loc).toBeNull();
+      expect(loc).toBeNull();
+    } finally {
+      warnSpy.mockRestore();
+      errSpy.mockRestore();
+    }
   });
 
   it("getTimeInfo and formatOffset behave as expected", () => {

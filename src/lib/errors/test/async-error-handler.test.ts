@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach } from "bun:test";
 import { AsyncErrorHandler, AsyncUtils } from "../async-error-handler";
 import { NetworkError, ErrorSeverity } from "../error-types";
 
@@ -7,13 +7,13 @@ describe("Async Error Handler", () => {
 
   beforeEach(() => {
     handler = AsyncErrorHandler.getInstance();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("execute", () => {
     it("should execute successful functions", async () => {
-      const successFn = vi.fn().mockResolvedValue("success");
-      const onSuccess = vi.fn();
+      const successFn = jest.fn().mockResolvedValue("success");
+      const onSuccess = jest.fn();
 
       const result = await handler.execute(successFn, { onSuccess });
 
@@ -25,9 +25,9 @@ describe("Async Error Handler", () => {
 
     it("should handle errors and retry retryable errors", async () => {
       const error = new NetworkError("Connection failed");
-      const failFn = vi.fn().mockRejectedValue(error);
-      const onError = vi.fn();
-      const onRetry = vi.fn();
+      const failFn = jest.fn().mockRejectedValue(error);
+      const onError = jest.fn();
+      const onRetry = jest.fn();
 
       const result = await handler.execute(failFn, {
         retryConfig: {
@@ -48,7 +48,7 @@ describe("Async Error Handler", () => {
     });
 
     it("should respect timeout configuration", async () => {
-      const slowFn = vi.fn().mockImplementation(
+      const slowFn = jest.fn().mockImplementation(
         () =>
           new Promise((resolve) => {
             setTimeout(() => resolve("delayed"), 200);
@@ -71,7 +71,7 @@ describe("Async Error Handler", () => {
 
     it("should not retry non-retryable errors", async () => {
       const error = new Error("Non-retryable error");
-      const failFn = vi.fn().mockRejectedValue(error);
+      const failFn = jest.fn().mockRejectedValue(error);
 
       const result = await handler.execute(failFn, {
         retryConfig: {
@@ -91,9 +91,9 @@ describe("Async Error Handler", () => {
 
   describe("executeAll", () => {
     it("should execute all functions successfully", async () => {
-      const fn1 = vi.fn().mockResolvedValue("result1");
-      const fn2 = vi.fn().mockResolvedValue("result2");
-      const fn3 = vi.fn().mockResolvedValue("result3");
+      const fn1 = jest.fn().mockResolvedValue("result1");
+      const fn2 = jest.fn().mockResolvedValue("result2");
+      const fn3 = jest.fn().mockResolvedValue("result3");
 
       const result = await handler.executeAll([fn1, fn2, fn3]);
 
@@ -102,8 +102,8 @@ describe("Async Error Handler", () => {
     });
 
     it("should handle mixed success and failure", async () => {
-      const successFn = vi.fn().mockResolvedValue("success");
-      const errorFn = vi.fn().mockRejectedValue(new Error("Failed"));
+      const successFn = jest.fn().mockResolvedValue("success");
+      const errorFn = jest.fn().mockRejectedValue(new Error("Failed"));
 
       const result = await handler.executeAll([successFn, errorFn], {
         failFast: false,
@@ -115,9 +115,9 @@ describe("Async Error Handler", () => {
     });
 
     it("should fail fast when configured", async () => {
-      const successFn = vi.fn().mockResolvedValue("success");
-      const errorFn = vi.fn().mockRejectedValue(new Error("Failed"));
-      const neverCalledFn = vi.fn().mockResolvedValue("never");
+      const successFn = jest.fn().mockResolvedValue("success");
+      const errorFn = jest.fn().mockRejectedValue(new Error("Failed"));
+      const neverCalledFn = jest.fn().mockResolvedValue("never");
 
       const result = await handler.executeAll(
         [successFn, errorFn, neverCalledFn],
@@ -135,7 +135,7 @@ describe("Async Error Handler", () => {
 describe("AsyncUtils", () => {
   describe("safe", () => {
     it("should return data on success", async () => {
-      const successFn = vi.fn().mockResolvedValue("success");
+      const successFn = jest.fn().mockResolvedValue("success");
 
       const result = await AsyncUtils.safe(successFn);
 
@@ -145,7 +145,7 @@ describe("AsyncUtils", () => {
 
     it("should return error on failure", async () => {
       const error = new Error("Failed");
-      const errorFn = vi.fn().mockRejectedValue(error);
+      const errorFn = jest.fn().mockRejectedValue(error);
 
       const result = await AsyncUtils.safe(errorFn, "fallback");
 
@@ -158,7 +158,7 @@ describe("AsyncUtils", () => {
   describe("retry", () => {
     it("should retry and eventually succeed", async () => {
       let attempts = 0;
-      const retryFn = vi.fn().mockImplementation(() => {
+      const retryFn = jest.fn().mockImplementation(() => {
         attempts++;
         if (attempts < 3) {
           throw new NetworkError("Not ready yet", {
@@ -180,7 +180,7 @@ describe("AsyncUtils", () => {
     });
 
     it("should throw after max retries", async () => {
-      const errorFn = vi.fn().mockImplementation(() => {
+      const errorFn = jest.fn().mockImplementation(() => {
         throw new NetworkError("Always fails", {
           isRetryable: true,
           severity: ErrorSeverity.HIGH,
@@ -197,7 +197,7 @@ describe("AsyncUtils", () => {
 
   describe("createCircuitBreaker", () => {
     it("should allow requests when circuit is closed", async () => {
-      const successFn = vi.fn().mockResolvedValue("success");
+      const successFn = jest.fn().mockResolvedValue("success");
       const circuitBreaker = AsyncUtils.createCircuitBreaker(successFn, {
         failureThreshold: 3,
         resetTimeout: 100,
@@ -209,7 +209,7 @@ describe("AsyncUtils", () => {
     });
 
     it("should open circuit after threshold failures", async () => {
-      const errorFn = vi.fn().mockRejectedValue(new Error("Service down"));
+      const errorFn = jest.fn().mockRejectedValue(new Error("Service down"));
       const circuitBreaker = AsyncUtils.createCircuitBreaker(errorFn, {
         failureThreshold: 2,
         resetTimeout: 100,
@@ -226,7 +226,7 @@ describe("AsyncUtils", () => {
   describe("processBatch", () => {
     it("should process all items successfully", async () => {
       const items = [1, 2, 3];
-      const processor = vi
+      const processor = jest
         .fn()
         .mockImplementation((item: number) => Promise.resolve(item * 2));
 
@@ -242,7 +242,7 @@ describe("AsyncUtils", () => {
 
     it("should handle partial failures", async () => {
       const items = [1, 2, 3];
-      const processor = vi.fn().mockImplementation((item: number) => {
+      const processor = jest.fn().mockImplementation((item: number) => {
         if (item === 2) {
           throw new Error("Processing failed for item 2");
         }
@@ -260,7 +260,7 @@ describe("AsyncUtils", () => {
 
     it("should respect batch size and concurrency limits", async () => {
       const items = Array.from({ length: 10 }, (_, i) => i);
-      const processor = vi
+      const processor = jest
         .fn()
         .mockImplementation((item: number) => Promise.resolve(item));
 

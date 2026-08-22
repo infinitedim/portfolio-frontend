@@ -1,17 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { POST } from "../route";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+  typeof (jest as unknown as Record<string, unknown>).mock !== "function"
 )
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("next/server", () => ({
+mock.module("next/server", () => ({
   NextRequest: class {},
   NextResponse: {
     json: (data: unknown, init?: ResponseInit) => {
-      const responseHeaders = new Headers(init?.headers as any);
+      const responseHeaders = new Headers(init?.headers as HeadersInit);
       responseHeaders.set("Content-Type", "application/json");
       return new Response(JSON.stringify(data), {
         ...init,
@@ -21,8 +21,8 @@ vi.mock("next/server", () => ({
   },
 }));
 
-const mockFetch = vi.fn();
-globalThis.fetch = mockFetch;
+const mockFetch = jest.fn();
+globalThis.fetch = mockFetch as unknown as typeof fetch;
 
 function createMockRequest(
   method: string,
@@ -41,7 +41,7 @@ function createMockRequest(
 
 describe("POST /api/auth/[...authPath]", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("should compositions the correct URL and forward cookies/auth to backend", async () => {
@@ -129,7 +129,9 @@ describe("POST /api/auth/[...authPath]", () => {
   });
 
   it("should return 502 when fetch throws", async () => {
-    mockFetch.mockRejectedValueOnce(new Error("Upstream failed"));
+    mockFetch.mockImplementationOnce(async () => {
+      throw new Error("Upstream failed");
+    });
 
     const req = createMockRequest("POST", { email: "test@example.com" });
     const context = {

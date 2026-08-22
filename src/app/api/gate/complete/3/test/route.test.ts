@@ -1,60 +1,22 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { POST } from "../route";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { proxyGateRequest } from "@/lib/gate/gate-proxy";
 
-if (
-  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
-)
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
-
-vi.mock("next/server", () => {
-  return {
-    NextRequest: class {
-      url: string;
-      method: string;
-      headers: Headers;
-      _body: string | null;
-      constructor(input: string, init?: RequestInit) {
-        this.url = input;
-        this.method = init?.method ?? "GET";
-        this.headers =
-          init?.headers instanceof Headers
-            ? init.headers
-            : new Headers(init?.headers as Record<string, string>);
-        this._body = (init?.body as string) ?? null;
-      }
-      async text() {
-        return this._body ?? "";
-      }
-    },
-    NextResponse: {
-      json: (data: unknown, init?: ResponseInit) =>
-        new Response(JSON.stringify(data), {
-          ...init,
-          headers: {
-            "Content-Type": "application/json",
-            ...(init?.headers as Record<string, string>),
-          },
-        }),
-    },
-  };
-});
-
-vi.mock("@/lib/gate/gate-proxy", () => ({
-  proxyGateRequest: vi.fn(),
+mock.module("@/lib/gate/gate-proxy", () => ({
+  proxyGateRequest: jest.fn(),
 }));
+
+import { POST } from "../route";
+import { NextRequest } from "next/server";
 
 describe("POST /api/gate/complete/3", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("should forward the JSON body to proxyGateRequest", async () => {
     const mockResponse = new Response(JSON.stringify({ passed: true }));
-    vi.mocked(proxyGateRequest).mockResolvedValueOnce(mockResponse as never);
+    (proxyGateRequest as unknown as ReturnType<typeof jest.fn>).mockResolvedValueOnce(mockResponse as unknown as Response);
 
-    const { NextRequest } = await import("next/server");
     const req = new NextRequest("http://localhost:3000/api/gate/complete/3", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -63,7 +25,7 @@ describe("POST /api/gate/complete/3", () => {
 
     const res = await POST(req);
 
-    expect(res).toBe(mockResponse);
+    expect(res as unknown as Response).toBe(mockResponse);
     expect(proxyGateRequest).toHaveBeenCalledWith(
       expect.objectContaining({
         method: "POST",
@@ -77,9 +39,8 @@ describe("POST /api/gate/complete/3", () => {
     const mockResponse = new Response(
       JSON.stringify({ passed: false, attempts: 1 }),
     );
-    vi.mocked(proxyGateRequest).mockResolvedValueOnce(mockResponse as never);
+    (proxyGateRequest as unknown as ReturnType<typeof jest.fn>).mockResolvedValueOnce(mockResponse as unknown as Response);
 
-    const { NextRequest } = await import("next/server");
     const req = new NextRequest("http://localhost:3000/api/gate/complete/3", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -88,7 +49,7 @@ describe("POST /api/gate/complete/3", () => {
 
     const res = await POST(req);
 
-    expect(res).toBe(mockResponse);
+    expect(res as unknown as Response).toBe(mockResponse);
     expect(proxyGateRequest).toHaveBeenCalledTimes(1);
   });
 });

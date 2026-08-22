@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { canRunTests } from "@/test/test-helpers";
 import * as authModule from "../index";
 

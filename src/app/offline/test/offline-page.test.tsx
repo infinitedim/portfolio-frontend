@@ -1,15 +1,15 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { render, screen, fireEvent } from "@testing-library/react";
 import OfflinePage from "../page";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+  typeof (jest as unknown as Record<string, unknown>).mock !== "function"
 )
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("@/hooks/use-i18n", () => ({
+mock.module("@/hooks/use-i18n", () => ({
   useI18n: () => ({
     t: (key: string) =>
       key === "offlineTitle"
@@ -24,7 +24,7 @@ vi.mock("@/hooks/use-i18n", () => ({
   }),
 }));
 
-vi.mock("@/hooks/use-theme", () => ({
+mock.module("@/hooks/use-theme", () => ({
   useTheme: () => ({
     themeConfig: {
       colors: {

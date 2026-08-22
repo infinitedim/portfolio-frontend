@@ -1,27 +1,19 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach } from "bun:test";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 import type { Command } from "@/types/terminal";
-
-vi.unmock("@/lib/utils/arg-parser");
 
 describe("commands.ts", () => {
   let commands: typeof import("../commands");
   let resumeCommand: Command;
 
   beforeEach(async () => {
-    if (typeof vi !== "undefined" && vi.importActual) {
-      commands =
-        await vi.importActual<typeof import("../commands")>("../commands");
-    } else {
-      commands = await import("../commands");
-    }
-
+    commands = await import("../commands");
     resumeCommand = commands.resumeCommand;
   });
 
-  const mockClick = vi.fn();
-  const mockOpen = vi.fn();
-  const mockCreateElement = vi.fn(() => ({
+  const mockClick = jest.fn();
+  const mockOpen = jest.fn();
+  const mockCreateElement = jest.fn(() => ({
     click: mockClick,
     href: "",
     download: "",
@@ -30,7 +22,7 @@ describe("commands.ts", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     if (typeof window !== "undefined") {
       window.open = mockOpen;

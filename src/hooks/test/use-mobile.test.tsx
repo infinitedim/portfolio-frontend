@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "bun:test";
 import { renderHook } from "@testing-library/react";
 import { useMobile } from "@/hooks/use-mobile";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";

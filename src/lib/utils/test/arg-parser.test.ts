@@ -1,26 +1,19 @@
 import { ParsedArgs } from "@/lib/utils/arg-parser";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 
-vi.unmock("@/lib/utils/arg-parser");
+// bun:test does not need unmock: // vi.unmock("@/lib/utils/arg-parser");
 
 describe("argParser", () => {
   let ArgumentParser: typeof import("@/lib/utils/arg-parser").ArgumentParser;
 
   beforeEach(async () => {
-    let module;
-    if (typeof vi !== "undefined" && vi.importActual) {
-      module = await vi.importActual<typeof import("@/lib/utils/arg-parser")>(
-        "@/lib/utils/arg-parser",
-      );
-    } else {
-      module = await import("@/lib/utils/arg-parser");
-    }
+    const module = await import("@/lib/utils/arg-parser");
     ArgumentParser = module.ArgumentParser;
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("ArgumentParser class", () => {

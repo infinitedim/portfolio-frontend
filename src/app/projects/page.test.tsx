@@ -1,24 +1,28 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { render } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+  typeof (jest as unknown as Record<string, unknown>).mock !== "function"
 )
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("next", () => ({
+mock.module("next", () => ({
   Metadata: {},
 }));
 
-const mockProjects = [
+import type { Project } from "@/lib/data/data-fetching";
+
+const mockProjects: Array<Project> = [
   {
     id: "1",
+    slug: "test-project",
     name: "Test Project",
     description: "Test Description",
     technologies: ["React", "TypeScript"],
     status: "completed",
+    featured: true,
     demoUrl: "https://example.com",
     githubUrl: "https://github.com/example",
   },
@@ -26,7 +30,7 @@ const mockProjects = [
 
 const mockFeaturedProjects = [mockProjects[0]];
 
-vi.mock("@/components/layout/standard-page-layout", () => ({
+mock.module("@/components/layout/standard-page-layout", () => ({
   StandardPageLayout: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="standard-page-layout">
       <main>{children}</main>
@@ -34,12 +38,12 @@ vi.mock("@/components/layout/standard-page-layout", () => ({
   ),
 }));
 
-vi.mock("@/lib/data/data-fetching", () => ({
-  getProjectsData: vi.fn(() => Promise.resolve(mockProjects)),
-  getFeaturedProjects: vi.fn(() => Promise.resolve(mockFeaturedProjects)),
+mock.module("@/lib/data/data-fetching", () => ({
+  getProjectsData: jest.fn(() => Promise.resolve(mockProjects)),
+  getFeaturedProjects: jest.fn(() => Promise.resolve(mockFeaturedProjects)),
 }));
 
-vi.mock("@/components/molecules/projects/project-card", () => ({
+mock.module("@/components/molecules/projects/project-card", () => ({
   ProjectCard: ({
     project,
     featured,
@@ -53,26 +57,41 @@ vi.mock("@/components/molecules/projects/project-card", () => ({
   ),
 }));
 
-vi.mock("@/components/organisms/projects/projects-loading", () => ({
+mock.module("@/components/organisms/projects/projects-loading", () => ({
   ProjectsLoading: () => <div data-testid="projects-loading">Loading...</div>,
 }));
 
 const mockUseSyncContent = { value: false };
 
-vi.mock("./projects-page-content", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("./projects-page-content")>();
-  const MockProjectsPageContent = (props: any) => {
+import { ProjectsClient } from "./projects-client";
+
+mock.module("./projects-page-content", () => ({
+  ProjectsPageContent: () => {
     if (mockUseSyncContent.value) {
       return <div data-testid="mock-projects-content" />;
     }
-    return (actual.ProjectsPageContent as any)(props);
-  };
-  return {
-    ...actual,
-    ProjectsPageContent: MockProjectsPageContent,
-  };
-});
+    return (
+      <>
+        <ProjectsClient
+          allProjects={mockProjects}
+          featuredProjects={mockFeaturedProjects}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              name: "Web Development Projects",
+              description: "Portfolio of web development projects",
+              numberOfItems: mockProjects.length,
+            }),
+          }}
+        />
+      </>
+    );
+  },
+}));
 
 import ProjectsPage, { metadata as projectsMetadata } from "./page";
 import { ProjectsPageContent } from "./projects-page-content";
@@ -84,7 +103,7 @@ describe("ProjectsPage", () => {
       return;
     }
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("Metadata", () => {

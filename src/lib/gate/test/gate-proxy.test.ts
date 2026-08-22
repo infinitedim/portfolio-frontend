@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 import { NextResponse } from "next/server";
 import { applyBackendGateCookies } from "@/lib/gate/gate-proxy";
 

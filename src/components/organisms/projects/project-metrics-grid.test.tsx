@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "bun:test";
 import { render, screen } from "@testing-library/react";
 import { ProjectMetricsGrid } from "./project-metrics-grid";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";

@@ -1,16 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach } from "bun:test";
 import { roadmapCommand } from "../roadmap-commands";
 
 describe("roadmap-commands.ts", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("roadmapCommand", () => {
     it("should execute successfully and return success status", async () => {
-      const openMock = vi.fn();
-      const originalOpen = window.open;
-      window.open = openMock as any;
+      const openMock = jest.fn();
+      (globalThis as unknown as { window: { open: typeof openMock } }).window = {
+        open: openMock,
+      };
 
       try {
         const result = await roadmapCommand.execute([]);
@@ -23,7 +24,7 @@ describe("roadmap-commands.ts", () => {
           "noopener,noreferrer",
         );
       } finally {
-        window.open = originalOpen;
+        delete (globalThis as unknown as { window?: unknown }).window;
       }
     });
   });

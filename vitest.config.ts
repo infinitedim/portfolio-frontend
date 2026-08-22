@@ -17,6 +17,7 @@ export default defineConfig({
       ".git",
       ".cache",
       "e2e",
+      "**/*.bun.test.*",
     ],
     pool: "forks",
     maxWorkers: 2,

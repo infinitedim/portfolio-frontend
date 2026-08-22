@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import { ClientLogger } from "../client-logger";
 import * as loggerUtils from "../utils";
 
-global.fetch = vi.fn().mockResolvedValue({
+global.fetch = jest.fn().mockResolvedValue({
   ok: false,
   status: 503,
   json: async () => ({}),
@@ -13,13 +13,23 @@ describe("ClientLogger", () => {
   let logger: ClientLogger;
 
   beforeEach(() => {
-    vi.spyOn(loggerUtils, "isClient").mockReturnValue(true);
+    jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    jest.spyOn(console, "warn").mockImplementation(() => {});
+    jest.spyOn(console, "log").mockImplementation(() => {});
+    jest.spyOn(process.stdout, "write").mockImplementation(() => true);
+    jest.spyOn(process.stderr, "write").mockImplementation(() => true);
+    if (typeof window === "undefined") {
+      (globalThis as unknown as { window: Record<string, unknown> }).window = {};
+    }
+    const mockStorage = { getItem: jest.fn(() => null), setItem: jest.fn(), removeItem: jest.fn(), clear: jest.fn() };
+    (window as unknown as { localStorage: typeof mockStorage; location: { href: string } }).localStorage = mockStorage;
+    (window as unknown as { localStorage: typeof mockStorage; location: { href: string } }).location = { href: "http://localhost:3000" };
+    (globalThis as unknown as { localStorage: typeof mockStorage }).localStorage = mockStorage;
+    jest.spyOn(loggerUtils, "isClient").mockReturnValue(true);
     logger = new ClientLogger();
-    vi.clearAllMocks();
 
-    vi.spyOn(loggerUtils, "isClient").mockReturnValue(true);
-
-    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+    (global.fetch as unknown as ReturnType<typeof jest.fn>).mockResolvedValue({
       ok: false,
       status: 503,
       json: async () => ({}),
@@ -37,12 +47,12 @@ describe("ClientLogger", () => {
       clearTimeout(loggerBuffer.timer);
       loggerBuffer.timer = null;
     }
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   describe("Basic Logging", () => {
     it("should log info messages", () => {
-      const spy = vi.spyOn(
+      const spy = jest.spyOn(
         (
           logger as unknown as {
             pino: { info: (...args: Array<unknown>) => void };
@@ -56,7 +66,7 @@ describe("ClientLogger", () => {
 
     it("should log error messages", () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const spy = vi
+      const spy = jest
         .spyOn(process.stderr, "write")
         .mockImplementation(() => true);
 
@@ -66,7 +76,7 @@ describe("ClientLogger", () => {
     });
 
     it("should log warnings", () => {
-      const spy = vi.spyOn(
+      const spy = jest.spyOn(
         (
           logger as unknown as {
             pino: { warn: (...args: Array<unknown>) => void };
@@ -87,7 +97,7 @@ describe("ClientLogger", () => {
 
   describe("User Actions", () => {
     it("should log user actions", () => {
-      const spy = vi.spyOn(
+      const spy = jest.spyOn(
         (
           logger as unknown as {
             pino: { info: (...args: Array<unknown>) => void };
@@ -108,7 +118,7 @@ describe("ClientLogger", () => {
     });
 
     it("should warn on slow performance", () => {
-      const spy = vi.spyOn(
+      const spy = jest.spyOn(
         (
           logger as unknown as {
             pino: { warn: (...args: Array<unknown>) => void };
@@ -129,7 +139,7 @@ describe("ClientLogger", () => {
     });
 
     it("should flush immediately for critical security events", async () => {
-      const flushSpy = vi.spyOn(logger, "flush").mockResolvedValue(undefined);
+      const flushSpy = jest.spyOn(logger, "flush").mockResolvedValue(undefined);
       logger.logSecurityEvent("account_takeover", "critical", {
         userId: "123",
       });
@@ -145,7 +155,7 @@ describe("ClientLogger", () => {
     });
 
     it("should warn on client errors", () => {
-      const spy = vi.spyOn(
+      const spy = jest.spyOn(
         (
           logger as unknown as {
             pino: { warn: (...args: Array<unknown>) => void };

@@ -1,11 +1,11 @@
 
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { POST } from "../route";
 
-if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (vi as unknown as Record<string, unknown>).mock !== "function") (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (jest as unknown as Record<string, unknown>).mock !== "function") (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("next/server", () => ({
+mock.module("next/server", () => ({
   NextRequest: class {},
   NextResponse: {
     json: (data: unknown, init?: ResponseInit) =>
@@ -19,13 +19,13 @@ vi.mock("next/server", () => ({
   },
 }));
 
-vi.mock("@/lib/logger/server-logger", () => ({
+mock.module("@/lib/logger/server-logger", () => ({
   createServerLogger: () => ({
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-    logClientLogs: vi.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+    logClientLogs: jest.fn(),
   }),
 }));
 
@@ -45,7 +45,7 @@ function createMockRequest(
 
 describe("POST /api/logs", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it("should return 400 when Content-Type is not application/json", async () => {

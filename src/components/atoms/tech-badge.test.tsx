@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach } from "bun:test";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { TechBadge } from "./tech-badge";
 import { getTechConfig, normalizeTechKey } from "./tech-icon-registry";
@@ -58,7 +58,7 @@ describe("TechBadge Component", () => {
 
   it("renders removable button when removable prop is true", () => {
     if (!canRunTests) return;
-    const handleRemove = vi.fn();
+    const handleRemove = jest.fn();
     render(<TechBadge name="Docker" removable onRemove={handleRemove} />);
 
     const removeBtn = screen.getByRole("button", { name: "Remove Docker" });

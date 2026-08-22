@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
 import {
   themes,
   defaultTheme,
@@ -11,11 +11,11 @@ import type { ThemeName } from "@/types/theme";
 
 describe("themeConfig", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("themes object", () => {
@@ -200,7 +200,7 @@ describe("themeConfig", () => {
       } else {
         const popularThemes = ["cyberpunk", "dracula", "matrix", "monokai"];
         popularThemes.forEach((theme) => {
-          expect(result).toContain(theme);
+          expect(result).toContain(theme as any);
         });
       }
     });

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach, mock } from "bun:test";
 
 interface LocaleConfig {
   code: string;
@@ -11,10 +11,10 @@ interface LocaleConfig {
 let mockCurrentLocale = "en_US";
 let mockSetLocaleResult = true;
 
-if (typeof (vi as unknown as Record<string, unknown>).mock !== "function")
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+if (typeof (jest as unknown as Record<string, unknown>).mock !== "function")
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("@/lib/i18n", () => ({
+mock.module("@/lib/i18n", () => ({
   i18n: {
     getCurrentLocale: () => mockCurrentLocale,
     getCurrentLocaleConfig: () => {
@@ -76,7 +76,7 @@ vi.mock("@/lib/i18n", () => ({
   },
 }));
 
-vi.mock("@/lib/i18n/locales", () => ({
+mock.module("@/lib/i18n/locales", () => ({
   DEFAULT_LOCALE: "en_US",
   isRegionalVariant: (code: string) => {
     const regionalVariants = [
@@ -179,7 +179,7 @@ describe("languageCommands", () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("languageCommand (lang)", () => {

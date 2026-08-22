@@ -1,12 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useTerminal } from "@/hooks/use-terminal";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-declare const Bun: unknown;
-const commandHistoryMock = vi.hoisted(() => ({
-  addCommand: vi.fn(),
-  clearHistory: vi.fn(),
+const commandHistoryMock = {
+  addCommand: jest.fn(),
+  clearHistory: jest.fn(),
   history: [] as Array<{
     command: string;
     success: boolean;
@@ -15,24 +14,17 @@ const commandHistoryMock = vi.hoisted(() => ({
     favorite: boolean;
     frequency: number;
   }>,
-}));
+};
 
-if (typeof Bun !== "undefined") {
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
-} else if (
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
-) {
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
-}
-vi.mock("@/lib/commands/roadmap-commands", () => ({
+mock.module("@/lib/commands/roadmap-commands", () => ({
   roadmapCommand: null,
 }));
-vi.mock("@/lib/commands/command-registry", async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>;
-  const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
+mock.module("@/lib/commands/command-registry", async (importOriginal?: () => Promise<unknown>) => {
+  const actual = importOriginal ? ((await importOriginal()) as Record<string, unknown>) : {};
+  const cmd = (name: string) => ({ name, description: "", execute: jest.fn() });
   return {
     ...actual,
-    createHelpCommand: vi.fn(() => cmd("help")),
+    createHelpCommand: jest.fn(() => cmd("help")),
     aboutCommand: cmd("about"),
     projectsCommand: cmd("projects"),
     contactCommand: cmd("contact"),
@@ -42,21 +34,21 @@ vi.mock("@/lib/commands/command-registry", async (importOriginal) => {
     gitCommand: cmd("git"),
   };
 });
-vi.mock("@/lib/commands/language-commands", () => {
-  const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
+mock.module("@/lib/commands/language-commands", () => {
+  const cmd = (name: string) => ({ name, description: "", execute: jest.fn() });
   return {
     languageCommand: cmd("language"),
     languageListCommand: cmd("language-list"),
     languageInfoCommand: cmd("language-info"),
   };
 });
-vi.mock("@/lib/commands/commands", () => {
-  const cmd = (name: string) => ({ name, description: "", execute: vi.fn() });
+mock.module("@/lib/commands/commands", () => {
+  const cmd = (name: string) => ({ name, description: "", execute: jest.fn() });
   return {
     resumeCommand: cmd("resume"),
   };
 });
-vi.mock("@/hooks/use-command-history", () => ({
+mock.module("@/hooks/use-command-history", () => ({
   useCommandHistory: () => ({
     addCommand: commandHistoryMock.addCommand,
     getSuggestions: () => [],
@@ -76,7 +68,7 @@ describe("useTerminal", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     localStorage.clear();
     commandHistoryMock.history = [];
   });

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import {
   PerformanceMonitor,
   usePerformanceMonitor,
@@ -8,15 +8,15 @@ describe("PerformanceMonitor", () => {
   let monitor: PerformanceMonitor;
 
   beforeEach(() => {
+    jest.spyOn(console, "log").mockImplementation(() => {});
+    jest.spyOn(console, "warn").mockImplementation(() => {});
     monitor = PerformanceMonitor.getInstance();
     monitor.clearMetrics();
-    vi.spyOn(console, "log").mockImplementation(() => {});
-    vi.spyOn(console, "warn").mockImplementation(() => {});
   });
 
   afterEach(() => {
     monitor.stopMonitoring();
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   describe("getInstance", () => {
@@ -138,7 +138,7 @@ describe("PerformanceMonitor", () => {
   describe("measureRender", () => {
     it("should call renderFn when enabled", () => {
       monitor.setEnabled(true);
-      const fn = vi.fn();
+      const fn = jest.fn();
       monitor.measureRender("TestComponent", fn);
       expect(fn).toHaveBeenCalled();
     });

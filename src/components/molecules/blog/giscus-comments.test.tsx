@@ -1,10 +1,8 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { GiscusComments, CommentsSkeleton } from "./giscus-comments";
+import { describe, it, expect, beforeEach, afterEach, mock } from "bun:test";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 // Mock @giscus/react
-vi.mock("@giscus/react", () => ({
+mock.module("@giscus/react", () => ({
   default: (props: Record<string, unknown>) => (
     <div data-testid="giscus-mock" data-theme={props.theme} data-repo={props.repo} data-category={props.category}>
       Giscus Mock
@@ -13,9 +11,12 @@ vi.mock("@giscus/react", () => ({
 }));
 
 // Mock next-themes
-vi.mock("next-themes", () => ({
+mock.module("next-themes", () => ({
   useTheme: () => ({ resolvedTheme: "dark" }),
 }));
+
+import { render, screen } from "@testing-library/react";
+import { GiscusComments, CommentsSkeleton } from "./giscus-comments";
 
 describe("CommentsSkeleton Component", () => {
   beforeEach(() => {
@@ -36,7 +37,6 @@ describe("GiscusComments Component", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
-    vi.resetModules();
     process.env = { ...originalEnv };
   });
 

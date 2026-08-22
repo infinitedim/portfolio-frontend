@@ -1,6 +1,5 @@
-# preload = ["./src/test/setup.ts"]
+[test]
+preload = ["./src/test/env-bun.ts", "./src/test/setup-bun.ts"]
 timeout = 10000
-# Exclude test files that cannot run under Bun's native test runner:
-# - e2e/ uses Playwright (needs playwright test runner)
-# - layout.integration.test fails due to next/font/google ESM-only exports
-exclude = ["e2e/**", "src/app/test/layout.integration.test.tsx"]
+include = ["src/**/*.test.ts", "src/**/*.test.tsx"]
+exclude = ["node_modules/**", "e2e/**"]

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { TypoTolerance } from "../typo-tolerance";
 
 describe("TypoTolerance", () => {
@@ -11,7 +11,7 @@ describe("TypoTolerance", () => {
 
   it("findSimilarCommand finds close command", () => {
     const cmd = TypoTolerance.findSimilarCommand("helo", ["help", "hello"]);
-    expect(["hello", "help"]).toContain(cmd);
+    expect(["hello", "help"]).toContain(cmd as string);
   });
 
   it("fuzzyMatch and suggestion score/type", () => {

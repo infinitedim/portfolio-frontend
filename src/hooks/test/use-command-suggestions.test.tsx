@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import { useCommandSuggestions } from "@/hooks/use-command-suggestions";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
@@ -23,14 +23,14 @@ describe("useCommandSuggestions", () => {
     }
 
     ensureDocumentBody();
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   describe("initialization", () => {
@@ -56,7 +56,7 @@ describe("useCommandSuggestions", () => {
       );
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       expect(Array.isArray(result.current.suggestions)).toBe(true);
@@ -89,7 +89,7 @@ describe("useCommandSuggestions", () => {
       rerender({ input: "help" });
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       const helpSuggestion = result.current.suggestions.find(
@@ -115,7 +115,7 @@ describe("useCommandSuggestions", () => {
       rerender({ input: "he" });
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       const suggestions = result.current.suggestions;
@@ -139,7 +139,7 @@ describe("useCommandSuggestions", () => {
       rerender({ input: "prj" });
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       expect(Array.isArray(result.current.suggestions)).toBe(true);
@@ -161,7 +161,7 @@ describe("useCommandSuggestions", () => {
       rerender({ input: "a" });
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       expect(result.current.suggestions.length).toBeLessThanOrEqual(3);
@@ -184,7 +184,7 @@ describe("useCommandSuggestions", () => {
       rerender({ input: "h" });
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       expect(result.current.suggestions.length).toBe(0);
@@ -205,7 +205,7 @@ describe("useCommandSuggestions", () => {
       rerender({ input: "help" });
 
       act(() => {
-        vi.advanceTimersByTime(100);
+        jest.advanceTimersByTime(100);
       });
 
       if (result.current.suggestions.length > 0) {

@@ -1,39 +1,40 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, mock } from "bun:test";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
-import { i18n, I18nService, t, tWithFallback } from "..";
 
-if (
-  typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
-)
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
-
-vi.mock("../locales", () => ({
-  getLocaleConfig: vi.fn((code: string) => ({
+mock.module("../locales", () => ({
+  getLocaleConfig: jest.fn((code: string) => ({
     code,
     name: "Test",
     nativeName: "Test",
     flag: "️",
     direction: "ltr",
   })),
-  isRegionalVariant: vi.fn(() => false),
-  getFallbackLocale: vi.fn((code: string) => code),
-  getSupportedLocales: vi.fn(() => []),
-  isValidLocale: vi.fn((code: string) => code === "en_US" || code === "id_ID"),
+  isRegionalVariant: jest.fn(() => false),
+  getFallbackLocale: jest.fn((code: string) => code),
+  getSupportedLocales: jest.fn(() => []),
+  isValidLocale: jest.fn((code: string) => code === "en_US" || code === "id_ID"),
   DEFAULT_LOCALE: "en_US",
 }));
 
+import { i18n, I18nService, t, tWithFallback } from "..";
+
 const localStorageMock = {
-  getItem: vi.fn(() => null as string | null),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
+  getItem: jest.fn(() => null as string | null),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
 };
 
+Object.defineProperty(globalThis, "localStorage", {
+  value: localStorageMock,
+  writable: true,
+  configurable: true,
+});
 if (typeof window !== "undefined") {
   Object.defineProperty(window, "localStorage", {
     value: localStorageMock,
     writable: true,
+    configurable: true,
   });
 }
 
@@ -41,7 +42,7 @@ describe("I18nService", () => {
   beforeEach(() => {
     if (!canRunTests) return;
     ensureDocumentBody();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     localStorageMock.getItem.mockReturnValue(null);
 
     (I18nService as unknown as { instance: unknown })["instance"] = undefined;
@@ -161,7 +162,7 @@ describe("I18nService", () => {
         return;
       }
       const service = I18nService.getInstance();
-      const listener = vi.fn();
+      const listener = jest.fn();
       const unsubscribe = service.subscribe(listener);
 
       service.setLocale("id_ID");

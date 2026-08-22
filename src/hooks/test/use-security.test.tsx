@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, jest, beforeEach, afterEach, mock } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import {
   useSecurity,
@@ -9,11 +9,11 @@ import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 if (
   typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" ||
-  typeof (vi as unknown as Record<string, unknown>).mock !== "function"
+  typeof (jest as unknown as Record<string, unknown>).mock !== "function"
 )
-  (vi as unknown as Record<string, unknown>).mock = () => undefined;
+  (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
-vi.mock("@/lib/trpc", () => ({
+mock.module("@/lib/trpc", () => ({
   trpc: null,
 }));
 
@@ -24,14 +24,14 @@ describe("useSecurity hook", () => {
     }
 
     ensureDocumentBody();
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   describe("hardened security patterns and limits", () => {
@@ -522,14 +522,14 @@ describe("useSecurityMonitoring hook", () => {
       return;
     }
     ensureDocumentBody();
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
     if (!canRunTests) {
       return;
     }
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   it("should return security hook values", () => {
@@ -550,14 +550,14 @@ describe("useSecurityMonitoring hook", () => {
       return;
     }
 
-    const _originalEnv = process.env.NODE_ENV;
-    vi.stubEnv("NODE_ENV", "development");
+    const originalEnv = process.env.NODE_ENV;
+    (process.env as Record<string, string>).NODE_ENV = "development";
 
     const { result, unmount } = renderHook(() => useSecurityMonitoring());
 
     expect(result.current.isSecure).toBe(true);
 
     unmount();
-    vi.unstubAllEnvs();
+    (process.env as Record<string, string>).NODE_ENV = originalEnv;
   });
 });

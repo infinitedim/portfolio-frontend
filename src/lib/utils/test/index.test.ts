@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import * as utils from "../index";
 
 describe("lib/utils index exports", () => {

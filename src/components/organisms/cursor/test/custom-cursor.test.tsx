@@ -1,9 +1,9 @@
 import { renderHook, act } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, mock } from "bun:test";
 import { CursorProvider, useCursor } from "../cursor-context";
 import type { ReactNode } from "react";
 
-vi.mock("@/hooks/use-pointer-device", () => ({
+mock.module("@/hooks/use-pointer-device", () => ({
   usePointerDevice: () => ({
     isFinePointer: true,
     isTouchDevice: false,

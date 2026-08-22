@@ -1,14 +1,14 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, jest } from "bun:test";
 import sitemap from "../sitemap";
 import type { MetadataRoute } from "next";
 
-const mockFetch = vi.fn();
+const mockFetch = jest.fn();
 
 global.fetch = mockFetch as unknown as typeof fetch;
 
 describe("sitemap.ts", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     delete process.env.NEXT_PUBLIC_BASE_URL;
     delete process.env.NEXT_PUBLIC_SITE_URL;
 
@@ -62,8 +62,10 @@ describe("sitemap.ts", () => {
   });
 
   it("handles API errors gracefully", async () => {
-    mockFetch.mockRejectedValueOnce(new Error("Network error"));
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    mockFetch.mockRejectedValue(new Error("Network error"));
     const result = await sitemap();
     expect(result.length).toBeGreaterThan(0);
+    consoleSpy.mockRestore();
   });
 });

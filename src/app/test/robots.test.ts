@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, jest } from "bun:test";
 import robots from "../robots";
 import type { MetadataRoute } from "next";
 
@@ -8,7 +8,7 @@ function getRulesArray(result: MetadataRoute.Robots) {
 
 describe("robots.ts", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     delete process.env.NEXT_PUBLIC_BASE_URL;
   });
