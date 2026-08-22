@@ -107,10 +107,28 @@ class FileTransport {
 
       const logLine = JSON.stringify(entry) + "\n";
 
-      if (!existsSync(this.filePath)) {
-        writeFileSync(this.filePath, logLine, "utf8");
+      const bunGlobal = (globalThis as unknown as Record<string, unknown>).Bun as
+        | {
+            file: (path: string) => unknown;
+            write: (
+              target: unknown,
+              data: string,
+              options?: { append?: boolean },
+            ) => Promise<number>;
+          }
+        | undefined;
+
+      if (bunGlobal) {
+        const file = bunGlobal.file(this.filePath);
+        bunGlobal.write(file, logLine, { append: true }).catch((error: unknown) => {
+          console.error("Failed to write log to file via Bun.write:", error);
+        });
       } else {
-        appendFileSync(this.filePath, logLine, "utf8");
+        if (!existsSync(this.filePath)) {
+          writeFileSync(this.filePath, logLine, "utf8");
+        } else {
+          appendFileSync(this.filePath, logLine, "utf8");
+        }
       }
     } catch (error) {
       console.error("Failed to write log to file:", error);

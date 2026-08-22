@@ -114,7 +114,7 @@ export function TurnstileResumeModal({
                 <div className="flex flex-col items-center gap-3">
                   <Turnstile
                     siteKey={siteKey}
-                    onSuccess={(token) => handleDownloadWithToken(token)}
+                    onSuccess={(token: string) => handleDownloadWithToken(token)}
                     onError={() => {
                       setHasFailed(true);
                       setErrorMsg(

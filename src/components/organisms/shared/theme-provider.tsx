@@ -17,16 +17,20 @@ export function useThemeContext() {
   };
 }
 
+const TypedNextThemesProvider = NextThemesProvider as unknown as React.ComponentType<
+  React.PropsWithChildren<ThemeProviderProps>
+>;
+
 export function ThemeProvider({
   children,
   ...props
-}: ThemeProviderProps): React.JSX.Element {
+}: React.PropsWithChildren<ThemeProviderProps>): React.JSX.Element {
   return (
-    <NextThemesProvider
+    <TypedNextThemesProvider
       {...props}
       storageKey="terminal-theme"
     >
       {children}
-    </NextThemesProvider>
+    </TypedNextThemesProvider>
   );
 }

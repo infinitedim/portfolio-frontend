@@ -1,4 +1,4 @@
-import { expect } from "vitest";
+import { expect } from "bun:test";
 
 /** True when jsdom document/window are available (Vitest + Bun runner). */
 export const canRunTests =
