@@ -12,11 +12,7 @@
     "lint:fix": "eslint . --fix",
     "test": "bun test --isolate --pass-with-no-tests src/",
     "test:bun": "bun test --isolate --pass-with-no-tests src/",
-    "test:watch": "vitest --watch",
-    "test:ui": "vitest --ui",
-    "test:run": "vitest run",
-    "test:vitest": "vitest run",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "bun test --coverage --isolate src/",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,mdx}\"",
@@ -74,11 +70,6 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
-    "@vitest/coverage-v8": "^4.1.11",
-    "@vitest/mocker": "^4.1.11",
-    "@vitest/snapshot": "^4.1.11",
-    "@vitest/ui": "^4.1.11",
-    "@vitest/utils": "^4.1.11",
     "autoprefixer": "^10.5.4",
     "babel-plugin-react-compiler": "^1.0.0",
     "cssnano": "^8.0.8",
@@ -103,8 +94,7 @@
     "tailwindcss": "^4.3.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.67.0",
-    "vitest": "^4.1.11"
+    "typescript-eslint": "^8.67.0"
   },
   "ignoreScripts": [
     "unrs-resolver"
