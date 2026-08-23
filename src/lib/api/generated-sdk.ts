@@ -1,6 +1,6 @@
 /**
  * AUTO-GENERATED API SDK CONTRACT (Rust Axum utoipa -> Bun TypeScript)
- * Generated at: 2026-08-22T14:50:50.353Z
+ * Generated at: 2026-08-23T05:47:16.609Z
  * Source OpenAPI: Fetched live from backend
  */
 
