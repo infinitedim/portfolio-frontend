@@ -12,7 +12,7 @@ concurrency:
 
 env:
   BUN_VERSION: "1.4.0"
-  NODE_VERSION: "22"
+  NODE_VERSION: "24"
 
 jobs:
   lint:
@@ -83,6 +83,14 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
           fail_ci_if_error: false
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-lcov
+          path: ./coverage/lcov.info
+          overwrite: true
 
   build:
     name: Build
