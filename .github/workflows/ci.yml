@@ -47,7 +47,7 @@ jobs:
         run: bun run type-check
 
   test:
-    name: Tests
+    name: Unit & Integration Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: lint
@@ -76,13 +76,35 @@ jobs:
       - name: Run unit and integration tests
         run: bun run test
 
-      - name: Upload coverage reports
-        if: always()
-        uses: codecov/codecov-action@v7
+  coverage:
+    name: Test Coverage Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/lcov.info
-          fail_ci_if_error: false
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Generate test coverage report
+        run: bun run test:coverage
 
       - name: Upload coverage artifact
         if: always()
@@ -91,6 +113,14 @@ jobs:
           name: frontend-lcov
           path: ./coverage/lcov.info
           overwrite: true
+
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
 
   build:
     name: Build
