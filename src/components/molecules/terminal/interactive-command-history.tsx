@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Star, X, Play } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useCommandHistory } from "@/hooks/use-command-history";
 import {
@@ -334,7 +335,7 @@ export function InteractiveCommandHistory({
               className="p-2 rounded hover:bg-opacity-20 transition-colors"
               style={{ color: themeConfig.colors.muted }}
             >
-              ✕
+              <X size={14} />
             </button>
           </div>
         </div>
@@ -414,7 +415,7 @@ export function InteractiveCommandHistory({
 
                         {entry.favorite && (
                           <span style={{ color: themeConfig.colors.warning }}>
-                            ⭐
+                            <Star size={12} className="fill-current inline" />
                           </span>
                         )}
                       </div>
@@ -709,14 +710,18 @@ export function InteractiveCommandHistory({
               <span>Interactive History</span>
               {enableRealTime && <span>Real-time updates</span>}
               {showPatterns && <span>Pattern recognition</span>}
-              {enableReplay && <span>▶️ Command replay</span>}
+              {enableReplay && (
+                <span className="inline-flex items-center gap-1">
+                  <Play size={10} className="inline fill-current text-emerald-400" /> Command replay
+                </span>
+              )}
             </div>
 
             <div className="flex items-center gap-3 text-xs">
               <span>Ctrl+R: Toggle replay</span>
-              <span>•</span>
+              <span className="text-neutral-600">|</span>
               <span>Ctrl+E: Export</span>
-              <span>•</span>
+              <span className="text-neutral-600">|</span>
               <span>Esc: Close</span>
             </div>
           </div>

@@ -1,16 +1,28 @@
 import { describe, it, expect } from "bun:test";
 import { decodeCipherSecret } from "../cipher-wasm";
 
-describe("cipher-wasm", () => {
-  it("should return empty string for empty input", async () => {
+describe("wasm/cipher-wasm", () => {
+  it("should return empty decoded result for empty string", async () => {
     const res = await decodeCipherSecret("");
     expect(res.decoded).toBe("");
+    expect(res.engineUsed).toBe("js-fallback");
   });
 
-  it("should decode hex encoded payload correctly", async () => {
-    const sampleHex = Buffer.from("yourblooo_secret_key").toString("hex");
-    const res = await decodeCipherSecret(sampleHex);
-    expect(res.decoded).toBe("yourblooo_secret_key");
-    expect(["rust-wasm", "js-fallback"]).toContain(res.engineUsed);
+  it("should decode hex encoded string using WASM engine path", async () => {
+    // Hex of "natas3_secret"
+    const hex = Buffer.from("natas3_secret", "utf-8").toString("hex");
+    const res = await decodeCipherSecret(hex);
+
+    expect(res.engineUsed).toBe("rust-wasm");
+    expect(res.decoded).toBe("natas3_secret");
+  });
+
+  it("should fall back to base64 decoding when hex parsing fails", async () => {
+    // Base64 of "b64_secret" (contains non-hex char 'g')
+    const b64 = Buffer.from("b64_secret_test", "utf-8").toString("base64");
+    const res = await decodeCipherSecret(b64);
+
+    expect(res.engineUsed).toBe("js-fallback");
+    expect(res.decoded).toBe("b64_secret_test");
   });
 });

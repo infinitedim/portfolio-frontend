@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, type JSX } from "react";
+import { Loader2, ArrowUpDown } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import {
   useCommandSuggestions,
@@ -176,7 +177,7 @@ export function CommandSuggestions({
       case "recent":
         return "";
       case "popular":
-        return "⭐";
+        return "[TOP]";
       default:
         return "";
     }
@@ -260,26 +261,26 @@ export function CommandSuggestions({
           </span>
           {isLoading && (
             <span className="flex items-center gap-1 text-xs opacity-75">
-              <span className="animate-spin">⟳</span>
+              <Loader2 size={12} className="animate-spin" />
               Loading...
             </span>
           )}
           {suggestions[selectedIndex] && (
             <span className="opacity-70 text-xs">
-              • {suggestions[selectedIndex].type}
+              <span className="mx-1">|</span> {suggestions[selectedIndex].type}
             </span>
           )}
           {enableLearning && userContext.totalCommands > 0 && (
             <span className="opacity-60 text-xs">
-              • {userContext.totalCommands} commands used
+              <span className="mx-1">|</span> {userContext.totalCommands} commands used
             </span>
           )}
         </div>
         <div className="flex items-center gap-2 text-xs opacity-60">
-          <span>↑↓ Navigate</span>
-          <span>•</span>
+          <span className="inline-flex items-center gap-1"><ArrowUpDown size={10} /> Navigate</span>
+          <span>|</span>
           <span>Tab Select</span>
-          <span>•</span>
+          <span>|</span>
           <span>Esc Close</span>
         </div>
       </div>

@@ -159,7 +159,7 @@ export function NatasLoginForm({
             className="inline-flex items-center justify-center gap-2 w-full rounded border border-neutral-700 bg-neutral-900/80 px-4 py-2.5 font-mono text-xs text-neutral-300 transition-all hover:border-green-400/50 hover:text-green-400"
           >
             <ArrowLeft size={14} />
-            Back to Standard Portfolio
+            $ cd / --standard
           </Link>
 
           {process.env.NODE_ENV === "development" && (

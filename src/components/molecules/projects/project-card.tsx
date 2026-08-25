@@ -116,8 +116,9 @@ export const ProjectCard = memo(function ProjectCard({
         <div className="flex flex-col flex-grow">
           <div className="mb-2">
             <div className="flex items-center justify-between gap-2 mb-1">
-              <span className={`font-mono text-[10px] ${status.color}`}>
-                ● {status.label}
+              <span className={`inline-flex items-center gap-1.5 font-mono text-[10px] ${status.color}`}>
+                <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                {status.label}
               </span>
             </div>
             <h3

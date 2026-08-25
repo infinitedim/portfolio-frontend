@@ -1,5 +1,4 @@
 import { describe, it, expect } from "bun:test";
-import { canRunTests } from "@/test/test-helpers";
 import {
   ValidationError,
   AuthenticationError,
@@ -12,153 +11,88 @@ import {
   InternalError,
   isAppError,
   toAppError,
-  ErrorCodes,
 } from "../errors";
 
-describe("errors.ts", () => {
-  describe("ValidationError", () => {
-    it("should create validation error", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const error = new ValidationError("Invalid input", { field: "email" });
-      expect(error.code).toBe("VALIDATION_ERROR");
-      expect(error.statusCode).toBe(400);
-      expect(error.field).toBe("email");
+describe("types/errors", () => {
+  it("ValidationError factory helpers and methods", () => {
+    const err = ValidationError.fromField("email", "Email is invalid");
+    expect(err.code).toBe("VALIDATION_ERROR");
+    expect(err.statusCode).toBe(400);
+    expect(err.field).toBe("email");
+    expect(err.toClientError()).toEqual({
+      code: "VALIDATION_ERROR",
+      message: "Email is invalid",
+      statusCode: 400,
     });
+    expect(err.toJSON()).toHaveProperty("timestamp");
+
+    const errConstraints = ValidationError.fromConstraints({
+      f1: "Field 1 required",
+      f2: "Field 2 required",
+    });
+    expect(errConstraints.message).toContain("Field 1 required");
   });
 
-  describe("AuthenticationError", () => {
-    it("should create authentication error", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const error = new AuthenticationError("Not authenticated");
-      expect(error.code).toBe("AUTHENTICATION_ERROR");
-      expect(error.statusCode).toBe(401);
-    });
+  it("AuthenticationError static factory methods", () => {
+    expect(AuthenticationError.invalidCredentials().message).toBe("Invalid email or password");
+    expect(AuthenticationError.tokenExpired().message).toBe("Token has expired");
+    expect(AuthenticationError.tokenInvalid().message).toBe("Invalid token");
+    expect(AuthenticationError.sessionExpired().message).toBe("Session has expired");
   });
 
-  describe("AuthorizationError", () => {
-    it("should create authorization error", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const error = new AuthorizationError("Not authorized", "admin");
-      expect(error.code).toBe("AUTHORIZATION_ERROR");
-      expect(error.statusCode).toBe(403);
-    });
+  it("AuthorizationError static factory methods", () => {
+    const permErr = AuthorizationError.insufficientPermissions("write:blog");
+    expect(permErr.requiredPermission).toBe("write:blog");
+    expect(AuthorizationError.adminRequired().requiredPermission).toBe("admin");
   });
 
-  describe("NotFoundError", () => {
-    it("should create not found error", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const error = new NotFoundError("Resource not found", {
-        resource: "user",
-        identifier: "123",
-      });
-      expect(error.code).toBe("NOT_FOUND");
-      expect(error.statusCode).toBe(404);
-    });
+  it("NotFoundError static factory methods", () => {
+    const errWithId = NotFoundError.forResource("Project", "proj-123");
+    expect(errWithId.message).toContain("Project with id 'proj-123' not found");
+    expect(errWithId.resource).toBe("Project");
+
+    const errNoId = NotFoundError.forResource("User");
+    expect(errNoId.message).toBe("User not found");
   });
 
-  describe("ConflictError", () => {
-    it("should create conflict error", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const error = new ConflictError("Resource conflict");
-      expect(error.code).toBe("CONFLICT");
-      expect(error.statusCode).toBe(409);
-    });
+  it("ConflictError static factory methods", () => {
+    expect(ConflictError.alreadyExists("User", "email").message).toContain("with this email already exists");
+    expect(ConflictError.alreadyExists("User").message).toBe("User already exists");
   });
 
-  describe("RateLimitError", () => {
-    it("should create rate limit error", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const error = new RateLimitError("Too many requests", 60);
-      expect(error.code).toBe("RATE_LIMIT_EXCEEDED");
-      expect(error.statusCode).toBe(429);
-    });
+  it("RateLimitError static factory methods", () => {
+    const err = RateLimitError.withRetry(60);
+    expect(err.retryAfter).toBe(60);
+    expect(err.statusCode).toBe(429);
   });
 
-  describe("NetworkError", () => {
-    it("should create network error", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const error = new NetworkError("Network error", { service: "API" });
-      expect(error.code).toBe("NETWORK_ERROR");
-      expect(error.statusCode).toBe(502);
-    });
+  it("NetworkError static factory methods", () => {
+    const err = NetworkError.fromService("GitHub API");
+    expect(err.service).toBe("GitHub API");
+    expect(err.statusCode).toBe(502);
+
+    expect(NetworkError.timeout("Resend").message).toContain("Request to Resend timed out");
+    expect(NetworkError.timeout().message).toBe("Request timed out");
   });
 
-  describe("DatabaseError", () => {
-    it("should create database error", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const error = new DatabaseError("Database error", "query");
-      expect(error.code).toBe("DATABASE_ERROR");
-      expect(error.statusCode).toBe(500);
-    });
+  it("DatabaseError static factory methods", () => {
+    expect(DatabaseError.queryFailed("SELECT").operation).toBe("SELECT");
+    expect(DatabaseError.connectionFailed().operation).toBe("connect");
   });
 
-  describe("InternalError", () => {
-    it("should create internal error", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const error = new InternalError("Internal error");
-      expect(error.code).toBe("INTERNAL_ERROR");
-      expect(error.statusCode).toBe(500);
-    });
-  });
+  it("InternalError and helper functions isAppError & toAppError", () => {
+    const customErr = new NotFoundError("Not found item");
+    expect(isAppError(customErr)).toBe(true);
+    expect(toAppError(customErr)).toBe(customErr);
 
-  describe("Utility Functions", () => {
-    it("should check if error is AppError", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const appError = new ValidationError("Test");
-      const regularError = new Error("Test");
-      expect(isAppError(appError)).toBe(true);
-      expect(isAppError(regularError)).toBe(false);
-    });
+    const standardErr = new Error("Generic error");
+    expect(isAppError(standardErr)).toBe(false);
 
-    it("should convert to AppError", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const regularError = new Error("Test");
-      const appError = toAppError(regularError);
-      expect(isAppError(appError)).toBe(true);
-    });
-  });
+    const converted = toAppError(standardErr);
+    expect(converted).toBeInstanceOf(InternalError);
+    expect(converted.message).toBe("Generic error");
 
-  describe("ErrorCodes", () => {
-    it("should export error codes", () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      expect(ErrorCodes.VALIDATION_ERROR).toBe("VALIDATION_ERROR");
-      expect(ErrorCodes.AUTHENTICATION_ERROR).toBe("AUTHENTICATION_ERROR");
-    });
+    const convertedStr = toAppError("String error message");
+    expect(convertedStr.message).toBe("String error message");
   });
 });

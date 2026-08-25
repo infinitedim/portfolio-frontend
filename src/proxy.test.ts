@@ -81,6 +81,13 @@ describe("proxy", () => {
       delete process.env.NEXT_PUBLIC_API_URL;
     });
 
+    it("handles normalizeApiOrigin fallback and invalid URL inputs", () => {
+      const { normalizeApiOrigin } = require("./proxy");
+      expect(normalizeApiOrigin("not-a-valid-url")).toBe("not-a-valid-url");
+      expect(normalizeApiOrigin(undefined)).toBe("https://api.infinitedim.dev");
+      expect(normalizeApiOrigin("  http://localhost:8080/  ")).toBe("http://localhost:8080");
+    });
+
     it("should handle security configuration", () => {
       const result = proxy(mockRequest);
       expect(result).toBeDefined();
@@ -451,6 +458,24 @@ describe("proxy", () => {
       process.env.NEXT_PUBLIC_GATE_ENABLED = "false";
       const request = new NextRequest("http://127.0.0.1:3000/terminal");
       expect(resolveGateRedirect(request)).toBeNull();
+    });
+
+    it("blocks direct access to /resume.pdf with 403 Forbidden", () => {
+      const resumeReq = new NextRequest("http://127.0.0.1:3000/resume.pdf");
+      resumeReq.nextUrl.pathname = "/resume.pdf";
+      const res = proxy(resumeReq);
+      expect(res).toBeDefined();
+      expect(String(res.status)).toContain("Direct access to resume.pdf is blocked");
+    });
+
+    it("redirects mobile devices visiting /gate to landing /", () => {
+      process.env.NEXT_PUBLIC_GATE_ENABLED = "true";
+      const mobileReq = new NextRequest("http://127.0.0.1:3000/gate", {
+        headers: [["user-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)"]],
+      });
+      mobileReq.nextUrl.pathname = "/gate";
+      const redirect = resolveGateRedirect(mobileReq);
+      expect(redirect?.headers.get("location")).toBe("http://127.0.0.1:3000/");
     });
   });
 

@@ -149,7 +149,7 @@ export function SiteFooter(): JSX.Element {
               ·
             </span>
             <span className="text-[11px] text-(--terminal-muted)">
-              Next.js 16 • Axum 0.8 • GCP
+              Next.js 16<span className="mx-1 text-(--terminal-border)">|</span>Axum 0.8<span className="mx-1 text-(--terminal-border)">|</span>GCP
             </span>
           </div>
         </div>

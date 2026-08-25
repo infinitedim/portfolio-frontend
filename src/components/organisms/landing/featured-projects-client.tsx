@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { type JSX } from "react";
+import { ArrowRight } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { Project } from "@/lib/data/data-fetching";
 import { ProjectCard } from "@/components/molecules/projects/project-card";
@@ -33,9 +34,13 @@ export function FeaturedProjectsClient({
           <Link
             href="/projects"
             prefetch={false}
-            className="font-mono text-xs text-(--terminal-muted) transition-colors duration-200 hover:text-(--terminal-accent)"
+            className="group inline-flex items-center gap-1 font-mono text-xs text-(--terminal-muted) transition-colors duration-200 hover:text-(--terminal-accent)"
           >
-            {t("projectsViewAll")} →
+            {t("projectsViewAll")}
+            <ArrowRight
+              size={14}
+              className="transition-transform duration-200 ease-out group-hover:translate-x-1"
+            />
           </Link>
         </FadeIn>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, type JSX } from "react";
+import { Loader2, Check, X } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 
 interface TerminalLoadingProgressProps {
@@ -193,15 +194,14 @@ export function TerminalLoadingProgress({
         return <span style={{ color: themeConfig.colors.muted }}></span>;
       case "loading":
         return (
-          <span
+          <Loader2
+            size={12}
             className="animate-spin"
             style={{ color: themeConfig.colors.accent }}
-          >
-            ⟳
-          </span>
+          />
         );
       case "complete": {
-        const icon = loadTime && loadTime < 100 ? "" : "✓";
+        const icon = loadTime && loadTime < 100 ? null : <Check size={12} />;
         return (
           <span
             style={{
@@ -214,9 +214,10 @@ export function TerminalLoadingProgress({
       }
       case "error":
         return (
-          <span style={{ color: themeConfig.colors.error || "#ef4444" }}>
-            ✗
-          </span>
+          <X
+            size={12}
+            style={{ color: themeConfig.colors.error || "#ef4444" }}
+          />
         );
       default:
         return <span></span>;

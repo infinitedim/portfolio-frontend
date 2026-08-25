@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { type JSX } from "react";
+import { Check } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 
 const LEVELS = [
@@ -47,7 +48,7 @@ export function GateProgress({
             }`}
             onClick={locked ? (e) => e.preventDefault() : undefined}
           >
-            {completed ? "✓ " : ""}
+            {completed && <Check size={12} className="mr-1 inline-block" />}
             {t(key)}
           </Link>
         );

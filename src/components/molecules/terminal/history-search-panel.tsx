@@ -7,6 +7,7 @@ import {
   type KeyboardEvent,
   type JSX,
 } from "react";
+import { Star, Check, X, ArrowUpDown, Trash2 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import {
   useCommandHistory,
@@ -205,7 +206,7 @@ export function HistorySearchPanel({
                 }}
                 title="Favorite"
               >
-                ⭐
+                <Star size={12} className="fill-current" />
               </span>
             )}
 
@@ -226,7 +227,7 @@ export function HistorySearchPanel({
                   color: themeConfig.colors.info || themeConfig.colors.accent,
                 }}
               >
-                ×{entry.frequency}
+                x{entry.frequency}
               </span>
             )}
           </div>
@@ -249,7 +250,7 @@ export function HistorySearchPanel({
                   : "bg-red-500/20 text-red-400"
               }`}
             >
-              {entry.success ? "✓" : "✗"}
+              {entry.success ? <Check size={12} /> : <X size={12} />}
             </span>
           </div>
         </div>
@@ -530,7 +531,7 @@ export function HistorySearchPanel({
               }}
               title="Clear history"
             >
-              ️
+              <Trash2 size={14} />
             </button>
 
             <button
@@ -542,7 +543,7 @@ export function HistorySearchPanel({
                 backgroundColor: "transparent",
               }}
             >
-              ✕
+              <X size={14} />
             </button>
           </div>
         </div>
@@ -703,7 +704,7 @@ export function HistorySearchPanel({
             of {analytics.totalCommands} commands
           </div>
           <div className="flex items-center gap-4">
-            <span>↑↓ Navigate</span>
+            <span className="inline-flex items-center gap-1"><ArrowUpDown size={10} /> Navigate</span>
             <span>Enter Select</span>
             <span>Ctrl+F Favorite</span>
             <span>Ctrl+Del Remove</span>

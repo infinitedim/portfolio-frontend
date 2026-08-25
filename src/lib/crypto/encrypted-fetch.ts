@@ -103,7 +103,7 @@ async function doFetch(
 
   let json: unknown;
   try {
-    json = await res.json();
+    json = await res.clone().json();
   } catch {
     return res;
   }

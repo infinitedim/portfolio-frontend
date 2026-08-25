@@ -31,6 +31,35 @@ describe("gate-client", () => {
     }
   });
 
+  it("getLevel3Challenge should fetch /api/gate/challenge/3/encoded", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(
+      async () => new Response(JSON.stringify({ encodedSecret: "secret-abc", algorithm: "base64" }), { status: 200 })
+    ) as unknown as typeof fetch;
+
+    try {
+      const res = await gateClient.getLevel3Challenge();
+      expect(res.encodedSecret).toBe("secret-abc");
+      expect(res.algorithm).toBe("base64");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("completeLevel3 should POST /api/gate/complete/3", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(
+      async () => new Response(JSON.stringify({ passed: true }), { status: 200 })
+    ) as unknown as typeof fetch;
+
+    try {
+      const res = await gateClient.completeLevel3("secret-123");
+      expect(res.passed).toBe(true);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
   it("unlock should POST /api/gate/unlock", async () => {
     const originalFetch = globalThis.fetch;
     globalThis.fetch = mock(

@@ -1,19 +1,54 @@
 import { describe, it, expect } from "bun:test";
 import { registerCronJob } from "../scheduler";
 
-describe("scheduler", () => {
-  it("should register cron job and return stop function", () => {
-    let executed = false;
-    const job = registerCronJob("0 * * * *", 100000, "test-job", () => {
-      executed = true;
-    });
+describe("cron/scheduler", () => {
+  it("should register fallback interval job and stop cleanly", (done) => {
+    const bunGlobal = (globalThis as unknown as Record<string, unknown>).Bun as
+      | { cron?: unknown }
+      | undefined;
+    const originalCron = bunGlobal?.cron;
+    if (bunGlobal) bunGlobal.cron = undefined;
 
-    expect(job).toBeDefined();
-    expect(job.name).toBe("test-job");
-    expect(["bun-cron", "fallback-interval"]).toContain(job.engineUsed);
-    expect(typeof job.stop).toBe("function");
+    try {
+      let count = 0;
+      const job = registerCronJob("*/1 * * * *", 50, "test-job", () => {
+        count++;
+      });
 
-    job.stop();
-    expect(executed).toBe(false);
+      expect(job.name).toBe("test-job");
+      expect(job.engineUsed).toBe("fallback-interval");
+
+      setTimeout(() => {
+        job.stop();
+        expect(count).toBeGreaterThan(0);
+        done();
+      }, 120);
+    } finally {
+      if (bunGlobal) bunGlobal.cron = originalCron;
+    }
+  });
+
+  it("should use native Bun.cron when present on globalThis.Bun", () => {
+    const bunGlobal = (globalThis as unknown as Record<string, unknown>).Bun as
+      | { cron?: (expr: string, cb: () => void) => void }
+      | undefined;
+
+    if (!bunGlobal) return;
+
+    const originalCron = bunGlobal.cron;
+    let registeredExpr = "";
+
+    bunGlobal.cron = (expr: string) => {
+      registeredExpr = expr;
+    };
+
+    try {
+      const job = registerCronJob("0 * * * *", 1000, "bun-job", () => {});
+      expect(job.engineUsed).toBe("bun-cron");
+      expect(registeredExpr).toBe("0 * * * *");
+      job.stop();
+    } finally {
+      bunGlobal.cron = originalCron;
+    }
   });
 });

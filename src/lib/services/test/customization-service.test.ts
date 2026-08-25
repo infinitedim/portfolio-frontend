@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
+import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { CustomizationService } from "@/lib/services/customization-service";
 
 const storage: Record<string, string> = {};
@@ -16,17 +16,10 @@ const localStorageMock = {
   },
 };
 
-const mockRemove = jest.fn();
-const mockQuerySelectorAll = jest.fn(() => {
-  return Array.from({ length: 0 }, () => ({ remove: mockRemove }));
-});
-
 describe("CustomizationService", () => {
-  let originalDocument: Document;
   let originalWindow: Window & typeof globalThis;
 
   beforeEach(() => {
-    originalDocument = globalThis.document;
     originalWindow = globalThis.window;
 
     if (typeof window === "undefined") {
@@ -42,26 +35,6 @@ describe("CustomizationService", () => {
       configurable: true,
     });
 
-    if (typeof document !== "undefined") {
-      Object.defineProperty(document, "querySelectorAll", {
-        value: mockQuerySelectorAll,
-        writable: true,
-        configurable: true,
-      });
-    } else {
-      Object.defineProperty(global, "document", {
-        value: {
-          querySelectorAll: mockQuerySelectorAll,
-        },
-        writable: true,
-        configurable: true,
-      });
-    }
-
-    mockQuerySelectorAll.mockReturnValue(
-      Array.from({ length: 0 }, () => ({ remove: mockRemove })),
-    );
-    mockRemove.mockClear();
     localStorageMock.clear();
 
     (CustomizationService as unknown as { instance: unknown })["instance"] =
@@ -69,11 +42,6 @@ describe("CustomizationService", () => {
   });
 
   afterEach(() => {
-    Object.defineProperty(globalThis, "document", {
-      value: originalDocument,
-      configurable: true,
-      writable: true,
-    });
     Object.defineProperty(globalThis, "window", {
       value: originalWindow,
       configurable: true,
@@ -81,15 +49,16 @@ describe("CustomizationService", () => {
     });
   });
 
-  it("returns built-in themes plus custom themes via getAllThemes", () => {
+  it("returns built-in themes and fonts via getAllThemes and getAllFonts", () => {
     const svc = CustomizationService.getInstance();
 
-    localStorageMock.removeItem("terminal-custom-themes");
+    const themes = svc.getAllThemes();
+    expect(themes.length).toBeGreaterThan(0);
+    expect(themes[0]).toHaveProperty("id");
 
-    const all = svc.getAllThemes();
-    expect(Array.isArray(all)).toBe(true);
-
-    expect(all.length).toBeGreaterThan(0);
+    const fonts = svc.getAllFonts();
+    expect(fonts.length).toBeGreaterThan(0);
+    expect(fonts[0]).toHaveProperty("family");
   });
 
   it("manages settings and resetToDefaults", () => {
@@ -98,11 +67,28 @@ describe("CustomizationService", () => {
     svc.saveSettings({ currentTheme: "matrix" });
 
     const settings = svc.getSettings();
-    expect(settings).toHaveProperty("currentTheme");
+    expect(settings.currentTheme).toBe("matrix");
 
     svc.resetToDefaults();
 
     const after = svc.getSettings();
     expect(after.currentTheme).toBe("dark");
+  });
+
+  it("manages background settings and handles corrupted JSON fallback", () => {
+    const svc = CustomizationService.getInstance();
+
+    svc.saveBackgroundSettings({ type: "letter-glitch" });
+    const bg = svc.getBackgroundSettings();
+    expect(bg.type).toBe("letter-glitch");
+
+    // Corrupt JSON
+    localStorageMock.setItem("terminal-background-settings", "{invalid-json");
+    const fallbackBg = svc.getBackgroundSettings();
+    expect(fallbackBg.type).toBe("letter-glitch");
+
+    localStorageMock.setItem("terminal-customization-settings", "{invalid-json");
+    const fallbackSettings = svc.getSettings();
+    expect(fallbackSettings.currentTheme).toBe("dark");
   });
 });

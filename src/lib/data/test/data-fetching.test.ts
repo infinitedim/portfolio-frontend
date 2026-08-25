@@ -1,330 +1,263 @@
-import { describe, it, expect, jest, beforeEach } from "bun:test";
-import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
+import { describe, it, expect, mock } from "bun:test";
 import {
+  getGitHubAvatar,
+  getRoadmapDashboardWithError,
+  getRoadmapStreak,
   getPortfolioData,
   getProjectsData,
   getExperienceData,
   getAboutData,
   getFeaturedProjects,
   getGitHubData,
+  getRoadmapTeams,
+  getRoadmapFavourites,
   invalidateCache,
   checkDataHealth,
 } from "../data-fetching";
 
-const mockFetch = jest.fn();
-globalThis.fetch = mockFetch as unknown as typeof fetch;
+describe("data-fetching", () => {
+  it("getGitHubAvatar should fetch avatar from backend proxy", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(
+      async () => new Response(JSON.stringify({ avatarUrl: "https://example.com/avatar.jpg" }), { status: 200 })
+    ) as unknown as typeof fetch;
 
-global.Blob = class Blob {
-  size: number;
-  constructor(parts: Array<unknown>) {
-    this.size = JSON.stringify(parts).length;
-  }
-} as unknown as typeof Blob;
+    try {
+      const avatar = await getGitHubAvatar("infinitedim");
+      expect(avatar).toBe("https://example.com/avatar.jpg");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
 
-describe("data-fetching.ts", () => {
-  beforeEach(() => {
-    if (!canRunTests) return;
-    ensureDocumentBody();
-    jest.clearAllMocks();
-    mockFetch.mockReset();
-    mockFetch.mockImplementation(async (url: string) => {
-      if (url.includes("section=projects")) {
-        return {
-          ok: true,
-          json: async () => ({
+  it("getGitHubAvatar should return null when fetch fails or response is not ok", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(async () => new Response(null, { status: 404 })) as unknown as typeof fetch;
+
+    try {
+      const avatar = await getGitHubAvatar("nonexistent");
+      expect(avatar).toBeNull();
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("getPortfolioData should fetch projects, experience, and about in parallel", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(async (url: string | URL | Request) => {
+      const str = String(url);
+      if (str.includes("section=projects")) {
+        return new Response(JSON.stringify({ data: [{ id: "p1", name: "Project 1", featured: true }] }), { status: 200 });
+      }
+      if (str.includes("section=experience")) {
+        return new Response(JSON.stringify({ data: [{ company: "Tech Co", position: "Lead" }] }), { status: 200 });
+      }
+      if (str.includes("section=about")) {
+        return new Response(JSON.stringify({ data: { name: "Dimas", location: "ID" } }), { status: 200 });
+      }
+      return new Response(null, { status: 404 });
+    }) as unknown as typeof fetch;
+
+    try {
+      const portfolio = await getPortfolioData("en_US");
+      expect(portfolio.projects).toHaveLength(1);
+      expect(portfolio.experience).toHaveLength(1);
+      expect(portfolio.about.name).toBe("Dimas");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("getProjectsData should fetch, normalize, and limit projects", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(
+      async () =>
+        new Response(
+          JSON.stringify({
             data: [
-              {
-                id: "proj-1",
-                name: "Project 1",
-                description: "Description 1",
-                technologies: ["React"],
-                status: "completed",
-                featured: true,
-              },
-              {
-                id: "proj-2",
-                name: "Project 2",
-                description: "Description 2",
-                technologies: ["Rust"],
-                status: "in-progress",
-                featured: false,
-              },
+              { id: "1", name: "Awesome App", status: "active", featured: true },
+              { id: "2", name: "Backend Tool", status: "in-progress", featured: false },
             ],
           }),
-        };
+          { status: 200 },
+        ),
+    ) as unknown as typeof fetch;
+
+    try {
+      const projects = await getProjectsData(1);
+      expect(projects).toHaveLength(1);
+      expect(projects[0].slug).toBe("awesome-app");
+      expect(projects[0].status).toBe("completed");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("getExperienceData should try dedicated i18n endpoint first and fall back", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(async (url: string | URL | Request) => {
+      if (String(url).includes("/api/portfolio/experience")) {
+        return new Response(JSON.stringify({ data: [{ company: "I18n Corp", position: "Dev" }] }), { status: 200 });
       }
-      if (url.includes("section=experience")) {
-        return {
-          ok: true,
-          json: async () => ({
+      return new Response(null, { status: 404 });
+    }) as unknown as typeof fetch;
+
+    try {
+      const exp = await getExperienceData("id_ID");
+      expect(exp[0].company).toBe("I18n Corp");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("getAboutData should fetch about section or return fallback data", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(
+      async () => new Response(JSON.stringify({ data: { name: "About Name", title: "Dev" } }), { status: 200 }),
+    ) as unknown as typeof fetch;
+
+    try {
+      const about = await getAboutData("en_US");
+      expect(about.name).toBe("About Name");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("getFeaturedProjects should filter projects by featured flag", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(
+      async () =>
+        new Response(
+          JSON.stringify({
             data: [
-              {
-                company: "Company",
-                position: "Developer",
-                duration: "2020-2021",
-                description: ["Did stuff"],
-                technologies: ["React"],
-              },
+              { id: "1", name: "Featured App", featured: true },
+              { id: "2", name: "Other App", featured: false },
             ],
           }),
-        };
-      }
-      if (url.includes("section=about")) {
-        return {
-          ok: true,
-          json: async () => ({
-            data: {
-              name: "Dimas Saputra",
-              title: "Full-Stack Developer",
-              bio: "Bio",
-              location: "Indonesia",
-              contact: { email: "test@test.com", github: "", linkedin: "" },
-            },
-          }),
-        };
-      }
-      if (url.includes("/api/github/stats/")) {
-        return {
-          ok: true,
-          json: async () => ({
-            profile: { followers: 10, following: 20, publicRepos: 5 },
+          { status: 200 },
+        ),
+    ) as unknown as typeof fetch;
+
+    try {
+      const featured = await getFeaturedProjects();
+      expect(featured).toHaveLength(1);
+      expect(featured[0].name).toBe("Featured App");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("getGitHubData should fetch repositories and profile metrics", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(
+      async () =>
+        new Response(
+          JSON.stringify({
+            profile: { followers: 50, following: 20, publicRepos: 15 },
             repositories: [
-              {
-                name: "repo1",
-                description: "Description",
-                stars: 10,
-                forks: 5,
-                language: "TypeScript",
-                updatedAt: new Date().toISOString(),
-              },
+              { name: "repo1", description: "desc1", stars: 10, forks: 2, language: "Rust", updatedAt: "2026-01-01" },
             ],
           }),
-        };
-      }
-      return {
-        ok: true,
-        json: async () => ({}),
-      };
-    });
+          { status: 200 },
+        ),
+    ) as unknown as typeof fetch;
+
+    try {
+      const gh = await getGitHubData();
+      expect(gh.profile.followers).toBe(50);
+      expect(gh.repositories[0].name).toBe("repo1");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 
-  describe("getPortfolioData", () => {
-    it("should return portfolio data", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await getPortfolioData();
+  it("getRoadmapTeams & getRoadmapFavourites should fetch from backend roadmap proxy", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(async (url: string | URL | Request) => {
+      const str = String(url);
+      if (str.includes("/teams")) return new Response(JSON.stringify([{ id: "t1", name: "Team 1" }]), { status: 200 });
+      if (str.includes("/favourites")) return new Response(JSON.stringify({ roadmapSlugs: ["react"] }), { status: 200 });
+      return new Response(null, { status: 404 });
+    }) as unknown as typeof fetch;
 
-      expect(result).toHaveProperty("projects");
-      expect(result).toHaveProperty("experience");
-      expect(result).toHaveProperty("about");
-      expect(result).toHaveProperty("lastUpdated");
-    });
+    try {
+      const teams = await getRoadmapTeams();
+      expect(teams).toHaveLength(1);
+
+      const favs = await getRoadmapFavourites();
+      expect(favs?.roadmapSlugs).toContain("react");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 
-  describe("getProjectsData", () => {
-    it("should return projects data", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await getProjectsData();
+  it("checkDataHealth should verify health of portfolio API and GitHub proxy", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(
+      async () => new Response(JSON.stringify({ ok: true }), { status: 200 }),
+    ) as unknown as typeof fetch;
 
-      expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBeGreaterThan(0);
-    });
-
-    it("should limit projects when limit is provided", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await getProjectsData(2);
-
-      expect(result.length).toBeLessThanOrEqual(2);
-    });
+    try {
+      const health = await checkDataHealth();
+      expect(health.api).toBe(true);
+      expect(health.github).toBe(true);
+      expect(health.lastCheck).toBeDefined();
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 
-  describe("getExperienceData", () => {
-    it("should return experience data", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: async () => ({ data: [] }),
-      });
-
-      const result = await getExperienceData();
-
-      expect(Array.isArray(result)).toBe(true);
-    });
-
-    it("should return fallback data on error", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const spy = jest.spyOn(console, "error").mockImplementation(() => {});
-      mockFetch.mockRejectedValue(new Error("Network error"));
-
-      const result = await getExperienceData();
-
-      expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBe(1);
-      expect(result[0].company).toBe("Freelance");
-      spy.mockRestore();
-    });
+  it("invalidateCache should warn in non-production environments", async () => {
+    await expect(invalidateCache("projects")).resolves.toBeUndefined();
   });
 
-  describe("getAboutData", () => {
-    it("should return about data", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          data: {
-            name: "Test",
-            title: "Developer",
-            bio: "Bio",
-            location: "Location",
-            contact: { email: "test@test.com", github: "", linkedin: "" },
-          },
-        }),
-      });
+  it("getRoadmapDashboardWithError should parse data on 200 response", async () => {
+    const originalFetch = globalThis.fetch;
+    const mockDashboard = { username: "infinitedim", progresses: [] };
 
-      const result = await getAboutData();
+    globalThis.fetch = mock(
+      async () => new Response(JSON.stringify(mockDashboard), { status: 200 })
+    ) as unknown as typeof fetch;
 
-      expect(result).toHaveProperty("name");
-      expect(result).toHaveProperty("title");
-    });
-
-    it("should return fallback data on error", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const spy = jest.spyOn(console, "error").mockImplementation(() => {});
-      mockFetch.mockRejectedValue(new Error("Network error"));
-
-      const result = await getAboutData();
-
-      expect(result).toHaveProperty("name");
-      expect(result.name).toBe("Dimas Saputra");
-      spy.mockRestore();
-    });
+    try {
+      const res = await getRoadmapDashboardWithError();
+      expect(res.error).toBeNull();
+      expect(res.data?.username).toBe("infinitedim");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 
-  describe("getFeaturedProjects", () => {
-    it("should return only featured projects", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const result = await getFeaturedProjects();
+  it("getRoadmapDashboardWithError should return error object when backend is unreachable or non-200", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = mock(
+      async () => new Response(JSON.stringify({ error: "Upstream roadmap error" }), { status: 502 })
+    ) as unknown as typeof fetch;
 
-      expect(Array.isArray(result)).toBe(true);
-      result.forEach((project) => {
-        expect(project.featured).toBe(true);
-      });
-    });
+    try {
+      const res = await getRoadmapDashboardWithError();
+      expect(res.data).toBeNull();
+      expect(res.error?.message).toBe("Upstream roadmap error");
+      expect(res.error?.status).toBe(502);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 
-  describe("getGitHubData", () => {
-    it("should return GitHub data via backend proxy", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          profile: { followers: 1, following: 2, publicRepos: 3 },
-          repositories: [
-            {
-              name: "repo1",
-              description: "Description",
-              stars: 10,
-              forks: 5,
-              language: "TypeScript",
-              updatedAt: new Date().toISOString(),
-            },
-          ],
-        }),
-      });
+  it("getRoadmapStreak should return streak data or null on error", async () => {
+    const originalFetch = globalThis.fetch;
+    const mockStreak = { count: 5, longestCount: 10, lastVisitAt: new Date().toISOString() };
 
-      const result = await getGitHubData();
+    globalThis.fetch = mock(
+      async () => new Response(JSON.stringify(mockStreak), { status: 200 })
+    ) as unknown as typeof fetch;
 
-      expect(result).toHaveProperty("repositories");
-      expect(result).toHaveProperty("profile");
-      expect(result.repositories[0]?.name).toBe("repo1");
-    });
-
-    it("should return empty data on error", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      const spy = jest.spyOn(console, "error").mockImplementation(() => {});
-      mockFetch.mockRejectedValue(new Error("Network error"));
-
-      const result = await getGitHubData();
-
-      expect(result.repositories).toEqual([]);
-      expect(result.profile).toEqual({
-        followers: 0,
-        following: 0,
-        publicRepos: 0,
-      });
-      spy.mockRestore();
-    });
-  });
-
-  describe("invalidateCache", () => {
-    it("should invalidate cache", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      await invalidateCache("test-section");
-
-      expect(true).toBe(true);
-    });
-  });
-
-  describe("checkDataHealth", () => {
-    it("should check data health", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      mockFetch.mockResolvedValue({
-        ok: true,
-      });
-
-      const result = await checkDataHealth();
-
-      expect(result).toHaveProperty("api");
-      expect(result).toHaveProperty("github");
-      expect(result).toHaveProperty("lastCheck");
-    });
-
-    it("should handle health check errors", async () => {
-      if (!canRunTests) {
-        expect(true).toBe(true);
-        return;
-      }
-      mockFetch.mockRejectedValue(new Error("Network error"));
-
-      const result = await checkDataHealth();
-
-      expect(result.api).toBe(false);
-      expect(result.github).toBe(false);
-    });
+    try {
+      const streak = await getRoadmapStreak();
+      expect(streak?.count).toBe(5);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 });

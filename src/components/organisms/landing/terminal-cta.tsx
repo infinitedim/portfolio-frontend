@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { type JSX, useState, useEffect } from "react";
+import { ArrowRight, ShieldAlert } from "lucide-react";
 import { TerminalFeaturesModal } from "@/components/molecules/shared/terminal-features-modal";
 import { FadeIn } from "@/components/atoms/shared/motion-wrappers";
 import { useI18n } from "@/hooks/use-i18n";
@@ -87,9 +88,13 @@ export function TerminalCta(): JSX.Element {
                 <button
                   type="button"
                   onClick={() => router.push("/terminal")}
-                  className="mt-2 rounded-lg bg-(--terminal-accent) text-(--terminal-bg) font-semibold px-6 py-2.5 text-xs sm:text-sm hover:opacity-90 transition-colors shadow-lg shadow-(--terminal-accent)/10 cursor-pointer select-none"
+                  className="group mt-2 inline-flex items-center gap-2 rounded-lg bg-(--terminal-accent) text-(--terminal-bg) font-semibold px-6 py-2.5 text-xs sm:text-sm hover:opacity-90 transition-colors shadow-lg shadow-(--terminal-accent)/10 cursor-pointer select-none"
                 >
-                  $ terminal --launch →
+                  $ terminal --launch
+                  <ArrowRight
+                    size={14}
+                    className="transition-transform duration-200 ease-out group-hover:translate-x-1"
+                  />
                 </button>
               </>
             ) : (
@@ -129,9 +134,13 @@ export function TerminalCta(): JSX.Element {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(true)}
-                  className="mt-1 rounded-lg border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 text-(--terminal-accent) font-semibold px-6 py-2.5 text-xs sm:text-sm hover:bg-(--terminal-accent)/20 transition-colors cursor-pointer select-none"
+                  className="group mt-1 inline-flex items-center gap-2 rounded-lg border border-(--terminal-accent)/40 bg-(--terminal-accent)/10 text-(--terminal-accent) font-semibold px-6 py-2.5 text-xs sm:text-sm hover:bg-(--terminal-accent)/20 transition-colors cursor-pointer select-none"
                 >
-                  $ gate --enter-challenges →
+                  $ gate --enter-challenges
+                  <ShieldAlert
+                    size={14}
+                    className="transition-transform duration-200 group-hover:rotate-12"
+                  />
                 </button>
               </>
             )}

@@ -10,7 +10,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { toast } from "sonner";
-import { Mail, ExternalLink, Clock } from "lucide-react";
+import { Mail, ExternalLink, Clock, Check } from "lucide-react";
 import {
   submitContactMessage,
   type ContactSubmission,
@@ -505,7 +505,7 @@ function Field({
         </label>
         {isValid && (
           <span className="font-mono text-xs font-medium text-(--terminal-accent) flex items-center gap-1">
-            ✓ Valid
+            <Check size={12} /> Valid
           </span>
         )}
       </div>

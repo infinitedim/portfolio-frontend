@@ -1,5 +1,5 @@
 import { describe, it, expect, jest, beforeEach, afterEach, mock } from "bun:test";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
 const mockPush = jest.fn();
@@ -68,6 +68,7 @@ describe("AdminLayout", () => {
   });
 
   afterEach(() => {
+    cleanup();
     jest.clearAllMocks();
   });
 

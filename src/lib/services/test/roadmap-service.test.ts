@@ -1,117 +1,90 @@
-import { describe, it, expect, beforeEach, afterEach, jest } from "bun:test";
+import { describe, it, expect, mock, beforeEach } from "bun:test";
+import { RoadmapService } from "../roadmap-service";
 
-const dashboardResponse = {
-  username: "testuser",
-  progresses: [
-    {
-      resourceId: "frontend",
-      resourceTitle: "Frontend Basics",
-      resourceType: "roadmap",
-      done: 1,
-      total: 2,
-      learning: 0,
-    },
-  ],
-};
+let mockFetchHandler: (url: string) => Promise<unknown> = async () => null;
 
-const streakResponse = {
-  lastVisitAt: new Date().toISOString(),
-  count: 5,
-};
+mock.module("@/lib/crypto/encrypted-fetch", () => ({
+  encryptedFetch: async <T>(url: string): Promise<T | null> => {
+    return (await mockFetchHandler(url)) as T | null;
+  },
+}));
 
-describe("RoadmapService", () => {
-  let RoadmapService: typeof import("@/lib/services/roadmap-service").RoadmapService;
-  let originalWindow: Window & typeof globalThis;
-
-  beforeEach(async () => {
-    originalWindow = globalThis.window;
-    delete (globalThis as unknown as { window?: unknown }).window;
-
-    Object.defineProperty(globalThis, "fetch", {
-      value: jest.fn((url: string) => {
-        if (String(url).includes("dashboard")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(dashboardResponse),
-          });
-        }
-        if (String(url).includes("streak")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(streakResponse),
-          });
-        }
-        return Promise.resolve({
-          ok: false,
-          json: () => Promise.resolve(null),
-        });
-      }),
-      configurable: true,
-      writable: true,
-    });
-
-    const module = await import("@/lib/services/roadmap-service");
-    RoadmapService = module.RoadmapService;
-    (RoadmapService as unknown as { instance?: unknown }).instance = undefined;
+describe("roadmap-service", () => {
+  beforeEach(() => {
+    mockFetchHandler = async () => null;
   });
 
-  afterEach(() => {
-    if (originalWindow !== undefined) {
-      Object.defineProperty(globalThis, "window", {
-        value: originalWindow,
-        configurable: true,
-        writable: true,
-      });
-    } else {
-      delete (globalThis as unknown as { window?: unknown }).window;
-    }
-    if (RoadmapService) {
-      (RoadmapService as unknown as { instance?: unknown }).instance =
-        undefined;
-    }
-    jest.clearAllMocks();
+  it("getInstance should return singleton RoadmapService instance", () => {
+    const instance1 = RoadmapService.getInstance();
+    const instance2 = RoadmapService.getInstance();
+    expect(instance1).toBe(instance2);
   });
 
-  it("initializes and loads fallback/api data", async () => {
-    if (typeof Bun !== "undefined") {
-      expect(true).toBe(true);
-      return;
-    }
+  it("initialize should load dashboard and streak data", async () => {
+    const service = RoadmapService.getInstance();
+    const mockDashboard = {
+      username: "infinitedim",
+      progresses: [
+        {
+          resourceId: "react",
+          resourceTitle: "React",
+          resourceType: "frontend",
+          done: 10,
+          total: 10,
+          learning: 0,
+        },
+        {
+          resourceId: "typescript",
+          resourceTitle: "TypeScript",
+          resourceType: "language",
+          done: 5,
+          total: 10,
+          learning: 2,
+        },
+      ],
+    };
 
-    const svc = RoadmapService.getInstance();
-    await svc.initialize();
+    const mockStreak = {
+      lastVisitAt: new Date().toISOString(),
+      streakCount: 5,
+    };
 
-    const progress = await svc.getUserProgress();
-    expect(progress).toHaveProperty("categories");
-    expect(progress.categories.length).toBeGreaterThan(0);
+    mockFetchHandler = async (url: string) => {
+      if (url.includes("dashboard")) return mockDashboard;
+      if (url.includes("streak")) return mockStreak;
+      return null;
+    };
+
+    await service.refreshData();
+    const userProgress = await service.getUserProgress();
+
+    expect(userProgress.username).toBe("infinitedim");
+    expect(userProgress.completedSkills).toBe(15);
+    expect(userProgress.totalSkills).toBe(20);
+
+    const stats = await service.getStatistics();
+    expect(stats.totalSkills).toBe(20);
+    expect(stats.completedSkills).toBe(15);
+
+    const reactCategory = await service.getCategoryProgress("react");
+    expect(reactCategory?.name).toBe("React");
+
+    const skill = await service.getSkill("react");
+    expect(skill?.name).toBe("React");
+
+    const completed = await service.getSkillsByStatus("completed");
+    expect(completed.length).toBeGreaterThan(0);
+
+    const updated = await service.updateSkillProgress("react", { skillId: "react", status: "completed", progress: 100 });
+    expect(updated).toBe(true);
   });
 
-  it("can get category progress and update skills", async () => {
-    if (typeof Bun !== "undefined") {
-      expect(true).toBe(true);
-      return;
-    }
+  it("loadFallbackData should handle API failure gracefully", async () => {
+    const service = RoadmapService.getInstance();
+    mockFetchHandler = async () => null;
 
-    const svc = RoadmapService.getInstance();
-    await svc.initialize();
-
-    const cat = await svc.getCategoryProgress("frontend");
-    expect(cat).not.toBeNull();
-
-    if (cat && cat.skills.length > 0) {
-      const skill = cat.skills[0];
-      const updated = await svc.updateSkillProgress(skill.id, {
-        skillId: skill.id,
-        status: "in-progress",
-        progress: 50,
-      });
-      expect(updated).toBe(true);
-
-      const fetchedSkill = await svc.getSkill(skill.id);
-      expect(fetchedSkill).not.toBeNull();
-      if (fetchedSkill) {
-        expect(fetchedSkill.status).toBe("in-progress");
-      }
-    }
+    await service.refreshData();
+    const progress = await service.getUserProgress();
+    expect(progress.username).toBe("infinitedim");
   });
 });

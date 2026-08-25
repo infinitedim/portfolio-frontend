@@ -1,6 +1,7 @@
 import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   TagFilter,
   type TagWithCount,
@@ -230,7 +231,7 @@ async function BlogPageContent({
           name="search"
           defaultValue={search ?? ""}
           placeholder={t.blogSearchPlaceholder}
-          className="flex-1 rounded border border-(--terminal-border) bg-(--terminal-bg)/90 px-3 py-2 text-sm text-(--terminal-text) font-mono outline-none transition-colors duration-200 focus:border-(--terminal-accent)"
+          className="flex-1 rounded border border-(--terminal-border) bg-(--terminal-bg)/90 px-3 py-2 text-sm text-(--terminal-text) font-mono outline-none transition-colors duration-200"
         />
         {tag && (
           <input
@@ -365,9 +366,10 @@ async function BlogPageContent({
           {page > 1 && (
             <Link
               href={buildUrl({ page: page - 1 })}
-              className="px-4 py-2 rounded border border-(--terminal-border) font-mono text-sm text-(--terminal-muted) transition-colors duration-200 hover:border-(--terminal-accent)/60 hover:text-(--terminal-accent)"
+              className="inline-flex items-center gap-1 px-4 py-2 rounded border border-(--terminal-border) font-mono text-sm text-(--terminal-muted) transition-colors duration-200 hover:border-(--terminal-accent)/60 hover:text-(--terminal-accent)"
             >
-              ← {t.previous}
+              <ChevronLeft size={14} />
+              {t.previous}
             </Link>
           )}
           <span className="px-4 py-2 text-(--terminal-muted)">
@@ -378,9 +380,10 @@ async function BlogPageContent({
           {page < totalPages && (
             <Link
               href={buildUrl({ page: page + 1 })}
-              className="px-4 py-2 rounded border border-(--terminal-border) font-mono text-sm text-(--terminal-muted) transition-colors duration-200 hover:border-(--terminal-accent)/60 hover:text-(--terminal-accent)"
+              className="inline-flex items-center gap-1 px-4 py-2 rounded border border-(--terminal-border) font-mono text-sm text-(--terminal-muted) transition-colors duration-200 hover:border-(--terminal-accent)/60 hover:text-(--terminal-accent)"
             >
-              {t.next} →
+              {t.next}
+              <ChevronRight size={14} />
             </Link>
           )}
         </nav>

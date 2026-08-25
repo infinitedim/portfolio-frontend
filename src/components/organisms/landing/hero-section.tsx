@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { type JSX } from "react";
+import { Download } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import dynamic from "next/dynamic";
 
@@ -51,9 +52,13 @@ export function HeroSection(): JSX.Element {
             <button
               type="button"
               onClick={() => setIsResumeModalOpen(true)}
-              className="rounded border border-(--terminal-border) px-5 py-2.5 font-mono text-sm text-(--terminal-text) transition-colors duration-200 hover:border-(--terminal-accent)/60 hover:text-(--terminal-accent) cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent)"
+              className="group inline-flex items-center gap-2 rounded border border-(--terminal-border) px-5 py-2.5 font-mono text-sm text-(--terminal-text) transition-colors duration-200 hover:border-(--terminal-accent)/60 hover:text-(--terminal-accent) cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent)"
             >
-              ↓ Resume
+              <Download
+                size={14}
+                className="transition-transform duration-200 group-hover:translate-y-0.5"
+              />
+              Resume
             </button>
             <Link
               href="/contact"

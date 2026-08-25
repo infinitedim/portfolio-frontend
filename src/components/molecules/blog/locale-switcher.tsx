@@ -3,6 +3,7 @@
 import { Suspense, useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { ChevronUp, ChevronDown, Check } from "lucide-react";
 import {
   BLOG_CONTENT_LOCALES,
   DEFAULT_BLOG_LOCALE,
@@ -88,7 +89,7 @@ function BlogLocaleSwitcherInner({
           <span className="font-medium">{currentConfig.label}</span>
         </span>
         <span className="text-(--terminal-muted) text-[10px]">
-          {isOpen ? "▲" : "▼"}
+          {isOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
         </span>
       </button>
 
@@ -123,7 +124,7 @@ function BlogLocaleSwitcherInner({
                     <span>{locale.flag}</span>
                     <span>{locale.label}</span>
                   </span>
-                  {isActive && <span className="text-emerald-400">✓</span>}
+                  {isActive && <Check size={12} className="text-emerald-400" />}
                 </Link>
               );
             })}

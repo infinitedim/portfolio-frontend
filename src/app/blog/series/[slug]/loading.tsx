@@ -17,7 +17,7 @@ export default function BlogSeriesLoading(): JSX.Element {
           <header className="space-y-4 rounded-lg border border-neutral-800 bg-neutral-900/50 p-6">
             <div className="flex items-center gap-2 font-mono text-xs text-neutral-500">
               <div className="h-4 w-20 animate-pulse rounded bg-neutral-800/60" />
-              <span>•</span>
+              <span className="mx-1 text-neutral-700">|</span>
               <div className="h-4 w-16 animate-pulse rounded bg-neutral-800/60" />
             </div>
 

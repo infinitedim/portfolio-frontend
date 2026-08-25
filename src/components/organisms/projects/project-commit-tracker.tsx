@@ -530,7 +530,7 @@ export function ProjectCommitTracker({
                             </span>
                           </div>
 
-                          <span>•</span>
+                          <span className="mx-1 text-neutral-700">|</span>
 
                           <time
                             dateTime={commit.authorDate}

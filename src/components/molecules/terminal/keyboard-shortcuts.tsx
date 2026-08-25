@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
+import { Keyboard, X, Play, Sliders } from "lucide-react";
 
 export interface KeyboardShortcut {
   id: string;
@@ -334,10 +335,10 @@ export function KeyboardShortcut({
           <div className="flex items-center gap-4">
             <h3
               id="shortcuts-panel-title"
-              className="text-lg font-semibold"
+              className="text-lg font-semibold inline-flex items-center gap-2"
               style={{ color: themeConfig.colors.text }}
             >
-              ⌨️ {t("shortcutPanelTitle")}
+              <Keyboard size={18} /> {t("shortcutPanelTitle")}
             </h3>
 
             <div className="flex items-center gap-2">
@@ -373,7 +374,7 @@ export function KeyboardShortcut({
               backgroundColor: "transparent",
             }}
           >
-            ✕
+            <X size={14} />
           </button>
         </div>
 
@@ -423,8 +424,8 @@ export function KeyboardShortcut({
           </div>
           <div className="flex items-center gap-4">
             <span>Esc {t("shortcutEscClose")}</span>
-            <span>️ {t("shortcutCustomizeHint")}</span>
-            <span>▶️ {t("shortcutTestHint")}</span>
+            <span className="inline-flex items-center gap-1"><Sliders size={12} /> {t("shortcutCustomizeHint")}</span>
+            <span className="inline-flex items-center gap-1"><Play size={12} /> {t("shortcutTestHint")}</span>
           </div>
         </div>
       </div>

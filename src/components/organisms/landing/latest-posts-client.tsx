@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { type JSX } from "react";
+import { ArrowRight } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import {
   FadeIn,
@@ -58,9 +59,13 @@ export function LatestPostsClient({
           <Link
             href="/blog"
             prefetch={false}
-            className="font-mono text-xs text-(--terminal-muted) transition-colors duration-200 hover:text-(--terminal-accent)"
+            className="group inline-flex items-center gap-1 font-mono text-xs text-(--terminal-muted) transition-colors duration-200 hover:text-(--terminal-accent)"
           >
-            {t("blogAllPosts")} →
+            {t("blogAllPosts")}
+            <ArrowRight
+              size={14}
+              className="transition-transform duration-200 ease-out group-hover:translate-x-1"
+            />
           </Link>
         </FadeIn>
 
@@ -101,7 +106,8 @@ export function LatestPostsClient({
                           </p>
                         )}
                         <p className="mt-2 font-mono text-xs text-(--terminal-muted)/70">
-                          {post.readingTimeMinutes} {t("blogMinRead")} ·{" "}
+                          {post.readingTimeMinutes} {t("blogMinRead")}
+                          <span className="mx-1 text-(--terminal-border)">|</span>
                           {formattedDate(post.createdAt)}
                         </p>
                       </Link>
