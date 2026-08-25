@@ -19,6 +19,7 @@ Next.js 16 App Router UI for [portfolio-backend](../portfolio-backend) (Rust/Axu
 - Landing/gate UI: **English default** with existing i18n toggle — not Indonesian-first on those surfaces.
 - Blog, RSS, projects, contact, roadmap: **shared public routes** — do not duplicate across standard vs terminal UIs.
 - `ROADMAP.md` removed May 2026; feature backlog lives here and in `FEATURE_PLANNING.md`.
+- **Documentation comments rule**: Never add JSDoc or code comments unless there is an explicit ESLint/JSDoc error requiring documentation or explicitly requested by the user.
 
 ---
 
