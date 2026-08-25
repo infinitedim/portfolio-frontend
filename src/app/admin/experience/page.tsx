@@ -27,27 +27,59 @@ import { Badge } from "@/components/ui/badge";
 import { ConfirmDialog } from "@/components/molecules/admin/confirm-dialog";
 import { toast } from "sonner";
 
+/**
+ * Data model for a career work experience record stored in the database.
+ *
+ * @description
+ * Represents a localized employment entry containing company details, multilingual position titles,
+ * durations, bullet point descriptions, tech stack tags, employment classification, and sequence sorting index.
+ */
 interface ExperienceEntry {
+  /** Unique record identifier (UUID) */
   id: string;
+  /** Company or organization name */
   company: string;
+  /** Map of locale code to localized job title (e.g. `{"en_US": "Senior Engineer"}`) */
   position: Record<string, string>;
+  /** Map of locale code to localized employment tenure (e.g. `{"en_US": "2022 - Present"}`) */
   duration: Record<string, string>;
+  /** Map of locale code to localized list of responsibility bullet points */
   description: Record<string, string[]>;
+  /** Array of associated technology and skill keywords */
   technologies: string[];
+  /** Employment type classification (e.g., "full-time", "contract") */
   type: string;
+  /** Display sort order index for chronological rendering */
   display_order: number;
 }
 
+/**
+ * State shape for the work experience creation and editing form.
+ *
+ * @description
+ * Form fields match the database model, with textarea-friendly newline-separated string descriptions
+ * and comma-separated technology tags for streamlined editing before payload serialization.
+ */
 interface ExperienceForm {
+  /** Company or organization name */
   company: string;
+  /** Map of locale code to localized position title */
   position: Record<string, string>;
+  /** Map of locale code to localized employment duration */
   duration: Record<string, string>;
+  /** Map of locale code to localized newline-separated description string */
   description: Record<string, string>;
+  /** Comma-separated list of technologies */
   technologies: string;
+  /** Employment type (e.g. "full-time") */
   type: string;
+  /** Numeric display sequence order */
   display_order: number;
 }
 
+/**
+ * Default empty form state used when initializing a new experience entry.
+ */
 const EMPTY_FORM: ExperienceForm = {
   company: "",
   position: {},
@@ -58,6 +90,19 @@ const EMPTY_FORM: ExperienceForm = {
   display_order: 0,
 };
 
+/**
+ * Administrator dashboard page for managing work experience and career timeline entries.
+ *
+ * @description
+ * Provides a comprehensive CRUD management interface for developer work history:
+ * - Lists existing work experiences with locale coverage badges and reordering controls (move up / down).
+ * - Multi-tab localized editor for modifying company, job title, duration, responsibilities, and tech stack per locale.
+ * - AI auto-translation integration (`/api/admin/portfolio/experience/translate`) to translate experience details
+ * from a source locale to all configured locales.
+ * - Deletion modal dialog with confirmation handling.
+ *
+ * @returns {JSX.Element} The rendered career experience administration view.
+ */
 export default function AdminExperiencePage(): JSX.Element {
   const { themeConfig } = useTheme();
   const [experiences, setExperiences] = useState<ExperienceEntry[]>([]);

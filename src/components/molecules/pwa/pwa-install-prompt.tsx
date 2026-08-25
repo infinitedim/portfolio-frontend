@@ -4,13 +4,33 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Props for the {@link PWAInstallPrompt} component.
+ */
 interface PWAInstallPromptProps {
+  /** Optional callback invoked when the user clicks the install button. */
   onInstall?: () => void;
+  /** Optional callback invoked when the user dismisses or closes the prompt. */
   onDismiss?: () => void;
+  /** Delay in milliseconds before presenting the install prompt to the user. Defaults to 3000ms. */
   delay?: number;
+  /** Whether to persist dismissal in `localStorage` so the prompt does not reappear. Defaults to true. */
   persistDismissal?: boolean;
 }
 
+/**
+ * A terminal-themed floating banner prompting users to install the web app as a PWA.
+ *
+ * @description Renders a modal/toast prompt with retro terminal styling, offering quick benefits,
+ * keyboard accessibility (Escape to dismiss), delayed appearance, and persistent dismissal tracking.
+ *
+ * @param props - Component properties conforming to {@link PWAInstallPromptProps}.
+ * @param props.onInstall - Optional callback invoked when the user clicks the install button.
+ * @param props.onDismiss - Optional callback invoked when the user dismisses or closes the prompt.
+ * @param props.delay - Delay in milliseconds before presenting the install prompt to the user.
+ * @param props.persistDismissal - Whether to persist dismissal in localStorage so the prompt does not reappear.
+ * @returns A JSX element rendering the install banner dialog, or null if inactive/dismissed.
+ */
 export function PWAInstallPrompt({
   onInstall,
   onDismiss,
@@ -24,6 +44,11 @@ export function PWAInstallPrompt({
   const timeoutRef = useRef<number | null>(null);
   const dismissedRef = useRef<boolean>(false);
 
+  /**
+   * Checks whether the user has previously dismissed the install prompt.
+   *
+   * @returns True if prompt dismissal is recorded in localStorage, false otherwise.
+   */
   const checkDismissalStatus = useCallback((): boolean => {
     if (!persistDismissal) return false;
 
@@ -38,6 +63,9 @@ export function PWAInstallPrompt({
     return false;
   }, [persistDismissal]);
 
+  /**
+   * Saves the dismissal flag to localStorage to prevent future prompts.
+   */
   const saveDismissalStatus = useCallback((): void => {
     if (!persistDismissal) return;
 
@@ -50,6 +78,13 @@ export function PWAInstallPrompt({
     }
   }, [persistDismissal]);
 
+  /**
+   * Safely wraps `window.setTimeout` with SSR and error guardrails.
+   *
+   * @param callback - Function to execute upon timeout completion.
+   * @param ms - Delay in milliseconds.
+   * @returns The timeout identifier number, or null if execution failed.
+   */
   const safeSetTimeout = useCallback(
     (callback: () => void, ms: number): number | null => {
       if (typeof window === "undefined" || !window.setTimeout) return null;
@@ -64,6 +99,11 @@ export function PWAInstallPrompt({
     [],
   );
 
+  /**
+   * Safely clears an active timeout ID with SSR guardrails.
+   *
+   * @param id - Timeout ID to clear.
+   */
   const safeClearTimeout = useCallback((id: number | null): void => {
     if (typeof window === "undefined" || !window.clearTimeout || !id) return;
 
@@ -74,6 +114,9 @@ export function PWAInstallPrompt({
     }
   }, []);
 
+  /**
+   * Handles user confirmation to install the PWA, triggers exit animation, and calls `onInstall`.
+   */
   const handleInstall = useCallback(() => {
     try {
       console.log("PWA Prompt: Install button clicked");
@@ -98,6 +141,9 @@ export function PWAInstallPrompt({
     }
   }, [onInstall]);
 
+  /**
+   * Handles user dismissal of the prompt, saves state to localStorage, and calls `onDismiss`.
+   */
   const handleDismiss = useCallback(() => {
     try {
       console.log("PWA Prompt: Dismiss button clicked");
@@ -125,6 +171,11 @@ export function PWAInstallPrompt({
     }
   }, [onDismiss, saveDismissalStatus]);
 
+  /**
+   * Keyboard event handler enabling Escape key dismissal of the prompt.
+   *
+   * @param event - Keyboard event object.
+   */
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       try {
@@ -295,3 +346,4 @@ export function PWAInstallPrompt({
     </div>
   );
 }
+

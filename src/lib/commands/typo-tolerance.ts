@@ -1,4 +1,20 @@
+/**
+ * Utility class providing string distance metrics, fuzzy matching, and typo tolerance for terminal commands.
+ *
+ * @class TypoTolerance
+ */
 export class TypoTolerance {
+  /**
+   * Calculates the Levenshtein edit distance between two strings using dynamic programming.
+   *
+   * @param a - The first input string.
+   * @param b - The second input string.
+   * @returns The minimum number of single-character edits (insertions, deletions, or substitutions).
+   * @example
+   * ```ts
+   * TypoTolerance.levenshteinDistance("theem", "theme"); // 1
+   * ```
+   */
   public static levenshteinDistance(a: string, b: string): number {
     const matrix = Array(b.length + 1)
       .fill(null)
@@ -21,6 +37,18 @@ export class TypoTolerance {
     return matrix[b.length][a.length];
   }
 
+  /**
+   * Finds the closest matching command from an array of candidates within a given edit distance threshold.
+   *
+   * @param input - The mistyped user input string.
+   * @param availableCommands - List of valid command names and aliases.
+   * @param threshold - Maximum allowable Levenshtein distance for a match.
+   * @returns The closest command candidate or null if none within the threshold.
+   * @example
+   * ```ts
+   * TypoTolerance.findSimilarCommand("hlelp", ["help", "clear", "theme"]); // "help"
+   * ```
+   */
   static findSimilarCommand(
     input: string,
     availableCommands: string[],
@@ -43,6 +71,13 @@ export class TypoTolerance {
     return bestMatch;
   }
 
+  /**
+   * Returns a list of candidate commands ranked by fuzzy string similarity to the input.
+   *
+   * @param input - The input query to match against.
+   * @param commands - Array of candidate command strings.
+   * @returns Filtered and sorted array of matching commands in order of ascending edit distance.
+   */
   static fuzzyMatch(input: string, commands: string[]): string[] {
     const matches = commands.filter((command) => {
       const distance = this.levenshteinDistance(
@@ -65,6 +100,14 @@ export class TypoTolerance {
     });
   }
 
+  /**
+   * Computes a relevance score from 0 to 100 indicating how closely a candidate command matches user input.
+   * Exact matches yield 100, prefix matches yield 80-95, substring matches yield 30-60, and typo distance yields 10-50.
+   *
+   * @param input - User query string.
+   * @param command - Target command string.
+   * @returns Numeric relevance score between 0 (no match) and 100 (exact match).
+   */
   static getSuggestionScore(input: string, command: string): number {
     const lowerInput = input.toLowerCase();
     const lowerCommand = command.toLowerCase();
@@ -95,6 +138,13 @@ export class TypoTolerance {
     return 0;
   }
 
+  /**
+   * Classifies the match relationship category between the user's input and a candidate command.
+   *
+   * @param input - User query string.
+   * @param command - Target candidate command name.
+   * @returns The categorized match type.
+   */
   static getSuggestionType(
     input: string,
     command: string,
@@ -117,3 +167,4 @@ export class TypoTolerance {
     return "typo";
   }
 }
+

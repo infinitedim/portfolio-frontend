@@ -5,17 +5,37 @@ import { type JSX } from "react";
 import { Check } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Predefined list of gate puzzle level navigation configurations and localization keys.
+ */
 const LEVELS = [
   { level: 1, key: "gateLevel1" as const, href: "/gate/1" },
   { level: 2, key: "gateLevel2" as const, href: "/gate/2" },
   { level: 3, key: "gateLevel3" as const, href: "/gate/3" },
 ] as const;
 
+/**
+ * Props for the {@link GateProgress} navigation component.
+ */
 interface GateProgressProps {
+  /** The current active gate level number the user is viewing or solving. */
   currentLevel: number;
+  /** Array of level numbers that the user has successfully solved/completed. */
   completedLevels: number[];
 }
 
+/**
+ * Gate challenge progress navigation bar.
+ *
+ * Renders an accessible breadcrumb/stepper style navigation indicator for the
+ * interactive security gate levels. Displays completion checks, active states,
+ * and lock states based on solved level progression.
+ *
+ * @param props - Component configuration props.
+ * @param props.currentLevel - Number representing the active level in the challenge sequence.
+ * @param props.completedLevels - List of levels completed so far.
+ * @returns The rendered navigation bar with status badges for each level.
+ */
 export function GateProgress({
   currentLevel,
   completedLevels,

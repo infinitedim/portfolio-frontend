@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * Resolves the upstream backend service base URL from environment variables,
+ * defaulting to localhost if not configured.
+ *
+ * @returns {string} The resolved base URL for the backend API.
+ */
 function getBackendUrl(): string {
   return (
     process.env.BACKEND_URL ??
@@ -8,6 +14,15 @@ function getBackendUrl(): string {
   );
 }
 
+/**
+ * Handles incoming HTTP POST requests to proxy analytics pageview events to the upstream backend service.
+ *
+ * Extracts incoming request body, passes client telemetry headers (`X-Forwarded-For` and `User-Agent`),
+ * and forwards the payload to the `/api/analytics/pageview` backend endpoint.
+ *
+ * @param {NextRequest} req - The incoming Next.js API route request object containing pageview payload and telemetry headers.
+ * @returns {Promise<NextResponse>} JSON response indicating proxy success or upstream failure status.
+ */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const text = await req.text();

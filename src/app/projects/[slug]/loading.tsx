@@ -1,6 +1,15 @@
 import { type JSX } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
+/**
+ * Loading skeleton component for the project detail page route (`/projects/[slug]`).
+ *
+ * @description Displays animated pulse placeholders representing the project title, metadata badges,
+ * call-to-action buttons, mockup preview frames, metrics grid, and architecture highlight cards
+ * while dynamic project data is streamed during route transitions.
+ *
+ * @returns {JSX.Element} The rendered project detail loading skeleton.
+ */
 export default function ProjectDetailLoading(): JSX.Element {
   return (
     <StandardPageLayout>

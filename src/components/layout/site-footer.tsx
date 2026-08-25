@@ -7,6 +7,10 @@ import { NewsletterSignup } from "@/components/molecules/newsletter/newsletter-s
 import { CopyrightYear } from "./copyright-year";
 import { FooterResumeButton } from "@/components/molecules/shared/footer-resume-button";
 
+/**
+ * Main application footer component styled in a terminal aesthetic with system status metrics, CLI command navigation, social profiles, newsletter subscription form, and dynamic copyright metadata.
+ * @returns {JSX.Element} The rendered site footer element.
+ */
 export function SiteFooter(): JSX.Element {
   const siteUrl = getSiteUrl();
 

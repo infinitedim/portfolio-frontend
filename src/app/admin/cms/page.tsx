@@ -6,6 +6,13 @@ import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { useTheme } from "@/hooks/use-theme";
 import { getApiUrl } from "@/lib/api/get-api-url";
 
+/**
+ * Reference list of supported Headless CMS REST API endpoints exposed by the backend service.
+ *
+ * @description
+ * Documents the HTTP method, endpoint URL path, query parameter requirements, scope privileges,
+ * and description for developers integrating with the headless CMS content delivery endpoints.
+ */
 const CMS_ENDPOINTS = [
   {
     method: "GET",
@@ -34,6 +41,17 @@ const CMS_ENDPOINTS = [
   },
 ] as const;
 
+/**
+ * Headless CMS API documentation and integration reference page for administrators.
+ *
+ * @description
+ * Displays configuration instructions, required environment variables, API key provisioning
+ * SQL scripts, scope permissions (read vs. admin), endpoint reference tables, and example
+ * `curl` requests for interacting with the portfolio's headless CMS REST API.
+ * Protected by {@link ProtectedRoute} to restrict access to authenticated admins.
+ *
+ * @returns {JSX.Element} The rendered Headless CMS developer documentation view.
+ */
 export default function AdminCmsPage() {
   const { themeConfig } = useTheme();
   const apiUrl = getApiUrl();

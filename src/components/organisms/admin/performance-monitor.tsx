@@ -10,6 +10,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+/**
+ * Snapshot of system resource telemetry measurements at a specific point in time.
+ *
+ * @interface PerformanceData
+ * @property {number} timestamp - Unix epoch millisecond timestamp of the sample.
+ * @property {number} cpu - CPU utilization percentage (0 - 100).
+ * @property {number} memory - Memory utilization percentage (0 - 100).
+ * @property {number} network - Network bandwidth throughput in MB/s.
+ * @property {number} disk - Storage/disk utilization percentage (0 - 100).
+ */
 interface PerformanceData {
   timestamp: number;
   cpu: number;
@@ -18,10 +28,26 @@ interface PerformanceData {
   disk: number;
 }
 
+/**
+ * Properties for the PerformanceMonitor system resource dashboard component.
+ *
+ * @interface PerformanceMonitorProps
+ * @property {ThemeConfig} themeConfig - The current theme configuration providing UI colors.
+ */
 interface PerformanceMonitorProps {
   themeConfig: ThemeConfig;
 }
 
+/**
+ * Administrative performance telemetry component that graphs real-time CPU, memory, network, and disk metrics.
+ *
+ * Renders an HTML5 `<canvas>` multi-line chart updated at configurable polling intervals (0.5s - 5s)
+ * alongside statistical aggregates including peak and average load figures.
+ *
+ * @param {PerformanceMonitorProps} props - The component properties.
+ * @param {ThemeConfig} props.themeConfig - Active theme configuration styling metrics and graphs.
+ * @returns {JSX.Element} The rendered performance monitor console.
+ */
 function PerformanceMonitorComponent({ themeConfig }: PerformanceMonitorProps) {
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
   const [isPaused, setIsPaused] = useState(false);
@@ -29,6 +55,11 @@ function PerformanceMonitorComponent({ themeConfig }: PerformanceMonitorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
 
+  /**
+   * Generates a randomized mock performance telemetry sample.
+   *
+   * @returns {PerformanceData} The generated telemetry point.
+   */
   const generateMockData = useCallback(
     (): PerformanceData => ({
       timestamp: Date.now(),

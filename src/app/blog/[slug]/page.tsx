@@ -23,32 +23,67 @@ import {
 } from "@/lib/services/cached-blog-fetch";
 import { getTranslationsForLocale } from "@/lib/i18n";
 
+/**
+ * Sentinel slug identifier utilized as a placeholder during static site generation / build time.
+ */
 const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
 
+/**
+ * Retrieves the server-side API base URL from configuration or environment.
+ *
+ * @returns {string} The base URL string pointing to the backend API service.
+ */
 function getBackendUrl(): string {
   return getServerApiUrl();
 }
 
+/**
+ * Represents the detailed data structure for an individual blog post entity.
+ */
 interface BlogPost {
+  /** Unique identifier of the blog post. */
   id: string;
+  /** Human-readable title of the blog post. */
   title: string;
+  /** URL-friendly slug identifier for the blog post. */
   slug: string;
+  /** Brief overview or excerpt of the blog post content, or null if none. */
   summary: string | null;
+  /** Raw Markdown content of the blog post, or null if unavailable. */
   contentMd: string | null;
+  /** Pre-rendered HTML representation of the blog post, or null if unavailable. */
   contentHtml: string | null;
+  /** Publication status flag indicating whether the post is publicly visible. */
   published: boolean;
+  /** Array of thematic tag strings associated with the blog post. */
   tags: string[];
+  /** Estimated reading time for the article in minutes. */
   readingTimeMinutes: number;
+  /** Aggregate count of views recorded for this blog post. */
   viewCount: number;
+  /** ISO 8601 timestamp string representing when the post was created. */
   createdAt: string;
+  /** ISO 8601 timestamp string representing when the post was last modified. */
   updatedAt: string;
 }
 
+/**
+ * Props supplied by Next.js App Router for the blog post dynamic route page.
+ */
 interface BlogPostPageProps {
+  /** Promise resolving to the dynamic route parameters containing the post slug. */
   params: Promise<{ slug: string }>;
+  /** Promise resolving to search parameters, including optional locale query. */
   searchParams: Promise<{ locale?: string }>;
 }
 
+/**
+ * Fetches an individual blog post by its slug and locale with caching.
+ *
+ * @param slug - The unique URL slug identifying the blog post.
+ * @param locale - The target locale identifier for localization.
+ * @returns A promise that resolves to the blog post entity or null if not found.
+ */
 async function getBlogPost(
   slug: string,
   locale: string = DEFAULT_BLOG_LOCALE,
@@ -56,6 +91,13 @@ async function getBlogPost(
   return getCachedBlogPost(slug, locale);
 }
 
+/**
+ * Generates dynamic SEO and OpenGraph metadata for a specific blog post page.
+ *
+ * @param {Object} props - Metadata generation parameters supplied by Next.js.
+ * @param {Promise<{ slug: string }>} props.params - Promise resolving to the route parameters.
+ * @returns {Promise<Metadata>} A promise resolving to Next.js Metadata configuration object.
+ */
 export async function generateMetadata({
   params,
 }: {
@@ -111,6 +153,11 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * Generates static route parameters for pre-rendering published blog posts at build time.
+ *
+ * @returns {Promise<{ slug: string }[]>} Array of parameter objects containing blog post slugs.
+ */
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const backendUrl = getBackendUrl();
@@ -132,10 +179,14 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
     console.error("Failed to generate static params:", error);
   }
 
-                                                                          
   return [{ slug: BUILD_PLACEHOLDER_SLUG }];
 }
 
+/**
+ * Fallback loading skeleton component displayed while the blog post is being resolved.
+ *
+ * @returns {JSX.Element} The rendered skeleton placeholder.
+ */
 function BlogPostSkeleton() {
   const t = getTranslationsForLocale(DEFAULT_BLOG_LOCALE);
   return (
@@ -147,6 +198,13 @@ function BlogPostSkeleton() {
   );
 }
 
+/**
+ * Server component that fetches and renders the complete blog post view, including SEO schemas,
+ * article content, metadata badges, table of contents, and interactive discussion widget.
+ *
+ * @param {BlogPostPageProps} props - The route and search parameters for the blog post.
+ * @returns {Promise<JSX.Element>} The rendered blog post page content.
+ */
 async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
   const { slug } = await params;
   if (slug === BUILD_PLACEHOLDER_SLUG) {
@@ -344,6 +402,12 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
   );
 }
 
+/**
+ * Default export page component for dynamic blog post routes wrapped in React Suspense.
+ *
+ * @param {BlogPostPageProps} props - Page properties containing route parameters and search query params.
+ * @returns {JSX.Element} The rendered React component wrapped in a Suspense boundary.
+ */
 export default function BlogPostPage(props: BlogPostPageProps) {
   return (
     <Suspense fallback={<BlogPostSkeleton />}>

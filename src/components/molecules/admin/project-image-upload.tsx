@@ -7,9 +7,27 @@ import { getApiUrl } from "@/lib/api/get-api-url";
 import { Upload, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;       
+/**
+ * Maximum permitted file size for project image uploads in bytes (5 MB).
+ * @constant {number}
+ */
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+/**
+ * Array of accepted image MIME types for project image uploads.
+ * @constant {string[]}
+ */
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
+/**
+ * Server response schema returned after a successful project image upload.
+ *
+ * @interface UploadResponse
+ * @property {string} url - The publicly accessible URL of the uploaded image resource.
+ * @property {string} filename - Stored filename on the server or Google Cloud Storage.
+ * @property {number} size - Uploaded file size in bytes.
+ * @property {string} mimeType - The MIME content type of the image.
+ */
 interface UploadResponse {
   url: string;
   filename: string;
@@ -17,12 +35,30 @@ interface UploadResponse {
   mimeType: string;
 }
 
+/**
+ * Props for the {@link ProjectImageUpload} component.
+ *
+ * @interface ProjectImageUploadProps
+ * @property {string} [imageUrl] - Optional current image URL to display in preview mode.
+ * @property {(url: string | undefined) => void} onUploadComplete - Callback invoked with the new image URL when uploaded, or `undefined` when removed.
+ * @property {ThemeConfig} themeConfig - Theme configuration object for colors and styling borders.
+ */
 interface ProjectImageUploadProps {
   imageUrl?: string;
   onUploadComplete: (url: string | undefined) => void;
   themeConfig: ThemeConfig;
 }
 
+/**
+ * An admin UI component for uploading, previewing, and removing project showcase images.
+ *
+ * Supports drag-and-drop file uploading, file selection, format/size validation,
+ * and direct deletion with live preview of the uploaded image.
+ *
+ * @component
+ * @param {ProjectImageUploadProps} props - Properties configuring the project image upload component.
+ * @returns {JSX.Element} The rendered project image upload dropzone or preview card.
+ */
 export function ProjectImageUpload({
   imageUrl,
   onUploadComplete,
@@ -34,6 +70,13 @@ export function ProjectImageUpload({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCountRef = useRef(0);
 
+  /**
+   * Validates and executes the multipart upload of a project image file to GCS.
+   *
+   * @async
+   * @param {File} file - The image file to validate and upload.
+   * @returns {Promise<void>} Resolves when upload completes or fails.
+   */
   const uploadFile = useCallback(
     async (file: File) => {
       setError(null);
@@ -88,6 +131,12 @@ export function ProjectImageUpload({
     [onUploadComplete],
   );
 
+  /**
+   * Handles native file input change event.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Input change event.
+   * @returns {void}
+   */
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -98,6 +147,12 @@ export function ProjectImageUpload({
     [uploadFile],
   );
 
+  /**
+   * Handles drag enter events to activate the drag overlay.
+   *
+   * @param {React.DragEvent} e - Drag event object.
+   * @returns {void}
+   */
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -107,6 +162,12 @@ export function ProjectImageUpload({
     }
   }, []);
 
+  /**
+   * Handles drag leave events to deactivate the drag overlay.
+   *
+   * @param {React.DragEvent} e - Drag event object.
+   * @returns {void}
+   */
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -116,11 +177,23 @@ export function ProjectImageUpload({
     }
   }, []);
 
+  /**
+   * Handles drag over events to permit dropping files.
+   *
+   * @param {React.DragEvent} e - Drag event object.
+   * @returns {void}
+   */
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
   }, []);
 
+  /**
+   * Handles drop events to extract and upload dragged image files.
+   *
+   * @param {React.DragEvent} e - Drag event object with dropped files.
+   * @returns {void}
+   */
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
@@ -137,6 +210,11 @@ export function ProjectImageUpload({
     [uploadFile],
   );
 
+  /**
+   * Clears the current project image and notifies parent handler.
+   *
+   * @returns {void}
+   */
   const handleRemove = useCallback(() => {
     onUploadComplete(undefined);
     setError(null);

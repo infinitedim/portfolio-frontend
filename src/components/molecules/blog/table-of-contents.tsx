@@ -1,9 +1,21 @@
+/**
+ * Represents a parsed heading extracted from article HTML.
+ */
 interface Heading {
+  /** The anchor ID of the heading element. */
   id: string;
+  /** The plain text title of the heading. */
   text: string;
+  /** The heading depth level (e.g. 2 for h2, 3 for h3). */
   level: number;
 }
 
+/**
+ * Extracts h2 and h3 heading tags from HTML content and generates slug anchors.
+ *
+ * @param html - Raw HTML content of the article.
+ * @returns Array of parsed heading objects with level, id, and text.
+ */
 function extractHeadings(html: string): Heading[] {
   const headings: Heading[] = [];
   const withIds = /<h([23])[^>]*\bid="([^"]+)"/i.test(html)
@@ -41,11 +53,25 @@ function extractHeadings(html: string): Heading[] {
   return headings;
 }
 
+/**
+ * Props for the TableOfContents component.
+ */
 interface TableOfContentsProps {
+  /** Raw HTML content string from which to extract headings. */
   contentHtml: string;
+  /** Optional custom CSS classes for the container. */
   className?: string;
 }
 
+/**
+ * TableOfContents component that parses HTML headings (h2/h3) and renders a
+ * navigable index with jump links.
+ *
+ * @param props - Component properties.
+ * @param props.contentHtml - Raw HTML string of the blog post.
+ * @param props.className - Optional extra CSS class names for styling.
+ * @returns The rendered table of contents navigation or null if fewer than 2 headings exist.
+ */
 export function TableOfContents({
   contentHtml,
   className = "",

@@ -3,11 +3,32 @@
 import { useEffect, useState, useCallback, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
+/**
+ * Props for the {@link OfflineRadar} component.
+ */
 interface OfflineRadarProps {
+  /**
+   * Current online connection status indicator.
+   */
   isOnline: boolean;
+  /**
+   * Optional callback invoked when the user manually requests a network signal recheck.
+   */
   onRecheckSignal?: () => void;
 }
 
+/**
+ * Renders a sci-fi radar visualizer and network ping diagnostic widget for offline states.
+ *
+ * @description
+ * Displays an animated concentric radar screen with a sweeping beam indicating connection status.
+ * Periodically measures HTTP HEAD latency against `/manifest.json` and exposes a manual signal recheck button.
+ *
+ * @param props - The component props.
+ * @param props.isOnline - Whether network connectivity is currently established.
+ * @param props.onRecheckSignal - Optional handler triggered on manual signal recheck click.
+ * @returns The rendered offline radar JSX element.
+ */
 export function OfflineRadar({
   isOnline,
   onRecheckSignal,
@@ -16,6 +37,9 @@ export function OfflineRadar({
   const [pingLatency, setPingLatency] = useState<number | null>(null);
   const [isChecking, setIsChecking] = useState(false);
 
+  /**
+   * Measures network latency by issuing a HEAD request with `cache: "no-store"` to `/manifest.json`.
+   */
   const measureLatency = useCallback(async () => {
     setIsChecking(true);
     const start = performance.now();

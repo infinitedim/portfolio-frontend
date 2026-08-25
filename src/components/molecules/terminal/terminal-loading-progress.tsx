@@ -4,25 +4,47 @@ import { useState, useEffect, useRef, type JSX } from "react";
 import { Loader2, Check, X } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 
+/**
+ * Properties for configuring the terminal loading simulation progress component.
+ */
 interface TerminalLoadingProgressProps {
+  /** Total duration in milliseconds over which simulated file loading runs */
   duration?: number;
+  /** List of file paths and sizes to animate through during loading */
   files?: Array<string | { path: string; size?: string }>;
+  /** Message displayed upon completion of file initialization */
   completionText?: string;
+  /** Callback function invoked after all simulated files have loaded */
   onComplete?: () => void;
+  /** Whether the loading simulation starts immediately upon mounting */
   autoStart?: boolean;
+  /** Whether to display contextual system status updates above the list */
   showSystemInfo?: boolean;
+  /** Whether the graphical progress bar is displayed */
   showProgressBar?: boolean;
+  /** Whether typewriter effects are enabled for output text */
   enableTypewriter?: boolean;
 }
 
+/**
+ * Represents the state and metadata of an individual file being simulated during loading.
+ */
 interface LoadingFile {
+  /** Virtual file system path of the loading resource */
   path: string;
+  /** Current execution status of the file load operation */
   status: "pending" | "loading" | "complete" | "error";
+  /** Percentage progress (0-100) of the file loading state */
   progress?: number;
+  /** Formatted file size string (e.g., "4.2 KB") */
   size?: string;
+  /** Elapsed duration in milliseconds taken to load the file */
   loadTime?: number;
 }
 
+/**
+ * Default collection of project source files used for the terminal loading sequence simulation.
+ */
 const DEFAULT_FILES = [
   { path: "src/components/ui/button.tsx", size: "4.2 KB" },
   { path: "src/components/ui/card.tsx", size: "3.1 KB" },
@@ -52,6 +74,21 @@ const DEFAULT_FILES = [
   { path: "tsconfig.json", size: "1.2 KB" },
 ];
 
+/**
+ * Terminal file loading simulation component with animated progress bars, file list status, and telemetry.
+ *
+ * Simulates a realistic boot and asset loading sequence for the terminal portfolio interface,
+ * displaying file sizes, loading spinners, elapsed times, and final completion diagnostics.
+ *
+ * @param props - The component properties.
+ * @param props.duration - Simulated total loading duration in milliseconds.
+ * @param props.files - Array of files to load.
+ * @param props.completionText - Banner text shown when loading finishes.
+ * @param props.onComplete - Completion callback invoked at 100% progress.
+ * @param props.autoStart - Whether to begin loading immediately on render.
+ * @param props.showSystemInfo - Flag to show real-time phase descriptions.
+ * @returns The rendered loading progress console or an empty div if unmounted.
+ */
 export function TerminalLoadingProgress({
   duration = 3000,
   files = DEFAULT_FILES,
@@ -188,6 +225,13 @@ export function TerminalLoadingProgress({
     }
   }, [currentFileIndex]);
 
+  /**
+   * Resolves the appropriate status icon or loader for an individual file load state.
+   *
+   * @param status - Current lifecycle status of the file being loaded.
+   * @param loadTime - Elapsed loading time in milliseconds.
+   * @returns The rendered icon element corresponding to the status.
+   */
   const getStatusIcon = (status: LoadingFile["status"], loadTime?: number) => {
     switch (status) {
       case "pending":
@@ -224,6 +268,12 @@ export function TerminalLoadingProgress({
     }
   };
 
+  /**
+   * Formats and truncates file paths exceeding display length for clean terminal rendering.
+   *
+   * @param path - The raw file path string.
+   * @returns The formatted display path.
+   */
   const getFileDisplayName = (path: string) => {
     if (path.length > 40) {
       const parts = path.split("/");

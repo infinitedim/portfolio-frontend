@@ -4,12 +4,28 @@ import { useState } from "react";
 import { useI18n } from "@/hooks/use-i18n";
 import { Share2, Link as LinkIcon, Check } from "lucide-react";
 
+/**
+ * Props for the ShareButtons component.
+ */
 interface ShareButtonsProps {
+  /** Post title to include in the share message. */
   title: string;
+  /** Unique slug of the blog post for URL generation. */
   slug: string;
+  /** Optional summary or excerpt of the blog post. */
   summary?: string | null;
 }
 
+/**
+ * Renders social sharing buttons (Twitter, LinkedIn, Copy Link/Web Share API)
+ * with a terminal-styled aesthetic.
+ *
+ * @param props - Component properties.
+ * @param props.title - Title of the blog post.
+ * @param props.slug - Blog post slug identifier.
+ * @param props.summary - Optional short description or excerpt.
+ * @returns The rendered share button group.
+ */
 export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);

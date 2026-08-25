@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 
+/**
+ * Sanitizes and escapes reserved XML characters in a string.
+ *
+ * @param {string} text - The input plain text string to escape.
+ * @returns {string} The escaped text safe for XML insertion.
+ */
 function escapeXml(text: string): string {
   return text
     .replace(/&/g, "&amp;")
@@ -11,6 +17,19 @@ function escapeXml(text: string): string {
     .replace(/'/g, "&apos;");
 }
 
+/**
+ * Represents a blog post item payload fetched from the backend API for RSS generation.
+ *
+ * @interface BlogPostItem
+ * @property {string} id - Unique identifier of the post.
+ * @property {string} title - Title of the blog post.
+ * @property {string} slug - URL slug identifier of the blog post.
+ * @property {string | null} summary - Short excerpt or synopsis of the post content.
+ * @property {string[]} tags - Categorization tags associated with the post.
+ * @property {number} readingTimeMinutes - Estimated reading time in minutes.
+ * @property {string} createdAt - ISO date string when the post was created.
+ * @property {string} updatedAt - ISO date string when the post was last modified.
+ */
 interface BlogPostItem {
   id: string;
   title: string;
@@ -22,6 +41,16 @@ interface BlogPostItem {
   updatedAt: string;
 }
 
+/**
+ * HTTP GET route handler that generates an RSS 2.0 XML feed of published blog posts.
+ *
+ * @description Fetches the latest published blog articles from the backend API, formats them
+ * into RSS 2.0 XML channel items with escaped XML fields, categories, links, and publication dates,
+ * and responds with appropriate XML headers and caching directives.
+ *
+ * @async
+ * @returns {Promise<NextResponse>} The HTTP response containing the RSS 2.0 XML feed.
+ */
 export async function GET(): Promise<NextResponse> {
   const siteUrl = getSiteUrl();
   const siteTitle = process.env.NEXT_PUBLIC_SITE_TITLE ?? "Portfolio Blog";

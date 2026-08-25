@@ -4,11 +4,29 @@ import { useState, useEffect, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { PerformanceMonitor } from "@/lib/performance/performance-monitor";
 
+/**
+ * Properties for the {@link PerformanceDashboard} component.
+ */
 interface PerformanceDashboardProps {
+  /**
+   * Indicates whether the performance dashboard overlay is currently visible.
+   */
   isOpen: boolean;
+  /**
+   * Callback handler invoked when the dashboard overlay is requested to close.
+   */
   onClose: () => void;
 }
 
+/**
+ * Renders an interactive modal dashboard visualizing real-time client performance metrics,
+ * memory usage, rendering timings, command durations, and automated optimization suggestions.
+ *
+ * @param {PerformanceDashboardProps} props - Component properties.
+ * @param {boolean} props.isOpen - Whether the dashboard modal is currently open.
+ * @param {() => void} props.onClose - Callback function triggered to close the dashboard.
+ * @returns {JSX.Element | null} The performance dashboard modal element, or `null` if closed.
+ */
 export function PerformanceDashboard({
   isOpen,
   onClose,
@@ -38,23 +56,49 @@ export function PerformanceDashboard({
 
   if (!isOpen) return null;
 
+  /**
+   * Formats a millisecond duration into a human-readable string.
+   *
+   * @param {number} ms - Milliseconds value to format.
+   * @returns {string} Formatted duration with appropriate unit (`ms` or `s`).
+   */
   const formatTime = (ms: number): string => {
     if (ms < 1) return `${ms.toFixed(2)}ms`;
     if (ms < 1000) return `${ms.toFixed(1)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   };
 
+  /**
+   * Formats a raw byte count into a readable binary prefix string (B, KB, MB).
+   *
+   * @param {number} bytes - Number of bytes to convert.
+   * @returns {string} Formatted byte size string.
+   */
   const formatBytes = (bytes: number): string => {
     if (bytes < 1024) return `${bytes}B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
     return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
   };
 
+  /**
+   * Filters the monitor report's metric list according to the active category selection.
+   *
+   * @returns {Array<import("@/lib/performance/performance-monitor").PerformanceMetric>} Filtered metrics array.
+   */
   const getMetricsByCategory = () => {
     if (selectedCategory === "all") return report.metrics;
     return report.metrics.filter((m) => m.category === selectedCategory);
   };
 
+  /**
+   * Determines the theme color corresponding to a metric value based on provided warning and good thresholds.
+   *
+   * @param {number} value - Numeric performance metric value.
+   * @param {object} thresholds - Evaluation boundaries.
+   * @param {number} thresholds.good - Upper bound for optimal performance.
+   * @param {number} thresholds.warning - Upper bound before considered critically slow.
+   * @returns {string} Theme hex or RGB color string.
+   */
   const getPerformanceColor = (
     value: number,
     thresholds: { good: number; warning: number },

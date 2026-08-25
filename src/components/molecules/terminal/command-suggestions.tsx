@@ -9,6 +9,23 @@ import {
 } from "@/hooks/use-command-suggestions";
 import { LenisScroll } from "@/components/layout/lenis-scroll";
 
+/**
+ * Properties for the CommandSuggestions popup component.
+ *
+ * @interface CommandSuggestionsProps
+ * @property {string} input - Current user input string being matched.
+ * @property {string[]} availableCommands - List of valid registered commands.
+ * @property {boolean} visible - Controls whether the suggestion popover is active.
+ * @property {(suggestion: string) => void} onSelect - Callback when a suggestion is chosen.
+ * @property {(command: string) => void} [onCommandUsed] - Optional callback fired when a command execution is tracked.
+ * @property {number} [maxSuggestions] - Maximum number of suggestions to render (default: 8).
+ * @property {boolean} [showOnEmpty] - Whether suggestions should appear when query is blank (default: true).
+ * @property {boolean} [showDescriptions] - Whether command descriptions should be visible (default: true).
+ * @property {boolean} [enableLearning] - Whether command usage history influences suggestions (default: true).
+ * @property {boolean} [enableCache] - Whether suggestion results are memoized in cache (default: true).
+ * @property {number} [minQueryLength] - Minimum characters required before querying (default: 0).
+ * @property {number} [debounceMs] - Input debounce time in milliseconds (default: 50).
+ */
 interface CommandSuggestionsProps {
   input: string;
   availableCommands: string[];
@@ -24,6 +41,13 @@ interface CommandSuggestionsProps {
   debounceMs?: number;
 }
 
+/**
+ * Smart autocomplete suggestions dropdown component displaying ranked command matches,
+ * match type badges, command descriptions, usage frequencies, and keyboard navigation support.
+ *
+ * @param {CommandSuggestionsProps} props - Component properties.
+ * @returns {JSX.Element | null} Rendered suggestion overlay menu or null if hidden/empty.
+ */
 export function CommandSuggestions({
   input,
   availableCommands,
@@ -164,6 +188,12 @@ export function CommandSuggestions({
     suggestions: suggestions.map((s) => s.command),
   });
 
+  /**
+   * Resolves the visual icon or marker representation for a given suggestion match type.
+   *
+   * @param {SuggestionItem["type"]} type - The match strategy classification.
+   * @returns {string} Text icon indicator string.
+   */
   const getTypeIcon = (type: SuggestionItem["type"]) => {
     switch (type) {
       case "exact":
@@ -183,6 +213,12 @@ export function CommandSuggestions({
     }
   };
 
+  /**
+   * Resolves the theme accent color corresponding to a suggestion match type.
+   *
+   * @param {SuggestionItem["type"]} type - The match classification type.
+   * @returns {string} Color hex or theme color value.
+   */
   const getTypeColor = (type: SuggestionItem["type"]) => {
     switch (type) {
       case "exact":
@@ -202,6 +238,12 @@ export function CommandSuggestions({
     }
   };
 
+  /**
+   * Resolves the badge color corresponding to a command category name.
+   *
+   * @param {string} [category] - The command category name.
+   * @returns {string} Color hex or theme color value.
+   */
   const getCategoryColor = (category?: string) => {
     switch (category) {
       case "system":
@@ -215,6 +257,12 @@ export function CommandSuggestions({
     }
   };
 
+  /**
+   * Handles click selection of a suggestion item, invoking selection callbacks and updating usage metrics.
+   *
+   * @param {SuggestionItem} suggestion - Selected suggestion item object.
+   * @param {number} index - Index of the chosen item in the list.
+   */
   const handleSuggestionClick = (suggestion: SuggestionItem, index: number) => {
     setSelectedIndex(index);
     onSelect(suggestion.command);

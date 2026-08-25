@@ -3,12 +3,27 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { PWAInstallPrompt } from "@/components/molecules/pwa/pwa-install-prompt";
 
+/**
+ * Synthetic browser event dispatched before a PWA install prompt is displayed,
+ * allowing the web application to defer or trigger installation manually.
+ */
 interface BeforeInstallPromptEvent extends Event {
+  /**
+   * Platforms on which the application can be installed.
+   */
   readonly platforms: string[];
+  /**
+   * Promise resolving to the user's choice regarding the installation prompt.
+   */
   readonly userChoice: Promise<{
     outcome: "accepted" | "dismissed";
     platform: string;
   }>;
+  /**
+   * Triggers the native browser installation prompt dialog.
+   *
+   * @returns {Promise<void>} Resolves when the prompt sequence finishes.
+   */
   prompt(): Promise<void>;
 }
 
@@ -18,6 +33,12 @@ declare global {
   }
 }
 
+/**
+ * Manages Progressive Web App (PWA) lifecycle, registering the service worker (`/sw.js`),
+ * monitoring update availability, and orchestrating the custom install prompt banner.
+ *
+ * @returns {JSX.Element | null} The rendered install prompt component, or `null` if the app is already installed or not installable.
+ */
 export function PWARegistration() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);

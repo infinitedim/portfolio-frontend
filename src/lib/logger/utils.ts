@@ -1,5 +1,11 @@
 import { PII_PATTERNS, SENSITIVE_HEADERS, SENSITIVE_FIELDS } from "./config";
 
+/**
+ * Masks an email address string by obfuscating the username and domain.
+ *
+ * @param email - The email address to mask.
+ * @returns Masked email address string.
+ */
 function maskEmail(email: string): string {
   const [local, domain] = email.split("@");
   if (!local || !domain) return "***@***.***";
@@ -10,6 +16,12 @@ function maskEmail(email: string): string {
   return `${maskedLocal}@${maskedDomain}`;
 }
 
+/**
+ * Masks a telephone number string, retaining only the last 4 digits.
+ *
+ * @param phone - The phone number string to mask.
+ * @returns Masked phone number string.
+ */
 function maskPhone(phone: string): string {
   const cleaned = phone.replace(/\D/g, "");
   if (cleaned.length < 4) return "***";
@@ -18,6 +30,12 @@ function maskPhone(phone: string): string {
   return `***-***-${lastFour}`;
 }
 
+/**
+ * Masks a credit card number string, retaining only the last 4 digits.
+ *
+ * @param card - The credit card number string to mask.
+ * @returns Masked credit card string.
+ */
 function maskCreditCard(card: string): string {
   const cleaned = card.replace(/\D/g, "");
   if (cleaned.length < 4) return "****";
@@ -26,6 +44,12 @@ function maskCreditCard(card: string): string {
   return `****-****-****-${lastFour}`;
 }
 
+/**
+ * Masks an IPv4 address string by obscuring the first three octets.
+ *
+ * @param ip - The IPv4 address string to mask.
+ * @returns Masked IPv4 address string.
+ */
 function maskIpAddress(ip: string): string {
   const parts = ip.split(".");
   if (parts.length !== 4) return "***.***.***.***.***";
@@ -33,6 +57,12 @@ function maskIpAddress(ip: string): string {
   return `***.***.***.${parts[3]}`;
 }
 
+/**
+ * Scans a string for recognized PII patterns (email, phone, credit cards, SSN, IPv4) and masks them.
+ *
+ * @param text - The raw text string to sanitize.
+ * @returns Sanitized string with PII replaced by masked values.
+ */
 export function maskPIIString(text: string): string {
   let masked = text;
 
@@ -51,6 +81,12 @@ export function maskPIIString(text: string): string {
   return masked;
 }
 
+/**
+ * Recursively masks sensitive fields and PII values in arbitrary data structures (strings, arrays, objects).
+ *
+ * @param data - The data structure or primitive value to sanitize.
+ * @returns Deeply sanitized clone of the input data.
+ */
 export function maskPII(data: unknown): unknown {
   if (data === null || data === undefined) {
     return data;
@@ -91,6 +127,12 @@ export function maskPII(data: unknown): unknown {
   return data;
 }
 
+/**
+ * Sanitizes HTTP headers by replacing sensitive header values with a redaction placeholder.
+ *
+ * @param headers - Key-value map of headers or Fetch API Headers instance.
+ * @returns Sanitized headers record.
+ */
 export function sanitizeHeaders(
   headers: Record<string, string> | Headers,
 ): Record<string, string> {
@@ -115,6 +157,12 @@ export function sanitizeHeaders(
   return sanitized;
 }
 
+/**
+ * Formats an unknown error or exception into a standardized structured object.
+ *
+ * @param error - The caught error object, exception, or string.
+ * @returns Standardized error details object.
+ */
 export function formatError(error: unknown): {
   name: string;
   message: string;
@@ -154,6 +202,11 @@ export function formatError(error: unknown): {
   };
 }
 
+/**
+ * Extracts ambient client-side request context from cookies, localStorage, and navigator.
+ *
+ * @returns Contextual metadata including request ID, session ID, user ID, URL, and device type.
+ */
 export function getRequestContext(): {
   requestId?: string;
   sessionId?: string;
@@ -185,6 +238,11 @@ export function getRequestContext(): {
   };
 }
 
+/**
+ * Generates a unique correlation/request identifier using crypto.randomUUID or timestamp fallback.
+ *
+ * @returns Unique correlation identifier string.
+ */
 export function generateCorrelationId(): string {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
     return crypto.randomUUID();
@@ -193,6 +251,12 @@ export function generateCorrelationId(): string {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
+/**
+ * Retrieves the value of a document cookie by name.
+ *
+ * @param name - Cookie key name.
+ * @returns Decoded cookie value or undefined if not found.
+ */
 function getCookie(name: string): string | undefined {
   if (typeof document === "undefined") {
     return undefined;
@@ -209,6 +273,11 @@ function getCookie(name: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Detects device category based on the browser User-Agent string.
+ *
+ * @returns Detected device type ('mobile', 'tablet', 'desktop', or 'unknown').
+ */
 function getDeviceType(): string {
   if (typeof window === "undefined") {
     return "unknown";
@@ -227,6 +296,11 @@ function getDeviceType(): string {
   return "desktop";
 }
 
+/**
+ * Checks whether the current execution context is in the browser client.
+ *
+ * @returns True if running in a client browser; false if running in Node or Bun server.
+ */
 export function isClient(): boolean {
   if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined") {
     return false;
@@ -234,10 +308,22 @@ export function isClient(): boolean {
   return typeof window !== "undefined";
 }
 
+/**
+ * Checks whether the current execution context is on the server.
+ *
+ * @returns True if running in a server runtime; false if running in a browser.
+ */
 export function isServer(): boolean {
   return typeof window === "undefined";
 }
 
+/**
+ * Safely stringifies an arbitrary value or object handling circular references and depth limits.
+ *
+ * @param obj - Target value to serialize.
+ * @param maxDepth - Maximum recursion depth for nested objects.
+ * @returns Serialized JSON string representation.
+ */
 export function safeStringify(obj: unknown, maxDepth = 5): string {
   const seen = new WeakSet();
 
@@ -308,6 +394,13 @@ export function safeStringify(obj: unknown, maxDepth = 5): string {
   }
 }
 
+/**
+ * Truncates a string to a specified maximum length, appending an ellipsis if truncated.
+ *
+ * @param str - Input string to truncate.
+ * @param maxLength - Maximum allowed length.
+ * @returns Truncated string.
+ */
 export function truncate(str: string, maxLength: number): string {
   if (str.length <= maxLength) {
     return str;
@@ -316,7 +409,14 @@ export function truncate(str: string, maxLength: number): string {
   return str.substring(0, maxLength - 3) + "...";
 }
 
+/**
+ * Calculates the approximate size in bytes of a serialized object.
+ *
+ * @param obj - Target object or value to measure.
+ * @returns Size in bytes.
+ */
 export function getObjectSize(obj: unknown): number {
   const str = JSON.stringify(obj);
   return new Blob([str]).size;
 }
+

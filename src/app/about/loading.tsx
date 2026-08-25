@@ -1,6 +1,17 @@
 import { type JSX } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
+/**
+ * Loading skeleton component for the About page.
+ *
+ * @description
+ * Renders a full-page animated skeleton screen matching the layout structure of the About page.
+ * Displays placeholder pulse animations for the developer header (avatar, name, bio),
+ * skill group cards grid, and work experience timeline entries to improve perceived performance
+ * during route transitions and data fetching.
+ *
+ * @returns {JSX.Element} The rendered About page loading skeleton wrapped in the standard layout.
+ */
 export default function AboutLoading(): JSX.Element {
   return (
     <StandardPageLayout>

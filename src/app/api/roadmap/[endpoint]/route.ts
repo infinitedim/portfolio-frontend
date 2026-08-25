@@ -1,9 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withEncryption } from "@/lib/crypto/with-encryption";
 
+/**
+ * Allowlist of valid roadmap proxy endpoint identifiers.
+ */
 const ALLOWED = ["streak", "dashboard", "teams", "favourites"] as const;
+
+/**
+ * Union type representing allowed roadmap proxy endpoint paths.
+ */
 type Endpoint = (typeof ALLOWED)[number];
 
+/**
+ * Resolves the backend service base URL from environment variables with local fallback.
+ *
+ * @returns The resolved backend base URL.
+ */
 function getBackendUrl(): string {
   return (
     process.env.BACKEND_URL ??
@@ -12,6 +24,14 @@ function getBackendUrl(): string {
   );
 }
 
+/**
+ * Handler for GET requests that proxies roadmap statistics and telemetry from the backend.
+ *
+ * @param _req - The incoming NextRequest instance.
+ * @param context - The route context containing dynamic endpoint params.
+ * @param context.params - Promise resolving to route parameters including endpoint name.
+ * @returns A promise resolving to a NextResponse containing the roadmap JSON payload or error.
+ */
 async function getHandler(
   _req: NextRequest,
   { params }: { params: Promise<{ endpoint: string }> },
@@ -49,4 +69,7 @@ async function getHandler(
   }
 }
 
+/**
+ * Encrypted route handler for GET requests to the roadmap proxy endpoints.
+ */
 export const GET = withEncryption(getHandler);

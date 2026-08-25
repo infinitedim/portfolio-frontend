@@ -1,11 +1,26 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+/**
+ * Configuration options for generating the API SDK contract.
+ */
 export interface GeneratedSdkOptions {
+  /**
+   * The file destination path where the generated SDK should be written.
+   */
   outputPath?: string;
+  /**
+   * The base URL of the backend API providing the OpenAPI specification.
+   */
   backendUrl?: string;
 }
 
+/**
+ * Generates a typed TypeScript API client SDK by fetching the OpenAPI specification from the backend.
+ *
+ * @param options - Configuration options for SDK generation.
+ * @returns A promise resolving to an object containing generation success status and the output path.
+ */
 export async function generateApiSdk(options: GeneratedSdkOptions = {}) {
   const outputPath =
     options.outputPath ||

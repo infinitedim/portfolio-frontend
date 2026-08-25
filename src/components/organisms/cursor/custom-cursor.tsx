@@ -5,6 +5,14 @@ import "./cursor.css";
 import { useCursor } from "@/hooks/use-cursor";
 import { usePointerDevice } from "@/hooks/use-pointer-device";
 
+/**
+ * Custom animated cursor component rendering a stylized mouse pointer follower.
+ *
+ * Automatically detects device pointer capabilities to disable itself on touch devices,
+ * tracks mouse movement states, and synchronizes with the active UI theme.
+ *
+ * @returns Custom cursor DOM node or null if not mounted or unsupported on device.
+ */
 export function CustomCursor() {
   const [mounted, setMounted] = useState(false);
   const [hasMoved, setHasMoved] = useState(false);

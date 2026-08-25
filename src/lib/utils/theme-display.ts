@@ -1,15 +1,32 @@
 import { themes, getSortedThemeNames } from "@/lib/themes/theme-config";
 import type { ThemeName, ThemeRegistry } from "@/types/theme";
 
+/**
+ * Configuration options for rendering terminal theme listings and previews.
+ */
 export interface ThemeDisplayOptions {
+  /** Whether to display the active theme indicator header. */
   showCurrent?: boolean;
+  /** Name of the currently active theme. */
   currentTheme?: ThemeName;
+  /** Whether to render a single-line compact list instead of a full grid. */
   compact?: boolean;
+  /** Whether to output ANSI or text color values in the listing. */
   showColors?: boolean;
+  /** Number of grid columns for multi-column output layout. */
   columns?: number;
 }
 
+/**
+ * Utility class providing formatted text-based output generators for terminal themes.
+ */
 export class ThemeDisplay {
+  /**
+   * Generates a formatted ASCII table or list string displaying available terminal themes.
+   *
+   * @param options - Display configuration options including layout and active theme highlight.
+   * @returns Formatted theme listing string.
+   */
   static generateList(options: ThemeDisplayOptions = {}): string {
     const {
       showCurrent = true,
@@ -84,6 +101,12 @@ export class ThemeDisplay {
     return lines.join("\n");
   }
 
+  /**
+   * Generates a detailed color preview block showing hex color assignments for a specific theme.
+   *
+   * @param themeName - Identifier of the theme to preview.
+   * @returns Formatted color preview string or empty string if theme not found.
+   */
   static generateColorPreview(themeName: ThemeName): string {
     const config = themes[themeName];
     if (!config) return "";
@@ -106,6 +129,12 @@ export class ThemeDisplay {
     return lines.join("\n");
   }
 
+  /**
+   * Generates a side-by-side comparison table between specified theme names.
+   *
+   * @param themeNames - Array of theme names to compare.
+   * @returns Formatted comparison table string.
+   */
   static generateThemeComparison(themeNames: ThemeName[]): string {
     if (themeNames.length === 0) return "No themes to compare";
 

@@ -1,12 +1,36 @@
+/**
+ * @fileoverview Empty/error state organism component for the roadmap dashboard,
+ * rendered when upstream roadmap data fails to fetch or credentials are unconfigured.
+ * @module components/organisms/roadmap/roadmap-empty-state
+ */
+
 "use client";
 
 import type { RoadmapFetchError } from "@/lib/data/data-fetching";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Props for the RoadmapEmptyState component.
+ *
+ * @interface RoadmapEmptyStateProps
+ * @property {RoadmapFetchError | null} [error] - Optional fetch error object with status code and failure message.
+ */
 interface RoadmapEmptyStateProps {
   error?: RoadmapFetchError | null;
 }
 
+/**
+ * Renders a terminal-styled error or empty state card for roadmap tracking.
+ *
+ * @description
+ * Inspects the provided error to determine whether missing API credentials (401 / credential issue)
+ * or upstream connectivity failures occurred, displaying localized error badges, messages,
+ * and diagnostic HTTP status information formatted as a CLI diagnostic prompt.
+ *
+ * @param {RoadmapEmptyStateProps} props - The component props.
+ * @param {RoadmapFetchError | null} [props.error] - Optional error details from upstream roadmap API fetch.
+ * @returns {React.JSX.Element} The rendered error/empty state UI.
+ */
 export function RoadmapEmptyState({ error }: RoadmapEmptyStateProps) {
   const { t } = useI18n();
 

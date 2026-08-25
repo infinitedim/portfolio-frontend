@@ -1,6 +1,13 @@
 import Link from "next/link";
 import type { JSX } from "react";
 
+/**
+ * Teaser page component displayed when the terminal route is accessed without gate unlock credentials.
+ *
+ * Directs users back to the gate challenges or allows resuming the puzzle flow.
+ *
+ * @returns Rendered locked terminal notice page.
+ */
 export function TerminalLockedTeaser(): JSX.Element {
   return (
     <main

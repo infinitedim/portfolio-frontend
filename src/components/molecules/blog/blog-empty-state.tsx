@@ -1,6 +1,20 @@
+import type { JSX } from "react";
 import Link from "next/link";
 import type { Route } from "next";
 
+/**
+ * Properties for the BlogEmptyState component.
+ *
+ * @interface BlogEmptyStateProps
+ * @property {string} [search] - Active search query filter, if any.
+ * @property {string} [tag] - Active tag filter, if any.
+ * @property {string} [series] - Active series filter, if any.
+ * @property {string} resetUrl - Target route URL to reset and clear all active filters.
+ * @property {{ blogNoPostsFound: string; blogNoPostsMessage: string; blogViewAllPosts: string }} t - Localized dictionary strings for empty search and no-post messages.
+ * @property {string} t.blogNoPostsFound - String template displayed when filtered query yields zero results.
+ * @property {string} t.blogNoPostsMessage - General message displayed when the entire blog index has no articles.
+ * @property {string} t.blogViewAllPosts - Button label text to view all articles.
+ */
 interface BlogEmptyStateProps {
   search?: string;
   tag?: string;
@@ -13,13 +27,27 @@ interface BlogEmptyStateProps {
   };
 }
 
+/**
+ * Terminal-styled empty state view for the blog index and archive pages.
+ *
+ * Distinguishes between filtered zero-match queries (displaying active tags/terms and a `$ clear --filters` reset button)
+ * and globally empty blog archives (displaying CLI navigation prompts `$ cd /projects`, `$ cat /about`, `$ send --message`).
+ *
+ * @param {BlogEmptyStateProps} props - Component properties.
+ * @param {string} [props.search] - Filter search keyword.
+ * @param {string} [props.tag] - Filter tag name.
+ * @param {string} [props.series] - Filter series slug.
+ * @param {string} props.resetUrl - Navigation URL to clear all filters.
+ * @param {object} props.t - Localized translation strings.
+ * @returns {JSX.Element} The rendered empty state container.
+ */
 export function BlogEmptyState({
   search,
   tag,
   series,
   resetUrl,
   t,
-}: BlogEmptyStateProps) {
+}: BlogEmptyStateProps): JSX.Element {
   const isFiltered = Boolean(search || tag || series);
 
   return (

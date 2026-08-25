@@ -12,6 +12,13 @@ import { Mail } from "lucide-react";
 import { AboutResumeButton } from "@/components/molecules/about/about-resume-button";
 import { TechBadge } from "@/components/atoms/tech-badge";
 
+/**
+ * Static metadata configuration for the About page.
+ *
+ * @description
+ * Defines OpenGraph metadata, page title, description, and canonical URL
+ * for search engine optimization (SEO) and social media link previews.
+ */
 export const metadata: Metadata = {
   title: "About",
   description:
@@ -25,6 +32,13 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Categorized list of technical skills and toolsets displayed on the About page.
+ *
+ * @description
+ * Groups developer proficiencies into distinct domains (Frontend, Backend, DevOps & Tooling, Other)
+ * to render structured skill badges in the skills section grid.
+ */
 const SKILL_GROUPS = [
   {
     label: "Frontend",
@@ -63,6 +77,17 @@ const SKILL_GROUPS = [
   },
 ] as const;
 
+/**
+ * Server component that fetches and renders the complete About page content.
+ *
+ * @description
+ * Retrieves localized developer profile and work experience data based on the user's
+ * active `portfolio_locale` cookie. Renders structured JSON-LD schemas (Person, BreadcrumbList),
+ * an introductory hero section with contact details, an interactive work history timeline,
+ * a categorized technical skills showcase, and a call-to-action section with resume access.
+ *
+ * @returns {Promise<JSX.Element>} A promise resolving to the rendered About page sections and JSON-LD scripts.
+ */
 async function AboutContent(): Promise<JSX.Element> {
   const { cookies } = await import("next/headers");
   const cookieStore = await cookies();
@@ -271,6 +296,15 @@ async function AboutContent(): Promise<JSX.Element> {
   );
 }
 
+/**
+ * Fallback skeleton component displayed while the server-rendered AboutContent is streaming.
+ *
+ * @description
+ * Renders placeholder animated pulse blocks corresponding to the header, bio summary,
+ * and experience timeline cards inside a Suspense boundary.
+ *
+ * @returns {JSX.Element} Skeleton loading placeholder for the About page content.
+ */
 function AboutFallback(): JSX.Element {
   return (
     <div className="px-4 py-16">
@@ -291,6 +325,16 @@ function AboutFallback(): JSX.Element {
   );
 }
 
+/**
+ * Root page component for the public `/about` route.
+ *
+ * @description
+ * Wraps the asynchronous server component {@link AboutContent} within a React Suspense
+ * boundary and the global {@link StandardPageLayout}, displaying {@link AboutFallback}
+ * during data streaming.
+ *
+ * @returns {JSX.Element} The rendered About page layout with Suspense streaming.
+ */
 export default function AboutPage(): JSX.Element {
   return (
     <StandardPageLayout>

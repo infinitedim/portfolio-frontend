@@ -3,6 +3,15 @@
 import { useState } from "react";
 import { TurnstileResumeModal } from "@/components/molecules/shared/turnstile-resume-modal";
 
+/**
+ * Interactive button component for downloading the curriculum vitae / resume.
+ *
+ * Renders a styled action button that opens the `TurnstileResumeModal` upon click,
+ * prompting the user to complete Cloudflare Turnstile bot verification before initiating
+ * the protected resume file download.
+ *
+ * @returns {JSX.Element} The resume download button and its associated Turnstile verification modal.
+ */
 export function AboutResumeButton() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -20,3 +29,4 @@ export function AboutResumeButton() {
     </>
   );
 }
+

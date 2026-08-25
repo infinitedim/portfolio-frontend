@@ -20,17 +20,44 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
+/**
+ * Form state data model representing developer profile and contact details across multiple locales.
+ *
+ * @description
+ * Contains both global developer information (name, email, social profile URLs) and
+ * localized fields (job title, biography, physical location) mapped by locale code (e.g., `en_US`, `id_ID`).
+ */
 interface AboutFormData {
+  /** Developer full name */
   name: string;
+  /** Map of locale code to localized professional job title */
   title: Record<string, string>;
+  /** Map of locale code to localized biography text */
   bio: Record<string, string>;
+  /** Map of locale code to localized geographic location */
   location: Record<string, string>;
+  /** Primary contact email address */
   email: string;
+  /** GitHub profile URL */
   github: string;
+  /** LinkedIn profile URL */
   linkedin: string;
+  /** Twitter / X profile URL */
   twitter: string;
 }
 
+/**
+ * Administrator dashboard page for managing developer profile information and internationalized bio data.
+ *
+ * @description
+ * Provides an administrative form to view and update:
+ * - Global contact credentials (name, email, GitHub, LinkedIn, Twitter).
+ * - Multilingual job titles, bios, and locations per supported locale.
+ * - Integration with AI automated translation endpoint (`/api/admin/portfolio/about/translate`)
+ * to automatically translate text from a selected source locale to all other supported locales.
+ *
+ * @returns {JSX.Element} The rendered admin about profile management view.
+ */
 export default function AdminAboutPage(): JSX.Element {
   const { themeConfig } = useTheme();
   const [loading, setLoading] = useState(true);

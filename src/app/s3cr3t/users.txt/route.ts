@@ -6,6 +6,16 @@ import {
   buildGateCookieHeader,
 } from "@/lib/gate/gate-proxy";
 
+/**
+ * Route handler proxy for fetching challenge 2 users list artifact.
+ *
+ * @description Forwards incoming gate challenge cookie sessions to the backend challenge API
+ * (`/api/gate/challenge/2/users.txt`), propagates gate session cookies in response headers,
+ * and streams the resulting plain text contents.
+ *
+ * @async
+ * @returns {Promise<NextResponse>} The HTTP response delivering the plain-text file or error status.
+ */
 export async function GET(): Promise<NextResponse> {
   const cookieStore = await cookies();
   const cookieHeader = buildGateCookieHeader(cookieStore);

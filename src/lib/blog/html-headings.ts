@@ -1,4 +1,14 @@
-                                           
+/**
+ * Converts a raw heading string or HTML fragment into a URL-friendly, lowercase kebab-case slug.
+ * Strips HTML tags, removes special punctuation, collapses whitespaces and dashes.
+ *
+ * @param {string} text - The raw heading text or HTML string to be slugified.
+ * @returns {string} The normalized kebab-case slug string.
+ * @example
+ * ```ts
+ * slugifyHeading("Getting Started with TypeScript 5.0!"); // "getting-started-with-typescript-50"
+ * ```
+ */
 export function slugifyHeading(text: string): string {
   return text
     .toLowerCase()
@@ -10,7 +20,18 @@ export function slugifyHeading(text: string): string {
     .replace(/^-|-$/g, "");
 }
 
-                                                                               
+/**
+ * Parses raw HTML content and injects unique kebab-case `id` attributes into all `<h2>` and `<h3>` heading tags.
+ * Preserves existing `id` attributes if already present and handles duplicates by appending incremental numeric suffixes.
+ *
+ * @param {string} html - The input HTML string containing blog post markup.
+ * @returns {string} The transformed HTML markup with unique `id` attributes on all level 2 and 3 headings.
+ * @example
+ * ```ts
+ * const processed = addHeadingIdsToHtml("<h2>Introduction</h2><h2>Introduction</h2>");
+ * // Result: '<h2 id="introduction">Introduction</h2><h2 id="introduction-2">Introduction</h2>'
+ * ```
+ */
 export function addHeadingIdsToHtml(html: string): string {
   const used = new Set<string>();
 

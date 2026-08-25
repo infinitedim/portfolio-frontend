@@ -6,31 +6,61 @@ import {
   ErrorUtils,
 } from "./error-types";
 
+/**
+ * Configuration options for managing exponential backoff and retry behavior of asynchronous operations.
+ */
 export interface RetryConfig {
+  /** Maximum number of retry attempts permitted before failing. */
   maxRetries: number;
+  /** Initial base delay in milliseconds before the first retry attempt. */
   baseDelay: number;
+  /** Upper bound ceiling for retry delays in milliseconds. */
   maxDelay: number;
+  /** Exponential backoff multiplier factor applied between consecutive retry attempts. */
   backoffFactor: number;
+  /** Optional custom predicate determining if a specific error and attempt count qualify for a retry. */
   retryCondition?: (error: Error, attempt: number) => boolean;
+  /** Optional callback invoked on each retry attempt with error and attempt index. */
   onRetry?: (error: Error, attempt: number) => void;
 }
 
+/**
+ * Execution parameters and lifecycle hooks for async error handler workflows.
+ */
 export interface AsyncErrorHandlerConfig {
+  /** Operation timeout duration in milliseconds before timing out. */
   timeout?: number;
+  /** Retry policy and backoff settings. */
   retryConfig?: RetryConfig;
+  /** Fallback data value returned when the operation fails. */
   fallbackValue?: unknown;
+  /** Error event listener invoked whenever an exception occurs. */
   onError?: (error: Error) => void;
+  /** Success callback invoked with the resolved execution result. */
   onSuccess?: (result: unknown) => void;
 }
 
+/**
+ * Encapsulated result container from an async execution managed by {@link AsyncErrorHandler}.
+ *
+ * @template T - The resolved data payload type.
+ */
 export interface AsyncResult<T> {
+  /** Indicates whether the operation completed successfully without error. */
   success: boolean;
+  /** Resolved data payload when successful. */
   data?: T;
+  /** Enhanced error descriptor if the operation failed. */
   error?: EnhancedError;
+  /** Count of retry attempts made before completing or failing. */
   retryCount: number;
+  /** Total elapsed execution duration in milliseconds. */
   duration: number;
 }
 
+/**
+ * Default retry strategy configuration with 3 retries and exponential backoff.
+ */
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
   maxRetries: 3,
   baseDelay: 1000,
@@ -39,9 +69,18 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
   retryCondition: (error: Error) => ErrorUtils.isRetryable(error),
 };
 
+/**
+ * Singleton service orchestrating robust asynchronous execution with configurable retries,
+ * timeout races, exponential backoff, and aggregated error reporting.
+ */
 export class AsyncErrorHandler {
   private static instance: AsyncErrorHandler;
 
+  /**
+   * Retrieves or initializes the shared singleton instance of `AsyncErrorHandler`.
+   *
+   * @returns The singleton {@link AsyncErrorHandler} instance.
+   */
   static getInstance(): AsyncErrorHandler {
     if (!AsyncErrorHandler.instance) {
       AsyncErrorHandler.instance = new AsyncErrorHandler();
@@ -49,6 +88,21 @@ export class AsyncErrorHandler {
     return AsyncErrorHandler.instance;
   }
 
+  /**
+   * Executes an asynchronous task with timeout enforcement, exponential backoff retries,
+   * error enhancement, and lifecycle event notifications.
+   *
+   * @param fn - The asynchronous function to execute.
+   * @param config - Optional configuration overrides for timeout, retries, and event callbacks.
+   * @returns Promise resolving to an {@link AsyncResult} object with status, data, and metrics.
+   *
+   * @example
+   * ```ts
+   * const handler = AsyncErrorHandler.getInstance();
+   * const res = await handler.execute(() => fetchUserData(id), { timeout: 5000 });
+   * if (res.success) console.log(res.data);
+   * ```
+   */
   async execute<T>(
     fn: () => Promise<T>,
     config: AsyncErrorHandlerConfig = {},
@@ -114,6 +168,14 @@ export class AsyncErrorHandler {
     };
   }
 
+  /**
+   * Executes a batch of asynchronous tasks sequentially or with fail-fast semantics,
+   * aggregating successes, errors, and retry attempts.
+   *
+   * @param functions - Array of asynchronous functions to execute.
+   * @param config - Configuration options including failFast mode and retry settings.
+   * @returns Promise resolving to an aggregated {@link AsyncResult} array.
+   */
   async executeAll<T>(
     functions: Array<() => Promise<T>>,
     config: AsyncErrorHandlerConfig & { failFast?: boolean } = {},
@@ -163,6 +225,14 @@ export class AsyncErrorHandler {
     };
   }
 
+  /**
+   * Races an asynchronous promise against a timeout rejection promise.
+   *
+   * @param promise - The async operation promise.
+   * @param timeout - Timeout duration in milliseconds.
+   * @returns Promise resolving to the operation result if completed in time.
+   * @throws NetworkError if the timeout threshold is exceeded.
+   */
   private async withTimeout<T>(
     promise: Promise<T>,
     timeout: number,
@@ -185,10 +255,22 @@ export class AsyncErrorHandler {
     return Promise.race([promise, timeoutPromise]);
   }
 
+  /**
+   * Pauses execution for a specified duration in milliseconds.
+   *
+   * @param ms - Delay duration in milliseconds.
+   * @returns Promise resolving when the delay concludes.
+   */
   private async delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  /**
+   * Aggregates multiple enhanced errors into a single unified `EnhancedError` container.
+   *
+   * @param errors - List of enhanced errors to combine.
+   * @returns Consolidated {@link EnhancedError} with merged messages and highest severity.
+   */
   private combineErrors(errors: EnhancedError[]): EnhancedError {
     const messages = errors.map((e) => e.message).join("; ");
     const categories = [...new Set(errors.map((e) => e.category))];
@@ -217,7 +299,17 @@ export class AsyncErrorHandler {
   }
 }
 
+/**
+ * Utility collection for resilient async execution, circuit breakers, and batch processing.
+ */
 export class AsyncUtils {
+  /**
+   * Executes an asynchronous function safely without throwing, returning data or enhanced error.
+   *
+   * @param fn - The async function to execute.
+   * @param fallbackValue - Optional fallback value returned upon error.
+   * @returns Promise resolving to an object containing data or error.
+   */
   static async safe<T>(
     fn: () => Promise<T>,
     fallbackValue?: T,
@@ -233,6 +325,14 @@ export class AsyncUtils {
     }
   }
 
+  /**
+   * Executes an async operation with automatic retry logic using the singleton error handler.
+   *
+   * @param fn - The async function to execute.
+   * @param config - Partial retry configuration overrides.
+   * @returns Promise resolving to the successfully returned value.
+   * @throws The final error if all retry attempts fail.
+   */
   static async retry<T>(
     fn: () => Promise<T>,
     config: Partial<RetryConfig> = {},
@@ -248,6 +348,16 @@ export class AsyncUtils {
     throw result.error || new Error("Retry failed");
   }
 
+  /**
+   * Creates a circuit-breaker wrapper around an asynchronous function to prevent cascading failures.
+   *
+   * @param fn - Target async function protected by the circuit breaker.
+   * @param config - Failure threshold and timeout parameters.
+   * @param config.failureThreshold - Number of failures before tripping the circuit.
+   * @param config.resetTimeout - Time in milliseconds before attempting reset to half-open.
+   * @param config.monitoringPeriod - Window of time in milliseconds for monitoring failure rate.
+   * @returns Wrapped function enforcing CLOSED, OPEN, and HALF_OPEN state transitions.
+   */
   static createCircuitBreaker<T>(
     fn: () => Promise<T>,
     config: {
@@ -308,6 +418,17 @@ export class AsyncUtils {
     };
   }
 
+  /**
+   * Processes an array of items in concurrent batches with error tracking and summary metrics.
+   *
+   * @param items - Collection of items to process.
+   * @param processor - Async processing handler for each individual item.
+   * @param options - Batch size, concurrency level, and error continuation options.
+   * @param options.batchSize - Maximum number of items per execution batch.
+   * @param options.concurrency - Maximum number of concurrent tasks per batch.
+   * @param options.continueOnError - Whether to continue processing remaining items if an error occurs.
+   * @returns Promise resolving to individual results and batch summary statistics.
+   */
   static async processBatch<T, R>(
     items: T[],
     processor: (item: T) => Promise<R>,
@@ -387,6 +508,12 @@ export class AsyncUtils {
   }
 }
 
+/**
+ * Method decorator that wraps async class methods with {@link AsyncErrorHandler} protection.
+ *
+ * @param config - Error handler configuration settings.
+ * @returns Method decorator function wrapping the target method with error handling and retries.
+ */
 export function handleAsync(config?: AsyncErrorHandlerConfig) {
   return function (
     _target: unknown,
@@ -413,6 +540,17 @@ export function handleAsync(config?: AsyncErrorHandlerConfig) {
   };
 }
 
+/**
+ * Custom React hook exposing async execution helpers, retries, and batch processing utilities.
+ *
+ * @returns Object containing `execute`, `executeAll`, `safe`, `retry`, and `processBatch` helpers.
+ *
+ * @example
+ * ```tsx
+ * const { safe, retry } = useAsyncErrorHandler();
+ * const { data, error } = await safe(() => api.fetchUser());
+ * ```
+ */
 export function useAsyncErrorHandler() {
   const handler = AsyncErrorHandler.getInstance();
 

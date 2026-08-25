@@ -8,10 +8,24 @@ import {
 } from "@/lib/location/location-service";
 import { Clock, MapPin, Globe, Wifi, RefreshCw, Sun, Moon } from "lucide-react";
 
+/**
+ * Properties for the TimeDisplay modal component.
+ *
+ * @interface TimeDisplayProps
+ * @property {() => void} onClose - Callback triggered to close the modal dialog.
+ */
 interface TimeDisplayProps {
   onClose: () => void;
 }
 
+/**
+ * Interactive modal component displaying real-time geographic location, local time,
+ * UTC timestamp, timezone offset, coordinates, and network IP details.
+ *
+ * @param {TimeDisplayProps} props - Component properties.
+ * @param {() => void} props.onClose - Handler invoked when the user dismisses the modal.
+ * @returns {JSX.Element} The rendered modal backdrop and time display panel.
+ */
 export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
   const [location, setLocation] = useState<LocationInfo | null>(null);
   const [timeInfo, setTimeInfo] = useState<TimeInfo | null>(null);
@@ -21,6 +35,10 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
 
   const locationService = LocationService.getInstance();
 
+  /**
+   * Asynchronously fetches client location and timezone information via LocationService,
+   * updating state and handling loading/error indicators.
+   */
   const fetchLocation = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -49,11 +67,21 @@ export function TimeDisplay({ onClose }: TimeDisplayProps): JSX.Element {
     return () => clearInterval(timeInterval);
   }, [fetchLocation]);
 
+  /**
+   * Invalidates cached location data and initiates a fresh network request.
+   */
   const handleRefresh = () => {
     locationService.clearCache();
     fetchLocation();
   };
 
+  /**
+   * Formats a Date object into a 24-hour localized date-time string for a specific IANA timezone identifier.
+   *
+   * @param {Date} date - The date instance to format.
+   * @param {string} timezone - IANA timezone identifier (e.g., 'America/New_York', 'Asia/Jakarta').
+   * @returns {string} The localized formatted date-time string in 24-hour notation.
+   */
   const formatTime = (date: Date, timezone: string) => {
     return date.toLocaleString("en-US", {
       timeZone: timezone,

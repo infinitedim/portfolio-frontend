@@ -3,6 +3,14 @@
 import { useEffect, useState } from "react";
 import { getApiUrl } from "@/lib/api/get-api-url";
 
+/**
+ * Constructs the absolute WebSocket endpoint URL for live visitor presence tracking.
+ *
+ * Converts HTTP/HTTPS protocols from the configured API URL to WS/WSS respectively,
+ * and sets the pathname to `/ws/presence`.
+ *
+ * @returns The resolved WebSocket URL string.
+ */
 function wsUrl(): string {
   const api = getApiUrl();
   const url = new URL(api);
@@ -13,6 +21,15 @@ function wsUrl(): string {
   return url.toString();
 }
 
+/**
+ * Live presence badge component that displays real-time concurrent active visitors.
+ *
+ * Establishes a lazy WebSocket connection upon first user interaction (to optimize Core Web Vitals
+ * and prevent bot connections) and listens for `welcome` and `roomCount` presence updates.
+ * Renders a glowing green badge if 2 or more users are actively online.
+ *
+ * @returns The rendered badge indicator or `null` if alone or disconnected.
+ */
 export function VisitorPresenceBadge() {
   const [count, setCount] = useState<number | null>(null);
 

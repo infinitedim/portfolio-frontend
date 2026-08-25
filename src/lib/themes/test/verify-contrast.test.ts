@@ -1,6 +1,12 @@
 import { describe, it, expect } from "bun:test";
 import { themes } from "../theme-config";
 
+/**
+ * Converts a 3-character or 6-character hexadecimal color string into an RGB component object.
+ *
+ * @param hex - Hexadecimal color string (with or without leading '#').
+ * @returns Object containing numerical `r`, `g`, `b` values (0-255), or null if the hex format is invalid.
+ */
 function hexToRgb(hex: string) {
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
   const fullHex = hex.replace(
@@ -17,6 +23,15 @@ function hexToRgb(hex: string) {
     : null;
 }
 
+/**
+ * Computes the relative luminance of an sRGB color according to the WCAG 2.1 standard formula.
+ *
+ * @param rgb - RGB color components normalized to the 0-255 range.
+ * @param rgb.r - Red component (0-255).
+ * @param rgb.g - Green component (0-255).
+ * @param rgb.b - Blue component (0-255).
+ * @returns Relative luminance value between 0.0 (darkest black) and 1.0 (lightest white).
+ */
 function getLuminance(rgb: { r: number; g: number; b: number }) {
   const a = [rgb.r, rgb.g, rgb.b].map((v) => {
     v /= 255;
@@ -25,6 +40,13 @@ function getLuminance(rgb: { r: number; g: number; b: number }) {
   return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
 
+/**
+ * Calculates the WCAG contrast ratio between two hexadecimal colors.
+ *
+ * @param hex1 - First hexadecimal color string (e.g. foreground/muted text color).
+ * @param hex2 - Second hexadecimal color string (e.g. background color).
+ * @returns Contrast ratio number ranging from 1.0 (no contrast) to 21.0 (maximum contrast), or 0 if parsing fails.
+ */
 function getContrastRatio(hex1: string, hex2: string) {
   const rgb1 = hexToRgb(hex1);
   const rgb2 = hexToRgb(hex2);

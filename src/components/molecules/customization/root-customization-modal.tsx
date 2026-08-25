@@ -11,11 +11,28 @@ import type { ThemeName } from "@/types/theme";
 import type { FontName } from "@/types/font";
 import { LenisScroll } from "@/components/layout/lenis-scroll";
 
+/**
+ * Props for the {@link RootCustomizationModal} component.
+ */
 interface RootCustomizationModalProps {
+  /** Controls whether the root superuser customization modal is currently open. */
   isOpen: boolean;
+  /** Callback fired when the modal should be closed. */
   onClose: () => void;
 }
 
+/**
+ * Superuser terminal-themed customization modal for configuring root-level themes and fonts.
+ *
+ * Renders an accessible Radix UI dialog overlay presenting a hacker/terminal UI layout
+ * where users can switch between available visual themes and monospaced typography pairings,
+ * with immediate color swatch previews and options to persist configuration and reload.
+ *
+ * @param props - Component props.
+ * @param props.isOpen - Boolean flag representing modal visibility.
+ * @param props.onClose - Function callback invoked to dismiss the modal dialog.
+ * @returns The rendered accessible root customization modal dialog.
+ */
 export function RootCustomizationModal({
   isOpen,
   onClose,

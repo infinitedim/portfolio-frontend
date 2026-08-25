@@ -12,6 +12,23 @@ import { TabCompletion } from "@/components/molecules/terminal/tab-completion";
 import { CommandSuggestions } from "@/components/molecules/terminal/command-suggestions";
 import { useSecurity } from "@/hooks/use-security";
 
+/**
+ * Properties for the CommandInput terminal component.
+ *
+ * @interface CommandInputProps
+ * @property {string} value - Current command input string value.
+ * @property {(value: string) => void} onChange - Callback triggered when input value changes.
+ * @property {(command: string) => void} onSubmit - Callback invoked when a command is submitted (e.g., via Enter key).
+ * @property {(direction: "up" | "down") => string} onHistoryNavigate - Function to cycle through terminal history.
+ * @property {boolean} isProcessing - Indicates whether an active command is currently running.
+ * @property {string[]} [availableCommands] - List of registered valid commands for auto-completion.
+ * @property {string} [prompt] - Custom command prompt prefix string (default: "$").
+ * @property {React.RefObject<HTMLInputElement | null>} [inputRef] - Optional external ref for the underlying input element.
+ * @property {() => void} [onClearError] - Handler called to reset any active terminal error state.
+ * @property {boolean} [showOnEmpty] - Whether suggestions should be displayed when the input is empty.
+ * @property {(input: string, limit?: number) => string[]} [getCommandSuggestions] - Optional callback providing custom smart suggestions.
+ * @property {() => string[]} [getFrequentCommands] - Optional callback returning user's most frequent commands.
+ */
 interface CommandInputProps {
   value: string;
   onChange: (value: string) => void;
@@ -27,6 +44,13 @@ interface CommandInputProps {
   getFrequentCommands?: () => string[];
 }
 
+/**
+ * Interactive terminal command input bar featuring animated block cursor, tab auto-completion,
+ * fuzzy suggestions, keyboard history navigation, security input validation, and real-time sanitization.
+ *
+ * @param {CommandInputProps} props - Component properties.
+ * @returns {JSX.Element} The interactive terminal input prompt component.
+ */
 export function CommandInput({
   value,
   onChange,
@@ -149,6 +173,12 @@ export function CommandInput({
     }
   }, [threatAlerts]);
 
+  /**
+   * Evaluates available completion candidates for the current input word.
+   *
+   * @param {string} input - The raw command string to evaluate.
+   * @returns {string[]} Filtered list of matching command completion candidates.
+   */
   const getTabCompletions = (input: string) => {
     const parts = input.split(" ");
     const lastPart = parts[parts.length - 1].toLowerCase();
@@ -176,6 +206,9 @@ export function CommandInput({
     return basicMatches;
   };
 
+  /**
+   * Triggers tab completion logic, autocompleting single matches or opening the completion modal for multiple.
+   */
   const handleTabCompletion = () => {
     const completions = getTabCompletions(value);
 
@@ -186,6 +219,12 @@ export function CommandInput({
     }
   };
 
+  /**
+   * Handles keyboard shortcuts including history traversal, tab completion, submission, and dismissal.
+   *
+   * @param {KeyboardEvent<HTMLInputElement>} e - The native keyboard event.
+   * @returns {Promise<void>} Resolves when the key action processing finishes.
+   */
   const handleKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case "Enter":
@@ -300,6 +339,11 @@ export function CommandInput({
     }
   };
 
+  /**
+   * Replaces the trailing token with the completed command value and restores focus.
+   *
+   * @param {string} completion - The completed token string to inject.
+   */
   const handleTabComplete = (completion: string) => {
     const parts = value.split(" ");
     parts[parts.length - 1] = completion;
@@ -313,6 +357,11 @@ export function CommandInput({
     }, 50);
   };
 
+  /**
+   * Applies the selected suggestion from the dropdown and automatically submits the command.
+   *
+   * @param {string} suggestion - The chosen command suggestion string.
+   */
   const handleSuggestionSelect = (suggestion: string) => {
     const parts = value.split(" ");
     parts[parts.length - 1] = suggestion;
@@ -328,6 +377,11 @@ export function CommandInput({
     }, 50);
   };
 
+  /**
+   * Synchronizes input element changes with parent state and updates suggestions visibility.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Input change event.
+   */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
 
@@ -345,23 +399,41 @@ export function CommandInput({
     setShowSuggestions(shouldShow);
   };
 
+  /**
+   * Tracks text selection within the input element to synchronize the simulated cursor.
+   *
+   * @param {React.SyntheticEvent<HTMLInputElement>} e - Selection synthetic event.
+   */
   const handleInputSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setCursorIndex(target.selectionStart || 0);
   };
 
+  /**
+   * Opens suggestion dropdown on input focus if enabled.
+   */
   const handleInputFocus = () => {
     if (showOnEmpty || value.length > 0) {
       setShowSuggestions(true);
     }
   };
 
+  /**
+   * Synchronizes cursor position and opens suggestions when clicking inside the input.
+   *
+   * @param {React.MouseEvent<HTMLInputElement>} e - Mouse click event.
+   */
   const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setCursorIndex(target.selectionStart || 0);
     handleInputFocus();
   };
 
+  /**
+   * Synchronizes simulated block cursor position on key release.
+   *
+   * @param {React.KeyboardEvent<HTMLInputElement>} e - Keyboard event.
+   */
   const handleInputKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setCursorIndex(target.selectionStart || 0);

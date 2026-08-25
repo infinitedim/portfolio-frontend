@@ -1,43 +1,94 @@
 import sharp from "sharp";
 
+/**
+ * Supported output image format types for image transformation and optimization.
+ */
 export type SupportedImageFormat = "webp" | "png" | "jpeg" | "avif";
 
+/**
+ * Configuration options for resizing and encoding images.
+ */
 export interface ImageResizeOptions {
+  /** Target image width in pixels. */
   width?: number;
+  /** Target image height in pixels. */
   height?: number;
-  quality?: number;                       
-  format?: SupportedImageFormat;                   
+  /** Output compression quality (1-100). Defaults to 80. */
+  quality?: number;
+  /** Output image format encoding. Defaults to 'webp'. */
+  format?: SupportedImageFormat;
+  /** Image resizing fit strategy when both width and height are provided. */
   fit?: "cover" | "contain" | "fill" | "inside" | "outside";
 }
 
+/**
+ * Result object produced by the image optimization pipeline, indicating success or failure.
+ */
 export type ImageOptimizationResult =
   | {
+      /** Indicates successful optimization. */
       success: true;
+      /** The processed and optimized binary image data buffer. */
       buffer: Uint8Array;
+      /** The resulting image format. */
       format: SupportedImageFormat;
+      /** Identifies the underlying processing engine utilized. */
       engineUsed: "bun-image" | "sharp";
+      /** Width of the optimized image in pixels if resized. */
       width?: number;
+      /** Height of the optimized image in pixels if resized. */
       height?: number;
     }
   | {
+      /** Indicates optimization failure. */
       success: false;
+      /** Error message describing the reason for failure. */
       error: string;
+      /** The processing engine attempted when the failure occurred. */
       engineUsed?: "bun-image" | "sharp";
     };
 
+/**
+ * Type interface for Bun runtime's native Image processing instance.
+ */
 interface BunImageInstance {
+  /**
+   * Resizes the current Bun image instance.
+   * @param options - Dimensions to resize image to.
+   * @param options.width - Target image width in pixels.
+   * @param options.height - Target image height in pixels.
+   * @returns Resized Bun image instance.
+   */
   resize(options: { width?: number; height?: number }): BunImageInstance;
+  /**
+   * Converts the Bun image instance into a binary buffer.
+   * @param format - Target encoding format name.
+   * @param options - Encoding options.
+   * @param options.quality - Output compression quality.
+   * @returns Promise resolving to image buffer.
+   */
   toBuffer(format?: string, options?: { quality?: number }): Promise<Uint8Array>;
 }
 
+/**
+ * Type interface for Bun's global Image API namespace.
+ */
 interface BunImageGlobal {
+  /**
+   * Constructs a Bun Image instance from an input binary buffer.
+   * @param input - Input image binary data.
+   * @returns Promise resolving to a BunImageInstance.
+   */
   from(input: ArrayBuffer | Uint8Array): Promise<BunImageInstance>;
 }
 
-   
-                                                                              
-                                                                           
-   
+/**
+ * Optimizes, resizes, and converts an input image buffer to a desired format.
+ * Attempts to use Bun's native image engine first if available, falling back to Sharp.
+ * @param inputBuffer - Raw binary data of the source image.
+ * @param options - Custom resizing, quality, and format options.
+ * @returns Promise resolving to the optimization result with output buffer or error details.
+ */
 export async function optimizeImage(
   inputBuffer: ArrayBuffer | Uint8Array,
   options: ImageResizeOptions = {},
@@ -51,7 +102,6 @@ export async function optimizeImage(
     | { Image?: BunImageGlobal }
     | undefined;
 
-                                          
   if (bunGlobal && typeof bunGlobal.Image?.from === "function") {
     try {
       const img = await bunGlobal.Image.from(inputBuffer);
@@ -68,11 +118,11 @@ export async function optimizeImage(
         width,
         height,
       };
-    } // eslint-disable-next-line no-empty
-    catch {}
+    } catch {
+      void 0;
+    }
   }
 
-                             
   try {
     const bufferInput =
       inputBuffer instanceof Uint8Array

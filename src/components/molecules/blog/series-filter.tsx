@@ -6,12 +6,27 @@ import { useSearchParams } from "next/navigation";
 import type { BlogSeriesSummary } from "@/lib/services/series-service";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Props for the blog series filter component.
+ */
 interface SeriesFilterProps {
+  /** List of available blog series summaries. */
   series: BlogSeriesSummary[];
+  /** The currently selected series slug, if any. */
   activeSeries?: string;
+  /** The current search query string, preserved across series navigation. */
   search?: string;
 }
 
+/**
+ * Inner component for series filtering with search param synchronization.
+ *
+ * @param props - Component properties.
+ * @param props.series - Available blog series summaries.
+ * @param props.activeSeries - Slug of the currently active series filter.
+ * @param props.search - Active search term to retain when switching series.
+ * @returns The rendered series filter bar or null if series list is empty.
+ */
 function SeriesFilterInner({
   series,
   activeSeries,
@@ -20,6 +35,12 @@ function SeriesFilterInner({
   const { t } = useI18n();
   const searchParams = useSearchParams();
 
+  /**
+   * Constructs the URL href string with updated series filter parameters.
+   *
+   * @param seriesSlug - Optional slug of the series to filter by.
+   * @returns Formatted query path for blog navigation.
+   */
   const buildHref = (seriesSlug?: string): string => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("page");
@@ -88,6 +109,12 @@ function SeriesFilterInner({
   );
 }
 
+/**
+ * SeriesFilter component wrapped in Suspense for safe search params consumption.
+ *
+ * @param props - Component properties for filtering blog series.
+ * @returns The Suspense-wrapped series filter component.
+ */
 export function SeriesFilter(props: SeriesFilterProps) {
   return (
     <Suspense fallback={null}>
@@ -95,3 +122,4 @@ export function SeriesFilter(props: SeriesFilterProps) {
     </Suspense>
   );
 }
+

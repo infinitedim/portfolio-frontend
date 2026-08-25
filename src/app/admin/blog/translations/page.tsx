@@ -12,16 +12,41 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RefreshCw, Languages, Inbox } from "lucide-react";
 
+/**
+ * Data structure representing a pending blog post translation item queued for administrative review.
+ *
+ * @description
+ * Pairs the machine-generated localized translation draft with its corresponding original
+ * source blog post article for side-by-side comparison and verification.
+ */
 interface PendingTranslationItem {
+  /** The auto-generated translation post data awaiting approval */
   translated: BlogPostResponse;
+  /** The original source post from which the translation was generated, if available */
   source: BlogPostResponse | null;
 }
 
+/**
+ * API response payload for pending blog translation items.
+ */
 interface PendingTranslationsResponse {
+  /** Array of pending translation review items */
   items: PendingTranslationItem[];
+  /** Total count of pending translations in the review queue */
   total: number;
 }
 
+/**
+ * Administrator dashboard page for reviewing and approving AI-generated blog translations.
+ *
+ * @description
+ * Displays a two-column interactive review workstation:
+ * - Left column: Queue list of pending translations with locale badges and creation dates.
+ * - Right column: Interactive {@link TranslationReview} workspace displaying the selected translation
+ * alongside the source post for content approval, manual editing, or rejection.
+ *
+ * @returns {JSX.Element | null} The rendered translations queue management page or null before hydration.
+ */
 export default function TranslationsPage() {
   const { themeConfig, mounted } = useTheme();
   const [items, setItems] = useState<PendingTranslationItem[]>([]);

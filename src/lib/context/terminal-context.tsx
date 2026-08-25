@@ -1,28 +1,3 @@
-   
-                                                      
-  
-                                                                            
-                                                   
-  
-         
-         
-                               
-                     
-                        
-                      
-  
-                                       
-                                                          
-      
-  
-                                   
-                                                   
-                                                 
-                                                        
-                                               
-                                                   
-   
-
 "use client";
 
 import {
@@ -50,18 +25,16 @@ import type {
 } from "@/types/terminal-context";
 import type { BackgroundSettings } from "@/types/customization";
 
-                                                                              
-                   
-                                                                              
-
 const TerminalContext = createContext<TerminalContextType | null>(null);
 
-                                                                              
-                                       
-                                                                              
-
+/**
+ * Default color palette used for the terminal background glitch effect.
+ */
 const DEFAULT_GLITCH_COLORS = ["#2b4539", "#61dca3", "#61b3dc"] as const;
 
+/**
+ * Default background settings for the terminal canvas animation.
+ */
 const DEFAULT_BACKGROUND_SETTINGS: BackgroundSettings = {
   type: "letter-glitch",
   letterGlitch: {
@@ -75,25 +48,27 @@ const DEFAULT_BACKGROUND_SETTINGS: BackgroundSettings = {
   },
 };
 
-                                                                              
-           
-                                                                              
-
+/**
+ * Component props for the {@link TerminalProvider}.
+ */
 interface TerminalProviderProps {
+  /** The child React components rendered inside the terminal context. */
   children: ReactNode;
-                                                             
+  /** Optional callback invoked when the terminal theme changes. */
   onThemeChange?: (theme: string) => void;
-                                                            
+  /** Optional callback invoked when the terminal typography font changes. */
   onFontChange?: (font: string) => void;
 }
 
-   
-                   
-  
-                                                                           
-                                                                           
-                            
-   
+/**
+ * Context provider component managing terminal emulator state, themes, fonts, i18n, accessibility, and background effects.
+ *
+ * @param props - Component props containing child components and optional change handlers.
+ * @param props.children - The child React components rendered inside the terminal context.
+ * @param props.onThemeChange - Optional callback invoked when the terminal theme changes.
+ * @param props.onFontChange - Optional callback invoked when the terminal typography font changes.
+ * @returns The rendered TerminalProvider wrapping child components with context.
+ */
 export function TerminalProvider({
   children,
   onThemeChange,
@@ -471,26 +446,17 @@ export function TerminalProvider({
   );
 }
 
-                                                                              
-                
-                                                                              
-
-   
-                     
-  
-                                                                     
-                                             
-  
-                                                         
-  
-           
-         
-                           
-                                                            
-           
-    
-      
-   
+/**
+ * Custom React hook to access terminal emulator context state and actions.
+ *
+ * @returns The current {@link TerminalContextType} object.
+ * @throws Throws an error if invoked outside of a `<TerminalProvider>` component tree.
+ *
+ * @example
+ * ```tsx
+ * const { history, executeCommand, currentInput, setCurrentInput } = useTerminalContext();
+ * ```
+ */
 export function useTerminalContext(): TerminalContextType {
   const ctx = useContext(TerminalContext);
   if (!ctx) {

@@ -8,13 +8,27 @@ import { getPublicSeries } from "@/lib/services/series-service";
 import { DEFAULT_BLOG_LOCALE } from "@/lib/i18n/locales";
 import { getTranslationsForLocale } from "@/lib/i18n";
 
+/**
+ * Sentinel slug placeholder utilized during static site generation / build phase.
+ */
 const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
 
+/**
+ * Route and query parameters supplied to the blog series dynamic page.
+ */
 interface SeriesPageProps {
+  /** Promise resolving to the dynamic route parameters containing the series slug. */
   params: Promise<{ slug: string }>;
+  /** Promise resolving to optional search parameters such as locale. */
   searchParams: Promise<{ locale?: string }>;
 }
 
+/**
+ * Generates SEO metadata for a specific blog series page based on resolved series details.
+ *
+ * @param {SeriesPageProps} props - Properties containing route parameters promise.
+ * @returns {Promise<Metadata>} Metadata configuration object for the series page.
+ */
 export async function generateMetadata({
   params,
 }: SeriesPageProps): Promise<Metadata> {
@@ -32,10 +46,22 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * Generates static route parameters for pre-rendering blog series pages at build time.
+ *
+ * @returns {Promise<{ slug: string }[]>} Array of parameter objects with series slugs.
+ */
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return [{ slug: BUILD_PLACEHOLDER_SLUG }];
 }
 
+/**
+ * Server component that fetches and renders series details, post chronological timeline,
+ * parts ordering badges, and metadata tags.
+ *
+ * @param {SeriesPageProps} props - Page properties including route parameters and search query params.
+ * @returns {Promise<JSX.Element>} Rendered blog series page content.
+ */
 async function BlogSeriesContent({ params, searchParams }: SeriesPageProps) {
   const { slug } = await params;
   if (slug === BUILD_PLACEHOLDER_SLUG) {
@@ -148,6 +174,11 @@ async function BlogSeriesContent({ params, searchParams }: SeriesPageProps) {
   );
 }
 
+/**
+ * Fallback skeleton loading component rendered while series data is being fetched.
+ *
+ * @returns {JSX.Element} The rendered loading skeleton.
+ */
 function BlogSeriesSkeleton() {
   const t = getTranslationsForLocale(DEFAULT_BLOG_LOCALE);
   return (
@@ -159,6 +190,12 @@ function BlogSeriesSkeleton() {
   );
 }
 
+/**
+ * Main entry page component for the blog series route wrapped in React Suspense.
+ *
+ * @param {SeriesPageProps} props - Route parameters and search query properties.
+ * @returns {JSX.Element} The rendered React component wrapped in Suspense.
+ */
 export default function BlogSeriesPage(props: SeriesPageProps) {
   return (
     <Suspense fallback={<BlogSeriesSkeleton />}>

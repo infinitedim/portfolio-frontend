@@ -7,11 +7,28 @@ import {
   type EncryptedPayload,
 } from "./server";
 
+/**
+ * Type definition for Next.js App Router route handler functions.
+ *
+ * @template C - Route context type parameter (such as params/route segments).
+ * @param {NextRequest} req - The incoming Next.js request object.
+ * @param {C} context - Context object containing dynamic route segment parameters.
+ * @returns {Promise<NextResponse> | NextResponse} The generated NextResponse or a promise resolving to it.
+ */
 type RouteHandler<C = unknown> = (
   req: NextRequest,
   context: C,
 ) => Promise<NextResponse> | NextResponse;
 
+/**
+ * Higher-order route handler middleware that wraps Next.js API endpoints with transparent end-to-end payload encryption.
+ * Automatically inspects the `x-encrypted` header. When present, validates the active crypto session, decrypts
+ * the request body prior to executing the handler, and encrypts the handler's response payload before returning it.
+ *
+ * @template C - Route context type parameter.
+ * @param {RouteHandler<C>} handler - The standard inner Next.js route handler to wrap.
+ * @returns {RouteHandler<C>} An encrypted route handler that processes encrypted requests and responses.
+ */
 export function withEncryption<C = unknown>(
   handler: RouteHandler<C>,
 ): RouteHandler<C> {
@@ -119,6 +136,12 @@ export function withEncryption<C = unknown>(
   };
 }
 
+/**
+ * Type guard verifying whether an unknown object conforms to the `EncryptedPayload` shape.
+ *
+ * @param {unknown} v - The value to inspect.
+ * @returns {v is EncryptedPayload} `true` if the value has valid string fields for iv, ciphertext, tag, and hmac.
+ */
 function isEncryptedPayload(v: unknown): v is EncryptedPayload {
   return (
     typeof v === "object" &&
@@ -130,6 +153,9 @@ function isEncryptedPayload(v: unknown): v is EncryptedPayload {
   );
 }
 
+/**
+ * List of HTTP response header names permitted to be passed through unencrypted from inner responses.
+ */
 const SAFE_RESPONSE_HEADERS = [
   "cache-control",
   "x-request-id",
@@ -137,6 +163,12 @@ const SAFE_RESPONSE_HEADERS = [
   "set-cookie",
 ];
 
+/**
+ * Filters and extracts only the allowed safe headers from an incoming Headers collection.
+ *
+ * @param {Headers} headers - The Headers object from the inner NextResponse.
+ * @returns {Record<string, string>} A dictionary containing only the allowed safe headers.
+ */
 function extractSafeHeaders(headers: Headers): Record<string, string> {
   const out: Record<string, string> = {};
   for (const name of SAFE_RESPONSE_HEADERS) {
@@ -145,3 +177,4 @@ function extractSafeHeaders(headers: Headers): Record<string, string> {
   }
   return out;
 }
+

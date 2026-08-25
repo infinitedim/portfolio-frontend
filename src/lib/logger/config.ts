@@ -1,5 +1,10 @@
 import { LogLevel, type LoggerConfig, type BatchConfig } from "./types";
 
+/**
+ * Resolves the runtime environment name from `NODE_ENV`.
+ *
+ * @returns Standardized environment name ('development', 'staging', or 'production').
+ */
 function getEnvironment(): "development" | "staging" | "production" {
   const env = process.env.NODE_ENV;
   if (env === "production") return "production";
@@ -7,6 +12,9 @@ function getEnvironment(): "development" | "staging" | "production" {
   return "development";
 }
 
+/**
+ * Default batch configuration parameters for client-side log buffering and dispatch.
+ */
 const DEFAULT_BATCH_CONFIG: BatchConfig = {
   maxBatchSize: 10,
   maxBatchWait: 5000,
@@ -14,6 +22,11 @@ const DEFAULT_BATCH_CONFIG: BatchConfig = {
   retryDelay: 1000,
 };
 
+/**
+ * Resolves the active log level from environment variables or default environment mappings.
+ *
+ * @returns Configured LogLevel enum member.
+ */
 function getLogLevel(): LogLevel {
   const env = getEnvironment();
 
@@ -37,6 +50,11 @@ function getLogLevel(): LogLevel {
   }
 }
 
+/**
+ * Resolves the HTTP endpoint URL for submitting client log batches.
+ *
+ * @returns Full or relative API endpoint URL string.
+ */
 function getApiEndpoint(): string {
   if (process.env.NEXT_PUBLIC_LOG_API_URL) {
     return process.env.NEXT_PUBLIC_LOG_API_URL;
@@ -50,6 +68,9 @@ function getApiEndpoint(): string {
   return "/api/logs";
 }
 
+/**
+ * Global configuration settings for client-side logging.
+ */
 export const clientConfig: LoggerConfig = {
   level: getLogLevel(),
   pretty: getEnvironment() === "development",
@@ -62,21 +83,29 @@ export const clientConfig: LoggerConfig = {
   maskPII: true,
 };
 
+/**
+ * Determines whether server-side log output should be written to local filesystem log files.
+ *
+ * @returns True if file logging is enabled and runtime permits file writes; otherwise false.
+ */
 function shouldEnableFileLogging(): boolean {
   if (getEnvironment() === "development") {
     return false;
   }
-                                                                                    
+
   if (process.env.VERCEL === "1") {
     return false;
   }
-                                                                                 
+
   if (process.env.NEXT_PHASE === "phase-production-build") {
     return false;
   }
   return process.env.LOG_TO_FILE === "true";
 }
 
+/**
+ * Global configuration settings for server-side logging.
+ */
 export const serverConfig: LoggerConfig = {
   level: getLogLevel(),
   pretty: getEnvironment() === "development",
@@ -87,6 +116,9 @@ export const serverConfig: LoggerConfig = {
   maskPII: true,
 };
 
+/**
+ * Regular expression patterns used for identifying and masking personally identifiable information (PII).
+ */
 export const PII_PATTERNS = {
   email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
   phone:
@@ -96,6 +128,9 @@ export const PII_PATTERNS = {
   ipv4: /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g,
 } as const;
 
+/**
+ * HTTP request header names that may contain sensitive credentials and must be redacted in logs.
+ */
 export const SENSITIVE_HEADERS = [
   "authorization",
   "cookie",
@@ -109,6 +144,9 @@ export const SENSITIVE_HEADERS = [
   "token",
 ] as const;
 
+/**
+ * Object property keys that contain sensitive information and must be redacted in logs.
+ */
 export const SENSITIVE_FIELDS = [
   "password",
   "passwordConfirm",
@@ -127,18 +165,27 @@ export const SENSITIVE_FIELDS = [
   "socialSecurityNumber",
 ] as const;
 
+/**
+ * Relative filesystem target paths for categorized server log files.
+ */
 export const LOG_PATHS = {
   combined: "logs/server/combined.log",
   error: "logs/server/error.log",
   access: "logs/server/access.log",
 } as const;
 
+/**
+ * Log rotation parameters controlling file sizes, retention counts, and gzip compression.
+ */
 export const ROTATION_CONFIG = {
   maxSize: "50m",
   maxFiles: 10,
   compress: true,
 } as const;
 
+/**
+ * Log level sampling rates controlling the ratio of logs retained in production.
+ */
 export const SAMPLING_CONFIG = {
   debug: getEnvironment() === "production" ? 0.1 : 1.0,
 
@@ -148,7 +195,11 @@ export const SAMPLING_CONFIG = {
   fatal: 1.0,
 } as const;
 
+/**
+ * Duration thresholds in milliseconds for classifying slow and critical performance operations.
+ */
 export const PERFORMANCE_THRESHOLDS = {
   slow: 1000,
   critical: 5000,
 } as const;
+

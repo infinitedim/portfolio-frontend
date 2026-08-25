@@ -2,22 +2,66 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { EnhancedError, ErrorUtils } from "./error-types";
 import { AsyncErrorHandler, AsyncResult } from "./async-error-handler";
 
+/**
+ * State snapshot representing the active error status, retry count, and loading progress.
+ */
 export interface ErrorState {
+  /**
+   * The currently active enhanced error object, or null if no error has occurred.
+   */
   error: EnhancedError | null;
+  /**
+   * Whether an asynchronous operation or retry attempt is actively executing.
+   */
   isLoading: boolean;
+  /**
+   * Number of retry attempts that have been executed for the current failure.
+   */
   retryCount: number;
+  /**
+   * Timestamp when the most recent retry attempt was initiated, or null if never retried.
+   */
   lastRetryAt: Date | null;
 }
 
+/**
+ * Configuration options for customizing the behavior of the `useErrorHandler` React hook.
+ */
 export interface UseErrorHandlerOptions {
+  /**
+   * Maximum number of automatic or manual retry attempts before giving up.
+   */
   maxRetries?: number;
+  /**
+   * Base backoff delay in milliseconds between retry attempts.
+   */
   retryDelay?: number;
+  /**
+   * Callback invoked whenever an error is encountered.
+   * @param error - The enhanced error instance captured.
+   */
   onError?: (error: EnhancedError) => void;
+  /**
+   * Callback invoked prior to executing a retry attempt.
+   * @param error - The enhanced error triggering the retry.
+   * @param attempt - The current retry attempt number (1-indexed).
+   */
   onRetry?: (error: EnhancedError, attempt: number) => void;
+  /**
+   * Callback invoked when an operation executes successfully.
+   */
   onSuccess?: () => void;
+  /**
+   * Whether to clear the error state and reset retry counts upon a successful operation.
+   */
   resetOnSuccess?: boolean;
 }
 
+/**
+ * Custom React hook providing robust error state management, automated retries with exponential backoff, and recovery callbacks for async operations.
+ * @param options - Configuration options for retry limits, delays, and event callbacks.
+ * @returns An object containing error state, execution triggers, retry utilities, and manual setters.
+ */
 export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
   const [errorState, setErrorState] = useState<ErrorState>({
     error: null,
@@ -145,6 +189,11 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
   };
 }
 
+/**
+ * Custom React hook for safely executing isolated asynchronous tasks with integrated loading, error catching, and data state management.
+ * @template T - Type of data returned by the asynchronous operation.
+ * @returns An object containing data, error, loading flags, execute runner, and state reset function.
+ */
 export function useSafeAsync<T>() {
   const [state, setState] = useState<{
     data: T | null;
@@ -181,6 +230,11 @@ export function useSafeAsync<T>() {
   };
 }
 
+/**
+ * Custom React hook for concurrently or sequentially executing batches of asynchronous tasks with partial failure tolerance and summary reporting.
+ * @template T - Type of data returned by each individual task function.
+ * @returns An object containing execution results array, loading status, batch summary metrics, execute runner, and state reset function.
+ */
 export function useBatchAsync<T>() {
   const [state, setState] = useState<{
     results: Array<{ success: boolean; data?: T; error?: EnhancedError }>;
@@ -261,6 +315,10 @@ export function useBatchAsync<T>() {
   };
 }
 
+/**
+ * Custom React hook providing interval and timeout timers wrapped with automated exception handling, error state tracking, and cleanup on unmount.
+ * @returns An object containing timer execution state, error details, startInterval, startTimeout, stop, and clearError functions.
+ */
 export function useTimerWithErrorHandling() {
   const [state, setState] = useState<{
     isRunning: boolean;
@@ -370,6 +428,10 @@ export function useTimerWithErrorHandling() {
   };
 }
 
+/**
+ * Custom React hook for orchestrating multiple named or auto-identified timers, managing individual timer errors, and auto-canceling on critical errors or unmount.
+ * @returns An object with timer scheduling methods (setTimeout, setInterval), cancellation methods (clearTimeout, clearInterval, clearAll), and error inspectors.
+ */
 export function useEnhancedTimerManager() {
   const [errors, setErrors] = useState<Map<string, EnhancedError>>(new Map());
   const timeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());

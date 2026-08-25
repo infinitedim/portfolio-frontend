@@ -17,7 +17,16 @@ import { ConfirmDialog } from "@/components/molecules/admin/confirm-dialog";
 import { toast } from "sonner";
 import { History, RotateCcw, ArrowLeft, Eye, Clock } from "lucide-react";
 
-export default function AdminPortfolioPage() {
+/**
+ * Administrator portfolio version history and snapshot management page component.
+ *
+ * Enables administrators to switch between portfolio sections (e.g. skills, projects, experience),
+ * inspect previous snapshot payloads in a slide-out drawer, and revert the live portfolio section state
+ * back to any historical snapshot.
+ *
+ * @returns {React.JSX.Element} The rendered portfolio version management interface.
+ */
+export default function AdminPortfolioPage(): React.JSX.Element {
   const { themeConfig } = useTheme();
   const [section, setSection] = useState<PortfolioSection>("skills");
   const [versions, setVersions] = useState<PortfolioVersionSummary[]>([]);
@@ -28,6 +37,11 @@ export default function AdminPortfolioPage() {
   const [restoreConfirmId, setRestoreConfirmId] = useState<string | null>(null);
   const [previewVersion, setPreviewVersion] = useState<PortfolioVersionSummary | null>(null);
 
+  /**
+   * Fetches the snapshot history list for the currently active portfolio section.
+   *
+   * @returns {Promise<void>} Resolves when version summaries have been loaded into state.
+   */
   const loadVersions = useCallback(async () => {
     setLoading(true);
     try {
@@ -47,7 +61,12 @@ export default function AdminPortfolioPage() {
     void loadVersions();
   }, [loadVersions]);
 
-  const handleRestoreConfirm = async () => {
+  /**
+   * Confirms and applies the reversion of the current section to the selected historical snapshot ID.
+   *
+   * @returns {Promise<void>} Resolves when the section is restored and versions are reloaded.
+   */
+  const handleRestoreConfirm = async (): Promise<void> => {
     if (!restoreConfirmId) return;
     setRestoring(restoreConfirmId);
     try {

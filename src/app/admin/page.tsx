@@ -21,6 +21,16 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+/**
+ * Statistical counters and fetch status displayed on the administrator dashboard overview.
+ *
+ * @interface DashboardStats
+ * @property {number} unreadMessages - Count of incoming contact messages that have not yet been marked as read.
+ * @property {number} newsletterSubscribers - Total number of active newsletter subscribers.
+ * @property {number} totalProjects - Total count of portfolio projects managed in the system.
+ * @property {number} totalPosts - Total count of published and draft blog posts.
+ * @property {boolean} loading - Indicates whether statistics are currently being fetched from backend services.
+ */
 interface DashboardStats {
   unreadMessages: number;
   newsletterSubscribers: number;
@@ -29,7 +39,16 @@ interface DashboardStats {
   loading: boolean;
 }
 
-export default function AdminDashboardPage() {
+/**
+ * Administrator dashboard overview page component.
+ *
+ * Serves as the central management hub, displaying summary metrics (blog posts,
+ * unread contact inquiries, newsletter subscriber count, portfolio projects) and providing
+ * quick navigation links to content editors, i18n management, version history snapshots, and security tools.
+ *
+ * @returns {React.JSX.Element} The rendered admin dashboard overview page.
+ */
+export default function AdminDashboardPage(): React.JSX.Element {
   const { themeConfig } = useTheme();
   const { user } = useAuth();
   const { t } = useI18n();
@@ -43,7 +62,12 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     let isMounted = true;
-    const fetchDashboardStats = async () => {
+    /**
+     * Asynchronously queries all dashboard metric endpoints in parallel and populates the stats state.
+     *
+     * @returns {Promise<void>} Resolves when all metric queries settle.
+     */
+    const fetchDashboardStats = async (): Promise<void> => {
       const apiUrl = getApiUrl();
       try {
         const [msgRes, newsRes, projRes, blogRes] = await Promise.allSettled([

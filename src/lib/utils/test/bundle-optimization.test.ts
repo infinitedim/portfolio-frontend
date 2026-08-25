@@ -20,6 +20,9 @@ import {
   initBundleOptimizations,
 } from "../bundler-optimization";
 
+/**
+ * Mock Document object simulating DOM operations such as element creation, querying, and appending.
+ */
 const mockDocument = {
   createElement: jest.fn(),
   querySelectorAll: jest.fn(),
@@ -31,6 +34,9 @@ const mockDocument = {
   hidden: false,
 };
 
+/**
+ * Mock Window object simulating performance navigation APIs and localStorage mechanisms.
+ */
 const mockWindow = {
   performance: {
     now: () => Date.now(),
@@ -47,14 +53,21 @@ const mockWindow = {
   _eventListeners: {},
 };
 
+/**
+ * Mock Console object capturing log and warn outputs during testing.
+ */
 const mockConsole = {
   log: jest.fn(),
   warn: jest.fn(),
 };
 
+/** Saved reference to the original global `window` object for test cleanup. */
 const _savedWindow = (globalThis as Record<string, unknown>).window;
+/** Saved reference to the original global `document` object for test cleanup. */
 const _savedDocument = (globalThis as Record<string, unknown>).document;
+/** Saved reference to the original global `console` object for test cleanup. */
 const _savedConsole = (globalThis as Record<string, unknown>).console;
+/** Saved reference to the original global `performance` object for test cleanup. */
 const _savedPerformance = (globalThis as Record<string, unknown>).performance;
 
 Object.defineProperty(global, "document", {
@@ -82,6 +95,7 @@ Object.defineProperty(global, "performance", {
   writable: true,
 });
 
+/** Original unmocked `Object.keys` reference. */
 const originalObjectKeys = Object.keys;
 
 describe("bundleOptimization", () => {
@@ -135,6 +149,9 @@ describe("bundleOptimization", () => {
     });
 
     it("should set loading attribute to lazy for images", () => {
+      /**
+       * Mock implementation of HTMLImageElement simulating the loading property.
+       */
       global.HTMLImageElement = class MockHTMLImageElement {
         loading = "";
       } as unknown as typeof HTMLImageElement;
@@ -324,6 +341,9 @@ describe("optimizeThirdParty function", () => {
   });
 
   it("should set defer attribute on scripts", () => {
+    /**
+     * Mock implementation of HTMLScriptElement simulating the defer property.
+     */
     global.HTMLScriptElement = class MockHTMLScriptElement {
       defer = false;
     } as unknown as typeof HTMLScriptElement;

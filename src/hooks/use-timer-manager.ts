@@ -1,6 +1,23 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import { EnhancedError, ErrorUtils } from "../lib/errors/error-types";
 
+/**
+ * Interface representing a centralized timer manager instance.
+ * Provides safe wrappers around browser timer APIs (`setTimeout`, `setInterval`)
+ * with automatic tracking, error handling, cancellation, and cleanup capabilities.
+ *
+ * @interface TimerManager
+ * @property {(callback: () => void, delay: number, id?: string) => string} setTimeout - Schedules a one-time callback execution after specified delay.
+ * @property {(callback: () => void, delay: number, id?: string) => string} setInterval - Schedules recurring callback execution at specified interval.
+ * @property {(id: string) => void} clearTimeout - Cancels an active timeout by its identifier.
+ * @property {(id: string) => void} clearInterval - Cancels an active interval by its identifier.
+ * @property {() => void} clearAll - Cancels all active timeouts, intervals, and clears recorded errors.
+ * @property {() => void} clearAllTimeouts - Cancels all currently active timeouts.
+ * @property {() => void} clearAllIntervals - Cancels all currently active recurring intervals.
+ * @property {() => EnhancedError[]} getErrors - Retrieves an array of all errors caught during timer executions.
+ * @property {() => void} clearErrors - Clears all recorded timer execution errors.
+ * @property {boolean} hasErrors - Boolean flag indicating if any timer errors have occurred.
+ */
 export interface TimerManager {
   setTimeout: (callback: () => void, delay: number, id?: string) => string;
   setInterval: (callback: () => void, delay: number, id?: string) => string;
@@ -14,6 +31,21 @@ export interface TimerManager {
   hasErrors: boolean;
 }
 
+/**
+ * Custom React hook that provides managed, memory-safe timer scheduling.
+ * Automatically clears all pending timeouts and intervals on unmount, page hide, or beforeunload.
+ * Captures execution errors in safe callbacks and tracks them via `EnhancedError`.
+ *
+ * @returns {TimerManager} An object containing timer creation, cancellation, and error-handling utilities.
+ *
+ * @example
+ * ```tsx
+ * const { setTimeout, clearTimeout, clearAll } = useTimerManager();
+ * const timerId = setTimeout(() => {
+ *   console.log('Delayed action');
+ * }, 1000);
+ * ```
+ */
 export function useTimerManager(): TimerManager {
   const timeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
   const intervalsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
@@ -198,6 +230,22 @@ export function useTimerManager(): TimerManager {
   };
 }
 
+/**
+ * Custom React hook that produces a debounced version of the provided callback function.
+ * Delays invoking the callback until after the specified delay has elapsed since the last time it was invoked.
+ *
+ * @template T - The type of the callback function.
+ * @param {T} func - The callback function to debounce.
+ * @param {number} delay - The debounce delay in milliseconds.
+ * @returns {T} The debounced function wrapper.
+ *
+ * @example
+ * ```tsx
+ * const handleSearch = useDebounce((query: string) => {
+ *   fetchResults(query);
+ * }, 300);
+ * ```
+ */
 export function useDebounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number,
@@ -227,6 +275,23 @@ export function useDebounce<T extends (...args: unknown[]) => unknown>(
   return debouncedFunction;
 }
 
+/**
+ * Custom React hook that produces a throttled version of the provided callback function.
+ * Ensures the callback is executed at most once within the specified time interval.
+ * Subsequent calls within the window schedule a trailing execution if required.
+ *
+ * @template T - The type of the callback function.
+ * @param {T} func - The callback function to throttle.
+ * @param {number} delay - The throttle window delay in milliseconds.
+ * @returns {T} The throttled function wrapper.
+ *
+ * @example
+ * ```tsx
+ * const handleScroll = useThrottle((event: UIEvent) => {
+ *   updateScrollPosition(event);
+ * }, 100);
+ * ```
+ */
 export function useThrottle<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number,
@@ -267,6 +332,21 @@ export function useThrottle<T extends (...args: unknown[]) => unknown>(
   return throttledFunction;
 }
 
+/**
+ * Custom React hook for safely scheduling and cancelling animation frames (`requestAnimationFrame`).
+ * Automatically cancels any pending animation frame when the component unmounts.
+ *
+ * @returns {{ requestFrame: (callback: () => void) => number; cancelFrame: () => void }}
+ * An object providing `requestFrame` to queue a callback for the next repaint and `cancelFrame` to cancel it.
+ *
+ * @example
+ * ```tsx
+ * const { requestFrame, cancelFrame } = useAnimationFrame();
+ * requestFrame(() => {
+ *   element.style.transform = `translateX(${position}px)`;
+ * });
+ * ```
+ */
 export function useAnimationFrame() {
   const frameIdRef = useRef<number | null>(null);
 

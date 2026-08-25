@@ -7,6 +7,37 @@ import {
 } from "@/lib/i18n";
 import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 
+/**
+ * Custom React hook for reactive internationalization (i18n), locale switching, and text translation.
+ *
+ * Automatically synchronizes with the singleton {@link i18n} manager, reacts to locale change
+ * subscriptions, updates DOM document direction (`ltr`/`rtl`), and provides SSR-safe translation helpers.
+ *
+ * @returns An object containing the current localization state, translation functions, and locale utilities:
+ * - `mounted`: Boolean indicating whether the client component has mounted.
+ * - `currentLocale`: The active BCP 47 locale code (e.g., `'en'`, `'id'`, `'ja'`).
+ * - `isRTL`: Boolean indicating if the current locale is right-to-left.
+ * - `t`: Translates a given translation key into the active language string.
+ * - `tWithFallback`: Translates a key with a provided fallback value if missing.
+ * - `changeLocale`: Updates the active application locale. Returns `true` if successful.
+ * - `getCurrentLocaleConfig`: Retrieves metadata for the currently active locale.
+ * - `getSupportedLocales`: Returns the list of all supported locale configurations.
+ * - `isLocaleSupported`: Checks if a given locale code is supported.
+ * - `getLocaleInfo`: Retrieves configuration metadata for a specific locale code.
+ * - `i18n`: The underlying i18n singleton instance.
+ *
+ * @example
+ * ```tsx
+ * const { t, currentLocale, changeLocale, isRTL } = useI18n();
+ *
+ * return (
+ *   <div dir={isRTL ? 'rtl' : 'ltr'}>
+ *     <h1>{t('terminal.welcome')}</h1>
+ *     <button onClick={() => changeLocale('ja')}>日本語</button>
+ *   </div>
+ * );
+ * ```
+ */
 export function useI18n() {
   const [mounted, setMounted] = useState(false);
   const [currentLocale, setCurrentLocale] = useState(DEFAULT_LOCALE);

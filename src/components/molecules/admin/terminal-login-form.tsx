@@ -9,15 +9,33 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Loader2, ArrowRight, ShieldCheck } from "lucide-react";
 
+/**
+ * Properties for the TerminalLoginForm component.
+ *
+ * @interface TerminalLoginFormProps
+ * @property {() => void} [onLoginSuccess] - Optional callback triggered upon successful authentication or 2FA verification.
+ * @property {ThemeConfig} themeConfig - Current terminal theme configuration tokens.
+ */
 interface TerminalLoginFormProps {
   onLoginSuccess?: () => void;
   themeConfig: ThemeConfig;
 }
 
+/**
+ * Interactive administrative login form component styled with a cyberpunk terminal aesthetic.
+ *
+ * Supports email and password credentials submission, handles two-factor authentication challenge transitions
+ * (TOTP verification and backup recovery codes), input autofocus, and error message rendering.
+ *
+ * @param {TerminalLoginFormProps} props - Component properties.
+ * @param {() => void} [props.onLoginSuccess] - Success callback invoked after valid sign-in.
+ * @param {ThemeConfig} props.themeConfig - Active theme configuration tokens.
+ * @returns {React.JSX.Element} The rendered admin login form element.
+ */
 export function TerminalLoginForm({
   onLoginSuccess,
   themeConfig: _themeConfig,
-}: TerminalLoginFormProps) {
+}: TerminalLoginFormProps): React.JSX.Element {
   const { login, complete2FA } = useAuth();
   const { t } = useI18n();
   const [email, setEmail] = useState("");
@@ -42,6 +60,12 @@ export function TerminalLoginForm({
     }
   }, [challengeToken]);
 
+  /**
+   * Handles submission of primary email/password credentials.
+   *
+   * @param {React.FormEvent} e - Form submission event.
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim() || isLoading) return;
@@ -73,6 +97,12 @@ export function TerminalLoginForm({
     }
   };
 
+  /**
+   * Handles submission of two-factor TOTP or backup recovery code.
+   *
+   * @param {React.FormEvent} e - Form submission event.
+   * @returns {Promise<void>}
+   */
   const handleTwoFASubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!challengeToken || !code.trim() || isLoading) return;
@@ -102,6 +132,11 @@ export function TerminalLoginForm({
     }
   };
 
+  /**
+   * Cancels the active two-factor authentication challenge and returns to the email/password prompt.
+   *
+   * @returns {void}
+   */
   const handleCancel2FA = () => {
     setChallengeToken(null);
     setCode("");

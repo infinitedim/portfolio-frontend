@@ -2,13 +2,38 @@ import Image from "next/image";
 import { type JSX } from "react";
 import { getBlurDataUrl } from "@/lib/utils/image-utils";
 
+/**
+ * Properties for the {@link ProjectMockupFrame} component.
+ */
 interface ProjectMockupFrameProps {
+  /**
+   * URL of the screenshot or preview image to render inside the mockup.
+   */
   readonly imageUrl: string;
+  /**
+   * Name of the project, used for accessible labels and image alt text.
+   */
   readonly projectName: string;
+  /**
+   * Optional custom domain or URL shown in the browser mockup address bar.
+   */
   readonly domain?: string;
+  /**
+   * Optional CSS class names for styling the outer mockup container.
+   */
   readonly className?: string;
 }
 
+/**
+ * Renders a browser-styled window mockup containing an optimized project screenshot with blur placeholder.
+ *
+ * @param {ProjectMockupFrameProps} props - Component properties.
+ * @param {string} props.imageUrl - URL of the preview image.
+ * @param {string} props.projectName - Name of the project for accessibility labels.
+ * @param {string} [props.domain] - Optional domain displayed in the header title bar.
+ * @param {string} [props.className] - Optional custom CSS classes.
+ * @returns {JSX.Element | null} The rendered browser mockup frame or `null` if no image URL is provided.
+ */
 export function ProjectMockupFrame({
   imageUrl,
   projectName,

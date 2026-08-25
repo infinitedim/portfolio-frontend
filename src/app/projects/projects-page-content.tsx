@@ -2,6 +2,15 @@ import { JSX } from "react";
 import { getProjectsData, getFeaturedProjects } from "@/lib/data/data-fetching";
 import { ProjectsClient } from "./projects-client";
 
+/**
+ * Asynchronous Server Component that fetches project data and generates structured SEO schema.
+ *
+ * @description Concurrently retrieves the complete list of projects and featured projects,
+ * passes them to the interactive `ProjectsClient` component, and injects a schema.org `ItemList`
+ * JSON-LD structured data payload for search engine indexing.
+ *
+ * @returns {Promise<JSX.Element>} The rendered projects content and JSON-LD metadata element.
+ */
 export async function ProjectsPageContent(): Promise<JSX.Element> {
   const [allProjects, featuredProjects] = await Promise.all([
     getProjectsData(),

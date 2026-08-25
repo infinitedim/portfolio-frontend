@@ -2,6 +2,14 @@ import { type JSX } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { ProjectsLoading } from "@/components/organisms/projects/projects-loading";
 
+/**
+ * Loading skeleton component for the projects gallery root route (`/projects`).
+ *
+ * @description Renders a header title placeholder, category filter tabs skeleton,
+ * and project cards skeleton grid inside the standard layout wrapper while data is streamed.
+ *
+ * @returns {JSX.Element} The rendered projects page loading skeleton.
+ */
 export default function ProjectsPageLoading(): JSX.Element {
   return (
     <StandardPageLayout>

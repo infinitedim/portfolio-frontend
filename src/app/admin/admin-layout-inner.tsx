@@ -8,20 +8,52 @@ import { AdminSidebar } from "@/components/molecules/admin/admin-sidebar";
 import { TerminalHeader } from "@/components/molecules/admin/terminal-header";
 import { LoadingSpinner } from "@/components/atoms/shared/loading-spinner";
 
+/**
+ * Properties for the {@link AdminLayoutInner} layout wrapper component.
+ */
 interface AdminLayoutInnerProps {
+  /** The child React nodes representing admin subpages to render within the layout */
   children: React.ReactNode;
 }
 
+/**
+ * Set of administrative route pathnames that are publicly accessible without authentication.
+ *
+ * @description
+ * Requests to paths in this set (such as `/admin/login` and `/admin/register`) bypass
+ * the authenticated layout wrapper and authentication redirect guards.
+ */
 const PUBLIC_ADMIN_PATHS: ReadonlySet<string> = new Set([
   "/admin/login",
   "/admin/register",
 ]);
 
+/**
+ * Evaluates whether a given URL pathname belongs to the public admin route whitelist.
+ *
+ * @param pathname - The current URL pathname or null.
+ * @returns `true` if the pathname matches a public admin route; otherwise `false`.
+ */
 function isPublicPath(pathname: string | null): boolean {
   if (!pathname) return false;
   return PUBLIC_ADMIN_PATHS.has(pathname);
 }
 
+/**
+ * Core client layout container for the administrative dashboard area.
+ *
+ * @description
+ * Enforces route-level authentication guards and manages structural layout presentation:
+ * - Allows unrestricted access to unauthenticated public admin routes (login, register).
+ * - Displays a loading spinner while authentication state is resolving.
+ * - Redirects unauthenticated visitors attempting to access protected admin views to `/admin/login`.
+ * - Renders the responsive administrator shell with {@link AdminSidebar} and {@link TerminalHeader}
+ * for authenticated sessions.
+ *
+ * @param props - Layout props containing child route content.
+ * @param props.children - The child React nodes representing admin subpages to render within the layout.
+ * @returns {React.JSX.Element} The rendered admin layout or fallback view.
+ */
 export function AdminLayoutInner({
   children,
 }: AdminLayoutInnerProps): React.JSX.Element {

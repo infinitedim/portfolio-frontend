@@ -1,8 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type JSX } from "react";
 
-export function ScrollProgress() {
+/**
+ * Real-time reading progress bar component for long-form blog articles.
+ *
+ * Calculates the current vertical scroll percentage relative to total document height
+ * and renders an accessible fixed-position top progress indicator with `role="progressbar"`.
+ *
+ * @returns {JSX.Element} The rendered reading scroll progress indicator.
+ */
+export function ScrollProgress(): JSX.Element {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {

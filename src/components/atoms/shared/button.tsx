@@ -5,6 +5,19 @@ import { JSX, useEffect, useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 
+/**
+ * Props for the {@link AnimatedButton} component.
+ *
+ * @interface AnimatedButtonProps
+ * @property {React.ReactNode} children - The content and nodes to render inside the button.
+ * @property {() => void} [onClick] - Optional click handler callback function.
+ * @property {"primary" | "secondary" | "success" | "error" | "warning"} [variant] - Visual color and theme style preset.
+ * @property {"sm" | "md" | "lg"} [size] - Size preset controlling padding, font size, and dimensions.
+ * @property {boolean} [disabled] - When true, prevents user interaction and applies muted opacity styling.
+ * @property {boolean} [loading] - Optional indicator for pending asynchronous actions.
+ * @property {string} [className] - Optional additional CSS class names for custom overrides.
+ * @property {string} [ariaLabel] - Accessible label used by assistive technologies and screen readers.
+ */
 interface AnimatedButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
@@ -16,6 +29,25 @@ interface AnimatedButtonProps {
   ariaLabel?: string;
 }
 
+/**
+ * An interactive theme-aware button component with animations and accessibility compliance.
+ *
+ * @description
+ * Renders an accessible button that automatically consumes the active terminal theme tokens
+ * for background, border, and hover colors. Features smooth hover scaling and transitions while
+ * respecting the user's reduced-motion preferences.
+ *
+ * @param {AnimatedButtonProps} props - Properties configuring the animated button.
+ * @param {React.ReactNode} props.children - Inner button content.
+ * @param {() => void} [props.onClick] - Click event handler.
+ * @param {"primary" | "secondary" | "success" | "error" | "warning"} [props.variant] - Visual styling variant.
+ * @param {"sm" | "md" | "lg"} [props.size] - Size dimension preset.
+ * @param {boolean} [props.disabled] - Interaction disabled state.
+ * @param {boolean} [props.loading] - Optional loading indicator flag.
+ * @param {string} [props.className] - Custom CSS class names.
+ * @param {string} [props.ariaLabel] - Accessible label string.
+ * @returns {JSX.Element} The rendered animated button component.
+ */
 export function AnimatedButton({
   children,
   onClick,

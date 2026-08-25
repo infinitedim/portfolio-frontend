@@ -4,6 +4,14 @@ import { TerminalLoadingProgress } from "@/components/molecules/terminal/termina
 import { HomeTerminalHeader } from "@/components/molecules/shared/home-terminal-header";
 import { TerminalClient } from "@/components/layout/terminal-client";
 
+/**
+ * Unlocked terminal page component rendered when the user has solved the gate challenges.
+ *
+ * Provides screen reader navigation structures, SEO structured data (Person, WebPage, BreadcrumbList),
+ * static fallback content, and the interactive client terminal wrapped in Suspense.
+ *
+ * @returns Rendered unlocked terminal page structure.
+ */
 export function TerminalUnlockedContent(): JSX.Element {
   return (
     <>

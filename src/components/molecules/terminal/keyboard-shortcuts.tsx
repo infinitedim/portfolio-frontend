@@ -11,6 +11,18 @@ import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { Keyboard, X, Play, Sliders } from "lucide-react";
 
+/**
+ * Represents a configurable keyboard shortcut within the terminal application.
+ *
+ * @interface KeyboardShortcut
+ * @property {string} id - Unique identifier for the keyboard shortcut.
+ * @property {string[]} keys - Sequence or combination of key names (e.g., ["Ctrl", "K"]).
+ * @property {string} description - Human-readable description of what the shortcut does.
+ * @property {string} category - Categorization group for sorting and filtering shortcuts.
+ * @property {() => void} action - Callback function triggered when the shortcut is executed.
+ * @property {boolean} enabled - Whether the shortcut is currently active and can be triggered.
+ * @property {boolean} customizable - Whether the key combination can be modified by the user.
+ */
 export interface KeyboardShortcut {
   id: string;
   keys: string[];
@@ -21,6 +33,16 @@ export interface KeyboardShortcut {
   customizable: boolean;
 }
 
+/**
+ * Properties for configuring and controlling the KeyboardShortcut modal dialog component.
+ *
+ * @interface KeyboardShortcutProps
+ * @property {boolean} isOpen - Indicates whether the shortcuts overlay is currently visible.
+ * @property {() => void} onClose - Callback invoked when the modal is requested to close.
+ * @property {KeyboardShortcut[]} shortcuts - Collection of all available keyboard shortcuts.
+ * @property {(shortcutId: string, newKeys: string[]) => void} [onShortcutChange] - Optional callback triggered when a shortcut key combination is remapped.
+ * @property {string} [className] - Additional CSS class names to apply to the root overlay container.
+ */
 interface KeyboardShortcutProps {
   isOpen: boolean;
   onClose: () => void;
@@ -29,12 +51,34 @@ interface KeyboardShortcutProps {
   className?: string;
 }
 
+/**
+ * Represents a categorized grouping of keyboard shortcuts for filtered navigation.
+ *
+ * @interface ShortcutCategory
+ * @property {string} name - Name identifier for the category.
+ * @property {string} icon - Visual representation icon string for the category tab.
+ * @property {KeyboardShortcut[]} shortcuts - Array of keyboard shortcuts belonging to this category.
+ */
 interface ShortcutCategory {
   name: string;
   icon: string;
   shortcuts: KeyboardShortcut[];
 }
 
+/**
+ * Modal dialog component displaying an interactive cheat sheet and configuration panel for keyboard shortcuts.
+ *
+ * Provides shortcut discovery, real-time search filtering, categorization, key recording for custom bindings,
+ * and direct shortcut execution for testing.
+ *
+ * @param props - The component properties.
+ * @param props.isOpen - Whether the shortcut dialog is visible.
+ * @param props.onClose - Handler to dismiss the shortcut dialog.
+ * @param props.shortcuts - Array of shortcut definitions.
+ * @param props.onShortcutChange - Optional handler called when a shortcut binding is updated.
+ * @param props.className - Optional custom CSS classes.
+ * @returns The rendered keyboard shortcut modal dialog or null if not open.
+ */
 export function KeyboardShortcut({
   isOpen,
   onClose,
@@ -75,6 +119,12 @@ export function KeyboardShortcut({
     })),
   ];
 
+  /**
+   * Retrieves the corresponding visual icon for a given shortcut category name.
+   *
+   * @param {string} category - The category key/identifier.
+   * @returns {string} The icon symbol representing the category.
+   */
   function getCategoryIcon(category: string): string {
     const icons: Record<string, string> = {
       navigation: "",
@@ -169,18 +219,37 @@ export function KeyboardShortcut({
     return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [isRecording, editingShortcut, onShortcutChange]);
 
+  /**
+   * Handles keyboard interaction on the dialog backdrop, closing the modal when Escape is pressed.
+   *
+   * @param {KeyboardEvent} e - React keyboard event.
+   * @returns {void}
+   */
   const handlePanelKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape" && !isRecording) {
       onClose();
     }
   };
 
+  /**
+   * Puts the specified shortcut into recording mode to capture a new key combination.
+   *
+   * @param {string} shortcutId - Identifier of the shortcut to edit.
+   * @returns {void}
+   */
   const startRecording = (shortcutId: string) => {
     setEditingShortcut(shortcutId);
     setRecordingKeys([]);
     setIsRecording(true);
   };
 
+  /**
+   * Renders visual key badge elements for an array of key combination names.
+   *
+   * @param keys - List of keys in the shortcut combination.
+   * @param isActive - Whether the shortcut is currently being recorded/active.
+   * @returns Rendered key combination component.
+   */
   const renderKeyCombo = (keys: string[], isActive = false) => (
     <div className="flex items-center gap-1">
       {keys.map((key, index) => (
@@ -210,6 +279,12 @@ export function KeyboardShortcut({
     </div>
   );
 
+  /**
+   * Renders an individual keyboard shortcut card with its description, status badges, and action buttons.
+   *
+   * @param {KeyboardShortcut} shortcut - The shortcut definition to render.
+   * @returns {JSX.Element} Rendered shortcut row element.
+   */
   const renderShortcut = (shortcut: KeyboardShortcut) => {
     const isEditing = editingShortcut === shortcut.id;
     const keysToShow = isEditing && isRecording ? recordingKeys : shortcut.keys;

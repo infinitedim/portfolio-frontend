@@ -1,6 +1,14 @@
 import Link from "next/link";
 import type { JSX } from "react";
 
+/**
+ * Secret directory index page component modeled as an Apache-style directory listing.
+ *
+ * @description Simulates a retro web server file directory table containing navigational
+ * links to parent directories and exposed text artifacts for security challenge exploration.
+ *
+ * @returns {JSX.Element} The rendered secret directory index page.
+ */
 export default function S3cr3tIndexPage(): JSX.Element {
   return (
     <main className="min-h-screen bg-neutral-950 px-4 py-10 font-mono text-sm text-neutral-300">

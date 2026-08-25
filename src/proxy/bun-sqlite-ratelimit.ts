@@ -1,14 +1,32 @@
+/**
+ * Rate limit evaluation result describing quota consumption and window reset timing.
+ */
 export interface RateLimitResult {
+  /** Indicates whether the incoming request is permitted under rate limit thresholds. */
   allowed: boolean;
+  /** Current count of requests received within the active time window. */
   count: number;
+  /** Number of remaining requests permitted before reaching the limit. */
   remaining: number;
+  /** Epoch timestamp in milliseconds when the current rate limit window resets. */
   resetAt: number;
+  /** Identifier of the rate limiting storage engine used. */
   engineUsed: "memory-map";
 }
 
-                                                            
+/**
+ * In-memory fallback map storing client request counts and window expiration timestamps.
+ */
 const memoryMapFallback = new Map<string, { count: number; resetAt: number }>();
 
+/**
+ * Evaluates and increments the rate limit counter for a specified client IP address.
+ *
+ * @param ip - The client IP address identifier.
+ * @param limit - Maximum number of allowed requests within the time window (default: 60).
+ * @param windowMs - Duration of the rolling rate limit window in milliseconds (default: 60000).
+ * @returns A RateLimitResult detailing whether the request was allowed and remaining quota.
+ */
 export function checkSqliteRateLimit(
   ip: string,
   limit: number = 60,

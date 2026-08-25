@@ -1,7 +1,21 @@
+/**
+ * @fileoverview Custom animation hooks and web animation utilities for terminal UI effects.
+ * @module hooks/use-animations
+ */
+
 import { useRef, useCallback, useEffect, useState, useMemo } from "react";
 import { useAccessibility } from "@/components/organisms/accessibility/accessibility-provider";
 import { useMountRef, generateId, withErrorHandling } from "./hooks-utils";
 
+/**
+ * Configuration options for web animations and CSS keyframes.
+ *
+ * @interface AnimationConfig
+ * @property {number} duration - Duration of the animation in milliseconds.
+ * @property {string} easing - CSS easing function string (e.g. "ease-in-out", "cubic-bezier(...)").
+ * @property {number} [delay] - Optional start delay in milliseconds.
+ * @property {"none" | "forwards" | "backwards" | "both"} [fillMode] - CSS animation fill mode.
+ */
 export interface AnimationConfig {
   duration: number;
   easing: string;
@@ -9,6 +23,15 @@ export interface AnimationConfig {
   fillMode?: "none" | "forwards" | "backwards" | "both";
 }
 
+/**
+ * Configuration options for typewriter text rendering animations.
+ *
+ * @interface TypewriterConfig
+ * @property {number} speed - Typing delay between characters in milliseconds.
+ * @property {boolean} cursor - Whether to render a flashing typing cursor.
+ * @property {string} cursorChar - Character glyph to display as cursor (e.g. "▋", "_", "|").
+ * @property {number} [deleteSpeed] - Delay between deleted characters during backspace animations.
+ */
 export interface TypewriterConfig {
   speed: number;
   cursor: boolean;
@@ -16,6 +39,9 @@ export interface TypewriterConfig {
   deleteSpeed?: number;
 }
 
+/**
+ * Default configuration parameters applied to generic animations.
+ */
 const DEFAULT_ANIMATION_CONFIG: AnimationConfig = {
   duration: 300,
   easing: "cubic-bezier(0.4, 0, 0.2, 1)",
@@ -23,6 +49,9 @@ const DEFAULT_ANIMATION_CONFIG: AnimationConfig = {
   fillMode: "forwards",
 };
 
+/**
+ * Default configuration parameters applied to typewriter animations.
+ */
 const DEFAULT_TYPEWRITER_CONFIG: TypewriterConfig = {
   speed: 50,
   cursor: true,
@@ -30,11 +59,21 @@ const DEFAULT_TYPEWRITER_CONFIG: TypewriterConfig = {
   deleteSpeed: 30,
 };
 
+/**
+ * React hook providing core Web Animations API effects, glitch effects, matrix rain, and motion accessibility support.
+ *
+ * @returns {object} Animation generator utilities and control methods.
+ */
 export function useAnimations() {
   const { isReducedMotion } = useAccessibility();
   const isMountedRef = useMountRef();
   const animationRefs = useRef<Map<string, Animation>>(new Map());
 
+  /**
+   * Cancels and unregisters an active Web Animation instance by ID.
+   *
+   * @param {string} id - Unique identifier of the animation to cancel.
+   */
   const cleanupAnimation = useCallback((id: string) => {
     const animation = animationRefs.current.get(id);
     if (animation) {
@@ -69,6 +108,14 @@ export function useAnimations() {
     };
   }, []);
 
+  /**
+   * Creates a progressive typewriter typing effect on a DOM element.
+   *
+   * @param {HTMLElement} element - Target HTML element whose textContent will be animated.
+   * @param {string} text - Full text string to type out.
+   * @param {Partial<TypewriterConfig>} [config={}] - Optional typewriter speed and cursor settings.
+   * @returns {Promise<void>} Resolves when the typewriter effect completes or unmounts.
+   */
   const createTypewriterEffect = useCallback(
     async (
       element: HTMLElement,
@@ -91,6 +138,9 @@ export function useAnimations() {
         let i = 0;
         let _timerId: NodeJS.Timeout;
 
+        /**
+         * Recursively types each character up to the total text length.
+         */
         const typeNextChar = () => {
           if (!isMountedRef.current) {
             if (fullConfig.cursor) {
@@ -118,6 +168,13 @@ export function useAnimations() {
     [isReducedMotion, isMountedRef],
   );
 
+  /**
+   * Triggers a momentary RGB-split and displacement glitch animation on an element.
+   *
+   * @param {HTMLElement} element - Target HTML element to apply glitch keyframes.
+   * @param {number} [duration=200] - Duration of glitch animation in milliseconds.
+   * @returns {Animation | null} Active Animation instance or null if reduced motion is enabled.
+   */
   const createGlitchEffect = useCallback(
     (element: HTMLElement, duration: number = 200): Animation | null => {
       if (isReducedMotion || !isMountedRef.current) return null;
@@ -169,6 +226,17 @@ export function useAnimations() {
     [isReducedMotion, isMountedRef, cleanupAnimation],
   );
 
+  /**
+   * Spawns falling Matrix-style digital rain character streams inside a container element.
+   *
+   * @param {HTMLElement} container - DOM container element that will host the matrix drops.
+   * @param {object} [options={}] - Configuration options for character set, count, speed, and color.
+   * @param {string} [options.characters] - Custom character glyph pool.
+   * @param {number} [options.drops] - Number of concurrent falling rain columns.
+   * @param {number} [options.speed] - Character alternation frequency in milliseconds.
+   * @param {string} [options.color] - CSS text color for matrix rain drops.
+   * @returns {() => void} Cleanup function that removes drops and stops intervals.
+   */
   const createMatrixRain = useCallback(
     (
       container: HTMLElement,
@@ -243,6 +311,13 @@ export function useAnimations() {
     [isReducedMotion],
   );
 
+  /**
+   * Creates an infinite gentle pulse scale animation on an element.
+   *
+   * @param {HTMLElement} element - Target HTML element.
+   * @param {Partial<AnimationConfig>} [config={}] - Optional animation configuration overrides.
+   * @returns {Animation | null} Active Animation instance or null if reduced motion is enabled.
+   */
   const createPulseAnimation = useCallback(
     (
       element: HTMLElement,
@@ -271,6 +346,14 @@ export function useAnimations() {
     [isReducedMotion],
   );
 
+  /**
+   * Animates an element sliding into position from a specified direction.
+   *
+   * @param {HTMLElement} element - Target HTML element to slide in.
+   * @param {"left" | "right" | "up" | "down"} [direction="up"] - Direction from which the element slides into place.
+   * @param {Partial<AnimationConfig>} [config={}] - Optional duration, easing, delay, and fillMode overrides.
+   * @returns {Animation | null} Active Animation instance or null if reduced motion is enabled.
+   */
   const createSlideIn = useCallback(
     (
       element: HTMLElement,
@@ -322,6 +405,13 @@ export function useAnimations() {
     [isReducedMotion],
   );
 
+  /**
+   * Creates an elastic bounce animation on an element.
+   *
+   * @param {HTMLElement} element - Target HTML element to bounce.
+   * @param {Partial<AnimationConfig>} [config={}] - Optional animation configuration overrides.
+   * @returns {Animation | null} Active Animation instance or null if reduced motion is enabled.
+   */
   const createBounceAnimation = useCallback(
     (
       element: HTMLElement,
@@ -353,6 +443,13 @@ export function useAnimations() {
     [isReducedMotion],
   );
 
+  /**
+   * Renders animated flashing loading dots inside a container element.
+   *
+   * @param {HTMLElement} container - Target container element.
+   * @param {number} [dotCount=3] - Number of dot glyphs to animate.
+   * @returns {() => void} Cleanup function that removes loading dots.
+   */
   const createLoadingDots = useCallback(
     (container: HTMLElement, dotCount: number = 3): (() => void) => {
       if (isReducedMotion) {
@@ -383,12 +480,20 @@ export function useAnimations() {
     [isReducedMotion],
   );
 
+  /**
+   * Cancels and clears all currently running Web Animations tracked by this hook.
+   */
   const stopAllAnimations = useCallback(() => {
     animationRefs.current.forEach((animation, id) => {
       cleanupAnimation(id);
     });
   }, [cleanupAnimation]);
 
+  /**
+   * Cancels a specific active animation by ID.
+   *
+   * @param {string} animationId - Unique identifier of the animation.
+   */
   const stopAnimation = useCallback(
     (animationId: string) => {
       cleanupAnimation(animationId);
@@ -424,11 +529,24 @@ export function useAnimations() {
   );
 }
 
+/**
+ * Specialized animation hook tailored for terminal command output streams, scanline wipes, errors, and theme transitions.
+ *
+ * @returns {object} Terminal-specific animation methods and typing status flags.
+ */
 export function useTerminalAnimations() {
   const animations = useAnimations();
   const [isTyping, setIsTyping] = useState(false);
   const { isReducedMotion } = animations;
 
+  /**
+   * Dynamically renders terminal command output with frame-budgeted streaming typewriter animation and auto-scrolling.
+   *
+   * @param {HTMLElement} element - Target HTML element displaying output.
+   * @param {string} content - Full text or ANSI output string.
+   * @param {React.MutableRefObject<boolean>} [skipRef] - Optional ref to immediately skip animation and reveal entire content.
+   * @returns {Promise<void>} Resolves when the stream animation finishes.
+   */
   const animateCommandOutput = useCallback(
     async (
       element: HTMLElement,
@@ -442,10 +560,9 @@ export function useTerminalAnimations() {
 
       setIsTyping(true);
 
-                                                                              
       const MAX_DURATION_MS = 3000;
-      const frameDelay = 16;          
-      const totalFrames = MAX_DURATION_MS / frameDelay;               
+      const frameDelay = 16;
+      const totalFrames = MAX_DURATION_MS / frameDelay;
       const charsPerFrame = Math.max(
         1,
         Math.ceil(content.length / totalFrames),
@@ -459,6 +576,9 @@ export function useTerminalAnimations() {
         let _timerId: NodeJS.Timeout | null = null;
         let userScrolledUp = false;
 
+        /**
+         * Tracks whether user has manually scrolled up to prevent disruptive auto-scroll behavior.
+         */
         const handleScroll = () => {
           if (typeof window === "undefined") return;
           const threshold = 120;
@@ -475,12 +595,18 @@ export function useTerminalAnimations() {
           window.addEventListener("scroll", handleScroll, { passive: true });
         }
 
+        /**
+         * Scrolls the newest output lines into view if the user hasn't scrolled up.
+         */
         const autoScroll = () => {
           if (!userScrolledUp && element && typeof element.scrollIntoView === "function") {
             element.scrollIntoView({ block: "nearest", behavior: "auto" });
           }
         };
 
+        /**
+         * Cleans up typing classes, listeners, and resolves the promise.
+         */
         const cleanup = () => {
           if (typeof window !== "undefined") {
             window.removeEventListener("scroll", handleScroll);
@@ -491,6 +617,9 @@ export function useTerminalAnimations() {
           resolve();
         };
 
+        /**
+         * Advances the typed output by a chunk of characters per frame.
+         */
         const typeNextChar = () => {
           if (skipRef?.current) {
             element.textContent = content;
@@ -516,6 +645,12 @@ export function useTerminalAnimations() {
     [isReducedMotion],
   );
 
+  /**
+   * Applies a CRT scanline swipe wipe animation during terminal clearing.
+   *
+   * @param {HTMLElement} containerElement - Terminal container element.
+   * @param {() => void} onComplete - Callback triggered when scanline clear effect finishes.
+   */
   const animateScanlineClear = useCallback(
     (containerElement: HTMLElement, onComplete: () => void) => {
       if (animations.isReducedMotion) {
@@ -532,6 +667,11 @@ export function useTerminalAnimations() {
     [animations],
   );
 
+  /**
+   * Animates a glitch shake and turns text red upon command execution errors.
+   *
+   * @param {HTMLElement} element - Error text container element.
+   */
   const animateCommandError = useCallback(
     (element: HTMLElement) => {
       animations.createGlitchEffect(element, 300);
@@ -540,6 +680,11 @@ export function useTerminalAnimations() {
     [animations],
   );
 
+  /**
+   * Animates a slide-and-bounce transition on an element when the terminal theme changes.
+   *
+   * @param {HTMLElement} element - Target container element to animate.
+   */
   const animateThemeChange = useCallback(
     (element: HTMLElement) => {
       const animation = animations.createSlideIn(element, "up", {

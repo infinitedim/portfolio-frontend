@@ -8,11 +8,26 @@ import { PageHeader } from "@/components/atoms/shared/page-header";
 import { TechBadge } from "@/components/atoms/tech-badge";
 import { Folder, Star, Cpu, CheckCircle2 } from "lucide-react";
 
+/**
+ * Component properties for the client-side interactive projects showcase.
+ */
 interface ProjectsClientProps {
+  /** Complete list of portfolio projects. */
   allProjects: Project[];
+  /** Subset of projects marked as featured for prominent display. */
   featuredProjects: Project[];
 }
 
+/**
+ * Interactive Client Component managing project filtering, category selection, and summary metrics.
+ *
+ * @description Renders the projects page interactive interface including page header,
+ * tech stack pills, featured projects grid, category filter tabs (all, frontend, backend, fullstack, mobile, desktop, library),
+ * and aggregate statistics summary footer.
+ *
+ * @param {ProjectsClientProps} props - Component properties with all and featured projects.
+ * @returns {JSX.Element} The rendered interactive projects gallery.
+ */
 export function ProjectsClient({
   allProjects,
   featuredProjects,

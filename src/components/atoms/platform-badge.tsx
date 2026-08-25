@@ -4,11 +4,25 @@ import { type JSX } from "react";
 import { type TargetPlatform } from "@/lib/data/data-fetching";
 import { Smartphone, Apple, Monitor, Globe, Terminal, Laptop } from "lucide-react";
 
+/**
+ * Props for the {@link PlatformBadge} component.
+ *
+ * @interface PlatformBadgeProps
+ * @property {TargetPlatform} platform - The target operating system or deployment environment (e.g., 'android', 'ios', 'windows', 'macos', 'linux', 'web').
+ * @property {"sm" | "md"} [size] - Display size variant controlling padding, typography, and icon dimensions.
+ */
 interface PlatformBadgeProps {
   readonly platform: TargetPlatform;
   readonly size?: "sm" | "md";
 }
 
+/**
+ * Visual styling and iconography configuration map for all supported target platforms.
+ *
+ * @description
+ * Maps each `TargetPlatform` identifier to its human-readable display label,
+ * Lucide icon component, and corresponding Tailwind CSS border, text, and background color classes.
+ */
 const PLATFORM_CONFIG: Record<
   TargetPlatform,
   { label: string; icon: React.ComponentType<{ className?: string }>; color: string }
@@ -45,6 +59,18 @@ const PLATFORM_CONFIG: Record<
   },
 };
 
+/**
+ * Platform badge atom component.
+ *
+ * @description
+ * Renders an inline pill badge displaying a platform icon and label formatted with monospace typography
+ * and themed color accents tailored to the specific target platform.
+ *
+ * @param {PlatformBadgeProps} props - Component props.
+ * @param {TargetPlatform} props.platform - The target platform to display.
+ * @param {"sm" | "md"} [props.size] - Size variant of the badge.
+ * @returns {JSX.Element} The rendered platform badge element.
+ */
 export function PlatformBadge({
   platform,
   size = "sm",
@@ -68,3 +94,4 @@ export function PlatformBadge({
     </span>
   );
 }
+

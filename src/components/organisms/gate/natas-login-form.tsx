@@ -9,13 +9,33 @@ import { gateClient } from "@/lib/gate/gate-client";
 import { GATE_L1_USERNAME, GATE_L2_USERNAME } from "@/lib/gate/types";
 import { runRecruiterBypass } from "@/lib/gate/gate-bypass-helper";
 
+/**
+ * Properties for configuring the NatasLoginForm puzzle component.
+ */
 interface NatasLoginFormProps {
+  /** Target puzzle level (1 or 2) */
   level: 1 | 2;
+  /** Callback fired when the level challenge is successfully passed */
   onPassed: (nextLevel?: number) => void;
+  /** Whether to display explicit login credentials helper banner */
   showCredentials?: boolean;
+  /** Optional contextual hint message displayed above the form */
   hint?: string;
 }
 
+/**
+ * NATAS-style challenge authentication form for gate levels 1 and 2.
+ *
+ * Provides username/password submission, attempt counters, dynamic hint alerts,
+ * and a development-only recruiter auto-unlock bypass action.
+ *
+ * @param props - Component properties.
+ * @param props.level - Gate level identifier (1 or 2).
+ * @param props.onPassed - Callback invoked upon successful authentication.
+ * @param props.showCredentials - Whether to show credential hints.
+ * @param props.hint - Contextual level hint text.
+ * @returns Rendered challenge login form interface.
+ */
 export function NatasLoginForm({
   level,
   onPassed,

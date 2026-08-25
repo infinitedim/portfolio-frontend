@@ -7,6 +7,17 @@ import type { GateStatus, Level3Challenge } from "@/lib/gate/types";
 import { gateLevelRoute } from "@/lib/gate/types";
 import { GateLevel3Client } from "@/components/organisms/gate/gate-level-3-client";
 
+/**
+ * Client-side component that manages state and challenge data loading for Gate Level 3 (Natas 5).
+ *
+ * @description
+ * Fetches the current gate progression status and Level 3 cryptographic challenge payload.
+ * Redirects already unlocked sessions to the terminal (`/terminal`) and incomplete progression
+ * to earlier gate levels. Once challenge parameters (encoded secret and algorithm) are retrieved,
+ * renders the interactive Level 3 challenge solver client component.
+ *
+ * @returns {JSX.Element} The rendered Gate Level 3 client interface or a loading fallback message.
+ */
 export function GateLevel3PageClient(): JSX.Element {
   const router = useRouter();
   const [status, setStatus] = useState<GateStatus | null>(null);

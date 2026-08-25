@@ -10,7 +10,16 @@ import { useI18n } from "@/hooks/use-i18n";
 import { Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function AdminLoginPage() {
+/**
+ * Administrator login page component.
+ *
+ * Provides a terminal-styled authentication interface with JWT support,
+ * redirecting already authenticated users to the admin dashboard, and
+ * providing navigation back to the public site or registration page.
+ *
+ * @returns {React.JSX.Element | null} The rendered login page or `null` while redirecting authenticated users.
+ */
+export default function AdminLoginPage(): React.JSX.Element | null {
   const { themeConfig } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
   const { t } = useI18n();
@@ -29,7 +38,12 @@ export default function AdminLoginPage() {
     return null;
   }
 
-  const handleLoginSuccess = () => {
+  /**
+   * Handles post-authentication redirection upon successful login.
+   *
+   * @returns {void}
+   */
+  const handleLoginSuccess = (): void => {
     router.push("/admin");
   };
 

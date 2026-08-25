@@ -9,6 +9,16 @@ import { Settings, Save, RotateCcw } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { LenisScroll } from "@/components/layout/lenis-scroll";
 
+/**
+ * Customization settings manager component.
+ *
+ * Provides a user-friendly interface for configuring application-wide customization
+ * preferences, including auto-save behavior and typography parameters (such as font size).
+ * Displays a live preview of rendered text according to configured font metrics,
+ * and allows saving or resetting preferences back to initial defaults.
+ *
+ * @returns The rendered settings management panel or terminal loading progress indicator.
+ */
 export function SettingsManager(): JSX.Element {
   const { t } = useI18n();
   const { themeConfig, theme } = useTheme();
@@ -23,6 +33,13 @@ export function SettingsManager(): JSX.Element {
     setSettings(currentSettings);
   }, [customizationService]);
 
+  /**
+   * Updates an individual customization setting in the local state and automatically
+   * persists it to storage if the `autoSave` setting is active.
+   *
+   * @param key - The property key in {@link CustomizationSettings} to update.
+   * @param value - The new value for the specified setting.
+   */
   const handleSettingChange = (
     key: keyof CustomizationSettings,
     value: CustomizationSettings[keyof CustomizationSettings],
@@ -39,6 +56,9 @@ export function SettingsManager(): JSX.Element {
     }
   };
 
+  /**
+   * Persists all currently modified settings to local storage via {@link CustomizationService}.
+   */
   const handleSave = () => {
     if (!settings) return;
 
@@ -46,6 +66,9 @@ export function SettingsManager(): JSX.Element {
     setHasChanges(false);
   };
 
+  /**
+   * Prompts user confirmation and resets all customization settings back to default configurations.
+   */
   const handleReset = () => {
     if (confirm(t("customResetConfirm"))) {
       customizationService.resetToDefaults();

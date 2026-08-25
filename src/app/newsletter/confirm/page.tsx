@@ -7,6 +7,16 @@ import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { confirmNewsletter } from "@/lib/services/newsletter-service";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Internal client component that handles newsletter subscription token confirmation.
+ *
+ * @description
+ * Extracts the `token` parameter from the URL search query string and executes {@link confirmNewsletter}.
+ * Manages loading, success, and error states, rendering a styled terminal-like card
+ * with verification status indicators and a navigation link back to the blog.
+ *
+ * @returns {JSX.Element} The rendered subscription confirmation card interface.
+ */
 function ConfirmContent() {
   const { t } = useI18n();
   const searchParams = useSearchParams();
@@ -83,11 +93,28 @@ function ConfirmContent() {
   );
 }
 
+/**
+ * Loading fallback placeholder displayed while the confirmation query parameters are resolved.
+ *
+ * @description
+ * Renders an accessible, localized loading text indicator inside the {@link Suspense} boundary.
+ *
+ * @returns {JSX.Element} The rendered loading placeholder element.
+ */
 function LoadingFallback() {
   const { t } = useI18n();
   return <div className="py-16 text-center text-gray-400">{t("loading")}</div>;
 }
 
+/**
+ * Page component for confirming double opt-in newsletter subscriptions.
+ *
+ * @description
+ * Wraps the asynchronous {@link ConfirmContent} component inside a React {@link Suspense}
+ * boundary and places it inside {@link StandardPageLayout}.
+ *
+ * @returns {JSX.Element} The rendered newsletter confirmation page.
+ */
 export default function NewsletterConfirmPage() {
   return (
     <StandardPageLayout>

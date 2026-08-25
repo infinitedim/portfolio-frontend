@@ -4,18 +4,37 @@ import Link from "next/link";
 import { TagChip } from "@/components/atoms/shared/tag-chip";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Represents a blog tag along with its associated post count.
+ */
 export interface TagWithCount {
+  /** The display name of the tag. */
   name: string;
+  /** The URL-friendly slug of the tag. */
   slug: string;
+  /** Number of published posts tagged with this tag. */
   postCount: number;
 }
 
+/**
+ * Props for the TagFilter component.
+ */
 interface TagFilterProps {
+  /** Array of available tags with their post counts. */
   tags: TagWithCount[];
+  /** Name of the currently active tag filter, if any. */
   activeTag?: string;
+  /** Active search query parameter to preserve in the URL. */
   searchParam?: string;
 }
 
+/**
+ * Builds a blog URL with updated tag and search query parameters.
+ *
+ * @param tag - Tag name to set, or undefined to clear.
+ * @param search - Optional search query string.
+ * @returns Formatted URL string for blog navigation.
+ */
 function buildTagUrl(
   tag: string | undefined,
   search: string | undefined,
@@ -27,6 +46,16 @@ function buildTagUrl(
   return `/blog${qs ? `?${qs}` : ""}`;
 }
 
+/**
+ * TagFilter component that renders a horizontal scrolling list of tag chips
+ * for filtering blog posts.
+ *
+ * @param props - Component properties.
+ * @param props.tags - List of tags with counts.
+ * @param props.activeTag - Currently selected tag name.
+ * @param props.searchParam - Current search query parameter to preserve.
+ * @returns The rendered tag filter list or null if no tags are provided.
+ */
 export function TagFilter({ tags, activeTag, searchParam }: TagFilterProps) {
   const { t } = useI18n();
   if (tags.length === 0) return null;

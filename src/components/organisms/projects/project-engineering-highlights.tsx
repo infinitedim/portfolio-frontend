@@ -1,17 +1,50 @@
 import { type JSX } from "react";
 
+/**
+ * Represents an individual engineering highlight or technical milestone for a project.
+ */
 export interface ProjectHighlight {
+  /**
+   * Unique identifier for the highlight entry.
+   */
   readonly id: string;
+  /**
+   * Category or domain tag (e.g. "Architecture", "Performance", "Security").
+   */
   readonly category: string;
+  /**
+   * Brief headline describing the engineering accomplishment.
+   */
   readonly title: string;
+  /**
+   * Optional extended technical detail or contextual explanation.
+   */
   readonly detail?: string;
 }
 
+/**
+ * Properties for the {@link ProjectEngineeringHighlights} component.
+ */
 interface ProjectEngineeringHighlightsProps {
+  /**
+   * List of engineering highlight items to display.
+   */
   readonly highlights?: readonly ProjectHighlight[];
+  /**
+   * Optional CSS class names for custom container styling.
+   */
   readonly className?: string;
 }
 
+/**
+ * Renders a terminal-styled engineering highlights section showcasing architecture decisions,
+ * performance optimizations, and key implementation notes for a project.
+ *
+ * @param {ProjectEngineeringHighlightsProps} props - Component properties.
+ * @param {readonly ProjectHighlight[]} [props.highlights] - List of engineering highlights.
+ * @param {string} [props.className] - Optional extra CSS class names.
+ * @returns {JSX.Element | null} Rendered highlights list or `null` if no highlights are provided.
+ */
 export function ProjectEngineeringHighlights({
   highlights,
   className = "",

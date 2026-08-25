@@ -40,9 +40,18 @@ import {
   type SimpleIcon,
 } from "simple-icons";
 
+/**
+ * Standard SVG properties passed to technology icon components.
+ */
 export type TechIconProps = SVGProps<SVGSVGElement>;
 
-                                                                          
+/**
+ * Helper utility to render a SimpleIcon definition as an inline SVG element.
+ *
+ * @param icon - The simple-icons icon descriptor containing SVG path information.
+ * @param props - Additional SVG attributes and event handlers.
+ * @returns {JSX.Element} The rendered SVG element for the given simple-icon.
+ */
 function renderSimpleIcon(icon: SimpleIcon, props: TechIconProps): JSX.Element {
   return (
     <svg
@@ -56,12 +65,12 @@ function renderSimpleIcon(icon: SimpleIcon, props: TechIconProps): JSX.Element {
   );
 }
 
-   
-                                                                          
-                                                                                      
-                                                                                              
-                                                                                      
-   
+/**
+ * Custom animated SVG icon component for Docker with staggered container hover animations.
+ *
+ * @param props - Standard SVG attributes and properties.
+ * @returns {JSX.Element} The multi-part animated Docker SVG icon element.
+ */
 export function DockerIcon(props: TechIconProps): JSX.Element {
   return (
     <svg
@@ -122,10 +131,14 @@ export function DockerIcon(props: TechIconProps): JSX.Element {
   );
 }
 
-   
-                                                             
-                                                                            
-   
+/**
+ * Fallback icon generator that renders a styled SVG square with the technology's initials when no official icon exists in the registry.
+ *
+ * @param props - The component props.
+ * @param props.name - The raw technology name from which initials are extracted.
+ * @param props.className - Optional custom CSS classes for styling and sizing.
+ * @returns {JSX.Element} SVG element containing the monogram text in a rounded container.
+ */
 export function MonogramFallbackIcon({
   name,
   className,
@@ -175,10 +188,16 @@ export function MonogramFallbackIcon({
   );
 }
 
-                                                                               
-                                                                           
-                                                                               
-
+/**
+ * Metadata descriptor for an entry in the technology registry.
+ *
+ * @interface TechIconMeta
+ * @property label - Human-readable display label for the technology.
+ * @property Icon - React component rendering the technology's SVG icon.
+ * @property color - Brand hex color code for the technology.
+ * @property hoverAnimation - Tailwind CSS animation classes applied during group hover states.
+ * @property category - Classification category of the technology.
+ */
 export interface TechIconMeta {
   readonly label: string;
   readonly Icon: (props: TechIconProps) => JSX.Element;
@@ -187,6 +206,10 @@ export interface TechIconMeta {
   readonly category: "language" | "framework" | "database" | "infra" | "tool";
 }
 
+/**
+ * @constant TECH_REGISTRY
+ * @description Centralized lookup registry mapping normalized technology keys to their corresponding metadata, icons, and brand colors.
+ */
 const TECH_REGISTRY: Record<string, TechIconMeta> = {
   react: {
     label: "React",
@@ -535,17 +558,18 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   },
 };
 
-                                                                               
-                                                                       
-                                                                               
-
+/**
+ * Normalizes arbitrary technology name strings into standardized registry lookup keys (handling aliases, whitespace, punctuation, and abbreviations).
+ *
+ * @param name - The raw technology name to normalize (e.g., "Next.js", "K8s", "NodeJS").
+ * @returns The normalized canonical key matching registry entries.
+ */
 export function normalizeTechKey(name: string): string {
   const cleaned = name
     .toLowerCase()
     .trim()
     .replace(/[\s.\-_/&]+/g, "");
 
-                              
   if (cleaned.includes("tokio")) return "tokio";
   if (cleaned.includes("loki")) return "loki";
   if (cleaned.includes("kubernetes") || cleaned === "k8s") return "kubernetes";
@@ -571,6 +595,12 @@ export function normalizeTechKey(name: string): string {
     .replace(/^js$/, "javascript");
 }
 
+/**
+ * Retrieves metadata configuration for a given technology name, falling back to a dynamically generated monogram icon if unregistered.
+ *
+ * @param name - The technology name or alias to look up.
+ * @returns The matched or fallback technology icon metadata descriptor.
+ */
 export function getTechConfig(name: string): TechIconMeta {
   const normalizedKey = normalizeTechKey(name);
   const matched = TECH_REGISTRY[normalizedKey];
@@ -579,7 +609,6 @@ export function getTechConfig(name: string): TechIconMeta {
     return matched;
   }
 
-                                                                 
   return {
     label: name,
     Icon: (props: TechIconProps) => (
@@ -594,9 +623,9 @@ export function getTechConfig(name: string): TechIconMeta {
   };
 }
 
-   
-                                                                       
-   
+/**
+ * List of commonly used technology names curated for quick selection and display presets across the portfolio.
+ */
 export const POPULAR_TECH_PRESETS: string[] = [
   "React",
   "Next.js",

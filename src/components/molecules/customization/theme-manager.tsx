@@ -15,13 +15,34 @@ import { ThemeName } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { LenisScroll } from "@/components/layout/lenis-scroll";
 
+/**
+ * Props for the {@link ThemeManager} component.
+ */
 interface ThemeManagerProps {
+  /** List of custom and preset theme objects available for selection. */
   themes: CustomTheme[];
+  /** Callback triggered when themes are modified or updated. */
   onUpdate: () => void;
+  /** Currently active theme identifier name. */
   currentTheme?: ThemeName;
+  /** Optional callback invoked when a theme is selected and applied. */
   onApplyTheme?: (themeId: string) => void;
 }
 
+/**
+ * Interactive theme management and palette browsing component.
+ *
+ * Provides responsive grid-based browsing of available color themes with real-time
+ * search filtering, multiple sorting criteria (by name, creation date, modification date),
+ * palette color swatches, active status badges, and direct theme application handlers.
+ *
+ * @param props - Component configuration properties.
+ * @param props.themes - The array of custom/system theme items.
+ * @param props.onUpdate - Callback invoked on theme list updates.
+ * @param props.onApplyTheme - Optional callback triggered after applying a theme.
+ * @param props.currentTheme - Currently active theme identifier.
+ * @returns The rendered theme manager interface with search, sort, and theme cards.
+ */
 export function ThemeManager({
   themes,
   onUpdate: _onUpdate,
@@ -59,6 +80,11 @@ export function ThemeManager({
       }
     });
 
+  /**
+   * Applies the chosen theme to the application and notifies parent listeners.
+   *
+   * @param themeId - The unique identifier of the theme to apply.
+   */
   const handleApplyTheme = (themeId: string) => {
     console.log(`ThemeManager: Applying theme ${themeId}`);
 

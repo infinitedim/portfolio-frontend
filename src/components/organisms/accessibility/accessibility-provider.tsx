@@ -9,6 +9,18 @@ import {
   JSX,
 } from "react";
 
+/**
+ * Context state and control methods provided by the AccessibilityProvider.
+ *
+ * @interface AccessibilityContextType
+ * @property {(message: string, priority?: "polite" | "assertive") => void} announceMessage - Announces a message to screen readers via an ARIA live region.
+ * @property {boolean} isHighContrast - Indicates whether high contrast mode is detected or enabled.
+ * @property {boolean} isReducedMotion - Indicates whether user prefers reduced motion animations.
+ * @property {"small" | "medium" | "large"} fontSize - Current global UI font size preference.
+ * @property {(size: "small" | "medium" | "large") => void} setFontSize - Updates the global UI font size preference.
+ * @property {boolean} focusMode - Whether high-visibility keyboard focus indicators are active.
+ * @property {(enabled: boolean) => void} setFocusMode - Toggles high-visibility keyboard focus mode.
+ */
 interface AccessibilityContextType {
   announceMessage: (message: string, priority?: "polite" | "assertive") => void;
   isHighContrast: boolean;
@@ -19,10 +31,23 @@ interface AccessibilityContextType {
   setFocusMode: (enabled: boolean) => void;
 }
 
+/**
+ * React Context instance for providing accessibility settings and screen reader announcements.
+ */
 const AccessibilityContext = createContext<AccessibilityContextType | null>(
   null,
 );
 
+/**
+ * Application-wide Accessibility Provider managing a11y preferences and screen reader live regions.
+ *
+ * Automatically detects OS contrast and motion preferences, synchronizes font sizes and focus styles
+ * with CSS custom properties and HTML root classes, and provides screen reader announcements.
+ *
+ * @param {Object} props - The component properties.
+ * @param {ReactNode} props.children - Child components wrapped by the provider.
+ * @returns {JSX.Element} The rendered context provider and live announcer DOM tree.
+ */
 export function AccessibilityProvider({
   children,
 }: {
@@ -104,6 +129,12 @@ export function AccessibilityProvider({
     localStorage.setItem("accessibility-focus-mode", focusMode.toString());
   }, [focusMode]);
 
+  /**
+   * Dispatches a temporary announcement text to the hidden screen reader live region.
+   *
+   * @param message - Announcement text to be read by assistive technology.
+   * @param priority - ARIA live urgency level ('polite' or 'assertive').
+   */
   const announceMessage = (
     message: string,
     priority: "polite" | "assertive" = "polite",
@@ -141,6 +172,12 @@ export function AccessibilityProvider({
   );
 }
 
+/**
+ * Hook to access the current accessibility context and announcement dispatcher.
+ *
+ * @throws {Error} Thrown if invoked outside of an `<AccessibilityProvider>` tree.
+ * @returns {AccessibilityContextType} The current accessibility state and actions.
+ */
 export function useAccessibility(): AccessibilityContextType {
   const context = useContext(AccessibilityContext);
   if (!context) {

@@ -1,5 +1,10 @@
 import { JSX } from "react";
 
+/**
+ * Skeleton loading placeholder grid rendered while project list data is being fetched.
+ *
+ * @returns {JSX.Element} The rendered skeleton grid with 6 animated project card placeholders.
+ */
 export function ProjectsLoading(): JSX.Element {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -10,6 +15,11 @@ export function ProjectsLoading(): JSX.Element {
   );
 }
 
+/**
+ * Individual skeleton card placeholder simulating the layout of a project card.
+ *
+ * @returns {JSX.Element} An animated skeleton placeholder element.
+ */
 function ProjectCardSkeleton(): JSX.Element {
   return (
     <div className="bg-terminal-bg border border-terminal-border rounded-lg overflow-hidden animate-pulse">

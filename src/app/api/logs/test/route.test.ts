@@ -6,6 +6,9 @@ import { POST } from "../route";
 if (typeof (globalThis as { Bun?: unknown }).Bun !== "undefined" || typeof (jest as unknown as Record<string, unknown>).mock !== "function") (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
 mock.module("next/server", () => ({
+  /**
+   *
+   */
   NextRequest: class {},
   NextResponse: {
     json: (data: unknown, init?: ResponseInit) =>
@@ -29,6 +32,13 @@ mock.module("@/lib/logger/server-logger", () => ({
   }),
 }));
 
+/**
+ * Creates a mock Request object configured for POST /api/logs tests.
+ *
+ * @param body - The JSON payload to serialize into the request body.
+ * @param headers - Optional HTTP headers to include in the request.
+ * @returns A Request configured with JSON headers and serialized body.
+ */
 function createMockRequest(
   body: unknown,
   headers: Record<string, string> = {},

@@ -8,6 +8,9 @@ import {
   getLocaleConfig,
 } from "@/lib/i18n/locales";
 
+/**
+ * Terminal command definition for switching application language or displaying available locales.
+ */
 export const languageCommand: Command = {
   name: "lang",
   description: "Change application language",
@@ -89,7 +92,12 @@ export const languageCommand: Command = {
   },
 };
 
-function showCurrentLanguage() {
+/**
+ * Constructs a terminal information output describing the active language and all available supported locales.
+ *
+ * @returns {CommandOutput} Formatted command output displaying current locale details, flags, and options.
+ */
+function showCurrentLanguage(): CommandOutput {
   const currentLocale = i18n.getCurrentLocale();
   const currentConfig = i18n.getCurrentLocaleConfig();
   const supportedLocales = i18n.getSupportedLocales();

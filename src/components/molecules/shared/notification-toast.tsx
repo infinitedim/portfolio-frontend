@@ -3,14 +3,48 @@
 import { type JSX, useEffect, useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
+/**
+ * Props for the NotificationToast component.
+ */
 interface NotificationToastProps {
+  /**
+   * The notification message string displayed in the toast body.
+   */
   message: string;
+  /**
+   * The semantic severity type of the toast notification.
+   */
   type: "info" | "success" | "warning" | "error";
+  /**
+   * Auto-dismiss delay in milliseconds. Set to 0 to disable automatic dismissal.
+   * @defaultValue 4000
+   */
   duration?: number;
+  /**
+   * Callback function executed when the toast is closed or dismisses.
+   */
   onClose: () => void;
+  /**
+   * Controlled visibility boolean for the toast.
+   * @defaultValue true
+   */
   visible?: boolean;
 }
 
+/**
+ * NotificationToast component renders a floating banner for alert messages and action feedback.
+ *
+ * Positions in the top-right corner with slide-in animations, auto-dismiss timers,
+ * manual dismiss buttons, and theme-synchronized alert color schemes.
+ *
+ * @param props - Component configuration props.
+ * @param props.message - Text message to present to the user.
+ * @param props.type - Severity type ('info' | 'success' | 'warning' | 'error').
+ * @param props.visible - Whether the toast is actively visible.
+ * @param props.onClose - Callback triggered after toast closure animation.
+ * @param props.duration - Auto-dismiss timeout in milliseconds.
+ * @returns A floating alert toast element or null if not visible.
+ */
 export function NotificationToast({
   message,
   type,
@@ -36,6 +70,11 @@ export function NotificationToast({
     }
   }, [isVisible, duration, onClose]);
 
+  /**
+   * Computes background, text, icon, and border styling according to notification type and active theme.
+   *
+   * @returns An object containing style definitions and icon representation for the notification type.
+   */
   const getTypeStyles = () => {
     const colors = themeConfig?.colors;
 
@@ -83,6 +122,9 @@ export function NotificationToast({
 
   const typeStyles = getTypeStyles();
 
+  /**
+   * Initiates the exit animation and triggers the onClose callback after transition ends.
+   */
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(onClose, 300);

@@ -1,24 +1,8 @@
-   
-                                     
-  
-                                                                               
-                                                                                 
-  
-               
-                                                                          
-  
-           
-         
-                                                                  
-      
-  
-                
-                                                                                    
-                                                                                      
-                                         
-                 
-                            
-   
+/**
+ * @fileoverview Interactive input area organism for the terminal UI, providing command input,
+ * autocomplete suggestions, history navigation, and background processing loaders.
+ * @module components/organisms/terminal/terminal-input-section
+ */
 
 "use client";
 
@@ -28,7 +12,9 @@ import { CommandLoadingIndicator } from "@/components/molecules/terminal/command
 import { useTerminalContext } from "@/lib/context/terminal-context";
 import { useI18n } from "@/hooks/use-i18n";
 
-                                                          
+/**
+ * List of registered commands available for shell execution and autocomplete suggestions.
+ */
 const AVAILABLE_COMMANDS = [
   "help",
   "skills",
@@ -56,12 +42,12 @@ const AVAILABLE_COMMANDS = [
   "pwa",
 ] as const;
 
-   
-                       
-  
-                                                                          
-                                                                 
-   
+/**
+ * Organism component rendering the terminal input prompt section, handling command submission,
+ * loading state feedback, and keyboard suggestion interactions.
+ *
+ * @returns {JSX.Element} The rendered sticky terminal input bar.
+ */
 export function TerminalInputSection(): JSX.Element {
   const { t } = useI18n();
   const {
@@ -91,7 +77,6 @@ export function TerminalInputSection(): JSX.Element {
       suppressHydrationWarning={true}
       tabIndex={-1}
     >
-                                                                        
       {isProcessing && (
         <CommandLoadingIndicator
           command={currentInput}

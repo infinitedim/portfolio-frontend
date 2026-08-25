@@ -13,19 +13,52 @@
 import { useState, useCallback, memo } from "react";
 import type { GraphLayout } from "@/lib/git-graph";
 
+/**
+ * Props for the {@link GitGraphColumn} visualization component.
+ */
 interface GitGraphColumnProps {
+  /** The computed graph layout containing positions for nodes and routed edges. */
   layout: GraphLayout;
+  /** Vertical height in pixels allocated to each commit row. */
   rowHeight: number;
+  /** Horizontal width in pixels allocated to each parallel branch lane. */
   laneWidth: number;
+  /** Callback fired when a commit node is clicked or activated via keyboard. */
   onNodeClick: (sha: string) => void;
-                                                                              
+  /** Optional flag indicating whether terminal-style styling/opacity should be applied. */
   terminalMode?: boolean;
 }
 
+/**
+ * Standard commit node circle radius in pixels.
+ */
 const NODE_RADIUS = 5;
-const MERGE_NODE_RADIUS = 7;
-const HIT_TARGET_RADIUS = 22;                        
 
+/**
+ * Merge commit node outer circle radius in pixels.
+ */
+const MERGE_NODE_RADIUS = 7;
+
+/**
+ * Expanded invisible hit target circle radius in pixels for enhanced accessibility and touch.
+ */
+const HIT_TARGET_RADIUS = 22;
+
+/**
+ * SVG-based interactive Git graph column component.
+ *
+ * Renders a visual branch topology diagram with commit nodes, merge indicators,
+ * branch tip ping animations, and curved Bezier/straight edge connectors.
+ * Supports branch hover highlighting and click-to-inspect commit navigation.
+ *
+ * @param props - Component configuration properties.
+ * @param props.layout - The calculated graph layout metadata.
+ * @param props.rowHeight - Row height in pixels for vertical spacing.
+ * @param props.laneWidth - Lane width in pixels for horizontal column distribution.
+ * @param props.onNodeClick - Callback triggered with the commit SHA when a node is clicked.
+ * @param props.terminalMode - Whether to render with terminal styling.
+ * @returns The rendered SVG Git graph column or `null` if no commit nodes exist.
+ */
 export const GitGraphColumn = memo(function GitGraphColumn({
   layout,
   rowHeight,
@@ -225,10 +258,14 @@ export const GitGraphColumn = memo(function GitGraphColumn({
 
 GitGraphColumn.displayName = "GitGraphColumn";
 
-   
-                                            
-                                                         
-   
+/**
+ * Renders inline branch name pill badges next to commit summaries or graph rows.
+ *
+ * @param props - Component props containing branch names and theme color.
+ * @param props.branchNames - Array of branch reference names (e.g. `['main', 'feat/auth']`).
+ * @param props.color - Hex or CSS color string used for badge borders, text, and background tint.
+ * @returns The rendered branch badge pills or `null` if no branch names are provided.
+ */
 export function BranchLabel({
   branchNames,
   color,

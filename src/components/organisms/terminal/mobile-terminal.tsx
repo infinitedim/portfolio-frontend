@@ -1,13 +1,36 @@
+/**
+ * @fileoverview Responsive guard organism component that restricts full CLI / gate interactions on mobile viewports.
+ * @module components/organisms/terminal/mobile-terminal
+ */
+
 "use client";
 
 import type React from "react";
 import { type JSX } from "react";
 import { useMobile } from "@/hooks/use-mobile";
 
+/**
+ * Props for the MobileTerminal guard component.
+ *
+ * @interface MobileTerminalProps
+ * @property {React.ReactNode} children - The interactive desktop terminal content to render when not on a mobile device.
+ */
 interface MobileTerminalProps {
   children: React.ReactNode;
 }
 
+/**
+ * Mobile responsive fallback component that displays a desktop requirement notice on small screens.
+ *
+ * @description
+ * Evaluates viewport dimensions via `useMobile`. If mobile viewport is detected,
+ * renders a themed "Desktop Required" notification modal with navigation fallback.
+ * Otherwise, transparently passes through children.
+ *
+ * @param {MobileTerminalProps} props - The component props.
+ * @param {React.ReactNode} props.children - Child elements rendered for desktop viewports.
+ * @returns {JSX.Element} The rendered mobile warning UI or children.
+ */
 export function MobileTerminal({ children }: MobileTerminalProps): JSX.Element {
   const { isMobile } = useMobile();
 

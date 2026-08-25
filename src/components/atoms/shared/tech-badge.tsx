@@ -2,6 +2,17 @@
 
 import { JSX, useState } from "react";
 
+/**
+ * Properties for the shared TechBadge component.
+ *
+ * @interface TechBadgeProps
+ * @property technology - Name or identifier of the technology displayed in the badge.
+ * @property count - Optional numeric count or metric indicator attached to the badge.
+ * @property onClick - Optional callback triggered when an interactive badge is activated.
+ * @property selected - Whether the badge is rendered in an active or selected state.
+ * @property interactive - Whether the badge supports interactive features (focus, keyboard, hover).
+ * @property size - Size variant of the badge determining padding and typography scale.
+ */
 interface TechBadgeProps {
   technology: string;
   count?: number;
@@ -11,6 +22,9 @@ interface TechBadgeProps {
   size?: "sm" | "md" | "lg";
 }
 
+/**
+ * Mapping of technology names to their corresponding color themes (background, text, and border classes).
+ */
 const TECH_COLORS: Record<
   string,
   { bg: string; text: string; border: string }
@@ -253,12 +267,27 @@ const TECH_COLORS: Record<
   },
 };
 
+/**
+ * Mapping of badge size variants to their corresponding Tailwind CSS utility classes.
+ */
 const SIZE_CLASSES = {
   sm: "px-2 py-1 text-xs",
   md: "px-3 py-1.5 text-sm",
   lg: "px-4 py-2 text-base",
 };
 
+/**
+ * Renders a technology badge with technology-specific colors, optional counter, and accessible interactive behaviors.
+ *
+ * @param props - The component properties.
+ * @param props.technology - The name of the technology.
+ * @param props.count - Optional counter badge number.
+ * @param props.onClick - Click handler when badge is clicked.
+ * @param props.selected - Whether the badge is marked as selected.
+ * @param props.interactive - Enables keyboard navigation and click interactions.
+ * @param props.size - Badge dimensions and font size variant.
+ * @returns {JSX.Element} The rendered technology badge element.
+ */
 export function TechBadge({
   technology,
   count,

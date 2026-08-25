@@ -3,6 +3,9 @@
 import { onCLS, onFCP, onINP, onLCP, onTTFB, type Metric } from "web-vitals";
 import clientLogger from "./client-logger";
 
+/**
+ * Core Web Vitals rating thresholds for Good, Needs Improvement, and Poor classifications.
+ */
 const THRESHOLDS = {
   LCP: {
     good: 2500,
@@ -35,6 +38,9 @@ const THRESHOLDS = {
   },
 };
 
+/**
+ * In-memory repository caching the latest reported Web Vitals metrics and ratings.
+ */
 const vitalsStore: {
   metrics: Record<string, number>;
   ratings: Record<string, string>;
@@ -43,6 +49,11 @@ const vitalsStore: {
   ratings: {},
 };
 
+/**
+ * Resolves current URL pathname from the window location.
+ *
+ * @returns Pathname string of the current route.
+ */
 function getRoutePathname(): string {
   if (typeof window === "undefined") {
     return "/";
@@ -55,6 +66,13 @@ function getRoutePathname(): string {
   }
 }
 
+/**
+ * Evaluates a numeric Web Vital metric value against standard Google threshold benchmarks.
+ *
+ * @param name - Metric identifier (e.g. 'LCP', 'CLS', 'INP', 'FCP', 'TTFB').
+ * @param value - Numeric measurement value.
+ * @returns Quality classification score ('good', 'needs-improvement', or 'poor').
+ */
 function getRating(
   name: string,
   value: number,
@@ -76,6 +94,11 @@ function getRating(
   return "poor";
 }
 
+/**
+ * Internal callback invoked by `web-vitals` library to store and log a captured performance metric.
+ *
+ * @param metric - Standard Web Vitals Metric object.
+ */
 function reportMetric(metric: Metric): void {
   const { name, value, rating, id, navigationType } = metric;
   const route = getRoutePathname();
@@ -108,6 +131,9 @@ function reportMetric(metric: Metric): void {
   clientLogger.logPerformance(name, value, vitalsMetadata, vitalsContext);
 }
 
+/**
+ * Initializes Core Web Vitals listeners for CLS, FCP, INP, LCP, and TTFB.
+ */
 export function initWebVitals(): void {
   try {
     onCLS(reportMetric);
@@ -130,6 +156,11 @@ export function initWebVitals(): void {
   }
 }
 
+/**
+ * Subscribes a custom callback or defaults to the standard internal reporter for Core Web Vitals.
+ *
+ * @param onPerfEntry - Optional callback receiving each captured Metric data point.
+ */
 export function reportWebVitals(onPerfEntry?: (metric: Metric) => void): void {
   if (!onPerfEntry) {
     initWebVitals();
@@ -149,6 +180,11 @@ export function reportWebVitals(onPerfEntry?: (metric: Metric) => void): void {
   }
 }
 
+/**
+ * Retrieves a snapshot copy of all collected Web Vitals metrics and evaluated ratings.
+ *
+ * @returns Record containing collected metric values and classification ratings.
+ */
 export function getWebVitalsSummary(): {
   metrics: Record<string, number>;
   ratings: Record<string, string>;

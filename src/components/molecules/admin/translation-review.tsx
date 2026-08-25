@@ -10,6 +10,32 @@ import { ConfirmDialog } from "./confirm-dialog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
+/**
+ * Data transfer object representing a blog post entity from the backend API.
+ *
+ * @interface BlogPostResponse
+ * @property {string} id - Unique identifier for the blog post.
+ * @property {string} title - Title of the blog post.
+ * @property {string} slug - URL-friendly slug.
+ * @property {string | null} summary - Short synopsis or excerpt.
+ * @property {string | null} contentMd - Raw Markdown body content.
+ * @property {string | null} contentHtml - Rendered and sanitized HTML content.
+ * @property {boolean} published - Whether the post is currently published.
+ * @property {string[]} tags - Associated topic tags.
+ * @property {number} readingTimeMinutes - Estimated reading time in minutes.
+ * @property {number} viewCount - Total accumulated page views.
+ * @property {string | null} publishAt - Scheduled or actual publication ISO timestamp.
+ * @property {"draft" | "scheduled" | "published"} status - Publication workflow state.
+ * @property {string} locale - Locale code (e.g. 'en', 'id').
+ * @property {string | null} seriesId - Optional ID of the parent blog series.
+ * @property {number | null} seriesOrder - Position order within the parent series.
+ * @property {string | null} translationGroupId - Shared UUID linking translated versions of the same article.
+ * @property {string} translationStatus - Status of translation workflow (e.g. 'pending', 'translated', 'approved').
+ * @property {string | null} reviewedAt - ISO timestamp when the translation was reviewed.
+ * @property {string | null} reviewedBy - Identifier of the reviewer user.
+ * @property {string} createdAt - ISO timestamp when the post was created.
+ * @property {string} updatedAt - ISO timestamp when the post was last modified.
+ */
 export interface BlogPostResponse {
   id: string;
   title: string;
@@ -34,6 +60,15 @@ export interface BlogPostResponse {
   updatedAt: string;
 }
 
+/**
+ * Properties for the TranslationReview component.
+ *
+ * @interface TranslationReviewProps
+ * @property {BlogPostResponse} translated - The target localized blog post under review.
+ * @property {BlogPostResponse | null} source - The original source language blog post for side-by-side comparison.
+ * @property {() => void} onAction - Callback invoked when an action (approve, re-translate) completes to refresh parent state.
+ * @property {ThemeConfig} themeConfig - Current terminal theme styling tokens.
+ */
 interface TranslationReviewProps {
   translated: BlogPostResponse;
   source: BlogPostResponse | null;
@@ -41,12 +76,26 @@ interface TranslationReviewProps {
   themeConfig: ThemeConfig;
 }
 
+/**
+ * Side-by-side translation review and verification interface for administrators.
+ *
+ * Displays original source content alongside machine-translated copy, provides a 4-point safety checklist
+ * (Markdown formatting, glossary preservation, artifact absence, length sanity), and allows one-click approval
+ * or re-translation triggering.
+ *
+ * @param {TranslationReviewProps} props - Component properties.
+ * @param {BlogPostResponse} props.translated - The translated blog post entity.
+ * @param {BlogPostResponse | null} props.source - The original source blog post entity.
+ * @param {() => void} props.onAction - State refresh callback after review actions.
+ * @param {ThemeConfig} props.themeConfig - Active terminal theme configuration.
+ * @returns {React.JSX.Element} The rendered translation review workspace.
+ */
 export function TranslationReview({
   translated,
   source,
   onAction,
   themeConfig,
-}: TranslationReviewProps) {
+}: TranslationReviewProps): React.JSX.Element {
   const router = useRouter();
   const [checks, setChecks] = useState({
     format: false,
@@ -60,6 +109,11 @@ export function TranslationReview({
 
   const allChecked = Object.values(checks).every(Boolean);
 
+  /**
+   * Approves and publishes the translated blog post via backend API.
+   *
+   * @returns {Promise<void>}
+   */
   const handleApprove = async () => {
     try {
       setLoading(true);
@@ -89,6 +143,11 @@ export function TranslationReview({
     }
   };
 
+  /**
+   * Triggers an asynchronous re-translation of the article from source content.
+   *
+   * @returns {Promise<void>}
+   */
   const handleRetranslate = async () => {
     try {
       setLoading(true);

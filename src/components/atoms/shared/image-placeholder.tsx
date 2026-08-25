@@ -3,12 +3,33 @@
 import { cn } from "@/lib/utils/utils";
 import { JSX } from "react";
 
+/**
+ * Props for the {@link ImagePlaceholder} component.
+ *
+ * @interface ImagePlaceholderProps
+ * @property {number} [width] - Explicit width in pixels for the placeholder container.
+ * @property {number} [height] - Explicit height in pixels for the placeholder container.
+ * @property {string} [className] - Optional custom CSS classes to merge with default container styles.
+ */
 interface ImagePlaceholderProps {
   width?: number;
   height?: number;
   className?: string;
 }
 
+/**
+ * Skeleton image placeholder atom component.
+ *
+ * @description
+ * Renders an animated pulse skeleton containing an SVG image icon silhouette,
+ * utilized as a loading fallback or placeholder state for missing and loading visual media.
+ *
+ * @param {ImagePlaceholderProps} props - Component properties.
+ * @param {number} [props.width] - Width in pixels.
+ * @param {number} [props.height] - Height in pixels.
+ * @param {string} [props.className] - Additional class names for styling.
+ * @returns {JSX.Element} The rendered image placeholder element.
+ */
 export function ImagePlaceholder({
   width = 400,
   height = 300,

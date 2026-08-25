@@ -8,6 +8,35 @@ import { FadeIn } from "@/components/atoms/shared/motion-wrappers";
 import { useI18n } from "@/hooks/use-i18n";
 import { gateClient } from "@/lib/gate/gate-client";
 
+/**
+ * Represents a security challenge puzzle preview in the gate CTA widget.
+ */
+interface NatasPuzzle {
+  /**
+   * Challenge identifier code (e.g., 'L01').
+   */
+  code: string;
+  /**
+   * Short challenge topic label.
+   */
+  label: string;
+  /**
+   * Brief description of the vulnerability concept tested.
+   */
+  desc: string;
+}
+
+/**
+ * Renders the terminal call-to-action banner on the landing page.
+ *
+ * @description
+ * Inspects authentication and puzzle gate clearance (via client cookie or `gateClient.getStatus()`)
+ * to render either an "ACCESS GRANTED" status with a direct link to the interactive terminal,
+ * or a "RESTRICTED" status previewing security challenge puzzles (Natas series) and
+ * triggering the challenge gateway modal.
+ *
+ * @returns The rendered terminal CTA section JSX element.
+ */
 export function TerminalCta(): JSX.Element {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +64,10 @@ export function TerminalCta(): JSX.Element {
     }
   }, []);
 
-  const NATAS_PUZZLES = [
+  /**
+   * List of Natas-inspired security challenges guarding full terminal access.
+   */
+  const NATAS_PUZZLES: NatasPuzzle[] = [
     { code: "L01", label: "Auth Bypass", desc: "Static Login Credential Audit" },
     { code: "L02", label: "Discovery", desc: "Hidden Path & File Inspection" },
     { code: "L03", label: "Headers", desc: "Referer Check & Payload Decode" },

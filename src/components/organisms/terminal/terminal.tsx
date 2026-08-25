@@ -1,20 +1,8 @@
-   
-                                                       
-  
-                                                                          
-                                                                      
-                        
-  
-                                                           
-                                                          
-                                                                          
-                                                             
-  
-           
-         
-                                                                     
-      
-   
+/**
+ * @fileoverview Main terminal organism component with full terminal emulator functionality,
+ * theme/font customization, command history, and accessibility features.
+ * @module components/organisms/terminal
+ */
 
 "use client";
 
@@ -36,16 +24,30 @@ import { KeyboardShortcut } from "@/components/molecules/terminal/keyboard-short
 import { HistorySearchPanel } from "@/components/molecules/terminal/history-search-panel";
 import type { ThemeName } from "@/types/theme";
 
+/**
+ * Props for the Terminal component and its internal subcomponents.
+ *
+ * @interface TerminalProps
+ * @property {(theme: string) => void} [onThemeChange] - Optional callback triggered when the terminal theme changes.
+ * @property {(font: string) => void} [onFontChange] - Optional callback triggered when the terminal font changes.
+ */
 interface TerminalProps {
   onThemeChange?: (theme: string) => void;
   onFontChange?: (font: string) => void;
 }
 
-   
-                                                    
-                                                                   
-   
-
+/**
+ * Internal terminal content renderer that connects to the TerminalContext.
+ *
+ * Renders the terminal interface including header, history list, command input prompt,
+ * animated backgrounds, shortcut modals, history search panels, and customization toolbars.
+ * Handles keyboard navigation, global focus traps, and loading states.
+ *
+ * @param {TerminalProps} props - The component props.
+ * @param {(theme: string) => void} [props.onThemeChange] - Optional theme change callback.
+ * @param {(font: string) => void} [props.onFontChange] - Optional font change callback.
+ * @returns {JSX.Element | null} The rendered terminal interface or loading indicator while initializing.
+ */
 function TerminalContent({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onThemeChange,
@@ -75,9 +77,11 @@ function TerminalContent({
   const [hasMinimumLoadingTime, setHasMinimumLoadingTime] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-                                                                              
   const isCustomizationOpenRef = useRef(false);
 
+  /**
+   * Cycles through available terminal color themes sequentially.
+   */
   const cycleTheme = useCallback(() => {
     if (!availableThemes?.length) return;
     const idx = availableThemes.indexOf(theme);
@@ -95,7 +99,15 @@ function TerminalContent({
   });
 
   useEffect(() => {
+    /**
+     * Opens the keyboard shortcuts modal.
+     * @returns {void}
+     */
     const openShortcuts = () => setShortcutsOpen(true);
+    /**
+     * Opens the command history search panel.
+     * @returns {void}
+     */
     const openHistory = () => setHistoryOpen(true);
     window.addEventListener("terminal:open-shortcuts", openShortcuts);
     window.addEventListener("terminal:open-history", openHistory);
@@ -106,6 +118,11 @@ function TerminalContent({
   }, []);
 
   useEffect(() => {
+    /**
+     * Closes open overlay panels on Escape key press.
+     *
+     * @param {KeyboardEvent} e - Keyboard event.
+     */
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (shortcutsOpen) {
@@ -122,13 +139,11 @@ function TerminalContent({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [shortcutsOpen, historyOpen]);
 
-                                                                 
   useEffect(() => {
     const timer = setTimeout(() => setHasMinimumLoadingTime(true), 800);
     return () => clearTimeout(timer);
   }, []);
 
-                                                  
   useEffect(() => {
     const rafId = requestAnimationFrame(() => {
       if (bottomRef.current && !isReducedMotion) {
@@ -140,11 +155,16 @@ function TerminalContent({
     return () => cancelAnimationFrame(rafId);
   }, [history, isReducedMotion, bottomRef]);
 
-                                                                         
   useEffect(() => {
+    /**
+     * Marks the customization toolbar as open.
+     */
     const open = () => {
       isCustomizationOpenRef.current = true;
     };
+    /**
+     * Marks the customization toolbar as closed.
+     */
     const close = () => {
       isCustomizationOpenRef.current = false;
     };
@@ -156,9 +176,13 @@ function TerminalContent({
     };
   }, []);
 
-                                                                           
   const setCurrentInput = useTerminalContext().setCurrentInput;
   useEffect(() => {
+    /**
+     * Handles global keystrokes to auto-focus terminal input when typing.
+     *
+     * @param {KeyboardEvent} e - Keyboard event.
+     */
     const handleGlobalKeydown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       if (!target) return;
@@ -209,8 +233,12 @@ function TerminalContent({
     return () => document.removeEventListener("keydown", handleGlobalKeydown);
   }, [commandInputRef, setCurrentInput]);
 
-                                                                                
   useEffect(() => {
+    /**
+     * Focuses the terminal input when the user clicks on the terminal body.
+     *
+     * @param {MouseEvent} e - Mouse click event.
+     */
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       if (!target) return;
@@ -230,8 +258,6 @@ function TerminalContent({
       return () => el.removeEventListener("click", handleClick);
     }
   }, [terminalRef]);
-
-                                                                          
 
   if (!themeConfig || !fontConfig) {
     return (
@@ -305,10 +331,14 @@ function TerminalContent({
     );
   }
 
-                                                                          
-
   const DEFAULT_GLITCH_COLORS = ["#2b4539", "#61dca3", "#61b3dc"];
 
+  /**
+   * Checks whether the provided array of color strings matches the default glitch colors.
+   *
+   * @param {string[]} colors - Array of color hex codes or CSS color strings to compare.
+   * @returns {boolean} True if the colors array matches the default glitch palette exactly; otherwise false.
+   */
   const isDefaultGlitchColors = (colors: string[]): boolean => {
     if (colors.length !== DEFAULT_GLITCH_COLORS.length) return false;
     return colors.every((c, i) => c === DEFAULT_GLITCH_COLORS[i]);
@@ -321,8 +351,6 @@ function TerminalContent({
         themeConfig.colors.muted || themeConfig.colors.border,
       ]
     : DEFAULT_GLITCH_COLORS;
-
-                                                                          
 
   return (
     <>
@@ -402,19 +430,17 @@ function TerminalContent({
   );
 }
 
-                                                                              
-                           
-                                                                              
-
-   
-           
-  
-                                                                         
-                                                          
-  
-                                                                        
-                                                                       
-   
+/**
+ * Main Terminal organism component.
+ *
+ * Wraps the TerminalContent inside a TerminalProvider to provide state management
+ * for terminal commands, history, theme, font, and background customizations.
+ *
+ * @param {TerminalProps} props - Configuration props for theme and font change callbacks.
+ * @param {(theme: string) => void} [props.onThemeChange] - Optional theme change callback.
+ * @param {(font: string) => void} [props.onFontChange] - Optional font change callback.
+ * @returns {JSX.Element} The wrapped terminal application interface.
+ */
 export function Terminal({
   onThemeChange,
   onFontChange,

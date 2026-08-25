@@ -8,6 +8,9 @@ if (
   (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
 mock.module("next/server", () => ({
+  /**
+   *
+   */
   NextRequest: class {},
   NextResponse: {
     json: (data: unknown, init?: ResponseInit) =>
@@ -21,9 +24,19 @@ mock.module("next/server", () => ({
   },
 }));
 
+/**
+ * Mock fetch implementation for simulating HTTP requests in test suites.
+ */
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch as unknown as typeof fetch;
 
+/**
+ * Creates a mock HTTP Request instance with a JSON payload and optional custom headers.
+ *
+ * @param body - The payload data to serialize as the JSON request body.
+ * @param headers - Optional custom headers to merge into the request.
+ * @returns A new Request instance targeting the analytics pageview endpoint.
+ */
 function createMockRequest(
   body: unknown,
   headers: Record<string, string> = {},

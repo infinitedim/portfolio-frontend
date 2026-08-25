@@ -22,6 +22,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+/**
+ * Properties for the HistorySearchPanel modal component.
+ *
+ * @interface HistorySearchPanelProps
+ * @property {boolean} isOpen - Controls whether the history search dialog is visible.
+ * @property {() => void} onClose - Callback invoked to dismiss the modal.
+ * @property {(command: string) => void} onSelectCommand - Callback triggered when a command is selected for execution.
+ * @property {string} [className] - Optional custom CSS class names.
+ */
 interface HistorySearchPanelProps {
   isOpen: boolean;
   onClose: () => void;
@@ -29,6 +38,14 @@ interface HistorySearchPanelProps {
   className?: string;
 }
 
+/**
+ * Comprehensive command history search and analysis modal component featuring
+ * query filtering, category/time/sorting filters, favorites management,
+ * telemetry analytics, and batch export/clear capabilities.
+ *
+ * @param {HistorySearchPanelProps} props - Component properties.
+ * @returns {JSX.Element | null} The rendered history search panel or null if closed.
+ */
 export function HistorySearchPanel({
   isOpen,
   onClose,
@@ -71,6 +88,11 @@ export function HistorySearchPanel({
     setSelectedIndex(0);
   }, [searchOptions.query, searchOptions.category, searchOptions.sortBy]);
 
+  /**
+   * Keyboard event handler for navigating entries, executing selection, toggling favorites, and deleting items.
+   *
+   * @param {KeyboardEvent} e - React keyboard event.
+   */
   const handleKeyDown = (e: KeyboardEvent) => {
     const visibleEntries = activeTab === "search" ? history : favorites;
 
@@ -112,19 +134,40 @@ export function HistorySearchPanel({
     }
   };
 
+  /**
+   * Selects a command, notifies parent handler, and closes the search panel.
+   *
+   * @param {string} command - The chosen command text.
+   */
   const handleCommandSelect = (command: string) => {
     onSelectCommand(command);
     onClose();
   };
 
+  /**
+   * Updates the search query string in history search options.
+   *
+   * @param {string} query - Text query string.
+   */
   const handleSearchChange = (query: string) => {
     setSearchOptions((prev) => ({ ...prev, query }));
   };
 
+  /**
+   * Applies partial filter updates to history search options.
+   *
+   * @param {Partial<HistorySearchOptions>} filters - Filter properties to update.
+   */
   const handleFilterChange = (filters: Partial<HistorySearchOptions>) => {
     setSearchOptions((prev) => ({ ...prev, ...filters }));
   };
 
+  /**
+   * Formats a date or timestamp into a relative time representation (e.g., 'just now', '5m ago', '2d ago').
+   *
+   * @param {Date | string | number} date - The date value to format.
+   * @returns {string} Human-readable relative time string.
+   */
   const formatTimestamp = (date: Date | string | number) => {
     const dateObj = date instanceof Date ? date : new Date(date);
     if (isNaN(dateObj.getTime())) return "unknown date";
@@ -141,12 +184,24 @@ export function HistorySearchPanel({
     return dateObj.toLocaleDateString();
   };
 
+  /**
+   * Formats runtime duration in milliseconds to an abbreviated unit string (e.g., '250ms', '1.5s').
+   *
+   * @param {number} [ms] - Duration in milliseconds.
+   * @returns {string} Formatted duration string.
+   */
   const formatExecutionTime = (ms?: number) => {
     if (!ms) return "";
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(1)}s`;
   };
 
+  /**
+   * Resolves the theme color for a specific command category.
+   *
+   * @param {string} category - Command category identifier.
+   * @returns {string} Theme hex or rgb color string.
+   */
   const getCategoryColor = (category: string) => {
     const colors = {
       portfolio: themeConfig.colors.accent,
@@ -162,6 +217,13 @@ export function HistorySearchPanel({
 
   if (!isOpen) return null;
 
+  /**
+   * Renders a single history entry row with status badges, metrics, favorites toggle, and delete actions.
+   *
+   * @param {CommandHistoryEntry} entry - History entry data object.
+   * @param {number} index - Index of the item in the visible list.
+   * @returns {JSX.Element} Rendered history list item component.
+   */
   const renderHistoryItem = (entry: CommandHistoryEntry, index: number) => {
     const isSelected = index === selectedIndex;
 
@@ -290,6 +352,11 @@ export function HistorySearchPanel({
     );
   };
 
+  /**
+   * Renders command telemetry cards including total counts, success rates, average runtime, top commands, and category splits.
+   *
+   * @returns {JSX.Element} Rendered analytics dashboard view.
+   */
   const renderAnalytics = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

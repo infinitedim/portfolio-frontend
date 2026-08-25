@@ -1,9 +1,25 @@
 import { JSX } from "react";
 
+/**
+ * Props for the CriticalCSS component.
+ */
 interface CriticalCSSProps {
+  /**
+   * The identifier of the active theme (e.g., 'default', 'matrix', 'cyberpunk', 'dracula', 'nord').
+   */
   theme: string;
 }
 
+/**
+ * CriticalCSS component that injects inline critical CSS rules directly into the DOM.
+ *
+ * Pre-renders foundational styles, resets, CSS custom variables, typography,
+ * responsive breakpoints, and keyframe animations to eliminate Flash of Unstyled Content (FOUC).
+ *
+ * @param props - Component props containing the active theme identifier.
+ * @param props.theme - The active theme name for resolving CSS variable palettes.
+ * @returns An inline `<style>` JSX element with generated critical CSS.
+ */
 export function CriticalCSS({ theme }: CriticalCSSProps): JSX.Element {
   const criticalCSS = generateCriticalCSS(theme);
 
@@ -15,6 +31,15 @@ export function CriticalCSS({ theme }: CriticalCSSProps): JSX.Element {
   );
 }
 
+/**
+ * Generates the critical CSS style definitions string for the specified theme.
+ *
+ * Compiles root custom properties, resets, utility classes, media queries (reduced motion,
+ * high contrast), and accessibility focus-state definitions.
+ *
+ * @param theme - The active theme identifier used to retrieve custom color palettes.
+ * @returns The complete CSS stylesheet as a template literal string.
+ */
 function generateCriticalCSS(theme: string): string {
   const themeColors = getThemeColors(theme);
 
@@ -155,6 +180,15 @@ function generateCriticalCSS(theme: string): string {
   `;
 }
 
+/**
+ * Retrieves the theme-specific CSS custom properties and color codes.
+ *
+ * Supported themes: default, matrix, cyberpunk, dracula, nord.
+ * Falls back to the default theme configuration if an unrecognized theme name is provided.
+ *
+ * @param theme - The theme identifier name.
+ * @returns A dictionary mapping CSS custom variable names to their corresponding hex color values.
+ */
 function getThemeColors(theme: string): Record<string, string> {
   const themes: Record<string, Record<string, string>> = {
     default: {

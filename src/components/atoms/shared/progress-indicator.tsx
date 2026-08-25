@@ -3,6 +3,16 @@
 import { useTheme } from "@/hooks/use-theme";
 import type { JSX } from "react";
 
+/**
+ * Props for the {@link ProgressIndicator} component.
+ *
+ * @interface ProgressIndicatorProps
+ * @property {number} progress - Current completion percentage (0 - 100). Values outside this range will be clamped.
+ * @property {string} [label] - Optional text label displayed above the progress bar.
+ * @property {boolean} [showPercentage] - Whether to show the numeric percentage text.
+ * @property {"sm" | "md" | "lg"} [size] - Size dimension preset controlling bar height and typography size.
+ * @property {boolean} [animated] - Whether to enable pulse animation on the filled progress bar.
+ */
 interface ProgressIndicatorProps {
   progress: number;
   label?: string;
@@ -11,6 +21,21 @@ interface ProgressIndicatorProps {
   animated?: boolean;
 }
 
+/**
+ * Progress indicator atom component.
+ *
+ * @description
+ * Renders a themed linear progress bar with optional label and percentage indicators,
+ * styled using active theme accent and border colors with smooth transition effects.
+ *
+ * @param {ProgressIndicatorProps} props - Component properties.
+ * @param {number} props.progress - Progress percentage value.
+ * @param {string} [props.label] - Optional title label.
+ * @param {boolean} [props.showPercentage] - Toggle display of percentage number.
+ * @param {"sm" | "md" | "lg"} [props.size] - Bar and text size preset.
+ * @param {boolean} [props.animated] - Animation pulse toggle.
+ * @returns {JSX.Element} The rendered progress indicator element.
+ */
 export function ProgressIndicator({
   progress,
   label,

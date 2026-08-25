@@ -6,6 +6,20 @@ import { useTheme } from "@/hooks/use-theme";
 import type { ThemeName } from "@/types/theme";
 import { Check, X } from "lucide-react";
 
+/**
+ * Accessibility preferences dropdown menu widget.
+ *
+ * Provides interactive quick toggles for accessibility adjustments including:
+ * - Font size scaling (`small`, `medium`, `large`)
+ * - Enhanced keyboard focus mode navigation
+ * - Contrast and reduced motion status indicators
+ * - Quick theme cycling
+ *
+ * Dispatches live status announcements to assistive technologies (`ScreenReaderAnnouncer`)
+ * on every setting modification.
+ *
+ * @returns {JSX.Element} The accessibility menu trigger button and overlay settings panel.
+ */
 export function AccessibilityMenu(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -19,6 +33,11 @@ export function AccessibilityMenu(): JSX.Element {
   } = useAccessibility();
   const { themeConfig, changeTheme, theme } = useTheme();
 
+  /**
+   * Updates the global typography font size scale and triggers an ARIA live announcement.
+   *
+   * @param {"small" | "medium" | "large"} size - Target font size mode.
+   */
   const handleFontSizeChange = useCallback(
     (size: "small" | "medium" | "large") => {
       setFontSize(size);
@@ -27,6 +46,9 @@ export function AccessibilityMenu(): JSX.Element {
     [setFontSize, announceMessage],
   );
 
+  /**
+   * Toggles enhanced keyboard navigation focus indicator mode and announces the new state.
+   */
   const handleFocusModeToggle = useCallback(() => {
     const newFocusMode = !focusMode;
     setFocusMode(newFocusMode);
@@ -36,6 +58,9 @@ export function AccessibilityMenu(): JSX.Element {
     );
   }, [focusMode, setFocusMode, announceMessage]);
 
+  /**
+   * Toggles visibility of the accessibility dropdown menu and announces menu status to screen readers.
+   */
   const handleMenuToggle = useCallback(() => {
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
@@ -45,11 +70,17 @@ export function AccessibilityMenu(): JSX.Element {
     );
   }, [isOpen, announceMessage]);
 
+  /**
+   * Closes the accessibility popover menu and emits a polite ARIA announcement.
+   */
   const handleCloseMenu = useCallback(() => {
     setIsOpen(false);
     announceMessage("Accessibility menu closed", "polite");
   }, [announceMessage]);
 
+  /**
+   * Cycles to the next theme in the popular theme rotation and announces the active theme change.
+   */
   const handleThemeToggle = useCallback(() => {
     const popularThemes: ThemeName[] = [
       "default",
@@ -69,6 +100,7 @@ export function AccessibilityMenu(): JSX.Element {
       setIsOpen(false);
     }
   }, [theme, changeTheme, announceMessage]);
+
 
   return (
     <div className="fixed top-4 left-4 z-50">

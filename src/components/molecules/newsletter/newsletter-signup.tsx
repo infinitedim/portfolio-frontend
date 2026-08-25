@@ -4,10 +4,23 @@ import { useState, type SubmitEvent } from "react";
 import { toast } from "sonner";
 import { subscribeNewsletter } from "@/lib/services/newsletter-service";
 
+/**
+ * Terminal-styled newsletter subscription form component.
+ *
+ * Provides a responsive email input form styled like a terminal prompt ($ indicator),
+ * handling asynchronous newsletter registration, loading states, and toast notifications.
+ *
+ * @returns The rendered newsletter signup form element.
+ */
 export function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles newsletter subscription form submission and triggers toast notifications.
+   *
+   * @param e - The form submission event.
+   */
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     if (!email.trim()) return;

@@ -1,13 +1,31 @@
 import { ImageResponse } from "next/og";
 import { getCachedBlogPost } from "@/lib/services/cached-blog-fetch";
 
+/**
+ * Image alt text metadata for the OpenGraph image.
+ */
 export const alt = "Blog Post Preview Banner";
+
+/**
+ * Dimensions configuration for the generated OpenGraph image.
+ */
 export const size = {
   width: 1200,
   height: 630,
 };
+
+/**
+ * MIME type for the generated OpenGraph image.
+ */
 export const contentType = "image/png";
 
+/**
+ * Generates a dynamic OpenGraph image for a specific blog post based on its slug.
+ *
+ * @param props - Route props containing the blog slug parameters.
+ * @param props.params - Promise resolving to route parameters including post slug.
+ * @returns A promise resolving to an ImageResponse with dynamic terminal-themed banner layout.
+ */
 export default async function Image({
   params,
 }: {

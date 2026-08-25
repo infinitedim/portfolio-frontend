@@ -33,12 +33,30 @@ import {
   Layers,
 } from "lucide-react";
 
+/**
+ * Props for the AdminSidebar component.
+ *
+ * @interface AdminSidebarProps
+ * @property {number} [unreadMessagesCount] - The number of unread contact messages to show as a badge on the Messages link.
+ * @property {boolean} [mobileOpen] - Whether the mobile navigation drawer is currently open.
+ * @property {() => void} [onMobileClose] - Callback invoked to close the mobile navigation drawer.
+ */
 export interface AdminSidebarProps {
   unreadMessagesCount?: number;
   mobileOpen?: boolean;
   onMobileClose?: () => void;
 }
 
+/**
+ * Structure representing an individual navigation link within the admin sidebar.
+ *
+ * @interface NavItem
+ * @property {string} label - Display name or localized string for the navigation link.
+ * @property {string} href - Target URL or Next.js route path.
+ * @property {React.ComponentType<{ className?: string }>} icon - Icon component rendered beside the link label.
+ * @property {boolean} [isExternal] - Indicates whether the link targets an external destination opening in a new tab.
+ * @property {string | number} [badge] - Optional badge counter or text tag shown alongside the link.
+ */
 interface NavItem {
   label: string;
   href: string;
@@ -47,11 +65,38 @@ interface NavItem {
   badge?: string | number;
 }
 
+/**
+ * Group of related navigation items with a category header.
+ *
+ * @interface NavGroup
+ * @property {string} title - Section category heading label.
+ * @property {NavItem[]} items - Array of navigation item entries belonging to this category.
+ */
 interface NavGroup {
   title: string;
   items: NavItem[];
 }
 
+/**
+ * Admin navigation sidebar component.
+ *
+ * Provides hierarchical sectioned navigation across administration modules:
+ * - Overview (Dashboard)
+ * - Content (Blog Posts, Blog Series, Translations, CMS API)
+ * - Portfolio (Projects, Experience i18n, About i18n)
+ * - Communication (Inbox messages with unread counts, Newsletter subscribers)
+ * - Security (Two-Factor Authentication)
+ * - System (Portfolio snapshots, Grafana metrics, Scalar API docs)
+ *
+ * Supports collapsible rail layout mode, active route highlighting, user authentication state display,
+ * and authenticated session logout.
+ *
+ * @param {AdminSidebarProps} props - Component properties.
+ * @param {number} [props.unreadMessagesCount] - Number of unread inbox communications.
+ * @param {boolean} [props.mobileOpen] - Whether the mobile navigation drawer is currently open.
+ * @param {() => void} [props.onMobileClose] - Callback invoked to close the mobile navigation drawer.
+ * @returns {React.JSX.Element} The rendered admin navigation sidebar.
+ */
 export function AdminSidebar({
   unreadMessagesCount = 0,
 }: AdminSidebarProps): React.JSX.Element {
@@ -172,10 +217,16 @@ export function AdminSidebar({
     },
   ];
 
+  /**
+   * Logs the current user out via `authService`, invalidating session tokens, and navigates to the login view.
+   *
+   * @returns {Promise<void>}
+   */
   const handleLogout = async () => {
     await logout();
     router.push("/admin/login");
   };
+
 
   return (
     <aside

@@ -43,6 +43,12 @@ import { ConfirmDialog } from "./confirm-dialog";
 import { toast } from "sonner";
 
 
+/**
+ * Dynamically imported rich-text and Markdown blog post editor component.
+ *
+ * Loaded on the client side with a skeleton pulse fallback to optimize
+ * initial bundle size and avoid SSR hydration mismatches.
+ */
 const CustomEditor = dynamic(
   () =>
     import("./custom-editor").then((mod) => ({ default: mod.CustomEditor })),
@@ -54,8 +60,34 @@ const CustomEditor = dynamic(
   },
 );
 
+/**
+ * Publication lifecycle status for a blog post.
+ * - `"draft"`: Unpublished draft visible only to administrators.
+ * - `"scheduled"`: Scheduled for automated future release once `publishAt` passes.
+ * - `"published"`: Publicly visible and accessible to readers.
+ */
 type BlogStatus = "draft" | "scheduled" | "published";
 
+/**
+ * Blog post entity schema as stored and returned by the backend REST API.
+ *
+ * @interface BlogPost
+ * @property {string} id - Unique post identifier.
+ * @property {string} title - The title of the article.
+ * @property {string} slug - URL slug identifier for routing.
+ * @property {string | null} contentMd - Raw Markdown source content (if stored as markdown).
+ * @property {string | null} contentHtml - Rendered HTML content containing heading anchors.
+ * @property {string | null} summary - Excerpt or teaser summary of the post.
+ * @property {boolean} published - Primary publication flag.
+ * @property {string[]} tags - Associated category and topic tags.
+ * @property {string | null} publishAt - ISO 8601 timestamp for scheduled publishing.
+ * @property {BlogStatus} [status] - Computed or explicit publication status.
+ * @property {string} [locale] - Language locale code (e.g., 'en', 'id').
+ * @property {string | null} [seriesId] - Optional parent series identifier.
+ * @property {number | null} [seriesOrder] - Position order index within the series.
+ * @property {string} createdAt - ISO 8601 creation timestamp.
+ * @property {string} updatedAt - ISO 8601 last-modified timestamp.
+ */
 interface BlogPost {
   id: string;
   title: string;
@@ -75,13 +107,40 @@ interface BlogPost {
   updatedAt: string;
 }
 
+/**
+ * Client-side extension of the BlogPost model ensuring non-null fallback fields for form bindings.
+ *
+ * @interface LocalBlogPost
+ * @extends BlogPost
+ */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface LocalBlogPost extends BlogPost {}
 
+/**
+ * Props for the BlogEditor component.
+ *
+ * @interface BlogEditorProps
+ * @property {ThemeConfig} themeConfig - Active terminal theme color palette and styling configuration.
+ */
 interface BlogEditorProps {
   themeConfig: ThemeConfig;
 }
 
+/**
+ * Comprehensive administrative blog authoring and management interface.
+ *
+ * Features:
+ * - Real-time post listing, searching, and status tracking (Draft, Scheduled, Published).
+ * - Rich HTML/Markdown editor with image upload drop zone and live preview tab.
+ * - Automatic client-side draft autosaving to `localStorage` with debounce and crash recovery prompt.
+ * - Slug generation, locale selection, multi-tag management with autocomplete, and series assignment.
+ * - Immediate or future-scheduled publishing with automated ISO timestamp conversion.
+ * - Deletion workflows with confirmation dialogs.
+ *
+ * @param {BlogEditorProps} props - Component properties.
+ * @param {ThemeConfig} props.themeConfig - Active terminal theme configuration.
+ * @returns {JSX.Element} The rendered blog editor management console.
+ */
 export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const { t } = useI18n();
   const [currentPost, setCurrentPost] = useState<LocalBlogPost | null>(null);
@@ -123,6 +182,12 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     debounceMs: 2000,
   });
 
+  /**
+   * Normalizes a server BlogPost entity into a client LocalBlogPost with guaranteed defaults.
+   *
+   * @param {BlogPost} post - The raw post data from the API.
+   * @returns {LocalBlogPost} Form-safe post object with non-null defaults.
+   */
   const toLocalPost = (post: BlogPost): LocalBlogPost => ({
     ...post,
     tags: post.tags ?? [],
@@ -132,11 +197,12 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     seriesOrder: post.seriesOrder ?? null,
   });
 
-     
-                                                                       
-                                                                           
-                                             
-     
+  /**
+   * Converts an ISO 8601 datetime string into standard `datetime-local` input format (`YYYY-MM-DDTHH:mm`).
+   *
+   * @param {string | null} iso - ISO datetime string to parse.
+   * @returns {string} Formatted local datetime string or empty string on invalid/null input.
+   */
   const isoToLocalInput = (iso: string | null): string => {
     if (!iso) return "";
     const d = new Date(iso);
@@ -145,16 +211,25 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   };
 
-     
-                                                                   
-                                    
-     
+  /**
+   * Converts a `datetime-local` HTML input string back to a standardized ISO 8601 UTC string.
+   *
+   * @param {string} local - Value from datetime-local input.
+   * @returns {string | null} ISO 8601 timestamp string or null if empty/invalid.
+   */
   const localInputToIso = (local: string): string | null => {
     if (!local) return null;
     const d = new Date(local);
     return Number.isNaN(d.getTime()) ? null : d.toISOString();
   };
 
+  /**
+   * Evaluates the post's current publication lifecycle status based on flags and scheduled timestamps.
+   *
+   * @param {boolean} published - The published boolean flag.
+   * @param {string | null} publishAt - Optional ISO timestamp for scheduled release.
+   * @returns {BlogStatus} The computed lifecycle status: `"draft"`, `"scheduled"`, or `"published"`.
+   */
   const computeStatus = (
     published: boolean,
     publishAt: string | null,
@@ -167,6 +242,12 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     return published ? "published" : "draft";
   };
 
+  /**
+   * Resolves the initial HTML content string from post properties, converting Markdown paragraphs to HTML if needed.
+   *
+   * @param {LocalBlogPost} post - The local post object.
+   * @returns {string} Sanitized HTML content string ready for editor mounting.
+   */
   const resolveEditorHtml = (post: LocalBlogPost): string => {
     if (post.contentHtml) return post.contentHtml;
     if (post.contentMd) {
@@ -178,6 +259,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     return "<p></p>";
   };
 
+  /**
+   * Populates the editor form fields with data from a chosen blog post and checks for recovered local drafts.
+   *
+   * @param {LocalBlogPost} draft - The blog post entity to load.
+   */
   const loadDraft = useCallback((draft: LocalBlogPost) => {
     setCurrentPost(draft);
     setTitle(draft.title);
@@ -212,6 +298,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   }, []);
 
+  /**
+   * Fetches all globally registered blog tags from the API to populate autocomplete suggestions.
+   */
   const fetchAvailableTags = useCallback(async () => {
     try {
       const response = await fetch(`${getApiUrl()}/api/blog/tags`, {
@@ -231,6 +320,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   }, []);
 
+  /**
+   * Loads the latest paginated blog posts list from the administrative backend API.
+   */
   const loadPosts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -260,6 +352,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   }, [currentPost, loadDraft]);
 
+  /**
+   * Fetches all available blog series groupings for series association dropdowns.
+   */
   const fetchAvailableSeries = useCallback(async () => {
     try {
       const data = await listAdminSeries();
@@ -299,6 +394,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     };
   }, [title, content, currentPost]);
 
+  /**
+   * Generates a random UUID string used as a fallback unique slug when creating new posts.
+   *
+   * @returns {string} A standard UUID v4 string.
+   */
   const generateUuidSlug = (): string => {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
       return crypto.randomUUID();
@@ -310,6 +410,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     });
   };
 
+  /**
+   * Validates and persists the current blog post draft (new or existing) to the backend API.
+   */
   const saveDraft = async () => {
     if (!title.trim()) {
       setError("Title is required");
@@ -409,6 +512,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
+  /**
+   * Resets the editor state and initializes a new blank post draft.
+   */
   const createNewDraft = () => {
     const newDraft: LocalBlogPost = {
       id: `new-${Date.now()}`,
@@ -441,6 +547,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setError(null);
   };
 
+  /**
+   * Restores unsaved draft content and metadata recovered from browser `localStorage`.
+   */
   const loadLocalDraft = () => {
     if (savedDraft) {
       setTitle(savedDraft.title || title);
@@ -451,6 +560,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setShowDraftPrompt(false);
   };
 
+  /**
+   * Dismisses the local draft recovery prompt and clears the stored browser draft cache.
+   */
   const dismissDraftPrompt = () => {
     setShowDraftPrompt(false);
     clearDraft();
@@ -458,11 +570,17 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
+  /**
+   * Opens the confirmation modal for deleting the currently active blog post.
+   */
   const handleDeletePostClick = () => {
     if (!currentPost || isNewPost) return;
     setDeleteConfirmOpen(true);
   };
 
+  /**
+   * Sends a DELETE request to remove the currently selected blog post from the database.
+   */
   const deletePost = async () => {
     if (!currentPost || isNewPost) return;
 
@@ -502,6 +620,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
+  /**
+   * Adds the currently typed tag value to the post's tag collection if valid and unique.
+   */
   const addTag = () => {
     const trimmed = tagInput.trim();
     if (
@@ -514,10 +635,20 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
+  /**
+   * Removes a specific tag from the current post's tag list.
+   *
+   * @param {string} tagToRemove - Name of the tag to eliminate.
+   */
   const removeTag = (tagToRemove: string) => {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
   };
 
+  /**
+   * Updates tag input text and computes filtered autocomplete suggestions based on available tags.
+   *
+   * @param {string} value - Current text entered in the tag input field.
+   */
   const handleTagInputChange = (value: string) => {
     setTagInput(value);
     if (value.trim()) {
@@ -532,6 +663,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
+  /**
+   * Handles keyboard shortcuts in the tag input (Enter to add, Backspace to delete previous tag, Escape to dismiss suggestions).
+   *
+   * @param {React.KeyboardEvent<HTMLInputElement>} e - Keyboard event.
+   */
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -543,6 +679,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     }
   };
 
+  /**
+   * Adds a selected autocomplete suggestion to the active tags array and resets suggestions.
+   *
+   * @param {string} tag - Tag name clicked from the suggestion dropdown.
+   */
   const selectTagSuggestion = (tag: string) => {
     if (!tags.some((t) => t.toLowerCase() === tag.toLowerCase())) {
       setTags((prev) => [...prev, tag]);
@@ -551,6 +692,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     setTagSuggestions([]);
   };
 
+  /**
+   * Appends an uploaded image URL as an HTML figure tag directly into the editor body content.
+   *
+   * @param {string} url - Publicly accessible CDN or S3 URL of the uploaded image.
+   */
   const handleImageUpload = useCallback((url: string) => {
     const rawFilename = url.split("/").pop()?.replace(/\.[^.]+$/, "") || "blog image";
     const cleanAlt = decodeURIComponent(rawFilename).replace(/[-_]+/g, " ");
@@ -560,6 +706,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     );
   }, []);
 
+  /**
+   * Toggles or updates the publication status of the active post between draft and published.
+   */
   const togglePublish = async () => {
     if (!currentPost) return;
 
@@ -597,7 +746,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           contentHtml: addHeadingIdsToHtml(content),
                                                                         
                                                                       
-                               
+                                
           published:
             !publishAtIso || new Date(publishAtIso).getTime() <= Date.now(),
           tags,
@@ -677,6 +826,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       setIsSaving(false);
     }
   };
+
 
   if (isLoading) {
     return (

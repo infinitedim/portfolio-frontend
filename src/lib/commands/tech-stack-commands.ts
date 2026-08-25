@@ -1,6 +1,9 @@
 import { getProjectsData } from "@/lib/data/data-fetching";
 import type { Command, CommandOutput } from "@/types/terminal";
 
+/**
+ * Terminal command definition for analyzing and browsing technologies used across portfolio projects.
+ */
 export const techStackCommand: Command = {
   name: "tech-stack",
   description: "Technology stack visualization and analysis",
@@ -35,6 +38,11 @@ export const techStackCommand: Command = {
   },
 };
 
+/**
+ * Retrieves all unique technologies from projects and formats them grouped by predefined categories.
+ *
+ * @returns {Promise<CommandOutput>} Formatted command output displaying the categorized technology list.
+ */
 async function listTechnologies(): Promise<CommandOutput> {
   const projects = await getProjectsData();
   const techSet = new Set<string>();
@@ -68,6 +76,12 @@ async function listTechnologies(): Promise<CommandOutput> {
   };
 }
 
+/**
+ * Searches for all projects that utilize the specified technology name.
+ *
+ * @param {string} technology - The technology name or substring to query for.
+ * @returns {Promise<CommandOutput>} Formatted command output listing matching projects or an error.
+ */
 async function getProjectsByTech(technology: string): Promise<CommandOutput> {
   if (!technology) {
     return {
@@ -109,6 +123,11 @@ async function getProjectsByTech(technology: string): Promise<CommandOutput> {
   };
 }
 
+/**
+ * Computes frequency statistics and percentages for the top 10 technologies used across all projects.
+ *
+ * @returns {Promise<CommandOutput>} Formatted command output with top 10 technology usage stats.
+ */
 async function getTechStats(): Promise<CommandOutput> {
   const projects = await getProjectsData();
   const techUsage: Record<string, number> = {};
@@ -149,6 +168,11 @@ async function getTechStats(): Promise<CommandOutput> {
   };
 }
 
+/**
+ * Maps all technologies present in project data into predefined technology category buckets.
+ *
+ * @returns {Promise<Record<string, string[]>>} A record mapping category names to arrays of matching technology names.
+ */
 async function categorizeTechnologiesData(): Promise<Record<string, string[]>> {
   const projects = await getProjectsData();
   const techSet = new Set<string>();
@@ -232,6 +256,11 @@ async function categorizeTechnologiesData(): Promise<Record<string, string[]>> {
   return categorized;
 }
 
+/**
+ * Generates command output displaying all technology categories and their count of associated technologies.
+ *
+ * @returns {Promise<CommandOutput>} Formatted command output of technology categories.
+ */
 async function categorizeTechnologies(): Promise<CommandOutput> {
   const categorized = await categorizeTechnologiesData();
 
@@ -250,6 +279,12 @@ async function categorizeTechnologies(): Promise<CommandOutput> {
   };
 }
 
+/**
+ * Searches across all project technologies matching a given keyword query and counts occurrences.
+ *
+ * @param {string} query - The search term or substring to match against technology names.
+ * @returns {Promise<CommandOutput>} Formatted command output displaying matching technologies and project counts.
+ */
 async function searchTechnologies(query: string): Promise<CommandOutput> {
   if (!query) {
     return {
@@ -299,6 +334,11 @@ async function searchTechnologies(query: string): Promise<CommandOutput> {
   };
 }
 
+/**
+ * Generates terminal help text displaying all available `tech-stack` subcommands and usage examples.
+ *
+ * @returns {CommandOutput} Information command output outlining command syntax.
+ */
 function showTechStackHelp(): CommandOutput {
   return {
     type: "info",
@@ -320,3 +360,4 @@ Examples:
     id: "tech-stack-help",
   };
 }
+

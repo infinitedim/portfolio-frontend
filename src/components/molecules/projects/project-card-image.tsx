@@ -6,13 +6,34 @@ import { cn } from "@/lib/utils/utils";
 import { Folder } from "lucide-react";
 import { DEFAULT_SIZES, getBlurDataUrl } from "@/lib/utils/image-utils";
 
+/**
+ * Props for the {@link ProjectCardImage} component.
+ */
 interface ProjectCardImageProps {
+  /** The image source URL or path for the project preview. */
   src: string;
+  /** Accessible alternative text describing the project image. */
   alt: string;
+  /** Whether the project is marked as featured, enabling high-priority eager image loading. */
   featured?: boolean;
+  /** Optional custom CSS classes to merge with the image or fallback container. */
   className?: string;
 }
 
+/**
+ * Renders an optimized project preview card image.
+ *
+ * @description Handles progressive loading transitions with blur-up placeholders,
+ * high-priority loading for featured projects, and provides a stylized terminal
+ * fallback folder view if image loading fails.
+ *
+ * @param props - Component properties conforming to {@link ProjectCardImageProps}.
+ * @param props.src - The image source URL or path for the project preview.
+ * @param props.alt - Accessible alternative text describing the project image.
+ * @param props.featured - Whether the project is marked as featured, enabling high-priority eager image loading.
+ * @param props.className - Optional custom CSS classes to merge with the image or fallback container.
+ * @returns A Next.js Image component with loading animations, or a fallback icon placeholder if an error occurs.
+ */
 export function ProjectCardImage({
   src,
   alt,
@@ -65,4 +86,5 @@ export function ProjectCardImage({
     />
   );
 }
+
 

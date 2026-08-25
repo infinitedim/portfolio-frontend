@@ -6,11 +6,28 @@ import { CommandOutput } from "@/components/molecules/terminal/command-output";
 import type { TerminalHistory as TerminalHistoryType } from "@/types/terminal";
 import { type JSX } from "react";
 
+/**
+ * Properties for the {@link TerminalHistory} component.
+ */
 interface TerminalHistoryProps {
+  /**
+   * Array of historical command entries executed in the terminal session.
+   */
   history: TerminalHistoryType[];
+  /**
+   * Optional flag indicating whether a screen clear animation is currently active.
+   */
   isClearing?: boolean;
 }
 
+/**
+ * Renders the chronological list of previously executed terminal commands along with their outputs.
+ *
+ * @param {TerminalHistoryProps} props - Component properties.
+ * @param {TerminalHistoryType[]} props.history - List of command execution records to display.
+ * @param {boolean} [props.isClearing] - Whether the terminal is currently animating a clear transition.
+ * @returns {JSX.Element | null} The rendered command history log, or `null` if the history is empty.
+ */
 export function TerminalHistory({
   history,
   isClearing = false,

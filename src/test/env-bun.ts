@@ -1,15 +1,26 @@
 import { GlobalWindow } from "happy-dom";
 
+/**
+ * Generic dictionary mapping string keys to unknown values for global object mutations.
+ */
 type GlobalRecord = Record<string, unknown>;
 
+/**
+ * Reference to globalThis cast as a mutable dictionary for runtime environment shimming.
+ */
 const g = globalThis as unknown as GlobalRecord;
 
 if (typeof g.document === "undefined") {
   const windowInstance = new GlobalWindow({ url: "http://localhost:3000" });
   const winObj = windowInstance as unknown as GlobalRecord;
 
+  /**
+   * Mock Window constructor fallback.
+   */
+  class FallbackWindow {}
+
   g.window = windowInstance;
-  g.Window = winObj.constructor || windowInstance.Window || class Window {};
+  g.Window = winObj.constructor || windowInstance.Window || FallbackWindow;
   g.document = windowInstance.document;
 
   if (!windowInstance.document.documentElement) {
@@ -50,25 +61,61 @@ if (typeof g.document === "undefined") {
     configurable: true,
   });
   g.MutationObserver = windowInstance.MutationObserver;
-  g.ResizeObserver =
-    windowInstance.ResizeObserver ||
-    class {
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-    };
+
+  /**
+   * Mock ResizeObserver fallback implementation.
+   */
+  class FallbackResizeObserver {
+    /**
+     * Observes target element.
+     */
+    observe() {}
+    /**
+     * Stops observing target element.
+     */
+    unobserve() {}
+    /**
+     * Disconnects observer.
+     */
+    disconnect() {}
+  }
+  g.ResizeObserver = windowInstance.ResizeObserver || FallbackResizeObserver;
+
+  /**
+   * Mock IntersectionObserver fallback implementation.
+   */
+  class FallbackIntersectionObserver {
+    /**
+     * Observes target element.
+     */
+    observe() {}
+    /**
+     * Stops observing target element.
+     */
+    unobserve() {}
+    /**
+     * Disconnects observer.
+     */
+    disconnect() {}
+  }
   g.IntersectionObserver =
-    windowInstance.IntersectionObserver ||
-    class {
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-    };
+    windowInstance.IntersectionObserver || FallbackIntersectionObserver;
+
   g.NodeFilter = windowInstance.NodeFilter;
   g.DocumentFragment = windowInstance.DocumentFragment;
   g.HTMLDocument = windowInstance.HTMLDocument;
-  g.Range = windowInstance.Range || class {};
-  g.Selection = windowInstance.Selection || class {};
+
+  /**
+   * Mock Range fallback implementation.
+   */
+  class FallbackRange {}
+  g.Range = windowInstance.Range || FallbackRange;
+
+  /**
+   * Mock Selection fallback implementation.
+   */
+  class FallbackSelection {}
+  g.Selection = windowInstance.Selection || FallbackSelection;
 
   for (const name of Object.getOwnPropertyNames(windowInstance)) {
     if (
@@ -88,20 +135,53 @@ if (typeof g.document === "undefined") {
     }
   }
 
+  /**
+   * In-memory Web Storage implementation for test runners lacking native localStorage/sessionStorage.
+   */
   class MockStorage implements Storage {
     private store = new Map<string, string>();
+
+    /**
+     * Retrieves the total number of key/value pairs currently stored.
+     *
+     * @returns The count of stored entries.
+     */
     get length() {
       return this.store.size;
     }
+
+    /**
+     * Clears all stored key/value entries from the storage instance.
+     */
     clear() {
       this.store.clear();
     }
+
+    /**
+     * Returns the string value corresponding to the specified key.
+     *
+     * @param key - The storage key name to look up.
+     * @returns The stored string value or null if the key is not found.
+     */
     getItem(key: string) {
       return this.store.get(key) ?? null;
     }
+
+    /**
+     * Returns the key name at the specified zero-based index.
+     *
+     * @param index - The zero-based integer index of the key.
+     * @returns The key name at that index, or null if out of bounds.
+     */
     key(index: number) {
       return Array.from(this.store.keys())[index] ?? null;
     }
+
+    /**
+     * Removes the key and its associated value from the storage instance and dispatches a storage event.
+     *
+     * @param key - The key name to remove.
+     */
     removeItem(key: string) {
       this.store.delete(key);
       if (
@@ -112,6 +192,13 @@ if (typeof g.document === "undefined") {
         window.dispatchEvent(new EventCtor("storage"));
       }
     }
+
+    /**
+     * Sets or updates the value associated with the specified key and dispatches a storage event.
+     *
+     * @param key - The key name to set.
+     * @param value - The value string to associate with the key.
+     */
     setItem(key: string, value: string) {
       this.store.set(key, String(value));
       if (

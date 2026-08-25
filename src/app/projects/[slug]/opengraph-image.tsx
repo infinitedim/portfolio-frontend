@@ -1,13 +1,34 @@
 import { ImageResponse } from "next/og";
 import { getProjectsData } from "@/lib/data/data-fetching";
 
+/**
+ * Image alt text descriptor for the generated OpenGraph preview banner.
+ */
 export const alt = "Project Detail Preview Banner";
+
+/**
+ * Dimensions configuration for the dynamically generated OpenGraph project banner.
+ */
 export const size = {
   width: 1200,
   height: 630,
 };
+
+/**
+ * MIME type for the generated OpenGraph image response.
+ */
 export const contentType = "image/png";
 
+/**
+ * Route handler generating dynamic OpenGraph and Twitter preview card images for individual projects.
+ *
+ * @description Fetches project metadata for the specified slug and dynamically renders a terminal-themed
+ * PNG banner containing the project name, description, status badge, and tech stack tags using Next.js `ImageResponse`.
+ *
+ * @param {object} props - Component route parameters.
+ * @param {Promise<{ slug: string }>} props.params - Asynchronous route parameters containing the project slug.
+ * @returns {Promise<ImageResponse>} Dynamic OpenGraph image response.
+ */
 export default async function Image({
   params,
 }: {

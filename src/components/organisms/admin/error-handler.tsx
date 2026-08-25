@@ -5,20 +5,54 @@ import type { ThemeConfig } from "@/types/theme";
 
 import { getApiUrl } from "@/lib/api/get-api-url";
 
+/**
+ * Base URL for backend API endpoints resolved from environment configuration.
+ *
+ * @constant
+ * @type {string}
+ */
 const API_URL = getApiUrl();
 
+/**
+ * Properties for configuring the ErrorHandler service status diagnostic panel.
+ *
+ * @interface ErrorHandlerProps
+ * @property {ThemeConfig} themeConfig - The current theme configuration providing styling colors.
+ * @property {(error: Error) => void} onError - Callback triggered when service health checks fail.
+ * @property {() => void} onRecovery - Callback triggered when all monitored services transition to healthy.
+ */
 interface ErrorHandlerProps {
   themeConfig: ThemeConfig;
   onError: (error: Error) => void;
   onRecovery: () => void;
 }
 
+/**
+ * Health and connectivity status for upstream infrastructure services.
+ *
+ * @interface ServiceStatus
+ * @property {"connected" | "disconnected" | "checking"} backend - HTTP API server status.
+ * @property {"connected" | "disconnected" | "checking"} database - PostgreSQL database connection status.
+ * @property {"connected" | "disconnected" | "checking"} redis - Redis cache instance connection status.
+ */
 interface ServiceStatus {
   backend: "connected" | "disconnected" | "checking";
   database: "connected" | "disconnected" | "checking";
   redis: "connected" | "disconnected" | "checking";
 }
 
+/**
+ * Administrative diagnostic component that monitors the health of backend, database, and Redis services.
+ *
+ * Automatically conducts health ping checks against `/health`, `/health/database`, and `/health/redis`,
+ * rendering troubleshooting recommendations and actionable links if any services are disconnected.
+ *
+ * @param {ErrorHandlerProps} props - The component properties.
+ * @param {ThemeConfig} props.themeConfig - Active theme configuration.
+ * @param {(error: Error) => void} props.onError - Error reporter callback.
+ * @param {() => void} props.onRecovery - Callback executed when all services recover.
+ * @returns {JSX.Element | null} The rendered error and service status panel, or null if all services are healthy.
+ */
 export function ErrorHandler({
   themeConfig,
   onError,
@@ -104,6 +138,12 @@ export function ErrorHandler({
     checkServiceHealth();
   }, [checkServiceHealth]);
 
+  /**
+   * Resolves the Tailwind CSS text color class associated with a service health state.
+   *
+   * @param {string} status - Connection status string ("connected", "disconnected", "checking").
+   * @returns {string} Tailwind CSS class name for text color.
+   */
   const getStatusColor = (status: string) => {
     switch (status) {
       case "connected":
@@ -117,6 +157,12 @@ export function ErrorHandler({
     }
   };
 
+  /**
+   * Resolves the emoji indicator icon corresponding to a service status.
+   *
+   * @param {string} status - Connection status string.
+   * @returns {string} Emoji string representing the status.
+   */
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "connected":

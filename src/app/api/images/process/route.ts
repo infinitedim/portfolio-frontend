@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import { optimizeImage, type SupportedImageFormat } from "@/lib/images/bun-image-optimizer";
 
+/**
+ * Handles HTTP POST requests to optimize, resize, convert, and compress images.
+ * Supports both `multipart/form-data` uploads containing an image file with optional
+ * dimension, quality, and format fields, as well as raw image binary data in the request body
+ * configured via URL query parameters.
+ *
+ * @param request - The incoming HTTP Request containing the raw image buffer or FormData payload.
+ * @returns A promise resolving to a Response with the optimized image buffer and appropriate headers,
+ * or a NextResponse error payload with corresponding HTTP status codes (200: success, 400: invalid params, 422: processing failure, 500: internal error).
+ */
 export async function POST(request: Request) {
   try {
     const contentType = request.headers.get("content-type") || "";

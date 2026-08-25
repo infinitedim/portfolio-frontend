@@ -3,6 +3,15 @@ import { generateId } from "@/lib/utils/utils";
 import { getApiUrl } from "@/lib/api/get-api-url";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 
+/**
+ * Represents a summarized blog post item retrieved from the blog API.
+ *
+ * @interface BlogPostItem
+ * @property {string} title - The title of the blog post.
+ * @property {string} slug - The unique URL-friendly slug identifier for the post.
+ * @property {string | null} summary - A brief summary or excerpt of the blog post content.
+ * @property {number} readingTimeMinutes - Estimated reading time in minutes.
+ */
 interface BlogPostItem {
   title: string;
   slug: string;
@@ -10,6 +19,11 @@ interface BlogPostItem {
   readingTimeMinutes: number;
 }
 
+/**
+ * Fetches recent published blog posts from the backend API for terminal display.
+ *
+ * @returns {Promise<BlogPostItem[]>} A promise resolving to a list of recent blog posts or an empty array on failure.
+ */
 async function fetchRecentPosts(): Promise<BlogPostItem[]> {
   try {
     const response = await fetch(
@@ -24,6 +38,9 @@ async function fetchRecentPosts(): Promise<BlogPostItem[]> {
   return [];
 }
 
+/**
+ * Terminal command definition for browsing blog posts or triggering subcommands like `blog read`.
+ */
 export const blogCommand: Command = {
   name: "blog",
   description: "Browse blog posts or open the blog in your browser",
@@ -78,6 +95,9 @@ export const blogCommand: Command = {
   },
 };
 
+/**
+ * Terminal command definition for opening a specific blog post in the user's browser by slug.
+ */
 export const blogReadCommand: Command = {
   name: "blog read",
   description: "Open a blog post by slug",

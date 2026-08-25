@@ -7,10 +7,25 @@ import { useTerminalAnimations } from "@/hooks/use-animations";
 import type { CommandOutput as CommandOutputType } from "@/types/terminal";
 import type { JSX } from "react";
 
+/**
+ * Properties for the CommandOutput component.
+ *
+ * @interface CommandOutputProps
+ * @property {CommandOutputType} output - The terminal command output data object to render.
+ */
 interface CommandOutputProps {
   output: CommandOutputType;
 }
 
+/**
+ * Terminal output renderer component supporting typed animated text streaming,
+ * multi-line formatting, custom React node rendering, theme-aware error/success styling,
+ * accessible screen reader log roles, and animation skip handling.
+ *
+ * @param {CommandOutputProps} props - Component properties.
+ * @param {CommandOutputType} props.output - Output entity containing type, id, and content payload.
+ * @returns {JSX.Element} The rendered command output block.
+ */
 export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
   const { themeConfig, theme } = useTheme();
   const { isReducedMotion } = useAccessibility();
@@ -24,6 +39,11 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
     mountedAtRef.current = Date.now();
   }, [output.id]);
 
+  /**
+   * Resolves the theme color corresponding to the current output severity level (success, info, error, warning).
+   *
+   * @returns {string} Hex or rgba color string for text styling.
+   */
   const getOutputColor = () => {
     switch (output.type) {
       case "success":
@@ -38,6 +58,12 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
     }
   };
 
+  /**
+   * Normalizes output content into a unified newline-delimited string format.
+   *
+   * @param {CommandOutputType["content"]} content - Raw content payload (string, array of strings, or React component).
+   * @returns {string} Serialized string representation of the output content.
+   */
   const formatContent = (content: CommandOutputType["content"]): string => {
     if (typeof content === "string") {
       return content;
@@ -51,6 +77,9 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
   const isError = output.type === "error";
   const rawText = formatContent(output.content);
 
+  /**
+   * Interrupts the active typing animation to immediately reveal full text content.
+   */
   const triggerSkip = useCallback(() => {
     if (!skipRef.current) {
       skipRef.current = true;

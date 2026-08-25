@@ -8,6 +8,12 @@ mock.module("@/lib/crypto/server", () => ({
 import { POST } from "../route";
 import { NextRequest } from "next/server";
 
+/**
+ * Creates a mock NextRequest instance targeting the crypto handshake endpoint with a JSON body.
+ *
+ * @param body - The payload data to serialize as JSON.
+ * @returns A new mock Request instance.
+ */
 function createMockRequest(body: unknown): Request {
   return new NextRequest("http://localhost:3000/api/crypto/handshake", {
     method: "POST",

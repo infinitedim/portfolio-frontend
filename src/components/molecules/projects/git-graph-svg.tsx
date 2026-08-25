@@ -1,41 +1,45 @@
 "use client";
 
-   
-                                                                
-  
-                                                                 
-                                                         
-                                                                       
-                                            
-   
-
 import { memo, useCallback } from "react";
 import type { GraphNode, GraphEdge } from "@/lib/git-graph";
 
+/**
+ * Props for the {@link GitGraphRow} SVG rendering component.
+ */
 interface GitGraphRowProps {
+  /** The graph node representing the commit at this specific row. */
   node: GraphNode;
-                                                                
+  /** All graph edges that intersect with or connect to this row's commit. */
   edges: GraphEdge[];
-                                                                
+  /** List of active vertical branch lanes and their assigned stroke colors passing through this row. */
   activeLanes: { lane: number; color: string }[];
+  /** Maximum number of concurrent branch lanes across the entire graph to determine SVG width. */
   maxLanes: number;
+  /** Vertical height in pixels allocated for this graph row. */
   rowHeight: number;
+  /** Horizontal width in pixels allocated per branch lane column. */
   laneWidth: number;
+  /** Currently active or hovered branch name used for visual highlighting and dimming, or null. */
   highlightedBranch: string | null;
+  /** Callback fired when a commit node is clicked or activated via Enter/Space key. */
   onNodeClick: (sha: string) => void;
+  /** Callback fired when hovering over or leaving a commit node with its branch name or null. */
   onBranchHover: (branchName: string | null) => void;
 }
 
-   
-                                                                 
-                                                          
-   
+/**
+ * Generates an SVG path data string (`d` attribute) for a graph edge relative to the current row.
+ *
+ * @param edge - The graph edge connecting two commits with source and destination coordinates.
+ * @param rowIndex - The zero-based row index for calculating local coordinate offsets.
+ * @param rowHeight - The pixel height of a single row.
+ * @returns An SVG path definition string rendering a straight line or cubic Bézier curve.
+ */
 function buildEdgePath(
   edge: GraphEdge,
   rowIndex: number,
   rowHeight: number,
 ): string {
-                                                          
   const rowTop = rowIndex * rowHeight;
   const fromY = edge.from.y - rowTop;
   const toY = edge.to.y - rowTop;
@@ -46,15 +50,35 @@ function buildEdgePath(
     return `M ${fromX} ${fromY} L ${toX} ${toY}`;
   }
 
-                                       
   const midY = (fromY + toY) / 2;
   return `M ${fromX} ${fromY} C ${fromX} ${midY}, ${toX} ${midY}, ${toX} ${toY}`;
 }
 
+/**
+ * Default pixel radius for standard commit nodes.
+ */
 const NODE_RADIUS = 5;
-const MERGE_NODE_RADIUS = 7;
-const HIT_TARGET_RADIUS = 22;                        
 
+/**
+ * Outer pixel radius for merge commit ring indicators.
+ */
+const MERGE_NODE_RADIUS = 7;
+
+/**
+ * Hit target pixel radius to facilitate easy cursor and touch selection on small commit dots.
+ */
+const HIT_TARGET_RADIUS = 22;
+
+/**
+ * Renders a single row in an SVG-based interactive Git commit graph.
+ *
+ * @description Displays active vertical branch lanes, incoming and outgoing connecting
+ * curve/straight paths, and interactive commit node markers with support for hover highlighting,
+ * keyboard accessibility, and merge/branch-tip animations.
+ *
+ * @param props - Component properties conforming to {@link GitGraphRowProps}.
+ * @returns An SVG element representing a single row in the git graph visualization.
+ */
 export const GitGraphRow = memo(function GitGraphRow({
   node,
   edges,
@@ -95,7 +119,6 @@ export const GitGraphRow = memo(function GitGraphRow({
     onBranchHover(null);
   }, [onBranchHover]);
 
-                                                                   
   const nodeX = node.lane * laneWidth + laneWidth / 2;
   const isMerge = node.type === "merge";
   const isBranchTip = node.type === "branch-tip";
@@ -108,7 +131,6 @@ export const GitGraphRow = memo(function GitGraphRow({
       className="shrink-0"
       aria-hidden="true"
     >
-                                                                                            
       {activeLanes.map(({ lane, color }) => {
         const x = lane * laneWidth + laneWidth / 2;
         const isLaneHighlighted =
@@ -140,10 +162,8 @@ export const GitGraphRow = memo(function GitGraphRow({
         );
       })}
 
-                                                                            
       {edges
         .filter((edge) => {
-                                                                
           const rowTop = node.row * rowHeight;
           const rowBottom = (node.row + 1) * rowHeight;
           return (
@@ -175,7 +195,6 @@ export const GitGraphRow = memo(function GitGraphRow({
           );
         })}
 
-                         
       <g
         style={{ cursor: "pointer" }}
         onClick={handleNodeClick}
@@ -187,7 +206,6 @@ export const GitGraphRow = memo(function GitGraphRow({
         aria-label={`Commit ${node.shortSha}${node.branchRefs.length > 0 ? ` on ${node.branchRefs.join(", ")}` : ""}${isMerge ? ", merge commit" : ""}`}
         className="focus-visible:outline-none"
       >
-                                                                      
         <circle
           cx={nodeX}
           cy={halfRow}
@@ -195,7 +213,6 @@ export const GitGraphRow = memo(function GitGraphRow({
           fill="transparent"
         />
 
-                                        
         {isMerge && (
           <circle
             cx={nodeX}
@@ -208,7 +225,6 @@ export const GitGraphRow = memo(function GitGraphRow({
           />
         )}
 
-                           
         <circle
           cx={nodeX}
           cy={halfRow}
@@ -219,7 +235,6 @@ export const GitGraphRow = memo(function GitGraphRow({
           opacity={isDimmed ? 0.25 : 1}
         />
 
-                                             
         {isBranchTip && (
           <circle
             cx={nodeX}
@@ -234,7 +249,6 @@ export const GitGraphRow = memo(function GitGraphRow({
           />
         )}
 
-                                                      
         <circle
           cx={nodeX}
           cy={halfRow}

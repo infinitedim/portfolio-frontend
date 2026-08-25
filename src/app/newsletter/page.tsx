@@ -4,11 +4,24 @@ import { PageHeader } from "@/components/atoms/shared/page-header";
 import { NewsletterSignup } from "@/components/molecules/newsletter/newsletter-signup";
 import { Cpu, Terminal, Shield, Zap } from "lucide-react";
 
+/**
+ * Static metadata configuration for the Newsletter subscription landing page.
+ *
+ * @description
+ * Sets the document title and meta description for search engine optimization (SEO) and social sharing.
+ */
 export const metadata: Metadata = {
   title: "Newsletter | Developer Dispatch",
   description: "Subscribe to engineering breakdowns, Rust/Axum architecture notes, and Next.js 16 updates.",
 };
 
+/**
+ * Featured newsletter content modules and focus areas.
+ *
+ * @description
+ * Defines the core technical engineering disciplines covered in the dispatches,
+ * paired with visual icons and descriptions for the topic showcase grid.
+ */
 const MODULES = [
   {
     id: "MOD_01",
@@ -36,6 +49,15 @@ const MODULES = [
   },
 ];
 
+/**
+ * Page component for the Developer Dispatch newsletter landing page.
+ *
+ * @description
+ * Presents the newsletter content breakdown, highlighting technical topics (Rust, Next.js, Security, Cloud)
+ * and embedding the interactive {@link NewsletterSignup} form inside {@link StandardPageLayout}.
+ *
+ * @returns {JSX.Element} The rendered newsletter landing page view.
+ */
 export default function NewsletterPage() {
   return (
     <StandardPageLayout>

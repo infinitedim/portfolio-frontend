@@ -1,6 +1,16 @@
 import Script from "next/script";
 import type { JSX } from "react";
 
+/**
+ * Critical theme initialization script component.
+ *
+ * Injects a synchronous, `beforeInteractive` inline JavaScript snippet that reads the
+ * stored theme configuration from `localStorage` (`"terminal-theme"`) and toggles the
+ * `"dark"` CSS class on the root `<html>` element (`document.documentElement`).
+ * This prevents Flash of Unstyled Content (FOUC) / theme flashing during client hydration.
+ *
+ * @returns {JSX.Element} The Next.js `Script` component configured for pre-interactive execution.
+ */
 export function ThemeInitScript(): JSX.Element {
   return (
     <Script
@@ -12,3 +22,4 @@ export function ThemeInitScript(): JSX.Element {
     />
   );
 }
+

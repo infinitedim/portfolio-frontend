@@ -5,9 +5,20 @@ import { useTheme } from "@/hooks/use-theme";
 import { isThemeName } from "@/types/theme";
 import type { JSX } from "react";
 
+/**
+ * Renders an interactive theme switcher component displaying buttons for all available themes.
+ * Allows users to toggle active themes with visual indication for current selection.
+ *
+ * @returns {JSX.Element} The rendered theme switcher interface with theme selection buttons.
+ */
 export function ThemeSwitcher(): JSX.Element {
   const { theme, changeTheme, availableThemes } = useTheme();
 
+  /**
+   * Handles theme switching with validation against known theme identifiers.
+   *
+   * @param {string} newTheme - The target theme name to apply.
+   */
   const handleThemeChange = (newTheme: string) => {
     try {
       if (isThemeName(newTheme)) {

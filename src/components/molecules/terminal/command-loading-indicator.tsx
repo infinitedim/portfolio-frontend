@@ -4,12 +4,21 @@ import { useState, useEffect, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Properties for the CommandLoadingIndicator component.
+ */
 interface CommandLoadingIndicatorProps {
+  /** Name or input text of the executing command to display. */
   command?: string;
+  /** Whether the loading animation indicator is visible. */
   visible?: boolean;
+  /** Custom array of cyclical progress messages during loading. */
   messages?: string[];
 }
 
+/**
+ * Default fallback sequence of progress messages shown during asynchronous command execution.
+ */
 const DEFAULT_MESSAGES = [
   "Processing command...",
   "Analyzing request...",
@@ -18,6 +27,16 @@ const DEFAULT_MESSAGES = [
   "Almost done...",
 ];
 
+/**
+ * Visual loading indicator component rendering a spinning loader, current command label,
+ * animated cycling progress messages, animated trailing dots, and equalizer pulse bars.
+ *
+ * @param props - Component properties.
+ * @param props.command - The active command being processed.
+ * @param props.visible - Flag controlling component rendering and animation timers.
+ * @param props.messages - Array of status messages to cycle through.
+ * @returns Rendered loading indicator or null if hidden/unthemed.
+ */
 export function CommandLoadingIndicator({
   command,
   visible = false,

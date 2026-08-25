@@ -17,6 +17,11 @@ import { languageCommand } from "@/lib/commands/language-commands";
 import { useCommandHistory } from "./use-command-history";
 import { generateId } from "@/lib/utils/utils";
 
+/**
+ * Dynamically loads the roadmap command definitions.
+ *
+ * @returns An object containing the loaded `roadmapCommand` or null if loading fails or executed in SSR.
+ */
 const getRoadmapCommands = async () => {
   if (typeof window === "undefined") return { roadmapCommand: null };
   try {
@@ -28,6 +33,11 @@ const getRoadmapCommands = async () => {
   }
 };
 
+/**
+ * Dynamically imports the tech stack command definitions.
+ *
+ * @returns The tech stack commands module, or null if import fails.
+ */
 const getTechStackCommands = async () => {
   try {
     return await import("@/lib/commands/tech-stack-commands");
@@ -36,6 +46,11 @@ const getTechStackCommands = async () => {
   }
 };
 
+/**
+ * Dynamically imports the blog command definitions.
+ *
+ * @returns The blog commands module, or null if import fails.
+ */
 const getBlogCommands = async () => {
   try {
     return await import("@/lib/commands/blog-commands");
@@ -44,6 +59,11 @@ const getBlogCommands = async () => {
   }
 };
 
+/**
+ * Dynamically imports the general and resume command definitions.
+ *
+ * @returns The commands module, or null if import fails.
+ */
 const getResumeCommand = async () => {
   try {
     return await import("@/lib/commands/commands");
@@ -54,16 +74,25 @@ const getResumeCommand = async () => {
 
 import type { CommandOutput, TerminalHistory } from "@/types/terminal";
 
+/**
+ * Local storage keys used for terminal state persistence.
+ */
 const STORAGE_KEYS = {
   COMMAND_HISTORY: "terminal-command-history",
 } as const;
 
+/**
+ * Internal command action tokens for special terminal behavior.
+ */
 const SPECIAL_COMMANDS = {
   CLEAR: "CLEAR",
   THEME_PREFIX: "CHANGE_THEME:",
   FONT_PREFIX: "CHANGE_FONT:",
 } as const;
 
+/**
+ * Complete list of available terminal root commands for autocomplete and suggestions.
+ */
 const ALL_COMMANDS = [
   "help",
   "about",
@@ -80,6 +109,53 @@ const ALL_COMMANDS = [
   "clear",
 ] as const;
 
+/**
+ * Primary React hook orchestrating the interactive terminal emulator.
+ *
+ * Coordinates command parsing (via {@link CommandParser}), asynchronous command registration,
+ * session output history, input line state, history traversal with up/down navigation,
+ * and command frequency analytics.
+ *
+ * @param onOpenAuth - Optional callback triggered when a command requires authentication.
+ * @param themePerformance - Optional performance profiling metrics for theme switching.
+ * @param themePerformance.getPerformanceReport - Function returning performance summary report.
+ * @param themePerformance.themeMetrics - Performance metrics collection object.
+ * @param themePerformance.themeMetrics.switchCount - Total number of theme switch operations.
+ * @param themePerformance.themeMetrics.averageSwitchTime - Average duration of theme switches.
+ * @param themePerformance.themeMetrics.lastSwitchTime - Timestamp of the most recent theme switch.
+ * @param themePerformance.themeMetrics.popularThemes - Array of most frequently chosen themes.
+ * @param themePerformance.themeMetrics.renderTime - Time taken to render the active theme.
+ * @param themePerformance.resetMetrics - Resets recorded theme performance metrics.
+ * @returns An object managing terminal state, history, execution, and autocompletion:
+ * - `history`: Array of {@link TerminalHistory} records containing past input/output pairs.
+ * - `currentInput`: Current value of the terminal command line input prompt.
+ * - `setCurrentInput`: State setter for the active input prompt string.
+ * - `isProcessing`: True while an asynchronous command is actively executing.
+ * - `isClearing`: True while the terminal clear transition animation is occurring.
+ * - `executeCommand`: Parses and runs a command string, appending results to history.
+ * - `addToHistory`: Manually appends a new input/output record to history.
+ * - `navigateHistory`: Steps backward ('up') or forward ('down') through executed command history.
+ * - `clearHistory`: Wipes all terminal output and command history from state and storage.
+ * - `commandHistory`: Raw array of executed command strings.
+ * - `lastError`: Error message from the most recent command failure, or null.
+ * - `clearError`: Clears the current `lastError` state.
+ * - `getCommandSuggestions`: Returns autocomplete candidate commands matching an input prefix.
+ * - `getFrequentCommands`: Returns list of the most frequently executed commands.
+ * - `commandAnalytics`: Analytics metrics computed by {@link useCommandHistory}.
+ * - `favoriteCommands`: Bookmarked commands list.
+ * - `enhancedHistory`: Full enhanced history list with metadata.
+ *
+ * @example
+ * ```tsx
+ * const {
+ *   history,
+ *   currentInput,
+ *   setCurrentInput,
+ *   executeCommand,
+ *   navigateHistory,
+ * } = useTerminal();
+ * ```
+ */
 export function useTerminal(
   onOpenAuth?: () => void,
   themePerformance?: {

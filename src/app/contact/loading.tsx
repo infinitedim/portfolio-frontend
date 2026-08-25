@@ -1,6 +1,11 @@
 import { type JSX } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
+/**
+ * Loading skeleton component displayed while the contact page and form are resolving.
+ *
+ * @returns {JSX.Element} The rendered full-page skeleton placeholder for the contact view.
+ */
 export default function ContactLoading(): JSX.Element {
   return (
     <StandardPageLayout>

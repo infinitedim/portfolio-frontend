@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Main roadmap dashboard organism component that displays user profile summary,
+ * learning streaks, overall progress aggregation, and individual roadmap progress cards.
+ * @module components/organisms/roadmap/roadmap-dashboard
+ */
+
 "use client";
 
 import type { RoadmapDashboard, RoadmapStreak } from "@/lib/data/data-fetching";
@@ -6,11 +12,31 @@ import { RoadmapProgressBar } from "@/components/molecules/roadmap/roadmap-progr
 import { RoadmapStreakCard } from "@/components/molecules/roadmap/roadmap-streak-card";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Props for the RoadmapDashboardOrganism component.
+ *
+ * @interface RoadmapDashboardProps
+ * @property {RoadmapDashboard} dashboard - Roadmap dashboard data containing user details and progress list.
+ * @property {RoadmapStreak | null} streak - Learning streak information or null if unavailable.
+ */
 interface RoadmapDashboardProps {
   dashboard: RoadmapDashboard;
   streak: RoadmapStreak | null;
 }
 
+/**
+ * Roadmap dashboard organism component rendering complete learning roadmap tracking metrics.
+ *
+ * @description
+ * Aggregates and sorts all roadmap topic progresses by completion percentage in descending order,
+ * computes overall completion stats (completed, skipped, total topics), and presents a user profile banner,
+ * learning streak card, global ASCII progress bar, and individual roadmap topic cards.
+ *
+ * @param {RoadmapDashboardProps} props - The component props.
+ * @param {RoadmapDashboard} props.dashboard - The roadmap dashboard payload with profile and topics.
+ * @param {RoadmapStreak | null} props.streak - The user's active learning streak data.
+ * @returns {React.JSX.Element} The rendered roadmap dashboard interface.
+ */
 export function RoadmapDashboardOrganism({
   dashboard,
   streak,
@@ -35,9 +61,8 @@ export function RoadmapDashboardOrganism({
 
   return (
     <div className="flex flex-col gap-8 font-mono transition-colors duration-300">
-                                             
       <div className="rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/70 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-(--terminal-accent)/0 via-(--terminal-accent) to-(--terminal-accent)/0" />
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-(--terminal-accent)/0 via-(--terminal-accent) to-(--terminal-accent)/0" />
 
         <div className="flex items-center gap-4">
           {dashboard.avatar ? (
@@ -77,22 +102,26 @@ export function RoadmapDashboardOrganism({
         </div>
       </div>
 
-                                      
       <RoadmapStreakCard streak={streak} />
 
-                                          
       <div className="rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/70 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col gap-4">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between border-b border-(--terminal-border)/80 pb-3">
           <div className="flex items-center gap-2">
             <span className="text-(--terminal-accent) font-bold">$</span>
-            <span className="text-(--terminal-text) font-semibold text-sm">roadmap</span>
+            <span className="text-(--terminal-text) font-semibold text-sm">
+              roadmap
+            </span>
             <span className="text-(--terminal-muted) text-sm">--overview</span>
           </div>
           <span className="text-xs text-(--terminal-muted)">
             {t("roadmapCompleted")}:{" "}
-            <strong className="text-(--terminal-accent) font-bold">{totalDone}</strong>{" "}
+            <strong className="text-(--terminal-accent) font-bold">
+              {totalDone}
+            </strong>{" "}
             · {t("roadmapSkipped")}:{" "}
-            <strong className="text-(--terminal-muted) font-bold">{totalSkipped}</strong>{" "}
+            <strong className="text-(--terminal-muted) font-bold">
+              {totalSkipped}
+            </strong>{" "}
             / {totalTopics} {t("roadmapTotalTopics")}
           </span>
         </div>
@@ -106,12 +135,13 @@ export function RoadmapDashboardOrganism({
         />
       </div>
 
-                           
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-xs text-(--terminal-muted)">
           <span className="text-(--terminal-accent) font-bold">$</span>
           <span className="text-(--terminal-text) font-semibold">roadmap</span>
-          <span className="text-(--terminal-muted)">--list --sort=progress_desc</span>
+          <span className="text-(--terminal-muted)">
+            --list --sort=progress_desc
+          </span>
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

@@ -3,6 +3,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { authService, type AuthUser } from "@/lib/auth/auth-service";
 
+/**
+ * Result structure returned by user login operations.
+ *
+ * @interface LoginResult
+ * @property {boolean} success - Indicates whether the login request succeeded or requires subsequent verification.
+ * @property {string} [error] - Descriptive error message if the login attempt failed.
+ * @property {boolean} [requires2FA] - Flag indicating if two-factor authentication is required.
+ * @property {string} [challengeToken] - Temporary challenge token required to complete 2FA verification.
+ */
 export interface LoginResult {
   success: boolean;
   error?: string;
@@ -10,6 +19,18 @@ export interface LoginResult {
   challengeToken?: string;
 }
 
+/**
+ * Type contract for the authentication context state and exposed dispatch methods.
+ *
+ * @interface AuthContextType
+ * @property {AuthUser | null} user - The currently authenticated user object, or null if unauthenticated.
+ * @property {boolean} isAuthenticated - Whether a user is currently authenticated.
+ * @property {boolean} isLoading - Loading state while checking or initializing authentication on mount.
+ * @property {(email: string, password: string) => Promise<LoginResult>} login - Authenticates user with credentials.
+ * @property {(challengeToken: string, code: string, isBackupCode?: boolean) => Promise<{ success: boolean; error?: string }>} complete2FA - Completes two-factor verification.
+ * @property {() => Promise<void>} logout - Logs out the user and clears session tokens.
+ * @property {() => Promise<{ success: boolean; error?: string }>} refresh - Manually refreshes session authentication tokens.
+ */
 interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
@@ -24,8 +45,26 @@ interface AuthContextType {
   refresh: () => Promise<{ success: boolean; error?: string }>;
 }
 
+/**
+ * React Context instance providing authentication state to subscriber components.
+ */
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * React Context Provider component that initializes authentication state,
+ * manages automatic token refreshes at periodic intervals, and exposes auth action handlers.
+ *
+ * @param {object} props - Component properties.
+ * @param {React.ReactNode} props.children - Child component nodes to receive the authentication context.
+ * @returns {React.JSX.Element} The rendered context provider element.
+ *
+ * @example
+ * ```tsx
+ * export default function RootLayout({ children }: { children: React.ReactNode }) {
+ *   return <AuthProvider>{children}</AuthProvider>;
+ * }
+ * ```
+ */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -78,8 +117,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await authService.login(email, password);
 
       if (result.success && result.requires2FA && result.challengeToken) {
-                                                                         
-                                        
         return {
           success: true,
           requires2FA: true,
@@ -167,6 +204,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+/**
+ * Custom React hook to access the current authentication context.
+ * Must be used within a descendant of `<AuthProvider>`.
+ *
+ * @returns {AuthContextType} The authentication context containing user state and auth methods.
+ * @throws {Error} Throws an error if invoked outside of an `<AuthProvider>`.
+ *
+ * @example
+ * ```tsx
+ * const { user, isAuthenticated, login, logout } = useAuth();
+ * ```
+ */
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {

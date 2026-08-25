@@ -3,6 +3,15 @@
 import { JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
+/**
+ * Properties for the TabCompletion dropdown suggestion menu.
+ *
+ * @interface TabCompletionProps
+ * @property {string} input - The current user input prefix to match against command suggestions.
+ * @property {string[]} availableCommands - List of all possible command names available for auto-completion.
+ * @property {(completion: string) => void} onComplete - Callback invoked when a user selects or completes a suggestion.
+ * @property {boolean} visible - Whether the completion popover menu should be rendered and visible.
+ */
 interface TabCompletionProps {
   input: string;
   availableCommands: string[];
@@ -10,6 +19,19 @@ interface TabCompletionProps {
   visible: boolean;
 }
 
+/**
+ * Autocomplete dropdown menu providing inline suggestions for terminal commands.
+ *
+ * Displays matching commands filtered by the current prefix input, highlighting matched vs remaining characters,
+ * and allows rapid command selection via click or keyboard interactions.
+ *
+ * @param {TabCompletionProps} props - The component properties.
+ * @param {string} props.input - Current terminal prompt text input used for prefix filtering.
+ * @param {string[]} props.availableCommands - Array of command strings eligible for completion.
+ * @param {(completion: string) => void} props.onComplete - Handler invoked when a command option is selected.
+ * @param {boolean} props.visible - Boolean flag determining popover visibility.
+ * @returns {JSX.Element | null} The rendered tab completion popover menu or null if hidden or no matches exist.
+ */
 export function TabCompletion({
   input,
   availableCommands,

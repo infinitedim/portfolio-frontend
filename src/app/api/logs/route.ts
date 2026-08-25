@@ -1,20 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerLogger } from "@/lib/logger/server-logger";
 import type { LogEntry } from "@/lib/logger/types";
+/**
+ * Server-side logger instance for the API logs endpoint.
+ */
 const logger = createServerLogger("api/logs");
 
+/**
+ * In-memory map to track request counts and reset timestamps per IP address for rate limiting.
+ */
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
+/**
+ * Configuration options for IP rate limiting on client log submissions.
+ */
 const RATE_LIMIT = {
   maxRequests: 100,
   windowMs: 60 * 1000,
 };
 
-                                                                              
-                                                                                  
+/**
+ * Request counter used to trigger periodic pruning of expired rate limit entries.
+ */
 let pruneCounter = 0;
+
+/**
+ * Number of requests between periodic rate limit map pruning executions.
+ */
 const PRUNE_EVERY = 200;
 
+/**
+ * Removes expired entries from the in-memory rate limit map to prevent memory leaks.
+ */
 function pruneRateLimitMap(): void {
   const now = Date.now();
   for (const [ip, entry] of rateLimitMap) {
@@ -24,14 +41,25 @@ function pruneRateLimitMap(): void {
   }
 }
 
+/**
+ * Maximum allowed payload size in bytes for client log ingestion requests.
+ */
 const _MAX_PAYLOAD_SIZE = 1024 * 1024;
 
+/**
+ * Maximum number of log entries allowed in a single batch request.
+ */
 const MAX_BATCH_SIZE = 100;
 
+/**
+ * Evaluates whether an IP address is within the allowed request rate limit.
+ *
+ * @param ip - The client IP address to evaluate.
+ * @returns An object indicating whether the request is allowed and the remaining request quota.
+ */
 function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   const now = Date.now();
 
-                                                                  
   pruneCounter += 1;
   if (pruneCounter >= PRUNE_EVERY) {
     pruneCounter = 0;
@@ -62,6 +90,12 @@ function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   };
 }
 
+/**
+ * Extracts the client IP address from request headers or falls back to 'unknown'.
+ *
+ * @param request - The incoming NextRequest instance.
+ * @returns The resolved client IP address string.
+ */
 function getClientIp(request: NextRequest): string {
   return (
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -70,6 +104,12 @@ function getClientIp(request: NextRequest): string {
   );
 }
 
+/**
+ * Validates that an unknown input matches the shape of a valid LogEntry.
+ *
+ * @param entry - The candidate log entry object to validate.
+ * @returns True if the object conforms to the LogEntry schema; otherwise false.
+ */
 function validateLogEntry(entry: unknown): entry is LogEntry {
   if (!entry || typeof entry !== "object") {
     return false;
@@ -93,6 +133,12 @@ function validateLogEntry(entry: unknown): entry is LogEntry {
   return true;
 }
 
+/**
+ * Handles incoming POST requests to ingest client-side log entries.
+ *
+ * @param request - The incoming NextRequest containing the batch of logs.
+ * @returns A promise resolving to a NextResponse with ingestion status and metadata.
+ */
 async function postHandler(request: NextRequest): Promise<NextResponse> {
   const startTime = Date.now();
   const requestId = request.headers.get("x-request-id") || crypto.randomUUID();
@@ -282,9 +328,16 @@ async function postHandler(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-                                                                                        
+/**
+ * Route handler for POST requests to ingest client log entries.
+ */
 export const POST = postHandler;
 
+/**
+ * Route handler for OPTIONS preflight requests on the logs endpoint.
+ *
+ * @returns A promise resolving to a NextResponse containing CORS preflight headers.
+ */
 export async function OPTIONS(): Promise<NextResponse> {
   return new NextResponse(null, {
     status: 204,

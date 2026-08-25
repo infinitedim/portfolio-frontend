@@ -7,11 +7,28 @@ import type { BackgroundSettings } from "@/types/customization";
 import { useI18n } from "@/hooks/use-i18n";
 import { LenisScroll } from "@/components/layout/lenis-scroll";
 
+/**
+ * Props for the {@link BackgroundManager} component.
+ */
 interface BackgroundManagerProps {
+  /** Optional callback invoked when background settings are updated and saved. */
   onUpdate?: () => void;
+  /** Optional callback invoked to close the background manager modal or container. */
   onClose?: () => void;
 }
 
+/**
+ * Interactive management panel for configuring global background presentation settings.
+ *
+ * Allows users to switch between different background styles (such as matrix-style letter glitch
+ * animation or none) and customize visual parameters including glitch colors, animation speed,
+ * vignette effects, smoothness, and the character glyph pool.
+ *
+ * @param props - The configuration props for the background manager component.
+ * @param props.onUpdate - Callback triggered after settings are persisted and broadcasted.
+ * @param props.onClose - Callback triggered when the user cancels or closes the view.
+ * @returns The rendered background manager interface wrapped in a smooth scroll container.
+ */
 export function BackgroundManager({
   onUpdate,
   onClose,
@@ -41,6 +58,11 @@ export function BackgroundManager({
     };
   }, []);
 
+  /**
+   * Throttles glitch animation speed updates using `requestAnimationFrame` to prevent UI stuttering.
+   *
+   * @param newSpeed - The new speed value in milliseconds.
+   */
   const handleGlitchSpeedChange = useCallback((newSpeed: number) => {
     if (rafIdRef.current !== null) {
       cancelAnimationFrame(rafIdRef.current);
@@ -61,6 +83,10 @@ export function BackgroundManager({
     }
   }, [customizationService]);
 
+  /**
+   * Persists the current background configuration via {@link CustomizationService}
+   * and dispatches a global window event to notify active listeners.
+   */
   const handleSave = useCallback(() => {
     const settings: BackgroundSettings = {
       type: backgroundType,
@@ -78,6 +104,9 @@ export function BackgroundManager({
     }
   }, [backgroundType, letterGlitchSettings, customizationService, onUpdate]);
 
+  /**
+   * Adds a new default color to the glitch palette array.
+   */
   const handleAddColor = useCallback(() => {
     setLetterGlitchSettings((prev) => ({
       ...prev,
@@ -85,6 +114,11 @@ export function BackgroundManager({
     }));
   }, []);
 
+  /**
+   * Removes a color from the glitch palette at the specified index.
+   *
+   * @param index - The zero-based index of the color to remove.
+   */
   const handleRemoveColor = useCallback((index: number) => {
     setLetterGlitchSettings((prev) => ({
       ...prev,
@@ -92,6 +126,12 @@ export function BackgroundManager({
     }));
   }, []);
 
+  /**
+   * Updates an existing color in the glitch palette at a specific index.
+   *
+   * @param index - The zero-based index of the target color to update.
+   * @param color - The replacement hex color code.
+   */
   const handleColorChange = useCallback((index: number, color: string) => {
     setLetterGlitchSettings((prev) => ({
       ...prev,

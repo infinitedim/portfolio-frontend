@@ -1,6 +1,11 @@
 import { type JSX } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
+/**
+ * Loading skeleton component for individual blog post detail pages.
+ *
+ * @returns The JSX element representing the article loading state with pulse placeholders.
+ */
 export default function BlogPostLoading(): JSX.Element {
   return (
     <StandardPageLayout>

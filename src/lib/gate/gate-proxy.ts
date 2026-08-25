@@ -2,14 +2,30 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerApiUrl } from "@/lib/api/get-api-url";
 
+/**
+ * List of cookie keys managed and forwarded by the portfolio gate system.
+ */
 const GATE_COOKIE_NAMES = ["gate_progress", "portfolio_gate"] as const;
 
+/**
+ * Type alias for valid gate cookie identifiers.
+ */
 type GateCookieName = (typeof GATE_COOKIE_NAMES)[number];
 
+/**
+ * Type guard determining whether a given cookie name matches a known gate cookie identifier.
+ * @param name - Cookie name to test.
+ * @returns True if the name is a known GateCookieName, false otherwise.
+ */
 function isGateCookieName(name: string): name is GateCookieName {
   return (GATE_COOKIE_NAMES as readonly string[]).includes(name);
 }
 
+/**
+ * Constructs a serialized HTTP `Cookie` header string from Next.js server cookie store containing only gate-related cookies.
+ * @param store - Read-only or mutable Next.js server cookie store instance.
+ * @returns Semicolon-delimited cookie header string.
+ */
 export function buildGateCookieHeader(
   store: Awaited<ReturnType<typeof cookies>>,
 ): string {
@@ -21,6 +37,11 @@ export function buildGateCookieHeader(
     .join("; ");
 }
 
+/**
+ * Extracts the cookie value from a raw `Set-Cookie` HTTP header string.
+ * @param setCookie - Raw `Set-Cookie` header value.
+ * @returns The extracted cookie value string, or null if malformed.
+ */
 function parseSetCookieValue(setCookie: string): string | null {
   const eq = setCookie.indexOf("=");
   if (eq <= 0) return null;
@@ -28,6 +49,11 @@ function parseSetCookieValue(setCookie: string): string | null {
   return semi === -1 ? setCookie.slice(eq + 1) : setCookie.slice(eq + 1, semi);
 }
 
+/**
+ * Parses the `Max-Age` attribute in seconds from a raw `Set-Cookie` header string.
+ * @param setCookie - Raw `Set-Cookie` header value.
+ * @returns Parsed max age in seconds, or undefined if absent or invalid.
+ */
 function parseMaxAge(setCookie: string): number | undefined {
   const match = setCookie.match(/Max-Age=(\d+)/i);
   if (!match) return undefined;
@@ -35,7 +61,11 @@ function parseMaxAge(setCookie: string): number | undefined {
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
-                                                                               
+/**
+ * Inspects `Set-Cookie` headers from the backend response and mirrors gate session cookies onto the Next.js client response.
+ * @param backendResponse - The Response object received from the backend gate service.
+ * @param nextResponse - The outgoing NextResponse being prepared for the client.
+ */
 export function applyBackendGateCookies(
   backendResponse: Response,
   nextResponse: NextResponse,
@@ -62,14 +92,37 @@ export function applyBackendGateCookies(
   }
 }
 
+/**
+ * Configuration options for proxying Next.js Route Handler requests to the upstream Gate backend.
+ */
 interface ProxyGateOptions {
+  /**
+   * HTTP method (e.g. 'GET', 'POST').
+   */
   method: string;
+  /**
+   * Relative backend path (e.g. '/api/gate/login').
+   */
   backendPath: string;
+  /**
+   * Incoming NextRequest object from the route handler.
+   */
   request: NextRequest;
+  /**
+   * Optional serialized JSON body payload to send upstream.
+   */
   body?: string;
+  /**
+   * Whether to propagate the incoming request's `Referer` header to the backend.
+   */
   forwardReferer?: boolean;
 }
 
+/**
+ * Forwards an incoming Next.js API route request to the backend gate service, passing session cookies and relaying responses and Set-Cookie headers.
+ * @param options - Proxy configuration options including method, path, request, body, and referer flag.
+ * @returns A promise resolving to a NextResponse mirroring backend payload, status, headers, and cookies.
+ */
 export async function proxyGateRequest(
   options: ProxyGateOptions,
 ): Promise<NextResponse> {

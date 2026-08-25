@@ -3,11 +3,28 @@
 import type { RoadmapStreak } from "@/lib/data/data-fetching";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Props for the {@link RoadmapStreakCard} component.
+ */
 interface RoadmapStreakCardProps {
+  /** Roadmap streak data containing current, longest, and previous streak metrics, or null. */
   streak: RoadmapStreak | null;
+  /** Optional custom CSS classes for styling the outer container. */
   className?: string;
 }
 
+/**
+ * Renders a terminal-styled learning streak metrics board.
+ *
+ * @description Displays key streak analytics including current active streak,
+ * all-time longest streak record, previous streak count, and peer referral count,
+ * along with the formatted last active date.
+ *
+ * @param props - Component properties conforming to {@link RoadmapStreakCardProps}.
+ * @param props.streak - Roadmap streak data containing current, longest, and previous streak metrics, or null.
+ * @param props.className - Optional custom CSS classes for styling the outer container.
+ * @returns A JSX element displaying the streak card grid, or null if no streak data is available.
+ */
 export function RoadmapStreakCard({
   streak,
   className = "",
@@ -16,6 +33,12 @@ export function RoadmapStreakCard({
 
   if (!streak) return null;
 
+  /**
+   * Formats an ISO date string into a localized readable date string.
+   *
+   * @param raw - The raw date string or null/undefined.
+   * @returns Formatted date string (e.g., "Aug 25, 2026") or "N/A" if invalid/missing.
+   */
   const formatDate = (raw?: string | null) => {
     if (!raw) return "N/A";
     try {
@@ -64,7 +87,6 @@ export function RoadmapStreakCard({
     >
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-(--terminal-accent)/0 via-(--terminal-accent) to-(--terminal-accent)/0" />
 
-                                
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4 border-b border-(--terminal-border)/80 pb-3">
         <div className="flex items-center gap-2">
           <span className="text-(--terminal-accent) font-bold">$</span>
@@ -77,7 +99,6 @@ export function RoadmapStreakCard({
         </div>
       </div>
 
-                               
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {metrics.map((m) => (
           <div
@@ -99,3 +120,4 @@ export function RoadmapStreakCard({
     </div>
   );
 }
+

@@ -3,30 +3,97 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 
+/**
+ * Represents a single executed terminal command record within the command history.
+ */
 export interface HistoryItem {
+  /** The full command line string executed by the user. */
   command: string;
+  /** Date object representing the exact time the command was run. */
   timestamp: Date;
+  /** Indicates whether the command execution completed successfully without error. */
   success: boolean;
+  /** Categorization tag inferred from the command root (e.g., 'system', 'portfolio', 'customization'). */
   category?: string;
+  /** Flag marking whether the command has been starred or bookmarked by the user. */
   favorite?: boolean;
+  /** Duration in milliseconds that the command took to finish executing. */
   executionTime?: number;
 }
 
+/**
+ * Configuration options for initializing the command history management hook.
+ */
 interface UseHistoryOptions {
+  /** Maximum number of history items to retain in memory and persistence (defaults to 200). */
   maxHistorySize?: number;
+  /** LocalStorage key utilized for persisting serialized history (defaults to "-terminal-history"). */
   persistKey?: string;
+  /** Whether to automatically classify commands into functional categories (defaults to true). */
   categorizeCommands?: boolean;
 }
 
+/**
+ * Serialized representation of a command history entry stored in JSON format within localStorage.
+ */
 interface SerializedHistoryItem {
+  /** The executed command line string. */
   command: string;
+  /** ISO 8601 string representation of the execution timestamp. */
   timestamp: string;
+  /** Whether the command succeeded. */
   success: boolean;
+  /** Categorization tag. */
   category?: string;
+  /** Favorite status flag. */
   favorite?: boolean;
+  /** Execution elapsed time in milliseconds. */
   executionTime?: number;
 }
 
+/**
+ * Custom React hook for tracking, persisting, filtering, and analyzing terminal command execution history.
+ *
+ * Provides localStorage persistence, debounced full-text search, automatic command categorization,
+ * multi-criteria sorting (recency, frequency, alphabetical), favorites management, suggestions,
+ * and JSON import/export capabilities.
+ *
+ * @param options - Configuration options controlling history size, storage key, and categorization behavior.
+ * @param options.maxHistorySize - Maximum number of history items to retain in memory and persistence.
+ * @param options.persistKey - LocalStorage key utilized for persisting serialized history.
+ * @param options.categorizeCommands - Whether to automatically classify commands into functional categories.
+ * @returns An object containing filtered history, analytics, search states, and manipulation actions:
+ * - `history`: Filtered and sorted array of {@link HistoryItem} entries.
+ * - `favorites`: Top favorite command entries.
+ * - `frequentCommands`: Top most frequently executed commands with run counts.
+ * - `categories`: List of unique category names available across recorded history.
+ * - `commandFrequency`: Frequency map of command strings to execution counts.
+ * - `searchQuery`: Current raw search query string.
+ * - `setSearchQuery`: Dispatcher to update the search query.
+ * - `selectedCategory`: Active category filter.
+ * - `setSelectedCategory`: Dispatcher to update the category filter.
+ * - `sortBy`: Active sort mode ('recent' | 'frequency' | 'alphabetical').
+ * - `setSortBy`: Dispatcher to switch sort mode.
+ * - `addToHistory`: Appends a new executed command to the history.
+ * - `toggleFavorite`: Toggles the bookmark status of a specific command string.
+ * - `clearHistory`: Clears all history entries from state and local storage.
+ * - `exportHistory`: Downloads the entire command history as a JSON file.
+ * - `importHistory`: Parses and loads command history from an uploaded JSON file.
+ * - `getSuggestions`: Retrieves auto-completion command suggestions based on prefix match.
+ * - `totalCommands`: Total number of recorded command history entries.
+ * - `successRate`: Percentage of successfully executed commands (0-100).
+ *
+ * @example
+ * ```tsx
+ * const {
+ *   history,
+ *   addToHistory,
+ *   searchQuery,
+ *   setSearchQuery,
+ *   getSuggestions,
+ * } = useHistory({ maxHistorySize: 100 });
+ * ```
+ */
 export function useHistory({
   maxHistorySize = 200,
   persistKey = "-terminal-history",

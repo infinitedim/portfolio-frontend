@@ -19,18 +19,37 @@ import { ProjectEngineeringHighlights } from "@/components/organisms/projects/pr
 import { ProjectCommitTracker } from "@/components/organisms/projects/project-commit-tracker";
 
 
+/**
+ * Route parameters for the project detail page.
+ */
 interface PageProps {
+  /** Asynchronous route parameters containing the project slug. */
   params: Promise<{ slug: string }>;
+  /** Optional asynchronous search parameters containing query strings like locale. */
   searchParams?: Promise<{ locale?: string }>;
 }
 
+/**
+ * Fallback slug placeholder used during static generation when project lists are empty.
+ */
 const BUILD_PLACEHOLDER_SLUG = "__build_placeholder__";
 
+/**
+ * Finds a project by its URL slug.
+ *
+ * @param {string} slug - The slug identifier of the project.
+ * @returns {Promise<Project | null>} The matching Project object or null if not found.
+ */
 async function findProject(slug: string): Promise<Project | null> {
   const projects = await getProjectsData();
   return projects.find((p) => p.slug === slug) ?? null;
 }
 
+/**
+ * Generates static route parameters for all available projects for Static Site Generation (SSG).
+ *
+ * @returns {Promise<{ slug: string }[]>} Array of parameter objects with project slugs.
+ */
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const projects = await getProjectsData();
@@ -44,6 +63,13 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return [{ slug: BUILD_PLACEHOLDER_SLUG }];
 }
 
+/**
+ * Generates dynamic SEO metadata and OpenGraph configuration for a project detail page.
+ *
+ * @param {object} props - Metadata generation props.
+ * @param {Promise<{ slug: string }>} props.params - Asynchronous route parameters containing the slug.
+ * @returns {Promise<Metadata>} Metadata configuration object for Next.js.
+ */
 export async function generateMetadata({
   params,
 }: {
@@ -93,8 +119,9 @@ export async function generateMetadata({
   };
 }
 
-                                                                          
-
+/**
+ * Lookup set of lowercase technology identifiers classified under frontend development.
+ */
 const FRONTEND_KEYS = new Set([
   "react",
   "next.js",
@@ -114,6 +141,9 @@ const FRONTEND_KEYS = new Set([
   "radix ui",
 ]);
 
+/**
+ * Lookup set of lowercase technology identifiers classified under database and caching layers.
+ */
 const DATA_KEYS = new Set([
   "postgresql",
   "postgres",
@@ -130,11 +160,22 @@ const DATA_KEYS = new Set([
   "pgvector",
 ]);
 
+/**
+ * Structured technology group containing a human-readable label and item list.
+ */
 interface TechCategory {
+  /** The descriptive group name for the technology category. */
   readonly label: string;
+  /** Array of technology titles in this category. */
   readonly items: string[];
 }
 
+/**
+ * Categorizes an array of technology strings into structured stack buckets.
+ *
+ * @param {string[]} technologies - List of technology name strings.
+ * @returns {TechCategory[]} Categorized groups of technologies.
+ */
 function categorizeTechnologies(technologies: string[]): TechCategory[] {
   const frontend: string[] = [];
   const data: string[] = [];
@@ -160,14 +201,17 @@ function categorizeTechnologies(technologies: string[]): TechCategory[] {
   return categories;
 }
 
-                                                                          
-
+/**
+ * Obtains engineering highlights for a project, returning predefined defaults if custom highlights are absent.
+ *
+ * @param {Project} project - The project entity.
+ * @returns {ProjectHighlight[] | undefined} Array of highlights or undefined if metrics are missing.
+ */
 function getDefaultHighlights(project: Project): ProjectHighlight[] | undefined {
   if (project.highlights && project.highlights.length > 0) {
     return project.highlights;
   }
 
-                                                                                    
   if (!project.metrics) return undefined;
 
   return [
@@ -198,8 +242,16 @@ function getDefaultHighlights(project: Project): ProjectHighlight[] | undefined 
   ];
 }
 
-                                                                          
-
+/**
+ * Server Component that asynchronously fetches and renders complete project case study details.
+ *
+ * @description Loads project data by slug, renders breadcrumb and software schema metadata,
+ * presentation mockups, architectural metrics, tech badges, git commits, and related projects.
+ *
+ * @param {object} props - Component properties.
+ * @param {Promise<{ slug: string }>} props.params - Asynchronous route parameters.
+ * @returns {Promise<JSX.Element>} The rendered project detail content.
+ */
 async function ProjectDetailContent({
   params,
 }: {
@@ -456,6 +508,11 @@ async function ProjectDetailContent({
   );
 }
 
+/**
+ * Loading fallback placeholder skeleton for the ProjectDetailContent component.
+ *
+ * @returns {JSX.Element} The rendered project detail fallback skeleton.
+ */
 function ProjectDetailFallback(): JSX.Element {
   return (
     <div className="px-4 py-16">
@@ -476,6 +533,15 @@ function ProjectDetailFallback(): JSX.Element {
   );
 }
 
+/**
+ * Server Component page entry for the dynamic project slug route (`/projects/[slug]`).
+ *
+ * @description Wraps the project detail view inside a Suspense boundary with fallback
+ * within the standard application layout.
+ *
+ * @param {PageProps} props - Page properties containing dynamic route parameters.
+ * @returns {JSX.Element} The rendered project detail page tree.
+ */
 export default function ProjectDetailPage({ params }: PageProps): JSX.Element {
   return (
     <StandardPageLayout>

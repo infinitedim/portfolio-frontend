@@ -19,18 +19,34 @@ import {
   BatchConfig,
 } from "./types";
 
+/**
+ * Internal in-memory log buffer structure for batching client log entries before remote transmission.
+ */
 interface LogBuffer {
+  /** Queued log entries waiting to be transmitted. */
   logs: LogEntry[];
+  /** Active timeout handle for scheduled batch flushing. */
   timer: NodeJS.Timeout | null;
+  /** Number of consecutive failed delivery attempts. */
   retryCount: number;
 }
 
+/**
+ * Client-side logging service wrapping Pino with remote batching, sampling, and PII masking support.
+ */
 class ClientLogger {
+  /** Underlying Pino logger instance. */
   private pino: PinoLogger;
+  /** In-memory log entry queue for batch dispatch. */
   private buffer: LogBuffer;
+  /** Configuration parameters controlling batching and retry behavior. */
   private config: BatchConfig;
+  /** Indicates whether client-side logging is active in the current environment. */
   private enabled: boolean;
 
+  /**
+   * Initializes the client logger instance and binds lifecycle event handlers for automatic flush on unload.
+   */
   constructor() {
     if (!isClient()) {
       this.enabled = false;
@@ -59,7 +75,6 @@ class ClientLogger {
       level: clientConfig.level,
       browser: isDev
         ? {
-                                                                                                        
             disabled: true,
           }
         : {
@@ -95,17 +110,35 @@ class ClientLogger {
     }
   }
 
+  /**
+   * Creates a child logger with bound contextual metadata.
+   *
+   * @param context - Additional contextual properties to attach to all subsequent logs.
+   * @returns A new ClientLogger instance inheriting the parent configuration.
+   */
   child(context: LogContext): ClientLogger {
     const childLogger = Object.create(this) as ClientLogger;
     childLogger.pino = this.pino.child(context);
     return childLogger;
   }
 
+  /**
+   * Evaluates whether a log entry at the specified log level should be recorded based on sampling rates.
+   *
+   * @param level - Log severity level to check.
+   * @returns True if the log should be recorded; otherwise false.
+   */
   private shouldSample(level: LogLevel): boolean {
     const rate = SAMPLING_CONFIG[level as keyof typeof SAMPLING_CONFIG] || 1.0;
     return Math.random() < rate;
   }
 
+  /**
+   * Enriches contextual log properties with ambient browser request details (URL, user agent, session ID).
+   *
+   * @param context - Optional caller-supplied context to merge.
+   * @returns Merged contextual object.
+   */
   private enrichContext(context?: LogContext): LogContext {
     const requestContext = getRequestContext();
     return {
@@ -114,6 +147,11 @@ class ClientLogger {
     };
   }
 
+  /**
+   * Appends a log entry into the internal transmission buffer and triggers a flush if batch size is reached.
+   *
+   * @param entry - The structured log entry to buffer.
+   */
   private addToBuffer(entry: LogEntry): void {
     if (!clientConfig.remote || !this.enabled) {
       return;
@@ -140,6 +178,11 @@ class ClientLogger {
     }
   }
 
+  /**
+   * Flushes buffered log entries to the remote log ingest endpoint via HTTP POST.
+   *
+   * @returns A promise resolving when the flush attempt completes.
+   */
   async flush(): Promise<void> {
     if (!this.enabled || this.buffer.logs.length === 0) {
       return;
@@ -189,6 +232,13 @@ class ClientLogger {
     }
   }
 
+  /**
+   * Logs a trace-level diagnostic message.
+   *
+   * @param message - Diagnostic message string.
+   * @param context - Optional contextual data.
+   * @param metadata - Optional key-value metadata record.
+   */
   trace(
     message: string,
     context?: LogContext,
@@ -208,6 +258,13 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
+  /**
+   * Logs a debug-level diagnostic message.
+   *
+   * @param message - Debug message string.
+   * @param context - Optional contextual data.
+   * @param metadata - Optional key-value metadata record.
+   */
   debug(
     message: string,
     context?: LogContext,
@@ -227,6 +284,13 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
+  /**
+   * Logs an informational message.
+   *
+   * @param message - Informational message string.
+   * @param context - Optional contextual data.
+   * @param metadata - Optional key-value metadata record.
+   */
   info(
     message: string,
     context?: LogContext,
@@ -246,6 +310,13 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
+  /**
+   * Logs a warning message.
+   *
+   * @param message - Warning message string.
+   * @param context - Optional contextual data.
+   * @param metadata - Optional key-value metadata record.
+   */
   warn(
     message: string,
     context?: LogContext,
@@ -265,6 +336,14 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
+  /**
+   * Logs an error message and extracts error details including stack traces.
+   *
+   * @param message - Error description message.
+   * @param error - The caught error object or value.
+   * @param context - Optional contextual data.
+   * @param metadata - Optional key-value metadata record.
+   */
   error(
     message: string,
     error?: unknown,
@@ -293,6 +372,14 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
+  /**
+   * Logs a fatal application error and immediately attempts to flush the log buffer.
+   *
+   * @param message - Fatal error description message.
+   * @param error - The fatal error object or value.
+   * @param context - Optional contextual data.
+   * @param metadata - Optional key-value metadata record.
+   */
   fatal(
     message: string,
     error?: unknown,
@@ -323,6 +410,12 @@ class ClientLogger {
     this.flush();
   }
 
+  /**
+   * Convenience helper to log an error with formatted error name and message.
+   *
+   * @param error - The caught error object or value.
+   * @param context - Optional contextual data.
+   */
   logError(error: unknown, context?: LogContext): void {
     const errorDetails = formatError(error);
 
@@ -339,6 +432,13 @@ class ClientLogger {
     );
   }
 
+  /**
+   * Logs a user interaction or event for analytical tracking.
+   *
+   * @param actionType - Identifier describing the user action.
+   * @param metadata - Optional metadata details describing the action.
+   * @param context - Optional contextual data.
+   */
   logUserAction(
     actionType: string,
     metadata?: Record<string, unknown>,
@@ -359,6 +459,14 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
+  /**
+   * Logs performance timing metrics, categorizing severity based on configured duration thresholds.
+   *
+   * @param metricName - Name or identifier of the performance metric.
+   * @param value - Measured numeric value (typically duration in milliseconds).
+   * @param metadata - Optional metadata describing the measurement.
+   * @param context - Optional contextual data.
+   */
   logPerformance(
     metricName: string,
     value: number,
@@ -401,6 +509,14 @@ class ClientLogger {
     this.addToBuffer(entry);
   }
 
+  /**
+   * Logs a security-related event with an assigned threat level classification.
+   *
+   * @param eventType - Identifier describing the security event.
+   * @param threatLevel - Threat severity classification ('low', 'medium', 'high', or 'critical').
+   * @param metadata - Optional metadata details describing the security event.
+   * @param context - Optional contextual data.
+   */
   logSecurityEvent(
     eventType: string,
     threatLevel: "low" | "medium" | "high" | "critical",
@@ -436,6 +552,16 @@ class ClientLogger {
     }
   }
 
+  /**
+   * Logs HTTP API request results including method, URL, status code, and round-trip duration.
+   *
+   * @param method - HTTP request method (GET, POST, etc.).
+   * @param url - Requested endpoint URL.
+   * @param statusCode - HTTP response status code.
+   * @param duration - Elapsed request duration in milliseconds.
+   * @param metadata - Optional metadata associated with the API call.
+   * @param context - Optional contextual data.
+   */
   logApiCall(
     method: string,
     url: string,
@@ -472,6 +598,9 @@ class ClientLogger {
   }
 }
 
+/**
+ * Default singleton instance of the ClientLogger.
+ */
 const clientLogger = new ClientLogger();
 
 export default clientLogger;

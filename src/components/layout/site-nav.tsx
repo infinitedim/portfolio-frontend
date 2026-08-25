@@ -10,6 +10,9 @@ import { VisitorPresenceBadge } from "@/components/molecules/presence/visitor-pr
 import { RootCustomizationModal } from "@/components/molecules/customization/root-customization-modal";
 import dynamic from "next/dynamic";
 
+/**
+ * Dynamically loaded client modal showcasing interactive terminal features and shortcuts.
+ */
 const TerminalFeaturesModal = dynamic(
   () =>
     import("@/components/molecules/shared/terminal-features-modal").then(
@@ -19,6 +22,9 @@ const TerminalFeaturesModal = dynamic(
 );
 import * as Dialog from "@radix-ui/react-dialog";
 
+/**
+ * Configuration list of main site navigation items containing localization translation keys and route targets.
+ */
 const NAV_LINKS = [
   { key: "navHome" as const, href: "/" },
   { key: "navAbout" as const, href: "/about" },
@@ -28,10 +34,20 @@ const NAV_LINKS = [
   { key: "navRoadmap" as const, href: "/roadmap" },
 ] as const;
 
+/**
+ * Properties for the site navigation header component.
+ * @property {string} [currentPath] - Optional override path used to calculate active route highlight states.
+ */
 interface SiteNavProps {
   currentPath?: string;
 }
 
+/**
+ * Internal interactive navigation header containing responsive desktop links, mobile hamburger drawer, presence indicator, language selector, root customization triggers, and modal handlers.
+ * @param {SiteNavProps} props - The component properties.
+ * @param {string} [props.currentPath] - Optional active path override.
+ * @returns {JSX.Element} The rendered interactive site navigation element and associated dialogs.
+ */
 function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
   const pathname = usePathname();
   const router = useRouter();
@@ -257,6 +273,12 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
   );
 }
 
+/**
+ * Static navigation fallback rendered while asynchronous navigation state or localized routes are resolving within Suspense boundaries.
+ * @param {SiteNavProps} props - The component properties.
+ * @param {string} [props.currentPath] - Optional active path override.
+ * @returns {JSX.Element} The static fallback header element.
+ */
 function SiteNavFallback({ currentPath }: SiteNavProps): JSX.Element {
   const { t } = useI18n();
   const activePath = currentPath ?? "";
@@ -317,6 +339,12 @@ function SiteNavFallback({ currentPath }: SiteNavProps): JSX.Element {
   );
 }
 
+/**
+ * Suspense-wrapped primary application navigation header providing sticky navigation, terminal aesthetic links, presence indicators, and mobile menus.
+ * @param {SiteNavProps} props - The component properties.
+ * @param {string} [props.currentPath] - Optional active path override.
+ * @returns {JSX.Element} The Suspense boundary enclosing the interactive SiteNav component.
+ */
 export function SiteNav(props: SiteNavProps): JSX.Element {
   return (
     <Suspense fallback={<SiteNavFallback {...props} />}>

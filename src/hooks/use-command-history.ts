@@ -1,8 +1,27 @@
+/**
+ * @fileoverview Custom hook for terminal command history management, analytics, search, filtering, and persistence.
+ * @module hooks/use-command-history
+ */
+
 "use client";
 
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 
+/**
+ * Represents a single persisted terminal command execution record.
+ *
+ * @interface CommandHistoryEntry
+ * @property {string} id - Unique identifier for the history entry.
+ * @property {string} command - Raw command string that was entered.
+ * @property {Date} timestamp - Date and time when the command was executed.
+ * @property {boolean} success - Whether the command executed without runtime errors.
+ * @property {number} [executionTime] - Optional execution duration in milliseconds.
+ * @property {string} category - Command category (e.g. "portfolio", "system", "development", "social").
+ * @property {boolean} favorite - Whether the user marked this command as a favorite.
+ * @property {number} frequency - Number of times this exact command has been executed.
+ * @property {string} [context] - Optional execution context or arguments metadata.
+ */
 export interface CommandHistoryEntry {
   id: string;
   command: string;
@@ -15,6 +34,17 @@ export interface CommandHistoryEntry {
   context?: string;
 }
 
+/**
+ * Filter and sorting criteria for querying command history entries.
+ *
+ * @interface HistorySearchOptions
+ * @property {string} query - Text substring query to match against command or category.
+ * @property {string} [category] - Specific category to filter by.
+ * @property {boolean} [favorite] - Filter only favorite commands if true.
+ * @property {"today" | "week" | "month" | "all"} [timeRange] - Time window constraint.
+ * @property {"recent" | "frequency" | "alphabetical" | "execution_time"} sortBy - Sorting algorithm to apply.
+ * @property {boolean} [success] - Filter by execution success status.
+ */
 export interface HistorySearchOptions {
   query: string;
   category?: string;
@@ -24,6 +54,15 @@ export interface HistorySearchOptions {
   success?: boolean;
 }
 
+/**
+ * Configuration options for the useCommandHistory hook.
+ *
+ * @interface UseCommandHistoryOptions
+ * @property {number} [maxHistorySize] - Maximum number of history entries retained in storage.
+ * @property {string} [persistKey] - LocalStorage key for persisting history.
+ * @property {boolean} [enableAnalytics] - Whether to calculate usage analytics and metrics.
+ * @property {boolean} [autoCategories] - Whether to automatically assign categories to commands.
+ */
 interface UseCommandHistoryOptions {
   maxHistorySize?: number;
   persistKey?: string;
@@ -31,6 +70,19 @@ interface UseCommandHistoryOptions {
   autoCategories?: boolean;
 }
 
+/**
+ * Aggregated metrics and usage statistics derived from command history records.
+ *
+ * @interface HistoryAnalytics
+ * @property {number} totalCommands - Total count of executed commands.
+ * @property {number} uniqueCommands - Count of distinct command strings.
+ * @property {number} successRate - Percentage of successfully executed commands (0-100).
+ * @property {number} averageExecutionTime - Mean execution time across commands in milliseconds.
+ * @property {Array<{ command: string; count: number; avgTime: number }>} topCommands - Most frequently run commands.
+ * @property {Record<string, number>} commandsByCategory - Distribution of command executions per category.
+ * @property {Array<{ date: string; count: number }>} recentActivity - Daily command counts over the past 7 days.
+ * @property {Array<{ command: string; count: number }>} errorCommands - Commands that most frequently failed.
+ */
 export interface HistoryAnalytics {
   totalCommands: number;
   uniqueCommands: number;
@@ -42,6 +94,12 @@ export interface HistoryAnalytics {
   errorCommands: Array<{ command: string; count: number }>;
 }
 
+/**
+ * React hook managing terminal command history, persistence to localStorage, search filtering, auto-suggestions, and analytics.
+ *
+ * @param {UseCommandHistoryOptions} [options] - Configuration options for history capacity, storage key, analytics, and categorization.
+ * @returns {object} History collections, search filters, mutators, import/export utilities, and analytics.
+ */
 export function useCommandHistory({
   maxHistorySize = 500,
   persistKey = "-terminal-history",
@@ -88,6 +146,12 @@ export function useCommandHistory({
     }
   }, [history, persistKey]);
 
+  /**
+   * Categorizes a command string based on known keywords and conventions.
+   *
+   * @param {string} command - Command name or input string.
+   * @returns {string} Assigned category name.
+   */
   const categorizeCommand = useCallback(
     (command: string): string => {
       if (!autoCategories) return "general";
@@ -127,6 +191,14 @@ export function useCommandHistory({
     [autoCategories],
   );
 
+  /**
+   * Records a new command execution entry in history or bumps the frequency of an existing one.
+   *
+   * @param {string} command - Command string executed.
+   * @param {boolean} [success] - Whether the command succeeded.
+   * @param {number} [executionTime] - Optional duration in ms.
+   * @param {string} [context] - Optional execution context.
+   */
   const addCommand = useCallback(
     (
       command: string,
@@ -168,6 +240,11 @@ export function useCommandHistory({
     [maxHistorySize, categorizeCommand],
   );
 
+  /**
+   * Toggles the favorite status of a specific command history entry by ID.
+   *
+   * @param {string} commandId - Unique ID of the history entry to toggle.
+   */
   const toggleFavorite = useCallback((commandId: string) => {
     setHistory((prev) =>
       prev.map((entry) =>
@@ -178,10 +255,18 @@ export function useCommandHistory({
     );
   }, []);
 
+  /**
+   * Removes a specific command from history by ID.
+   *
+   * @param {string} commandId - Unique ID of the history entry to delete.
+   */
   const removeCommand = useCallback((commandId: string) => {
     setHistory((prev) => prev.filter((entry) => entry.id !== commandId));
   }, []);
 
+  /**
+   * Clears all command history from memory and localStorage.
+   */
   const clearHistory = useCallback(() => {
     setHistory([]);
     try {
@@ -191,6 +276,12 @@ export function useCommandHistory({
     }
   }, [persistKey]);
 
+  /**
+   * Creates a predicate function for filtering history entries by a time window.
+   *
+   * @param {string} timeRange - Time range string ("today", "week", "month", "all").
+   * @returns {(entry: CommandHistoryEntry) => boolean} Filter predicate function.
+   */
   const getTimeRangeFilter = useCallback((timeRange: string) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -264,6 +355,13 @@ export function useCommandHistory({
     }
   }, [history, debouncedSearch, searchOptions, getTimeRangeFilter]);
 
+  /**
+   * Generates autocomplete suggestions matching a partial command prefix weighted by frequency and recency.
+   *
+   * @param {string} partialCommand - Partial command input typed by user.
+   * @param {number} [limit] - Maximum number of suggestions to return.
+   * @returns {string[]} Ordered list of matching command suggestions.
+   */
   const getSuggestions = useCallback(
     (partialCommand: string, limit: number = 8) => {
       if (!partialCommand.trim()) return [];
@@ -397,6 +495,9 @@ export function useCommandHistory({
     };
   }, [history, enableAnalytics]);
 
+  /**
+   * Serializes history entries into a downloadable JSON file artifact.
+   */
   const exportHistory = useCallback(() => {
     const dataStr = JSON.stringify(history, null, 2);
     const blob = new Blob([dataStr], { type: "application/json" });
@@ -408,6 +509,11 @@ export function useCommandHistory({
     URL.revokeObjectURL(url);
   }, [history]);
 
+  /**
+   * Imports and merges history entries from an uploaded JSON file.
+   *
+   * @param {File} file - JSON file to import.
+   */
   const importHistory = useCallback(
     (file: File) => {
       const reader = new FileReader();

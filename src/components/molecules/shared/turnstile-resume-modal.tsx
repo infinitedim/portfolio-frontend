@@ -6,11 +6,27 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { Download, ShieldCheck, X, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
+/**
+ * Properties for the TurnstileResumeModal component.
+ *
+ * @interface TurnstileResumeModalProps
+ * @property {boolean} isOpen - Controls whether the modal dialog is visible.
+ * @property {(open: boolean) => void} onOpenChange - Callback invoked when the modal visibility state changes.
+ */
 interface TurnstileResumeModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+/**
+ * Security verification modal integrating Cloudflare Turnstile CAPTCHA protection
+ * for authorized resume PDF downloads with fallback mechanisms.
+ *
+ * @param {TurnstileResumeModalProps} props - Component properties.
+ * @param {boolean} props.isOpen - Current visibility state of the modal.
+ * @param {(open: boolean) => void} props.onOpenChange - Callback invoked when visibility changes.
+ * @returns {JSX.Element} The rendered modal containing the Turnstile challenge and download handler.
+ */
 export function TurnstileResumeModal({
   isOpen,
   onOpenChange,
@@ -22,6 +38,12 @@ export function TurnstileResumeModal({
 
   const siteKey = process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY || "";
 
+  /**
+   * Dispatches a POST request to verify the Turnstile token and initiate resume file download.
+   *
+   * @param {string} [token] - Optional Turnstile validation token provided by the challenge response.
+   * @returns {Promise<void>} Resolves when download initiates or fails.
+   */
   const handleDownloadWithToken = useCallback(
     async (token?: string) => {
       setIsDownloading(true);

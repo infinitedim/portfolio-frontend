@@ -2,6 +2,14 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 
+/**
+ * React hook that returns a debounced version of a value, updating only after the specified delay has elapsed since the last change.
+ *
+ * @template T - Type of the input value.
+ * @param {T} value - The dynamic value to debounce.
+ * @param {number} [delay] - Debounce delay in milliseconds before state is updated.
+ * @returns {T} The debounced value.
+ */
 export function useDebouncedValue<T>(value: T, delay: number = 300): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -27,6 +35,14 @@ export function useDebouncedValue<T>(value: T, delay: number = 300): T {
   return debouncedValue;
 }
 
+/**
+ * React hook that returns a debounced version of a callback function, delaying execution until after the specified delay has elapsed since the last invocation.
+ *
+ * @template T - Callback function type.
+ * @param {T} callback - The callback function to debounce.
+ * @param {number} [delay] - Debounce delay in milliseconds.
+ * @returns {T} The debounced callback function.
+ */
 export function useDebouncedCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
   delay: number = 300,

@@ -11,10 +11,27 @@ import {
   StaggerContainer,
 } from "@/components/atoms/shared/motion-wrappers";
 
+/**
+ * Props for the {@link FeaturedProjectsClient} component.
+ */
 interface FeaturedProjectsClientProps {
+  /**
+   * List of projects to display in the featured showcase.
+   */
   projects: Project[];
 }
 
+/**
+ * Client-side component displaying the featured projects showcase on the landing page.
+ *
+ * @description
+ * Renders a terminal-styled `$ ls --featured` section containing up to 3 highlighted projects
+ * using animated stagger and fade motion wrappers. If no projects are available, displays a localized empty state.
+ *
+ * @param props - The component props.
+ * @param props.projects - Array of project items to showcase.
+ * @returns The rendered featured projects section JSX element.
+ */
 export function FeaturedProjectsClient({
   projects,
 }: FeaturedProjectsClientProps): JSX.Element {

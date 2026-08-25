@@ -6,9 +6,27 @@ import { authService } from "@/lib/auth/auth-service";
 import { getApiUrl } from "@/lib/api/get-api-url";
 import { Upload } from "lucide-react";
 
+/**
+ * Maximum permitted file size for image uploads in bytes (5 MB).
+ * @constant {number}
+ */
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+/**
+ * Array of accepted image MIME content types allowed for upload.
+ * @constant {string[]}
+ */
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
+/**
+ * Server response schema returned after a successful image upload.
+ *
+ * @interface UploadResponse
+ * @property {string} url - The publicly accessible URL of the uploaded image resource.
+ * @property {string} filename - The stored filename generated or preserved by the backend.
+ * @property {number} size - The uploaded file size in bytes.
+ * @property {string} mimeType - The MIME type of the stored image.
+ */
 interface UploadResponse {
   url: string;
   filename: string;
@@ -16,6 +34,16 @@ interface UploadResponse {
   mimeType: string;
 }
 
+/**
+ * Uploads a blog image file to the backend image upload endpoint using bearer authentication.
+ *
+ * Validates the file format and size constraints before dispatching the multipart form request.
+ *
+ * @async
+ * @function uploadBlogImage
+ * @param {File} file - The image file to upload.
+ * @returns {Promise<string | null>} The public URL of the uploaded image, or `null` if the upload fails or validation fails.
+ */
 export async function uploadBlogImage(file: File): Promise<string | null> {
   if (!ACCEPTED_TYPES.includes(file.type)) return null;
   if (file.size > MAX_FILE_SIZE) return null;
@@ -37,12 +65,27 @@ export async function uploadBlogImage(file: File): Promise<string | null> {
   return data.url;
 }
 
+/**
+ * Props for the {@link ImageUploadButton} component.
+ *
+ * @interface ImageUploadButtonProps
+ * @property {(url: string) => void} onUploadComplete - Callback invoked with the uploaded image's public URL upon successful upload.
+ * @property {boolean} [disabled] - Disables the upload trigger button.
+ * @property {string} [className=""] - Optional extra CSS class names for styling the button container.
+ */
 interface ImageUploadButtonProps {
   onUploadComplete: (url: string) => void;
   disabled?: boolean;
   className?: string;
 }
 
+/**
+ * A button component that triggers an image file selection dialog and uploads the selected image to the server.
+ *
+ * @component
+ * @param {ImageUploadButtonProps} props - Properties configuring the image upload button.
+ * @returns {React.JSX.Element} The rendered image upload button and error message display.
+ */
 export function ImageUploadButton({
   onUploadComplete,
   disabled,
@@ -52,10 +95,22 @@ export function ImageUploadButton({
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * Programmatically opens the hidden file input dialog when the button is clicked.
+   *
+   * @returns {void}
+   */
   const handleClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
 
+  /**
+   * Validates and performs the multipart upload of the selected image file.
+   *
+   * @async
+   * @param {File} file - The file selected by the user.
+   * @returns {Promise<void>} Resolves when the upload process finishes.
+   */
   const uploadFile = useCallback(
     async (file: File) => {
       setError(null);
@@ -111,6 +166,12 @@ export function ImageUploadButton({
     [onUploadComplete],
   );
 
+  /**
+   * Event handler for the file input change event.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Change event from the file input element.
+   * @returns {void}
+   */
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -146,12 +207,27 @@ export function ImageUploadButton({
   );
 }
 
+/**
+ * Props for the {@link ImageDropZone} component.
+ *
+ * @interface ImageDropZoneProps
+ * @property {(url: string) => void} onUploadComplete - Callback invoked with the uploaded image's public URL upon successful drop and upload.
+ * @property {React.ReactNode} children - Child elements wrapped inside the drag and drop area.
+ * @property {string} [className=""] - Optional CSS class name for the wrapper container.
+ */
 interface ImageDropZoneProps {
   onUploadComplete: (url: string) => void;
   children: React.ReactNode;
   className?: string;
 }
 
+/**
+ * A drag-and-drop container component that accepts dropped image files and uploads them automatically.
+ *
+ * @component
+ * @param {ImageDropZoneProps} props - Properties configuring the drop zone container.
+ * @returns {React.JSX.Element} The rendered drop zone wrapper with visual drag overlay.
+ */
 export function ImageDropZone({
   onUploadComplete,
   children,
@@ -161,6 +237,13 @@ export function ImageDropZone({
   const [isUploading, setIsUploading] = useState(false);
   const dragCountRef = useRef(0);
 
+  /**
+   * Uploads the dropped file to the backend API.
+   *
+   * @async
+   * @param {File} file - Dropped image file to upload.
+   * @returns {Promise<void>} Resolves when upload completes.
+   */
   const uploadFile = useCallback(
     async (file: File) => {
       if (!ACCEPTED_TYPES.includes(file.type)) return;
@@ -196,6 +279,12 @@ export function ImageDropZone({
     [onUploadComplete],
   );
 
+  /**
+   * Handles drag enter events to track drag depth and activate the visual drag overlay.
+   *
+   * @param {React.DragEvent} e - Drag event object.
+   * @returns {void}
+   */
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -205,6 +294,12 @@ export function ImageDropZone({
     }
   }, []);
 
+  /**
+   * Handles drag leave events to decrement drag counter and dismiss overlay when dragging exits.
+   *
+   * @param {React.DragEvent} e - Drag event object.
+   * @returns {void}
+   */
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -214,11 +309,23 @@ export function ImageDropZone({
     }
   }, []);
 
+  /**
+   * Handles drag over events to allow dropping items by preventing default browser handling.
+   *
+   * @param {React.DragEvent} e - Drag event object.
+   * @returns {void}
+   */
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
   }, []);
 
+  /**
+   * Handles drop events to extract dropped image files and initiate file upload.
+   *
+   * @param {React.DragEvent} e - Drag event object containing dropped files.
+   * @returns {void}
+   */
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();

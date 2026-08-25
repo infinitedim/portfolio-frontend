@@ -3,10 +3,27 @@
 import type { JSX } from "react";
 import { AboutInfo } from "@/lib/data/data-fetching";
 
+/**
+ * Props for the {@link AboutSectionClient} component.
+ */
 interface AboutSectionClientProps {
+  /**
+   * The about information containing biography, title, and profile details.
+   */
   about: AboutInfo;
 }
 
+/**
+ * Renders the client-side presentation layer for the landing page's About section.
+ *
+ * @description
+ * Formats the biography and profile title in a terminal-styled card with
+ * monospace typography, accent borders, and terminal prompt headers (`$ cat --about`).
+ *
+ * @param props - The component props containing about data.
+ * @param props.about - The about payload fetched from the API or localization store.
+ * @returns The rendered terminal-themed about section JSX element.
+ */
 export function AboutSectionClient({
   about,
 }: AboutSectionClientProps): JSX.Element {

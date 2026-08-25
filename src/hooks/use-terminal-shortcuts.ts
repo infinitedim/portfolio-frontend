@@ -4,15 +4,58 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import type { KeyboardShortcut } from "@/components/molecules/terminal/keyboard-shortcuts";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Handler options and event callback bindings for keyboard shortcut triggers.
+ */
 interface UseTerminalShortcutsOptions {
+  /** Callback triggered when the terminal clear shortcut (e.g., Ctrl+L) is pressed. */
   onClear?: () => void;
+  /** Callback triggered when the help menu shortcut (e.g., Ctrl+H / F1) is pressed. */
   onHelp?: () => void;
+  /** Callback triggered when the theme toggle shortcut (e.g., Ctrl+T) is pressed. */
   onThemeToggle?: () => void;
+  /** Callback triggered when the history palette shortcut (e.g., Ctrl+R) is pressed. */
   onHistoryOpen?: () => void;
+  /** Callback triggered when the shortcuts cheat sheet shortcut (e.g., Ctrl+?) is pressed. */
   onShortcutsOpen?: () => void;
+  /**
+   * Callback invoked when a quick command shortcut fires.
+   * @param command - The pre-configured command string to execute (e.g. 'help', 'about', 'skills').
+   */
   onCommandExecute?: (command: string) => void;
 }
 
+/**
+ * Custom React hook for registering, handling, customizing, and persisting global terminal keyboard shortcuts.
+ *
+ * Attaches a global `keydown` event listener that bypasses standard text inputs, translates
+ * key combos into actions, and supports user customization persisted in `localStorage`.
+ *
+ * @param options - Configuration callbacks triggered when corresponding shortcuts are activated.
+ * @param options.onClear - Callback triggered when the clear terminal shortcut is pressed.
+ * @param options.onHelp - Callback triggered when the help menu shortcut is pressed.
+ * @param options.onThemeToggle - Callback triggered when the theme toggle shortcut is pressed.
+ * @param options.onHistoryOpen - Callback triggered when the history palette shortcut is pressed.
+ * @param options.onShortcutsOpen - Callback triggered when the shortcuts cheat sheet shortcut is pressed.
+ * @param options.onCommandExecute - Callback invoked when a quick command shortcut fires.
+ * @returns An object containing active shortcut bindings and management methods:
+ * - `shortcuts`: List of currently registered {@link KeyboardShortcut} configurations.
+ * - `updateShortcutKeys`: Modifies the key combination assigned to a specific shortcut ID.
+ * - `getShortcutSuggestions`: Returns matching shortcut suggestions filtered by a search query.
+ * - `resetToDefaults`: Restores all shortcut keybindings to their original defaults.
+ * - `exportShortcuts`: Exports custom shortcut bindings as a downloadable JSON file.
+ * - `importShortcuts`: Imports custom shortcut mappings from a JSON file.
+ * - `customShortcuts`: Map of shortcut IDs to customized key combination arrays.
+ *
+ * @example
+ * ```tsx
+ * const { shortcuts, resetToDefaults } = useTerminalShortcuts({
+ *   onClear: () => terminal.clear(),
+ *   onHelp: () => terminal.showHelp(),
+ *   onCommandExecute: (cmd) => terminal.run(cmd),
+ * });
+ * ```
+ */
 export function useTerminalShortcuts({
   onClear,
   onHelp,

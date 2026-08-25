@@ -10,24 +10,69 @@ import {
   HoverCard,
 } from "@/components/atoms/shared/motion-wrappers";
 
+/**
+ * Represents a blog post item payload for the latest posts widget.
+ */
 interface BlogPostItem {
+  /**
+   * Unique identifier of the blog post.
+   */
   id: string;
+  /**
+   * Article title.
+   */
   title: string;
+  /**
+   * URL-friendly slug for routing to the individual post.
+   */
   slug: string;
+  /**
+   * Brief summary or excerpt of the article content.
+   */
   summary: string | null;
+  /**
+   * Estimated reading duration in minutes.
+   */
   readingTimeMinutes: number;
+  /**
+   * ISO 8601 creation timestamp.
+   */
   createdAt: string;
 }
 
+/**
+ * Props for the {@link LatestPostsClient} component.
+ */
 interface LatestPostsClientProps {
+  /**
+   * Array of recent blog posts to display.
+   */
   posts: BlogPostItem[];
 }
 
+/**
+ * Client-side interactive list of the most recent blog posts for the landing page.
+ *
+ * @description
+ * Renders an animated terminal-themed section (`$ cat --latest-posts`) listing up to 3 blog posts.
+ * Includes interactive hover effects, reading time indicators, localized date formatting,
+ * and an empty state linking directly to the blog archive.
+ *
+ * @param props - The component props.
+ * @param props.posts - The list of blog post summaries.
+ * @returns The rendered latest posts section JSX element.
+ */
 export function LatestPostsClient({
   posts,
 }: LatestPostsClientProps): JSX.Element {
   const { t, currentLocale } = useI18n();
 
+  /**
+   * Formats an ISO date string according to the active locale.
+   *
+   * @param dateStr - The ISO 8601 date string to format.
+   * @returns Formatted localized date string (e.g. "Aug 25, 2026"), falling back to "en-US" on error.
+   */
   const formattedDate = (dateStr: string) => {
     try {
       const locale = currentLocale.replace("_", "-");

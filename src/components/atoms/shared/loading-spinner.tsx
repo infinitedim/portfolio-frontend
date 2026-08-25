@@ -3,12 +3,34 @@
 import { useTheme } from "@/hooks/use-theme";
 import type { JSX, HTMLAttributes } from "react";
 
+/**
+ * Props for the {@link LoadingSpinner} component.
+ *
+ * @interface LoadingSpinnerProps
+ * @extends {HTMLAttributes<HTMLDivElement>}
+ * @property {"sm" | "md" | "lg"} [size] - Size dimension preset controlling spinner size and typography.
+ * @property {string} [text] - Optional status message displayed alongside the spinner indicator.
+ * @property {string} [className] - Optional additional CSS classes for container layout.
+ */
 interface LoadingSpinnerProps extends HTMLAttributes<HTMLDivElement> {
   size?: "sm" | "md" | "lg";
   text?: string;
   className?: string;
 }
 
+/**
+ * Loading spinner atom component.
+ *
+ * @description
+ * Renders an accessible circular rotating spinner styled using the current theme's accent color,
+ * optionally displaying an accompanying pulsing status label.
+ *
+ * @param {LoadingSpinnerProps} props - Component properties.
+ * @param {"sm" | "md" | "lg"} [props.size] - The size variant of the spinner.
+ * @param {string} [props.text] - Optional loading status message.
+ * @param {string} [props.className] - Custom classes for layout adjustment.
+ * @returns {JSX.Element} The rendered loading spinner element.
+ */
 export function LoadingSpinner({
   size = "md",
   text,

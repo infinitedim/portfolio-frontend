@@ -5,6 +5,15 @@ import { useTheme } from "@/hooks/use-theme";
 import { CustomizationManager } from "@/components/organisms/customization/customization-manager";
 import { Palette } from "lucide-react";
 
+/**
+ * Floating action button (FAB) component that toggles the appearance customization modal.
+ *
+ * Renders a fixed palette button positioned at the bottom right corner of the viewport,
+ * styled dynamically with theme accent colors and backdrop blur. When clicked, it opens
+ * the {@link CustomizationManager} organism modal.
+ *
+ * @returns The rendered floating customization trigger button and associated manager modal.
+ */
 export function CustomizationButton(): JSX.Element {
   const { themeConfig, theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);

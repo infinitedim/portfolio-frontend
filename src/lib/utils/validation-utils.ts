@@ -1,22 +1,55 @@
+/**
+ * Result structure returned by validation operations.
+ */
 export interface ValidationResult {
+  /** Indicates whether the validation passed without critical errors. */
   isValid: boolean;
+  /** List of fatal validation error messages. */
   errors: string[];
+  /** List of non-fatal validation warning messages. */
   warnings: string[];
 }
 
+/**
+ * Supported value types for configurable service parameters.
+ */
 export type ParameterValue =
-  string | number | boolean | object | null | undefined;
+  | string
+  | number
+  | boolean
+  | object
+  | null
+  | undefined;
 
+/**
+ * Validation state and metadata for a specific named parameter.
+ */
 export interface ParameterValidation {
+  /** Name identifier of the parameter. */
   name: string;
+  /** Expected type definition for the parameter (e.g., 'string', 'number', 'email', 'url'). */
   type: string;
+  /** Whether the parameter is mandatory. */
   required: boolean;
+  /** Current value of the parameter being validated. */
   value: ParameterValue;
+  /** Whether the parameter value satisfies all validation constraints. */
   isValid: boolean;
+  /** Error message detailing why validation failed, if applicable. */
   error?: string;
 }
 
+/**
+ * Utility class providing static methods for validating services, methods, HTTP parameters, URLs, and environments.
+ */
 export class ValidationUtils {
+  /**
+   * Validates a service name and method against permitted services and naming conventions.
+   *
+   * @param service - The service identifier to validate.
+   * @param method - The procedure or method name to validate.
+   * @returns A ValidationResult indicating whether the service/method pair is valid along with any errors or warnings.
+   */
   static validateServiceMethod(
     service: string,
     method: string,
@@ -52,6 +85,13 @@ export class ValidationUtils {
     };
   }
 
+  /**
+   * Validates an array of parameter specifications against a map of actual parameter values.
+   *
+   * @param parameters - List of parameter definitions including name, expected type, and required flag.
+   * @param values - Key-value map containing the provided parameter values.
+   * @returns An array of ParameterValidation results describing the validity and potential errors for each parameter.
+   */
   static validateParameters(
     parameters: Array<{
       name: string;
@@ -155,6 +195,13 @@ export class ValidationUtils {
     });
   }
 
+  /**
+   * Validates an HTTP method string against allowed verbs and ensures compatibility with query or mutation operations.
+   *
+   * @param method - The HTTP verb (e.g. GET, POST, PUT, DELETE, PATCH).
+   * @param type - The operation category, either 'query' or 'mutation'.
+   * @returns A ValidationResult indicating validity and any HTTP method semantic warnings.
+   */
   static validateHttpMethod(
     method: string,
     type: "query" | "mutation",
@@ -184,6 +231,13 @@ export class ValidationUtils {
     };
   }
 
+  /**
+   * Sanitizes a given parameter value to conform to its expected target type.
+   *
+   * @param value - The input parameter value to normalize or cast.
+   * @param type - The target type representation ('string', 'number', 'boolean', 'object').
+   * @returns The sanitized value coerced or parsed according to the target type.
+   */
   static sanitizeValue(value: ParameterValue, type: string): ParameterValue {
     if (value === undefined || value === null) {
       return value;
@@ -219,6 +273,12 @@ export class ValidationUtils {
     }
   }
 
+  /**
+   * Validates a URL string for proper structure, supported protocol, and hostname existence.
+   *
+   * @param url - The URL string to inspect.
+   * @returns A ValidationResult indicating whether the URL is valid.
+   */
   static validateUrl(url: string): ValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -244,6 +304,11 @@ export class ValidationUtils {
     };
   }
 
+  /**
+   * Validates essential and optional environment variables necessary for runtime configuration.
+   *
+   * @returns A ValidationResult reflecting the presence and correctness of environment variables.
+   */
   static validateEnvironment(): ValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -277,6 +342,12 @@ export class ValidationUtils {
     };
   }
 
+  /**
+   * Formats errors and warnings from a ValidationResult into a human-readable multiline string.
+   *
+   * @param validation - The validation result object to format.
+   * @returns A formatted string listing errors and warnings, or an empty string if valid.
+   */
   static formatValidationErrors(validation: ValidationResult): string {
     if (validation.isValid) {
       return "";
@@ -297,6 +368,12 @@ export class ValidationUtils {
     return parts.join("\n");
   }
 
+  /**
+   * Checks whether a given value is empty (null, undefined, whitespace string, empty array, or empty object).
+   *
+   * @param value - The unknown input value to test.
+   * @returns True if the value is deemed empty, otherwise false.
+   */
   static isEmpty(value: unknown): boolean {
     if (value === null || value === undefined) {
       return true;
@@ -317,6 +394,13 @@ export class ValidationUtils {
     return false;
   }
 
+  /**
+   * Validates the serialized size of a payload against a maximum threshold in kilobytes.
+   *
+   * @param payload - The data payload to evaluate.
+   * @param maxSizeKB - The maximum allowed size in kilobytes (defaults to 1024 KB).
+   * @returns A ValidationResult indicating whether the payload is within acceptable size limits.
+   */
   static validatePayloadSize(
     payload: unknown,
     maxSizeKB: number = 1024,

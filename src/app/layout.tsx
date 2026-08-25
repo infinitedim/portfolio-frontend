@@ -10,6 +10,13 @@ import { LenisProvider } from "@/components/layout/lenis-provider";
 import { CursorProvider, CustomCursor } from "@/components/organisms/cursor";
 import { UnlockedCustomizationProvider } from "@/components/layout/unlocked-customization-provider";
 
+/**
+ * JetBrains Mono font configuration for terminal-style typography across the application.
+ *
+ * @description
+ * Loads the Latin character subset with variable font weight definitions
+ * and binds the font family to the `--font-mono` CSS custom property.
+ */
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
@@ -17,6 +24,13 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600", "700"],
 });
 
+/**
+ * Global viewport configuration for responsive layout rendering.
+ *
+ * @description
+ * Defines mobile responsive scaling boundaries, accessibility zoom allowances,
+ * and adaptive browser theme colors for dark and light color schemes.
+ */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -29,6 +43,14 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
+/**
+ * Global application metadata configuration for search engine optimization (SEO) and social previews.
+ *
+ * @description
+ * Configures base URL resolution, default title templates, meta descriptions, developer keywords,
+ * OpenGraph and Twitter card parameters, search engine robot indexing directives, site verifications,
+ * progressive web app (PWA) manifest references, and Apple Web App settings.
+ */
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.dev",
@@ -144,6 +166,20 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Root HTML layout component for the portfolio web application.
+ *
+ * @description
+ * Establishes the foundational document shell, applying language attributes,
+ * CSS font variable classes, hydration suppression, inline theme initialization scripts,
+ * structured JSON-LD schemas (Person and WebSite), and nesting global state/UI providers:
+ * {@link UnlockedCustomizationProvider}, {@link ClientOnlyComponents},
+ * {@link AccessibilityProvider}, {@link LenisProvider}, and {@link CursorProvider}.
+ *
+ * @param {object} props - Component properties.
+ * @param {ReactNode} props.children - The page components and sub-layouts to render within the document body.
+ * @returns {JSX.Element} The rendered root `<html>` and `<body>` layout container.
+ */
 export default function RootLayout({
   children,
 }: {

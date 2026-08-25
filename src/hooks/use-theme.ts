@@ -15,15 +15,54 @@ import {
 } from "./hooks-utils";
 import { PerformanceMonitor } from "@/lib/performance/performance-monitor";
 
+/**
+ * Local storage key used to persist the active terminal theme.
+ */
 const STORAGE_KEY = "terminal-theme" as const;
+
+/**
+ * Array of mandatory color token keys that every valid theme configuration must define.
+ */
 const REQUIRED_COLORS = ["bg", "text", "accent", "muted", "border"] as const;
 
+/**
+ * Internal state representation for the theme hook.
+ *
+ * @interface ThemeState
+ * @property {ThemeName} theme - Currently active theme identifier.
+ * @property {string | null} error - Error message if a theme operation failed, otherwise null.
+ * @property {boolean} mounted - Flag indicating whether the component has mounted on the client.
+ */
 interface ThemeState {
   theme: ThemeName;
   error: string | null;
   mounted: boolean;
 }
 
+/**
+ * Return type and API interface exposed by the `useTheme` hook.
+ *
+ * @interface UseThemeReturn
+ * @property {ThemeName} theme - The currently active theme identifier.
+ * @property {ThemeConfig} themeConfig - The complete configuration object for the active theme.
+ * @property {string | null} error - The current error message, if any.
+ * @property {boolean} hasError - Boolean flag indicating if there is an active error.
+ * @property {boolean} mounted - Indicates whether the hook has completed client-side hydration.
+ * @property {(newTheme: ThemeName) => boolean} changeTheme - Function to switch the active theme.
+ * @property {() => void} clearError - Function to clear the current error state.
+ * @property {ThemeName[]} availableThemes - Sorted list of all registered theme names.
+ * @property {(themeName?: ThemeName) => ThemeConfig} getThemeInfo - Retrieves configuration for a given theme or current theme.
+ * @property {(themeName: ThemeName) => boolean} isThemeActive - Checks if the specified theme is currently active.
+ * @property {typeof validateTheme} validateTheme - Validation utility function for theme names.
+ * @property {object} themeMetrics - Runtime performance and usage metrics for theme switching.
+ * @property {number} themeMetrics.switchCount - Total number of theme switches performed.
+ * @property {number} themeMetrics.averageSwitchTime - Average time taken in milliseconds for theme switches.
+ * @property {number} themeMetrics.lastSwitchTime - Duration of the most recent theme switch in milliseconds.
+ * @property {Array<{ theme: ThemeName; count: number }>} themeMetrics.popularThemes - Top theme usage counts.
+ * @property {number} themeMetrics.renderTime - Render application time in milliseconds for the last theme change.
+ * @property {() => object} getPerformanceReport - Computes and returns an aggregate performance summary.
+ * @property {() => void} resetPerformanceMetrics - Resets all collected performance metrics.
+ */
 interface UseThemeReturn {
   theme: ThemeName;
   themeConfig: ThemeConfig;
@@ -53,6 +92,12 @@ interface UseThemeReturn {
   resetPerformanceMetrics: () => void;
 }
 
+/**
+ * Converts a 6-character hexadecimal color string into HSL space representation formatted as `"H S% L%"`.
+ *
+ * @param {string} hex - The hexadecimal color code (e.g., "#1e1e2e").
+ * @returns {string} The formatted HSL string (e.g., "240 21% 15%"), or "0 0% 0%" for invalid input.
+ */
 const hexToHsl = (hex: string): string => {
   if (!hex?.match(/^#[0-9A-Fa-f]{6}$/)) return "0 0% 0%";
 
@@ -81,6 +126,12 @@ const hexToHsl = (hex: string): string => {
   return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
 };
 
+/**
+ * Validates that a theme configuration object has all required color definitions in valid hex format.
+ *
+ * @param {ThemeConfig} config - The theme configuration object to validate.
+ * @returns {boolean} True if the theme configuration meets all color requirements; false otherwise.
+ */
 const isValidThemeConfig = (config: ThemeConfig): boolean => {
   if (!config?.colors) return false;
   return REQUIRED_COLORS.every(
@@ -90,6 +141,13 @@ const isValidThemeConfig = (config: ThemeConfig): boolean => {
   );
 };
 
+/**
+ * Generates a complete mapping of CSS custom properties (variables) from theme colors.
+ * Maps terminal colors, content colors, and Tailwind/shadcn-compatible HSL variables.
+ *
+ * @param {ThemeColors} colors - The palette of theme colors.
+ * @returns {Record<string, string>} A key-value dictionary of CSS variable names to their values.
+ */
 const generateCSSVariables = (colors: ThemeColors) => ({
   "--terminal-bg": colors.bg,
   "--terminal-text": colors.text,
@@ -102,7 +160,6 @@ const generateCSSVariables = (colors: ThemeColors) => ({
   "--terminal-info": colors.info || "#00aaff",
   "--terminal-prompt": colors.prompt || colors.accent,
 
-                                                                                
   "--content-bg": `color-mix(in oklab, ${colors.bg} 92%, #1a1a2e)`,
   "--content-text": `color-mix(in oklab, ${colors.text} 45%, #d4d4d4)`,
   "--content-accent": colors.accent,
@@ -130,6 +187,19 @@ const generateCSSVariables = (colors: ThemeColors) => ({
   "--popover-foreground": hexToHsl(colors.text),
 });
 
+/**
+ * Custom React hook for managing application terminal and global UI themes.
+ * Provides theme persistence via localStorage, CSS variable injection into DOM,
+ * cross-tab/window event synchronization, and theme switching performance monitoring.
+ *
+ * @returns {UseThemeReturn} An object containing the current theme, config, handlers, and performance metrics.
+ *
+ * @example
+ * ```tsx
+ * const { theme, changeTheme, availableThemes } = useTheme();
+ * changeTheme('matrix');
+ * ```
+ */
 export function useTheme(): UseThemeReturn {
   const isMountedRef = useMountRef();
   const { getValue, setValue } = useLocalStorage(STORAGE_KEY, defaultTheme);

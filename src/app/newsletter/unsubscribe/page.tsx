@@ -8,6 +8,16 @@ import { unsubscribeNewsletter } from "@/lib/services/newsletter-service";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Internal client component that manages newsletter subscription revocation.
+ *
+ * @description
+ * Reads an optional `token` query parameter from the URL to prepopulate the unsubscribe form.
+ * Provides an interactive input field and submission handler to revoke email subscriptions
+ * via {@link unsubscribeNewsletter}, displaying real-time status feedback and toast notifications.
+ *
+ * @returns {JSX.Element} The rendered newsletter unsubscription interface.
+ */
 function UnsubscribeContent() {
   const { t } = useI18n();
   const searchParams = useSearchParams();
@@ -17,6 +27,12 @@ function UnsubscribeContent() {
   const [done, setDone] = useState(false);
   const [message, setMessage] = useState("");
 
+  /**
+   * Submits the cancellation request using the provided newsletter token.
+   *
+   * @param {SubmitEvent} e - The HTML form submission event.
+   * @returns {Promise<void>} Resolves when the unsubscription request completes.
+   */
   const handleUnsubscribe = async (e: SubmitEvent) => {
     e.preventDefault();
     if (!token.trim()) return;
@@ -96,11 +112,28 @@ function UnsubscribeContent() {
   );
 }
 
+/**
+ * Loading fallback placeholder displayed while URL search parameters are resolving.
+ *
+ * @description
+ * Renders an accessible, localized loading text placeholder inside the {@link Suspense} boundary.
+ *
+ * @returns {JSX.Element} The rendered loading state placeholder.
+ */
 function LoadingFallback() {
   const { t } = useI18n();
   return <div className="py-16 text-center text-gray-400">{t("loading")}</div>;
 }
 
+/**
+ * Page component for unsubscribing from the newsletter.
+ *
+ * @description
+ * Wraps the client-side {@link UnsubscribeContent} inside a React {@link Suspense} boundary
+ * and sets it inside {@link StandardPageLayout}.
+ *
+ * @returns {JSX.Element} The rendered newsletter unsubscribe page.
+ */
 export default function NewsletterUnsubscribePage() {
   return (
     <StandardPageLayout>

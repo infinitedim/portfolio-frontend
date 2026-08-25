@@ -1,29 +1,57 @@
+/**
+ * Geographic and network location details resolved for a client IP.
+ */
 export interface LocationInfo {
+  /** Resolved city name. */
   city: string;
+  /** Resolved country name. */
   country: string;
+  /** Resolved state or region name. */
   region: string;
+  /** IANA timezone identifier string. */
   timezone: string;
+  /** Geographic latitude coordinate. */
   latitude: number;
+  /** Geographic longitude coordinate. */
   longitude: number;
+  /** Client IP address string. */
   ip: string;
 }
 
+/**
+ * Time and timezone information calculated for a specific timezone.
+ */
 export interface TimeInfo {
+  /** Formatted local time string in the target timezone. */
   localTime: string;
+  /** ISO 8601 UTC timestamp string. */
   utcTime: string;
+  /** Target IANA timezone identifier. */
   timezone: string;
+  /** Timezone offset in minutes relative to the client's UTC offset. */
   offset: number;
+  /** Indicates whether Daylight Saving Time is currently active. */
   isDST: boolean;
 }
 
+/**
+ * Singleton service for fetching IP-based geolocation data and computing timezone metrics.
+ */
 export class LocationService {
   private static instance: LocationService;
   private cachedLocation: LocationInfo | null = null;
   private cacheTimeout = 30 * 60 * 1000;
   private lastFetch = 0;
 
+  /**
+   * Private constructor to enforce singleton pattern.
+   */
   private constructor() {}
 
+  /**
+   * Retrieves the shared singleton instance of the LocationService.
+   * @returns The LocationService singleton instance.
+   */
   static getInstance(): LocationService {
     if (!LocationService.instance) {
       LocationService.instance = new LocationService();
@@ -31,6 +59,10 @@ export class LocationService {
     return LocationService.instance;
   }
 
+  /**
+   * Fetches client geographic location with in-memory caching.
+   * @returns Promise resolving to LocationInfo or null if lookup fails.
+   */
   async getLocation(): Promise<LocationInfo | null> {
     if (
       this.cachedLocation &&
@@ -54,6 +86,10 @@ export class LocationService {
     return null;
   }
 
+  /**
+   * Queries external IP geolocation APIs (ipapi.co with fallback to ip-api.com).
+   * @returns Promise resolving to parsed LocationInfo or null.
+   */
   private async fetchLocationFromService(): Promise<LocationInfo | null> {
     try {
       const response = await fetch("https://ipapi.co/json/");
@@ -146,6 +182,11 @@ export class LocationService {
     return null;
   }
 
+  /**
+   * Calculates current local and UTC times, offset, and DST status for a specified timezone.
+   * @param timezone - Target IANA timezone identifier.
+   * @returns Computed TimeInfo object.
+   */
   getTimeInfo(timezone: string = "UTC"): TimeInfo {
     const now = new Date();
     const utcTime = now.toISOString();
@@ -183,6 +224,12 @@ export class LocationService {
     };
   }
 
+  /**
+   * Computes the minute difference between UTC and the specified timezone for a given date.
+   * @param timezone - Target IANA timezone string.
+   * @param date - Date instance to evaluate offset at.
+   * @returns Timezone offset in minutes.
+   */
   private getTimezoneOffset(timezone: string, date: Date = new Date()): number {
     try {
       const utc = new Date(date.toLocaleString("en-US", { timeZone: "UTC" }));
@@ -195,6 +242,11 @@ export class LocationService {
     }
   }
 
+  /**
+   * Formats a minute offset into standard UTC offset notation (e.g. UTC+07:00).
+   * @param offsetMinutes - Timezone offset in minutes.
+   * @returns Formatted UTC offset string.
+   */
   formatOffset(offsetMinutes: number): string {
     const hours = Math.floor(Math.abs(offsetMinutes) / 60);
     const minutes = Math.abs(offsetMinutes) % 60;
@@ -202,6 +254,10 @@ export class LocationService {
     return `UTC${sign}${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
   }
 
+  /**
+   * Determines a season or night descriptor based on current system time and month.
+   * @returns Season name ("Winter", "Spring", "Summer", "Autumn") or "Night".
+   */
   getWeatherEmoji(): string {
     const now = new Date();
     const hour = now.getHours();
@@ -217,6 +273,9 @@ export class LocationService {
     }
   }
 
+  /**
+   * Clears the cached location information and resets fetch timestamp.
+   */
   clearCache(): void {
     this.cachedLocation = null;
     this.lastFetch = 0;

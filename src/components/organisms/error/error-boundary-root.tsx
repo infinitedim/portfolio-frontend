@@ -5,23 +5,45 @@ import { Component, Suspense } from "react";
 import clientLogger from "@/lib/logger/client-logger";
 import { i18n } from "@/lib/i18n";
 
+/**
+ * Internal state for the ErrorBoundary class component.
+ */
 interface ErrorBoundaryState {
+  /** Indicates whether an error was caught during rendering */
   hasError: boolean;
+  /** Caught Error instance */
   error: Error | null;
+  /** React error information object containing component stack */
   errorInfo: ErrorInfo | null;
 }
 
+/**
+ * Properties for configuring the ErrorBoundary component.
+ */
 interface ErrorBoundaryProps {
+  /** Child component subtree protected by the boundary */
   children: ReactNode;
+  /** Custom fallback UI element or function receiving error and reset callback */
   fallback?: ReactNode | ((error: Error, reset: () => void) => ReactNode);
+  /** Callback fired when an error is caught */
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
+  /** Callback fired when the error boundary is reset */
   onReset?: () => void;
 }
 
+/**
+ * Root React error boundary component that catches rendering errors in child components,
+ * logs diagnostics to the client logger, and renders an appropriate fallback interface.
+ */
 export class ErrorBoundary extends Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
 > {
+  /**
+   * Initializes the ErrorBoundary component with clean error state.
+   *
+   * @param props - ErrorBoundary configuration properties.
+   */
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
@@ -31,10 +53,22 @@ export class ErrorBoundary extends Component<
     };
   }
 
+  /**
+   * Updates state so the next render will show the fallback UI.
+   *
+   * @param error - The error thrown during rendering.
+   * @returns Updated partial state object with hasError flag set.
+   */
   static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     return { hasError: true, error };
   }
 
+  /**
+   * Catches errors in descendant components, dispatches telemetry logs, and stores error traces.
+   *
+   * @param error - The thrown error instance.
+   * @param errorInfo - Additional component stack details.
+   */
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ errorInfo });
 
@@ -72,6 +106,9 @@ export class ErrorBoundary extends Component<
     this.props.onError?.(error, errorInfo);
   }
 
+  /**
+   * Resets the error boundary state to attempt re-rendering children.
+   */
   handleReset = (): void => {
     this.setState({
       hasError: false,
@@ -81,6 +118,11 @@ export class ErrorBoundary extends Component<
     this.props.onReset?.();
   };
 
+  /**
+   * Renders fallback UI if an error has occurred, or renders children normally.
+   *
+   * @returns Rendered fallback element or children.
+   */
   render(): ReactNode {
     if (this.state.hasError && this.state.error) {
       if (this.props.fallback) {
@@ -103,12 +145,27 @@ export class ErrorBoundary extends Component<
   }
 }
 
+/**
+ * Properties for the DefaultErrorFallback UI component.
+ */
 interface DefaultErrorFallbackProps {
+  /** The caught error object */
   error: Error;
+  /** React error information with component stack */
   errorInfo: ErrorInfo | null;
+  /** Function to reset error boundary state */
   resetAction: () => void;
 }
 
+/**
+ * Default full-page or card error fallback UI displaying error details and a retry button.
+ *
+ * @param props - Fallback properties.
+ * @param props.error - Caught error.
+ * @param props.errorInfo - React error information.
+ * @param props.resetAction - Callback to retry rendering.
+ * @returns Rendered fallback UI.
+ */
 function DefaultErrorFallback({
   error,
   errorInfo,
@@ -170,6 +227,14 @@ function DefaultErrorFallback({
   );
 }
 
+/**
+ * Compact inline error alert fallback component.
+ *
+ * @param props - Component properties.
+ * @param props.error - Caught error.
+ * @param props.resetAction - Callback to retry rendering.
+ * @returns Rendered compact error message element.
+ */
 export function CompactErrorFallback({
   error,
   resetAction,
@@ -192,6 +257,13 @@ export function CompactErrorFallback({
   );
 }
 
+/**
+ * Higher-Order Component (HOC) that wraps any React component with an ErrorBoundary.
+ *
+ * @param WrappedComponent - Component to protect with an error boundary.
+ * @param options - Error boundary configuration options (fallback, onError, onReset).
+ * @returns Enhanced component wrapped in ErrorBoundary.
+ */
 export function withErrorBoundary<P extends object>(
   WrappedComponent: React.ComponentType<P>,
   options?: Omit<ErrorBoundaryProps, "children">,
@@ -210,10 +282,23 @@ export function withErrorBoundary<P extends object>(
   return ComponentWithErrorBoundary;
 }
 
+/**
+ * Properties for the AsyncBoundary component.
+ */
 interface AsyncErrorBoundaryProps extends ErrorBoundaryProps {
+  /** Optional custom loading placeholder for React Suspense */
   loadingFallback?: ReactNode;
 }
 
+/**
+ * Combined boundary component integrating React Suspense and ErrorBoundary for asynchronous components.
+ *
+ * @param props - Async boundary properties.
+ * @param props.children - Child component tree.
+ * @param props.loadingFallback - Custom suspense placeholder.
+ * @param props.errorBoundaryProps - Additional error boundary options.
+ * @returns Rendered boundary structure.
+ */
 export function AsyncBoundary({
   children,
   loadingFallback,
@@ -228,6 +313,11 @@ export function AsyncBoundary({
   );
 }
 
+/**
+ * Default loading spinner fallback for AsyncBoundary.
+ *
+ * @returns Rendered spinner element.
+ */
 function DefaultLoadingFallback(): ReactNode {
   return (
     <div className="flex min-h-50 items-center justify-center">

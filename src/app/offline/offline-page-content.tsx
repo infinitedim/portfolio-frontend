@@ -5,6 +5,15 @@ import Link from "next/link";
 import { useI18n } from "@/hooks/use-i18n";
 import { OfflineRadar } from "@/components/organisms/offline/offline-radar";
 
+/**
+ * Interactive offline fallback page content rendered when network connectivity is lost.
+ *
+ * @description Provides a retro terminal-styled offline display with real-time connectivity
+ * state tracking, an interactive radar animation, optional CRT scanline effects, and quick navigation
+ * links to retry or return home.
+ *
+ * @returns {JSX.Element} The rendered offline page content view.
+ */
 export function OfflinePageContent(): JSX.Element {
   const { t } = useI18n();
   const [isOnline, setIsOnline] = useState<boolean>(true);

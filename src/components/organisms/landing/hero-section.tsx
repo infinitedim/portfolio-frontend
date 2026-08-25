@@ -7,6 +7,10 @@ import { Download } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import dynamic from "next/dynamic";
 
+/**
+ * Dynamically loaded Turnstile verification modal for resume downloads.
+ * Loaded client-side only (`ssr: false`) to minimize initial page bundle size and avoid hydration mismatch.
+ */
 const TurnstileResumeModal = dynamic(
   () =>
     import("@/components/molecules/shared/turnstile-resume-modal").then(
@@ -15,6 +19,16 @@ const TurnstileResumeModal = dynamic(
   { ssr: false },
 );
 
+/**
+ * Renders the hero banner and primary call-to-action area of the landing page.
+ *
+ * @description
+ * Features a terminal initialization prompt (`$ init portfolio`), localized title and tagline,
+ * navigation buttons leading to projects and contact, and an interactive resume download button
+ * protected by a Cloudflare Turnstile verification modal.
+ *
+ * @returns The rendered hero section JSX element.
+ */
 export function HeroSection(): JSX.Element {
   const { t } = useI18n();
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);

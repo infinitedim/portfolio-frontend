@@ -23,13 +23,39 @@ import {
   type GitHubCheckRun,
 } from "@/lib/api/commit-service";
 
+/**
+ * Properties for the {@link DeployDetailDrawer} component.
+ */
 interface DeployDetailDrawerProps {
+  /**
+   * GitHub repository owner/organization username.
+   */
   owner: string;
+  /**
+   * GitHub repository name.
+   */
   repo: string;
+  /**
+   * Target commit SHA hash, or `null` if the drawer is closed.
+   */
   refSha: string | null;
+  /**
+   * Callback invoked when the user requests closing the detail drawer.
+   */
   onClose: () => void;
 }
 
+/**
+ * Slide-out modal drawer displaying real-time CI/CD workflow runs, build states,
+ * and automated deployment checks associated with a specific commit.
+ *
+ * @param {DeployDetailDrawerProps} props - Component properties.
+ * @param {string} props.owner - Repository owner handle.
+ * @param {string} props.repo - Repository name.
+ * @param {string | null} props.refSha - Target commit SHA hash.
+ * @param {() => void} props.onClose - Dismissal callback function.
+ * @returns {JSX.Element | null} Rendered deployment detail drawer, or `null` if closed.
+ */
 export function DeployDetailDrawer({
   owner,
   repo,
@@ -41,11 +67,15 @@ export function DeployDetailDrawer({
   const [checkRunsData, setCheckRunsData] =
     useState<GitHubCheckRunsResponse | null>(null);
 
-                                                             
   const [cooldown, setCooldown] = useState<number>(0);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-                          
+  /**
+   * Fetches check runs and deployment statuses from the GitHub API service.
+   *
+   * @param {boolean} [force=false] - Whether to bypass client cache and force re-fetching.
+   * @returns {Promise<void>}
+   */
   const loadCheckRuns = useCallback(
     async (force: boolean = false) => {
       if (!refSha) return;
@@ -79,14 +109,15 @@ export function DeployDetailDrawer({
     }
   }, [refSha, loadCheckRuns]);
 
-                                                  
+  /**
+   * Initiates a manual data refresh with a 10-second rate-limit cooldown.
+   */
   const handleManualRefresh = () => {
     if (cooldown > 0 || refreshing) return;
     loadCheckRuns(true);
     setCooldown(10);
   };
 
-                                          
   useEffect(() => {
     if (cooldown <= 0) return;
     const interval = setInterval(() => {
@@ -95,7 +126,11 @@ export function DeployDetailDrawer({
     return () => clearInterval(interval);
   }, [cooldown]);
 
-                        
+  /**
+   * Global keyboard handler for closing the drawer on Escape key press.
+   *
+   * @param {KeyboardEvent} e - Native keyboard event.
+   */
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -110,7 +145,6 @@ export function DeployDetailDrawer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-                                                      
   useEffect(() => {
     if (refSha) {
       document.body.style.overflow = "hidden";
@@ -124,7 +158,12 @@ export function DeployDetailDrawer({
 
   if (!refSha) return null;
 
-                                         
+  /**
+   * Renders a styled status badge reflecting the check run conclusion or progress status.
+   *
+   * @param {GitHubCheckRun} run - Check run data object.
+   * @returns {JSX.Element} Status indicator badge element.
+   */
   const renderStatusBadge = (run: GitHubCheckRun) => {
     if (run.status === "in_progress" || run.status === "queued") {
       return (
@@ -415,6 +454,11 @@ export function DeployDetailDrawer({
   );
 }
 
+/**
+ * Renders an animated pulse skeleton loader while deployment check runs are fetching.
+ *
+ * @returns {JSX.Element} The deployment checks skeleton placeholder.
+ */
 function DeployDetailPhantomSkeleton() {
   return (
     <div

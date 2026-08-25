@@ -31,8 +31,17 @@ import {
   Send,
 } from "lucide-react";
 
+/**
+ * Number of contact messages displayed per pagination page.
+ */
 const PAGE_SIZE = 15;
 
+/**
+ * Formats an ISO 8601 date string into a localized, human-readable date and time representation.
+ *
+ * @param {string} iso - The ISO 8601 formatted date-time string to format.
+ * @returns {string} The localized date and time string formatted for US English.
+ */
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleString("en-US", {
     year: "numeric",
@@ -43,6 +52,15 @@ function formatDate(iso: string): string {
   });
 }
 
+/**
+ * Administrator contact messages inbox component.
+ *
+ * Displays a split-pane interface (list view and detailed view) for incoming contact messages.
+ * Supports filtering by unread status, full-text searching across sender details and message bodies,
+ * single and bulk mark-as-read actions, deletion with confirmation dialogs, and responsive mobile switching.
+ *
+ * @returns {JSX.Element} The rendered admin messages inbox interface.
+ */
 export default function AdminMessagesPage(): JSX.Element {
   const { themeConfig } = useTheme();
   const [data, setData] = useState<AdminMessagesListResponse | null>(null);
@@ -65,6 +83,11 @@ export default function AdminMessagesPage(): JSX.Element {
     setCheckedIds(new Set());
   }, [page, unreadOnly, searchQuery]);
 
+  /**
+   * Fetches the paginated list of messages matching current filter options and updates component state.
+   *
+   * @returns {Promise<void>} Resolves when messages are fetched and state is updated.
+   */
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
@@ -91,6 +114,12 @@ export default function AdminMessagesPage(): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, unreadOnly]);
 
+  /**
+   * Selects a contact message to view its details in the detail pane, marking it as read if currently unread.
+   *
+   * @param {AdminContactMessage} msg - The contact message object selected by the user.
+   * @returns {Promise<void>} Resolves when the message state is updated.
+   */
   const handleSelect = async (msg: AdminContactMessage) => {
     setSelected(msg);
     setMobileView("detail");
@@ -113,6 +142,12 @@ export default function AdminMessagesPage(): JSX.Element {
     }
   };
 
+  /**
+   * Toggles the read status of a specific contact message between read and unread.
+   *
+   * @param {AdminContactMessage} msg - The contact message to toggle read status for.
+   * @returns {Promise<void>} Resolves when the update request completes.
+   */
   const handleToggleRead = async (msg: AdminContactMessage) => {
     try {
       const updated = await markMessageRead(msg.id, !msg.read);
@@ -132,6 +167,11 @@ export default function AdminMessagesPage(): JSX.Element {
     }
   };
 
+  /**
+   * Executes deletion of the single contact message currently targeted by the deletion confirmation dialog.
+   *
+   * @returns {Promise<void>} Resolves when the message has been removed and state refreshed.
+   */
   const handleDeleteConfirm = async () => {
     if (!deleteConfirmMsg) return;
     try {
@@ -160,6 +200,11 @@ export default function AdminMessagesPage(): JSX.Element {
     }
   };
 
+  /**
+   * Deletes all currently selected (checked) contact messages in bulk.
+   *
+   * @returns {Promise<void>} Resolves when bulk deletion completes and messages list is reloaded.
+   */
   const handleBulkDeleteConfirm = async () => {
     const ids = Array.from(checkedIds);
     if (ids.length === 0) return;
@@ -178,6 +223,11 @@ export default function AdminMessagesPage(): JSX.Element {
     }
   };
 
+  /**
+   * Marks all currently selected (checked) contact messages as read in bulk.
+   *
+   * @returns {Promise<void>} Resolves when bulk mark-as-read completes and state refreshes.
+   */
   const handleBulkRead = async () => {
     const ids = Array.from(checkedIds);
     if (ids.length === 0) return;
@@ -191,6 +241,12 @@ export default function AdminMessagesPage(): JSX.Element {
     }
   };
 
+  /**
+   * Toggles the selection status of a single message ID in the batch selection Set.
+   *
+   * @param {string} id - The unique identifier of the contact message to select or deselect.
+   * @returns {void}
+   */
   const toggleChecked = (id: string) => {
     setCheckedIds((prev) => {
       const next = new Set(prev);
@@ -215,6 +271,11 @@ export default function AdminMessagesPage(): JSX.Element {
   const allOnPageChecked =
     items.length > 0 && items.every((m) => checkedIds.has(m.id));
 
+  /**
+   * Selects all messages on the current page if not all are selected, or deselects all if all are currently selected.
+   *
+   * @returns {void}
+   */
   const toggleAllOnPage = () => {
     if (allOnPageChecked) {
       setCheckedIds((prev) => {

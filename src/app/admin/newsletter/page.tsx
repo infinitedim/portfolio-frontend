@@ -25,7 +25,16 @@ import { ConfirmDialog } from "@/components/molecules/admin/confirm-dialog";
 import { toast } from "sonner";
 import { Mail, Send, Download, Search, RefreshCw, ArrowLeft, Eye, Edit3, CheckCircle2, Clock } from "lucide-react";
 
-export default function AdminNewsletterPage() {
+/**
+ * Administrator newsletter and audience broadcast management page component.
+ *
+ * Provides newsletter subscriber directory tracking with status filtering,
+ * CSV export capabilities, and an interactive broadcast email composer with live preview
+ * and local draft persistence.
+ *
+ * @returns {React.JSX.Element} The rendered admin newsletter management interface.
+ */
+export default function AdminNewsletterPage(): React.JSX.Element {
   const { themeConfig } = useTheme();
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [total, setTotal] = useState(0);
@@ -42,7 +51,9 @@ export default function AdminNewsletterPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "confirmed" | "pending">("all");
 
-                                    
+  /**
+   * Local storage key used to persist unsent broadcast draft subject and body.
+   */
   const DRAFT_KEY = "portfolio_newsletter_broadcast_draft";
 
   useEffect(() => {
@@ -57,13 +68,25 @@ export default function AdminNewsletterPage() {
     catch {}
   }, []);
 
-  const saveDraftLocally = (subVal: string, bodyVal: string) => {
+  /**
+   * Persists the current newsletter subject and body text to browser local storage.
+   *
+   * @param {string} subVal - The current email subject line to persist.
+   * @param {string} bodyVal - The current email body content to persist.
+   * @returns {void}
+   */
+  const saveDraftLocally = (subVal: string, bodyVal: string): void => {
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify({ subject: subVal, body: bodyVal }));
     } // eslint-disable-next-line no-empty
     catch {}
   };
 
+  /**
+   * Loads the current list of newsletter subscribers from the administrative backend service.
+   *
+   * @returns {Promise<void>} Resolves when subscribers data has been loaded into state.
+   */
   const loadSubscribers = useCallback(async () => {
     setLoading(true);
     try {
@@ -83,7 +106,12 @@ export default function AdminNewsletterPage() {
     void loadSubscribers();
   }, [loadSubscribers]);
 
-  const handleBroadcastConfirm = async () => {
+  /**
+   * Sends the composed broadcast email to all confirmed double-opt-in subscribers.
+   *
+   * @returns {Promise<void>} Resolves when the broadcast API request completes.
+   */
+  const handleBroadcastConfirm = async (): Promise<void> => {
     if (!subject.trim() || !body.trim()) return;
 
     setBroadcasting(true);
@@ -106,7 +134,12 @@ export default function AdminNewsletterPage() {
     }
   };
 
-  const handleExportCSV = () => {
+  /**
+   * Exports all newsletter subscriber records into a downloaded CSV file.
+   *
+   * @returns {void}
+   */
+  const handleExportCSV = (): void => {
     if (subscribers.length === 0) {
       toast.error("No subscribers available to export");
       return;

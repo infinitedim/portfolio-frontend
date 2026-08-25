@@ -3,6 +3,17 @@
 import { useState, useEffect, useRef } from "react";
 import type { ThemeConfig } from "@/types/theme";
 
+/**
+ * Represents a structured telemetry or runtime application log event.
+ *
+ * @interface LogEntry
+ * @property {string} id - Unique identifier for the log record.
+ * @property {string} timestamp - ISO-8601 formatted timestamp string when the event occurred.
+ * @property {"INFO" | "WARN" | "ERROR" | "DEBUG"} level - Severity level classification.
+ * @property {string} message - Primary event description text.
+ * @property {string} source - Originating subsystem or module (e.g., "auth", "api").
+ * @property {string} [details] - Optional contextual diagnostic metadata or payload.
+ */
 interface LogEntry {
   id: string;
   timestamp: string;
@@ -12,13 +23,42 @@ interface LogEntry {
   details?: string;
 }
 
+/**
+ * Properties for the LoggingMonitor telemetry dashboard component.
+ *
+ * @interface LoggingMonitorProps
+ * @property {ThemeConfig} themeConfig - Active theme configuration providing interface styling colors.
+ */
 interface LoggingMonitorProps {
   themeConfig: ThemeConfig;
 }
 
+/**
+ * Supported severity log levels for filtering and styling stream entries.
+ *
+ * @constant
+ * @type {readonly ["INFO", "WARN", "ERROR", "DEBUG"]}
+ */
 const logLevels = ["INFO", "WARN", "ERROR", "DEBUG"] as const;
+
+/**
+ * Supported subsystem source tags for filtering log streams.
+ *
+ * @constant
+ * @type {readonly ["system", "auth", "database", "api", "frontend"]}
+ */
 const logSources = ["system", "auth", "database", "api", "frontend"] as const;
 
+/**
+ * Administrative real-time log tailing and filtering monitor console.
+ *
+ * Simulates a streaming log console with live auto-scroll, full-text substring search,
+ * severity level toggle filters, and source category toggles.
+ *
+ * @param {LoggingMonitorProps} props - The component properties.
+ * @param {ThemeConfig} props.themeConfig - Color scheme and style definitions.
+ * @returns {JSX.Element} The rendered log monitoring dashboard.
+ */
 export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [isPaused, _setIsPaused] = useState(false);
@@ -33,6 +73,11 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
   const logsEndRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * Generates a randomized mock log record for live telemetry demonstration.
+   *
+   * @returns {LogEntry} A newly generated log entry object.
+   */
   const generateMockLog = (): LogEntry => {
     const levels: LogEntry["level"][] = ["INFO", "WARN", "ERROR", "DEBUG"];
     const sources: LogEntry["source"][] = [
@@ -105,6 +150,12 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
     return matchesSearch && matchesLevel && matchesSource;
   });
 
+  /**
+   * Resolves the theme color hex code associated with a specific log severity level.
+   *
+   * @param {LogEntry["level"]} level - The log severity level.
+   * @returns {string} Hex color string matching the theme configuration.
+   */
   const getLevelColor = (level: LogEntry["level"]) => {
     switch (level) {
       case "ERROR":
@@ -120,6 +171,12 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
     }
   };
 
+  /**
+   * Toggles the filter inclusion state for a specific log severity level.
+   *
+   * @param {string} level - Severity level name to toggle.
+   * @returns {void}
+   */
   const toggleLevel = (level: string) => {
     setSelectedLevels((prev) => {
       const newSet = new Set(prev);
@@ -132,6 +189,12 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
     });
   };
 
+  /**
+   * Toggles the filter inclusion state for a specific subsystem source origin.
+   *
+   * @param {string} source - Subsystem origin tag to toggle.
+   * @returns {void}
+   */
   const toggleSource = (source: string) => {
     setSelectedSources((prev) => {
       const newSet = new Set(prev);
@@ -144,10 +207,20 @@ export function LoggingMonitor({ themeConfig }: LoggingMonitorProps) {
     });
   };
 
+  /**
+   * Clears the current buffer of accumulated log entries.
+   *
+   * @returns {void}
+   */
   const _clearLogs = () => {
     setLogs([]);
   };
 
+  /**
+   * Exports the currently filtered log records as a downloadable plain-text file.
+   *
+   * @returns {void}
+   */
   const _exportLogs = () => {
     const logText = filteredLogs
       .map(

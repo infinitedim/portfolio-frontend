@@ -1,8 +1,13 @@
-export const prefetchResources = () => {
-                                                                                
+/**
+ * Prefetches high-priority static resources in the background.
+ */
+export const prefetchResources = (): void => {
 };
 
-export const optimizeImageLoading = () => {
+/**
+ * Applies native lazy-loading attributes (`loading="lazy"`) to all image elements lacking explicit loading strategies.
+ */
+export const optimizeImageLoading = (): void => {
   const images = document.querySelectorAll("img:not([loading])");
   images.forEach((img) => {
     if (img instanceof HTMLImageElement) {
@@ -11,6 +16,16 @@ export const optimizeImageLoading = () => {
   });
 };
 
+/**
+ * Executes a dynamic module import with configurable retry attempts and backoff delay.
+ *
+ * @template T - Module or value type returned by the import function.
+ * @param importFn - Function invoking the dynamic `import()` statement.
+ * @param retries - Maximum number of import attempts before failing.
+ * @param delay - Base delay in milliseconds between retries.
+ * @returns A promise resolving to the imported module or entity of type T.
+ * @throws {Error} If the import fails on all retry attempts.
+ */
 export const dynamicImportWithRetry = async <T>(
   importFn: () => Promise<T>,
   retries: number = 3,
@@ -27,7 +42,10 @@ export const dynamicImportWithRetry = async <T>(
   throw new Error("Dynamic import failed after retries");
 };
 
-export const analyzeBundleSize = () => {
+/**
+ * Measures and logs bundle navigation timing metrics in the browser console during development mode.
+ */
+export const analyzeBundleSize = (): void => {
   if (process.env.NODE_ENV !== "development") return;
 
   const performanceEntries = performance.getEntriesByType("navigation");
@@ -42,7 +60,10 @@ export const analyzeBundleSize = () => {
   }
 };
 
-export const markUnusedExports = () => {
+/**
+ * Logs developmental tree-shaking warnings regarding unused exports.
+ */
+export const markUnusedExports = (): void => {
   if (process.env.NODE_ENV === "production") {
     console.warn(
       "Development mode - unused exports will be removed in production",
@@ -50,20 +71,61 @@ export const markUnusedExports = () => {
   }
 };
 
+/**
+ * Collection of dynamic code-splitting strategies organized by feature and bundle size.
+ */
 export const SplittingStrategies = {
+  /**
+   * Code-splitting loaders partitioned by distinct application features.
+   *
+   * @returns Object with dynamic import loader functions for each feature.
+   */
   byFeature: () => ({
+    /**
+     * Loads the themes configuration module.
+     *
+     * @returns Promise resolving to the theme configuration module.
+     */
     themes: () => import("@/lib/themes/theme-config"),
+    /**
+     * Loads the command registry module.
+     *
+     * @returns Promise resolving to the command registry module.
+     */
     commands: () => import("@/lib/commands/command-registry"),
+    /**
+     * Loads the roadmap service module.
+     *
+     * @returns Promise resolving to the roadmap service module.
+     */
     roadmap: () => import("@/lib/services/roadmap-service"),
   }),
 
+  /**
+   * Code-splitting loaders partitioned by third-party package bundle size.
+   *
+   * @returns Object with dynamic import loader functions for heavy packages.
+   */
   bySize: () => ({
+    /**
+     * Loads Lucide icons library dynamically.
+     *
+     * @returns Promise resolving to the lucide-react module.
+     */
     icons: () => import("lucide-react"),
+    /**
+     * Loads Radix UI Dialog primitives dynamically.
+     *
+     * @returns Promise resolving to the @radix-ui/react-dialog module.
+     */
     ui: () => import("@radix-ui/react-dialog"),
   }),
 };
 
-export const addResourceHints = () => {
+/**
+ * Injects DNS prefetch and preconnect `<link>` elements into document `<head>` to accelerate external connections.
+ */
+export const addResourceHints = (): void => {
   if (typeof document === "undefined") return;
 
   const dnsPrefetch = ["https://cdn.jsdelivr.net"];
@@ -98,7 +160,10 @@ export const addResourceHints = () => {
   });
 };
 
-export const optimizeThirdParty = () => {
+/**
+ * Applies the `defer` attribute to third-party tracking and analytics script tags.
+ */
+export const optimizeThirdParty = (): void => {
   const analytics = "[src*='analytics']";
   const tracking = "[src*='tracking']";
   const scripts = document.querySelectorAll(
@@ -111,7 +176,13 @@ export const optimizeThirdParty = () => {
   });
 };
 
-export const optimizeMemoryUsage = () => {
+/**
+ * Initializes memory optimization listeners, monitoring event listener counts and clearing stale localStorage entries.
+ */
+export const optimizeMemoryUsage = (): void => {
+  /**
+   * Periodically checks for unusually high counts of window event listeners.
+   */
   const cleanupListeners = () => {
     const unusedEvents = ["resize", "scroll", "touchmove"];
     unusedEvents.forEach((event) => {
@@ -126,9 +197,18 @@ export const optimizeMemoryUsage = () => {
 
   setInterval(cleanupListeners, 30000);
 
+  /**
+   * Scans localStorage and removes temporary or cached items older than 24 hours.
+   */
   const clearOldStorage = () => {
     const MS_IN_DAY = 24 * 60 * 60 * 1000;
 
+    /**
+     * Type guard checking if parsed data is an object containing a numeric timestamp.
+     *
+     * @param data - The parsed storage value.
+     * @returns True if data has a numeric timestamp property.
+     */
     function isDataWithTimestamp(data: unknown): data is { timestamp: number } {
       return (
         typeof data === "object" &&
@@ -167,7 +247,13 @@ export const optimizeMemoryUsage = () => {
   });
 };
 
-export const initBundleOptimizations = () => {
+/**
+ * Initializes all client-side bundle performance and resource optimizations.
+ */
+export const initBundleOptimizations = (): void => {
+  /**
+   * Helper runner to execute all bundle optimization routines.
+   */
   const run = () => {
     addResourceHints();
     optimizeImageLoading();
@@ -187,3 +273,4 @@ export const initBundleOptimizations = () => {
 
   setTimeout(prefetchResources, 3000);
 };
+

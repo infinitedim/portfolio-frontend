@@ -1,6 +1,11 @@
 import { type JSX } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
+/**
+ * Loading fallback component displayed while a specific blog series details page is resolving.
+ *
+ * @returns {JSX.Element} Full-page skeleton placeholder for the blog series layout.
+ */
 export default function BlogSeriesLoading(): JSX.Element {
   return (
     <StandardPageLayout>

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withEncryption } from "@/lib/crypto/with-encryption";
 
+/**
+ * Resolves the backend service base URL from environment variables with local fallback.
+ *
+ * @returns The resolved backend base URL.
+ */
 function getBackendUrl(): string {
   return (
     process.env.BACKEND_URL ??
@@ -9,6 +14,14 @@ function getBackendUrl(): string {
   );
 }
 
+/**
+ * Handler for GET requests that proxies roadmap progress data for a specified tech stack from the backend.
+ *
+ * @param _req - The incoming NextRequest instance.
+ * @param context - The route context containing dynamic tech stack params.
+ * @param context.params - Promise resolving to route parameters including tech stack identifier.
+ * @returns A promise resolving to a NextResponse containing the roadmap progress JSON payload or error.
+ */
 async function getHandler(
   _req: NextRequest,
   { params }: { params: Promise<{ techstack: string }> },
@@ -52,4 +65,7 @@ async function getHandler(
   }
 }
 
+/**
+ * Encrypted route handler for GET requests to the roadmap progress endpoint.
+ */
 export const GET = withEncryption(getHandler);

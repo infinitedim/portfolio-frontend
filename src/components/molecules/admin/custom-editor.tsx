@@ -25,6 +25,17 @@ import {
   Edit3,
 } from "lucide-react";
 
+/**
+ * Props for the {@link CustomEditor} component.
+ *
+ * @interface CustomEditorProps
+ * @property {string} value - The current markdown/MDX string content being edited.
+ * @property {(value: string) => void} onChange - Callback invoked whenever the editor content changes.
+ * @property {ThemeConfig} themeConfig - Theme configuration object containing color schemes and styling rules.
+ * @property {string} [placeholder="Write your article or MDX content here..."] - Placeholder text displayed when the textarea is empty.
+ * @property {(file: File) => Promise<string | null>} [onImageUpload] - Optional async handler to upload an image file and return its hosted URL.
+ * @property {string} [minHeight="400px"] - Minimum height for the editor and preview containers.
+ */
 export interface CustomEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -34,6 +45,14 @@ export interface CustomEditorProps {
   minHeight?: string;
 }
 
+/**
+ * A custom rich Markdown and MDX editor component featuring a formatting toolbar,
+ * image upload integration, link insertion modal, and side-by-side live HTML/MDX preview.
+ *
+ * @component
+ * @param {CustomEditorProps} props - Properties configuring the custom editor.
+ * @returns {JSX.Element} The rendered Markdown/MDX editor with toolbar and preview tabs.
+ */
 export function CustomEditor({
   value,
   onChange,
@@ -47,7 +66,6 @@ export function CustomEditor({
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [isUploading, setIsUploading] = useState(false);
 
-                                            
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("https://infinitedim.dev");
   const [linkText, setLinkText] = useState("");
@@ -55,6 +73,14 @@ export function CustomEditor({
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("https://");
 
+  /**
+   * Applies prefix and suffix formatting delimiters around selected text, or inserts default placeholder text.
+   *
+   * @param {string} prefix - Delimiter to prepend before the selection or inserted text.
+   * @param {string} [suffix=""] - Delimiter to append after the selection or inserted text.
+   * @param {string} [defaultText=""] - Default fallback text to insert when no text is currently selected.
+   * @returns {void}
+   */
   const applyFormatting = useCallback(
     (prefix: string, suffix: string = "", defaultText: string = "") => {
       const textarea = textareaRef.current;
@@ -91,6 +117,12 @@ export function CustomEditor({
     [value, onChange],
   );
 
+  /**
+   * Transforms the current line at the cursor into a Markdown heading of specified level.
+   *
+   * @param {1 | 2 | 3} level - Heading level corresponding to the number of '#' characters (H1, H2, or H3).
+   * @returns {void}
+   */
   const applyHeading = useCallback(
     (level: 1 | 2 | 3) => {
       const textarea = textareaRef.current;
@@ -119,6 +151,12 @@ export function CustomEditor({
     [value, onChange],
   );
 
+  /**
+   * Prepends a line prefix (such as bullet, numbered list, or blockquote) to the current line.
+   *
+   * @param {string} prefix - The prefix string to add at the beginning of the active line.
+   * @returns {void}
+   */
   const applyBlockPrefix = useCallback(
     (prefix: string) => {
       const textarea = textareaRef.current;
@@ -145,6 +183,11 @@ export function CustomEditor({
     [value, onChange],
   );
 
+  /**
+   * Opens the hyperlink insertion dialog, pre-populating display text with current cursor selection.
+   *
+   * @returns {void}
+   */
   const openLinkDialog = useCallback(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -156,6 +199,11 @@ export function CustomEditor({
     setLinkDialogOpen(true);
   }, [value]);
 
+  /**
+   * Inserts the configured hyperlink into the editor at cursor position and closes the link dialog.
+   *
+   * @returns {void}
+   */
   const confirmInsertLink = () => {
     if (!linkUrl) return;
     const textarea = textareaRef.current;
@@ -172,6 +220,11 @@ export function CustomEditor({
     });
   };
 
+  /**
+   * Handles user click on image action button, triggering file picker or URL dialog.
+   *
+   * @returns {void}
+   */
   const handleImageClick = useCallback(() => {
     if (onImageUpload && fileInputRef.current) {
       fileInputRef.current.click();
@@ -180,12 +233,23 @@ export function CustomEditor({
     }
   }, [onImageUpload]);
 
+  /**
+   * Inserts Markdown image syntax with the specified image URL and closes the image dialog.
+   *
+   * @returns {void}
+   */
   const confirmInsertImage = () => {
     if (!imageUrl) return;
     applyFormatting("![Image Description](", ")", imageUrl);
     setImageDialogOpen(false);
   };
 
+  /**
+   * Handles file input change event to upload an image and insert markdown image tag with resulting URL.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Change event from the hidden file input element.
+   * @returns {Promise<void>} Resolves when the file upload and text insertion completes.
+   */
   const handleFileChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -207,6 +271,12 @@ export function CustomEditor({
     [onImageUpload, applyFormatting],
   );
 
+  /**
+   * Inserts predefined MDX template snippets (callouts, code blocks, expandable details) at cursor position.
+   *
+   * @param {"callout" | "codeblock" | "details"} type - The MDX snippet template type to inject.
+   * @returns {void}
+   */
   const insertMdxSnippet = useCallback(
     (type: "callout" | "codeblock" | "details") => {
       let snippet = "";
@@ -223,6 +293,12 @@ export function CustomEditor({
     [applyFormatting],
   );
 
+  /**
+   * Intercepts keyboard shortcuts (Ctrl+B, Ctrl+I, Ctrl+K, Tab) to apply corresponding Markdown formatting.
+   *
+   * @param {React.KeyboardEvent<HTMLTextAreaElement>} e - Keyboard event triggered from the textarea.
+   * @returns {void}
+   */
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       const isMod = e.ctrlKey || e.metaKey;
@@ -260,7 +336,6 @@ export function CustomEditor({
         className="hidden"
       />
 
-                     
       <div
         className="flex flex-wrap items-center justify-between gap-2 p-2 border-b text-xs font-mono select-none"
         style={{
@@ -388,7 +463,6 @@ export function CustomEditor({
           />
         </div>
 
-                            
         <div className="flex items-center gap-1 rounded bg-black/20 p-1">
           <button
             type="button"
@@ -455,7 +529,6 @@ export function CustomEditor({
         </div>
       )}
 
-                         
       <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -492,7 +565,6 @@ export function CustomEditor({
         </DialogContent>
       </Dialog>
 
-                          
       <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -523,6 +595,35 @@ export function CustomEditor({
   );
 }
 
+/**
+ * Props for the {@link ToolbarButton} component.
+ *
+ * @interface ToolbarButtonProps
+ * @property {string} title - Tooltip title text displayed on hover.
+ * @property {JSX.Element} [icon] - Icon element rendered inside the button.
+ * @property {string} [label] - Optional text label rendered alongside the icon.
+ * @property {() => void} onClick - Callback triggered when the button is clicked or activated.
+ * @property {ThemeConfig} themeConfig - Active theme configuration for styling borders and text colors.
+ * @property {boolean} [disabled=false] - Whether the button is disabled.
+ * @property {string} [ariaLabel] - Accessible label for screen readers. Defaults to title if not provided.
+ */
+interface ToolbarButtonProps {
+  title: string;
+  icon?: JSX.Element;
+  label?: string;
+  onClick: () => void;
+  themeConfig: ThemeConfig;
+  disabled?: boolean;
+  ariaLabel?: string;
+}
+
+/**
+ * Reusable action button component rendered inside the Markdown editor toolbar.
+ *
+ * @component
+ * @param {ToolbarButtonProps} props - Properties configuring the toolbar button.
+ * @returns {JSX.Element} The rendered toolbar button element.
+ */
 function ToolbarButton({
   title,
   icon,
@@ -531,15 +632,7 @@ function ToolbarButton({
   themeConfig,
   disabled = false,
   ariaLabel,
-}: {
-  title: string;
-  icon?: JSX.Element;
-  label?: string;
-  onClick: () => void;
-  themeConfig: ThemeConfig;
-  disabled?: boolean;
-  ariaLabel?: string;
-}) {
+}: ToolbarButtonProps) {
   return (
     <button
       type="button"

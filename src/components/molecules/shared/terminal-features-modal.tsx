@@ -4,18 +4,55 @@ import { useI18n } from "@/hooks/use-i18n";
 import { type JSX, type ReactNode } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 
+/**
+ * Props for the TerminalFeaturesModal component.
+ */
 interface TerminalFeaturesModalProps {
+  /**
+   * Controls whether the features modal dialog is currently open.
+   */
   isOpen: boolean;
+  /**
+   * Callback invoked when the user cancels or closes the modal dialog.
+   */
   onClose: () => void;
+  /**
+   * Callback invoked when the user confirms and proceeds to enter the interactive terminal.
+   */
   onProceed: () => void;
 }
 
+/**
+ * Represents a single highlighted feature item displayed inside the terminal features modal grid.
+ */
 interface Feature {
+  /**
+   * Optional React node or icon representing the feature visually.
+   */
   icon?: ReactNode;
+  /**
+   * The localized title of the feature.
+   */
   title: string;
+  /**
+   * The localized description explaining the feature capabilities.
+   */
   desc: string;
 }
 
+/**
+ * TerminalFeaturesModal component renders a modal dialog highlighting key terminal features
+ * (roadmap tracking, theme engine, interactive demos, GitHub sync, PWA support, shell emulations).
+ *
+ * Implements Radix UI Dialog primitives with custom cyber/terminal styling, keyboard dismissal,
+ * backdrop blur overlays, and localized text.
+ *
+ * @param props - Component configuration properties.
+ * @param props.isOpen - Whether the modal dialog is actively open.
+ * @param props.onClose - Dismissal callback function.
+ * @param props.onProceed - Confirmation action callback function.
+ * @returns A Radix Dialog portal JSX element or null.
+ */
 export function TerminalFeaturesModal({
   isOpen,
   onClose,

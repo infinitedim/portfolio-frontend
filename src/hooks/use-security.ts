@@ -5,41 +5,75 @@ import {
   useTimerManager,
 } from "./hooks-utils";
 
+/**
+ * State tracking security enforcement, rate limiting, and anomaly detection.
+ */
 interface SecurityState {
+  /** Indicates whether the user is currently rate-limited from executing further operations. */
   isRateLimited: boolean;
+  /** Cumulative count of detected suspicious activities or anomalous input patterns. */
   suspiciousActivity: number;
+  /** Cumulative count of requests or inputs blocked due to security violations. */
   blockedAttempts: number;
+  /** Timestamp when the most recent security threat or anomaly occurred. */
   lastThreatTime: Date | null;
 }
 
+/**
+ * Detailed threat alert record generated upon detecting suspicious or dangerous activity.
+ */
 interface ThreatAlert {
+  /** Unique identifier for the threat alert record. */
   id: string;
+  /** Categorization type of the detected security event. */
   type:
     | "rate_limit"
     | "suspicious_input"
     | "repeated_attempts"
     | "dangerous_pattern";
+  /** Human-readable explanation of why the threat was flagged. */
   message: string;
+  /** Date timestamp when the alert was triggered. */
   timestamp: Date;
+  /** Assessed severity level of the detected threat. */
   riskLevel: "low" | "medium" | "high";
+  /** Additional contextual diagnostics and execution metadata. */
   metadata: Record<string, unknown>;
 }
 
+/**
+ * Aggregated analytics and metrics regarding request throughput and threat occurrences.
+ */
 interface SecurityMetrics {
+  /** Total number of requests evaluated within the tracking window. */
   totalRequests: number;
+  /** Count of clean, accepted input requests. */
   validRequests: number;
+  /** Count of blocked or rejected input requests. */
   blockedRequests: number;
+  /** Rolling average throughput of requests per minute over the last 60 seconds. */
   averageRequestsPerMinute: number;
+  /** Breakdown of the most frequent threat types and their respective counts. */
   topThreats: Array<{ type: string; count: number }>;
 }
 
+/**
+ * Result structure returned after evaluating an input string against security heuristics.
+ */
 interface ValidationResult {
+  /** Boolean indicating whether the input passed all safety validations. */
   isValid: boolean;
+  /** Sanitized representation of the input string with dangerous elements stripped. */
   sanitizedInput: string;
+  /** Description of validation failure, or null if valid. */
   error: string | null;
+  /** Evaluated risk level of the input content. */
   riskLevel: "low" | "medium" | "high";
 }
 
+/**
+ * Thresholds, capacities, and timing constants for client-side security defense.
+ */
 const SECURITY_LIMITS = {
   MAX_RECENT_INPUTS: 50,
   MAX_ALERTS: 10,
@@ -48,8 +82,21 @@ const SECURITY_LIMITS = {
   ONE_HOUR: 3600000,
 } as const;
 
+/**
+ * Verifies whether execution is currently occurring within a client browser environment.
+ *
+ * @returns True if `window` object is defined.
+ */
 const isClientSide = () => typeof window !== "undefined";
 
+/**
+ * Wraps an operation in a try-catch block and returns a fallback value upon error.
+ *
+ * @template T - Return type of the protected function.
+ * @param fn - The function to execute safely.
+ * @param fallback - The default value to return if `fn` throws an error.
+ * @returns A safe function returning either the computation result or the fallback.
+ */
 const withErrorHandling = <T>(fn: () => T, fallback: T): (() => T) => {
   return () => {
     try {
@@ -61,6 +108,12 @@ const withErrorHandling = <T>(fn: () => T, fallback: T): (() => T) => {
   };
 };
 
+/**
+ * Evaluates an input string against regular expressions for dangerous injection attacks (XSS, script tags, cookie theft, eval).
+ *
+ * @param input - The raw command or text string to inspect.
+ * @returns A {@link ValidationResult} indicating validity, sanitized text, error reason, and risk level.
+ */
 function validateInputClientSide(input: string): ValidationResult {
   const sanitizedInput = input.trim();
 
@@ -114,11 +167,48 @@ function validateInputClientSide(input: string): ValidationResult {
   };
 }
 
+/**
+ * Represents an input string bundled with its submission epoch timestamp.
+ */
 export interface TimestampedInput {
+  /** The recorded command or query text. */
   input: string;
+  /** Milliseconds epoch timestamp when the input was received. */
   timestamp: number;
 }
 
+/**
+ * Custom React hook providing client-side security validation, rate limiting, and anomaly tracking.
+ *
+ * Scans terminal inputs for injection payloads, tracks burst command rates, throttles abuse,
+ * and maintains rolling threat metrics and actionable security recommendations.
+ *
+ * @returns An object containing security state, validation methods, threat alerts, and diagnostics:
+ * - `securityState`: Current {@link SecurityState} tracking rate limits and anomaly counts.
+ * - `threatAlerts`: List of recent {@link ThreatAlert} entries.
+ * - `validateInput`: Asynchronous validator inspecting input for malicious patterns and tracking metrics.
+ * - `validateInputSync`: Synchronous validator variant for immediate inline checks.
+ * - `resetRateLimit`: Manually lifts the active rate limit lockout.
+ * - `getSecurityMetrics`: Generates computed {@link SecurityMetrics} summarizing request activity.
+ * - `getSecurityRecommendations`: Returns contextual security guidance based on recent metrics.
+ * - `clearOldAlerts`: Purges alerts older than one hour.
+ * - `isSecure`: Boolean indicating whether current session is deemed safe and non-rate-limited.
+ * - `riskLevel`: Overall calculated risk tier ('low' | 'medium' | 'high').
+ *
+ * @example
+ * ```tsx
+ * const { validateInput, isRateLimited, threatAlerts } = useSecurity();
+ *
+ * const handleSubmit = async (cmd: string) => {
+ *   const res = await validateInput(cmd);
+ *   if (!res.shouldProceed) {
+ *     showError(res.error);
+ *     return;
+ *   }
+ *   execute(res.sanitizedInput);
+ * };
+ * ```
+ */
 export function useSecurity() {
   const isMountedRef = useMountRef();
   const { setTimer, clearTimer } = useTimerManager();
@@ -563,6 +653,15 @@ export function useSecurity() {
   };
 }
 
+/**
+ * Instantiates a new structured threat alert item.
+ *
+ * @param type - Category of threat identified.
+ * @param message - Diagnostic message describing the anomaly.
+ * @param riskLevel - Assessed risk severity.
+ * @param metadata - Supplementary data and state parameters.
+ * @returns A fully initialized {@link ThreatAlert} object.
+ */
 function createThreatAlert(
   type: ThreatAlert["type"],
   message: string,
@@ -586,6 +685,20 @@ function createThreatAlert(
   };
 }
 
+/**
+ * Analyzes a historical list of recent inputs for anomalous behavior patterns such as rapid burst submission or repeated spamming.
+ *
+ * @param recentInputs - Array of input strings or timestamped input objects to examine.
+ * @returns An evaluation object detailing suspicion status, reason explanation, and assessed risk level.
+ *
+ * @example
+ * ```ts
+ * const analysis = detectSuspiciousActivity(["help", "help", "help", "help"]);
+ * if (analysis.isSuspicious) {
+ *   console.warn(analysis.reason);
+ * }
+ * ```
+ */
 export function detectSuspiciousActivity(
   recentInputs: Array<string | TimestampedInput>,
 ): {
@@ -607,7 +720,6 @@ export function detectSuspiciousActivity(
     (item) => item.timestamp >= fiveSecondsAgo,
   );
 
-                                        
   if (inputsInLast5s.length > 15) {
     return {
       isSuspicious: true,
@@ -623,7 +735,6 @@ export function detectSuspiciousActivity(
     };
   }
 
-                                                                             
   const patternCounts: Record<string, number> = {};
   normalizedInputs.forEach((item) => {
     const normalized = item.input
@@ -654,6 +765,19 @@ export function detectSuspiciousActivity(
   return { isSuspicious: false, reason: "", riskLevel: "low" };
 }
 
+/**
+ * Diagnostic monitoring hook that periodically logs security diagnostics and active metrics to console during development.
+ *
+ * @returns The active {@link useSecurity} instance.
+ *
+ * @example
+ * ```tsx
+ * function App() {
+ *   useSecurityMonitoring();
+ *   return <Terminal />;
+ * }
+ * ```
+ */
 export function useSecurityMonitoring() {
   const security = useSecurity();
 

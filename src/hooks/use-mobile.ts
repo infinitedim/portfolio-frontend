@@ -2,23 +2,61 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 
+/**
+ * Comprehensive snapshot of mobile device characteristics, form factor, and viewport state.
+ */
 interface MobileState {
+  /** True if viewport width is less than or equal to mobile breakpoint (768px). */
   isMobile: boolean;
+  /** True if viewport width is between mobile (768px) and tablet (1024px) breakpoints. */
   isTablet: boolean;
+  /** Current screen orientation based on viewport aspect ratio. */
   orientation: "portrait" | "landscape";
+  /** Indicates whether an on-screen software keyboard is currently raised. */
   isVirtualKeyboardOpen: boolean;
+  /** True if client user agent matches iOS devices (iPhone, iPad, iPod). */
   isIOS: boolean;
+  /** True if client user agent matches Android devices. */
   isAndroid: boolean;
 }
 
+/**
+ * Screen width breakpoints in pixels used for device classification.
+ */
 const BREAKPOINTS = {
   MOBILE: 768,
   TABLET: 1024,
 } as const;
 
+/**
+ * Height ratio threshold below which a visual viewport shrinkage indicates an active software keyboard.
+ */
 const KEYBOARD_THRESHOLD = 0.75;
+
+/**
+ * Debounce duration in milliseconds for throttling resize and orientation change listeners.
+ */
 const RESIZE_DEBOUNCE_MS = 100;
 
+/**
+ * Custom React hook for responsive mobile device detection, orientation tracking, and virtual keyboard detection.
+ *
+ * Combines window dimensions, `visualViewport` metrics, and user agent sniffing to provide
+ * high-performance, RAF-debounced device context.
+ *
+ * @returns The current {@link MobileState} object with responsive device metrics.
+ *
+ * @example
+ * ```tsx
+ * const { isMobile, isVirtualKeyboardOpen, orientation } = useMobile();
+ *
+ * return (
+ *   <div className={isMobile ? "mobile-layout" : "desktop-layout"}>
+ *     {isVirtualKeyboardOpen && <DismissKeyboardButton />}
+ *   </div>
+ * );
+ * ```
+ */
 export function useMobile(): MobileState {
   const isMountedRef = useRef(true);
   const rafIdRef = useRef<number | null>(null);

@@ -9,6 +9,12 @@ import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 import { TerminalCta } from "@/components/organisms/landing/terminal-cta";
 
+/**
+ * Root landing page metadata configuration for OpenGraph, Twitter cards, and SEO.
+ *
+ * @description Provides search engines and social platforms with localized titles,
+ * descriptions, keywords, canonical URLs, and image previews for the portfolio homepage.
+ */
 export const metadata: Metadata = {
   title: "Dimas Saputra | Full-Stack Developer",
   description:
@@ -48,6 +54,15 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Root homepage Server Component rendering the main portfolio landing view.
+ *
+ * @description Assembles the landing page sections including Hero, About, Featured Projects,
+ * Latest Blog Posts, and Interactive Terminal CTA within the standard page layout.
+ * Also embeds JSON-LD structured schema data for Person and WebSite.
+ *
+ * @returns {JSX.Element} The rendered root homepage structure.
+ */
 export default function HomePage(): JSX.Element {
   const siteUrl = getSiteUrl();
 
@@ -112,6 +127,14 @@ export default function HomePage(): JSX.Element {
   );
 }
 
+/**
+ * Loading skeleton fallback component for the Featured Projects section.
+ *
+ * @description Renders pulsing placeholder project cards while project data is streamed
+ * via React Suspense during server-side rendering.
+ *
+ * @returns {JSX.Element} The rendered featured projects skeleton placeholder.
+ */
 function FeaturedProjectsPhantomSkeleton(): JSX.Element {
   return (
     <section
@@ -131,16 +154,12 @@ function FeaturedProjectsPhantomSkeleton(): JSX.Element {
               key={i}
               className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/80 p-4 space-y-4 overflow-hidden"
             >
-                                               
               <div className="h-44 w-full animate-pulse rounded-md bg-(--terminal-border)/40" />
-                                   
               <div className="h-6 w-3/4 animate-pulse rounded bg-(--terminal-border)/70" />
-                                               
               <div className="space-y-1.5">
                 <div className="h-3.5 w-full animate-pulse rounded bg-(--terminal-border)/50" />
                 <div className="h-3.5 w-4/5 animate-pulse rounded bg-(--terminal-border)/50" />
               </div>
-                                         
               <div className="flex gap-2 pt-2">
                 <div className="h-5 w-16 animate-pulse rounded bg-(--terminal-border)/60" />
                 <div className="h-5 w-20 animate-pulse rounded bg-(--terminal-border)/60" />
@@ -154,6 +173,14 @@ function FeaturedProjectsPhantomSkeleton(): JSX.Element {
   );
 }
 
+/**
+ * Loading skeleton fallback component for the Latest Blog Posts section.
+ *
+ * @description Renders pulsing placeholder post items while blog articles are fetched
+ * asynchronously and streamed via React Suspense.
+ *
+ * @returns {JSX.Element} The rendered latest posts skeleton placeholder.
+ */
 function LatestPostsPhantomSkeleton(): JSX.Element {
   return (
     <section

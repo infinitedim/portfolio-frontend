@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withEncryption } from "@/lib/crypto/with-encryption";
 
+/**
+ * Resolves the backend server base URL from environment variables with fallback to localhost.
+ *
+ * @returns The resolved backend base URL string.
+ */
 function getBackendUrl(): string {
   return (
     process.env.BACKEND_URL ??
@@ -9,6 +14,14 @@ function getBackendUrl(): string {
   );
 }
 
+/**
+ * Proxies authentication requests to the backend API service, forwarding headers and re-homing session cookies.
+ *
+ * @param req - The incoming Next.js server request.
+ * @param context - Route context object containing dynamic route parameters.
+ * @param context.params - Promise resolving to path parameters with the authPath segment array.
+ * @returns A promise resolving to the proxied NextResponse.
+ */
 async function handleAuthProxy(
   req: NextRequest,
   { params }: { params: Promise<{ authPath: string[] }> },
@@ -80,4 +93,7 @@ async function handleAuthProxy(
   }
 }
 
+/**
+ * HTTP POST handler for authentication endpoints wrapped with end-to-end payload encryption.
+ */
 export const POST = withEncryption(handleAuthProxy);

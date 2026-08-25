@@ -2,7 +2,15 @@
 
 import { useEffect } from "react";
 
-export function CopyCodeButton() {
+/**
+ * Headless DOM enhancement component that attaches clipboard copy buttons to code blocks.
+ *
+ * Traverses `.prose pre` and `article pre` blocks on client mount, injecting a styled `$ copy --clip`
+ * button that reads `<pre><code>` content and writes it to `navigator.clipboard` with status feedback.
+ *
+ * @returns {null} Renders nothing to the React DOM tree (headless side-effect component).
+ */
+export function CopyCodeButton(): null {
   useEffect(() => {
     const blocks = document.querySelectorAll<HTMLPreElement>(
       ".prose pre, article pre",

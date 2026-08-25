@@ -28,6 +28,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/**
+ * Health check status indicators for backend services.
+ *
+ * @interface HealthStatus
+ * @property {boolean} backend - Whether the backend API is reachable and responding.
+ * @property {boolean} database - Whether the database service reports healthy connection status.
+ * @property {boolean} redis - Whether the Redis caching layer is operational.
+ * @property {boolean} loading - Whether the initial health check polling request is in flight.
+ */
 interface HealthStatus {
   backend: boolean;
   database: boolean;
@@ -35,6 +44,14 @@ interface HealthStatus {
   loading: boolean;
 }
 
+/**
+ * Terminal-styled administrative top header bar.
+ *
+ * Displays active breadcrumb path hierarchy, real-time backend/database health pills,
+ * mobile drawer sheet toggle, and authenticated administrator profile dropdown with logout action.
+ *
+ * @returns {React.JSX.Element} The rendered administrative terminal header.
+ */
 export function TerminalHeader(): React.JSX.Element {
   const pathname = usePathname();
   const router = useRouter();
@@ -82,6 +99,11 @@ export function TerminalHeader(): React.JSX.Element {
     };
   }, []);
 
+  /**
+   * Generates a contextual breadcrumb label based on the current admin pathname.
+   *
+   * @returns {string} The formatted breadcrumb navigation title string.
+   */
   const getBreadcrumb = (): string => {
     if (pathname === "/admin") return "Dashboard";
     if (pathname.includes("/admin/blog/series")) return "Content / Blog Series";
@@ -98,6 +120,11 @@ export function TerminalHeader(): React.JSX.Element {
     return "Admin";
   };
 
+  /**
+   * Logs out the current admin user session and redirects to the login screen.
+   *
+   * @returns {Promise<void>}
+   */
   const handleLogout = async () => {
     await logout();
     router.push("/admin/login");

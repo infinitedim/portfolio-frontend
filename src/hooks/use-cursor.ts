@@ -3,6 +3,15 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { CursorState, CursorTheme } from "@/components/organisms/cursor/cursor.types";
 
+/**
+ * Return type for the {@link useCursor} hook.
+ *
+ * @interface UseCursorReturn
+ * @property {CursorState} cursorState - Current visual state of the custom cursor (e.g., "default", "hover", "hide").
+ * @property {string | null} cursorText - Optional text overlay rendered alongside the cursor pointer.
+ * @property {CursorTheme} cursorTheme - Current visual theme of the cursor ("standard" or "terminal").
+ * @property {(state: CursorState, text?: string | null) => void} setCursorState - Function to manually update the cursor state and text.
+ */
 export interface UseCursorReturn {
   cursorState: CursorState;
   cursorText: string | null;
@@ -10,10 +19,13 @@ export interface UseCursorReturn {
   setCursorState: (state: CursorState, text?: string | null) => void;
 }
 
-   
-                                                                                          
-                                                                  
-   
+/**
+ * React hook managing smooth cursor tracking, interactive element hover detection,
+ * route-aware theme switching, and custom cursor state transitions.
+ *
+ * @param {React.RefObject<HTMLDivElement | null>} cursorRef - React ref attached to the custom cursor DOM element.
+ * @returns {UseCursorReturn} Cursor state properties and controller functions.
+ */
 export function useCursor(
   cursorRef: React.RefObject<HTMLDivElement | null>,
 ): UseCursorReturn {
@@ -31,11 +43,10 @@ export function useCursor(
     setCursorText(text);
   }, []);
 
-                                                                   
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const lerpFactor = 0.18;                                       
+    const lerpFactor = 0.18;
 
     const animate = () => {
       if (!isInitializedRef.current && targetPosRef.current.x !== -100) {
@@ -44,7 +55,6 @@ export function useCursor(
         isInitializedRef.current = true;
       }
 
-                                                                                  
       currentPosRef.current.x += (targetPosRef.current.x - currentPosRef.current.x) * lerpFactor;
       currentPosRef.current.y += (targetPosRef.current.y - currentPosRef.current.y) * lerpFactor;
 
@@ -72,7 +82,6 @@ export function useCursor(
     };
   }, [cursorRef]);
 
-                                                     
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -113,7 +122,6 @@ export function useCursor(
     };
   }, [setCursorState]);
 
-                                                                  
   useEffect(() => {
     if (typeof window === "undefined") return;
 

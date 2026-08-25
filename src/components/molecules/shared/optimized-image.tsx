@@ -5,20 +5,80 @@ import Image from "next/image";
 import { cn } from "@/lib/utils/utils";
 import { DEFAULT_SIZES, getBlurDataUrl } from "@/lib/utils/image-utils";
 
+/**
+ * Props for the OptimizedImage component.
+ */
 interface OptimizedImageProps {
+  /**
+   * Source URL or path for the image asset.
+   */
   src: string;
+  /**
+   * Accessible alternative text describing the image content.
+   */
   alt: string;
+  /**
+   * Intrinsic or target display width in pixels.
+   * @defaultValue 400
+   */
   width?: number;
+  /**
+   * Intrinsic or target display height in pixels.
+   * @defaultValue 300
+   */
   height?: number;
+  /**
+   * Whether the image should fill its parent container using absolute positioning.
+   * @defaultValue false
+   */
   fill?: boolean;
+  /**
+   * Indicates high priority loading (disables lazy loading and preloads image resource).
+   * @defaultValue false
+   */
   priority?: boolean;
+  /**
+   * Whether to preload the image resource ahead of rendering.
+   * @defaultValue false
+   */
   preload?: boolean;
+  /**
+   * Optional CSS class string applied to the Next.js `Image` element.
+   */
   className?: string;
+  /**
+   * Optional CSS class string applied to the wrapping container element.
+   */
   containerClassName?: string;
+  /**
+   * Optional CSS aspect ratio definition (e.g., '16/9', '4/3', '1/1').
+   */
   aspectRatio?: string;
+  /**
+   * Responsive sizes descriptor defining image layout widths across breakpoints.
+   * @defaultValue DEFAULT_SIZES
+   */
   sizes?: string;
 }
 
+/**
+ * OptimizedImage component wraps Next.js `Image` with progressive blur-up placeholders,
+ * error state fallbacks, responsive aspect-ratio wrappers, and smooth transition animations.
+ *
+ * @param props - Configuration properties for the optimized image.
+ * @param props.src - Image source URL or path.
+ * @param props.alt - Alternative text description.
+ * @param props.width - Display width in pixels.
+ * @param props.height - Display height in pixels.
+ * @param props.fill - Whether to fill parent container.
+ * @param props.priority - Priority loading flag.
+ * @param props.preload - Preload loading flag.
+ * @param props.className - Classes applied to Image.
+ * @param props.containerClassName - Classes applied to container.
+ * @param props.aspectRatio - CSS aspect ratio.
+ * @param props.sizes - Media query responsive sizes string.
+ * @returns A JSX element rendering the image wrapper or error fallback state.
+ */
 export function OptimizedImage({
   src,
   alt,

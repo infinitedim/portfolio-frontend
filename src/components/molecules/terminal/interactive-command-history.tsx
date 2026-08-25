@@ -12,50 +12,96 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+/**
+ * Represents a single command entry in the interactive history timeline.
+ */
 interface TimelineEntry {
+  /** Unique identifier for the timeline entry */
   id: string;
+  /** Executed command string */
   command: string;
+  /** Timestamp when the command was executed */
   timestamp: Date;
+  /** Whether the command executed successfully */
   success: boolean;
+  /** Execution duration in milliseconds */
   executionTime?: number;
+  /** Category classification for the command */
   category: string;
+  /** Whether the entry is marked as a favorite */
   favorite: boolean;
+  /** Whether the entry details are currently expanded in the UI */
   expanded?: boolean;
+  /** Execution context or environment details */
   context?: string;
 }
 
+/**
+ * Configuration options for the history timeline view.
+ */
 interface TimelineConfig {
+  /** Time-based grouping interval */
   groupBy: "hour" | "day" | "week" | "month";
+  /** Whether to display detailed entry metadata */
   showDetails: boolean;
+  /** Whether to display aggregate statistics */
   showStats: boolean;
+  /** Whether to animate entries when first loaded */
   animateOnLoad: boolean;
+  /** Whether search filtering is enabled */
   enableFiltering: boolean;
 }
 
+/**
+ * Represents a recurring sequence of executed commands with usage statistics.
+ */
 interface ExecutionPattern {
+  /** Sequence of command strings forming the pattern */
   sequence: string[];
+  /** Number of times this sequence has been observed */
   frequency: number;
+  /** Average time interval between commands in milliseconds */
   avgInterval: number;
+  /** Percentage of successful executions in this sequence */
   successRate: number;
+  /** Timestamp of the most recent execution of this sequence */
   lastUsed: Date;
 }
 
+/**
+ * Props for the InteractiveCommandHistory component.
+ */
 interface InteractiveCommandHistoryProps {
+  /** Whether the interactive history modal is visible */
   isVisible: boolean;
-
+  /** Callback fired when a command is selected from history */
   onCommandSelect: (command: string) => void;
-
+  /** Callback fired when the history modal is closed */
   onClose: () => void;
-
+  /** Maximum height CSS value for the modal container */
   maxHeight?: string;
-
+  /** Whether to subscribe to real-time command updates */
   enableRealTime?: boolean;
-
+  /** Whether to detect and display recurring command patterns */
   showPatterns?: boolean;
-
+  /** Whether automated command replay is supported */
   enableReplay?: boolean;
 }
 
+/**
+ * Interactive modal component displaying command execution history with timeline filtering,
+ * pattern recognition, automated replay capability, and execution analytics.
+ *
+ * @param props - Component properties for configuring history display and interactions.
+ * @param props.isVisible - Whether the interactive history modal is visible.
+ * @param props.onCommandSelect - Callback fired when a command is selected from history.
+ * @param props.onClose - Callback fired when the history modal is closed.
+ * @param props.maxHeight - Maximum height CSS value for the modal container.
+ * @param props.enableRealTime - Whether to subscribe to real-time command updates.
+ * @param props.showPatterns - Whether to detect and display recurring command patterns.
+ * @param props.enableReplay - Whether automated command replay is supported.
+ * @returns Rendered interactive command history overlay, or null if not visible.
+ */
 export function InteractiveCommandHistory({
   isVisible,
   onCommandSelect,
@@ -83,6 +129,11 @@ export function InteractiveCommandHistory({
   const { history, analytics, toggleFavorite, removeCommand, exportHistory } =
     useCommandHistory();
 
+  /**
+   * Filters and formats history entries based on search queries and expansion state.
+   *
+   * @returns Array of formatted timeline entries.
+   */
   const timelineEntries = useCallback((): TimelineEntry[] => {
     const filtered = history.filter((entry) => {
       if (searchQuery) {
@@ -100,6 +151,11 @@ export function InteractiveCommandHistory({
     }));
   }, [history, searchQuery, selectedEntry]);
 
+  /**
+   * Identifies recurring 3-command execution sequences with usage stats.
+   *
+   * @returns List of top recurring execution patterns.
+   */
   const commandPatterns = useCallback((): ExecutionPattern[] => {
     if (!showPatterns || history.length < 3) return [];
 
@@ -145,6 +201,12 @@ export function InteractiveCommandHistory({
       .slice(0, 10);
   }, [history, showPatterns]);
 
+  /**
+   * Formats a date object into a human-readable relative time string.
+   *
+   * @param timestamp - The date timestamp to format.
+   * @returns Relative time string (e.g., 'Just now', '5m ago', '2d ago').
+   */
   const formatRelativeTime = (timestamp: Date): string => {
     const now = new Date();
     const diffMs = now.getTime() - timestamp.getTime();
@@ -159,6 +221,12 @@ export function InteractiveCommandHistory({
     return timestamp.toLocaleDateString();
   };
 
+  /**
+   * Resolves the theme color associated with a command category.
+   *
+   * @param category - The command category name.
+   * @returns Hex or CSS color string for the category.
+   */
   const getCategoryColor = (category: string): string => {
     const categoryColors: Record<string, string> = {
       info: themeConfig.colors.info || "#3B82F6",
@@ -170,6 +238,12 @@ export function InteractiveCommandHistory({
     return categoryColors[category] || themeConfig.colors.muted || "#6B7280";
   };
 
+  /**
+   * Plays back a sequence of commands sequentially with playback delay.
+   *
+   * @param commands - Array of command strings to execute.
+   * @returns Promise resolving once replay completes.
+   */
   const handleReplay = useCallback(
     async (commands: string[]) => {
       if (!enableReplay) return;
@@ -189,6 +263,11 @@ export function InteractiveCommandHistory({
     [enableReplay, replaySpeed, onCommandSelect],
   );
 
+  /**
+   * Toggles expansion state for a timeline entry.
+   *
+   * @param entry - The clicked timeline entry.
+   */
   const handleEntryClick = (entry: TimelineEntry) => {
     if (selectedEntry === entry.id) {
       setSelectedEntry(null);
@@ -197,6 +276,11 @@ export function InteractiveCommandHistory({
     }
   };
 
+  /**
+   * Selects a detected command pattern and triggers replay if enabled.
+   *
+   * @param pattern - The execution pattern to select.
+   */
   const handlePatternSelect = (pattern: ExecutionPattern) => {
     setSelectedPattern(pattern.sequence.join(" → "));
     if (enableReplay) {

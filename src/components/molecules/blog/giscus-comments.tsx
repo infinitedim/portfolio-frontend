@@ -1,12 +1,14 @@
 "use client";
 
+import type { JSX } from "react";
 import Giscus from "@giscus/react";
 import { useTheme } from "next-themes";
 
-    
-                                                              
-                                                                                 
-   
+/**
+ * Supported discussion category identifiers for GitHub Giscus integration.
+ *
+ * @typedef {"announcements" | "general" | "ideas" | "polls" | "qa" | "show-and-tell" | "blog-comments"} GiscusCategoryKey
+ */
 export type GiscusCategoryKey =
   | "announcements"
   | "general"
@@ -16,7 +18,11 @@ export type GiscusCategoryKey =
   | "show-and-tell"
   | "blog-comments";
 
-                                                                       
+/**
+ * Mapping of discussion category keys to their respective environment variable names.
+ *
+ * @constant CATEGORY_ENV_MAP
+ */
 const CATEGORY_ENV_MAP: Record<
   GiscusCategoryKey,
   [categoryEnvName: string, categoryIdEnvName: string]
@@ -48,6 +54,16 @@ const CATEGORY_ENV_MAP: Record<
   ],
 };
 
+/**
+ * Properties for the GiscusComments component.
+ *
+ * @interface GiscusCommentsProps
+ * @property {string} slug - Unique article identifier or pathname term used for mapping discussion threads.
+ * @property {GiscusCategoryKey} [categoryKey] - Preset discussion category key name.
+ * @property {string} [category] - Direct override name for the target GitHub discussion category.
+ * @property {string} [categoryId] - Direct override ID for the target GitHub discussion category.
+ * @property {string} [theme] - Custom Giscus theme identifier or style URL.
+ */
 interface GiscusCommentsProps {
   slug: string;
   categoryKey?: GiscusCategoryKey;
@@ -56,7 +72,12 @@ interface GiscusCommentsProps {
   theme?: string;
 }
 
-export function CommentsSkeleton() {
+/**
+ * Loading skeleton component rendered while Giscus discussion iframe is initializing.
+ *
+ * @returns {JSX.Element} The animated comments skeleton placeholder element.
+ */
+export function CommentsSkeleton(): JSX.Element {
   return (
     <div
       className="space-y-4 animate-pulse"
@@ -82,13 +103,27 @@ export function CommentsSkeleton() {
   );
 }
 
+/**
+ * GitHub Discussions comment feed integration component powered by Giscus.
+ *
+ * Resolves repository ID, discussion category configuration from environment variables or explicit props,
+ * binds comments to the specific article slug, and reacts to active system theme changes.
+ *
+ * @param {GiscusCommentsProps} props - Component properties.
+ * @param {string} props.slug - Article term identifier for mapping comments.
+ * @param {GiscusCategoryKey} [props.categoryKey] - Category mapping identifier.
+ * @param {string} [props.category] - Explicit discussion category name.
+ * @param {string} [props.categoryId] - Explicit discussion category ID.
+ * @param {string} [props.theme] - Custom theme identifier.
+ * @returns {JSX.Element | null} The rendered Giscus iframe element or null when configuration is incomplete.
+ */
 export function GiscusComments({
   slug,
   categoryKey = "blog-comments",
   category: categoryProp,
   categoryId: categoryIdProp,
   theme: themeProp,
-}: GiscusCommentsProps) {
+}: GiscusCommentsProps): JSX.Element | null {
   const { resolvedTheme } = useTheme();
 
   const repo = process.env.NEXT_PUBLIC_GISCUS_REPO;

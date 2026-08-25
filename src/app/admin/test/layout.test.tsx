@@ -2,9 +2,19 @@ import { describe, it, expect, jest, beforeEach, afterEach, mock } from "bun:tes
 import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
+/**
+ * Mock function tracking `router.push` invocations during test runs.
+ */
 const mockPush = jest.fn();
+
+/**
+ * Mock function returning the simulated active route pathname.
+ */
 const mockPathname = jest.fn(() => "/admin");
 
+/**
+ * Simulated Next.js navigation router for unit testing route transitions and guards.
+ */
 const mockRouter = {
   push: mockPush,
   replace: jest.fn(),
@@ -25,11 +35,21 @@ mock.module("next/navigation", () => ({
   usePathname: () => mockPathname(),
 }));
 
+/**
+ * State shape for mocked authentication context in unit tests.
+ *
+ * @interface MockAuthState
+ * @property {boolean} isAuthenticated - Whether the simulated user is authenticated.
+ * @property {boolean} isLoading - Whether the simulated authentication context is in a loading state.
+ */
 interface MockAuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
 }
 
+/**
+ * Mutable state singleton consumed by the mocked `useAuth` hook during test executions.
+ */
 const mockAuthState: MockAuthState = {
   isAuthenticated: false,
   isLoading: false,
@@ -50,6 +70,12 @@ mock.module("@/lib/auth/auth-context", () => ({
 
 import AdminLayout from "../layout";
 
+/**
+ * Mutates the active mock authentication context state values before or during test assertions.
+ *
+ * @param {Partial<MockAuthState>} next - The partial authentication state updates to apply.
+ * @returns {void}
+ */
 function setAuthState(next: Partial<MockAuthState>): void {
   mockAuthState.isAuthenticated = next.isAuthenticated ?? false;
   mockAuthState.isLoading = next.isLoading ?? false;

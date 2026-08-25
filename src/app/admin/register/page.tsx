@@ -10,7 +10,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function AdminRegisterPage() {
+/**
+ * Administrator registration page component.
+ *
+ * Provides a terminal-themed registration form to provision new administrator accounts,
+ * with client-side password validation, visibility toggling, error handling, and redirection upon success.
+ *
+ * @returns {React.JSX.Element} The rendered admin registration page.
+ */
+export default function AdminRegisterPage(): React.JSX.Element {
   const { themeConfig } = useTheme();
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -24,7 +32,16 @@ export default function AdminRegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  /**
+   * Handles form submission for administrator account creation.
+   *
+   * Validates required inputs, password matching, and minimum character length constraints,
+   * invokes {@link authService.register}, and redirects to the login screen upon successful registration.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+   * @returns {Promise<void>} Resolves when the registration flow completes.
+   */
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setError(null);
 

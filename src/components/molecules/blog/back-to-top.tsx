@@ -1,8 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type JSX } from "react";
 
-export function BackToTop() {
+/**
+ * Floating back-to-top button component for extended blog post layouts.
+ *
+ * Automatically monitors window scroll depth and reveals a fixed-position floating button
+ * once the user scrolls past 400px, triggering smooth animated scrolling back to the page top.
+ *
+ * @returns {JSX.Element | null} The rendered floating back-to-top button element or null when hidden.
+ */
+export function BackToTop(): JSX.Element | null {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -11,6 +19,11 @@ export function BackToTop() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  /**
+   * Smoothly scrolls the window viewport back to the top offset (y=0).
+   *
+   * @returns {void}
+   */
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   if (!visible) return null;

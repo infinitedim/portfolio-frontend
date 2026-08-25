@@ -4,8 +4,37 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import type { FontName } from "@/types/font";
 import { fonts, defaultFont } from "@/lib/fonts/font-config";
 
+/**
+ * Storage key used to persist the user's selected terminal font in `localStorage`.
+ */
 const STORAGE_KEY = "terminal-font" as const;
 
+/**
+ * Custom React hook for managing the terminal's active typography and font settings.
+ *
+ * Provides reactive font selection, dynamic CSS custom property injection on `:root`,
+ * `localStorage` persistence, and window-level `font-change` custom event synchronization.
+ *
+ * @returns An object containing the current font state, configuration, and controls:
+ * - `font`: The currently active {@link FontName}.
+ * - `fontConfig`: The active {@link FontConfig} containing family, weight, and ligature details.
+ * - `changeFont`: Callback function to switch to a different font and broadcast the update.
+ * - `availableFonts`: List of all supported font keys.
+ * - `mounted`: Boolean indicating whether the component has mounted on the client.
+ *
+ * @example
+ * ```tsx
+ * const { font, fontConfig, changeFont, availableFonts } = useFont();
+ *
+ * return (
+ *   <select value={font} onChange={(e) => changeFont(e.target.value as FontName)}>
+ *     {availableFonts.map((f) => (
+ *       <option key={f} value={f}>{f}</option>
+ *     ))}
+ *   </select>
+ * );
+ * ```
+ */
 export function useFont() {
   const [font, setFont] = useState<FontName>(() => {
     if (typeof window === "undefined") return defaultFont;

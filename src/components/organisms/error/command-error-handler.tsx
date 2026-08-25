@@ -2,13 +2,31 @@
 
 import type { JSX } from "react";
 
+/**
+ * Properties for configuring the CommandErrorHandler fallback component.
+ */
 interface CommandErrorHandlerProps {
+  /** The error object thrown during command execution */
   error: Error;
+  /** The raw command string that failed to execute */
   command: string;
+  /** Callback to re-attempt execution of the failed command */
   onRetry: () => void;
+  /** Callback to report the command error */
   onReport: () => void;
 }
 
+/**
+ * Terminal command error handler component rendering an error alert with
+ * command diagnostics, recovery actions (retry), and issue reporting.
+ *
+ * @param props - Component properties.
+ * @param props.error - Error thrown during execution.
+ * @param props.command - The failed command string.
+ * @param props.onRetry - Callback to retry command execution.
+ * @param props.onReport - Callback to report the error.
+ * @returns Rendered command error display component.
+ */
 export function CommandErrorHandler({
   error,
   command,

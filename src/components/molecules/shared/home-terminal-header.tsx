@@ -5,6 +5,15 @@ import { useTheme } from "@/hooks/use-theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { LanguageSwitcher } from "./language-switcher";
 
+/**
+ * HomeTerminalHeader component displays the top status bar of the interactive portfolio terminal.
+ *
+ * Shows real-time dynamic developer statistics (e.g. calculated years of experience,
+ * project counts, commit/star indicators, framework counters, online system health,
+ * live digital clock) alongside the theme-aware LanguageSwitcher dropdown.
+ *
+ * @returns A sticky/fixed header bar JSX element styled with active theme colors.
+ */
 export function HomeTerminalHeader(): JSX.Element {
   const { themeConfig } = useTheme();
   const { t } = useI18n();
@@ -123,6 +132,12 @@ export function HomeTerminalHeader(): JSX.Element {
     [STATIC_METRICS, dynamicMetrics],
   );
 
+  /**
+   * Formats a Date object into a zero-padded 24-hour time string (HH:MM:SS).
+   *
+   * @param date - The Date instance to format, or null during SSR/hydration.
+   * @returns Formatted time string, or '--:--:--' when date is unavailable.
+   */
   const formatTime = (date: Date | null) => {
     if (!date) return "--:--:--";
 
@@ -133,6 +148,15 @@ export function HomeTerminalHeader(): JSX.Element {
     return `${hours}:${minutes}:${seconds}`;
   };
 
+  /**
+   * Determines the terminal accent/success/muted color code for a metric based on predefined thresholds.
+   *
+   * @param metric - The numeric metric value to evaluate.
+   * @param thresholds - The low and high threshold boundaries.
+   * @param thresholds.low - Lower boundary value for standard accent color.
+   * @param thresholds.high - Upper boundary value for success color.
+   * @returns Hex or CSS color string from the active theme configuration.
+   */
   const getStatusColor = (
     metric: number,
     thresholds: { low: number; high: number },

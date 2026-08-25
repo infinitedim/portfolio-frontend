@@ -1,5 +1,14 @@
 import { JSX } from "react";
 
+/**
+ * ServerStaticCommands is a React Server Component that pre-renders static outputs
+ * for core terminal commands (`help`, `about`, `projects`) into hidden DOM containers.
+ *
+ * This allows instant client-side command execution without needing client bundle execution
+ * or network requests for standard help documentation and portfolio information.
+ *
+ * @returns A promise resolving to a hidden container JSX element containing pre-rendered command outputs.
+ */
 export async function ServerStaticCommands(): Promise<JSX.Element> {
   const helpOutput = await generateHelpOutput();
   const aboutOutput = await generateAboutOutput();
@@ -27,6 +36,13 @@ export async function ServerStaticCommands(): Promise<JSX.Element> {
   );
 }
 
+/**
+ * Generates the static HTML markup string for the `help` command output.
+ *
+ * Outlines available CLI commands, featured commands, tips, and navigation instructions.
+ *
+ * @returns A promise resolving to the pre-rendered HTML string for the help command.
+ */
 async function generateHelpOutput(): Promise<string> {
   return `
     <div class="font-mono text-sm whitespace-pre-wrap">
@@ -57,6 +73,13 @@ Tips:
   `;
 }
 
+/**
+ * Generates the static HTML markup string for the `about` command output.
+ *
+ * Details the developer background, tech stack specializations, and career overview.
+ *
+ * @returns A promise resolving to the pre-rendered HTML string for the about command.
+ */
 async function generateAboutOutput(): Promise<string> {
   return `
     <div class="font-mono text-sm whitespace-pre-wrap">
@@ -81,6 +104,13 @@ Type "projects" to see my work or "contact" to get in touch!
   `;
 }
 
+/**
+ * Generates the static HTML markup string for the `projects` command output.
+ *
+ * Summarizes highlighted featured engineering projects, tech stacks, and links.
+ *
+ * @returns A promise resolving to the pre-rendered HTML string for the projects command.
+ */
 async function generateProjectsOutput(): Promise<string> {
   return `
     <div class="font-mono text-sm whitespace-pre-wrap">
@@ -119,6 +149,12 @@ Visit my GitHub for more projects and source code!
   `;
 }
 
+/**
+ * Retrieves pre-rendered HTML output for a specific CLI command from the hidden DOM container.
+ *
+ * @param command - The name/slug of the command to retrieve (e.g., 'help', 'about', 'projects').
+ * @returns The pre-rendered inner HTML content string if found on the client DOM, or null otherwise.
+ */
 export function usePrerenderedCommand(command: string): string | null {
   if (typeof window === "undefined") return null;
 

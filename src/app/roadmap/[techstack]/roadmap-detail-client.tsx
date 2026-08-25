@@ -21,6 +21,16 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Represents the progress tracking payload for a roadmap technology stack.
+ *
+ * @interface ProgressResponse
+ * @property {number} totalTopicCount - Total number of topics contained in the roadmap.
+ * @property {string[]} done - Array of topic node IDs that have been completed.
+ * @property {string[]} learning - Array of topic node IDs currently in progress.
+ * @property {string[]} skipped - Array of topic node IDs that have been skipped.
+ * @property {boolean} isFavorite - Indicates whether the roadmap is marked as favorite.
+ */
 interface ProgressResponse {
   totalTopicCount: number;
   done: string[];
@@ -29,11 +39,30 @@ interface ProgressResponse {
   isFavorite: boolean;
 }
 
+/**
+ * Properties for the {@link RoadmapDetailClient} component.
+ *
+ * @interface RoadmapDetailClientProps
+ * @property {string} techstack - The unique slug identifier for the technology stack.
+ * @property {Root} initialStructure - The complete node and edge graph structure representing the roadmap canvas.
+ */
 interface RoadmapDetailClientProps {
   techstack: string;
   initialStructure: Root;
 }
 
+/**
+ * Interactive client-side canvas component for visualizing and exploring tech stack roadmaps.
+ *
+ * @description Renders a 2D node-and-edge graph of roadmap topics with real-time status highlights
+ * (completed, learning, skipped, pending), dynamic canvas scaling, mobile-friendly outline view,
+ * and synchronizes live progress from the API.
+ *
+ * @param {RoadmapDetailClientProps} props - Component properties.
+ * @param {string} props.techstack - The technology stack slug identifier.
+ * @param {Root} props.initialStructure - The layout data structure containing nodes, edges, and dimensions.
+ * @returns {JSX.Element} The rendered interactive roadmap visualizer.
+ */
 export function RoadmapDetailClient({
   techstack,
   initialStructure,
@@ -52,6 +81,12 @@ export function RoadmapDetailClient({
   const [fitScale, setFitScale] = useState(1);
 
                                            
+  /**
+   * Fetches user learning progress state for the current techstack from the backend API.
+   *
+   * @async
+   * @returns {Promise<void>} Resolves after progress state is loaded or error is captured.
+   */
   const fetchProgress = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -74,7 +109,6 @@ export function RoadmapDetailClient({
     fetchProgress();
   }, [fetchProgress]);
 
-                                         
   const doneSet = useMemo(() => new Set(progress?.done ?? []), [progress]);
   const learningSet = useMemo(
     () => new Set(progress?.learning ?? []),
@@ -85,10 +119,8 @@ export function RoadmapDetailClient({
     [progress],
   );
 
-                         
   const padding = 120;
 
-                                                                             
   const successColor = themeConfig.colors.success ?? themeConfig.colors.accent;
   const _errorColor = themeConfig.colors.error ?? themeConfig.colors.muted;
   const warningColor = themeConfig.colors.warning ?? themeConfig.colors.accent;
@@ -127,14 +159,13 @@ export function RoadmapDetailClient({
     };
   }, [initialStructure]);
 
-                                                           
   useEffect(() => {
     const container = containerRef.current;
     if (!container || width === 0) return;
 
     const handleResize = () => {
       const containerWidth = container.clientWidth;
-                                                                                        
+
       const rawScale =
         containerWidth > 0 ? Math.min(1, containerWidth / width) : 1;
       const scale = Math.max(rawScale, 0.85);
@@ -149,7 +180,12 @@ export function RoadmapDetailClient({
     };
   }, [width]);
 
-                         
+  /**
+   * Renders an individual node within the canvas coordinate system.
+   *
+   * @param {Node} node - The roadmap node object to render.
+   * @returns {JSX.Element | null} The rendered node element or null if skipped.
+   */
   const renderNode = (node: Node) => {
                                                                                  
                                                                                      

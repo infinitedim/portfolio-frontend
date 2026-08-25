@@ -1,5 +1,21 @@
+/**
+ * @fileoverview Static SEO and accessibility fallback content organism component,
+ * including structured JSON-LD schema metadata, screen-reader portfolio outlines, and preloaded ASCII art.
+ * @module components/organisms/shared/static-content
+ */
+
 import { JSX } from "react";
 
+/**
+ * Renders static semantic markup and JSON-LD structured metadata for search engines and assistive tech.
+ *
+ * @description
+ * Emits screen-reader accessible headers and lists of developer commands/skills/features,
+ * hidden preloaded ASCII art banners for fast paint, and a SoftwareApplication JSON-LD schema
+ * to ensure robust search engine optimization (SEO) without interfering with interactive terminal graphics.
+ *
+ * @returns {JSX.Element} The rendered static accessibility and SEO content container.
+ */
 export function StaticContent(): JSX.Element {
   return (
     <div className="static-content">

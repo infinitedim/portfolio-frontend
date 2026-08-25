@@ -1,26 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * Parsed browser client metadata.
+ */
 interface BrowserInfo {
+  /** Name of the detected browser (e.g., Chrome, Safari, Edge, Firefox). */
   name: string;
+  /** Major version string of the detected browser. */
   version?: string;
 }
 
+/**
+ * Extension of NextRequest incorporating geographic location metadata provided by edge runtime.
+ */
 interface NextRequestWithGeo extends NextRequest {
+  /** Geographic location details extracted by edge routing. */
   geo?: {
+    /** Two-letter ISO country code. */
     country?: string;
+    /** Region or state identifier. */
     region?: string;
+    /** City name. */
     city?: string;
   };
 }
 
-   
-                                                                          
-                                                                              
-                                                                           
-                                                                           
-                                                   
-   
+/**
+ * Structured logger for edge and proxy middleware execution.
+ */
 const edgeLogger = {
+  /**
+   * Logs warning messages with structured JSON payload.
+   *
+   * @param message - The warning message description.
+   * @param fields - Additional metadata fields to log.
+   */
   warn(message: string, fields: Record<string, unknown>): void {
     if (process.env.NODE_ENV === "test") return;
     console.warn(
@@ -33,6 +47,12 @@ const edgeLogger = {
       }),
     );
   },
+  /**
+   * Logs informational messages with structured JSON payload.
+   *
+   * @param message - The info message description.
+   * @param fields - Additional metadata fields to log.
+   */
   info(message: string, fields: Record<string, unknown>): void {
     if (process.env.NODE_ENV === "test") return;
     console.log(
@@ -47,10 +67,19 @@ const edgeLogger = {
   },
 };
 
-const RATE_LIMIT = 200;                           
+/** Maximum permitted requests per rate limit time window. */
+const RATE_LIMIT = 200;
+/** Rate limiting rolling window duration in milliseconds (60 seconds). */
 const RATE_LIMIT_WINDOW_MS = 60000;
+/** In-memory rate limiting map tracking IP hit counts and expirations. */
 const rateLimitMap = new Map<string, { count: number; expires: number }>();
 
+/**
+ * Evaluates whether an incoming IP address has exceeded the rate limit threshold.
+ *
+ * @param ip - Client IP address string.
+ * @returns True if request is allowed within rate limit bounds, false if rate limit is exceeded.
+ */
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const record = rateLimitMap.get(ip);
@@ -65,7 +94,12 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-                                                                           
+/**
+ * Normalizes an API origin URL string, upgrading insecure non-localhost protocols to HTTPS.
+ *
+ * @param raw - The raw origin string or environment variable value.
+ * @returns Normalized origin URL string with trailing slashes removed.
+ */
 export function normalizeApiOrigin(raw: string | undefined): string {
   const fallback = "https://api.infinitedim.dev";
   if (!raw?.trim()) return fallback;
@@ -84,6 +118,12 @@ export function normalizeApiOrigin(raw: string | undefined): string {
   }
 }
 
+/**
+ * Converts an HTTP/HTTPS origin URL into its corresponding WebSocket (ws:/wss:) origin.
+ *
+ * @param httpOrigin - The HTTP/HTTPS origin URL to convert.
+ * @returns The converted WebSocket origin URL.
+ */
 function toWebSocketOrigin(httpOrigin: string): string {
   try {
     const parsed = new URL(httpOrigin);
@@ -94,6 +134,12 @@ function toWebSocketOrigin(httpOrigin: string): string {
   }
 }
 
+/**
+ * Generates the Content Security Policy (CSP) header string tailored for production or development modes.
+ *
+ * @param isDev - Whether the current execution environment is development.
+ * @returns Formatted Content-Security-Policy header string.
+ */
 function buildCsp(isDev: boolean): string {
   const apiOrigin = normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL);
 
@@ -170,6 +216,12 @@ function buildCsp(isDev: boolean): string {
     .join("; ");
 }
 
+/**
+ * Constructs standard security headers including CSP, X-Content-Type-Options, and Referrer-Policy.
+ *
+ * @param csp - The serialized Content Security Policy string.
+ * @returns Key-value header dictionary.
+ */
 function getSecurityHeaders(csp: string): Record<string, string> {
   return {
     "Content-Security-Policy": csp,
@@ -179,6 +231,13 @@ function getSecurityHeaders(csp: string): Record<string, string> {
   };
 }
 
+/**
+ * Calculates Cross-Origin Resource Sharing (CORS) headers based on an allowed origin whitelist.
+ *
+ * @param origin - The incoming Origin request header value.
+ * @param allowed - List of permitted origins.
+ * @returns CORS headers object containing Access-Control-Allow-Origin if permitted.
+ */
 function getCORSHeaders(
   origin: string,
   allowed: string[],
@@ -188,20 +247,43 @@ function getCORSHeaders(
     : {};
 }
 
+/**
+ * Determines whether the portfolio security gate feature is enabled via environment variables.
+ *
+ * @returns True if gate authentication is active, otherwise false.
+ */
 export function isGateEnabled(): boolean {
   return process.env.NEXT_PUBLIC_GATE_ENABLED !== "false";
 }
 
+/**
+ * Verifies whether the request supplies a valid gate bypass secret header.
+ *
+ * @param request - The incoming NextRequest instance.
+ * @returns True if request contains valid x-gate-bypass secret header.
+ */
 export function hasGateBypass(request: NextRequest): boolean {
   const secret = process.env.GATE_BYPASS_SECRET;
   if (!secret) return false;
   return request.headers.get("x-gate-bypass") === secret;
 }
 
+/**
+ * Checks whether the incoming request possesses an authorized portfolio gate cookie.
+ *
+ * @param request - The incoming NextRequest instance.
+ * @returns True if the portfolio_gate cookie exists and contains a value.
+ */
 export function hasGateCookie(request: NextRequest): boolean {
   return Boolean(request.cookies.get("portfolio_gate")?.value);
 }
 
+/**
+ * Resolves redirection logic for protected routes (/gate and /terminal) based on gate authorization state and device type.
+ *
+ * @param request - The incoming NextRequest instance.
+ * @returns A NextResponse redirect if navigation redirect is required, otherwise null.
+ */
 export function resolveGateRedirect(request: NextRequest): NextResponse | null {
   if (!isGateEnabled()) return null;
   if (hasGateBypass(request)) return null;
@@ -230,8 +312,14 @@ export function resolveGateRedirect(request: NextRequest): NextResponse | null {
   return null;
 }
 
+/**
+ * Primary edge proxy middleware executing security checks, rate limiting, gate routing,
+ * device detection, caching policies, and performance logging.
+ *
+ * @param request - The incoming NextRequest instance.
+ * @returns A NextResponse object with configured security headers, tracking headers, or redirect/error responses.
+ */
 export function proxy(request: NextRequest): NextResponse {
-                                                                                    
   if (request.nextUrl.pathname.toLowerCase() === "/resume.pdf") {
     return new NextResponse(
       "Direct access to resume.pdf is blocked. Please use the download verification on the site.",
@@ -247,7 +335,6 @@ export function proxy(request: NextRequest): NextResponse {
     return gateRedirect;
   }
 
-                                                      
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     request.headers.get("x-real-ip") ||
@@ -270,7 +357,6 @@ export function proxy(request: NextRequest): NextResponse {
 
   response.headers.set("X-Request-ID", requestId);
 
-                                                                             
   const securityHeaders = getSecurityHeaders(csp);
   for (const [key, value] of Object.entries(securityHeaders)) {
     response.headers.set(key, value);
@@ -405,6 +491,9 @@ export function proxy(request: NextRequest): NextResponse {
   return response;
 }
 
+/**
+ * Next.js middleware configuration specifying route matcher exclusions.
+ */
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|sw.js|manifest.json|robots.txt|sitemap.xml|theme-init.js).*)",

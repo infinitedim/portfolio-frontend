@@ -1,5 +1,13 @@
 import { MetadataRoute } from "next";
 
+/**
+ * Generates the dynamic `robots.txt` configuration for search engine crawlers and web spiders.
+ *
+ * @description Defines per-user-agent crawler policies, allowlists, disallowlists, crawl delays,
+ * canonical sitemap URL, and host directives to optimize indexing and secure private/internal routes.
+ *
+ * @returns {MetadataRoute.Robots} The typed Robots configuration object for Next.js metadata route generation.
+ */
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://infinitedim.dev";
 

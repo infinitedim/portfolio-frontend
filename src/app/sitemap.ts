@@ -3,10 +3,24 @@ import { getServerApiUrl } from "@/lib/api/get-api-url";
 import { getSiteUrl } from "@/lib/api/get-site-url";
 import { getProjectsData } from "@/lib/data/data-fetching";
 
+/**
+ * Resolves the server-side API base URL from environment variables.
+ *
+ * @returns {string} The normalized base URL for the backend API.
+ */
 function getBackendUrl(): string {
   return getServerApiUrl();
 }
 
+/**
+ * Represents a blog post item payload for sitemap URL and language alternate generation.
+ *
+ * @interface BlogPostItem
+ * @property {string} slug - Unique URL slug of the blog article.
+ * @property {string} [locale] - Language code or locale tag for the article translation (e.g., 'en', 'id').
+ * @property {string} [translationStatus] - Status of translation for internationalized post.
+ * @property {string} [updatedAt] - ISO timestamp string of the last modification.
+ */
 interface BlogPostItem {
   slug: string;
   locale?: string;
@@ -14,6 +28,15 @@ interface BlogPostItem {
   updatedAt?: string;
 }
 
+/**
+ * Generates the complete dynamic sitemap for the portfolio website.
+ *
+ * @description Aggregates static primary application routes, published multi-locale blog posts
+ * with hreflang alternates, and dynamic project showcase pages into a standard sitemap structure.
+ *
+ * @async
+ * @returns {Promise<MetadataRoute.Sitemap>} The array of sitemap route entries for Next.js metadata generation.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getSiteUrl();
   const currentDate = new Date();

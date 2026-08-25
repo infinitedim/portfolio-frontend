@@ -8,6 +8,12 @@ import { gateLevelRoute } from "@/lib/gate/types";
 import { GateProgress } from "@/components/molecules/gate/gate-progress";
 import { NatasLoginForm } from "@/components/organisms/gate/natas-login-form";
 
+/**
+ * Client component representing Level 1 of the Natas-style gate challenge.
+ * Displays level progress and authentication form with introductory credentials.
+ *
+ * @returns The JSX element rendering the Level 1 gate challenge interface.
+ */
 export default function GateLevel1Page(): JSX.Element {
   const router = useRouter();
   const [status, setStatus] = useState<GateStatus | null>(null);

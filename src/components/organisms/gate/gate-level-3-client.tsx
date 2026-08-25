@@ -7,12 +7,30 @@ import { gateClient } from "@/lib/gate/gate-client";
 import { GateProgress } from "@/components/molecules/gate/gate-progress";
 import type { GateStatus } from "@/lib/gate/types";
 
+/**
+ * Properties for configuring the GateLevel3Client puzzle component.
+ */
 interface GateLevel3ClientProps {
+  /** Current gate progression status and completed level history */
   status: GateStatus;
+  /** Encoded ciphertext string to be reversed/decoded by user */
   encodedSecret: string;
+  /** PHP/pseudocode implementation demonstrating the forward encoding algorithm */
   algorithm: string;
 }
 
+/**
+ * Interactive client component for the Level 3 gate puzzle.
+ *
+ * Displays the reversible encoding algorithm source code, the target encoded ciphertext,
+ * and a submission form that verifies decoded plaintext via the backend API.
+ *
+ * @param props - Component properties.
+ * @param props.status - Gate progression status.
+ * @param props.encodedSecret - Encoded string to reverse.
+ * @param props.algorithm - Algorithm implementation source code.
+ * @returns Rendered Level 3 gate challenge interface.
+ */
 export function GateLevel3Client({
   status,
   encodedSecret,

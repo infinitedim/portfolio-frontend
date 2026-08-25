@@ -12,11 +12,27 @@ import type { CustomTheme, CustomFont } from "@/types/customization";
 import type { ThemeName } from "@/types/theme";
 import { useI18n } from "@/hooks/use-i18n";
 
+/**
+ * Properties for configuring the CustomizationManager modal dialog.
+ */
 interface CustomizationManagerProps {
+  /** Whether the customization modal is currently open */
   isOpen: boolean;
+  /** Callback function invoked to close the customization dialog */
   onClose: () => void;
 }
 
+/**
+ * Modal management component for user customizations.
+ *
+ * Provides tabbed interfaces for managing custom terminal themes, typography fonts,
+ * animated background configurations, and global terminal runtime settings.
+ *
+ * @param props - Component properties.
+ * @param props.isOpen - Whether the manager dialog is open.
+ * @param props.onClose - Callback invoked to dismiss the manager.
+ * @returns Rendered customization modal dialog, or null if closed.
+ */
 export function CustomizationManager({
   isOpen,
   onClose,
@@ -36,6 +52,12 @@ export function CustomizationManager({
 
   const customizationService = CustomizationService.getInstance();
 
+  /**
+   * Displays a temporary notification toast inside the customization modal.
+   *
+   * @param message - Alert message text to display.
+   * @param type - Notification severity level ('success', 'error', or 'info').
+   */
   const showNotification = useCallback(
     (message: string, type: "success" | "error" | "info" = "info") => {
       setNotification({ message, type });
@@ -44,6 +66,9 @@ export function CustomizationManager({
     [],
   );
 
+  /**
+   * Fetches all registered custom themes and fonts from the customization service.
+   */
   const loadData = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -68,18 +93,29 @@ export function CustomizationManager({
     }
   }, [isOpen, loadData]);
 
+  /**
+   * Refreshes the custom themes list when a theme is added, edited, or removed.
+   */
   const handleThemeUpdate = useCallback(() => {
     const themes = customizationService.getAllThemes();
     setCustomThemes(themes);
     console.log(`Updated themes list: ${themes.length} themes`);
   }, [customizationService]);
 
+  /**
+   * Refreshes the custom fonts list when a font is added, edited, or removed.
+   */
   const handleFontUpdate = useCallback(() => {
     const fonts = customizationService.getAllFonts();
     setCustomFonts(fonts);
     console.log(`Updated fonts list: ${fonts.length} fonts`);
   }, [customizationService]);
 
+  /**
+   * Applies the selected theme and closes the customization modal upon success.
+   *
+   * @param themeId - Identifier of the theme to apply.
+   */
   const handleThemeApply = useCallback(
     (themeId: string) => {
       console.log(`CustomizationManager: Applying theme ${themeId}`);

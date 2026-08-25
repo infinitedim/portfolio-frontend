@@ -19,35 +19,69 @@ import { PageHeader } from "@/components/atoms/shared/page-header";
 import { getCachedBlogList } from "@/lib/services/cached-blog-fetch";
 import { getTranslationsForLocale } from "@/lib/i18n";
 
+/**
+ * Retrieves the server-side API base URL from environment or configuration.
+ *
+ * @returns {string} The resolved base URL for the backend API service.
+ */
 function getBackendUrl(): string {
   return getServerApiUrl();
 }
 
+/**
+ * Data representation of a blog post summary item within a paginated list response.
+ */
 interface BlogPostItem {
+  /** Unique identifier of the blog post. */
   id: string;
+  /** Title of the blog post. */
   title: string;
+  /** URL-friendly slug identifier for the post. */
   slug: string;
+  /** Excerpt or summary of the post content, or null if none. */
   summary: string | null;
+  /** Publication status indicating whether the post is publicly viewable. */
   published: boolean;
+  /** List of thematic tags associated with the post. */
   tags: string[];
+  /** Estimated reading duration in minutes. */
   readingTimeMinutes: number;
+  /** Creation timestamp in ISO 8601 string format. */
   createdAt: string;
+  /** Last updated timestamp in ISO 8601 string format. */
   updatedAt: string;
 }
 
+/**
+ * Paginated API response structure for blog post listings.
+ */
 interface BlogListResponse {
+  /** Array of blog post summary items returned for the current page. */
   items: BlogPostItem[];
+  /** Current 1-based page index. */
   page: number;
+  /** Maximum number of posts per page. */
   pageSize: number;
+  /** Total count of matching posts across all pages. */
   total: number;
 }
 
+/**
+ * Parameter structure passed to generateMetadata for the blog index page.
+ */
 interface BlogPageMetadataProps {
+  /** Promise resolving to incoming search query parameters including optional locale. */
   searchParams: Promise<{
     locale?: string;
   }>;
 }
 
+/**
+ * Generates SEO metadata, alternate language links, and RSS feed links for the blog listing page.
+ *
+ * @param {BlogPageMetadataProps} props - Metadata properties containing search params promise.
+ * @returns {Promise<Metadata>} The generated Next.js Metadata configuration object.
+ */
 export async function generateMetadata({
   searchParams,
 }: BlogPageMetadataProps): Promise<Metadata> {
@@ -80,6 +114,17 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * Fetches a paginated list of published blog posts based on search, tag, series, and locale filters.
+ *
+ * @param page - The 1-based page index to retrieve.
+ * @param pageSize - The number of blog posts per page.
+ * @param search - Optional keyword filter to search titles and summaries.
+ * @param tag - Optional tag slug to filter posts by tag.
+ * @param series - Optional series identifier to filter posts by series.
+ * @param locale - Optional locale code for content localization.
+ * @returns A promise resolving to the paginated blog post response.
+ */
 async function getBlogPosts(
   page = 1,
   pageSize = 10,
@@ -123,6 +168,11 @@ async function getBlogPosts(
   return { items: [], page, pageSize, total: 0 };
 }
 
+/**
+ * Fetches the complete list of unique tags used across published blog posts along with their counts.
+ *
+ * @returns {Promise<TagWithCount[]>} Array of tag descriptor objects with names, slugs, and post counts.
+ */
 async function getAvailableTags(): Promise<TagWithCount[]> {
   try {
     const backendUrl = getBackendUrl();
@@ -149,6 +199,13 @@ async function getAvailableTags(): Promise<TagWithCount[]> {
   return [];
 }
 
+/**
+ * Main async server component that fetches blog list data, tags, series, and renders the terminal-themed blog feed.
+ *
+ * @param {Object} props - Component properties containing search params promise.
+ * @param {Promise<{ page?: string; search?: string; tag?: string; series?: string; locale?: string; }>} props.searchParams - Search params promise.
+ * @returns {Promise<JSX.Element>} The rendered blog listing interface.
+ */
 async function BlogPageContent({
   searchParams,
 }: {
@@ -392,6 +449,11 @@ async function BlogPageContent({
   );
 }
 
+/**
+ * Skeleton loading fallback rendered while the blog list data is being fetched.
+ *
+ * @returns {JSX.Element} The rendered loading placeholder.
+ */
 function BlogListSkeleton() {
   const t = getTranslationsForLocale(DEFAULT_BLOG_LOCALE);
   return (
@@ -401,6 +463,13 @@ function BlogListSkeleton() {
   );
 }
 
+/**
+ * Main entry page component for the blog index route wrapped in a Suspense boundary.
+ *
+ * @param {Object} props - Page properties.
+ * @param {Promise<{ page?: string; search?: string; tag?: string; series?: string; locale?: string; }>} props.searchParams - Search parameters promise.
+ * @returns {JSX.Element} The rendered blog page.
+ */
 export default function BlogPage(props: {
   searchParams: Promise<{
     page?: string;

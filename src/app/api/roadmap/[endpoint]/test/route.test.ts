@@ -8,6 +8,9 @@ if (
   (jest as unknown as Record<string, unknown>).mock = () => undefined;
 
 mock.module("next/server", () => ({
+  /**
+   *
+   */
   NextRequest: class {},
   NextResponse: {
     json: (data: unknown, init?: ResponseInit) =>
@@ -21,6 +24,9 @@ mock.module("next/server", () => ({
   },
 }));
 
+/**
+ * Mock implementation of global fetch for testing roadmap endpoint proxy requests.
+ */
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch as unknown as typeof fetch;
 

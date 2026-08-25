@@ -3,6 +3,16 @@ import type { AuthUser } from "@/lib/auth/auth-service";
 
                                                                           
 
+/**
+ * Mock representation of the AuthService instance used for test assertions and state manipulation.
+ *
+ * @interface MockAuthService
+ * @property {string | null} accessToken - The mocked active authentication token or null if unauthenticated.
+ * @property {AuthUser | null} user - The mocked current user profile or null if unauthenticated.
+ * @property {{ mock?: unknown }} isAuthenticated - Jest mock descriptor for authentication state check.
+ * @property {{ mock?: unknown }} getCurrentUser - Jest mock descriptor for user retrieval.
+ * @property {{ mock?: unknown }} getAccessToken - Jest mock descriptor for access token retrieval.
+ */
 interface MockAuthService {
   accessToken: string | null;
   user: AuthUser | null;
@@ -11,6 +21,9 @@ interface MockAuthService {
   getAccessToken: { mock?: unknown };
 }
 
+/**
+ * In-memory mock implementation of the browser Web Storage API (localStorage/sessionStorage) for testing.
+ */
 const storageMock = {
   getItem: () => null,
   setItem: () => {},
@@ -18,6 +31,14 @@ const storageMock = {
   clear: () => {},
 };
 
+/**
+ * Safely defines or overrides a property on the Node/Bun global object for storage mocking.
+ *
+ * @param {"localStorage" | "sessionStorage" | "window"} key - The global property name to define.
+ * @param {unknown} value - The mock object or value to assign to the global property.
+ * @throws {Error} If property definition fails and descriptor is non-configurable.
+ * @returns {void}
+ */
 function defineGlobalProperty(
   key: "localStorage" | "sessionStorage" | "window",
   value: unknown,

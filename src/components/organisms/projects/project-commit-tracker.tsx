@@ -40,16 +40,33 @@ import {
   RefreshCw,
 } from "lucide-react";
 
+/**
+ * Properties for the {@link ProjectCommitTracker} component.
+ */
 interface ProjectCommitTrackerProps {
+  /**
+   * Optional initial GitHub repository URL (e.g., `https://github.com/owner/repo`).
+   */
   repoUrl?: string;
+  /**
+   * Display name of the associated project.
+   */
   projectName: string;
 }
 
+/**
+ * Interactive Git commit tracking section providing dual presentation modes (interactive cards & terminal log),
+ * branch selection, commit message searching, branch graph visualization, diff inspection drawers, and CI/CD status triggers.
+ *
+ * @param {ProjectCommitTrackerProps} props - Component properties.
+ * @param {string} [props.repoUrl] - Optional initial repository URL.
+ * @param {string} props.projectName - Project name to display in the header.
+ * @returns {JSX.Element | null} The rendered commit tracker interface or `null` if no repo URL is configured.
+ */
 export function ProjectCommitTracker({
   repoUrl,
   projectName,
 }: ProjectCommitTrackerProps) {
-                                                           
   const [urlInput, setUrlInput] = useState<string>(repoUrl || "");
   const [parsedRepo, setParsedRepo] = useState<ParsedRepoUrl | null>(() =>
     parseGitHubUrl(repoUrl || ""),
@@ -61,12 +78,10 @@ export function ProjectCommitTracker({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-                      
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
-                    
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [viewMode, setViewMode] = useState<"cards" | "terminal">("cards");
   const [selectedCommitSha, setSelectedCommitSha] = useState<string | null>(
@@ -77,13 +92,15 @@ export function ProjectCommitTracker({
   );
   const [copiedSha, setCopiedSha] = useState<string | null>(null);
 
-                               
   const GRAPH_LANE_WIDTH = 20;
-  const GRAPH_ROW_HEIGHT_CARDS = 88;                                  
-  const GRAPH_ROW_HEIGHT_TERMINAL = 32;                             
+  const GRAPH_ROW_HEIGHT_CARDS = 88;
+  const GRAPH_ROW_HEIGHT_TERMINAL = 32;
 
-
-                                             
+  /**
+   * Form submission handler for parsing manual repository URL inputs.
+   *
+   * @param {React.FormEvent} e - Form submission event.
+   */
   const handleUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = parseGitHubUrl(urlInput);
@@ -98,7 +115,11 @@ export function ProjectCommitTracker({
     setSelectedBranch("");
   };
 
-                                                                                
+  /**
+   * Loads branch lists and initial page of commit records for the current repository and branch selection.
+   *
+   * @returns {Promise<void>}
+   */
   const loadRepoData = useCallback(async () => {
     if (!parsedRepo) return;
 
@@ -108,7 +129,6 @@ export function ProjectCommitTracker({
     setHasMore(true);
 
     try {
-                          
       const fetchedBranches = await fetchRepoBranches(
         parsedRepo.owner,
         parsedRepo.repo,
@@ -127,7 +147,6 @@ export function ProjectCommitTracker({
         setSelectedBranch(defaultBranch);
       }
 
-                                                                                         
       const fetchedCommits = await fetchRepoCommits(
         parsedRepo.owner,
         parsedRepo.repo,
@@ -152,7 +171,11 @@ export function ProjectCommitTracker({
     }
   }, [parsedRepo, selectedBranch]);
 
-                                  
+  /**
+   * Fetches the next page of commit entries for pagination.
+   *
+   * @returns {Promise<void>}
+   */
   const handleLoadMore = async () => {
     if (!parsedRepo || loadingMore || !hasMore) return;
 
@@ -267,6 +290,11 @@ export function ProjectCommitTracker({
     });
   }, [filteredCommits, branches, viewMode, nodeYMap]);
 
+  /**
+   * Copies a commit SHA hash to the user's system clipboard and updates the visual feedback state.
+   *
+   * @param {string} sha - The commit SHA hash string to copy.
+   */
   const copySha = (sha: string) => {
     navigator.clipboard.writeText(sha);
     setCopiedSha(sha);
@@ -770,6 +798,11 @@ export function ProjectCommitTracker({
   );
 }
 
+/**
+ * Renders an animated pulse timeline skeleton loader while commits and branch records are loading.
+ *
+ * @returns {JSX.Element} The commit tracker timeline skeleton component.
+ */
 function CommitTrackerPhantomSkeleton() {
   return (
     <div

@@ -1,38 +1,79 @@
 import { useRef, useCallback, useState, useMemo } from "react";
 import { useTimerManager, useMountRef } from "./hooks-utils";
 
+/**
+ * Configuration thresholds and timing parameters for gesture detection.
+ */
 export interface GestureConfig {
+  /** Minimum pixel distance required along an axis to trigger a swipe event. */
   swipeThreshold: number;
+  /** Milliseconds a touch must be held stationary to register as a long press. */
   longPressDelay: number;
+  /** Maximum milliseconds between two consecutive taps to register as a double tap. */
   doubleTapDelay: number;
+  /** Minimum scale delta required to trigger pinch-in or pinch-out callbacks. */
   pinchThreshold: number;
 }
 
+/**
+ * Event handler callbacks triggered when specific touch gestures are recognized.
+ */
 export interface GestureCallbacks {
+  /** Callback fired when a leftward horizontal swipe is detected. */
   onSwipeLeft?: () => void;
+  /** Callback fired when a rightward horizontal swipe is detected. */
   onSwipeRight?: () => void;
+  /** Callback fired when an upward vertical swipe is detected. */
   onSwipeUp?: () => void;
+  /** Callback fired when a downward vertical swipe is detected. */
   onSwipeDown?: () => void;
+  /** Callback fired when a long-press gesture exceeds the configured duration. */
   onLongPress?: () => void;
+  /** Callback fired when a double-tap is recognized within the configured interval. */
   onDoubleTap?: () => void;
+  /**
+   * Callback fired during a two-finger pinch-in gesture.
+   * @param scale - The computed scale factor relative to the initial touch distance (less than 1).
+   */
   onPinchIn?: (scale: number) => void;
+  /**
+   * Callback fired during a two-finger pinch-out gesture.
+   * @param scale - The computed scale factor relative to the initial touch distance (greater than 1).
+   */
   onPinchOut?: (scale: number) => void;
+  /** Callback fired when a top-of-screen downward pull exceeds the refresh threshold. */
   onPullToRefresh?: () => void;
 }
 
+/**
+ * Internal state tracking for multi-touch pointer events and ongoing gestures.
+ */
 interface TouchState {
+  /** Initial horizontal client coordinate of the first touch. */
   startX: number;
+  /** Initial vertical client coordinate of the first touch. */
   startY: number;
+  /** Latest horizontal client coordinate of the primary touch. */
   currentX: number;
+  /** Latest vertical client coordinate of the primary touch. */
   currentY: number;
+  /** Unix timestamp in milliseconds when the touch interaction commenced. */
   startTime: number;
+  /** Boolean flag indicating if a touch pointer is actively held down. */
   isPressed: boolean;
+  /** Unix timestamp of the most recent tap event for double-tap detection. */
   lastTapTime: number;
+  /** Number of consecutive taps recorded within the double-tap window. */
   tapCount: number;
+  /** Initial euclidean distance between two touch points in a pinch gesture. */
   initialDistance: number;
+  /** Current scale ratio derived from two-finger distance changes. */
   scale: number;
 }
 
+/**
+ * Default configuration values for gesture thresholds and delays.
+ */
 const DEFAULT_CONFIG: GestureConfig = {
   swipeThreshold: 50,
   longPressDelay: 500,
@@ -40,6 +81,31 @@ const DEFAULT_CONFIG: GestureConfig = {
   pinchThreshold: 0.1,
 };
 
+/**
+ * Custom React hook for recognizing touch gestures on interactive elements.
+ *
+ * Supports directional swipes (left/right/up/down), long press, double tap,
+ * two-finger pinch-to-zoom, and pull-to-refresh patterns.
+ *
+ * @param callbacks - Optional handler functions for recognized gesture events.
+ * @param config - Optional configuration overrides for gesture sensitivity and timings.
+ * @returns An object containing gesture event handlers and touch state metrics:
+ * - `getGestureHandlers`: Function returning touch event props and style overrides to spread onto a target element.
+ * - `isPullRefreshing`: Whether a pull-to-refresh gesture has triggered and is pending reset.
+ * - `pullDistance`: Current downward drag distance in pixels for pull-to-refresh visualization.
+ * - `touchState`: Current snapshot of the internal touch tracking data.
+ *
+ * @example
+ * ```tsx
+ * const { getGestureHandlers, isPullRefreshing } = useGestures({
+ *   onSwipeLeft: () => navigateNext(),
+ *   onSwipeRight: () => navigatePrev(),
+ *   onDoubleTap: () => resetZoom(),
+ * });
+ *
+ * return <div {...getGestureHandlers()}>Interactive Canvas</div>;
+ * ```
+ */
 export function useGestures(
   callbacks: GestureCallbacks = {},
   config: Partial<GestureConfig> = {},
@@ -70,6 +136,13 @@ export function useGestures(
 
   const memoizedCallbacks = useMemo(() => callbacks, [callbacks]);
 
+  /**
+   * Computes the euclidean distance between two touch points.
+   *
+   * @param touch1 - The primary touch point.
+   * @param touch2 - The secondary touch point.
+   * @returns The distance in pixels between the two points.
+   */
   const getDistance = (touch1: React.Touch, touch2: React.Touch): number => {
     const dx = touch1.clientX - touch2.clientX;
     const dy = touch1.clientY - touch2.clientY;
@@ -265,6 +338,29 @@ export function useGestures(
   };
 }
 
+/**
+ * Custom React hook tailoring gesture management specifically for mobile terminal interactions.
+ *
+ * Integrates command history cycling via vertical swipes, quick-command overlay toggling
+ * via horizontal swipes / long-press, help triggering via double-tap, and screen clearing via pull-to-refresh.
+ *
+ * @param onCommand - Callback executed with command strings triggered by gestures or history navigation.
+ * @returns An object containing gesture handlers, quick-command states, and command history management:
+ * - `getGestureHandlers`: Prop getter to bind touch events to the terminal container.
+ * - `isPullRefreshing`: Whether terminal clear via pull is active.
+ * - `pullDistance`: Current pull distance for drag animations.
+ * - `showQuickCommands`: State flag controlling visibility of the quick commands panel.
+ * - `setShowQuickCommands`: Dispatcher to toggle the quick commands panel.
+ * - `addToHistory`: Function to append executed commands to the local gesture history buffer.
+ * - `commandHistory`: List of recorded command history strings (capped at 20).
+ *
+ * @example
+ * ```tsx
+ * const { getGestureHandlers, showQuickCommands, addToHistory } = useTerminalGestures((cmd) => {
+ *   executeCommand(cmd);
+ * });
+ * ```
+ */
 export function useTerminalGestures(onCommand: (command: string) => void) {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);

@@ -6,6 +6,13 @@ import type {
 } from "@/types/roadmap";
 import type { RoadmapDashboard, RoadmapStreak } from "@/lib/data/data-fetching";
 
+/**
+ * Executes a network fetch for roadmap data, using encrypted fetch in client or direct fetch on server.
+ *
+ * @template T - Expected JSON response payload type.
+ * @param url - Full target endpoint URL.
+ * @returns Promise resolving to parsed data or null on failure.
+ */
 async function apiFetch<T>(url: string): Promise<T | null> {
   try {
     if (typeof window === "undefined") {
@@ -21,15 +28,31 @@ async function apiFetch<T>(url: string): Promise<T | null> {
   }
 }
 
+/**
+ * Singleton service for fetching, caching, and updating developer roadmap skills and progress.
+ */
 export class RoadmapService {
+  /** Singleton instance reference. */
   private static instance: RoadmapService;
+  /** Cached roadmap data state. */
   private progress: RoadmapData | null = null;
+  /** Flag indicating whether roadmap data has been loaded. */
   private loaded = false;
+  /** In-memory cache validity duration in milliseconds (5 minutes). */
   private readonly CACHE_DURATION = 5 * 60 * 1000;
+  /** Timestamp when roadmap data was last fetched. */
   private lastFetchTime = 0;
 
+  /**
+   * Private constructor to enforce singleton pattern.
+   */
   private constructor() {}
 
+  /**
+   * Retrieves the global singleton instance of RoadmapService.
+   *
+   * @returns The singleton RoadmapService instance.
+   */
   public static getInstance(): RoadmapService {
     if (!RoadmapService.instance) {
       RoadmapService.instance = new RoadmapService();
@@ -37,6 +60,12 @@ export class RoadmapService {
     return RoadmapService.instance;
   }
 
+  /**
+   * Resolves the full URL for a specific roadmap API endpoint path.
+   *
+   * @param path - Relative roadmap endpoint subpath.
+   * @returns Complete API URL string.
+   */
   private roadmapUrl(path: string): string {
     const base =
       typeof window === "undefined"
@@ -47,10 +76,23 @@ export class RoadmapService {
     return `${base}/api/roadmap/${path}`;
   }
 
+  /**
+   * Helper method to perform an API GET request for roadmap data.
+   *
+   * @template T - Expected response type.
+   * @param path - Endpoint subpath to query.
+   * @returns Promise resolving to parsed data or null.
+   */
   private async get<T>(path: string): Promise<T | null> {
     return apiFetch<T>(this.roadmapUrl(path));
   }
 
+  /**
+   * Resolves a hex color representation for a roadmap category or skill topic.
+   *
+   * @param id - Category identifier.
+   * @returns Hex color string.
+   */
   private getCategoryColor(id: string): string {
     const colorMap: Record<string, string> = {
       react: "#61dafb",
@@ -70,6 +112,11 @@ export class RoadmapService {
     return colorMap[id] ?? "#6366f1";
   }
 
+  /**
+   * Fetches latest roadmap dashboard and streak data from the backend API.
+   *
+   * @returns Promise resolving when data is loaded into cache.
+   */
   private async loadApiData(): Promise<void> {
     const now = Date.now();
     if (this.loaded && now - this.lastFetchTime < this.CACHE_DURATION) return;
@@ -130,21 +177,42 @@ export class RoadmapService {
     this.lastFetchTime = now;
   }
 
+  /**
+   * Initializes roadmap data loading if not already cached.
+   *
+   * @returns Promise resolving when initialization is complete.
+   */
   public async initialize(): Promise<void> {
     await this.loadApiData();
   }
 
+  /**
+   * Forces a cache invalidation and re-fetches roadmap data.
+   *
+   * @returns Promise resolving when data has refreshed.
+   */
   public async refreshData(): Promise<void> {
     this.loaded = false;
     this.lastFetchTime = 0;
     await this.initialize();
   }
 
+  /**
+   * Retrieves full user roadmap progress data, fetching from API if needed.
+   *
+   * @returns Promise resolving to the user's RoadmapData object.
+   */
   public async getUserProgress(): Promise<RoadmapData> {
     if (!this.loaded) await this.initialize();
     return this.progress!;
   }
 
+  /**
+   * Retrieves progress details for a specific category ID.
+   *
+   * @param categoryId - Unique category identifier.
+   * @returns Promise resolving to the RoadmapCategory object or null if not found.
+   */
   public async getCategoryProgress(
     categoryId: string,
   ): Promise<RoadmapCategory | null> {
@@ -152,6 +220,11 @@ export class RoadmapService {
     return progress.categories.find((cat) => cat.id === categoryId) ?? null;
   }
 
+  /**
+   * Calculates overall aggregate skill statistics across all categories.
+   *
+   * @returns Promise resolving to skill totals, completed counts, in-progress counts, and category totals.
+   */
   public async getStatistics(): Promise<{
     totalSkills: number;
     completedSkills: number;
@@ -173,6 +246,13 @@ export class RoadmapService {
     };
   }
 
+  /**
+   * Updates the completion status or percentage progress of an individual skill.
+   *
+   * @param skillId - Identifier of the skill to update.
+   * @param update - Progress and status update values.
+   * @returns Promise resolving to true if skill was found and updated, otherwise false.
+   */
   public async updateSkillProgress(
     skillId: string,
     update: ProgressUpdate,
@@ -198,6 +278,12 @@ export class RoadmapService {
     }
   }
 
+  /**
+   * Retrieves a single skill object by its identifier.
+   *
+   * @param skillId - Identifier of the skill to locate.
+   * @returns Promise resolving to the matching RoadmapSkill or null.
+   */
   public async getSkill(skillId: string): Promise<RoadmapSkill | null> {
     const progress = await this.getUserProgress();
     for (const category of progress.categories) {
@@ -207,6 +293,12 @@ export class RoadmapService {
     return null;
   }
 
+  /**
+   * Filters and returns all skills matching a specific progress status.
+   *
+   * @param status - Target status ('completed', 'in-progress', or 'not-started').
+   * @returns Promise resolving to array of matching skills.
+   */
   public async getSkillsByStatus(
     status: "completed" | "in-progress" | "not-started",
   ): Promise<RoadmapSkill[]> {
@@ -216,6 +308,9 @@ export class RoadmapService {
     );
   }
 
+  /**
+   * Populates default fallback roadmap data when API fetching fails.
+   */
   private loadFallbackData(): void {
     this.progress = {
       userId: "infinitedim",

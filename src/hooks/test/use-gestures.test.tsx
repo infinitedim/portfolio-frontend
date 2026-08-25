@@ -1,8 +1,20 @@
+/**
+ * @fileoverview Unit test suite for touch and mobile gesture hooks (useGestures and useTerminalGestures).
+ * @module hooks/test/use-gestures.test
+ */
+
 import { describe, it, expect, jest, beforeEach, afterEach } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 import { useGestures, useTerminalGestures } from "@/hooks/use-gestures";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
+/**
+ * Creates a synthetic React TouchEvent object for mocking gesture interactions in tests.
+ *
+ * @param {string} type - Event type (e.g. "touchstart", "touchmove", "touchend").
+ * @param {Array<{ clientX: number; clientY: number }>} touches - Coordinates for touch points in the event.
+ * @returns {React.TouchEvent} Synthetic touch event with mocked TouchList and lifecycle methods.
+ */
 function createTouchEvent(
   type: string,
   touches: Array<{ clientX: number; clientY: number }>,
@@ -35,6 +47,11 @@ function createTouchEvent(
   } as unknown as React.TouchEvent;
 }
 
+/**
+ * Invokes the onTouchEnd handler on a gesture handler bundle.
+ *
+ * @param {ReturnType<ReturnType<typeof useGestures>["getGestureHandlers"]>} handlers - Gesture handler object returned by `getGestureHandlers()`.
+ */
 function callTouchEnd(
   handlers: ReturnType<ReturnType<typeof useGestures>["getGestureHandlers"]>,
 ) {

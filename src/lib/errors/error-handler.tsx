@@ -3,23 +3,40 @@
 import { Component, type ErrorInfo, type ReactNode, type JSX } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
+/**
+ * State representation for the client EnhancedErrorBoundary component.
+ */
 interface ErrorBoundaryState {
+  /** Flag indicating whether an error occurred */
   hasError: boolean;
+  /** Caught error object or null */
   error: Error | null;
+  /** React error information with component stack or null */
   errorInfo: ErrorInfo | null;
+  /** Unique error identifier */
   errorId: string;
 }
 
+/**
+ * Properties accepted by the client EnhancedErrorBoundary component.
+ */
 interface ErrorBoundaryProps {
+  /** Child nodes to wrap */
   children: ReactNode;
+  /** Custom fallback rendering function */
   fallback?: (
     error: Error,
     errorInfo: ErrorInfo,
     retry: () => void,
   ) => ReactNode;
+  /** Error event handler callback */
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
+/**
+ * Client-side React Error Boundary class that catches errors,
+ * manages retry counts, persists error reports in localStorage, and renders fallback UI.
+ */
 export class EnhancedErrorBoundary extends Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
@@ -27,6 +44,10 @@ export class EnhancedErrorBoundary extends Component<
   private retryCount = 0;
   private maxRetries = 3;
 
+  /**
+   * Initializes the EnhancedErrorBoundary component with props and initial state.
+   * @param props - Boundary properties containing children and callbacks
+   */
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
@@ -37,6 +58,11 @@ export class EnhancedErrorBoundary extends Component<
     };
   }
 
+  /**
+   * Derives state updates when a descendant component throws an error.
+   * @param error - The uncaught error
+   * @returns Partial state update with error flags and generated error ID
+   */
   static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     const errorId = `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     return {
@@ -46,6 +72,11 @@ export class EnhancedErrorBoundary extends Component<
     };
   }
 
+  /**
+   * Lifecycle method triggered after an error is caught.
+   * @param error - The caught error
+   * @param errorInfo - React component stack info
+   */
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({
       error,
@@ -59,6 +90,11 @@ export class EnhancedErrorBoundary extends Component<
     this.props.onError?.(error, errorInfo);
   }
 
+  /**
+   * Persists an error report to localStorage under "terminal-errors".
+   * @param error - The caught error instance
+   * @param errorInfo - Component stack information
+   */
   private reportError(error: Error, errorInfo: ErrorInfo) {
     const errorReport = {
       message: error.message,
@@ -88,6 +124,9 @@ export class EnhancedErrorBoundary extends Component<
     }
   }
 
+  /**
+   * Increments retry count and clears error state to re-render children.
+   */
   private retry = () => {
     if (this.retryCount < this.maxRetries) {
       this.retryCount++;
@@ -100,6 +139,9 @@ export class EnhancedErrorBoundary extends Component<
     }
   };
 
+  /**
+   * Resets retry count and error state completely.
+   */
   private reset = () => {
     this.retryCount = 0;
     this.setState({
@@ -110,6 +152,11 @@ export class EnhancedErrorBoundary extends Component<
     });
   };
 
+  /**
+   * Analyzes error messages and generates contextual recovery suggestions.
+   * @param error - The error instance to analyze
+   * @returns Array of string suggestions for error resolution
+   */
   private getErrorSuggestions(error: Error): string[] {
     const suggestions: string[] = [];
     const message = error.message.toLowerCase();
@@ -143,6 +190,10 @@ export class EnhancedErrorBoundary extends Component<
     return suggestions;
   }
 
+  /**
+   * Renders fallback error UI or component children.
+   * @returns Rendered React node
+   */
   render() {
     if (this.state.hasError && this.state.error) {
       if (this.props.fallback) {
@@ -171,17 +222,41 @@ export class EnhancedErrorBoundary extends Component<
   }
 }
 
+/**
+ * Props for the DefaultErrorFallback presentation component.
+ */
 interface DefaultErrorFallbackProps {
+  /** Caught error object */
   error: Error;
+  /** Component stack error information */
   errorInfo: ErrorInfo | null;
+  /** Error identifier string */
   errorId: string;
+  /** Current retry attempt count */
   retryCount: number;
+  /** Maximum retry attempts allowed */
   maxRetries: number;
+  /** Contextual troubleshooting suggestions */
   suggestions: string[];
+  /** Retry callback function */
   onRetry: () => void;
+  /** Reset application callback function */
   onReset: () => void;
 }
 
+/**
+ * Renders the default styled fallback view for caught runtime errors.
+ * @param props - Presentation properties for the error screen
+ * @param props.error - Caught error object
+ * @param props.errorInfo - Component stack error information
+ * @param props.errorId - Error identifier string
+ * @param props.retryCount - Current retry attempt count
+ * @param props.maxRetries - Maximum retry attempts allowed
+ * @param props.suggestions - Contextual troubleshooting suggestions
+ * @param props.onRetry - Retry callback function
+ * @param props.onReset - Reset application callback function
+ * @returns JSX element representing the error screen
+ */
 function DefaultErrorFallback({
   error,
   errorInfo,
@@ -409,9 +484,16 @@ function DefaultErrorFallback({
   return handleCopyError();
 }
 
+/**
+ * Singleton service providing recovery assistance, suggestions, and diagnostic logs for command errors.
+ */
 export class ErrorRecoveryService {
   private static instance: ErrorRecoveryService;
 
+  /**
+   * Retrieves the singleton instance of ErrorRecoveryService.
+   * @returns ErrorRecoveryService instance
+   */
   static getInstance(): ErrorRecoveryService {
     if (!ErrorRecoveryService.instance) {
       ErrorRecoveryService.instance = new ErrorRecoveryService();
@@ -419,6 +501,12 @@ export class ErrorRecoveryService {
     return ErrorRecoveryService.instance;
   }
 
+  /**
+   * Evaluates command errors and yields suggestions along with executable quick-fix actions.
+   * @param command - The executed command string
+   * @param error - The error message generated
+   * @returns Structured object containing error message, suggestions, and quickFixes
+   */
   handleCommandError(
     command: string,
     error: string,
@@ -468,6 +556,10 @@ export class ErrorRecoveryService {
     };
   }
 
+  /**
+   * Retrieves stored error reports from localStorage.
+   * @returns Array of stored error reports or empty array
+   */
   getErrorReports(): [] {
     try {
       const historyData = localStorage.getItem("terminal-errors");
@@ -486,6 +578,9 @@ export class ErrorRecoveryService {
     }
   }
 
+  /**
+   * Clears all stored error reports from localStorage.
+   */
   clearErrorReports(): void {
     localStorage.removeItem("terminal-errors");
   }

@@ -9,30 +9,53 @@ import {
 } from "./error-types";
 import clientLogger from "../logger/client-logger";
 
+/**
+ * State structure for the EnhancedErrorBoundary component.
+ */
 export interface ErrorBoundaryState {
+  /** Indicates whether an error was captured by the boundary */
   hasError: boolean;
+  /** The normalized enhanced error instance, or null if no error */
   error: EnhancedError | null;
+  /** React component stack error info, or null */
   errorInfo: ErrorInfo | null;
+  /** Unique identifier generated for the captured error */
   errorId: string;
+  /** Number of retry attempts executed so far */
   retryCount: number;
 }
 
+/**
+ * Configuration options for the EnhancedErrorBoundary component.
+ */
 export interface ErrorBoundaryConfig {
+  /** Custom fallback render function receiving error state and recovery callbacks */
   fallback?: (
     error: EnhancedError,
     errorInfo: ErrorInfo,
     retry: () => void,
     reset: () => void,
   ) => ReactNode;
+  /** Callback fired when an error is caught */
   onError?: (error: EnhancedError, errorInfo: ErrorInfo) => void;
+  /** Callback fired when a retry attempt is triggered */
   onRetry?: (error: EnhancedError, attempt: number) => void;
+  /** Maximum number of retry attempts before giving up */
   maxRetries?: number;
+  /** Flag indicating whether errors should be isolated to this boundary */
   isolateErrors?: boolean;
+  /** Flag to enable automatic retry recovery for retryable errors */
   enableRecovery?: boolean;
+  /** Default error category to categorize caught errors under */
   category?: ErrorCategory;
+  /** Whether to report caught errors to the logger and session storage */
   reportErrors?: boolean;
 }
 
+/**
+ * Enhanced React Error Boundary class component that catches rendering errors,
+ * normalizes them into EnhancedError instances, provides retry mechanisms, and logs errors.
+ */
 export class EnhancedErrorBoundary extends Component<
   ErrorBoundaryConfig & { children: ReactNode },
   ErrorBoundaryState
@@ -40,6 +63,10 @@ export class EnhancedErrorBoundary extends Component<
   private retryTimeouts: NodeJS.Timeout[] = [];
   private readonly maxRetries: number;
 
+  /**
+   * Initializes the EnhancedErrorBoundary with props and initial state.
+   * @param props - Component props including ErrorBoundaryConfig and children
+   */
   constructor(props: ErrorBoundaryConfig & { children: ReactNode }) {
     super(props);
     this.state = {
@@ -52,6 +79,11 @@ export class EnhancedErrorBoundary extends Component<
     this.maxRetries = props.maxRetries || 3;
   }
 
+  /**
+   * React lifecycle method to derive state from a thrown error.
+   * @param error - The raw error thrown by a child component
+   * @returns Partial state update with error flags and enhanced error
+   */
   static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     const errorId = `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const enhancedError = ErrorUtils.enhance(error);
@@ -63,6 +95,11 @@ export class EnhancedErrorBoundary extends Component<
     };
   }
 
+  /**
+   * React lifecycle method called after an error has been thrown by a descendant component.
+   * @param error - The error thrown by descendant components
+   * @param errorInfo - React error info containing component stack trace
+   */
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     const enhancedError = ErrorUtils.enhance(error, {
       category: this.props.category,
@@ -91,6 +128,11 @@ export class EnhancedErrorBoundary extends Component<
     }
   }
 
+  /**
+   * Reports the error to clientLogger, development console, and session storage.
+   * @param error - The enhanced error instance to report
+   * @param errorInfo - Component stack information
+   */
   private reportError = (error: EnhancedError, errorInfo: ErrorInfo) => {
     try {
       clientLogger.logError(error, {
@@ -145,6 +187,9 @@ export class EnhancedErrorBoundary extends Component<
     }
   };
 
+  /**
+   * Schedules an automatic retry with exponential backoff delay.
+   */
   private scheduleRetry = () => {
     if (this.state.retryCount >= this.maxRetries) {
       return;
@@ -158,6 +203,9 @@ export class EnhancedErrorBoundary extends Component<
     this.retryTimeouts.push(timeout);
   };
 
+  /**
+   * Increments retry count and clears the error state to trigger a re-render.
+   */
   private retry = () => {
     if (this.state.retryCount >= this.maxRetries) {
       return;
@@ -181,6 +229,9 @@ export class EnhancedErrorBoundary extends Component<
     }, 100);
   };
 
+  /**
+   * Clears active timeouts and resets error state to initial conditions.
+   */
   private reset = () => {
     this.retryTimeouts.forEach(clearTimeout);
     this.retryTimeouts = [];
@@ -194,10 +245,17 @@ export class EnhancedErrorBoundary extends Component<
     });
   };
 
+  /**
+   * Cleans up pending retry timers when the component unmounts.
+   */
   componentWillUnmount() {
     this.retryTimeouts.forEach(clearTimeout);
   }
 
+  /**
+   * Renders fallback UI if an error has been caught, otherwise renders children.
+   * @returns Fallback UI or child elements
+   */
   render() {
     if (this.state.hasError && this.state.error) {
       if (this.props.fallback) {
@@ -225,15 +283,35 @@ export class EnhancedErrorBoundary extends Component<
   }
 }
 
+/**
+ * Props for the DefaultErrorFallback presentation component.
+ */
 interface DefaultErrorFallbackProps {
+  /** The enhanced error details */
   error: EnhancedError;
+  /** Component stack error information */
   errorInfo: ErrorInfo | null;
+  /** Current retry attempt count */
   retryCount: number;
+  /** Maximum retry attempts configured */
   maxRetries: number;
+  /** Callback to trigger a retry */
   onRetry: () => void;
+  /** Callback to reset the error boundary */
   onReset: () => void;
 }
 
+/**
+ * Default fallback UI displayed when an uncaught error occurs in the boundary.
+ * @param props - Fallback properties containing error details and recovery actions
+ * @param props.error - The enhanced error details
+ * @param props.errorInfo - Component stack error information
+ * @param props.retryCount - Current retry attempt count
+ * @param props.maxRetries - Maximum retry attempts configured
+ * @param props.onRetry - Callback to trigger a retry
+ * @param props.onReset - Callback to reset the error boundary
+ * @returns Rendered error fallback interface
+ */
 function DefaultErrorFallback({
   error,
   errorInfo,
@@ -388,6 +466,12 @@ function DefaultErrorFallback({
   );
 }
 
+/**
+ * Higher-order component that wraps a given component with an EnhancedErrorBoundary.
+ * @param Component - Target React component to wrap
+ * @param config - Optional configuration for the error boundary
+ * @returns Wrapped component with error boundary protection
+ */
 export function withErrorBoundary<P extends object>(
   Component: ComponentType<P>,
   config: ErrorBoundaryConfig = {},
@@ -403,6 +487,10 @@ export function withErrorBoundary<P extends object>(
   return WrappedComponent;
 }
 
+/**
+ * Hook to imperatively trigger an error boundary from within a component.
+ * @returns An object containing `captureError` and `resetError` methods
+ */
 export function useErrorBoundary() {
   const [error, setError] = useState<Error | null>(null);
 

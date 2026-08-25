@@ -1,15 +1,42 @@
 "use client";
 
+/**
+ * Props for the {@link RoadmapProgressBar} component.
+ */
 interface RoadmapProgressBarProps {
+  /** Explicit completion percentage (0 to 100) used when total/active segment counts are omitted. */
   percentage?: number;
+  /** Total number of roadmap items or segments to measure progress against. */
   totalSegments?: number;
+  /** Number of completed/active roadmap items or segments. */
   activeSegments?: number;
+  /** Whether to show the terminal header text with execution percent and segment counts. Defaults to true. */
   showAscii?: boolean;
+  /** Optional custom CSS classes for the progress bar container. */
   className?: string;
+  /** Height size variant of the individual LED segment bars ('sm', 'md', 'lg'). Defaults to 'md'. */
   size?: "sm" | "md" | "lg";
+  /** Optional custom status label override in place of the default `${pct}% EXECUTED` text. */
   label?: string;
 }
 
+/**
+ * Renders an interactive terminal-styled segmented LED progress bar.
+ *
+ * @description Computes percentage from raw segment counts or explicit percentage values,
+ * normalizes display segments into fixed or dynamic LED indicators with glowing terminal accent colors,
+ * and renders an optional ASCII status headline.
+ *
+ * @param props - Component properties conforming to {@link RoadmapProgressBarProps}.
+ * @param props.percentage - Explicit completion percentage (0 to 100) used when total/active segment counts are omitted.
+ * @param props.totalSegments - Total number of roadmap items or segments to measure progress against.
+ * @param props.activeSegments - Number of completed/active roadmap items or segments.
+ * @param props.showAscii - Whether to show the terminal header text with execution percent and segment counts.
+ * @param props.className - Optional custom CSS classes for the progress bar container.
+ * @param props.size - Height size variant of the individual LED segment bars ('sm', 'md', 'lg').
+ * @param props.label - Optional custom status label override in place of the default percent text.
+ * @returns A JSX element containing the segmented LED bar and status header.
+ */
 export function RoadmapProgressBar({
   percentage,
   totalSegments: customTotal,
@@ -32,8 +59,6 @@ export function RoadmapProgressBar({
     pct = Math.round((customActive / customTotal) * 100);
     topicText = `[${customActive}/${customTotal} TOPICS]`;
 
-                                                                      
-                                                                                                         
     if (customTotal <= 15) {
       displayTotal = customTotal;
       displayActive = customActive;
@@ -57,6 +82,11 @@ export function RoadmapProgressBar({
     lg: "h-3",
   };
 
+  /**
+   * Resolves the styling classes for an active/illuminated LED segment.
+   *
+   * @returns Tailwind class string for active or inactive segments.
+   */
   const getActiveStyle = () => {
     if (isComplete || isStarted) {
       return "bg-(--terminal-accent) shadow-[0_0_6px_var(--terminal-accent)] border-(--terminal-accent)/40";
@@ -84,7 +114,6 @@ export function RoadmapProgressBar({
         </div>
       )}
 
-                                                               
       <div className="w-full flex items-center gap-1 p-1 rounded-lg bg-(--terminal-bg) border border-(--terminal-border) shadow-inner overflow-hidden">
         {Array.from({ length: displayTotal }).map((_, idx) => {
           const isActive = idx < displayActive;
@@ -103,3 +132,4 @@ export function RoadmapProgressBar({
     </div>
   );
 }
+

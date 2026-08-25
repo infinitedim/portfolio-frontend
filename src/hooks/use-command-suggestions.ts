@@ -1,8 +1,27 @@
+/**
+ * @fileoverview Custom hook and fuzzy matching engine for intelligent terminal command suggestions and autocomplete.
+ * @module hooks/use-command-suggestions
+ */
+
 "use client";
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 
+/**
+ * Represents an individual command auto-suggestion item with ranking and contextual metadata.
+ *
+ * @interface SuggestionItem
+ * @property {string} command - Suggested command string.
+ * @property {number} score - Relevance and fuzzy matching score (higher is more relevant).
+ * @property {"exact" | "prefix" | "fuzzy" | "contextual" | "recent" | "popular"} type - Classification of suggestion source/match.
+ * @property {string} [description] - Human-readable summary of what the command does.
+ * @property {string} [usage] - Syntax guide or parameter format example.
+ * @property {string} [category] - Functional category grouping.
+ * @property {number} [frequency] - Execution frequency count.
+ * @property {Date} [lastUsed] - Last execution timestamp.
+ * @property {"start" | "middle" | "end" | "any"} [matchType] - Substring match location.
+ */
 export interface SuggestionItem {
   command: string;
   score: number;
@@ -15,6 +34,20 @@ export interface SuggestionItem {
   matchType?: "start" | "middle" | "end" | "any";
 }
 
+/**
+ * Detailed metadata profile describing a built-in terminal command.
+ *
+ * @interface CommandMetadata
+ * @property {string} description - Summary of command functionality.
+ * @property {string} category - Command classification.
+ * @property {string} [usage] - Parameter usage example.
+ * @property {string[]} [examples] - Example invocation strings.
+ * @property {number} frequency - Global execution counter.
+ * @property {Date} [lastUsed] - Last execution timestamp.
+ * @property {string[]} [aliases] - Alternative command names or shorthands.
+ * @property {string[]} [parameters] - Supported flags or subcommands.
+ * @property {string[]} [tags] - Keyword tags for search matching.
+ */
 interface CommandMetadata {
   description: string;
   category: string;
@@ -27,6 +60,16 @@ interface CommandMetadata {
   tags?: string[];
 }
 
+/**
+ * Tracks session history and execution habits to personalize suggestion rankings.
+ *
+ * @interface UserContext
+ * @property {string[]} recentCommands - Chronological list of recently executed commands.
+ * @property {Map<string, number>} frequentCommands - Execution count map per command name.
+ * @property {Map<string, string[]>} commandSequences - Sequential command transition chains.
+ * @property {Date} sessionStartTime - Session initialization timestamp.
+ * @property {number} totalCommands - Total count of executed commands in session.
+ */
 interface UserContext {
   recentCommands: string[];
   frequentCommands: Map<string, number>;
@@ -35,6 +78,9 @@ interface UserContext {
   totalCommands: number;
 }
 
+/**
+ * Built-in metadata dictionary for standard portfolio terminal commands.
+ */
 const COMMAND_METADATA: Record<string, CommandMetadata> = {
   help: {
     description: "Show all available commands and usage information",
@@ -134,6 +180,9 @@ const COMMAND_METADATA: Record<string, CommandMetadata> = {
   },
 };
 
+/**
+ * Fuzzy search engine providing weighted score calculations and HTML match highlighting.
+ */
 class FuzzyMatcher {
   private static readonly WEIGHTS = {
     EXACT_MATCH: 100,
@@ -145,6 +194,13 @@ class FuzzyMatcher {
     LENGTH_PENALTY: 5,
   };
 
+  /**
+   * Calculates a weighted relevance score comparing a user query against a candidate command string.
+   *
+   * @param {string} query - Typed query substring.
+   * @param {string} target - Candidate command string to evaluate.
+   * @returns {number} Numeric relevance score (0 if no match, up to 100 for exact match).
+   */
   static calculateScore(query: string, target: string): number {
     const lowerQuery = query.toLowerCase();
     const lowerTarget = target.toLowerCase();
@@ -201,6 +257,13 @@ class FuzzyMatcher {
     return 0;
   }
 
+  /**
+   * Wraps matching characters with `<mark>` tags for search highlighting in UI components.
+   *
+   * @param {string} query - Typed query substring.
+   * @param {string} target - Full target string to highlight.
+   * @returns {string} HTML string containing `<mark>` elements surrounding matching characters.
+   */
   static highlightMatches(query: string, target: string): string {
     if (!query) return target;
 
@@ -225,6 +288,9 @@ class FuzzyMatcher {
   }
 }
 
+/**
+ * In-memory cache for computed suggestion lists with time-to-live expiration and LRU eviction.
+ */
 class SuggestionCache {
   private cache = new Map<
     string,
@@ -233,6 +299,12 @@ class SuggestionCache {
   private readonly TTL = 5 * 60 * 1000;
   private readonly MAX_SIZE = 50;
 
+  /**
+   * Stores a query suggestion result in the cache.
+   *
+   * @param {string} key - Cache query key.
+   * @param {SuggestionItem[]} suggestions - List of computed suggestions.
+   */
   set(key: string, suggestions: SuggestionItem[]): void {
     if (this.cache.size >= this.MAX_SIZE) {
       const oldestKey = this.findOldestEntry();
@@ -248,6 +320,12 @@ class SuggestionCache {
     });
   }
 
+  /**
+   * Retrieves cached suggestions if available and within TTL.
+   *
+   * @param {string} key - Cache query key.
+   * @returns {SuggestionItem[] | null} Cached suggestions or null if expired or missing.
+   */
   get(key: string): SuggestionItem[] | null {
     const entry = this.cache.get(key);
     if (!entry) return null;
@@ -261,6 +339,12 @@ class SuggestionCache {
     return entry.suggestions;
   }
 
+  /**
+   * Identifies the least recently used or oldest entry in the cache for eviction.
+   *
+   * @private
+   * @returns {string | null} Cache key of the oldest entry.
+   */
   private findOldestEntry(): string | null {
     let oldestKey: string | null = null;
     let oldestTime = Date.now();
@@ -277,11 +361,28 @@ class SuggestionCache {
     return oldestKey;
   }
 
+  /**
+   * Empties the suggestion cache.
+   */
   clear(): void {
     this.cache.clear();
   }
 }
 
+/**
+ * React hook providing smart command autocomplete suggestions using fuzzy matching, history learning, and caching.
+ *
+ * @param {string} input - Current raw terminal input string.
+ * @param {string[]} availableCommands - List of valid registered command names.
+ * @param {object} [options] - Custom configuration parameters for debouncing, cache, and limits.
+ * @param {number} [options.maxSuggestions] - Maximum number of suggestions returned.
+ * @param {number} [options.debounceMs] - Input debounce time in milliseconds.
+ * @param {boolean} [options.showOnEmpty] - Whether to show recent/popular suggestions when input is empty.
+ * @param {boolean} [options.enableCache] - Whether to enable query result caching.
+ * @param {boolean} [options.enableLearning] - Whether to record usage to adapt suggestions over time.
+ * @param {number} [options.minQueryLength] - Minimum query length required to trigger suggestions.
+ * @returns {object} Suggestions state, loading indicator, usage tracking callback, and cache controls.
+ */
 export function useCommandSuggestions(
   input: string,
   availableCommands: string[],
@@ -318,6 +419,11 @@ export function useCommandSuggestions(
 
   const debouncedInput = useDebouncedValue(input.trim(), debounceMs);
 
+  /**
+   * Updates user execution statistics when a command is executed.
+   *
+   * @param {string} command - Executed command name.
+   */
   const updateCommandUsage = useCallback(
     (command: string) => {
       if (!enableLearning) return;
@@ -347,6 +453,12 @@ export function useCommandSuggestions(
     [enableLearning],
   );
 
+  /**
+   * Generates and ranks contextual suggestions for a given input query.
+   *
+   * @param {string} query - Command query substring.
+   * @returns {SuggestionItem[]} Sorted array of suggestion objects.
+   */
   const generateContextualSuggestions = useCallback(
     (query: string): SuggestionItem[] => {
       const results: SuggestionItem[] = [];
@@ -469,10 +581,18 @@ export function useCommandSuggestions(
     lastQueryRef.current = debouncedInput;
   }, [debouncedInput, generateSuggestions, minQueryLength, showOnEmpty]);
 
+  /**
+   * Flushes the suggestion query cache.
+   */
   const clearCache = useCallback(() => {
     cacheRef.current.clear();
   }, []);
 
+  /**
+   * Returns current user context statistics.
+   *
+   * @returns {UserContext} Current context state.
+   */
   const getUserContext = useCallback(() => userContext, [userContext]);
 
   return {

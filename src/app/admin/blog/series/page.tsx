@@ -34,6 +34,18 @@ import { ConfirmDialog } from "@/components/molecules/admin/confirm-dialog";
 import { toast } from "sonner";
 import { Layers, Plus, Pencil, Trash, RefreshCw, FolderKanban } from "lucide-react";
 
+/**
+ * Administrator dashboard page for managing blog article series collections.
+ *
+ * @description
+ * Provides a comprehensive CRUD management interface for organizing related blog posts into structured series:
+ * - Lists all existing series with article count metrics, slugs, and creation timestamps.
+ * - Opens a creation / edition modal dialog with automated URL slug generation from the series title.
+ * - Allows updating series titles, slugs, and optional descriptions.
+ * - Provides confirmation dialogs for safely deleting series without deleting constituent blog posts.
+ *
+ * @returns {JSX.Element} The rendered blog series administration view.
+ */
 export default function BlogSeriesAdminPage() {
   const { themeConfig } = useTheme();
   const [seriesList, setSeriesList] = useState<BlogSeriesSummary[]>([]);

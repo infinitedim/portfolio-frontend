@@ -27,18 +27,40 @@ import type { TranslationKeys } from "@/lib/i18n";
 
 import { PageHeader } from "@/components/atoms/shared/page-header";
 
+/**
+ * Minimum character length requirement for contact messages.
+ */
 const MIN_MESSAGE_LEN = 10;
+
+/**
+ * Maximum character length allowed for contact messages.
+ */
 const MAX_MESSAGE_LEN = 5000;
+
+/**
+ * LocalStorage key for saving and restoring form drafts.
+ */
 const DRAFT_KEY = "contact_form_draft";
 
+/**
+ * Internal state structure for the contact form fields.
+ */
 interface FormState {
+  /** Submitter's display name */
   name: string;
+  /** Submitter's email address */
   email: string;
+  /** Message subject line */
   subject: string;
+  /** Full message text body */
   message: string;
+  /** Honeypot anti-spam website field (must remain empty) */
   website: string;
 }
 
+/**
+ * Initial empty state defaults for the contact form.
+ */
 const EMPTY: FormState = {
   name: "",
   email: "",
@@ -47,6 +69,13 @@ const EMPTY: FormState = {
   website: "",
 };
 
+/**
+ * Validates all fields of the contact form and compiles error messages.
+ *
+ * @param form - Current state of the form fields to validate.
+ * @param t - Translation function for localized error strings.
+ * @returns Map of field keys to localized error message strings.
+ */
 function validateForm(
   form: FormState,
   t: (key: keyof TranslationKeys) => string,
@@ -90,6 +119,12 @@ function validateForm(
   return errors;
 }
 
+/**
+ * Interactive contact form component featuring automatic draft persistence,
+ * validation feedback, spam prevention honeypot, and asynchronous submission.
+ *
+ * @returns The rendered contact page section with sidebar info and message form.
+ */
 export function ContactForm(): JSX.Element {
   const { t } = useI18n();
   const [form, setForm] = useState<FormState>(EMPTY);
@@ -472,15 +507,36 @@ export function ContactForm(): JSX.Element {
   );
 }
 
+/**
+ * Properties for configuring a form field container component.
+ */
 interface FieldProps {
+  /** HTML input id associated with the field label */
   id: string;
+  /** Label text displayed above the input element */
   label: string;
+  /** Whether the field is marked as required */
   required?: boolean;
+  /** Whether the current input value satisfies validation rules */
   isValid?: boolean;
+  /** Optional error message text to display below the field */
   error?: string;
+  /** Child input, textarea, or custom control element */
   children: React.ReactNode;
 }
 
+/**
+ * Reusable form field wrapper rendering label, required indicator, validation badge, and error alert.
+ *
+ * @param props - Field properties.
+ * @param props.id - HTML input id.
+ * @param props.label - Display label text.
+ * @param props.required - Whether the field is required.
+ * @param props.isValid - Validation success status.
+ * @param props.error - Error message string.
+ * @param props.children - Child input element.
+ * @returns Rendered field container element.
+ */
 function Field({
   id,
   label,

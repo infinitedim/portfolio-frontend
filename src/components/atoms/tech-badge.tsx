@@ -4,6 +4,17 @@ import { type JSX } from "react";
 import { getTechConfig } from "./tech-icon-registry";
 import { X } from "lucide-react";
 
+/**
+ * Properties for the modern, accessible terminal-styled TechBadge component.
+ *
+ * @interface TechBadgeProps
+ * @property name - Canonical name or key of the technology to display (e.g., "React", "Rust", "TypeScript").
+ * @property size - Size preset affecting padding, typography, icon dimensions, and remove button sizing.
+ * @property variant - Visual style variant determining borders, background fills, and hover highlights.
+ * @property removable - Whether to render an interactive remove/delete button.
+ * @property onRemove - Callback invoked when the user clicks the remove button.
+ * @property className - Additional CSS class names to apply to the root badge container.
+ */
 export interface TechBadgeProps {
   readonly name: string;
   readonly size?: "sm" | "md" | "lg";
@@ -13,6 +24,18 @@ export interface TechBadgeProps {
   readonly className?: string;
 }
 
+/**
+ * Renders a terminal-themed technology badge featuring an official brand icon, animated hover effects, and optional removal action.
+ *
+ * @param props - The component properties.
+ * @param props.name - The technology name to resolve and render.
+ * @param props.size - The size variant of the badge.
+ * @param props.variant - The visual style variant.
+ * @param props.removable - Whether the badge displays a dismiss button.
+ * @param props.onRemove - Callback triggered upon clicking the remove button.
+ * @param props.className - Additional custom class names.
+ * @returns {JSX.Element} The rendered technology badge element with icon and label.
+ */
 export function TechBadge({
   name,
   size = "sm",

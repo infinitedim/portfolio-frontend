@@ -2,18 +2,51 @@ import { type JSX } from "react";
 import { Zap, ShieldCheck, Gauge, Activity } from "lucide-react";
 import { type ProjectMetrics } from "@/lib/data/data-fetching";
 
+/**
+ * Configuration for an individual metric cell rendered within the metrics grid.
+ */
 interface MetricCell {
+  /**
+   * Unique key identifying the metric entry.
+   */
   readonly id: string;
+  /**
+   * Display label for the metric category.
+   */
   readonly label: string;
+  /**
+   * Formatted metric value to be rendered.
+   */
   readonly value: string;
+  /**
+   * Lucide icon component representing the metric.
+   */
   readonly icon: typeof Zap;
 }
 
+/**
+ * Properties for the {@link ProjectMetricsGrid} component.
+ */
 interface ProjectMetricsGridProps {
+  /**
+   * Key engineering metrics and SLAs associated with the project.
+   */
   readonly metrics?: ProjectMetrics;
+  /**
+   * Optional custom CSS classes for the grid container.
+   */
   readonly className?: string;
 }
 
+/**
+ * Renders a responsive 4-cell grid presenting critical technical metrics and SLAs
+ * such as latency, test coverage, Lighthouse score, and uptime.
+ *
+ * @param {ProjectMetricsGridProps} props - Component properties.
+ * @param {ProjectMetrics} [props.metrics] - Key engineering metrics to display.
+ * @param {string} [props.className] - Optional custom CSS class names.
+ * @returns {JSX.Element | null} The rendered metrics grid, or `null` if no metrics are provided.
+ */
 export function ProjectMetricsGrid({
   metrics,
   className = "",

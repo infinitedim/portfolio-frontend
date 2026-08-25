@@ -11,31 +11,67 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+/**
+ * Represents an aggregated command node in the relationship graph.
+ */
 interface CommandNode {
+  /** Unique identifier matching the command string. */
   id: string;
+  /** The command string executed. */
   command: string;
+  /** Total number of times this command was run. */
   frequency: number;
+  /** Command classification category. */
   category: string;
+  /** Timestamp of the most recent execution. */
   lastUsed: Date;
+  /** Cumulative percentage (0-100) of successful executions. */
   successRate: number;
+  /** Average runtime in milliseconds. */
   avgExecutionTime: number;
 }
 
+/**
+ * Represents a directional or bidirectional relationship link between two commands.
+ */
 interface CommandRelationship {
+  /** Source command identifier. */
   from: string;
+  /** Destination command identifier. */
   to: string;
+  /** Normalized correlation strength (0 to 1). */
   strength: number;
+  /** Average interval time in milliseconds between subsequent executions. */
   avgDelay: number;
+  /** Whether execution sequences occur in both directions. */
   bidirectional: boolean;
 }
 
+/**
+ * Properties for the CommandRelationshipVisualizer modal component.
+ */
 interface CommandRelationshipVisualizerProps {
+  /** Controls modal visibility. */
   isVisible: boolean;
+  /** Callback invoked to dismiss the visualizer dialog. */
   onClose: () => void;
+  /** Callback triggered when user selects and executes a related command. */
   onCommandSelect?: (command: string) => void;
+  /** Maximum number of command nodes to include in the graph. */
   maxNodes?: number;
 }
 
+/**
+ * Interactive visualizer modal graphing sequential relationships, correlation strengths,
+ * execution delays, success metrics, and analytical distributions across terminal commands.
+ *
+ * @param props - Component properties.
+ * @param props.isVisible - Controls whether the visualizer is rendered.
+ * @param props.onClose - Callback triggered when the modal is closed.
+ * @param props.onCommandSelect - Optional handler to trigger selected commands.
+ * @param props.maxNodes - Max node limit displayed in the relationship grid.
+ * @returns The rendered relationship visualizer modal or null if hidden.
+ */
 export function CommandRelationshipVisualizer({
   isVisible,
   onClose,
@@ -140,6 +176,12 @@ export function CommandRelationshipVisualizer({
       .sort((a, b) => b.strength - a.strength);
   }, [history, commandNodes]);
 
+  /**
+   * Resolves the theme color associated with a specific command category.
+   *
+   * @param category - The category name.
+   * @returns The resolved CSS color value.
+   */
   const getCategoryColor = (category: string): string => {
     const colors: Record<string, string> = {
       info: themeConfig.colors.info || "#3B82F6",
@@ -151,10 +193,21 @@ export function CommandRelationshipVisualizer({
     return colors[category] || themeConfig.colors.muted || "#6B7280";
   };
 
+  /**
+   * Toggles selection state for a specific command node in the network graph.
+   *
+   * @param command - The command string clicked.
+   */
   const handleNodeClick = (command: string) => {
     setSelectedNode(selectedNode === command ? null : command);
   };
 
+  /**
+   * Accessible keyboard interaction handler for selecting command nodes via Enter or Space.
+   *
+   * @param event - The keyboard event.
+   * @param command - Target command string.
+   */
   const handleKeyDown = (event: React.KeyboardEvent, command: string) => {
     if (event.key === "Enter" || event.key === " ") {
       handleNodeClick(command);
@@ -221,7 +274,7 @@ export function CommandRelationshipVisualizer({
               onValueChange={setFilterCategory}
             >
               <SelectTrigger
-                className="w-40 px-3 py-1 h-[30px] text-sm rounded border bg-transparent focus:outline-none"
+                className="w-40 px-3 py-1 h-7.5 text-sm rounded border bg-transparent focus:outline-none"
                 style={{
                   borderColor: themeConfig.colors.border,
                   color: themeConfig.colors.text,

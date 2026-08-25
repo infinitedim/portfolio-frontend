@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useRef, useEffect } from "react";
+import { Suspense, useState, useRef, useEffect, type JSX } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ChevronUp, ChevronDown, Check } from "lucide-react";
@@ -10,15 +10,33 @@ import {
   isValidBlogLocale,
 } from "@/lib/i18n/locales";
 
+/**
+ * Properties for the BlogLocaleSwitcher component.
+ *
+ * @interface BlogLocaleSwitcherProps
+ * @property {string} [slug] - Optional blog post slug to construct canonical localized post URLs.
+ * @property {string} [className] - Optional container CSS class overrides.
+ */
 interface BlogLocaleSwitcherProps {
   slug?: string;
   className?: string;
 }
 
+/**
+ * Internal interactive blog locale dropdown component.
+ *
+ * Reads active language parameters from search parameters, renders the language selection menu,
+ * and manages click-outside and keyboard dismissal listeners.
+ *
+ * @param {BlogLocaleSwitcherProps} props - Component properties.
+ * @param {string} [props.slug] - Optional post slug identifier.
+ * @param {string} [props.className] - Container styling classes.
+ * @returns {JSX.Element} The rendered locale switcher dropdown.
+ */
 function BlogLocaleSwitcherInner({
   slug,
   className = "",
-}: BlogLocaleSwitcherProps) {
+}: BlogLocaleSwitcherProps): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -32,6 +50,12 @@ function BlogLocaleSwitcherInner({
     BLOG_CONTENT_LOCALES.find((l) => l.code === activeLocale) ??
     BLOG_CONTENT_LOCALES[0];
 
+  /**
+   * Constructs a localized URL preserving existing query search parameters.
+   *
+   * @param {string} locale - Target locale code (e.g., 'en', 'id').
+   * @returns {string} The formatted destination URL string with query parameters.
+   */
   const buildHref = (locale: string): string => {
     const params = new URLSearchParams(searchParams.toString());
     if (locale === DEFAULT_BLOG_LOCALE) {
@@ -49,6 +73,10 @@ function BlogLocaleSwitcherInner({
   };
 
   useEffect(() => {
+    /**
+     * Closes the dropdown menu when clicking outside of the dropdown container.
+     * @param {MouseEvent} event - The mouse click event.
+     */
     function handleClickOutside(event: MouseEvent) {
       if (
         dropdownRef.current &&
@@ -57,11 +85,17 @@ function BlogLocaleSwitcherInner({
         setIsOpen(false);
       }
     }
+
+    /**
+     * Closes the dropdown menu when pressing the Escape key.
+     * @param {KeyboardEvent} event - The keyboard press event.
+     */
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setIsOpen(false);
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -135,7 +169,18 @@ function BlogLocaleSwitcherInner({
   );
 }
 
-export function BlogLocaleSwitcher(props: BlogLocaleSwitcherProps) {
+/**
+ * Suspense-wrapped blog localization language switcher component.
+ *
+ * Provides terminal-styled language dropdown menu for switching between supported
+ * blog article translation locales while preserving navigation context and query parameters.
+ *
+ * @param {BlogLocaleSwitcherProps} props - Component properties.
+ * @param {string} [props.slug] - Optional blog post slug.
+ * @param {string} [props.className] - Container CSS class names.
+ * @returns {JSX.Element} The Suspense boundary enclosing BlogLocaleSwitcherInner.
+ */
+export function BlogLocaleSwitcher(props: BlogLocaleSwitcherProps): JSX.Element {
   return (
     <Suspense fallback={null}>
       <BlogLocaleSwitcherInner {...props} />

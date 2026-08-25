@@ -2,18 +2,49 @@
 
 import { useEffect, type JSX } from "react";
 
+/**
+ * Props for configuring client-side document head metadata in {@link SEOHead}.
+ */
 interface SEOHeadProps {
+  /** The document title displayed in browser tabs and search results. */
   title?: string;
+  /** Primary description meta tag used by search engines. */
   description?: string;
+  /** List of keywords for indexing and search relevance. */
   keywords?: string[];
+  /** Open Graph and Twitter preview image URL or path. Defaults to "/og-image.png". */
   image?: string;
+  /** Relative path or absolute URL of the current page. */
   url?: string;
+  /** Open Graph page type ('website', 'article', 'profile'). Defaults to 'website'. */
   type?: "website" | "article" | "profile";
+  /** Optional Schema.org JSON-LD structured metadata object. */
   structuredData?: Record<string, unknown>;
+  /** Whether to tell web crawlers not to index this page. Defaults to false. */
   noindex?: boolean;
+  /** Explicit canonical URL link override. */
   canonical?: string;
 }
 
+/**
+ * Client-side document head manager for dynamic metadata and SEO synchronization.
+ *
+ * @description Synchronizes document title, standard meta tags (`description`, `keywords`, `robots`),
+ * Open Graph properties, Twitter cards, canonical link elements, and JSON-LD structured data directly
+ * into `document.head` via DOM manipulation effects.
+ *
+ * @param props - Metadata settings conforming to {@link SEOHeadProps}.
+ * @param props.title - The document title displayed in browser tabs and search results.
+ * @param props.description - Primary description meta tag used by search engines.
+ * @param props.keywords - List of keywords for indexing and search relevance.
+ * @param props.image - Open Graph and Twitter preview image URL or path.
+ * @param props.url - Relative path or absolute URL of the current page.
+ * @param props.type - Open Graph page type ('website', 'article', 'profile').
+ * @param props.structuredData - Optional Schema.org JSON-LD structured metadata object.
+ * @param props.noindex - Whether to tell web crawlers not to index this page.
+ * @param props.canonical - Explicit canonical URL link override.
+ * @returns `null` since all mutations occur as DOM side-effects.
+ */
 export function SEOHead({
   title,
   description,
@@ -153,6 +184,17 @@ export function SEOHead({
   return null;
 }
 
+/**
+ * Injects project-specific SEO headers, Open Graph tags, and SoftwareApplication structured data.
+ *
+ * @param props - Project SEO metadata payload.
+ * @param props.projectName - Name of the project.
+ * @param props.description - Summary description of the project.
+ * @param props.technologies - Optional tech stack keywords associated with the project.
+ * @param props.image - Optional preview thumbnail URL.
+ * @param props.url - Optional canonical URL path for the project.
+ * @returns An {@link SEOHead} component managing project head tags.
+ */
 export function ProjectSEO({
   projectName,
   description,
@@ -206,6 +248,15 @@ export function ProjectSEO({
   );
 }
 
+/**
+ * Injects skill-specific SEO headers, Open Graph tags, and TechArticle structured data.
+ *
+ * @param props - Skill SEO metadata payload.
+ * @param props.skillName - Name of the technical skill.
+ * @param props.description - Summary description of proficiency and domain.
+ * @param props.relatedSkills - Optional list of associated frameworks or tools.
+ * @returns An {@link SEOHead} component managing skill head tags.
+ */
 export function SkillSEO({
   skillName,
   description,
@@ -244,3 +295,4 @@ export function SkillSEO({
     />
   );
 }
+

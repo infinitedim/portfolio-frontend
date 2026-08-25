@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, type JSX } from "react";
-const ChevronDownIcon = () => (
+
+/**
+ * Renders a downward-pointing chevron icon for collapsed accordion states.
+ *
+ * @returns An SVG icon element.
+ */
+const ChevronDownIcon = (): JSX.Element => (
   <svg
     className="w-5 h-5 text-gray-500"
     fill="currentColor"
@@ -15,7 +21,12 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-const ChevronUpIcon = () => (
+/**
+ * Renders an upward-pointing chevron icon for expanded accordion states.
+ *
+ * @returns An SVG icon element.
+ */
+const ChevronUpIcon = (): JSX.Element => (
   <svg
     className="w-5 h-5 text-gray-500"
     fill="currentColor"
@@ -29,17 +40,40 @@ const ChevronUpIcon = () => (
   </svg>
 );
 
+/**
+ * Represents an individual FAQ entry containing a question and its corresponding answer.
+ */
 interface FAQItem {
+  /** The question header text. */
   question: string;
+  /** The full answer body text. */
   answer: string;
 }
 
+/**
+ * Props for the {@link FAQ} accordion component.
+ */
 interface FAQProps {
+  /** Array of question and answer pairs conforming to {@link FAQItem}. */
   items: FAQItem[];
+  /** Optional section heading title. Defaults to "Frequently Asked Questions". */
   title?: string;
+  /** Optional custom CSS classes for the root container. */
   className?: string;
 }
 
+/**
+ * Renders an accessible interactive FAQ accordion with Schema.org JSON-LD structured data.
+ *
+ * @description Generates a `schema.org/FAQPage` structured data script and accessible
+ * expandable/collapsible accordion panels with full ARIA attributes (`aria-expanded`, `aria-controls`).
+ *
+ * @param props - Component properties conforming to {@link FAQProps}.
+ * @param props.items - Array of question and answer pairs conforming to {@link FAQItem}.
+ * @param props.title - Optional section heading title.
+ * @param props.className - Optional custom CSS classes for the root container.
+ * @returns A JSX element containing the JSON-LD script and accordion list.
+ */
 export function FAQ({
   items,
   title = "Frequently Asked Questions",
@@ -47,6 +81,11 @@ export function FAQ({
 }: FAQProps): JSX.Element {
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
 
+  /**
+   * Toggles the open/closed state of an FAQ item at the specified index.
+   *
+   * @param index - Numerical index of the clicked accordion item.
+   */
   const toggleItem = (index: number) => {
     const newOpenItems = new Set(openItems);
     if (newOpenItems.has(index)) {
@@ -118,6 +157,9 @@ export function FAQ({
   );
 }
 
+/**
+ * Standard list of frequently asked questions regarding developer background, stack, and services.
+ */
 export const CommonFAQItems: FAQItem[] = [
   {
     question: "What technologies do you specialize in?",
@@ -161,6 +203,11 @@ export const CommonFAQItems: FAQItem[] = [
   },
 ];
 
+/**
+ * Renders a specialized FAQ section with pre-populated developer service questions.
+ *
+ * @returns A JSX element rendering the developer services FAQ section.
+ */
 export function DeveloperFAQ(): JSX.Element {
   return (
     <FAQ
@@ -170,3 +217,4 @@ export function DeveloperFAQ(): JSX.Element {
     />
   );
 }
+

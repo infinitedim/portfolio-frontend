@@ -19,13 +19,39 @@ import {
 } from "lucide-react";
 import { LenisScroll } from "@/components/layout/lenis-scroll";
 
+/**
+ * Properties for the {@link CommitDetailDrawer} component.
+ */
 interface CommitDetailDrawerProps {
+  /**
+   * GitHub repository owner/organization username.
+   */
   owner: string;
+  /**
+   * GitHub repository name.
+   */
   repo: string;
+  /**
+   * Target commit SHA hash, or `null` if the drawer is closed.
+   */
   refSha: string | null;
+  /**
+   * Callback invoked when the user dismisses or closes the detail drawer.
+   */
   onClose: () => void;
 }
 
+/**
+ * Slide-out modal drawer component displaying detailed GitHub commit information,
+ * metadata, author identity, cumulative diff stats, and line-by-line patch changes.
+ *
+ * @param {CommitDetailDrawerProps} props - Component properties.
+ * @param {string} props.owner - Repository owner handle.
+ * @param {string} props.repo - Repository name.
+ * @param {string | null} props.refSha - Selected commit SHA hash.
+ * @param {() => void} props.onClose - Callback triggered on drawer dismissal.
+ * @returns {JSX.Element | null} Rendered commit detail drawer overlay or `null` if no commit is active.
+ */
 export function CommitDetailDrawer({
   owner,
   repo,
@@ -40,7 +66,11 @@ export function CommitDetailDrawer({
     {},
   );
 
-                        
+  /**
+   * Global keyboard event listener handler for closing the drawer on Escape press.
+   *
+   * @param {KeyboardEvent} e - Native keyboard event.
+   */
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -55,7 +85,6 @@ export function CommitDetailDrawer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-                                                      
   useEffect(() => {
     if (refSha) {
       document.body.style.overflow = "hidden";
@@ -77,13 +106,15 @@ export function CommitDetailDrawer({
     setLoading(true);
     setError(null);
 
+    /**
+     * Asynchronously retrieves commit file diffs and stats from the GitHub API service.
+     */
     const loadCommitDetail = async () => {
       try {
         const data = await fetchCommitDetail(owner, repo, refSha);
         if (!isMounted) return;
         setDetail(data);
 
-                                                           
         const initialExpanded: Record<string, boolean> = {};
         if (data.files) {
           data.files.slice(0, 3).forEach((f) => {
@@ -112,6 +143,12 @@ export function CommitDetailDrawer({
 
   if (!refSha) return null;
 
+  /**
+   * Copies specified text to the system clipboard and temporarily activates the copied indicator state.
+   *
+   * @param {string} text - String content to copy.
+   * @returns {Promise<void>}
+   */
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -121,6 +158,11 @@ export function CommitDetailDrawer({
     catch {}
   };
 
+  /**
+   * Toggles the collapsible diff accordion state for an individual file.
+   *
+   * @param {string} filename - Path/filename of the target file.
+   */
   const toggleFileExpand = (filename: string) => {
     setExpandedFiles((prev) => ({
       ...prev,
@@ -128,6 +170,12 @@ export function CommitDetailDrawer({
     }));
   };
 
+  /**
+   * Renders a badge indicating whether a file was added, modified, or removed.
+   *
+   * @param {string} status - Git status string (e.g. 'added', 'modified', 'removed').
+   * @returns {JSX.Element} Styled badge tag element.
+   */
   const renderFileStatusBadge = (status: string) => {
     const s = status.toLowerCase();
     let badgeClass = "bg-neutral-800 text-neutral-400 border-neutral-700";
@@ -419,6 +467,11 @@ export function CommitDetailDrawer({
   );
 }
 
+/**
+ * Renders an animated pulse skeleton placeholder while commit details and diffs are being retrieved.
+ *
+ * @returns {JSX.Element} The commit detail skeleton loader.
+ */
 function CommitDetailPhantomSkeleton() {
   return (
     <div

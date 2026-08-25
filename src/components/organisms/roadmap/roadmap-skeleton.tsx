@@ -1,6 +1,22 @@
+/**
+ * @fileoverview Skeleton placeholder organism component for roadmap dashboards during asynchronous data fetching.
+ * @module components/organisms/roadmap/roadmap-skeleton
+ */
+
 "use client";
 
-export function RoadmapSkeleton() {
+import type { JSX } from "react";
+
+/**
+ * Skeleton loading state component for the roadmap dashboard.
+ *
+ * @description
+ * Displays animated pulse placeholders mirroring the layout of the user profile banner,
+ * streak statistics, overall progress bar, and roadmap topic grid cards while data is being loaded.
+ *
+ * @returns {JSX.Element} The rendered skeleton placeholder elements.
+ */
+export function RoadmapSkeleton(): JSX.Element {
   return (
     <div className="flex flex-col gap-8 font-mono animate-pulse">
                                      

@@ -1,6 +1,13 @@
 import { type JSX } from "react";
 import { StandardPageLayout } from "@/components/layout/standard-page-layout";
 
+/**
+ * Renders a skeleton card placeholder simulating a blog post summary item with pulsing animations.
+ *
+ * @param {Object} props - Component properties.
+ * @param {number} props.index - Positional index used to vary simulated title and summary widths.
+ * @returns {JSX.Element} The rendered phantom blog card skeleton element.
+ */
 function BlogCardPhantom({ index }: { index: number }): JSX.Element {
                                 
   const titleWidths = ["w-4/5", "w-3/5", "w-3/4", "w-2/3", "w-5/6", "w-4/6"];
@@ -50,6 +57,11 @@ function BlogCardPhantom({ index }: { index: number }): JSX.Element {
   );
 }
 
+/**
+ * Loading UI component rendered by Next.js App Router while the blog listing page data is resolving.
+ *
+ * @returns {JSX.Element} The full-page loading skeleton for the blog overview.
+ */
 export default function BlogLoading(): JSX.Element {
   return (
     <StandardPageLayout>

@@ -12,12 +12,32 @@ import type { FontName } from "@/types/font";
 import { useI18n } from "@/hooks/use-i18n";
 import { LenisScroll } from "@/components/layout/lenis-scroll";
 
+/**
+ * Props for the {@link FontManager} component.
+ */
 interface FontManagerProps {
+  /** Array of available font configurations to browse and apply. */
   fonts: CustomFont[];
+  /** Callback triggered when font settings are modified. */
   onUpdate: () => void;
+  /** Optional callback triggered when the manager should be dismissed. */
   onClose?: () => void;
 }
 
+/**
+ * Interactive font selection and typography preview component.
+ *
+ * Provides a split-pane interface allowing users to filter, search, preview,
+ * and apply monospace fonts across the portfolio terminal and UI. Displays
+ * detailed metrics including font source, weight, ligature support, font family,
+ * and live previews across varying font sizes and syntax samples.
+ *
+ * @param props - The props for configuring the font manager.
+ * @param props.fonts - The list of custom or system fonts available for selection.
+ * @param props.onUpdate - Callback invoked upon font updates.
+ * @param props.onClose - Optional callback invoked to close the font dialog.
+ * @returns The rendered split-view font manager interface.
+ */
 export function FontManager({
   fonts,
   onUpdate: _onUpdate,
@@ -41,6 +61,13 @@ export function FontManager({
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
+  /**
+   * Applies the selected font to the application environment, updating CSS variables
+   * or calling the font hook depending on the font source.
+   *
+   * @param font - The font entity to activate.
+   * @param closeDialog - Whether to invoke the `onClose` callback after applying. Defaults to `true`.
+   */
   const handleApplyFont = (font: CustomFont, closeDialog = true) => {
     if (font.source === "system") {
       changeFont(font.id as FontName);

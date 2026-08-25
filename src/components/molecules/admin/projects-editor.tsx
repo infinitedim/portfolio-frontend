@@ -23,14 +23,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+/**
+ * Props for the {@link ProjectsEditor} component.
+ *
+ * @interface ProjectsEditorProps
+ * @property {ThemeConfig} themeConfig - Theme configuration object supplying color styles and borders.
+ */
 interface ProjectsEditorProps {
   themeConfig: ThemeConfig;
 }
 
+/**
+ * Maximum character limit for an individual technology tag.
+ * @constant {number}
+ */
 const MAX_TAG_LENGTH = 30;
+
+/**
+ * Maximum number of technology tags allowed per project entry.
+ * @constant {number}
+ */
 const MAX_TAGS_PER_PROJECT = 15;
+
+/**
+ * Regular expression pattern for validating valid characters in technology tags.
+ * @constant {RegExp}
+ */
 const TAG_VALIDATION_REGEX = /^[a-zA-Z0-9\s.\-_#+/()]+$/;
 
+/**
+ * List of available target deployment platform choices and their display labels.
+ * @constant {Array<{ id: TargetPlatform; label: string }>}
+ */
 const PLATFORM_OPTIONS: { id: TargetPlatform; label: string }[] = [
   { id: "android", label: "Android" },
   { id: "ios", label: "iOS" },
@@ -40,6 +64,14 @@ const PLATFORM_OPTIONS: { id: TargetPlatform; label: string }[] = [
   { id: "web", label: "Web" },
 ];
 
+/**
+ * Admin management panel component for listing, creating, editing, reordering,
+ * and deleting portfolio projects with metrics, platform tags, and GCS image uploads.
+ *
+ * @component
+ * @param {ProjectsEditorProps} props - Properties configuring the projects editor.
+ * @returns {JSX.Element} The rendered project management interface.
+ */
 export function ProjectsEditor({
   themeConfig,
 }: ProjectsEditorProps): JSX.Element {
@@ -49,7 +81,6 @@ export function ProjectsEditor({
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isNewProject, setIsNewProject] = useState(false);
 
-                
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<ProjectCategory>("frontend");
@@ -69,7 +100,6 @@ export function ProjectsEditor({
   const [tagInput, setTagInput] = useState("");
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 
-                        
   const [latencyP95, setLatencyP95] = useState("");
   const [throughputRps, setThroughputRps] = useState("");
   const [uptimeSla, setUptimeSla] = useState("");
@@ -79,7 +109,6 @@ export function ProjectsEditor({
   const [minOsVersion, setMinOsVersion] = useState("");
   const [testCoverage, setTestCoverage] = useState("");
 
-                                              
   const suggestions = tagInput.trim()
     ? POPULAR_TECH_PRESETS.filter(
         (tech) =>
@@ -88,6 +117,12 @@ export function ProjectsEditor({
       )
     : [];
 
+  /**
+   * Fetches the current list of projects from the backend portfolio API.
+   *
+   * @async
+   * @returns {Promise<void>} Resolves when project list is loaded into state.
+   */
   const loadProjects = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -110,6 +145,11 @@ export function ProjectsEditor({
     loadProjects();
   }, [loadProjects]);
 
+  /**
+   * Generates a cryptographically random UUID v4 string with fallback for non-crypto environments.
+   *
+   * @returns {string} A randomly generated UUID string.
+   */
   const generateUuid = (): string => {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
       return crypto.randomUUID();
@@ -121,6 +161,12 @@ export function ProjectsEditor({
     });
   };
 
+  /**
+   * Initializes the editor form state with data from an existing project.
+   *
+   * @param {Project} project - The project to edit.
+   * @returns {void}
+   */
   const handleEdit = (project: Project) => {
     setEditingProject(project);
     setIsNewProject(false);
@@ -143,7 +189,6 @@ export function ProjectsEditor({
     setTagInput("");
     setSelectedSuggestionIndex(-1);
 
-              
     setLatencyP95(project.metrics?.latencyP95 || "");
     setThroughputRps(project.metrics?.throughputRps || "");
     setUptimeSla(project.metrics?.uptimeSla || "");
@@ -158,6 +203,11 @@ export function ProjectsEditor({
     setTestCoverage(project.metrics?.testCoverage || "");
   };
 
+  /**
+   * Resets the form fields and initializes a blank project template for creation.
+   *
+   * @returns {void}
+   */
   const handleCreateNew = () => {
     const newProject: Project = {
       id: "",
@@ -200,6 +250,12 @@ export function ProjectsEditor({
     setTestCoverage("");
   };
 
+  /**
+   * Toggles the selection state of a target deployment platform.
+   *
+   * @param {TargetPlatform} platformId - The platform identifier to toggle.
+   * @returns {void}
+   */
   const togglePlatform = (platformId: TargetPlatform) => {
     setPlatforms((prev) =>
       prev.includes(platformId)
@@ -208,12 +264,23 @@ export function ProjectsEditor({
     );
   };
 
+  /**
+   * Cancels the active create or edit operation and closes the form drawer.
+   *
+   * @returns {void}
+   */
   const handleCancel = () => {
     setEditingProject(null);
     setIsNewProject(false);
     setSelectedSuggestionIndex(-1);
   };
 
+  /**
+   * Validates and appends a technology tag to the current project's tag list.
+   *
+   * @param {string} valueToAdd - The tag text or framework name to add.
+   * @returns {void}
+   */
   const addTagValue = (valueToAdd: string) => {
     const trimmed = valueToAdd.trim();
     if (!trimmed) return;
@@ -242,10 +309,22 @@ export function ProjectsEditor({
     }
   };
 
+  /**
+   * Removes a technology tag from the project's active tag list.
+   *
+   * @param {string} tagToRemove - The name of the tag to remove.
+   * @returns {void}
+   */
   const removeTag = (tagToRemove: string) => {
     setTags(tags.filter((t) => t !== tagToRemove));
   };
 
+  /**
+   * Handles keyboard navigation and auto-completion shortcuts within the technology tag input.
+   *
+   * @param {KeyboardEvent<HTMLInputElement>} e - The keyboard event.
+   * @returns {void}
+   */
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -279,6 +358,12 @@ export function ProjectsEditor({
     }
   };
 
+  /**
+   * Validates the project form, builds the project payload, and persists changes via the backend API.
+   *
+   * @async
+   * @returns {Promise<void>} Resolves when the save operation completes.
+   */
   const handleSave = async () => {
     if (!name.trim()) {
       toast.error("Project name is required");
@@ -367,9 +452,16 @@ export function ProjectsEditor({
     }
   };
 
-                            
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
+  /**
+   * Shifts the display position of a project up or down in the portfolio ordering and updates the backend.
+   *
+   * @async
+   * @param {number} index - Current index of the project in the list.
+   * @param {"up" | "down"} direction - Direction to shift the project.
+   * @returns {Promise<void>} Resolves when the reordered list is persisted.
+   */
   const handleMoveProject = async (index: number, direction: "up" | "down") => {
     const targetIndex = direction === "up" ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= projects.length) return;
@@ -402,6 +494,13 @@ export function ProjectsEditor({
     }
   };
 
+  /**
+   * Deletes a project by ID from the portfolio database after confirmation.
+   *
+   * @async
+   * @param {string} idToDelete - The unique identifier of the project to remove.
+   * @returns {Promise<void>} Resolves when deletion completes.
+   */
   const handleDelete = async (idToDelete: string) => {
     const token = authService.getAccessToken();
     if (!token) {
