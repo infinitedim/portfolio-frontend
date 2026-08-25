@@ -14,7 +14,7 @@ describe("crypto/with-encryption", () => {
 
     expect(response.status).toBe(200);
     const json = await response.json();
-    expect(json.message).toBe("unencrypted");
+    expect(json.message).toBe("Secret data payload");
   });
 
   it("should return 401 when x-encrypted: 1 but session id is missing or invalid", async () => {
