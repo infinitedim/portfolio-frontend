@@ -40,6 +40,7 @@ jobs:
         uses: ./.github/actions/setup-frontend
         with:
           bun-version: ${{ env.BUN_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Run ESLint
         run: bun run lint
@@ -59,6 +60,7 @@ jobs:
         uses: ./.github/actions/setup-frontend
         with:
           bun-version: ${{ env.BUN_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Run tests with coverage
         run: bun run test:coverage
@@ -90,6 +92,7 @@ jobs:
         uses: ./.github/actions/setup-frontend
         with:
           bun-version: ${{ env.BUN_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache Next.js build
         uses: actions/cache@v6
@@ -157,6 +160,7 @@ jobs:
         uses: ./.github/actions/setup-frontend
         with:
           bun-version: ${{ env.BUN_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache Playwright browsers
         uses: actions/cache@v6
