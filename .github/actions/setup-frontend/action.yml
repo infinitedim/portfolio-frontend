@@ -1,5 +1,5 @@
 name: Setup Frontend
-description: Checkout, setup Bun, cache dependencies, and install
+description: Setup Bun, cache dependencies, and install
 
 inputs:
   bun-version:
@@ -10,9 +10,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Checkout code
-      uses: actions/checkout@v7
-
     - name: Setup Bun
       uses: oven-sh/setup-bun@v2
       with:
@@ -31,3 +28,4 @@ runs:
     - name: Install dependencies
       shell: bash
       run: bun install --frozen-lockfile
+
