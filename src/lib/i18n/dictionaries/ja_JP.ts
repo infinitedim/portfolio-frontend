@@ -682,7 +682,7 @@ export const ja_JP_key: TranslationKeys = {
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
 
-  // Terminal Commands & Help
+                             
   termHelpAvailableCommands: "利用可能なコマンド:",
   termHelpFeaturedCommands: "おすすめコマンド:",
   termHelpArgsHeader: "コマンドライン引数:",
@@ -693,7 +693,7 @@ export const ja_JP_key: TranslationKeys = {
   termHelpTipFlags: "フラグを使用してリストやプレビューにクイックアクセス",
   termHelpTipLigatures: "可読性向上のためフォントリガチャをサポート",
 
-  // Terminal About
+                   
   termAboutGreeting: "こんにちは！フルス stack エンジニアです",
   termAboutPassionate: "革新的なWebソリューションの構築に情熱を注いでいます",
   termAboutSpecialized: "React、Next.js、およびモダンWeb技術を専門としています",
@@ -708,7 +708,7 @@ export const ja_JP_key: TranslationKeys = {
   termAboutRoadmapVisit: "トップページのロードマップで最新の進行状況をご確認ください！",
   termAboutTypePrompt: "実績を見るには \"projects\"、連絡を取るには \"contact\" と入力してください！",
 
-  // Terminal Language
+                      
   termLangDirection: "文字方向",
   termLangCode: "コード",
   termLangSaved: "言語設定を localStorage に保存しました",

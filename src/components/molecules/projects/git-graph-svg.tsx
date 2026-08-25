@@ -1,22 +1,22 @@
 "use client";
 
-/**
- * GitGraphRow — Row-slice SVG renderer for a single commit row.
- *
- * Renders the graph segment for one commit row: the commit node,
- * pass-through lane lines, and branch/merge curve paths.
- * Each row renders only its own tiny SVG segment (Row-Slice Technique)
- * for lightweight DOM and smooth scrolling.
- */
+   
+                                                                
+  
+                                                                 
+                                                         
+                                                                       
+                                            
+   
 
 import { memo, useCallback } from "react";
 import type { GraphNode, GraphEdge } from "@/lib/git-graph";
 
 interface GitGraphRowProps {
   node: GraphNode;
-  /** Edges that touch this row (start, end, or pass through) */
+                                                                
   edges: GraphEdge[];
-  /** Lanes with active pass-through branch lines at this row */
+                                                                
   activeLanes: { lane: number; color: string }[];
   maxLanes: number;
   rowHeight: number;
@@ -26,16 +26,16 @@ interface GitGraphRowProps {
   onBranchHover: (branchName: string | null) => void;
 }
 
-/**
- * Generate an SVG path string for a curved edge (merge or fork).
- * Uses cubic bezier curves for smooth branch connections.
- */
+   
+                                                                 
+                                                          
+   
 function buildEdgePath(
   edge: GraphEdge,
   rowIndex: number,
   rowHeight: number,
 ): string {
-  // Convert absolute coordinates to row-local coordinates
+                                                          
   const rowTop = rowIndex * rowHeight;
   const fromY = edge.from.y - rowTop;
   const toY = edge.to.y - rowTop;
@@ -46,14 +46,14 @@ function buildEdgePath(
     return `M ${fromX} ${fromY} L ${toX} ${toY}`;
   }
 
-  // Cubic bezier for merge/fork curves
+                                       
   const midY = (fromY + toY) / 2;
   return `M ${fromX} ${fromY} C ${fromX} ${midY}, ${toX} ${midY}, ${toX} ${toY}`;
 }
 
 const NODE_RADIUS = 5;
 const MERGE_NODE_RADIUS = 7;
-const HIT_TARGET_RADIUS = 22; // 44×44px touch target
+const HIT_TARGET_RADIUS = 22;                        
 
 export const GitGraphRow = memo(function GitGraphRow({
   node,
@@ -95,7 +95,7 @@ export const GitGraphRow = memo(function GitGraphRow({
     onBranchHover(null);
   }, [onBranchHover]);
 
-  // Node position is at (node.x, halfRow) within the row-local SVG
+                                                                   
   const nodeX = node.lane * laneWidth + laneWidth / 2;
   const isMerge = node.type === "merge";
   const isBranchTip = node.type === "branch-tip";
@@ -108,7 +108,7 @@ export const GitGraphRow = memo(function GitGraphRow({
       className="shrink-0"
       aria-hidden="true"
     >
-      {/* Pass-through lane lines (vertical lines for branches passing through this row) */}
+                                                                                            
       {activeLanes.map(({ lane, color }) => {
         const x = lane * laneWidth + laneWidth / 2;
         const isLaneHighlighted =
@@ -140,10 +140,10 @@ export const GitGraphRow = memo(function GitGraphRow({
         );
       })}
 
-      {/* Edge paths (branch/merge curves that start or end at this row) */}
+                                                                            
       {edges
         .filter((edge) => {
-          // Only render edges that have an endpoint in this row
+                                                                
           const rowTop = node.row * rowHeight;
           const rowBottom = (node.row + 1) * rowHeight;
           return (
@@ -175,7 +175,7 @@ export const GitGraphRow = memo(function GitGraphRow({
           );
         })}
 
-      {/* Commit node */}
+                         
       <g
         style={{ cursor: "pointer" }}
         onClick={handleNodeClick}
@@ -187,7 +187,7 @@ export const GitGraphRow = memo(function GitGraphRow({
         aria-label={`Commit ${node.shortSha}${node.branchRefs.length > 0 ? ` on ${node.branchRefs.join(", ")}` : ""}${isMerge ? ", merge commit" : ""}`}
         className="focus-visible:outline-none"
       >
-        {/* Invisible hit target for touch accessibility (44×44px) */}
+                                                                      
         <circle
           cx={nodeX}
           cy={halfRow}
@@ -195,7 +195,7 @@ export const GitGraphRow = memo(function GitGraphRow({
           fill="transparent"
         />
 
-        {/* Merge commit: outer ring */}
+                                        
         {isMerge && (
           <circle
             cx={nodeX}
@@ -208,7 +208,7 @@ export const GitGraphRow = memo(function GitGraphRow({
           />
         )}
 
-        {/* Node circle */}
+                           
         <circle
           cx={nodeX}
           cy={halfRow}
@@ -219,7 +219,7 @@ export const GitGraphRow = memo(function GitGraphRow({
           opacity={isDimmed ? 0.25 : 1}
         />
 
-        {/* Branch tip: pulsing glow ring */}
+                                             
         {isBranchTip && (
           <circle
             cx={nodeX}
@@ -234,7 +234,7 @@ export const GitGraphRow = memo(function GitGraphRow({
           />
         )}
 
-        {/* Focus ring (visible on keyboard focus) */}
+                                                      
         <circle
           cx={nodeX}
           cy={halfRow}

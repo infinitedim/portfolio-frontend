@@ -9,10 +9,10 @@ interface BunCronGlobal {
   cron?(expression: string, callback: () => void): void;
 }
 
-/**
- * Registers an in-process cron job using Bun.cron() when available,
- * with graceful fallback to setInterval for Node.js / Vercel.
- */
+   
+                                                                    
+                                                              
+   
 export function registerCronJob(
   expression: string,
   intervalMs: number,
@@ -23,7 +23,7 @@ export function registerCronJob(
     | { cron?: BunCronGlobal["cron"] }
     | undefined;
 
-  // Try native Bun.cron()
+                          
   if (bunGlobal && typeof bunGlobal.cron === "function") {
     try {
       bunGlobal.cron(expression, callback);
@@ -32,21 +32,19 @@ export function registerCronJob(
         expression,
         engineUsed: "bun-cron",
         stop() {
-          // Native Bun cron registration active
+                                                
         },
       };
-    } catch {
-      // Fall through to setInterval on invalid cron expression or error
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }
 
-  // Graceful fallback to setInterval
+                                     
   const timer = setInterval(() => {
     try {
       callback();
-    } catch {
-      // Ignore unhandled errors in periodic background job
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }, intervalMs);
 
   return {

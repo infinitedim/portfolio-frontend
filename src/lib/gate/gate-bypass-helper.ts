@@ -15,7 +15,7 @@ export interface BypassProgress {
 }
 
 function decodeEncodedSecret(encoded: string): string {
-  // Reverse the encoding: hex -> string -> reverse -> base64 decode
+                                                                    
   const hexPairs = encoded.match(/.{2}/g) ?? [];
   const chars = hexPairs.map((hex) =>
     String.fromCharCode(Number.parseInt(hex, 16)),
@@ -29,15 +29,15 @@ export async function runRecruiterBypass(
   onProgress?: (progress: BypassProgress) => void,
 ): Promise<void> {
   try {
-    // 1. Level 1
+                 
     onProgress?.({ step: "level1", message: "Authenticating Level 1..." });
     await gateClient.login({
       level: 1,
       username: GATE_L1_USERNAME,
-      password: GATE_L1_USERNAME, // default is the same as username
+      password: GATE_L1_USERNAME,                                   
     });
 
-    // 2. Fetch L2 Password
+                           
     onProgress?.({
       step: "fetching_l2_pass",
       message: "Fetching Level 2 credentials...",
@@ -55,7 +55,7 @@ export async function runRecruiterBypass(
     }
     const l2Password = parts[1].trim();
 
-    // 3. Level 2
+                 
     onProgress?.({ step: "level2", message: "Authenticating Level 2..." });
     await gateClient.login({
       level: 2,
@@ -63,7 +63,7 @@ export async function runRecruiterBypass(
       password: l2Password,
     });
 
-    // 4. Level 3 — decode the encoded secret
+                                             
     onProgress?.({
       step: "level3",
       message: "Decoding Level 3 challenge...",
@@ -72,7 +72,7 @@ export async function runRecruiterBypass(
     const decoded = decodeEncodedSecret(challenge.encodedSecret);
     await gateClient.completeLevel3(decoded);
 
-    // 5. Unlock
+                
     onProgress?.({ step: "unlocking", message: "Unlocking terminal..." });
     await gateClient.unlock();
 

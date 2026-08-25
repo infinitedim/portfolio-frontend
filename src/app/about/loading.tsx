@@ -9,13 +9,13 @@ export default function AboutLoading(): JSX.Element {
         aria-busy="true"
         aria-label="Loading about page..."
       >
-        {/* Header Phantom */}
+                              
         <div className="space-y-3">
           <div className="h-8 w-40 animate-pulse rounded bg-(--terminal-border)/70" />
           <div className="h-4 w-80 animate-pulse rounded bg-(--terminal-border)/50" />
         </div>
 
-        {/* Profile Card Phantom */}
+                                    
         <div className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/50 p-6 space-y-6">
           <div className="flex flex-col sm:flex-row gap-6 items-start">
             <div className="h-24 w-24 rounded-full animate-pulse bg-(--terminal-border)/70 shrink-0" />
@@ -30,7 +30,7 @@ export default function AboutLoading(): JSX.Element {
           </div>
         </div>
 
-        {/* Tech Stack Groups Phantom */}
+                                         
         <div className="space-y-6">
           <div className="h-6 w-44 animate-pulse rounded bg-(--terminal-border)/70" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -53,7 +53,7 @@ export default function AboutLoading(): JSX.Element {
           </div>
         </div>
 
-        {/* Experience Timeline Phantom */}
+                                           
         <div className="space-y-6">
           <div className="h-6 w-48 animate-pulse rounded bg-(--terminal-border)/70" />
           <div className="space-y-4 border-l-2 border-(--terminal-border) pl-4">

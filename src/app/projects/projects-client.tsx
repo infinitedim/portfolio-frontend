@@ -80,7 +80,7 @@ export function ProjectsClient({
               <span className="text-(--terminal-accent)">$</span> ls --category={selectedCategory}
             </h2>
 
-            {/* Category Filter Tabs */}
+                                        
             <div className="flex flex-wrap gap-1.5 font-mono text-xs">
               {[
                 { id: "all", label: "All" },

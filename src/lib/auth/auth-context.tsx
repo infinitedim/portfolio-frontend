@@ -78,8 +78,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await authService.login(email, password);
 
       if (result.success && result.requires2FA && result.challengeToken) {
-        // Don't set the user yet — they're not fully authenticated until
-        // the TOTP challenge completes.
+                                                                         
+                                        
         return {
           success: true,
           requires2FA: true,

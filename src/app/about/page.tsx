@@ -101,7 +101,7 @@ async function AboutContent(): Promise<JSX.Element> {
         ]}
       />
 
-      {/* Hero */}
+                  
       <section className="relative overflow-hidden px-4 py-12 sm:py-16">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-(--terminal-accent)/10 via-(--terminal-bg) to-(--terminal-bg)" />
         <div className="relative mx-auto max-w-6xl">
@@ -122,7 +122,7 @@ async function AboutContent(): Promise<JSX.Element> {
         </div>
       </section>
 
-      {/* Experience Timeline */}
+                                 
       <section className="px-4 py-12">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-8 font-mono text-2xl font-bold text-(--terminal-text)">
@@ -137,11 +137,11 @@ async function AboutContent(): Promise<JSX.Element> {
                   key={`${exp.company}-${i}`}
                   className="group relative"
                 >
-                  {/* Cyberpunk Timeline Step Node centered on the vertical line */}
+                                                                                    
                   <div className="absolute -left-8.25 top-6 flex h-4 w-4 items-center justify-center">
                     {isCurrent ? (
                       <>
-                        {/* Live Signal Pulse Ring for Current Job */}
+                                                                      
                         <span className="absolute inline-flex h-4 w-4 animate-ping rounded-full bg-(--terminal-accent)/60 opacity-75" />
                         <span className="relative inline-flex h-3 w-3 rounded-full bg-(--terminal-accent) shadow-[0_0_10px_var(--terminal-accent)] transition-transform duration-300 group-hover:scale-125" />
                       </>
@@ -152,7 +152,7 @@ async function AboutContent(): Promise<JSX.Element> {
                     )}
                   </div>
 
-                  {/* Experience Card */}
+                                         
                   <div className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/50 p-5">
                     <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
                       <div className="flex items-center gap-2">
@@ -206,7 +206,7 @@ async function AboutContent(): Promise<JSX.Element> {
         </div>
       </section>
 
-      {/* Skills Grid */}
+                         
       <section
         id="skills"
         className="px-4 py-12 scroll-mt-24"
@@ -245,7 +245,7 @@ async function AboutContent(): Promise<JSX.Element> {
         </div>
       </section>
 
-      {/* CTA */}
+                 
       <section className="px-4 py-12">
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="mb-5 font-mono text-xl font-bold text-(--terminal-text)">

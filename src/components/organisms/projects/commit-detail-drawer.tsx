@@ -40,7 +40,7 @@ export function CommitDetailDrawer({
     {},
   );
 
-  // Close on Escape key
+                        
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -55,7 +55,7 @@ export function CommitDetailDrawer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  // Lock background body scrolling when modal is open
+                                                      
   useEffect(() => {
     if (refSha) {
       document.body.style.overflow = "hidden";
@@ -83,7 +83,7 @@ export function CommitDetailDrawer({
         if (!isMounted) return;
         setDetail(data);
 
-        // Expand first 3 files by default if patches exist
+                                                           
         const initialExpanded: Record<string, boolean> = {};
         if (data.files) {
           data.files.slice(0, 3).forEach((f) => {
@@ -117,9 +117,8 @@ export function CommitDetailDrawer({
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Fallback ignore
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   };
 
   const toggleFileExpand = (filename: string) => {
@@ -161,14 +160,14 @@ export function CommitDetailDrawer({
       aria-modal="true"
       aria-labelledby="commit-detail-heading"
     >
-      {/* Backdrop overlay (non-clickable: user must click explicit close button) */}
+                                                                                     
       <div
         className="absolute inset-0"
         aria-hidden="true"
       />
 
       <aside className="relative flex h-full max-h-[92vh] w-full max-w-2xl md:max-w-3xl lg:max-w-4xl flex-col rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl overflow-hidden z-10 font-mono">
-        {/* Header */}
+                      
         <header className="flex items-center justify-between border-b border-neutral-800 px-5 py-4 bg-neutral-900/90">
           <div className="flex items-center gap-2.5">
             <GitCommit className="h-5 w-5 text-emerald-400" aria-hidden="true" />
@@ -193,7 +192,7 @@ export function CommitDetailDrawer({
           </button>
         </header>
 
-        {/* Content Body with Lenis Scroll */}
+                                              
         <LenisScroll
           className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)"
           data-lenis-prevent
@@ -209,7 +208,7 @@ export function CommitDetailDrawer({
 
           {detail && !loading && (
             <>
-              {/* Commit Message & Author info */}
+                                                  
               <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4 space-y-3">
                 <p className="font-mono text-sm font-medium leading-relaxed text-white whitespace-pre-wrap">
                   {detail.message}
@@ -272,7 +271,7 @@ export function CommitDetailDrawer({
                 </div>
               </div>
 
-              {/* Commit Stats Bar */}
+                                      
               {detail.stats && (
                 <div className="flex items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-950/40 px-4 py-3.5 font-mono text-xs my-1">
                   <span className="text-neutral-400">
@@ -293,7 +292,7 @@ export function CommitDetailDrawer({
                 </div>
               )}
 
-              {/* Mobile Notice Banner for Code Diffs */}
+                                                         
               <div className="sm:hidden rounded-lg border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-300 font-mono space-y-2">
                 <div className="flex items-center gap-2 font-semibold text-amber-400 text-[11px] uppercase tracking-wider">
                   <AlertTriangle size={13} className="shrink-0" />
@@ -315,7 +314,7 @@ export function CommitDetailDrawer({
                 )}
               </div>
 
-              {/* Files List with Diff View */}
+                                               
               {detail.files && detail.files.length > 0 && (
                 <div className="pt-3 space-y-4">
                   <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-400 pb-1.5 pt-2">
@@ -330,7 +329,7 @@ export function CommitDetailDrawer({
                           key={file.filename}
                           className="rounded-lg border border-neutral-800 bg-neutral-950/70 overflow-hidden transition-colors duration-150 hover:border-neutral-700"
                         >
-                          {/* File Header / Accordion Trigger */}
+                                                                 
                           <button
                             type="button"
                             onClick={() => toggleFileExpand(file.filename)}
@@ -370,7 +369,7 @@ export function CommitDetailDrawer({
                             </div>
                           </button>
 
-                          {/* Collapsible Diff Patch View */}
+                                                             
                           {isExpanded && (
                             <div className="border-t border-neutral-800/80 bg-neutral-950 p-3 overflow-x-auto text-[11px] font-mono leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)">
                               {file.patch ? (
@@ -427,7 +426,7 @@ function CommitDetailPhantomSkeleton() {
       aria-busy="true"
       aria-label="Loading commit file diff details"
     >
-      {/* Commit Info Card Phantom */}
+                                      
       <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4 space-y-3">
         <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-800/70" />
         <div className="flex flex-wrap items-center gap-3 pt-1">
@@ -442,7 +441,7 @@ function CommitDetailPhantomSkeleton() {
         </div>
       </div>
 
-      {/* Stats Summary Bar Phantom */}
+                                       
       <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4 flex items-center justify-between">
         <div className="h-4 w-40 rounded bg-neutral-800/70 animate-pulse" />
         <div className="flex items-center gap-2">
@@ -451,7 +450,7 @@ function CommitDetailPhantomSkeleton() {
         </div>
       </div>
 
-      {/* File Diff Expanders Phantom (2 Cards) */}
+                                                   
       <div className="space-y-3">
         <div className="h-4 w-44 rounded bg-neutral-800/70 animate-pulse" />
         {[1, 2].map((i) => (

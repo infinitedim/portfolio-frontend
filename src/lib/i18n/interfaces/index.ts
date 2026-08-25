@@ -658,7 +658,7 @@ export interface TranslationKeys {
   terminalFeaturesCtaProceed: string;
   terminalFeaturesCtaCancel: string;
 
-  // Terminal Interactive Welcome
+                                 
   terminalWelcomeTitle?: string;
   terminalWelcomeSubtitle?: string;
   terminalWelcomeTip?: string;
@@ -670,7 +670,7 @@ export interface TranslationKeys {
   terminalWelcomeDescProjects?: string;
   terminalWelcomeDescContact?: string;
 
-  // Terminal Commands & Help
+                             
   termHelpAvailableCommands: string;
   termHelpFeaturedCommands: string;
   termHelpArgsHeader: string;
@@ -681,7 +681,7 @@ export interface TranslationKeys {
   termHelpTipFlags: string;
   termHelpTipLigatures: string;
 
-  // Terminal About
+                   
   termAboutGreeting: string;
   termAboutPassionate: string;
   termAboutSpecialized: string;
@@ -696,7 +696,7 @@ export interface TranslationKeys {
   termAboutRoadmapVisit: string;
   termAboutTypePrompt: string;
 
-  // Terminal Language
+                      
   termLangDirection: string;
   termLangCode: string;
   termLangSaved: string;

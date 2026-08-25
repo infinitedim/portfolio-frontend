@@ -82,7 +82,7 @@ describe("crypto/server", () => {
   it("interoperability: clientEncrypt decrypted by serverDecrypt & vice-versa", async () => {
     resetClientSession();
 
-    // Mock fetch for client handshake to hit serverHandshake
+                                                             
     const originalFetch = globalThis.fetch;
     globalThis.fetch = (async (_url: string, init?: RequestInit) => {
       const { clientPublicKey } = JSON.parse(init?.body as string);
@@ -97,7 +97,7 @@ describe("crypto/server", () => {
       const clientMessage = "Client to Server Confidential Message";
       const clientEnvelope = await clientEncrypt(clientMessage);
 
-      // Server decrypts client message
+                                       
       const serverDecrypted = serverDecrypt(clientEnvelope.sessionId, {
         iv: clientEnvelope.iv,
         ciphertext: clientEnvelope.ciphertext,
@@ -106,11 +106,11 @@ describe("crypto/server", () => {
       });
       expect(serverDecrypted).toBe(clientMessage);
 
-      // Server encrypts response message
+                                         
       const serverResponseText = "Server to Client Confidential Response";
       const serverEnvelope = serverEncrypt(clientEnvelope.sessionId, serverResponseText);
 
-      // Client decrypts server response
+                                        
       const clientDecrypted = await clientDecrypt({
         iv: serverEnvelope.iv,
         ciphertext: serverEnvelope.ciphertext,

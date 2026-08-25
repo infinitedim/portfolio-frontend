@@ -69,7 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const data = await response.json();
       const rawItems: BlogPostItem[] = data.items || [];
 
-      // Group items by slug to aggregate published locales
+                                                           
       const postsBySlug = new Map<string, BlogPostItem[]>();
       for (const item of rawItems) {
         const existing = postsBySlug.get(item.slug) || [];

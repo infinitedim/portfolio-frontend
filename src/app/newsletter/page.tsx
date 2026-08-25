@@ -41,13 +41,13 @@ export default function NewsletterPage() {
     <StandardPageLayout>
       <div className="min-h-screen bg-terminal-bg text-terminal-text py-12 px-4">
         <div className="mx-auto max-w-5xl space-y-12">
-          {/* Header */}
+                        
           <PageHeader
             title="newsletter"
             description="Direct developer dispatch. Technical articles, architectural breakdowns, and engineering notes sent straight to your inbox."
           />
 
-          {/* Module Topics Grid */}
+                                    
           <section className="space-y-4">
             <h2 className="font-mono text-lg font-bold text-white flex items-center gap-2">
               <span className="text-emerald-400">$</span>
@@ -79,7 +79,7 @@ export default function NewsletterPage() {
             </div>
           </section>
 
-          {/* Newsletter Terminal Window Box */}
+                                                
           <section className="relative rounded-2xl border border-neutral-800 bg-neutral-900/70 p-8 sm:p-12 backdrop-blur-md overflow-hidden shadow-2xl">
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500/0 via-emerald-400 to-emerald-500/0" />
 

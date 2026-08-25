@@ -10,7 +10,7 @@ export function OfflinePageContent(): JSX.Element {
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [enableCrt, setEnableCrt] = useState(true);
 
-  // Monitor network online/offline events
+                                          
   const handleOnlineStatus = useCallback(() => {
     if (typeof window !== "undefined") {
       setIsOnline(navigator.onLine);
@@ -31,12 +31,12 @@ export function OfflinePageContent(): JSX.Element {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center bg-black px-4 py-8 font-mono text-neutral-200 overflow-x-hidden">
-      {/* CRT Scanline Overlay */}
+                                  
       {enableCrt && (
         <div className="pointer-events-none fixed inset-0 z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-size-[100%_4px] opacity-40" />
       )}
 
-      {/* Auto-Reconnect Banner Notice */}
+                                          
       {isOnline && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 flex items-center gap-3 rounded-full border border-emerald-500/40 bg-emerald-950/90 px-4 py-2 text-xs text-emerald-300 shadow-2xl backdrop-blur-md animate-bounce">
           <span className="h-2 w-2 rounded-full bg-emerald-400" />
@@ -52,7 +52,7 @@ export function OfflinePageContent(): JSX.Element {
       )}
 
       <div className="w-full max-w-md space-y-6">
-        {/* Top Header Title */}
+                                
         <div className="flex flex-col items-center text-center space-y-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/80 px-3 py-1 text-xs text-neutral-400">
             <span
@@ -68,13 +68,13 @@ export function OfflinePageContent(): JSX.Element {
           </p>
         </div>
 
-        {/* Central Signal Radar Component */}
+                                              
         <OfflineRadar
           isOnline={isOnline}
           onRecheckSignal={handleOnlineStatus}
         />
 
-        {/* Action Controls Bar */}
+                                   
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-neutral-800/80 pt-4 text-xs">
           <div className="flex items-center gap-2">
             <button

@@ -1,20 +1,20 @@
-/**
- * Contact-form service.
- *
- * Talks to the backend `/api/contact` endpoint. The backend persists every
- * message and *optionally* fires an operator notification email if a
- * mailer is configured — that is invisible to the client.
- *
- * The honeypot field (`website`) is sent untouched: real users won't fill
- * it but bots typically do, and the backend silently drops those.
- */
+   
+                        
+  
+                                                                           
+                                                                     
+                                                          
+  
+                                                                          
+                                                                  
+   
 
 export interface ContactSubmission {
   name: string;
   email: string;
   subject?: string;
   message: string;
-  /** Honeypot — must always be empty for human submissions. */
+                                                               
   website?: string;
 }
 
@@ -66,9 +66,8 @@ export async function submitContactMessage(
     try {
       const data = (await response.json()) as { error?: string };
       detail = data.error ?? "";
-    } catch {
-      // ignore JSON parse failure — fall back to status text
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
     return {
       ok: false,
       status: response.status,

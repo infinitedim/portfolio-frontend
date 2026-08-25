@@ -51,9 +51,8 @@ class FileTransport {
     if (!existsSync(dir)) {
       try {
         mkdirSync(dir, { recursive: true });
-      } catch {
-        // Read-only FS during Vercel build/runtime or CI — file logging disabled.
-      }
+      } // eslint-disable-next-line no-empty
+    catch {}
     }
   }
 
@@ -75,7 +74,7 @@ class FileTransport {
       const oldFile = `${this.filePath}.${i}`;
       const newFile = `${this.filePath}.${i + 1}`;
 
-      if (existsSync(/*turbopackIgnore: true*/ oldFile)) {
+      if (existsSync(                          oldFile)) {
         if (i === this.maxFiles - 1) {
           try {
             require("fs").unlinkSync(oldFile);

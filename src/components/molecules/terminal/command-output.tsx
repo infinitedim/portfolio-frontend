@@ -87,7 +87,7 @@ export function CommandOutput({ output }: CommandOutputProps): JSX.Element {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore submission Enter keydown event within 150ms of output mount
+                                                                           
       if (Date.now() - mountedAtRef.current < 150) {
         return;
       }

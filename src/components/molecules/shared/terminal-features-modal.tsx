@@ -67,13 +67,13 @@ export function TerminalFeaturesModal({
       onOpenChange={(open) => !open && onClose()}
     >
       <Dialog.Portal>
-        {/* Backdrop */}
+                        
         <Dialog.Overlay className="fixed inset-0 z-100 bg-black/75 backdrop-blur-sm transition-opacity" />
 
-        {/* Modal Content Wrapper */}
+                                     
         <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
           <Dialog.Content className="relative w-full max-w-2xl rounded-lg border border-green-500/30 bg-neutral-950 p-1 shadow-[0_0_40px_rgba(34,197,94,0.15)] transition-all duration-300 md:max-w-2xl flex flex-col overflow-hidden max-h-[80vh] focus:outline-none">
-            {/* Terminal Window Header (Fixed) */}
+                                                  
             <div className="flex items-center justify-between border-b border-neutral-800 bg-neutral-900/60 px-4 py-2.5 rounded-t-lg shrink-0">
               <div className="flex items-center gap-1.5">
                 <Dialog.Close asChild>
@@ -88,10 +88,10 @@ export function TerminalFeaturesModal({
               <Dialog.Title className="font-mono text-xs text-neutral-400 font-normal">
                 features_manifest.json
               </Dialog.Title>
-              <div className="w-12" /> {/* Spacer */}
+              <div className="w-12" />               
             </div>
 
-            {/* Modal Header Title Area (Fixed) */}
+                                                   
             <div className="px-6 pt-6 pb-4 border-b border-neutral-900 shrink-0">
               <h2 className="font-mono text-xl font-bold text-green-400 flex items-center gap-2">
                 <span className="text-green-400 opacity-60 font-mono">~/</span>
@@ -102,7 +102,7 @@ export function TerminalFeaturesModal({
               </Dialog.Description>
             </div>
 
-            {/* Scrollable Features Grid */}
+                                            
             <div
               data-lenis-prevent
               className="flex-1 min-h-0 overflow-y-auto px-6 py-4 scrollbar-hide"
@@ -131,7 +131,7 @@ export function TerminalFeaturesModal({
               </div>
             </div>
 
-            {/* Footer Actions (Fixed) */}
+                                          
             <div className="px-6 py-4 border-t border-neutral-900 bg-neutral-950/50 flex flex-col gap-2 shrink-0 sm:flex-row sm:justify-end">
               <Dialog.Close asChild>
                 <button className="rounded border border-neutral-800 bg-neutral-950 px-4 py-2 font-mono text-xs text-neutral-400 hover:bg-neutral-900 hover:text-white transition-colors cursor-pointer">

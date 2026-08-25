@@ -10,11 +10,11 @@ interface LenisProviderProps {
 
 export function LenisProvider({ children }: LenisProviderProps): ReactNode {
   const { isReducedMotion } = useAccessibility();
-  // Keep a reference to the Lenis instance using proper typings
+                                                                
   const lenisRef = useRef<LenisRef | null>(null);
 
   useEffect(() => {
-    // Whenever isReducedMotion changes, update the lenis instance status
+                                                                         
     if (lenisRef.current?.lenis) {
       if (isReducedMotion) {
         lenisRef.current.lenis.destroy();
@@ -24,9 +24,9 @@ export function LenisProvider({ children }: LenisProviderProps): ReactNode {
     }
   }, [isReducedMotion]);
 
-  // Options configuration
+                          
   const lenisOptions = {
-    lerp: isReducedMotion ? 1.0 : 0.1, // instant scroll if reduced motion
+    lerp: isReducedMotion ? 1.0 : 0.1,                                    
     duration: isReducedMotion ? 0 : 1.2,
     smoothWheel: !isReducedMotion,
     autoRaf: !isReducedMotion,

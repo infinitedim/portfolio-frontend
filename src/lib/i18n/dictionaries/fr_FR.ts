@@ -690,7 +690,7 @@ export const fr_FR_key: TranslationKeys = {
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
 
-  // Terminal Commands & Help
+                             
   termHelpAvailableCommands: "Commandes Disponibles :",
   termHelpFeaturedCommands: "Commandes En Vedette :",
   termHelpArgsHeader: "Arguments de Ligne de Commande :",
@@ -701,7 +701,7 @@ export const fr_FR_key: TranslationKeys = {
   termHelpTipFlags: "Utilisez des drapeaux pour un accès rapide aux aperçus",
   termHelpTipLigatures: "Ligatures de polices prises en charge pour une meilleure lisibilité",
 
-  // Terminal About
+                   
   termAboutGreeting: "Bonjour ! Je suis un Développeur Full-Stack",
   termAboutPassionate: "Passionné par la création de solutions web innovantes",
   termAboutSpecialized: "Spécialisé en React, Next.js et technologies web modernes",
@@ -716,7 +716,7 @@ export const fr_FR_key: TranslationKeys = {
   termAboutRoadmapVisit: "Consultez la feuille de route sur la page d'accueil pour voir mes progrès !",
   termAboutTypePrompt: "Tapez \"projects\" pour voir mes projets ou \"contact\" pour me contacter !",
 
-  // Terminal Language
+                      
   termLangDirection: "Direction",
   termLangCode: "Code",
   termLangSaved: "Préférence de langue enregistrée dans localStorage",

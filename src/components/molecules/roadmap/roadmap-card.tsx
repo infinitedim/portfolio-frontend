@@ -38,7 +38,7 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
 
   return (
     <div className="rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/70 font-mono shadow-xl backdrop-blur-md overflow-hidden flex flex-col transition-all duration-200 hover:border-(--terminal-accent)/40">
-      {/* Terminal Window Header */}
+                                    
       <div className="flex items-center justify-between border-b border-(--terminal-border)/80 bg-(--terminal-bg)/90 px-3.5 py-2 text-xs">
         <div className="flex items-center gap-2 text-[11px]">
           <span className="text-(--terminal-accent) font-bold">{orderNum} ::</span>
@@ -55,7 +55,7 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
         {statusBadge}
       </div>
 
-      {/* Card Content */}
+                          
       <div className="p-4 sm:p-5 flex flex-col gap-4 flex-1 justify-between">
         <div className="space-y-3">
           <h3 className="text-base font-bold text-(--terminal-text) tracking-tight">
@@ -70,7 +70,7 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
           />
         </div>
 
-        {/* Counter Pills */}
+                             
         <div className="grid grid-cols-4 gap-2 text-center text-[11px] border-t border-(--terminal-border)/60 pt-3">
           <div className="rounded border border-(--terminal-accent)/30 bg-(--terminal-accent)/10 py-1 text-(--terminal-accent)">
             <span className="block text-[9px] text-(--terminal-muted) font-sans uppercase">
@@ -98,7 +98,7 @@ export function RoadmapCard({ progress, index }: RoadmapCardProps) {
           </div>
         </div>
 
-        {/* Card Footer Actions */}
+                                   
         <div className="flex items-center justify-between pt-1 text-xs">
           <span className="text-[10px] text-(--terminal-muted)">
             ID: {progress.resourceId}

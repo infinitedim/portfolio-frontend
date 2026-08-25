@@ -82,7 +82,7 @@ describe("CustomizationService", () => {
     const bg = svc.getBackgroundSettings();
     expect(bg.type).toBe("letter-glitch");
 
-    // Corrupt JSON
+                   
     localStorageMock.setItem("terminal-background-settings", "{invalid-json");
     const fallbackBg = svc.getBackgroundSettings();
     expect(fallbackBg.type).toBe("letter-glitch");

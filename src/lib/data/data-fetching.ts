@@ -240,7 +240,7 @@ export async function getExperienceData(
   const backendUrl = getBackendUrl();
 
   try {
-    // Try the new dedicated i18n experience endpoint first
+                                                           
     const i18nResponse = await fetch(
       `${backendUrl}/api/portfolio/experience?locale=${encodeURIComponent(locale)}`,
       {
@@ -256,11 +256,10 @@ export async function getExperienceData(
       const result = data.data ?? [];
       if (result.length > 0) return result;
     }
-  } catch {
-    // Fall through to legacy endpoint
-  }
+  } // eslint-disable-next-line no-empty
+    catch {}
 
-  // Fallback to the legacy section-based endpoint
+                                                  
   try {
     const response = await fetch(
       `${backendUrl}/api/portfolio?section=experience`,
@@ -529,7 +528,7 @@ async function fetchRoadmapBackend(
       error instanceof Error
         ? `${error.name}: ${error.message}`
         : String(error);
-    // AbortError = client timeout; upstream 502 still surfaces via getRoadmapDashboardWithError.
+                                                                                                 
     if (process.env.NODE_ENV === "development") {
       console.warn(`Roadmap fetch failed (${path}): ${detail}`);
     }
@@ -547,9 +546,8 @@ async function parseRoadmapError(
     if (typeof body.error === "string" && body.error.trim()) {
       return { status: response.status, message: body.error };
     }
-  } catch {
-    // ignore parse errors
-  }
+  } // eslint-disable-next-line no-empty
+    catch {}
   return {
     status: response.status,
     message: `Backend returned HTTP ${response.status}`,

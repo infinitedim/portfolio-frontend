@@ -32,8 +32,8 @@ export function RoadmapProgressBar({
     pct = Math.round((customActive / customTotal) * 100);
     topicText = `[${customActive}/${customTotal} TOPICS]`;
 
-    // For short topics (<= 15), use exact count so 5 topics = 5 LEDs.
-    // For standard/large topic counts (> 15), scale to uniform 25 or 30 LEDs for identical block sizing.
+                                                                      
+                                                                                                         
     if (customTotal <= 15) {
       displayTotal = customTotal;
       displayActive = customActive;
@@ -84,7 +84,7 @@ export function RoadmapProgressBar({
         </div>
       )}
 
-      {/* Segmented Matrix LED Bar with Uniform Cell Sizing */}
+                                                               
       <div className="w-full flex items-center gap-1 p-1 rounded-lg bg-(--terminal-bg) border border-(--terminal-border) shadow-inner overflow-hidden">
         {Array.from({ length: displayTotal }).map((_, idx) => {
           const isActive = idx < displayActive;

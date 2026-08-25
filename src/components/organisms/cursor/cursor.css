@@ -1,22 +1,22 @@
-/* ==========================================================================
-   Custom Cursor System - Port of infinitedim/ecommerce (Dynamic Terminal Theme + LERP)
-   ========================================================================== */
 
-/* Guard for Mobile / Touch Devices */
+
+
+
+
 @media (pointer: coarse), (hover: none) {
   .ecommerce-cursor {
     display: none !important;
   }
 }
 
-/* Guard for Reduced Motion */
+
 @media (prefers-reduced-motion: reduce) {
   .ecommerce-cursor {
     display: none !important;
   }
 }
 
-/* Base Cursor Element (Takes active terminal theme accent color across all pages) */
+
 .ecommerce-cursor {
   --x: -100px;
   --y: -100px;
@@ -48,7 +48,7 @@
   opacity: 1;
 }
 
-/* Initial state before mouse move */
+
 .ecommerce-cursor[data-moved="false"] {
   opacity: 0 !important;
 }
@@ -62,7 +62,7 @@
   opacity: 1 !important;
 }
 
-/* Hide native OS cursor when custom cursor is active on desktop */
+
 .cursor-active-global,
 .cursor-active-global * {
   cursor: none !important;

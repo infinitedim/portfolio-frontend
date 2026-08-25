@@ -132,7 +132,7 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
     console.error("Failed to generate static params:", error);
   }
 
-  // cacheComponents requires at least one param for build-time validation
+                                                                          
   return [{ slug: BUILD_PLACEHOLDER_SLUG }];
 }
 
@@ -220,7 +220,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
           <div className="lg:grid lg:grid-cols-[1fr_260px] lg:gap-8 lg:items-start">
             <article className="prose prose-invert max-w-none min-w-0">
               <header className="mb-8 not-prose">
-                {/* Status Pill Header */}
+                                          
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-(--terminal-accent)/30 bg-(--terminal-accent)/10 text-(--terminal-accent) font-mono text-xs mb-4">
                   <span className="h-2 w-2 rounded-full bg-(--terminal-accent)" />
                   <span>post.status :: published</span>
@@ -295,7 +295,7 @@ async function BlogPostContent({ params, searchParams }: BlogPostPageProps) {
                 />
               </div>
 
-              {/* Imperative Code Copy button handler */}
+                                                         
               <CopyCodeButton />
             </article>
 

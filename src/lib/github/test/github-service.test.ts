@@ -117,7 +117,7 @@ describe("github/github-service", () => {
       expect(stats1.totalStars).toBe(10);
       expect(fetchCount).toBe(1);
 
-      // Second call should hit cache
+                                     
       const stats2 = await service.getStats("infinitedim");
       expect(stats2.totalStars).toBe(10);
       expect(fetchCount).toBe(1);

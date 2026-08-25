@@ -10,8 +10,8 @@ const RATE_LIMIT = {
   windowMs: 60 * 1000,
 };
 
-// Prune expired entries every 200 requests to prevent unbounded memory growth
-// from unique IPs (e.g. scanners/bots hitting the endpoint once and never again).
+                                                                              
+                                                                                  
 let pruneCounter = 0;
 const PRUNE_EVERY = 200;
 
@@ -31,7 +31,7 @@ const MAX_BATCH_SIZE = 100;
 function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   const now = Date.now();
 
-  // Periodic global cleanup to evict expired entries from all IPs
+                                                                  
   pruneCounter += 1;
   if (pruneCounter >= PRUNE_EVERY) {
     pruneCounter = 0;
@@ -282,7 +282,7 @@ async function postHandler(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-// Plain JSON over HTTPS — crypto sessions are in-memory and break on Vercel serverless.
+                                                                                        
 export const POST = postHandler;
 
 export async function OPTIONS(): Promise<NextResponse> {

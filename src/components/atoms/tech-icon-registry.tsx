@@ -42,7 +42,7 @@ import {
 
 export type TechIconProps = SVGProps<SVGSVGElement>;
 
-// Helper to render any SimpleIcon object with pixel-perfect 24x24 viewBox
+                                                                          
 function renderSimpleIcon(icon: SimpleIcon, props: TechIconProps): JSX.Element {
   return (
     <svg
@@ -56,12 +56,12 @@ function renderSimpleIcon(icon: SimpleIcon, props: TechIconProps): JSX.Element {
   );
 }
 
-/**
- * Custom Docker Icon with Docker Desktop Startup Cargo Loading Animation:
- * - Default State: Containers sit 100% attached to Moby Dock's back (`translate-y-0`)
- * - Hover State: 9 Container Boxes lift/pop sequentially with staggered delays (50ms - 300ms)
- * - Moby Dock Whale floats gently on water waves (`group-hover/tech:translate-y-0.5`)
- */
+   
+                                                                          
+                                                                                      
+                                                                                              
+                                                                                      
+   
 export function DockerIcon(props: TechIconProps): JSX.Element {
   return (
     <svg
@@ -122,10 +122,10 @@ export function DockerIcon(props: TechIconProps): JSX.Element {
   );
 }
 
-/**
- * Pure SVG Monogram Badge Fallback for unknown technologies.
- * Renders a crisp 16x16 vector box containing 2 uppercase monogram letters.
- */
+   
+                                                             
+                                                                            
+   
 export function MonogramFallbackIcon({
   name,
   className,
@@ -175,9 +175,9 @@ export function MonogramFallbackIcon({
   );
 }
 
-// ============================================================================
-// REGISTRY CONFIGURATION & DICTIONARY MAPPING (100% Official Simple Icons)
-// ============================================================================
+                                                                               
+                                                                           
+                                                                               
 
 export interface TechIconMeta {
   readonly label: string;
@@ -191,7 +191,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   react: {
     label: "React",
     Icon: (props) => renderSimpleIcon(siReact, props),
-    color: `#${siReact.hex}`, // #61DAFB
+    color: `#${siReact.hex}`,           
     hoverAnimation:
       "group-hover/tech:rotate-180 group-hover/tech:scale-110 transition-transform duration-500 ease-out",
     category: "framework",
@@ -199,7 +199,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   nextjs: {
     label: "Next.js",
     Icon: (props) => renderSimpleIcon(siNextdotjs, props),
-    color: "#ffffff", // white for dark mode readability
+    color: "#ffffff",                                   
     hoverAnimation:
       "group-hover/tech:-translate-y-0.5 group-hover/tech:scale-105 transition-all duration-200 ease-out",
     category: "framework",
@@ -207,7 +207,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   typescript: {
     label: "TypeScript",
     Icon: (props) => renderSimpleIcon(siTypescript, props),
-    color: `#${siTypescript.hex}`, // #3178C6
+    color: `#${siTypescript.hex}`,           
     hoverAnimation:
       "group-hover/tech:-translate-y-0.5 group-hover/tech:scale-105 transition-all duration-200 ease-out",
     category: "language",
@@ -215,7 +215,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   javascript: {
     label: "JavaScript",
     Icon: (props) => renderSimpleIcon(siJavascript, props),
-    color: `#${siJavascript.hex}`, // #F7DF1E
+    color: `#${siJavascript.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "language",
@@ -223,7 +223,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   rust: {
     label: "Rust",
     Icon: (props) => renderSimpleIcon(siRust, props),
-    color: "#f74c00", // Rust orange accent for contrast
+    color: "#f74c00",                                   
     hoverAnimation:
       "group-hover/tech:rotate-180 group-hover/tech:scale-110 transition-transform duration-500 ease-out",
     category: "language",
@@ -231,7 +231,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   prisma: {
     label: "Prisma",
     Icon: (props) => renderSimpleIcon(siPrisma, props),
-    color: "#5a67d8", // Prisma indigo accent
+    color: "#5a67d8",                        
     hoverAnimation:
       "group-hover/tech:-translate-y-0.5 group-hover/tech:scale-105 transition-all duration-200 ease-out",
     category: "tool",
@@ -239,7 +239,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   docker: {
     label: "Docker",
     Icon: DockerIcon,
-    color: `#${siDocker.hex}`, // #2496ED
+    color: `#${siDocker.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-105 transition-transform duration-300 ease-out",
     category: "infra",
@@ -247,7 +247,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   postgresql: {
     label: "PostgreSQL",
     Icon: (props) => renderSimpleIcon(siPostgresql, props),
-    color: `#${siPostgresql.hex}`, // #4169E1
+    color: `#${siPostgresql.hex}`,           
     hoverAnimation:
       "group-hover/tech:drop-shadow-[0_0_8px_#4169e1] group-hover/tech:scale-105 transition-all duration-300",
     category: "database",
@@ -255,7 +255,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   redis: {
     label: "Redis",
     Icon: (props) => renderSimpleIcon(siRedis, props),
-    color: `#${siRedis.hex}`, // #FF4438
+    color: `#${siRedis.hex}`,           
     hoverAnimation:
       "group-hover/tech:drop-shadow-[0_0_8px_#ff4438] group-hover/tech:scale-105 transition-all duration-300",
     category: "database",
@@ -263,7 +263,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   tailwindcss: {
     label: "Tailwind CSS",
     Icon: (props) => renderSimpleIcon(siTailwindcss, props),
-    color: `#${siTailwindcss.hex}`, // #06B6D4
+    color: `#${siTailwindcss.hex}`,           
     hoverAnimation:
       "group-hover/tech:-translate-y-0.5 group-hover/tech:scale-105 transition-all duration-200 ease-out",
     category: "framework",
@@ -271,7 +271,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   nodejs: {
     label: "Node.js",
     Icon: (props) => renderSimpleIcon(siNodedotjs, props),
-    color: `#${siNodedotjs.hex}`, // #5FA04E
+    color: `#${siNodedotjs.hex}`,           
     hoverAnimation:
       "group-hover/tech:rotate-180 group-hover/tech:scale-110 transition-transform duration-500 ease-out",
     category: "framework",
@@ -287,7 +287,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   python: {
     label: "Python",
     Icon: (props) => renderSimpleIcon(siPython, props),
-    color: `#${siPython.hex}`, // #3776AB
+    color: `#${siPython.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "language",
@@ -295,7 +295,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   go: {
     label: "Go",
     Icon: (props) => renderSimpleIcon(siGo, props),
-    color: `#${siGo.hex}`, // #00ADD8
+    color: `#${siGo.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "language",
@@ -303,7 +303,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   gcp: {
     label: "Google Cloud",
     Icon: (props) => renderSimpleIcon(siGooglecloud, props),
-    color: `#${siGooglecloud.hex}`, // #4285F4
+    color: `#${siGooglecloud.hex}`,           
     hoverAnimation:
       "group-hover/tech:drop-shadow-[0_0_8px_#4285f4] group-hover/tech:scale-105 transition-all duration-300",
     category: "infra",
@@ -328,7 +328,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   git: {
     label: "Git",
     Icon: (props) => renderSimpleIcon(siGit, props),
-    color: `#${siGit.hex}`, // #F05032
+    color: `#${siGit.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "tool",
@@ -344,7 +344,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   figma: {
     label: "Figma",
     Icon: (props) => renderSimpleIcon(siFigma, props),
-    color: `#${siFigma.hex}`, // #F24E1E
+    color: `#${siFigma.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "tool",
@@ -352,7 +352,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   linux: {
     label: "Linux",
     Icon: (props) => renderSimpleIcon(siLinux, props),
-    color: `#${siLinux.hex}`, // #FCC624
+    color: `#${siLinux.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "tool",
@@ -360,7 +360,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   supabase: {
     label: "Supabase",
     Icon: (props) => renderSimpleIcon(siSupabase, props),
-    color: `#${siSupabase.hex}`, // #3ECF8E
+    color: `#${siSupabase.hex}`,           
     hoverAnimation:
       "group-hover/tech:-translate-y-0.5 group-hover/tech:scale-105 transition-all duration-200 ease-out",
     category: "database",
@@ -368,7 +368,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   stripe: {
     label: "Stripe",
     Icon: (props) => renderSimpleIcon(siStripe, props),
-    color: `#${siStripe.hex}`, // #635BFF
+    color: `#${siStripe.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-105 transition-transform duration-200 ease-out",
     category: "tool",
@@ -376,7 +376,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   graphql: {
     label: "GraphQL",
     Icon: (props) => renderSimpleIcon(siGraphql, props),
-    color: `#${siGraphql.hex}`, // #E10098
+    color: `#${siGraphql.hex}`,           
     hoverAnimation:
       "group-hover/tech:rotate-45 group-hover/tech:scale-110 transition-all duration-300 ease-out",
     category: "language",
@@ -384,7 +384,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   html5: {
     label: "HTML5",
     Icon: (props) => renderSimpleIcon(siHtml5, props),
-    color: `#${siHtml5.hex}`, // #E34F26
+    color: `#${siHtml5.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "language",
@@ -392,7 +392,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   css3: {
     label: "CSS3",
     Icon: (props) => renderSimpleIcon(siCss, props),
-    color: `#${siCss.hex}`, // #1572B6
+    color: `#${siCss.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "language",
@@ -400,7 +400,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   sass: {
     label: "Sass",
     Icon: (props) => renderSimpleIcon(siSass, props),
-    color: `#${siSass.hex}`, // #CC6699
+    color: `#${siSass.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "language",
@@ -408,7 +408,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   mongodb: {
     label: "MongoDB",
     Icon: (props) => renderSimpleIcon(siMongodb, props),
-    color: `#${siMongodb.hex}`, // #47A248
+    color: `#${siMongodb.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-105 transition-transform duration-200 ease-out",
     category: "database",
@@ -424,7 +424,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   fastapi: {
     label: "FastAPI",
     Icon: (props) => renderSimpleIcon(siFastapi, props),
-    color: `#${siFastapi.hex}`, // #009688
+    color: `#${siFastapi.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-105 transition-transform duration-200 ease-out",
     category: "framework",
@@ -432,7 +432,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   terraform: {
     label: "Terraform",
     Icon: (props) => renderSimpleIcon(siTerraform, props),
-    color: `#${siTerraform.hex}`, // #844FBA
+    color: `#${siTerraform.hex}`,           
     hoverAnimation:
       "group-hover/tech:-translate-y-0.5 group-hover/tech:scale-105 transition-all duration-200 ease-out",
     category: "infra",
@@ -440,7 +440,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   flutter: {
     label: "Flutter",
     Icon: (props) => renderSimpleIcon(siFlutter, props),
-    color: `#${siFlutter.hex}`, // #02569B
+    color: `#${siFlutter.hex}`,           
     hoverAnimation:
       "group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "framework",
@@ -448,7 +448,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   prometheus: {
     label: "Prometheus",
     Icon: (props) => renderSimpleIcon(siPrometheus, props),
-    color: `#${siPrometheus.hex}`, // #E6522C
+    color: `#${siPrometheus.hex}`,           
     hoverAnimation:
       "group-hover/tech:drop-shadow-[0_0_8px_#e6522c] group-hover/tech:scale-105 transition-all duration-300",
     category: "infra",
@@ -456,7 +456,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   grafana: {
     label: "Grafana",
     Icon: (props) => renderSimpleIcon(siGrafana, props),
-    color: `#${siGrafana.hex}`, // #F46800
+    color: `#${siGrafana.hex}`,           
     hoverAnimation:
       "group-hover/tech:drop-shadow-[0_0_8px_#f46800] group-hover/tech:scale-105 transition-all duration-300",
     category: "infra",
@@ -472,7 +472,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   framer: {
     label: "Framer Motion",
     Icon: (props) => renderSimpleIcon(siFramer, props),
-    color: `#${siFramer.hex}`, // #0055FF
+    color: `#${siFramer.hex}`,           
     hoverAnimation:
       "group-hover/tech:rotate-12 group-hover/tech:scale-110 transition-transform duration-200 ease-out",
     category: "framework",
@@ -480,7 +480,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   pwa: {
     label: "PWA",
     Icon: (props) => renderSimpleIcon(siPwa, props),
-    color: `#${siPwa.hex}`, // #5A0FC8
+    color: `#${siPwa.hex}`,           
     hoverAnimation:
       "group-hover/tech:-translate-y-0.5 group-hover/tech:scale-105 transition-all duration-200 ease-out",
     category: "tool",
@@ -512,7 +512,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   loki: {
     label: "Loki",
     Icon: (props) => renderSimpleIcon(siGrafana, props),
-    color: `#${siGrafana.hex}`, // #F46800
+    color: `#${siGrafana.hex}`,           
     hoverAnimation:
       "group-hover/tech:drop-shadow-[0_0_8px_#f46800] group-hover/tech:scale-105 transition-all duration-300",
     category: "infra",
@@ -520,7 +520,7 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   kubernetes: {
     label: "Kubernetes",
     Icon: (props) => renderSimpleIcon(siKubernetes, props),
-    color: `#${siKubernetes.hex}`, // #326CE5
+    color: `#${siKubernetes.hex}`,           
     hoverAnimation:
       "group-hover/tech:rotate-45 group-hover/tech:scale-110 transition-all duration-300 ease-out",
     category: "infra",
@@ -535,9 +535,9 @@ const TECH_REGISTRY: Record<string, TechIconMeta> = {
   },
 };
 
-// ============================================================================
-// KEY NORMALIZATION & LOOKUP FUNCTION (Handles Compound & Alias Names)
-// ============================================================================
+                                                                               
+                                                                       
+                                                                               
 
 export function normalizeTechKey(name: string): string {
   const cleaned = name
@@ -545,7 +545,7 @@ export function normalizeTechKey(name: string): string {
     .trim()
     .replace(/[\s.\-_/&]+/g, "");
 
-  // Compound / Alias Matching
+                              
   if (cleaned.includes("tokio")) return "tokio";
   if (cleaned.includes("loki")) return "loki";
   if (cleaned.includes("kubernetes") || cleaned === "k8s") return "kubernetes";
@@ -579,7 +579,7 @@ export function getTechConfig(name: string): TechIconMeta {
     return matched;
   }
 
-  // Fallback config for unknown technologies using Monogram Icon
+                                                                 
   return {
     label: name,
     Icon: (props: TechIconProps) => (
@@ -594,9 +594,9 @@ export function getTechConfig(name: string): TechIconMeta {
   };
 }
 
-/**
- * List of popular preset technologies for Quick Pick Chips in Admin UI
- */
+   
+                                                                       
+   
 export const POPULAR_TECH_PRESETS: string[] = [
   "React",
   "Next.js",

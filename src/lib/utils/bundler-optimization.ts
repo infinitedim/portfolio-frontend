@@ -1,5 +1,5 @@
 export const prefetchResources = () => {
-  // Theme configs ship in JS bundles; Next.js handles link prefetch for routes.
+                                                                                
 };
 
 export const optimizeImageLoading = () => {

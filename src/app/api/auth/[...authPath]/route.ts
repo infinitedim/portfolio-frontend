@@ -17,7 +17,7 @@ async function handleAuthProxy(
   const subpath = authPath.join("/");
   const url = `${getBackendUrl()}/api/auth/${subpath}`;
 
-  // Build upstream headers — only forward what the Rust backend needs
+                                                                      
   const upstreamHeaders = new Headers();
   upstreamHeaders.set(
     "content-type",
@@ -25,11 +25,11 @@ async function handleAuthProxy(
   );
   upstreamHeaders.set("accept", "application/json");
 
-  // Forward cookies (HttpOnly refresh token lives here)
+                                                        
   const cookie = req.headers.get("cookie");
   if (cookie) upstreamHeaders.set("cookie", cookie);
 
-  // Forward Authorization bearer if present
+                                            
   const auth = req.headers.get("authorization");
   if (auth) upstreamHeaders.set("authorization", auth);
 
@@ -55,14 +55,14 @@ async function handleAuthProxy(
 
     const data = await upstream.json();
 
-    // Build response, preserving Set-Cookie from the Rust backend so the
-    // browser stores the HttpOnly refresh-token cookie on this BFF origin.
+                                                                         
+                                                                           
     const resHeaders = new Headers();
 
     const setCookies = upstream.headers.getSetCookie?.() ?? [];
     for (const sc of setCookies) {
-      // Strip any Domain= attribute so the cookie is scoped to the BFF
-      // origin (Vercel / localhost:3000), not the Cloud Run domain.
+                                                                       
+                                                                    
       const rehomed = sc.replace(/;\s*Domain=[^;]*/gi, "");
       resHeaders.append("set-cookie", rehomed);
     }

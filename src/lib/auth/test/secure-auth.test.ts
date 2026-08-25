@@ -6,8 +6,8 @@ import { SecureAuth, useSecureAuth } from "../secure-auth";
 const mockFetch = jest.fn();
 globalThis.fetch = mockFetch as unknown as typeof fetch;
 
-// `secure-auth` calls `getApiUrl()` which falls back to
-// `http://localhost:8080` when env vars are unset (the test env).
+                                                        
+                                                                  
 const apiBase =
   (process.env.NEXT_PUBLIC_API_URL as string | undefined) ??
   "http://localhost:8080";
@@ -127,8 +127,8 @@ describe("SecureAuth", () => {
       }
       mockFetch.mockResolvedValue({
         ok: true,
-        // The backend returns either `success` or `isValid`; the SDK accepts
-        // both. Reflect that contract in the mock.
+                                                                             
+                                                   
         json: async () => ({
           success: true,
           isValid: true,
@@ -190,8 +190,8 @@ describe("SecureAuth", () => {
         url("/api/auth/login"),
         expect.objectContaining({
           method: "POST",
-          // `credentials: "include"` is mandatory — without it the browser
-          // would never persist the HttpOnly refresh-token cookie.
+                                                                           
+                                                                   
           credentials: "include",
           body: JSON.stringify({
             email: "test@test.com",
@@ -232,7 +232,7 @@ describe("SecureAuth", () => {
         url("/api/auth/logout"),
         expect.objectContaining({
           method: "POST",
-          // Required so the cookie is forwarded to the backend for revocation.
+                                                                               
           credentials: "include",
         }),
       );

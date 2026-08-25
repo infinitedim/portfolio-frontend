@@ -1,20 +1,20 @@
-/**
- * Git Graph Layout Engine
- *
- * Pure-logic module (zero DOM/React dependencies) that transforms a flat
- * GitHubCommitSummary[] array into renderable graph data with lane assignments,
- * coordinates, and edge descriptors.
- *
- * Reversal Rule:
- * - Lane 0 (main branch) is placed on the RIGHTMOST position of the graph column
- *   (closest to the commit cards).
- * - Feature branches (lane 1, 2...) branch out to the LEFT.
- */
+   
+                          
+  
+                                                                         
+                                                                                
+                                     
+  
+                 
+                                                                                 
+                                   
+                                                            
+   
 
 import type { GitHubCommitSummary, GitHubBranchResponse } from "@/lib/api/commit-service";
 import { getBranchColor } from "./git-graph-colors";
 
-// ─── Types ───────────────────────────────────────────────────────────
+                                                                        
 
 export type GitNodeType = "regular" | "merge" | "initial" | "branch-tip";
 
@@ -30,7 +30,7 @@ export interface GraphNode {
   children: string[];
   branchName?: string;
   branchColor: string;
-  /** All branch names pointing at this commit (for tip labels) */
+                                                                  
   branchRefs: string[];
 }
 
@@ -46,7 +46,7 @@ export interface GraphEdge {
 
 export interface GraphLayout {
   nodes: Map<string, GraphNode>;
-  /** Ordered list of node SHAs matching the commit display order */
+                                                                    
   orderedShas: string[];
   edges: GraphEdge[];
   maxLanes: number;
@@ -63,21 +63,21 @@ export interface LayoutOptions {
 const DEFAULT_LANE_WIDTH = 22;
 const DEFAULT_ROW_HEIGHT = 88;
 
-// ─── Layout Engine ───────────────────────────────────────────────────
+                                                                        
 
-/**
- * Calculate X coordinate for a lane.
- * Reversed layout: lane 0 (main) is rightmost, lane 1, 2... expand to the left.
- */
+   
+                                     
+                                                                                
+   
 export function getLaneX(lane: number, maxLanes: number, laneWidth: number): number {
   const reversedLane = Math.max(0, maxLanes - 1 - lane);
   return reversedLane * laneWidth + laneWidth / 2 + 6;
 }
 
-/**
- * Build a branch ref map from branch responses.
- * Maps commit SHA → array of branch names pointing at that commit.
- */
+   
+                                                
+                                                                   
+   
 export function buildBranchRefsMap(
   branches: GitHubBranchResponse[],
 ): Map<string, string[]> {
@@ -90,9 +90,9 @@ export function buildBranchRefsMap(
   return map;
 }
 
-/**
- * Compute the full graph layout from a list of commits.
- */
+   
+                                                        
+   
 export function computeGraphLayout(
   commits: GitHubCommitSummary[],
   branchRefs: Map<string, string[]>,
@@ -100,7 +100,7 @@ export function computeGraphLayout(
 ): GraphLayout {
   const laneWidth = options?.laneWidth ?? DEFAULT_LANE_WIDTH;
   const rowHeight = options?.rowHeight ?? DEFAULT_ROW_HEIGHT;
-  // Node Y offset from top of row (default 26px aligns with card title line)
+                                                                             
   const nodeYOffset = options?.nodeYOffset ?? Math.min(26, rowHeight / 2);
   const customNodeYMap = options?.customNodeYMap;
 
@@ -108,9 +108,9 @@ export function computeGraphLayout(
     return { nodes: new Map(), orderedShas: [], edges: [], maxLanes: 1, totalRows: 0 };
   }
 
-  // Step 1: Build nodes and parent→child links
+                                               
   const nodes = new Map<string, GraphNode>();
-  const childrenMap = new Map<string, string[]>(); // parent SHA → child SHAs
+  const childrenMap = new Map<string, string[]>();                           
 
   for (let i = 0; i < commits.length; i++) {
     const commit = commits[i];
@@ -125,7 +125,7 @@ export function computeGraphLayout(
     else if (isMerge) type = "merge";
     else if (isInitial) type = "initial";
 
-    // Determine branch name
+                            
     const branchName = refs[0] || "";
 
     const customY = customNodeYMap?.get(commit.sha);
@@ -134,9 +134,9 @@ export function computeGraphLayout(
     nodes.set(commit.sha, {
       sha: commit.sha,
       shortSha: commit.shortSha,
-      lane: 0, // assigned in step 2
+      lane: 0,                      
       row: i,
-      x: 0, // computed in step 3
+      x: 0,                      
       y: nodeY,
       type,
       parents: parentShas,
@@ -160,8 +160,8 @@ export function computeGraphLayout(
     }
   }
 
-  // Step 2: Lane assignment
-  const activeLanes = new Map<string, number>(); // tracking key → lane
+                            
+  const activeLanes = new Map<string, number>();                       
   const usedLanes = new Set<number>();
   let maxLane = 0;
 
@@ -216,12 +216,12 @@ export function computeGraphLayout(
 
   const totalLanes = maxLane + 1;
 
-  // Step 3: Compute X coordinates with REVERSED lane ordering
+                                                              
   for (const node of nodes.values()) {
     node.x = getLaneX(node.lane, totalLanes, laneWidth);
   }
 
-  // Step 4: Generate edges
+                           
   const edges: GraphEdge[] = [];
 
   for (const node of nodes.values()) {

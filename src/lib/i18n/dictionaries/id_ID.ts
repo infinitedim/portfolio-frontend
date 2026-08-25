@@ -685,7 +685,7 @@ export const id_ID_key: TranslationKeys = {
   terminalFeaturesCtaProceed: "Mulai Tantangan Gate →",
   terminalFeaturesCtaCancel: "Kembali",
 
-  // Terminal Interactive Welcome
+                                 
   terminalWelcomeTitle: "Selamat Datang di Portofolio Terminal Saya!",
   terminalWelcomeSubtitle:
     "Klik salah satu perintah di bawah ini untuk memulai, atau ketik langsung di terminal",
@@ -699,7 +699,7 @@ export const id_ID_key: TranslationKeys = {
   terminalWelcomeDescProjects: "Jelajahi proyek-proyek saya",
   terminalWelcomeDescContact: "Hubungi saya",
 
-  // Terminal Commands & Help
+                             
   termHelpAvailableCommands: "Perintah Yang Tersedia:",
   termHelpFeaturedCommands: "Perintah Unggulan:",
   termHelpArgsHeader: "Argumen Baris Perintah:",
@@ -710,7 +710,7 @@ export const id_ID_key: TranslationKeys = {
   termHelpTipFlags: "Gunakan bendera (flag) untuk akses cepat ke daftar dan pratinjau",
   termHelpTipLigatures: "Ligatur font didukung untuk keterbacaan lebih baik",
 
-  // Terminal About
+                   
   termAboutGreeting: "Halo! Saya seorang Pengembang Full-Stack",
   termAboutPassionate: "Antusias dalam menciptakan solusi web yang inovatif",
   termAboutSpecialized: "Spesialisasi dalam React, Next.js, dan teknologi web modern",
@@ -725,7 +725,7 @@ export const id_ID_key: TranslationKeys = {
   termAboutRoadmapVisit: "Kunjungi peta jalan di beranda untuk melihat progres terbaru saya!",
   termAboutTypePrompt: "Ketik \"projects\" untuk melihat karya saya atau \"contact\" untuk menghubungi saya!",
 
-  // Terminal Language
+                      
   termLangDirection: "Arah",
   termLangCode: "Kode",
   termLangSaved: "Preferensi bahasa disimpan ke localStorage",
@@ -733,7 +733,7 @@ export const id_ID_key: TranslationKeys = {
   termLangExamples: "Contoh: lang id_ID, lang es_ES, lang fr_FR",
   termLangRegionalNote: "Varian regional (misalnya, en_GB, es_MX) akan kembali ke bahasa utama mereka",
 
-  // Admin Navigation
+                     
   adminSidebarDashboard: "Ikhtisar Dasbor",
   adminSidebarBlog: "Artikel & Draf",
   adminSidebarProjects: "Katalog Proyek",

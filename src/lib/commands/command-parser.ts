@@ -9,7 +9,7 @@ interface ParsedSegment {
   operator?: ChainOperator;
 }
 
-/** Split a command line on `;` or `&&` while respecting quoted strings. */
+                                                                           
 export function splitCommandChain(input: string): ParsedSegment[] {
   const segments: ParsedSegment[] = [];
   let current = "";
@@ -62,7 +62,7 @@ export function splitCommandChain(input: string): ParsedSegment[] {
   return segments;
 }
 
-/** Split a single command on unquoted `|` for piping. */
+                                                         
 export function splitPipeChain(command: string): string[] {
   const parts: string[] = [];
   let current = "";

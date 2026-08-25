@@ -5,8 +5,8 @@ export type SupportedImageFormat = "webp" | "png" | "jpeg" | "avif";
 export interface ImageResizeOptions {
   width?: number;
   height?: number;
-  quality?: number; // 1-100 (Default: 80)
-  format?: SupportedImageFormat; // Default: 'webp'
+  quality?: number;                       
+  format?: SupportedImageFormat;                   
   fit?: "cover" | "contain" | "fill" | "inside" | "outside";
 }
 
@@ -34,10 +34,10 @@ interface BunImageGlobal {
   from(input: ArrayBuffer | Uint8Array): Promise<BunImageInstance>;
 }
 
-/**
- * Optimizes, resizes, and converts images using Bun.Image (native C++ engine)
- * when running in Bun, with automatic fallback to Sharp in Node.js/Vercel.
- */
+   
+                                                                              
+                                                                           
+   
 export async function optimizeImage(
   inputBuffer: ArrayBuffer | Uint8Array,
   options: ImageResizeOptions = {},
@@ -51,7 +51,7 @@ export async function optimizeImage(
     | { Image?: BunImageGlobal }
     | undefined;
 
-  // Try Bun.Image native C++ engine first
+                                          
   if (bunGlobal && typeof bunGlobal.Image?.from === "function") {
     try {
       const img = await bunGlobal.Image.from(inputBuffer);
@@ -68,12 +68,11 @@ export async function optimizeImage(
         width,
         height,
       };
-    } catch {
-      // Fall through to sharp on unsupported image formats or Bun.Image errors
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }
 
-  // Fallback to Sharp engine
+                             
   try {
     const bufferInput =
       inputBuffer instanceof Uint8Array

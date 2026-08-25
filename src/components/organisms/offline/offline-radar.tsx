@@ -44,19 +44,19 @@ export function OfflineRadar({
 
   return (
     <div className="relative flex flex-col items-center justify-center p-4 rounded-xl border border-neutral-800 bg-neutral-950/80 backdrop-blur-sm shadow-2xl">
-      {/* Radar Canvas / SVG Sweep */}
+                                      
       <div className="relative h-44 w-44 flex items-center justify-center">
-        {/* Concentric Circles */}
+                                  
         <div className="absolute inset-0 rounded-full border border-green-500/20 animate-pulse" />
         <div className="absolute inset-4 rounded-full border border-green-500/30" />
         <div className="absolute inset-10 rounded-full border border-green-500/20" />
         <div className="absolute inset-16 rounded-full border border-green-500/10" />
 
-        {/* Crosshair Lines */}
+                               
         <div className="absolute inset-y-0 left-1/2 w-px bg-green-500/20" />
         <div className="absolute inset-x-0 top-1/2 h-px bg-green-500/20" />
 
-        {/* Sweeping Beam */}
+                             
         <div
           className="absolute inset-0 rounded-full pointer-events-none origin-center animate-spin"
           style={{
@@ -65,7 +65,7 @@ export function OfflineRadar({
           }}
         />
 
-        {/* Blip Signal Dots */}
+                                
         <div
           className={`h-3 w-3 rounded-full transition-all duration-300 ${
             isOnline
@@ -75,7 +75,7 @@ export function OfflineRadar({
         />
       </div>
 
-      {/* Connection Info Panel */}
+                                   
       <div className="mt-4 flex flex-col items-center gap-1.5 text-center font-mono">
         <div className="flex items-center gap-2">
           <span

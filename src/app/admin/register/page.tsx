@@ -84,7 +84,7 @@ export default function AdminRegisterPage() {
             borderColor: themeConfig.colors.border,
           }}
         >
-          {/* Header */}
+                        
           <div
             className="flex items-center justify-between p-3 border-b"
             style={{ borderColor: themeConfig.colors.border }}
@@ -106,7 +106,7 @@ export default function AdminRegisterPage() {
             </Button>
           </div>
 
-          {/* Form Body */}
+                           
           <div className="p-6">
             <div className="mb-6">
               <h1 className="text-xl font-bold mb-1 text-(--terminal-accent)">
@@ -252,7 +252,7 @@ export default function AdminRegisterPage() {
             )}
           </div>
 
-          {/* Footer */}
+                        
           <div
             className="p-3 border-t text-xs text-center"
             style={{ borderColor: themeConfig.colors.border }}

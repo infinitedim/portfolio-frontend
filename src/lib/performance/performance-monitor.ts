@@ -29,10 +29,10 @@ export class PerformanceMonitor {
   private isEnabled: boolean = true;
   private maxMetrics: number = 1000;
 
-  // Next.js/React dev-mode internal Profiler measure names.
-  // These fire on every page load regardless of app code and are not
-  // actionable performance signals — filter them out so real slow-operation
-  // warnings from this app's own code aren't drowned out.
+                                                            
+                                                                     
+                                                                            
+                                                          
   private static readonly DEV_INTERNAL_MEASURE_NAMES = new Set([
     "HotReload",
     "Mount",

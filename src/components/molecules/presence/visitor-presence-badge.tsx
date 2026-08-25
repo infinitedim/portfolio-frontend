@@ -65,9 +65,8 @@ export function VisitorPresenceBadge() {
           if (msg.type === "roomCount" && typeof msg.count === "number") {
             setCount(msg.count);
           }
-        } catch {
-          // ignore malformed messages
-        }
+        } // eslint-disable-next-line no-empty
+    catch {}
       };
 
       ws.onclose = () => {

@@ -3,10 +3,10 @@ export interface BinaryEncodeResult {
   byteLength: number;
 }
 
-/**
- * Encodes a JavaScript object into a compact binary buffer for WebSocket presence
- * and high-throughput network transport.
- */
+   
+                                                                                  
+                                         
+   
 export function encodeBinaryMessage<T extends Record<string, unknown>>(data: T): BinaryEncodeResult {
   const jsonString = JSON.stringify(data);
   const buffer = new TextEncoder().encode(jsonString);
@@ -16,9 +16,9 @@ export function encodeBinaryMessage<T extends Record<string, unknown>>(data: T):
   };
 }
 
-/**
- * Decodes a binary Uint8Array buffer back into a typed JavaScript object.
- */
+   
+                                                                          
+   
 export function decodeBinaryMessage<T = unknown>(buffer: Uint8Array | ArrayBuffer): T {
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
   const jsonString = new TextDecoder().decode(bytes);

@@ -64,7 +64,7 @@ export function RoadmapStreakCard({
     >
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-(--terminal-accent)/0 via-(--terminal-accent) to-(--terminal-accent)/0" />
 
-      {/* CLI Section Header */}
+                                
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4 border-b border-(--terminal-border)/80 pb-3">
         <div className="flex items-center gap-2">
           <span className="text-(--terminal-accent) font-bold">$</span>
@@ -77,7 +77,7 @@ export function RoadmapStreakCard({
         </div>
       </div>
 
-      {/* Metric Cards Grid */}
+                               
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {metrics.map((m) => (
           <div

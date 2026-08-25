@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-/** Legacy Cloud Run project id — must not appear in production CSP connect-src. */
+                                                                                   
 const STALE_BACKEND_PROJECT = "1086149692502";
 
 test.describe("Security Headers", () => {

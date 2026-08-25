@@ -7,7 +7,7 @@ export function TerminalLockedTeaser(): JSX.Element {
       id="main-content"
       className="flex min-h-screen flex-col items-center justify-center bg-black px-4 font-mono text-green-400"
     >
-      {/* view-source: the terminal is locked — find the path from /terminal */}
+                                                                                
       <div className="max-w-lg text-center">
         <h1 className="text-lg">Terminal locked</h1>
         <p className="mt-3 text-sm text-neutral-400">
@@ -21,7 +21,7 @@ export function TerminalLockedTeaser(): JSX.Element {
             Return to gate
           </Link>
         </p>
-        {/* puzzle hint: continue from here with the right referer */}
+                                                                      
         <p className="sr-only">
           <Link href="/gate/3">Continue to level 3</Link>
         </p>

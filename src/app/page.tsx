@@ -131,16 +131,16 @@ function FeaturedProjectsPhantomSkeleton(): JSX.Element {
               key={i}
               className="rounded-lg border border-(--terminal-border) bg-(--terminal-bg)/80 p-4 space-y-4 overflow-hidden"
             >
-              {/* Image Preview Box Phantom */}
+                                               
               <div className="h-44 w-full animate-pulse rounded-md bg-(--terminal-border)/40" />
-              {/* Title Phantom */}
+                                   
               <div className="h-6 w-3/4 animate-pulse rounded bg-(--terminal-border)/70" />
-              {/* Description Lines Phantom */}
+                                               
               <div className="space-y-1.5">
                 <div className="h-3.5 w-full animate-pulse rounded bg-(--terminal-border)/50" />
                 <div className="h-3.5 w-4/5 animate-pulse rounded bg-(--terminal-border)/50" />
               </div>
-              {/* Tech Badges Phantom */}
+                                         
               <div className="flex gap-2 pt-2">
                 <div className="h-5 w-16 animate-pulse rounded bg-(--terminal-border)/60" />
                 <div className="h-5 w-20 animate-pulse rounded bg-(--terminal-border)/60" />

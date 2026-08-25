@@ -1,25 +1,25 @@
-/**
- * Admin TOTP / 2FA service.
- *
- * Wraps the four backend endpoints introduced in Sprint 2:
- *   POST /api/auth/2fa/setup    -> generate secret + backup codes (NOT enabled yet)
- *   POST /api/auth/2fa/verify   -> finalize enrollment with a TOTP code
- *   POST /api/auth/2fa/disable  -> turn 2FA off (requires password + code)
- *   POST /api/auth/2fa/login    -> exchange a challenge token for tokens
- *                                  (handled in `auth-service.complete2FALogin`)
- *
- * Backup codes are returned ONCE at setup time and never again — the admin
- * page is responsible for surfacing them clearly to the user.
- */
+   
+                            
+  
+                                                           
+                                                                                    
+                                                                        
+                                                                           
+                                                                         
+                                                                                
+  
+                                                                           
+                                                              
+   
 
 import { authService } from "@/lib/auth/auth-service";
 
 export interface SetupTwoFAResponse {
-  /** Base32-encoded shared secret. Useful for manual entry into authenticator apps. */
+                                                                                       
   secret: string;
-  /** Pre-formatted otpauth:// URI for QR-code scanning. */
+                                                           
   otpauthUri: string;
-  /** Plain-text backup codes — show once, then never again. */
+                                                               
   backupCodes: string[];
 }
 

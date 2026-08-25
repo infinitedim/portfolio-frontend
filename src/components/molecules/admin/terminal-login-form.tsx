@@ -26,7 +26,7 @@ export function TerminalLoginForm({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 2FA state
+              
   const [challengeToken, setChallengeToken] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [useBackupCode, setUseBackupCode] = useState(false);
@@ -191,7 +191,7 @@ export function TerminalLoginForm({
         </div>
       )}
 
-      {/* Email Field */}
+                         
       <div className="space-y-1.5">
         <Label htmlFor="admin-email" className="text-xs text-(--terminal-muted)">
           Email Address
@@ -213,7 +213,7 @@ export function TerminalLoginForm({
         />
       </div>
 
-      {/* Password Field */}
+                            
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label htmlFor="admin-password" className="text-xs text-(--terminal-muted)">
@@ -247,7 +247,7 @@ export function TerminalLoginForm({
         </div>
       </div>
 
-      {/* Submit Button */}
+                           
       <div className="pt-2">
         <Button
           type="submit"

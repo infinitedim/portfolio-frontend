@@ -53,14 +53,14 @@ export default function AdminMessagesPage(): JSX.Element {
   const [selected, setSelected] = useState<AdminContactMessage | null>(null);
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
 
-  // Mobile View Toggle ("list" vs "detail")
+                                            
   const [mobileView, setMobileView] = useState<"list" | "detail">("list");
 
-  // Confirm Delete Dialog state
+                                
   const [deleteConfirmMsg, setDeleteConfirmMsg] = useState<AdminContactMessage | null>(null);
   const [bulkDeleteConfirmOpen, setBulkDeleteConfirmOpen] = useState(false);
 
-  // Clear checkedIds on page or filter change (fixes pagination bulk action leak)
+                                                                                  
   useEffect(() => {
     setCheckedIds(new Set());
   }, [page, unreadOnly, searchQuery]);
@@ -233,7 +233,7 @@ export default function AdminMessagesPage(): JSX.Element {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-mono text-sm">
-      {/* Header Bar */}
+                        
       <div
         className="p-4 rounded-lg border flex flex-wrap items-center justify-between gap-4"
         style={{
@@ -271,7 +271,7 @@ export default function AdminMessagesPage(): JSX.Element {
         </div>
       </div>
 
-      {/* Filter & Search Bar */}
+                                 
       <div
         className="p-4 rounded-lg border flex flex-wrap items-center justify-between gap-4"
         style={{
@@ -307,7 +307,7 @@ export default function AdminMessagesPage(): JSX.Element {
           </button>
         </div>
 
-        {/* Bulk Actions */}
+                            
         {checkedIds.size > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-(--terminal-accent) font-semibold">
@@ -333,9 +333,9 @@ export default function AdminMessagesPage(): JSX.Element {
         )}
       </div>
 
-      {/* Main Master-Detail Workspace */}
+                                          
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 min-h-[600px]">
-        {/* List Pane (col-span-2 desktop, mobileView === 'list' mobile) */}
+                                                                            
         <div
           className={`lg:col-span-2 border rounded-lg overflow-hidden flex flex-col ${
             mobileView === "detail" ? "hidden lg:flex" : "flex"
@@ -345,7 +345,7 @@ export default function AdminMessagesPage(): JSX.Element {
             borderColor: themeConfig.colors.border,
           }}
         >
-          {/* List Header */}
+                             
           <div className="p-3 border-b flex items-center justify-between text-xs bg-(--terminal-accent)/5 border-(--terminal-border)">
             <label className="flex items-center gap-2 cursor-pointer font-semibold">
               <input
@@ -361,7 +361,7 @@ export default function AdminMessagesPage(): JSX.Element {
             </span>
           </div>
 
-          {/* List Body */}
+                           
           <div className="flex-1 overflow-y-auto max-h-[600px] divide-y divide-(--terminal-border)/40">
             {loading ? (
               <div className="p-8 text-center text-xs text-(--terminal-muted) animate-pulse">
@@ -432,7 +432,7 @@ export default function AdminMessagesPage(): JSX.Element {
             )}
           </div>
 
-          {/* List Pagination */}
+                                 
           <div className="p-3 border-t flex items-center justify-between text-xs border-(--terminal-border) bg-(--terminal-bg)">
             <Button
               variant="outline"
@@ -458,7 +458,7 @@ export default function AdminMessagesPage(): JSX.Element {
           </div>
         </div>
 
-        {/* Detail Pane (col-span-3 desktop, mobileView === 'detail' mobile) */}
+                                                                                
         <div
           className={`lg:col-span-3 border rounded-lg overflow-hidden flex flex-col ${
             mobileView === "list" ? "hidden lg:flex" : "flex"
@@ -470,7 +470,7 @@ export default function AdminMessagesPage(): JSX.Element {
         >
           {selected ? (
             <div className="flex-1 flex flex-col min-h-[600px]">
-              {/* Detail Toolbar */}
+                                    
               <div className="p-4 border-b flex flex-wrap items-center justify-between gap-3 border-(--terminal-border) bg-(--terminal-accent)/5">
                 <div className="flex items-center gap-2">
                   <Button
@@ -507,7 +507,7 @@ export default function AdminMessagesPage(): JSX.Element {
                 </div>
               </div>
 
-              {/* Detail Content */}
+                                    
               <div className="p-6 flex-1 overflow-y-auto space-y-6">
                 <div className="space-y-3 border-b pb-4 border-(--terminal-border)">
                   <h2 className="text-lg font-bold text-(--terminal-accent)">
@@ -530,12 +530,12 @@ export default function AdminMessagesPage(): JSX.Element {
                   </div>
                 </div>
 
-                {/* Message Body */}
+                                    
                 <div className="p-4 rounded-lg border border-(--terminal-border) bg-black/30 text-sm leading-relaxed whitespace-pre-wrap text-(--terminal-text) font-mono">
                   {selected.message}
                 </div>
 
-                {/* Inline Quick Reply Action */}
+                                                 
                 <div className="pt-4 border-t border-(--terminal-border) space-y-2">
                   <h3 className="font-bold text-xs text-(--terminal-accent)">
                     Quick Reply Action
@@ -557,7 +557,7 @@ export default function AdminMessagesPage(): JSX.Element {
         </div>
       </div>
 
-      {/* Confirm Delete Single Message */}
+                                           
       <ConfirmDialog
         open={Boolean(deleteConfirmMsg)}
         onOpenChange={(open) => !open && setDeleteConfirmMsg(null)}
@@ -568,7 +568,7 @@ export default function AdminMessagesPage(): JSX.Element {
         onConfirm={handleDeleteConfirm}
       />
 
-      {/* Confirm Bulk Delete */}
+                                 
       <ConfirmDialog
         open={bulkDeleteConfirmOpen}
         onOpenChange={setBulkDeleteConfirmOpen}

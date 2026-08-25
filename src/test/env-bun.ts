@@ -82,9 +82,8 @@ if (typeof g.document === "undefined") {
       if (!(name in globalThis)) {
         try {
           g[name] = winObj[name];
-        } catch {
-          // ignore read-only properties
-        }
+        } // eslint-disable-next-line no-empty
+    catch {}
       }
     }
   }

@@ -24,7 +24,7 @@ export default function AdminPortfolioPage() {
   const [loading, setLoading] = useState(true);
   const [restoring, setRestoring] = useState<string | null>(null);
 
-  // Restore Confirm & Preview Sheet
+                                    
   const [restoreConfirmId, setRestoreConfirmId] = useState<string | null>(null);
   const [previewVersion, setPreviewVersion] = useState<PortfolioVersionSummary | null>(null);
 
@@ -64,7 +64,7 @@ export default function AdminPortfolioPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 font-mono text-sm">
-      {/* Header Bar */}
+                        
       <div
         className="p-4 rounded-lg border flex flex-wrap items-center justify-between gap-4"
         style={{
@@ -93,7 +93,7 @@ export default function AdminPortfolioPage() {
         </Button>
       </div>
 
-      {/* Section Tabs */}
+                          
       <div
         className="p-4 rounded-lg border space-y-4"
         style={{
@@ -123,7 +123,7 @@ export default function AdminPortfolioPage() {
           })}
         </div>
 
-        {/* Version List */}
+                            
         {loading ? (
           <div className="p-8 text-center text-xs text-(--terminal-muted) animate-pulse">
             Loading snapshots for section "{section}"...
@@ -185,7 +185,7 @@ export default function AdminPortfolioPage() {
         )}
       </div>
 
-      {/* Snapshot Preview Sheet */}
+                                    
       <Sheet open={Boolean(previewVersion)} onOpenChange={(open) => !open && setPreviewVersion(null)}>
         <SheetContent side="right" className="sm:max-w-xl font-mono text-xs overflow-y-auto">
           <SheetHeader>
@@ -202,7 +202,7 @@ export default function AdminPortfolioPage() {
         </SheetContent>
       </Sheet>
 
-      {/* Confirm Restore Dialog */}
+                                    
       <ConfirmDialog
         open={Boolean(restoreConfirmId)}
         onOpenChange={(open) => !open && setRestoreConfirmId(null)}

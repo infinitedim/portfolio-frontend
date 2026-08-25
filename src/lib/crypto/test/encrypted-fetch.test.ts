@@ -27,12 +27,12 @@ describe("crypto/encrypted-fetch", () => {
         });
       }
 
-      // Check request headers
+                              
       const headers = new Headers(init?.headers);
       expect(headers.get("x-encrypted")).toBe("1");
       expect(headers.get("x-session-id")).toBe(serverSessionId);
 
-      // Return encrypted response payload
+                                          
       const responseData = { result: "Success Data", count: 42 };
       const encryptedResponse = serverEncrypt(serverSessionId, JSON.stringify(responseData));
 

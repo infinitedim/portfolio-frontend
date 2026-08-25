@@ -80,7 +80,7 @@ export default function TranslationsPage() {
 
   return (
     <div className="space-y-6 font-mono text-sm max-w-7xl mx-auto">
-      {/* Header Bar */}
+                        
       <div
         className="p-4 rounded-lg border flex flex-wrap items-center justify-between gap-4"
         style={{
@@ -125,7 +125,7 @@ export default function TranslationsPage() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-[600px]">
-        {/* Queue List Panel */}
+                                
         <div
           className="flex flex-col border rounded-lg overflow-hidden lg:col-span-1"
           style={{
@@ -182,7 +182,7 @@ export default function TranslationsPage() {
           </div>
         </div>
 
-        {/* Review Panel (Fixed invalid h-200 class with min-h-[600px]) */}
+                                                                           
         <div
           className="lg:col-span-2 min-h-[600px] border rounded-lg overflow-hidden flex flex-col"
           style={{

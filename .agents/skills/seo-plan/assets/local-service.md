@@ -1,4 +1,4 @@
-<!-- Updated: 2026-02-07 -->
+
 
 # Local Service Business SEO Strategy Template
 

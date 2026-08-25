@@ -1,20 +1,20 @@
-/**
- * @fileoverview Terminal – main component (refactored)
- *
- * This file is now a thin composition layer. All state and business logic
- * live in `TerminalProvider` (via TerminalContext). This component is
- * responsible only for:
- *
- *  1. Wrapping `TerminalContent` with `<TerminalProvider>`
- *  2. Rendering the full-page loading screen before mount
- *  3. Wiring DOM-level side effects (scroll, global keydown, click-focus)
- *  4. Laying out the structural regions of the terminal page
- *
- * @example
- * ```tsx
- * <Terminal onThemeChange={handleTheme} onFontChange={handleFont} />
- * ```
- */
+   
+                                                       
+  
+                                                                          
+                                                                      
+                        
+  
+                                                           
+                                                          
+                                                                          
+                                                             
+  
+           
+         
+                                                                     
+      
+   
 
 "use client";
 
@@ -41,10 +41,10 @@ interface TerminalProps {
   onFontChange?: (font: string) => void;
 }
 
-/**
- * Internal component that consumes TerminalContext.
- * Handles DOM side-effects and assembles the visible page regions.
- */
+   
+                                                    
+                                                                   
+   
 
 function TerminalContent({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -75,7 +75,7 @@ function TerminalContent({
   const [hasMinimumLoadingTime, setHasMinimumLoadingTime] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-  /** Tracks if customization manager is open (used to gate global keydown) */
+                                                                              
   const isCustomizationOpenRef = useRef(false);
 
   const cycleTheme = useCallback(() => {
@@ -122,13 +122,13 @@ function TerminalContent({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [shortcutsOpen, historyOpen]);
 
-  /** Minimum loading delay so the splash screen isn't a flash */
+                                                                 
   useEffect(() => {
     const timer = setTimeout(() => setHasMinimumLoadingTime(true), 800);
     return () => clearTimeout(timer);
   }, []);
 
-  /** Scroll to bottom whenever history updates */
+                                                  
   useEffect(() => {
     const rafId = requestAnimationFrame(() => {
       if (bottomRef.current && !isReducedMotion) {
@@ -140,7 +140,7 @@ function TerminalContent({
     return () => cancelAnimationFrame(rafId);
   }, [history, isReducedMotion, bottomRef]);
 
-  /** Listen for customization panel open/close to gate global keydown */
+                                                                         
   useEffect(() => {
     const open = () => {
       isCustomizationOpenRef.current = true;
@@ -156,7 +156,7 @@ function TerminalContent({
     };
   }, []);
 
-  /** Global keydown: redirect printable characters to the command input */
+                                                                           
   const setCurrentInput = useTerminalContext().setCurrentInput;
   useEffect(() => {
     const handleGlobalKeydown = (e: KeyboardEvent) => {
@@ -209,7 +209,7 @@ function TerminalContent({
     return () => document.removeEventListener("keydown", handleGlobalKeydown);
   }, [commandInputRef, setCurrentInput]);
 
-  /** Focus the command input when the user clicks on the terminal background */
+                                                                                
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
@@ -231,7 +231,7 @@ function TerminalContent({
     }
   }, [terminalRef]);
 
-  // ── Loading screens ──────────────────────────────────────────────────
+                                                                          
 
   if (!themeConfig || !fontConfig) {
     return (
@@ -305,7 +305,7 @@ function TerminalContent({
     );
   }
 
-  // ── Derived glitch colours ───────────────────────────────────────────
+                                                                          
 
   const DEFAULT_GLITCH_COLORS = ["#2b4539", "#61dca3", "#61b3dc"];
 
@@ -322,7 +322,7 @@ function TerminalContent({
       ]
     : DEFAULT_GLITCH_COLORS;
 
-  // ── Main render ──────────────────────────────────────────────────────
+                                                                          
 
   return (
     <>
@@ -402,19 +402,19 @@ function TerminalContent({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Terminal – public export
-// ---------------------------------------------------------------------------
+                                                                              
+                           
+                                                                              
 
-/**
- * Terminal
- *
- * Public entry point. Wraps `TerminalContent` with `TerminalProvider` so
- * the entire sub-tree has access to the terminal context.
- *
- * @param onThemeChange - Callback fired after a successful theme change
- * @param onFontChange  - Callback fired after a successful font change
- */
+   
+           
+  
+                                                                         
+                                                          
+  
+                                                                        
+                                                                       
+   
 export function Terminal({
   onThemeChange,
   onFontChange,

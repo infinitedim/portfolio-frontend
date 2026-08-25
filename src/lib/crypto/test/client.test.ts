@@ -34,7 +34,7 @@ describe("crypto/client", () => {
   });
 
   it("should complete ECDH handshake, encrypt plaintext, and decrypt envelope back", async () => {
-    // Generate real server ECDH key pair for mock handshake response
+                                                                     
     const serverKeyPair = await crypto.subtle.generateKey(
       { name: "ECDH", namedCurve: "P-256" },
       true,
@@ -72,7 +72,7 @@ describe("crypto/client", () => {
       expect(envelope.hmac).toBeDefined();
       expect(hasActiveSession()).toBe(true);
 
-      // Decrypt
+                
       const decrypted = await clientDecrypt({
         iv: envelope.iv,
         ciphertext: envelope.ciphertext,

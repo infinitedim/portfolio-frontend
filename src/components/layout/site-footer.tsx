@@ -23,9 +23,9 @@ export function SiteFooter(): JSX.Element {
       className="mt-12 sm:mt-16 border-t border-(--terminal-border) bg-(--terminal-bg)/90 px-4 pt-12 pb-8 transition-colors duration-300"
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-8 font-mono">
-        {/* Terminal Control Grid */}
+                                     
         <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-6">
-          {/* Col 1: Brand & Live Diagnostics (5 cols) */}
+                                                          
           <div className="flex flex-col gap-3.5 md:col-span-5">
             <div className="flex items-center gap-2 font-mono text-sm font-semibold text-(--terminal-text)">
               <Link
@@ -52,7 +52,7 @@ export function SiteFooter(): JSX.Element {
             </div>
           </div>
 
-          {/* Col 2: Terminal Nav & Socials (3 cols) */}
+                                                        
           <div className="flex flex-col gap-4 md:col-span-3">
             <p className="text-xs font-semibold text-(--terminal-accent) tracking-wider">
               $ ls --nav
@@ -91,7 +91,7 @@ export function SiteFooter(): JSX.Element {
             </div>
           </div>
 
-          {/* Col 3: Newsletter Terminal Box (4 cols) */}
+                                                         
           <div className="flex flex-col gap-3 rounded-xl border border-(--terminal-border) bg-(--terminal-accent)/5 p-4 md:col-span-4">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold text-(--terminal-accent)">
@@ -109,7 +109,7 @@ export function SiteFooter(): JSX.Element {
           </div>
         </div>
 
-        {/* Bottom Status & Copyright Strip */}
+                                               
         <div className="flex flex-col items-center justify-between gap-4 border-t border-(--terminal-border)/80 pt-6 text-xs text-(--terminal-muted) sm:flex-row">
           <div className="flex items-center gap-3">
             <span>

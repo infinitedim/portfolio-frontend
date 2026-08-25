@@ -184,7 +184,7 @@ export default function AdminAboutPage(): JSX.Element {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 font-mono text-sm">
-      {/* Header Bar */}
+                        
       <div
         className="p-4 rounded-lg border flex flex-wrap items-center justify-between gap-4"
         style={{
@@ -221,7 +221,7 @@ export default function AdminAboutPage(): JSX.Element {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Base Info & Social Links */}
+                                          
           <div
             className="p-6 rounded-lg border space-y-4"
             style={{
@@ -281,7 +281,7 @@ export default function AdminAboutPage(): JSX.Element {
             </div>
           </div>
 
-          {/* Multilingual Content Tabs */}
+                                           
           <div
             className="p-6 rounded-lg border space-y-4"
             style={{
@@ -320,7 +320,7 @@ export default function AdminAboutPage(): JSX.Element {
               </Button>
             </div>
 
-            {/* Locale Tabs */}
+                               
             <div className="flex flex-wrap items-center gap-2 pt-1" role="tablist" aria-label="Locale Selection Tabs">
               {locales.map((loc) => {
                 const active = activeLocale === loc.code;
@@ -345,7 +345,7 @@ export default function AdminAboutPage(): JSX.Element {
               })}
             </div>
 
-            {/* Locale Specific Fields */}
+                                          
             <div className="space-y-4 pt-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">

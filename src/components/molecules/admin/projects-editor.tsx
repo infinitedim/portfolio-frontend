@@ -49,7 +49,7 @@ export function ProjectsEditor({
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isNewProject, setIsNewProject] = useState(false);
 
-  // Form states
+                
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<ProjectCategory>("frontend");
@@ -69,7 +69,7 @@ export function ProjectsEditor({
   const [tagInput, setTagInput] = useState("");
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 
-  // Metrics form states
+                        
   const [latencyP95, setLatencyP95] = useState("");
   const [throughputRps, setThroughputRps] = useState("");
   const [uptimeSla, setUptimeSla] = useState("");
@@ -79,7 +79,7 @@ export function ProjectsEditor({
   const [minOsVersion, setMinOsVersion] = useState("");
   const [testCoverage, setTestCoverage] = useState("");
 
-  // Compute filtered AutoComplete suggestions
+                                              
   const suggestions = tagInput.trim()
     ? POPULAR_TECH_PRESETS.filter(
         (tech) =>
@@ -143,7 +143,7 @@ export function ProjectsEditor({
     setTagInput("");
     setSelectedSuggestionIndex(-1);
 
-    // Metrics
+              
     setLatencyP95(project.metrics?.latencyP95 || "");
     setThroughputRps(project.metrics?.throughputRps || "");
     setUptimeSla(project.metrics?.uptimeSla || "");
@@ -367,7 +367,7 @@ export function ProjectsEditor({
     }
   };
 
-  // Delete & Reorder States
+                            
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const handleMoveProject = async (index: number, direction: "up" | "down") => {
@@ -457,7 +457,7 @@ export function ProjectsEditor({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+                    
       <div
         className="p-4 border rounded flex items-center justify-between"
         style={{
@@ -491,7 +491,7 @@ export function ProjectsEditor({
         </button>
       </div>
 
-      {/* Edit Form Modal/Panel */}
+                                   
       {editingProject && (
         <div
           className="p-4 border rounded space-y-4"
@@ -517,7 +517,7 @@ export function ProjectsEditor({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-            {/* Name */}
+                        
             <div className="space-y-1">
               <label htmlFor="project-name" className="block opacity-80">
                 Project Name *
@@ -533,7 +533,7 @@ export function ProjectsEditor({
               />
             </div>
 
-            {/* Category & Status & Featured */}
+                                                
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
                 <span className="block opacity-80">Project Category *</span>
@@ -579,7 +579,7 @@ export function ProjectsEditor({
               </div>
             </div>
 
-            {/* Featured Checkbox & Target Platforms (if Native or Library) */}
+                                                                               
             <div className="space-y-2 md:col-span-2 p-2.5 border rounded bg-black/20 border-neutral-800">
               <div className="flex items-center justify-between">
                 <label className="flex items-center space-x-2 cursor-pointer">
@@ -594,7 +594,7 @@ export function ProjectsEditor({
                 </label>
               </div>
 
-              {/* Target Platforms selector */}
+                                               
               <div className="pt-1">
                 <span className="block text-[11px] opacity-70 mb-1">Target Platforms:</span>
                 <div className="flex flex-wrap gap-2">
@@ -620,7 +620,7 @@ export function ProjectsEditor({
               </div>
             </div>
 
-            {/* Description */}
+                               
             <div className="space-y-1 md:col-span-2">
               <label htmlFor="project-description" className="block opacity-80">
                 Description *
@@ -636,7 +636,7 @@ export function ProjectsEditor({
               />
             </div>
 
-            {/* Tech Stack Input Section */}
+                                            
             <div className="space-y-2 md:col-span-2 relative">
               <div className="flex items-center justify-between">
                 <label htmlFor="project-tech" className="block opacity-80">
@@ -647,7 +647,7 @@ export function ProjectsEditor({
                 </span>
               </div>
 
-              {/* Tag Chips Container */}
+                                         
               <div
                 className="flex flex-wrap gap-2 p-2.5 border rounded min-h-12 bg-black/40"
                 style={{ borderColor: themeConfig.colors.border }}
@@ -682,7 +682,7 @@ export function ProjectsEditor({
                     }
                   />
 
-                  {/* AutoComplete Suggestions Dropdown */}
+                                                           
                   {suggestions.length > 0 && (
                     <div className="absolute left-0 top-full z-50 mt-1 max-h-48 w-60 overflow-y-auto rounded-md border border-neutral-800 bg-neutral-900/95 py-1 shadow-xl backdrop-blur-md">
                       {suggestions.map((tech, idx) => {
@@ -713,7 +713,7 @@ export function ProjectsEditor({
                 </div>
               </div>
 
-              {/* Quick Pick Chips Bar */}
+                                          
               <div className="space-y-1 pt-1">
                 <span className="text-[11px] text-neutral-400">Quick Pick Presets:</span>
                 <div className="flex flex-wrap gap-1.5">
@@ -747,7 +747,7 @@ export function ProjectsEditor({
               </div>
             </div>
 
-            {/* Specialized Links Section */}
+                                             
             <div className="space-y-2 md:col-span-2 pt-2 border-t border-neutral-800">
               <span className="block font-semibold text-neutral-300">Project Links & Access</span>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -862,7 +862,7 @@ export function ProjectsEditor({
               </div>
             </div>
 
-            {/* Performance Metrics Inputs */}
+                                              
             <div className="space-y-2 md:col-span-2 pt-2 border-t border-neutral-800">
               <span className="block font-semibold text-neutral-300">Engineering Metrics (Optional)</span>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -981,7 +981,7 @@ export function ProjectsEditor({
               </div>
             </div>
 
-            {/* Image Upload */}
+                                
             <div className="space-y-1 md:col-span-2">
               <ProjectImageUpload
                 imageUrl={imageUrl}
@@ -991,7 +991,7 @@ export function ProjectsEditor({
             </div>
           </div>
 
-          {/* Form Actions */}
+                              
           <div className="flex items-center justify-end space-x-2 pt-2 border-t border-neutral-800">
             <button
               type="button"
@@ -1017,7 +1017,7 @@ export function ProjectsEditor({
         </div>
       )}
 
-      {/* Projects List */}
+                           
       <div className="space-y-3">
         {projects.length === 0 ? (
           <div className="p-8 text-center text-xs opacity-60 font-mono border border-dashed rounded border-neutral-800">

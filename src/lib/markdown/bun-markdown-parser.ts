@@ -7,10 +7,10 @@ interface BunMarkdownGlobal {
   html?(input: string): string | Promise<string>;
 }
 
-/**
- * Parses markdown to HTML using Bun.markdown native C++ CommonMark parser
- * when running in Bun 1.4+, with graceful fallback for Node.js / Vercel.
- */
+   
+                                                                          
+                                                                         
+   
 export async function parseMarkdownToHtml(markdownText: string): Promise<MarkdownParseResult> {
   if (!markdownText) {
     return { html: "", engineUsed: "fallback-markdown" };
@@ -20,7 +20,7 @@ export async function parseMarkdownToHtml(markdownText: string): Promise<Markdow
     | { markdown?: BunMarkdownGlobal }
     | undefined;
 
-  // Try native Bun.markdown C++ parser
+                                       
   if (bunGlobal && typeof bunGlobal.markdown?.html === "function") {
     try {
       const resultHtml = await bunGlobal.markdown.html(markdownText);
@@ -28,12 +28,11 @@ export async function parseMarkdownToHtml(markdownText: string): Promise<Markdow
         html: typeof resultHtml === "string" ? resultHtml : String(resultHtml),
         engineUsed: "bun-markdown",
       };
-    } catch {
-      // Fall through to fallback on error
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }
 
-  // Graceful light fallback parser (converts headers, bold, italics, links, lists)
+                                                                                   
   const html = markdownText
     .replace(/^### (.*$)/gim, "<h3>$1</h3>")
     .replace(/^## (.*$)/gim, "<h2>$1</h2>")

@@ -121,7 +121,7 @@ export default function AdminTwoFactorPage(): JSX.Element {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 font-mono text-sm">
-      {/* Header Bar */}
+                        
       <div className="flex items-center justify-between pb-4 border-b border-(--terminal-border)">
         <div>
           <h1 className="text-xl font-bold text-(--terminal-accent) flex items-center gap-2">
@@ -304,7 +304,7 @@ function SetupPanel({
 
   return (
     <div className="space-y-6">
-      {/* Step 1 */}
+                    
       <div className="p-6 rounded-lg border border-(--terminal-border) bg-(--terminal-bg) space-y-4">
         <h3 className="text-base font-semibold text-(--terminal-accent)">
           Step 1 — Scan QR Code with Authenticator App
@@ -337,7 +337,7 @@ function SetupPanel({
         </div>
       </div>
 
-      {/* Step 2 */}
+                    
       <div className="p-6 rounded-lg border border-amber-500/40 bg-amber-500/5 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold text-amber-400">
@@ -373,7 +373,7 @@ function SetupPanel({
         </div>
       </div>
 
-      {/* Step 3 */}
+                    
       <div className="p-6 rounded-lg border border-(--terminal-border) bg-(--terminal-bg) space-y-4">
         <h3 className="text-base font-semibold text-(--terminal-accent)">
           Step 3 — Verify TOTP Code & Enable

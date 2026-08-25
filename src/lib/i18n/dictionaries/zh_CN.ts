@@ -664,7 +664,7 @@ export const zh_CN_key: TranslationKeys = {
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
 
-  // Terminal Commands & Help
+                             
   termHelpAvailableCommands: "可用命令：",
   termHelpFeaturedCommands: "精选命令：",
   termHelpArgsHeader: "命令行参数：",
@@ -675,7 +675,7 @@ export const zh_CN_key: TranslationKeys = {
   termHelpTipFlags: "使用标志快速访问列表和预览",
   termHelpTipLigatures: "支持字体连字以提升可读性",
 
-  // Terminal About
+                   
   termAboutGreeting: "你好！我是一名全栈开发人员",
   termAboutPassionate: "热衷于创建创新的 Web 解决方案",
   termAboutSpecialized: "专注于 React、Next.js 和现代 Web 技术",
@@ -690,7 +690,7 @@ export const zh_CN_key: TranslationKeys = {
   termAboutRoadmapVisit: "访问主页路线图以查看我当前的进度！",
   termAboutTypePrompt: "输入 \"projects\" 查看我的作品，或输入 \"contact\" 与我联系！",
 
-  // Terminal Language
+                      
   termLangDirection: "方向",
   termLangCode: "代码",
   termLangSaved: "语言偏好已保存至 localStorage",

@@ -105,7 +105,7 @@ export class SecureAuth {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        // Required so the browser persists the HttpOnly refresh cookie.
+                                                                        
         credentials: "include",
         body: JSON.stringify({ email, password }),
       });
@@ -141,8 +141,8 @@ export class SecureAuth {
       await fetch(`${getApiUrl()}/api/auth/logout`, {
         method: "POST",
         headers,
-        // Send the refresh cookie so the server can revoke it server-side
-        // and clear it client-side.
+                                                                          
+                                    
         credentials: "include",
         body: JSON.stringify({
           accessToken,

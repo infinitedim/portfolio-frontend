@@ -6,7 +6,7 @@ export interface RateLimitResult {
   engineUsed: "memory-map";
 }
 
-// Ultra-fast in-memory O(1) Map sliding window rate limiter
+                                                            
 const memoryMapFallback = new Map<string, { count: number; resetAt: number }>();
 
 export function checkSqliteRateLimit(

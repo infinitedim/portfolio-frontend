@@ -13,13 +13,13 @@ interface NextRequestWithGeo extends NextRequest {
   };
 }
 
-/**
- * Edge-runtime safe logger. The full pino + file-rotation logger lives in
- * `src/lib/logger/server-logger.ts` but it imports `node:fs` and `node:path`,
- * which are unavailable in the Edge Runtime where this proxy runs. We keep
- * the proxy itself lean and emit JSON lines to stdout/stderr so they still
- * land in our log aggregator (Loki / Vercel logs).
- */
+   
+                                                                          
+                                                                              
+                                                                           
+                                                                           
+                                                   
+   
 const edgeLogger = {
   warn(message: string, fields: Record<string, unknown>): void {
     if (process.env.NODE_ENV === "test") return;
@@ -47,7 +47,7 @@ const edgeLogger = {
   },
 };
 
-const RATE_LIMIT = 200; // max requests per minute
+const RATE_LIMIT = 200;                           
 const RATE_LIMIT_WINDOW_MS = 60000;
 const rateLimitMap = new Map<string, { count: number; expires: number }>();
 
@@ -65,7 +65,7 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-/** Origin only — no trailing slash; upgrade http→https for connect-src. */
+                                                                           
 export function normalizeApiOrigin(raw: string | undefined): string {
   const fallback = "https://api.infinitedim.dev";
   if (!raw?.trim()) return fallback;
@@ -231,7 +231,7 @@ export function resolveGateRedirect(request: NextRequest): NextResponse | null {
 }
 
 export function proxy(request: NextRequest): NextResponse {
-  // Block direct access to /resume.pdf — require Turnstile via /api/resume/download
+                                                                                    
   if (request.nextUrl.pathname.toLowerCase() === "/resume.pdf") {
     return new NextResponse(
       "Direct access to resume.pdf is blocked. Please use the download verification on the site.",
@@ -247,7 +247,7 @@ export function proxy(request: NextRequest): NextResponse {
     return gateRedirect;
   }
 
-  // IP-based Rate Limiting (Basic L7 DDoS Mitigation)
+                                                      
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     request.headers.get("x-real-ip") ||
@@ -270,7 +270,7 @@ export function proxy(request: NextRequest): NextResponse {
 
   response.headers.set("X-Request-ID", requestId);
 
-  // Security headers (apply CSP in all environments — fail loud during dev).
+                                                                             
   const securityHeaders = getSecurityHeaders(csp);
   for (const [key, value] of Object.entries(securityHeaders)) {
     response.headers.set(key, value);

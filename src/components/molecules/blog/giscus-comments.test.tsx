@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, mock } from "bun:test";
 import { canRunTests, ensureDocumentBody } from "@/test/test-helpers";
 
-// Mock @giscus/react
+                     
 mock.module("@giscus/react", () => ({
   default: (props: Record<string, unknown>) => (
     <div data-testid="giscus-mock" data-theme={props.theme} data-repo={props.repo} data-category={props.category}>
@@ -10,7 +10,7 @@ mock.module("@giscus/react", () => ({
   ),
 }));
 
-// Mock next-themes
+                   
 mock.module("next-themes", () => ({
   useTheme: () => ({ resolvedTheme: "dark" }),
 }));

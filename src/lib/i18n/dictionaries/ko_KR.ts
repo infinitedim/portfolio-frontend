@@ -674,7 +674,7 @@ export const ko_KR_key: TranslationKeys = {
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
 
-  // Terminal Commands & Help
+                             
   termHelpAvailableCommands: "사용 가능한 명령어:",
   termHelpFeaturedCommands: "추천 명령어:",
   termHelpArgsHeader: "명령줄 인수:",
@@ -685,7 +685,7 @@ export const ko_KR_key: TranslationKeys = {
   termHelpTipFlags: "플래그를 사용하여 목록 및 미리보기에 빠르게 접근",
   termHelpTipLigatures: "가독성을 위한 폰트 합자 지원",
 
-  // Terminal About
+                   
   termAboutGreeting: "안녕하세요! 풀스택 개발자입니다",
   termAboutPassionate: "혁신적인 웹 솔루션 구축에 열정을 가지고 있습니다",
   termAboutSpecialized: "React, Next.js 및 최신 웹 기술 전문",
@@ -700,7 +700,7 @@ export const ko_KR_key: TranslationKeys = {
   termAboutRoadmapVisit: "홈페이지 로드맵을 방문하여 현재 진행 상황을 확인해보세요!",
   termAboutTypePrompt: "작품을 보려면 \"projects\", 문의하려면 \"contact\"를 입력하세요!",
 
-  // Terminal Language
+                      
   termLangDirection: "방향",
   termLangCode: "코드",
   termLangSaved: "언어 설정이 localStorage에 저장되었습니다",

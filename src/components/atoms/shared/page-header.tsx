@@ -1,23 +1,23 @@
 import type { JSX, ReactNode } from "react";
 
 interface PageHeaderProps {
-  /** The route/section title (e.g. "about", "projects", "blog", "contact", "roadmap") */
+                                                                                         
   title: string;
-  /** Optional subtitle or description text below the title */
+                                                              
   description?: string;
-  /** Optional action elements to display on the right (e.g. RSS button) */
+                                                                           
   actions?: ReactNode;
-  /** Optional additional elements below the description (e.g. badges, search bar, tags) */
+                                                                                           
   children?: ReactNode;
-  /** Custom additional container class names */
+                                                
   className?: string;
 }
 
-/**
- * Standardized Terminal Page Header component across all routes.
- * Enforces left-alignment, ~/ green prefix notation, lowercase route name,
- * and unified typography hierarchy.
- */
+   
+                                                                 
+                                                                           
+                                    
+   
 export function PageHeader({
   title,
   description,

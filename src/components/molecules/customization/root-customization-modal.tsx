@@ -37,7 +37,7 @@ export function RootCustomizationModal({
           data-lenis-prevent-touch
           className="fixed left-1/2 top-1/2 z-50 w-[92vw] max-w-xl -translate-x-1/2 -translate-y-1/2 rounded-xl border border-emerald-500/30 bg-neutral-900/95 p-5 sm:p-6 font-mono shadow-2xl backdrop-blur-md max-h-[85vh] flex flex-col focus:outline-none overflow-hidden"
         >
-          {/* Header Chrome */}
+                               
           <div className="flex items-center justify-between border-b border-neutral-800 pb-3 mb-4 shrink-0">
             <div className="flex items-center gap-2">
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -55,7 +55,7 @@ export function RootCustomizationModal({
             </Dialog.Close>
           </div>
 
-          {/* Scrollable Content Body powered by LenisScroll */}
+                                                                
           <LenisScroll className="flex-1 overflow-y-auto pr-1">
             <div className="space-y-6 py-1">
               <Dialog.Description className="text-xs text-neutral-400 leading-relaxed">
@@ -63,7 +63,7 @@ export function RootCustomizationModal({
                 monospaced typography settings below.
               </Dialog.Description>
 
-              {/* Theme Selector Section */}
+                                            
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-xs text-emerald-400 font-bold uppercase tracking-wider">
                   <span>// {t("navSelectTheme")}</span>
@@ -126,7 +126,7 @@ export function RootCustomizationModal({
                 </div>
               </div>
 
-              {/* Font Selector Section */}
+                                           
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-xs text-emerald-400 font-bold uppercase tracking-wider">
                   <span>// {t("navSelectFont")}</span>
@@ -168,7 +168,7 @@ export function RootCustomizationModal({
             </div>
           </LenisScroll>
 
-          {/* Footer Action */}
+                               
           <div className="mt-4 pt-3 border-t border-neutral-800 flex items-center justify-between gap-3 shrink-0">
             <span className="text-[11px] text-neutral-500 font-mono hidden sm:inline">
               * Click Save to apply &amp; hard refresh page

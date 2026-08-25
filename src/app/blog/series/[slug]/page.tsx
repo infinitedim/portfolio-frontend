@@ -98,7 +98,7 @@ async function BlogSeriesContent({ params, searchParams }: SeriesPageProps) {
                 const partNumber = post.seriesOrder ?? index + 1;
                 return (
                   <div key={post.id} className="relative group">
-                    {/* Pipeline timeline node dot */}
+                                                      
                     <div className="absolute -left-[21px] sm:-left-[37px] top-6 w-3 h-3 rounded-full border-2 border-(--terminal-accent) bg-(--terminal-bg) group-hover:bg-(--terminal-accent) transition-colors shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
 
                     <article className="rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/50 p-6 transition-all duration-200 hover:border-(--terminal-accent)/40 shadow-xl">

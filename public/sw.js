@@ -1,4 +1,4 @@
-// Service Worker for PWA — network-first HTML, cache-first static assets.
+                                                                          
 
 const CACHE_NAME = "portfolio-v2";
 const OFFLINE_URL = "/offline";

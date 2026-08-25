@@ -42,7 +42,7 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
   const [isRootConfigOpen, setIsRootConfigOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Close mobile navigation menu on route changes
+                                                  
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
@@ -114,7 +114,7 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
               {t("navTerminal")} →
             </button>
 
-            {/* Radix Dialog for Mobile Navigation Menu */}
+                                                           
             <Dialog.Root
               open={isMobileMenuOpen}
               onOpenChange={setIsMobileMenuOpen}
@@ -141,10 +141,10 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
               </Dialog.Trigger>
 
               <Dialog.Portal>
-                {/* Backdrop Overlay */}
+                                        
                 <Dialog.Overlay className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm sm:hidden animate-fade-in" />
 
-                {/* Mobile Menu Drawer */}
+                                          
                 <Dialog.Content
                   data-lenis-prevent
                   data-lenis-prevent-wheel
@@ -205,7 +205,7 @@ function SiteNavInner({ currentPath }: SiteNavProps): JSX.Element {
                     })}
                   </ul>
 
-                  {/* Unlocked Root Customization Section for Mobile */}
+                                                                        
                   {isUnlocked && (
                     <div className="mt-6 pt-5 border-t border-(--terminal-border)/80 font-mono">
                       <div className="flex items-center gap-2 text-xs text-(--terminal-accent) font-bold mb-3">

@@ -49,7 +49,7 @@ export default async function Image({
           boxSizing: "border-box",
         }}
       >
-        {/* Terminal Header */}
+                               
         <div
           style={{
             display: "flex",
@@ -100,7 +100,7 @@ export default async function Image({
           </span>
         </div>
 
-        {/* Content Body */}
+                            
         <div
           style={{
             display: "flex",
@@ -136,7 +136,7 @@ export default async function Image({
           </div>
         </div>
 
-        {/* Footer */}
+                      
         <div
           style={{
             display: "flex",

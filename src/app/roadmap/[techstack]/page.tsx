@@ -8,7 +8,7 @@ interface PageProps {
   params: Promise<{ techstack: string }>;
 }
 
-// Dynamically generate metadata based on the roadmap title
+                                                           
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -33,7 +33,7 @@ export async function generateMetadata({
       title: `${title} Roadmap | Portfolio`,
       description: roadmapData.description,
       alternates: { canonical: `/roadmap/${techstack}` },
-      robots: { index: false, follow: true }, // disallow index for crawler per rule
+      robots: { index: false, follow: true },                                       
     };
   } catch {
     return {
@@ -63,12 +63,12 @@ export default function RoadmapDetailPage({ params }: PageProps) {
 async function RoadmapDetailContent({ params }: PageProps) {
   const { techstack } = await params;
 
-  // Validate the techstack format (to prevent path traversal)
+                                                              
   if (!/^[a-zA-Z0-9_-]+$/.test(techstack)) {
     return notFound();
   }
 
-  // Ensure request-time rendering
+                                  
   await headers();
 
   let roadmapData: Root;

@@ -53,7 +53,7 @@ describe("TechBadge Component", () => {
     render(<TechBadge name="CustomLib" />);
 
     expect(screen.getByText("CustomLib")).toBeInTheDocument();
-    expect(screen.getByText("CU")).toBeInTheDocument(); // Monogram CL or CU
+    expect(screen.getByText("CU")).toBeInTheDocument();                     
   });
 
   it("renders removable button when removable prop is true", () => {

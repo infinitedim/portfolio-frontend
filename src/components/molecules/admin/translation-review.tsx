@@ -127,7 +127,7 @@ export function TranslationReview({
         backgroundColor: themeConfig.colors.bg,
       }}
     >
-      {/* Header */}
+                    
       <div
         className="p-4 border-b flex flex-wrap items-center justify-between gap-4"
         style={{ borderColor: themeConfig.colors.border }}
@@ -166,9 +166,9 @@ export function TranslationReview({
         </div>
       </div>
 
-      {/* Main Diff Content */}
+                               
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-(--terminal-border) min-h-[400px]">
-        {/* Source Column */}
+                             
         <div className="p-4 overflow-y-auto space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-(--terminal-border)">
             <span className="font-bold text-xs text-(--terminal-muted) uppercase">
@@ -201,7 +201,7 @@ export function TranslationReview({
           </div>
         </div>
 
-        {/* Target Translated Column */}
+                                        
         <div className="p-4 overflow-y-auto space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-(--terminal-border)">
             <span className="font-bold text-xs text-(--terminal-accent) uppercase">
@@ -235,7 +235,7 @@ export function TranslationReview({
         </div>
       </div>
 
-      {/* Pre-approval Checklist */}
+                                    
       <div className="p-4 border-t border-(--terminal-border) space-y-4 bg-(--terminal-bg)">
         <h3 className="font-bold text-xs text-(--terminal-accent) uppercase">
           Pre-Approval Safety Checklist

@@ -41,7 +41,7 @@ export const ProjectCard = memo(function ProjectCard({
 
   const status = statusConfig[project.status] ?? statusConfig.completed;
 
-  // Determine main media image (Architecture image for backend if available, or imageUrl)
+                                                                                          
   const displayImage = project.imageUrl || project.architectureImageUrl;
 
   return (
@@ -58,7 +58,7 @@ export const ProjectCard = memo(function ProjectCard({
         className="h-full flex flex-col p-5"
         suppressHydrationWarning
       >
-        {/* Card Header Media or Icon */}
+                                         
         <div className="relative mb-4 overflow-hidden rounded border border-(--terminal-border) bg-(--terminal-bg)">
           {displayImage ? (
             <ImageErrorBoundary
@@ -92,7 +92,7 @@ export const ProjectCard = memo(function ProjectCard({
             </div>
           )}
 
-          {/* Badges Overlay */}
+                                
           <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
             {project.featured && (
               <span className="inline-flex items-center gap-1 rounded bg-(--terminal-accent)/20 border border-(--terminal-accent)/40 px-2 py-0.5 font-mono text-[10px] font-medium text-(--terminal-accent) backdrop-blur-md">
@@ -112,7 +112,7 @@ export const ProjectCard = memo(function ProjectCard({
           </div>
         </div>
 
-        {/* Title & Description */}
+                                   
         <div className="flex flex-col flex-grow">
           <div className="mb-2">
             <div className="flex items-center justify-between gap-2 mb-1">
@@ -140,7 +140,7 @@ export const ProjectCard = memo(function ProjectCard({
             </p>
           </div>
 
-          {/* Key Metrics Pills */}
+                                   
           {project.metrics && (
             <div className="mb-4 flex flex-wrap gap-1.5 font-mono text-[11px]">
               {project.metrics.latencyP95 && (

@@ -40,7 +40,7 @@ export default function BlogSeriesAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Dialog States
+                  
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   const [editingSeries, setEditingSeries] = useState<BlogSeriesSummary | null>(null);
   const [title, setTitle] = useState("");
@@ -48,7 +48,7 @@ export default function BlogSeriesAdminPage() {
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Delete State
+                 
   const [deleteSeriesItem, setDeleteSeriesItem] = useState<BlogSeriesSummary | null>(null);
 
   const loadSeries = async () => {
@@ -143,7 +143,7 @@ export default function BlogSeriesAdminPage() {
 
   return (
     <div className="space-y-6 font-mono text-sm max-w-7xl mx-auto">
-      {/* Header Bar */}
+                        
       <div
         className="p-4 rounded-lg border flex flex-wrap items-center justify-between gap-4"
         style={{
@@ -187,7 +187,7 @@ export default function BlogSeriesAdminPage() {
         </div>
       )}
 
-      {/* Series Data Table */}
+                               
       <div
         className="rounded-lg border overflow-hidden"
         style={{
@@ -270,7 +270,7 @@ export default function BlogSeriesAdminPage() {
         </Table>
       </div>
 
-      {/* Create / Edit Form Dialog */}
+                                       
       <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
         <DialogContent className="sm:max-w-md font-mono text-xs">
           <DialogHeader>
@@ -333,7 +333,7 @@ export default function BlogSeriesAdminPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Confirm Delete Dialog */}
+                                   
       <ConfirmDialog
         open={Boolean(deleteSeriesItem)}
         onOpenChange={(open) => !open && setDeleteSeriesItem(null)}

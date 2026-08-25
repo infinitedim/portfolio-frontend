@@ -8,7 +8,7 @@ import type {
 } from "./types";
 
 async function gateFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  // Same-origin BFF — gate session cookies live on the frontend domain.
+                                                                        
   const response = await fetch(path, {
     credentials: "include",
     headers: {

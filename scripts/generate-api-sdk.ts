@@ -20,9 +20,8 @@ export async function generateApiSdk(options: GeneratedSdkOptions = {}) {
     if (res.ok) {
       openApiSpec = (await res.json()) as Record<string, unknown>;
     }
-  } catch {
-    // If backend is offline during static build, use default schema contract
-  }
+  } // eslint-disable-next-line no-empty
+    catch {}
 
   const generatedCode = `/**
  * AUTO-GENERATED API SDK CONTRACT (Rust Axum utoipa -> Bun TypeScript)

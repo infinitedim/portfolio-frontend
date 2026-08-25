@@ -1,14 +1,14 @@
 "use client";
 
-/**
- * GitGraphColumn — Single-Canvas Continuous Git Graph Visualization
- *
- * Renders the entire Git DAG (edges and nodes) as a single continuous SVG canvas,
- * ensuring zero line gaps/breaks across rows, perfect hover highlighting,
- * and lane 0 (main branch) aligned on the RIGHT adjacent to the commit cards.
- *
- * Hidden on mobile (< 640px) via Tailwind `hidden sm:block`.
- */
+   
+                                                                    
+  
+                                                                                  
+                                                                          
+                                                                              
+  
+                                                             
+   
 
 import { useState, useCallback, memo } from "react";
 import type { GraphLayout } from "@/lib/git-graph";
@@ -18,13 +18,13 @@ interface GitGraphColumnProps {
   rowHeight: number;
   laneWidth: number;
   onNodeClick: (sha: string) => void;
-  /** Whether to render in terminal mode (reduced opacity, tighter spacing) */
+                                                                              
   terminalMode?: boolean;
 }
 
 const NODE_RADIUS = 5;
 const MERGE_NODE_RADIUS = 7;
-const HIT_TARGET_RADIUS = 22; // 44×44px touch target
+const HIT_TARGET_RADIUS = 22;                        
 
 export const GitGraphColumn = memo(function GitGraphColumn({
   layout,
@@ -66,7 +66,7 @@ export const GitGraphColumn = memo(function GitGraphColumn({
         height={totalHeight}
         className="absolute inset-0 overflow-visible"
       >
-        {/* ── Layer 1: Edges (Continuous unbroken paths) ─────────────────── */}
+                                                                                 
         <g className="graph-edges">
           {layout.edges.map((edge) => {
             const isEdgeHighlighted =
@@ -84,7 +84,7 @@ export const GitGraphColumn = memo(function GitGraphColumn({
 
             const strokeWidth = isEdgeHighlighted ? 2.5 : 1.5;
 
-            // Straight line if X coordinates are equal
+                                                       
             if (Math.abs(edge.from.x - edge.to.x) < 1) {
               return (
                 <line
@@ -104,7 +104,7 @@ export const GitGraphColumn = memo(function GitGraphColumn({
               );
             }
 
-            // Cubic bezier curve for branch/merge transitions
+                                                              
             const midY = (edge.from.y + edge.to.y) / 2;
             const pathData = `M ${edge.from.x} ${edge.from.y} C ${edge.from.x} ${midY}, ${edge.to.x} ${midY}, ${edge.to.x} ${edge.to.y}`;
 
@@ -125,7 +125,7 @@ export const GitGraphColumn = memo(function GitGraphColumn({
           })}
         </g>
 
-        {/* ── Layer 2: Nodes (Commit circles) ───────────────────────────── */}
+                                                                                
         <g className="graph-nodes">
           {nodesList.map((node) => {
             const isNodeHighlighted =
@@ -155,7 +155,7 @@ export const GitGraphColumn = memo(function GitGraphColumn({
                 aria-label={`Commit ${node.shortSha}${node.branchRefs.length > 0 ? ` on ${node.branchRefs.join(", ")}` : ""}${isMerge ? ", merge commit" : ""}`}
                 className="focus-visible:outline-none group"
               >
-                {/* Touch hit area (44×44px) */}
+                                                
                 <circle
                   cx={node.x}
                   cy={node.y}
@@ -163,7 +163,7 @@ export const GitGraphColumn = memo(function GitGraphColumn({
                   fill="transparent"
                 />
 
-                {/* Merge commit outer ring */}
+                                               
                 {isMerge && (
                   <circle
                     cx={node.x}
@@ -176,7 +176,7 @@ export const GitGraphColumn = memo(function GitGraphColumn({
                   />
                 )}
 
-                {/* Core node circle */}
+                                        
                 <circle
                   cx={node.x}
                   cy={node.y}
@@ -188,7 +188,7 @@ export const GitGraphColumn = memo(function GitGraphColumn({
                   className="transition-opacity duration-150"
                 />
 
-                {/* Branch tip pulsing ring */}
+                                               
                 {isBranchTip && (
                   <circle
                     cx={node.x}
@@ -203,7 +203,7 @@ export const GitGraphColumn = memo(function GitGraphColumn({
                   />
                 )}
 
-                {/* Keyboard focus ring */}
+                                           
                 <circle
                   cx={node.x}
                   cy={node.y}
@@ -225,10 +225,10 @@ export const GitGraphColumn = memo(function GitGraphColumn({
 
 GitGraphColumn.displayName = "GitGraphColumn";
 
-/**
- * Branch label pill for branch tip commits.
- * Displays branch names like (HEAD → main) on the graph.
- */
+   
+                                            
+                                                         
+   
 export function BranchLabel({
   branchNames,
   color,

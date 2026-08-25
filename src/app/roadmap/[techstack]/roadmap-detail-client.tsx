@@ -41,17 +41,17 @@ export function RoadmapDetailClient({
   const { t } = useI18n();
   const { themeConfig } = useTheme();
 
-  // Progress states
+                    
   const [progress, setProgress] = useState<ProgressResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [showCanvasMobile, setShowCanvasMobile] = useState<boolean>(false);
 
-  // Canvas scaling & scroll prevent refs
+                                         
   const containerRef = useRef<HTMLDivElement>(null);
   const [fitScale, setFitScale] = useState(1);
 
-  // Fetch progress live from backend route
+                                           
   const fetchProgress = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -74,7 +74,7 @@ export function RoadmapDetailClient({
     fetchProgress();
   }, [fetchProgress]);
 
-  // Set lookup lookups for O(1) matching
+                                         
   const doneSet = useMemo(() => new Set(progress?.done ?? []), [progress]);
   const learningSet = useMemo(
     () => new Set(progress?.learning ?? []),
@@ -85,10 +85,10 @@ export function RoadmapDetailClient({
     [progress],
   );
 
-  // Dimensions of canvas
+                         
   const padding = 120;
 
-  // ─── Theme color consts (single declaration, reused everywhere below) ───
+                                                                             
   const successColor = themeConfig.colors.success ?? themeConfig.colors.accent;
   const _errorColor = themeConfig.colors.error ?? themeConfig.colors.muted;
   const warningColor = themeConfig.colors.warning ?? themeConfig.colors.accent;
@@ -127,14 +127,14 @@ export function RoadmapDetailClient({
     };
   }, [initialStructure]);
 
-  // Effect to calculate fit scale and handle window resize
+                                                           
   useEffect(() => {
     const container = containerRef.current;
     if (!container || width === 0) return;
 
     const handleResize = () => {
       const containerWidth = container.clientWidth;
-      // Only scale down, never up — don't blow up small roadmaps to fill the container.
+                                                                                        
       const rawScale =
         containerWidth > 0 ? Math.min(1, containerWidth / width) : 1;
       const scale = Math.max(rawScale, 0.85);
@@ -149,10 +149,10 @@ export function RoadmapDetailClient({
     };
   }, [width]);
 
-  // Render a single node
+                         
   const renderNode = (node: Node) => {
-    // ── Node type scope: only topic, subtopic, section, vertical, horizontal ──
-    // title, paragraph, button, label are intentionally NOT rendered on this canvas.
+                                                                                 
+                                                                                     
     if (
       node.type === "title" ||
       node.type === "paragraph" ||
@@ -165,11 +165,11 @@ export function RoadmapDetailClient({
     const w = node.style?.width ?? node.width ?? node.measured?.width ?? 200;
     const h = node.style?.height ?? node.height ?? node.measured?.height ?? 60;
 
-    // Normalize coordinates based on minX, minY and padding
+                                                            
     const x = node.position.x - minX + padding;
     const y = node.position.y - minY + padding;
 
-    // Helper: Determine topic status
+                                     
     const isTopic = node.type === "topic" || node.type === "subtopic";
     let status: "done" | "learning" | "skipped" | "not-started" = "not-started";
 
@@ -240,8 +240,8 @@ export function RoadmapDetailClient({
       );
     }
 
-    // Default: topic / subtopic
-    // Build inline style objects per status (no hardcoded Tailwind color classes)
+                                
+                                                                                  
     let nodeStyle: React.CSSProperties = {
       borderColor: borderColor,
       backgroundColor: bgColor,
@@ -296,7 +296,7 @@ export function RoadmapDetailClient({
       };
     }
 
-    // Font size styling
+                        
     const fontSize = node.data.style?.fontSize
       ? `${node.data.style.fontSize}px`
       : "13px";
@@ -321,7 +321,7 @@ export function RoadmapDetailClient({
     );
   };
 
-  // Compute edge coordinates
+                             
   const edgesData = useMemo(() => {
     return initialStructure.edges
       .map((edge) => {
@@ -362,7 +362,7 @@ export function RoadmapDetailClient({
         const sPrefix = edge.sourceHandle ? edge.sourceHandle.charAt(0) : "";
         const tPrefix = edge.targetHandle ? edge.targetHandle.charAt(0) : "";
 
-        // Source coordinates
+                             
         let startX = sx + sW / 2;
         let startY = sy + sH / 2;
         if (sPrefix === "x") {
@@ -378,7 +378,7 @@ export function RoadmapDetailClient({
           startX = sx;
           startY = sy + sH / 2;
         } else {
-          // Fallback old boundary logic
+                                        
           if (ty > sy + sH) {
             startY = sy + sH;
           } else if (ty + tH < sy) {
@@ -391,7 +391,7 @@ export function RoadmapDetailClient({
           }
         }
 
-        // Target coordinates
+                             
         let endX = tx + tW / 2;
         let endY = ty + tH / 2;
         if (tPrefix === "x") {
@@ -407,7 +407,7 @@ export function RoadmapDetailClient({
           endX = tx;
           endY = ty + tH / 2;
         } else {
-          // Fallback old boundary logic
+                                        
           if (ty > sy + sH) {
             endY = ty;
           } else if (ty + tH < sy) {
@@ -438,7 +438,7 @@ export function RoadmapDetailClient({
     <StandardPageLayout>
       <div className="min-h-screen px-4 py-8 font-mono select-none">
         <div className="mx-auto max-w-6xl space-y-4">
-          {/* Header Action Bar */}
+                                   
           <div
             className="flex flex-wrap items-center justify-between gap-4 border-b pb-4"
             style={{ borderBottomColor: borderColor }}
@@ -471,7 +471,7 @@ export function RoadmapDetailClient({
               </div>
             </div>
 
-            {/* Sync progress button & Status indicator */}
+                                                           
             <div className="flex items-center gap-3">
               {loading && (
                 <div
@@ -518,7 +518,7 @@ export function RoadmapDetailClient({
             </div>
           </div>
 
-          {/* Stats Bar */}
+                           
           {progress && (
             <div
               className="grid grid-cols-2 gap-3 sm:grid-cols-4 rounded-lg border p-4 text-center"
@@ -589,7 +589,7 @@ export function RoadmapDetailClient({
             </div>
           )}
 
-          {/* Mobile Notice Banner & Simplified Outline View */}
+                                                                
           <div className="md:hidden space-y-4 mb-4">
             <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-300">
               <div className="flex items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-wider font-semibold text-amber-400 mb-1">
@@ -620,7 +620,7 @@ export function RoadmapDetailClient({
               </p>
             </div>
 
-            {/* Mobile Outline Summary List */}
+                                               
             {!showCanvasMobile && (
               <div
                 className="rounded-lg border p-4 space-y-3 font-mono text-xs"
@@ -691,7 +691,7 @@ export function RoadmapDetailClient({
             )}
           </div>
 
-          {/* Map Visualizer Canvas Container */}
+                                                 
           <div
             ref={containerRef}
             data-lenis-prevent
@@ -720,7 +720,7 @@ export function RoadmapDetailClient({
                   backgroundSize: "24px 24px",
                 }}
               >
-                {/* SVG containing connections */}
+                                                  
                 <svg
                   style={{
                     position: "absolute",
@@ -731,7 +731,7 @@ export function RoadmapDetailClient({
                     pointerEvents: "none",
                   }}
                 >
-                  {/* Arrow markers */}
+                                       
                   <defs>
                     <marker
                       id="arrow"
@@ -749,7 +749,7 @@ export function RoadmapDetailClient({
                     </marker>
                   </defs>
 
-                  {/* Draw edges */}
+                                    
                   {edgesData.map((edge) => {
                     if (!edge) return null;
                     const isDashed = edge.style?.strokeDasharray !== "0";
@@ -805,13 +805,13 @@ export function RoadmapDetailClient({
                   })}
                 </svg>
 
-                {/* Render all nodes */}
+                                        
                 {initialStructure.nodes.map((node) => renderNode(node))}
               </div>
             </div>
           </div>
 
-          {/* Legend Banner */}
+                               
           <div
             className="flex flex-wrap gap-4 items-center justify-between text-xs rounded border p-3"
             style={{

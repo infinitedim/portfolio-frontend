@@ -35,7 +35,7 @@ export function RoadmapDashboardOrganism({
 
   return (
     <div className="flex flex-col gap-8 font-mono transition-colors duration-300">
-      {/* Profile Header Telemetry Banner */}
+                                             
       <div className="rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/70 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-(--terminal-accent)/0 via-(--terminal-accent) to-(--terminal-accent)/0" />
 
@@ -77,10 +77,10 @@ export function RoadmapDashboardOrganism({
         </div>
       </div>
 
-      {/* Streak Diagnostics Panel */}
+                                      
       <RoadmapStreakCard streak={streak} />
 
-      {/* Overall Progress Summary Box */}
+                                          
       <div className="rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/70 p-6 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col gap-4">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between border-b border-(--terminal-border)/80 pb-3">
           <div className="flex items-center gap-2">
@@ -106,7 +106,7 @@ export function RoadmapDashboardOrganism({
         />
       </div>
 
-      {/* Roadmaps Grid */}
+                           
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-xs text-(--terminal-muted)">
           <span className="text-(--terminal-accent) font-bold">$</span>

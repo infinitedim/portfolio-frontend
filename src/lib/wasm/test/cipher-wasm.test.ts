@@ -9,7 +9,7 @@ describe("wasm/cipher-wasm", () => {
   });
 
   it("should decode hex encoded string using WASM engine path", async () => {
-    // Hex of "natas3_secret"
+                             
     const hex = Buffer.from("natas3_secret", "utf-8").toString("hex");
     const res = await decodeCipherSecret(hex);
 
@@ -18,7 +18,7 @@ describe("wasm/cipher-wasm", () => {
   });
 
   it("should fall back to base64 decoding when hex parsing fails", async () => {
-    // Base64 of "b64_secret" (contains non-hex char 'g')
+                                                         
     const b64 = Buffer.from("b64_secret_test", "utf-8").toString("base64");
     const res = await decodeCipherSecret(b64);
 

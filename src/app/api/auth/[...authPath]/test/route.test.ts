@@ -78,11 +78,11 @@ describe("POST /api/auth/[...authPath]", () => {
     const data = await res.json();
     expect(data.success).toBe(true);
 
-    // Verify Set-Cookie domain was stripped
+                                            
     const setCookie = res.headers.get("set-cookie");
     expect(setCookie).toBe("refresh_token=abc; Path=/; Secure; HttpOnly");
 
-    // Verify fetch was called with dynamic subpath and correct headers
+                                                                       
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining("/api/auth/login"),
       expect.objectContaining({

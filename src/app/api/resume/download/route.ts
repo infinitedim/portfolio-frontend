@@ -44,7 +44,7 @@ export async function GET(request: NextRequest): Promise<Response> {
   const secretKey = process.env.CF_TURNSTILE_SECRET_KEY;
   const isDev = process.env.NODE_ENV === "development";
 
-  // In production with Turnstile active, direct GET without token redirects to site with modal trigger
+                                                                                                       
   if (secretKey && !isDev) {
     return NextResponse.redirect(
       new URL("/?resume=protected", request.url),
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     const secretKey = process.env.CF_TURNSTILE_SECRET_KEY;
     const isDev = process.env.NODE_ENV === "development";
 
-    // In production with Turnstile configured, verify token with Cloudflare API
+                                                                                
     if (secretKey && !isDev) {
       if (!token) {
         return NextResponse.json(

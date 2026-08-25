@@ -1,27 +1,27 @@
-/**
- * @fileoverview TerminalProvider + useTerminalContext
- *
- * Centralises all terminal-related state management so child components can
- * access any piece of state without prop drilling.
- *
- * Usage:
- * ```tsx
- * // Wrap your component tree:
- * <TerminalProvider>
- *   <TerminalContent />
- * </TerminalProvider>
- *
- * // Consume anywhere inside the tree:
- * const { history, handleSubmit } = useTerminalContext();
- * ```
- *
- * Dependencies (hooks integrated):
- *  - useTheme         – active theme + changeTheme
- *  - useFont          – active font + changeFont
- *  - useI18n          – translations + locale switching
- *  - useAccessibility – a11y flags + announcer
- *  - useTerminal      – command history + executor
- */
+   
+                                                      
+  
+                                                                            
+                                                   
+  
+         
+         
+                               
+                     
+                        
+                      
+  
+                                       
+                                                          
+      
+  
+                                   
+                                                   
+                                                 
+                                                        
+                                               
+                                                   
+   
 
 "use client";
 
@@ -50,15 +50,15 @@ import type {
 } from "@/types/terminal-context";
 import type { BackgroundSettings } from "@/types/customization";
 
-// ---------------------------------------------------------------------------
-// Context creation
-// ---------------------------------------------------------------------------
+                                                                              
+                   
+                                                                              
 
 const TerminalContext = createContext<TerminalContextType | null>(null);
 
-// ---------------------------------------------------------------------------
-// Default background settings constant
-// ---------------------------------------------------------------------------
+                                                                              
+                                       
+                                                                              
 
 const DEFAULT_GLITCH_COLORS = ["#2b4539", "#61dca3", "#61b3dc"] as const;
 
@@ -75,31 +75,31 @@ const DEFAULT_BACKGROUND_SETTINGS: BackgroundSettings = {
   },
 };
 
-// ---------------------------------------------------------------------------
-// Provider
-// ---------------------------------------------------------------------------
+                                                                              
+           
+                                                                              
 
 interface TerminalProviderProps {
   children: ReactNode;
-  /** Called when the user changes the theme via a command */
+                                                             
   onThemeChange?: (theme: string) => void;
-  /** Called when the user changes the font via a command */
+                                                            
   onFontChange?: (font: string) => void;
 }
 
-/**
- * TerminalProvider
- *
- * Integrates all terminal-related hooks and exposes their combined state +
- * handlers via React Context. Wrap `<TerminalContent />` (or any component
- * tree) with this provider.
- */
+   
+                   
+  
+                                                                           
+                                                                           
+                            
+   
 export function TerminalProvider({
   children,
   onThemeChange,
   onFontChange,
 }: TerminalProviderProps): JSX.Element {
-  // ── Hooks ──────────────────────────────────────────────────────────────
+                                                                            
   const themeHookResult = useTheme();
   const fontHookResult = useFont();
   const { t, currentLocale, changeLocale } = useI18n();
@@ -127,7 +127,7 @@ export function TerminalProvider({
 
   const { font, fontConfig, changeFont, availableFonts } = fontHookResult;
 
-  /** Performance object forwarded into useTerminal so the `perf` command works */
+                                                                                  
   const themePerformance = useMemo(
     () => ({
       getPerformanceReport,
@@ -152,7 +152,7 @@ export function TerminalProvider({
     commandAnalytics,
   } = useTerminal(undefined, themePerformance);
 
-  // ── Local UI state ─────────────────────────────────────────────────────
+                                                                            
   const [showWelcome, setShowWelcome] = useState(true);
   const [notification, setNotification] = useState<TerminalNotification | null>(
     null,
@@ -160,24 +160,24 @@ export function TerminalProvider({
   const [backgroundSettings, setBackgroundSettings] =
     useState<BackgroundSettings>(DEFAULT_BACKGROUND_SETTINGS);
 
-  // ── Refs exposed to children ───────────────────────────────────────────
+                                                                            
   const commandInputRef = useRef<HTMLInputElement | null>(null);
   const terminalRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // ── Side effects ───────────────────────────────────────────────────────
+                                                                            
 
-  /** Hide welcome panel once history is non-empty */
+                                                     
   useEffect(() => {
     if (history.length > 0) setShowWelcome(false);
   }, [history.length]);
 
-  /** Announce on mount */
+                          
   useEffect(() => {
     announceMessage("Terminal portfolio loaded", "polite");
   }, [announceMessage]);
 
-  /** Sync background settings from CustomizationService */
+                                                           
   useEffect(() => {
     const customizationService = CustomizationService.getInstance();
 
@@ -207,7 +207,7 @@ export function TerminalProvider({
       );
   }, []);
 
-  // ── Handlers ───────────────────────────────────────────────────────────
+                                                                            
 
   const showNotification = useCallback(
     (
@@ -221,13 +221,13 @@ export function TerminalProvider({
 
   const clearNotification = useCallback(() => setNotification(null), []);
 
-  /**
-   * handleSubmit
-   *
-   * Full command pipeline. Parses special sentinel values returned by the
-   * command registry (e.g. "CHANGE_THEME:dracula") and calls the appropriate
-   * hook functions before writing to history.
-   */
+     
+                 
+    
+                                                                          
+                                                                             
+                                              
+     
   const handleSubmit = useCallback(
     async (command: string): Promise<void> => {
       const output = await executeCommand(command);
@@ -237,7 +237,7 @@ export function TerminalProvider({
         return;
       }
 
-      // ── CHANGE_THEME:* ─────────────────────────────────────────────────
+                                                                            
       if (
         typeof output.content === "string" &&
         output.content.startsWith("CHANGE_THEME:")
@@ -282,7 +282,7 @@ export function TerminalProvider({
         return;
       }
 
-      // ── CHANGE_FONT:* ──────────────────────────────────────────────────
+                                                                            
       if (
         typeof output.content === "string" &&
         output.content.startsWith("CHANGE_FONT:")
@@ -318,7 +318,7 @@ export function TerminalProvider({
         return;
       }
 
-      // ── Default: pass through ──────────────────────────────────────────
+                                                                            
       addToHistory(command, output);
       setCurrentInput("");
     },
@@ -346,11 +346,11 @@ export function TerminalProvider({
     [handleSubmit],
   );
 
-  // ── Context value ──────────────────────────────────────────────────────
+                                                                            
 
   const contextValue = useMemo<TerminalContextType>(
     () => ({
-      // Terminal core
+                      
       history,
       currentInput,
       setCurrentInput,
@@ -364,7 +364,7 @@ export function TerminalProvider({
       getFrequentCommands,
       commandAnalytics,
 
-      // Theme
+              
       theme,
       themeConfig,
       changeTheme,
@@ -375,18 +375,18 @@ export function TerminalProvider({
       getPerformanceReport,
       resetPerformanceMetrics,
 
-      // Font
+             
       font,
       fontConfig,
       changeFont,
       availableFonts,
 
-      // i18n
+             
       t,
       currentLocale,
       changeLocale,
 
-      // Accessibility
+                      
       announceMessage,
       isReducedMotion,
       isHighContrast,
@@ -395,23 +395,23 @@ export function TerminalProvider({
       focusMode,
       setFocusMode,
 
-      // Background
+                   
       backgroundSettings,
       setBackgroundSettings,
 
-      // UI state
+                 
       showWelcome,
       setShowWelcome,
       notification,
       showNotification,
       clearNotification,
 
-      // High-level handlers
+                            
       handleSubmit,
 
       handleWelcomeCommandSelect,
 
-      // Refs
+             
       commandInputRef,
       terminalRef,
       bottomRef,
@@ -471,26 +471,26 @@ export function TerminalProvider({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Consumer hook
-// ---------------------------------------------------------------------------
+                                                                              
+                
+                                                                              
 
-/**
- * useTerminalContext
- *
- * Returns the full TerminalContextType. Must be called from within a
- * component wrapped by `<TerminalProvider>`.
- *
- * @throws {Error} when called outside a TerminalProvider
- *
- * @example
- * ```tsx
- * function MyComponent() {
- *   const { history, handleSubmit } = useTerminalContext();
- *   // ...
- * }
- * ```
- */
+   
+                     
+  
+                                                                     
+                                             
+  
+                                                         
+  
+           
+         
+                           
+                                                            
+           
+    
+      
+   
 export function useTerminalContext(): TerminalContextType {
   const ctx = useContext(TerminalContext);
   if (!ctx) {

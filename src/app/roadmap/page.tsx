@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 async function RoadmapContent(): Promise<JSX.Element> {
-  // Request-time data (roadmap.sh proxy); avoids build-time SSG timeout with cacheComponents.
+                                                                                              
   await headers();
 
   const [dashboardResult, streak, githubAvatar] = await Promise.all([

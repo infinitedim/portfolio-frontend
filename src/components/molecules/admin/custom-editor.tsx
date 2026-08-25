@@ -47,7 +47,7 @@ export function CustomEditor({
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [isUploading, setIsUploading] = useState(false);
 
-  // Dialog State for Link & Image Insertion
+                                            
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("https://infinitedim.dev");
   const [linkText, setLinkText] = useState("");
@@ -260,7 +260,7 @@ export function CustomEditor({
         className="hidden"
       />
 
-      {/* Toolbar */}
+                     
       <div
         className="flex flex-wrap items-center justify-between gap-2 p-2 border-b text-xs font-mono select-none"
         style={{
@@ -388,7 +388,7 @@ export function CustomEditor({
           />
         </div>
 
-        {/* Tab Switcher */}
+                            
         <div className="flex items-center gap-1 rounded bg-black/20 p-1">
           <button
             type="button"
@@ -455,7 +455,7 @@ export function CustomEditor({
         </div>
       )}
 
-      {/* Link Dialog */}
+                         
       <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -492,7 +492,7 @@ export function CustomEditor({
         </DialogContent>
       </Dialog>
 
-      {/* Image Dialog */}
+                          
       <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>

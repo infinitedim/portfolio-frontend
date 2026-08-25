@@ -7,7 +7,7 @@ import { getApiUrl } from "@/lib/api/get-api-url";
 import { Upload, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;       
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 interface UploadResponse {

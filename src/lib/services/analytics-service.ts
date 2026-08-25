@@ -11,7 +11,6 @@ export async function recordPageview(payload: PageviewPayload): Promise<void> {
       body: JSON.stringify(payload),
       keepalive: true,
     });
-  } catch {
-    // Beacon — fire and forget
-  }
+  } // eslint-disable-next-line no-empty
+    catch {}
 }

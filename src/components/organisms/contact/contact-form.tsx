@@ -99,7 +99,7 @@ export function ContactForm(): JSX.Element {
   const [draftRestored, setDraftRestored] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  // Restore LocalStorage draft on initial mount
+                                                
   useEffect(() => {
     nameInputRef.current?.focus();
     try {
@@ -111,21 +111,19 @@ export function ContactForm(): JSX.Element {
           setDraftRestored(true);
         }
       }
-    } catch {
-      // Ignore storage errors
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }, []);
 
-  // Save draft to LocalStorage when user changes form values
+                                                             
   useEffect(() => {
     if (submitted) return;
     try {
       if (form.name || form.email || form.subject || form.message) {
         localStorage.setItem(DRAFT_KEY, JSON.stringify(form));
       }
-    } catch {
-      // Ignore storage errors
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }, [form, submitted]);
 
   const clearDraft = useCallback(() => {
@@ -134,9 +132,8 @@ export function ContactForm(): JSX.Element {
     setDraftRestored(false);
     try {
       localStorage.removeItem(DRAFT_KEY);
-    } catch {
-      // Ignore storage errors
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }, []);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
@@ -150,7 +147,7 @@ export function ContactForm(): JSX.Element {
     }
   };
 
-  // Keyboard Shortcut: Ctrl+Enter or Cmd+Enter to submit form
+                                                              
   const handleKeyDown = (
     e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -195,9 +192,8 @@ export function ContactForm(): JSX.Element {
       setDraftRestored(false);
       try {
         localStorage.removeItem(DRAFT_KEY);
-      } catch {
-        // Ignore
-      }
+      } // eslint-disable-next-line no-empty
+    catch {}
       toast.success(t("contactSendSuccess"));
     } else if (result.status === 429) {
       toast.error(t("contactSendFailure"));
@@ -214,7 +210,7 @@ export function ContactForm(): JSX.Element {
     (form.message.length / MAX_MESSAGE_LEN) * 100,
   );
 
-  // Field validation checkmark statuses
+                                        
   const isNameValid = isPlausibleName(form.name);
   const isEmailValid = isPlausibleEmail(form.email);
   const isSubjectValid =
@@ -228,7 +224,7 @@ export function ContactForm(): JSX.Element {
         description={t("contactDesc")}
       />
       <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-8 lg:gap-12">
-        {/* Left Column */}
+                           
         <div className="space-y-6">
           <h2 className="mb-5 font-mono text-xl font-bold text-(--terminal-text)">
             <span className="text-(--terminal-accent)">$</span> contact --info
@@ -271,7 +267,7 @@ export function ContactForm(): JSX.Element {
           </div>
         </div>
 
-        {/* Right Column */}
+                            
         <div>
           <h2 className="mb-5 font-mono text-xl font-bold text-(--terminal-text)">
             <span className="text-(--terminal-accent)">$</span> send --message
@@ -413,7 +409,7 @@ export function ContactForm(): JSX.Element {
                   }
                 />
 
-                {/* Visual Character Progress Bar & Shortcut Hint */}
+                                                                     
                 <div className="mt-2 space-y-1.5">
                   <div className="h-1 w-full overflow-hidden rounded bg-(--terminal-border)">
                     <div

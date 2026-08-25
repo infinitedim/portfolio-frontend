@@ -68,7 +68,7 @@ describe("crypto/with-encryption", () => {
     const clientPubRaw = await crypto.subtle.exportKey("raw", clientKeyPair.publicKey);
     const handshake = serverHandshake(btoa(String.fromCharCode(...new Uint8Array(clientPubRaw))));
 
-    // Prepare client encrypted request body
+                                            
     const requestPayload = serverEncrypt(handshake.sessionId, JSON.stringify({ ping: "pong" }));
 
     const handler = withEncryption(async (req) => {

@@ -101,7 +101,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-6 font-mono text-sm max-w-7xl mx-auto">
-      {/* Welcome Banner */}
+                            
       <div
         className="p-6 rounded-lg border shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4"
         style={{
@@ -137,9 +137,9 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Overview Stats Cards (Steady borders, NO hover scale) */}
+                                                                   
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Stat 1: Total Blog Posts */}
+                                        
         <div
           className="p-4 rounded-lg border transition-colors hover:border-(--terminal-accent)/50 shadow-xs"
           style={{
@@ -163,7 +163,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Stat 2: Unread Messages */}
+                                       
         <div
           className="p-4 rounded-lg border transition-colors hover:border-(--terminal-accent)/50 shadow-xs"
           style={{
@@ -187,7 +187,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Stat 3: Newsletter Subscribers */}
+                                              
         <div
           className="p-4 rounded-lg border transition-colors hover:border-(--terminal-accent)/50 shadow-xs"
           style={{
@@ -211,7 +211,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Stat 4: Total Projects */}
+                                      
         <div
           className="p-4 rounded-lg border transition-colors hover:border-(--terminal-accent)/50 shadow-xs"
           style={{
@@ -236,9 +236,9 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Main Grid: Management Sections */}
+                                            
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Content Management Group */}
+                                        
         <div
           className="p-5 rounded-lg border space-y-4"
           style={{
@@ -296,7 +296,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Portfolio & Profile Group */}
+                                         
         <div
           className="p-5 rounded-lg border space-y-4"
           style={{
@@ -354,7 +354,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Security & Communication Group */}
+                                              
         <div
           className="p-5 rounded-lg border space-y-4"
           style={{

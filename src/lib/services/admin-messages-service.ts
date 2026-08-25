@@ -1,12 +1,12 @@
-/**
- * Admin contact-messages service.
- *
- * All endpoints under `/api/admin/messages` require an admin bearer token,
- * minted by `authService` after successful login. We attach the token from
- * memory; if it's missing we attempt a silent refresh first because the
- * refresh path reads the HttpOnly cookie and may still be valid even when
- * the in-memory access token is empty (page reload, etc).
- */
+   
+                                  
+  
+                                                                           
+                                                                           
+                                                                        
+                                                                          
+                                                          
+   
 
 import { authService } from "@/lib/auth/auth-service";
 
@@ -45,8 +45,8 @@ function getApiBase(): string {
 async function getAuthToken(): Promise<string | null> {
   const existing = authService.getAccessToken();
   if (existing) return existing;
-  // Cookie-based refresh: if the HttpOnly refresh cookie is still alive we
-  // can mint a new access token without any user interaction.
+                                                                           
+                                                              
   const refreshed = await authService.refresh();
   if (refreshed.success) {
     return authService.getAccessToken();

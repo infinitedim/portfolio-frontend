@@ -31,18 +31,18 @@ export default function AdminNewsletterPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Broadcast Form & Preview
+                             
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [broadcasting, setBroadcasting] = useState(false);
   const [broadcastConfirmOpen, setBroadcastConfirmOpen] = useState(false);
 
-  // Search & Filter
+                    
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "confirmed" | "pending">("all");
 
-  // LocalStorage draft autosave key
+                                    
   const DRAFT_KEY = "portfolio_newsletter_broadcast_draft";
 
   useEffect(() => {
@@ -53,17 +53,15 @@ export default function AdminNewsletterPage() {
         if (s) setSubject(s);
         if (b) setBody(b);
       }
-    } catch {
-      // Ignore storage errors
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }, []);
 
   const saveDraftLocally = (subVal: string, bodyVal: string) => {
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify({ subject: subVal, body: bodyVal }));
-    } catch {
-      // Ignore
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   };
 
   const loadSubscribers = useCallback(async () => {
@@ -99,9 +97,8 @@ export default function AdminNewsletterPage() {
       setBody("");
       try {
         localStorage.removeItem(DRAFT_KEY);
-      } catch {
-        // Ignore
-      }
+      } // eslint-disable-next-line no-empty
+    catch {}
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Broadcast failed");
     } finally {
@@ -151,7 +148,7 @@ export default function AdminNewsletterPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 font-mono text-sm">
-      {/* Header Bar */}
+                        
       <div
         className="p-4 rounded-lg border flex flex-wrap items-center justify-between gap-4"
         style={{
@@ -190,7 +187,7 @@ export default function AdminNewsletterPage() {
         </div>
       </div>
 
-      {/* Broadcast Email Composer */}
+                                      
       <div
         className="p-6 rounded-lg border space-y-4"
         style={{
@@ -250,7 +247,7 @@ export default function AdminNewsletterPage() {
                 saveDraftLocally(e.target.value, body);
               }}
               onKeyDown={(e) => {
-                if (e.key === "Enter") e.preventDefault(); // Prevent accidental submission
+                if (e.key === "Enter") e.preventDefault();                                 
               }}
               placeholder="e.g. Portfolio Update: New Engineering Articles Released"
               required
@@ -302,7 +299,7 @@ export default function AdminNewsletterPage() {
         </form>
       </div>
 
-      {/* Subscriber Management Section */}
+                                           
       <div
         className="p-6 rounded-lg border space-y-4"
         style={{
@@ -363,7 +360,7 @@ export default function AdminNewsletterPage() {
           </div>
         </div>
 
-        {/* Table */}
+                     
         <Table>
           <TableHeader>
             <TableRow>
@@ -413,7 +410,7 @@ export default function AdminNewsletterPage() {
         </Table>
       </div>
 
-      {/* Confirm Broadcast Dialog */}
+                                      
       <ConfirmDialog
         open={broadcastConfirmOpen}
         onOpenChange={setBroadcastConfirmOpen}

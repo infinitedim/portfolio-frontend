@@ -1,4 +1,4 @@
-// Shared image utilities — single source of truth for blur placeholders & sizing
+                                                                                 
 
 export const DEFAULT_SIZES =
   "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw";

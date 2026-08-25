@@ -74,7 +74,7 @@ export function TerminalHeader(): React.JSX.Element {
     };
 
     fetchHealth();
-    // Refresh health every 60 seconds (throttled, no 1-second re-render flood)
+                                                                               
     const interval = setInterval(fetchHealth, 60000);
     return () => {
       isMounted = false;
@@ -112,9 +112,9 @@ export function TerminalHeader(): React.JSX.Element {
         color: themeConfig.colors.text,
       }}
     >
-      {/* Left: Mobile Sheet Trigger + Breadcrumb */}
+                                                     
       <div className="flex items-center gap-3">
-        {/* Mobile Sidebar Sheet */}
+                                    
         <div className="lg:hidden">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
@@ -129,7 +129,7 @@ export function TerminalHeader(): React.JSX.Element {
           </Sheet>
         </div>
 
-        {/* Route Breadcrumb */}
+                                
         <div className="flex items-center gap-2">
           <span className="text-(--terminal-muted)">admin /</span>
           <span className="font-semibold text-(--terminal-accent)">
@@ -138,9 +138,9 @@ export function TerminalHeader(): React.JSX.Element {
         </div>
       </div>
 
-      {/* Right: Real System Health Status & User Profile */}
+                                                             
       <div className="flex items-center gap-4">
-        {/* Real System Health Badges (Desktop only) */}
+                                                        
         <div className="hidden md:flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-[11px]" title="Backend API Status">
             <Server className="h-3.5 w-3.5 text-(--terminal-muted)" />
@@ -164,7 +164,7 @@ export function TerminalHeader(): React.JSX.Element {
           </div>
         </div>
 
-        {/* User Profile Dropdown */}
+                                     
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="h-8 gap-2 border-(--terminal-border) font-mono">

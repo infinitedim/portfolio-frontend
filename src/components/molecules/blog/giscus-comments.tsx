@@ -3,10 +3,10 @@
 import Giscus from "@giscus/react";
 import { useTheme } from "next-themes";
 
-/**
- * Keys yang tersedia sesuai Discussion categories di GitHub.
- * Kalau pakai custom category, tetap bisa lewat prop `category` + `categoryId`.
- */
+    
+                                                              
+                                                                                 
+   
 export type GiscusCategoryKey =
   | "announcements"
   | "general"
@@ -16,7 +16,7 @@ export type GiscusCategoryKey =
   | "show-and-tell"
   | "blog-comments";
 
-/** Map dari categoryKey ke env var pair [category name, categoryId] */
+                                                                       
 const CATEGORY_ENV_MAP: Record<
   GiscusCategoryKey,
   [categoryEnvName: string, categoryIdEnvName: string]

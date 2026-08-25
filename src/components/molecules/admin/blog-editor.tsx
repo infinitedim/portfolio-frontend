@@ -65,7 +65,7 @@ interface BlogPost {
   summary: string | null;
   published: boolean;
   tags: string[];
-  /** ISO-8601 timestamp; if set and in the future, post is scheduled. */
+                                                                         
   publishAt: string | null;
   status?: BlogStatus;
   locale?: string;
@@ -92,7 +92,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
   const [slug, setSlug] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
-  // Datetime-local input value (YYYY-MM-DDTHH:mm). Empty string = no schedule.
+                                                                               
   const [publishAtLocal, setPublishAtLocal] = useState("");
   const [locale, setLocale] = useState(DEFAULT_BLOG_LOCALE);
   const [seriesId, setSeriesId] = useState<string>("");
@@ -132,11 +132,11 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     seriesOrder: post.seriesOrder ?? null,
   });
 
-  /**
-   * Convert an ISO-8601 timestamp to the `YYYY-MM-DDTHH:mm` shape that
-   * `<input type="datetime-local">` expects, in the user's locale. Returns
-   * an empty string for null/invalid values.
-   */
+     
+                                                                       
+                                                                           
+                                             
+     
   const isoToLocalInput = (iso: string | null): string => {
     if (!iso) return "";
     const d = new Date(iso);
@@ -145,10 +145,10 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   };
 
-  /**
-   * Convert the datetime-local string back to a UTC ISO timestamp.
-   * Returns `null` for empty input.
-   */
+     
+                                                                   
+                                    
+     
   const localInputToIso = (local: string): string | null => {
     if (!local) return null;
     const d = new Date(local);
@@ -350,9 +350,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         seriesId: seriesId || null,
         seriesOrder: seriesOrder ? parseInt(seriesOrder, 10) : null,
       };
-      // For PATCH we want to be able to *clear* the schedule explicitly,
-      // hence the difference between "absent" and `null`. POST always
-      // sends the chosen value so the field is unambiguous.
+                                                                         
+                                                                      
+                                                            
       if (isUpdate) {
         body.publishAt = publishAtIso;
       } else if (publishAtIso) {
@@ -595,9 +595,9 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           summary: summary.trim() || null,
           contentMd: null,
           contentHtml: addHeadingIdsToHtml(content),
-          // If a future schedule is set, leave `published` false so the
-          // status pipeline derives "scheduled". Otherwise this is an
-          // immediate publish.
+                                                                        
+                                                                      
+                               
           published:
             !publishAtIso || new Date(publishAtIso).getTime() <= Date.now(),
           tags,
@@ -690,7 +690,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
 
   return (
     <div className="space-y-6">
-      {/* Error display */}
+                           
       {error && (
         <div className="p-3 border rounded border-red-500 bg-red-50 dark:bg-red-900/20">
           <span className="text-sm text-red-700 dark:text-red-300">
@@ -705,7 +705,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
         </div>
       )}
 
-      {/* Header */}
+                    
       <div
         className="p-4 border rounded"
         style={{
@@ -797,7 +797,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
           </div>
         </div>
 
-        {/* Stats */}
+                     
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center space-x-4">
             <span>
@@ -828,7 +828,7 @@ export function BlogEditor({ themeConfig }: BlogEditorProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Posts sidebar */}
+                             
         <div className="lg:col-span-1">
           <div
             className="p-4 border rounded"

@@ -26,7 +26,7 @@ export function usePointerDevice(): PointerDeviceInfo {
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const updateDeviceInfo = () => {
-      // Custom cursor supported on desktop width >= 768px when reduced motion is disabled
+                                                                                          
       const isMobileTouch = window.innerWidth < 768 && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
       const isReduced = reducedMotionQuery.matches || accessibilityReducedMotion;
       const isSupported = !isMobileTouch && !isReduced;

@@ -49,7 +49,7 @@ export function ProjectCommitTracker({
   repoUrl,
   projectName,
 }: ProjectCommitTrackerProps) {
-  // Input URL state (defaults to repoUrl prop or fallback)
+                                                           
   const [urlInput, setUrlInput] = useState<string>(repoUrl || "");
   const [parsedRepo, setParsedRepo] = useState<ParsedRepoUrl | null>(() =>
     parseGitHubUrl(repoUrl || ""),
@@ -61,12 +61,12 @@ export function ProjectCommitTracker({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Pagination states
+                      
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
-  // Filters & Views
+                    
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [viewMode, setViewMode] = useState<"cards" | "terminal">("cards");
   const [selectedCommitSha, setSelectedCommitSha] = useState<string | null>(
@@ -77,13 +77,13 @@ export function ProjectCommitTracker({
   );
   const [copiedSha, setCopiedSha] = useState<string | null>(null);
 
-  // Git graph layout constants
+                               
   const GRAPH_LANE_WIDTH = 20;
-  const GRAPH_ROW_HEIGHT_CARDS = 88; // ~height of a commit card + gap
-  const GRAPH_ROW_HEIGHT_TERMINAL = 32; // ~height of a terminal row
+  const GRAPH_ROW_HEIGHT_CARDS = 88;                                  
+  const GRAPH_ROW_HEIGHT_TERMINAL = 32;                             
 
 
-  // Update parsed repo when urlInput changes
+                                             
   const handleUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = parseGitHubUrl(urlInput);
@@ -98,7 +98,7 @@ export function ProjectCommitTracker({
     setSelectedBranch("");
   };
 
-  // Load branches & initial 10 commits when parsedRepo / selectedBranch changes
+                                                                                
   const loadRepoData = useCallback(async () => {
     if (!parsedRepo) return;
 
@@ -108,7 +108,7 @@ export function ProjectCommitTracker({
     setHasMore(true);
 
     try {
-      // 1. Fetch branches
+                          
       const fetchedBranches = await fetchRepoBranches(
         parsedRepo.owner,
         parsedRepo.repo,
@@ -127,7 +127,7 @@ export function ProjectCommitTracker({
         setSelectedBranch(defaultBranch);
       }
 
-      // 2. Fetch initial 10 commits (compare against defaultBranch for feature branches)
+                                                                                         
       const fetchedCommits = await fetchRepoCommits(
         parsedRepo.owner,
         parsedRepo.repo,
@@ -152,7 +152,7 @@ export function ProjectCommitTracker({
     }
   }, [parsedRepo, selectedBranch]);
 
-  // Load next batch of 10 commits
+                                  
   const handleLoadMore = async () => {
     if (!parsedRepo || loadingMore || !hasMore) return;
 
@@ -198,7 +198,7 @@ export function ProjectCommitTracker({
     loadRepoData();
   }, [loadRepoData]);
 
-  // Filter commits by search query
+                                   
   const filteredCommits = useMemo(() => {
     if (!searchQuery.trim()) return commits;
     const q = searchQuery.toLowerCase();
@@ -210,11 +210,11 @@ export function ProjectCommitTracker({
     );
   }, [commits, searchQuery]);
 
-  // Dynamic card position measurement
+                                      
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const [nodeYMap, setNodeYMap] = useState<Map<string, number>>(new Map());
 
-  // Measure dynamic DOM card Y positions to align graph nodes with 100% accuracy
+                                                                                 
   useLayoutEffect(() => {
     if (viewMode !== "cards" || !cardsContainerRef.current) return;
     const container = cardsContainerRef.current;
@@ -227,7 +227,7 @@ export function ProjectCommitTracker({
       cardElements.forEach((el) => {
         const sha = el.getAttribute("data-commit-sha");
         if (sha) {
-          // 26px offset aligns graph node with card header title line
+                                                                      
           const nodeY = el.offsetTop + 26;
           newMap.set(sha, nodeY);
         }
@@ -248,14 +248,14 @@ export function ProjectCommitTracker({
     const observer = new ResizeObserver(measure);
     observer.observe(container);
 
-    // Also observe each individual card for multiline text wrapping
+                                                                    
     const cardElements = container.querySelectorAll<HTMLElement>("[data-commit-sha]");
     cardElements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
   }, [filteredCommits, viewMode]);
 
-  // Compute graph layout from commits + branch refs
+                                                    
   const graphLayout = useMemo<GraphLayout | null>(() => {
     if (filteredCommits.length === 0) return null;
     const branchRefsMap = buildBranchRefsMap(branches);
@@ -280,7 +280,7 @@ export function ProjectCommitTracker({
   return (
     <section className="px-4 py-8 border-t border-neutral-800">
       <div className="mx-auto max-w-6xl">
-        {/* Section Header */}
+                              
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>
             <h2 className="font-mono text-xl font-bold text-white flex items-center gap-2.5">
@@ -292,7 +292,7 @@ export function ProjectCommitTracker({
             </p>
           </div>
 
-          {/* View Mode Switcher */}
+                                    
           <div className="flex items-center gap-1 rounded-lg border border-neutral-800 bg-neutral-900/80 p-1">
             <button
               type="button"
@@ -331,7 +331,7 @@ export function ProjectCommitTracker({
           </div>
         </div>
 
-        {/* Repository URL Input & Controls Toolbar */}
+                                                       
         <div className="mb-6 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 space-y-4">
           <form
             onSubmit={handleUrlSubmit}
@@ -362,11 +362,11 @@ export function ProjectCommitTracker({
             </button>
           </form>
 
-          {/* Branch & Search Filter Bar */}
+                                            
           {parsedRepo && (
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800/80 pt-3 text-xs font-mono">
               <div className="flex flex-wrap items-center gap-3">
-                {/* Branch selection using custom Select component */}
+                                                                      
                 {branches.length > 0 && (
                   <div className="flex items-center gap-1.5">
                     <GitBranch
@@ -399,7 +399,7 @@ export function ProjectCommitTracker({
                   </div>
                 )}
 
-                {/* Repo Identifier Tag */}
+                                           
                 <div className="inline-flex items-center gap-1.5 rounded bg-neutral-800/80 px-2.5 py-1 text-neutral-300">
                   <span>Repo:</span>
                   <span className="font-semibold text-emerald-400">
@@ -408,7 +408,7 @@ export function ProjectCommitTracker({
                 </div>
               </div>
 
-              {/* Search input */}
+                                  
               <div className="relative min-w-50">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-neutral-500">
                   <Search
@@ -429,10 +429,10 @@ export function ProjectCommitTracker({
           )}
         </div>
 
-        {/* Loading Phantom Skeleton */}
+                                        
         {loading && <CommitTrackerPhantomSkeleton />}
 
-        {/* Error Display */}
+                             
         {error && !loading && (
           <div className="flex items-center gap-3 rounded-lg border border-rose-800/50 bg-rose-950/20 p-4 font-mono text-xs text-rose-300">
             <AlertCircle
@@ -446,20 +446,20 @@ export function ProjectCommitTracker({
           </div>
         )}
 
-        {/* Empty Search / No Commits */}
+                                         
         {!loading && !error && filteredCommits.length === 0 && (
           <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 py-12 text-center font-mono text-xs text-neutral-400">
             No commits found for the selected query.
           </div>
         )}
 
-        {/* ── View 1: Interactive Cards View ────────────────────────────── */}
+                                                                                
         {!loading &&
           !error &&
           viewMode === "cards" &&
           filteredCommits.length > 0 && (
             <div className="flex">
-              {/* Git Graph Column (hidden on mobile) */}
+                                                         
               {graphLayout && (
                 <GitGraphColumn
                   layout={graphLayout}
@@ -470,7 +470,7 @@ export function ProjectCommitTracker({
               )}
 
               <div ref={cardsContainerRef} className="relative flex-1 space-y-4 pl-7 sm:pl-8">
-              {/* Vertical timeline track line in the left gutter (mobile fallback) */}
+                                                                                       
               <div
                 className="absolute top-4 bottom-4 left-3 sm:left-3.5 w-0.5 bg-neutral-800 sm:hidden"
                 aria-hidden="true"
@@ -482,7 +482,7 @@ export function ProjectCommitTracker({
                   data-commit-sha={commit.sha}
                   className="group relative"
                 >
-                  {/* Timeline node icon in the left gutter (mobile fallback) */}
+                                                                                 
                   <div className="absolute -left-5.25 sm:-left-6.25 top-5 flex h-4 w-4 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950 text-emerald-400 group-hover:border-emerald-400 group-hover:bg-emerald-950 z-10 sm:hidden">
                     <GitCommit
                       size={10}
@@ -493,10 +493,10 @@ export function ProjectCommitTracker({
                   <article className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4 transition-all duration-200 group-hover:border-emerald-400/50 group-hover:bg-neutral-900">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="space-y-1.5 flex-1 min-w-60">
-                        {/* Commit Message */}
+                                              
                     <p className="font-mono text-sm font-semibold text-white leading-snug">
                           {commit.message}
-                          {/* Branch ref labels on branch tip commits */}
+                                                                         
                           {graphLayout && (() => {
                             const node = graphLayout.nodes.get(commit.sha);
                             if (node && node.branchRefs.length > 0) {
@@ -511,7 +511,7 @@ export function ProjectCommitTracker({
                           })()}
                         </p>
 
-                        {/* Author & Timestamp */}
+                                                  
                         <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs text-neutral-400">
                           <div className="flex items-center gap-1.5">
                             {commit.authorAvatar ? (
@@ -550,7 +550,7 @@ export function ProjectCommitTracker({
                               Committed on {commit.authorDate}
                             </span>
                           </time>
-                          {/* Deploy / CI Status Button */}
+                                                           
                           {commit.statusState === "unconfigured" ? (
                             <button
                               type="button"
@@ -592,7 +592,7 @@ export function ProjectCommitTracker({
                         </div>
                       </div>
 
-                      {/* SHA Badge & Actions */}
+                                                 
                       <div className="flex items-center gap-2 font-mono text-xs shrink-0">
                         <button
                           type="button"
@@ -611,7 +611,7 @@ export function ProjectCommitTracker({
                           <span>{commit.shortSha}</span>
                         </button>
 
-                        {/* Inspect File Diff Details Button */}
+                                                                
                         <button
                           type="button"
                           onClick={() => setSelectedCommitSha(commit.sha)}
@@ -645,7 +645,7 @@ export function ProjectCommitTracker({
             </div>
           )}
 
-        {/* ── View 2: Terminal Output View ────────────────────────────── */}
+                                                                              
         {!loading &&
           !error &&
           viewMode === "terminal" &&
@@ -656,7 +656,7 @@ export function ProjectCommitTracker({
               </div>
 
               <div className="flex">
-                {/* Git Graph Column for terminal (hidden on mobile) */}
+                                                                        
                 {graphLayout && (
                   <GitGraphColumn
                     layout={graphLayout}
@@ -679,7 +679,7 @@ export function ProjectCommitTracker({
                     <span className="text-emerald-400 font-semibold shrink-0">
                       {c.shortSha}
                     </span>
-                    {/* Branch ref labels in terminal view */}
+                                                              
                     {node && node.branchRefs.length > 0 && (
                       <BranchLabel
                         branchNames={node.branchRefs}
@@ -712,7 +712,7 @@ export function ProjectCommitTracker({
             </div>
           )}
 
-        {/* Load More Commits Button */}
+                                        
         {!loading &&
           !error &&
           filteredCommits.length > 0 &&
@@ -746,7 +746,7 @@ export function ProjectCommitTracker({
             </div>
           )}
 
-        {/* Expandable Commit File Diff Drawer */}
+                                                  
         {selectedCommitSha && parsedRepo && (
           <CommitDetailDrawer
             owner={parsedRepo.owner}
@@ -756,7 +756,7 @@ export function ProjectCommitTracker({
           />
         )}
 
-        {/* Expandable Deployment CI/CD Runs Drawer (Scaffold) */}
+                                                                  
         {selectedDeploySha && parsedRepo && (
           <DeployDetailDrawer
             owner={parsedRepo.owner}
@@ -777,7 +777,7 @@ function CommitTrackerPhantomSkeleton() {
       aria-busy="true"
       aria-label="Loading repository commits"
     >
-      {/* Vertical timeline track line */}
+                                          
       <div
         className="absolute top-4 bottom-4 left-3 sm:left-3.5 w-0.5 bg-neutral-800"
         aria-hidden="true"
@@ -788,7 +788,7 @@ function CommitTrackerPhantomSkeleton() {
           key={i}
           className="group relative"
         >
-          {/* Timeline node icon placeholder */}
+                                                
           <div className="absolute -left-5.25 sm:-left-6.25 top-5 flex h-4 w-4 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950 z-10">
             <div className="h-1.5 w-1.5 rounded-full bg-neutral-700 animate-pulse" />
           </div>
@@ -796,10 +796,10 @@ function CommitTrackerPhantomSkeleton() {
           <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4 space-y-3">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="space-y-2 flex-1 min-w-60">
-                {/* Commit message line */}
+                                           
                 <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-800/70" />
 
-                {/* Author & Timestamp info */}
+                                               
                 <div className="flex flex-wrap items-center gap-2.5 pt-0.5">
                   <div className="h-4 w-4 rounded-full bg-neutral-800 animate-pulse" />
                   <div className="h-3.5 w-28 rounded bg-neutral-800/60 animate-pulse" />
@@ -808,7 +808,7 @@ function CommitTrackerPhantomSkeleton() {
                 </div>
               </div>
 
-              {/* SHA Hash & Action buttons */}
+                                               
               <div className="flex items-center gap-2">
                 <div className="h-6 w-20 rounded bg-neutral-800/70 animate-pulse" />
                 <div className="h-6 w-20 rounded bg-neutral-800/70 animate-pulse" />

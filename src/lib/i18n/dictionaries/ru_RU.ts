@@ -687,7 +687,7 @@ export const ru_RU_key: TranslationKeys = {
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
 
-  // Terminal Commands & Help
+                             
   termHelpAvailableCommands: "Доступные команды:",
   termHelpFeaturedCommands: "Рекомендуемые команды:",
   termHelpArgsHeader: "Аргументы командной строки:",
@@ -698,7 +698,7 @@ export const ru_RU_key: TranslationKeys = {
   termHelpTipFlags: "Используйте флаги для быстрого доступа к спискам и просмотру",
   termHelpTipLigatures: "Поддержка лигатур шрифта для улучшения читаемости",
 
-  // Terminal About
+                   
   termAboutGreeting: "Привет! Я Full-Stack разработчик",
   termAboutPassionate: "Увлечен созданием инновационных веб-решений",
   termAboutSpecialized: "Специализируюсь на React, Next.js и современных веб-технологиях",
@@ -713,7 +713,7 @@ export const ru_RU_key: TranslationKeys = {
   termAboutRoadmapVisit: "Посетите дорожную карту на главной странице, чтобы увидеть текущий прогресс!",
   termAboutTypePrompt: "Введите \"projects\", чтобы увидеть работы, или \"contact\", чтобы связаться!",
 
-  // Terminal Language
+                      
   termLangDirection: "Направление",
   termLangCode: "Код",
   termLangSaved: "Языковые настройки сохранены в localStorage",

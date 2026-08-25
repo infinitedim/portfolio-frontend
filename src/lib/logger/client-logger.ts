@@ -59,7 +59,7 @@ class ClientLogger {
       level: clientConfig.level,
       browser: isDev
         ? {
-            // Dev: skip browser console — pino object logs trigger Next.js "Console Error" overlay ({})
+                                                                                                        
             disabled: true,
           }
         : {

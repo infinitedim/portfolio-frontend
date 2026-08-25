@@ -27,9 +27,8 @@ export function ShareButtons({ title, slug, summary }: ShareButtonsProps) {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Fallback
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   };
 
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;

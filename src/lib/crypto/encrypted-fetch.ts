@@ -85,9 +85,9 @@ async function doFetch(
         : undefined,
   });
 
-  // Only retry when the crypto layer itself rejects the session (401 without
-  // x-encrypted header). A 401 WITH x-encrypted means the inner handler
-  // returned an auth failure — don't waste a round-trip retrying that.
+                                                                             
+                                                                        
+                                                                       
   if (
     res.status === 401 &&
     attempt < MAX_RETRY &&

@@ -30,9 +30,8 @@ export function GateLevel3Client({
       await navigator.clipboard.writeText(encodedSecret);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard API not available — no-op
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }, [encodedSecret]);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -83,7 +82,7 @@ export function GateLevel3Client({
       />
 
       <div className="mx-auto max-w-lg space-y-4">
-        {/* Source code block */}
+                                 
         <div className="rounded border border-neutral-800 bg-black/40 p-4">
           <p className="mb-2 font-mono text-xs text-neutral-500">
             Source code:
@@ -96,7 +95,7 @@ export function GateLevel3Client({
           </pre>
         </div>
 
-        {/* Encoded string block */}
+                                    
         <div className="rounded border border-neutral-800 bg-black/40 p-4">
           <div className="mb-2 flex items-center justify-between">
             <p className="font-mono text-xs text-neutral-500">
@@ -129,7 +128,7 @@ export function GateLevel3Client({
           </pre>
         </div>
 
-        {/* Submit form */}
+                           
         <form
           onSubmit={handleSubmit}
           className="rounded border border-neutral-800 bg-black/40 p-4"

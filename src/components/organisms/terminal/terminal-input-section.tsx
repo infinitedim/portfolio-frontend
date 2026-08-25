@@ -1,24 +1,24 @@
-/**
- * @fileoverview TerminalInputSection
- *
- * Renders the sticky command input bar at the bottom of the terminal viewport.
- * Includes the command input field, loading indicator, and manages focus/submit.
- *
- * @description
- * Reads all required state from `useTerminalContext()`. No prop drilling.
- *
- * @example
- * ```tsx
- * <TerminalInputSection availableCommands={AVAILABLE_COMMANDS} />
- * ```
- *
- * @dependencies
- * - useTerminalContext – currentInput, setCurrentInput, handleSubmit, isProcessing,
- *                        navigateHistory, getCommandSuggestions, getFrequentCommands,
- *                        commandInputRef
- * - CommandInput
- * - CommandLoadingIndicator
- */
+   
+                                     
+  
+                                                                               
+                                                                                 
+  
+               
+                                                                          
+  
+           
+         
+                                                                  
+      
+  
+                
+                                                                                    
+                                                                                      
+                                         
+                 
+                            
+   
 
 "use client";
 
@@ -28,7 +28,7 @@ import { CommandLoadingIndicator } from "@/components/molecules/terminal/command
 import { useTerminalContext } from "@/lib/context/terminal-context";
 import { useI18n } from "@/hooks/use-i18n";
 
-/** Commands available for tab-completion / suggestions */
+                                                          
 const AVAILABLE_COMMANDS = [
   "help",
   "skills",
@@ -56,12 +56,12 @@ const AVAILABLE_COMMANDS = [
   "pwa",
 ] as const;
 
-/**
- * TerminalInputSection
- *
- * Sticky bottom bar containing the command input. When a command is being
- * processed, a loading indicator is shown above the input field.
- */
+   
+                       
+  
+                                                                          
+                                                                 
+   
 export function TerminalInputSection(): JSX.Element {
   const { t } = useI18n();
   const {
@@ -91,7 +91,7 @@ export function TerminalInputSection(): JSX.Element {
       suppressHydrationWarning={true}
       tabIndex={-1}
     >
-      {/* Loading indicator – shown above the input while processing */}
+                                                                        
       {isProcessing && (
         <CommandLoadingIndicator
           command={currentInput}

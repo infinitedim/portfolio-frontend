@@ -607,7 +607,7 @@ export function detectSuspiciousActivity(
     (item) => item.timestamp >= fiveSecondsAgo,
   );
 
-  // Layer 1: Time-aware Burst Detection
+                                        
   if (inputsInLast5s.length > 15) {
     return {
       isSuspicious: true,
@@ -623,7 +623,7 @@ export function detectSuspiciousActivity(
     };
   }
 
-  // Layer 2: Fuzzy Repetition Detection (normalize whitespace & punctuation)
+                                                                             
   const patternCounts: Record<string, number> = {};
   normalizedInputs.forEach((item) => {
     const normalized = item.input

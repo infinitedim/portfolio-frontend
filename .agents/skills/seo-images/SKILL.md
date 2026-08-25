@@ -124,14 +124,14 @@ In November 2025, Google's Chromium team reversed its 2022 decision and announce
 - Check for native vs JavaScript-based lazy loading
 
 ```html
-<!-- Below fold - lazy load -->
+
 <img
   src="photo.jpg"
   loading="lazy"
   alt="Description"
 />
 
-<!-- Above fold - eager load (default) -->
+
 <img
   src="hero.jpg"
   alt="Hero image"
@@ -176,7 +176,7 @@ Add `decoding="async"` to non-LCP images to prevent image decoding from blocking
 - Flag images without dimensions
 
 ```html
-<!-- Good - dimensions set -->
+
 <img
   src="photo.jpg"
   width="800"
@@ -184,14 +184,14 @@ Add `decoding="async"` to non-LCP images to prevent image decoding from blocking
   alt="Description"
 />
 
-<!-- Good - CSS aspect ratio -->
+
 <img
   src="photo.jpg"
   style="aspect-ratio: 4/3"
   alt="Description"
 />
 
-<!-- Bad - no dimensions -->
+
 <img
   src="photo.jpg"
   alt="Description"

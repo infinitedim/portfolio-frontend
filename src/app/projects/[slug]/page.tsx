@@ -93,7 +93,7 @@ export async function generateMetadata({
   };
 }
 
-// ── Tech stack categorization ──────────────────────────────────────────
+                                                                          
 
 const FRONTEND_KEYS = new Set([
   "react",
@@ -160,14 +160,14 @@ function categorizeTechnologies(technologies: string[]): TechCategory[] {
   return categories;
 }
 
-// ── Default engineering highlights for portfolio projects ──────────────
+                                                                          
 
 function getDefaultHighlights(project: Project): ProjectHighlight[] | undefined {
   if (project.highlights && project.highlights.length > 0) {
     return project.highlights;
   }
 
-  // Only provide default highlights for projects with metrics (case study projects)
+                                                                                    
   if (!project.metrics) return undefined;
 
   return [
@@ -198,7 +198,7 @@ function getDefaultHighlights(project: Project): ProjectHighlight[] | undefined 
   ];
 }
 
-// ── Main content ───────────────────────────────────────────────────────
+                                                                          
 
 async function ProjectDetailContent({
   params,
@@ -215,7 +215,7 @@ async function ProjectDetailContent({
   const allProjects = await getProjectsData();
   const siteUrl = getSiteUrl();
 
-  // Find related projects (same tech overlap)
+                                              
   const related = allProjects
     .filter(
       (p) =>
@@ -245,14 +245,13 @@ async function ProjectDetailContent({
   const techCategories = categorizeTechnologies(project.technologies);
   const highlights = getDefaultHighlights(project);
 
-  // Extract domain from demo URL for mockup frame
+                                                  
   let domain: string | undefined;
   if (project.demoUrl) {
     try {
       domain = new URL(project.demoUrl).hostname;
-    } catch {
-      // Invalid URL — skip domain display
-    }
+    } // eslint-disable-next-line no-empty
+    catch {}
   }
 
   return (
@@ -284,7 +283,7 @@ async function ProjectDetailContent({
         }}
       />
 
-      {/* Back link */}
+                       
       <div className="mx-auto max-w-6xl px-4 pt-8">
         <Link
           href="/projects"
@@ -295,13 +294,13 @@ async function ProjectDetailContent({
         </Link>
       </div>
 
-      {/* ── Asymmetric Split Hero ─────────────────────────────────── */}
+                                                                          
       <article className="px-4 py-8">
         <div className="mx-auto max-w-6xl">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[7fr_5fr] lg:gap-12">
-            {/* Left column: Narrative */}
+                                          
             <div className="flex flex-col">
-              {/* Eyebrow + Title */}
+                                     
               <div>
                 <div className="flex flex-wrap items-center gap-3">
                   <h1 className="font-mono text-3xl font-bold tracking-tight text-(--terminal-text) sm:text-4xl">
@@ -328,17 +327,17 @@ async function ProjectDetailContent({
                 </div>
               </div>
 
-              {/* Description */}
+                                 
               <p className="mt-4 max-w-prose text-base leading-relaxed text-(--terminal-muted) sm:text-lg">
                 {project.description}
               </p>
 
-              {/* Compact Stat Strip (inline in hero) */}
+                                                         
               <div className="mt-6">
                 <ProjectMetricsGrid metrics={project.metrics} />
               </div>
 
-              {/* Action buttons */}
+                                    
               <div className="mt-6 flex flex-wrap gap-3">
                 {project.demoUrl && (
                   <a
@@ -365,7 +364,7 @@ async function ProjectDetailContent({
               </div>
             </div>
 
-            {/* Right column: Mockup Frame */}
+                                              
             {project.imageUrl && (
               <div className="flex items-start lg:pt-2">
                 <ProjectMockupFrame
@@ -380,12 +379,12 @@ async function ProjectDetailContent({
         </div>
       </article>
 
-      {/* ── Engineering Highlights ─────────────────────────────────── */}
+                                                                           
       <div className="mx-auto max-w-6xl px-4 pb-2">
         <ProjectEngineeringHighlights highlights={highlights} />
       </div>
 
-      {/* ── Categorized Tech Stack ────────────────────────────────── */}
+                                                                          
       <section className="px-4 py-8">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-5 font-mono text-xl font-bold text-(--terminal-text)">
@@ -416,13 +415,13 @@ async function ProjectDetailContent({
         </div>
       </section>
 
-      {/* ── Interactive GitHub Commit Tracker ─────────────────────── */}
+                                                                          
       <ProjectCommitTracker
         repoUrl={project.githubUrl}
         projectName={project.name}
       />
 
-      {/* ── Related projects ──────────────────────────────────────── */}
+                                                                          
       {related.length > 0 && (
         <aside className="px-4 py-8 border-t border-(--terminal-border)">
           <div className="mx-auto max-w-6xl">

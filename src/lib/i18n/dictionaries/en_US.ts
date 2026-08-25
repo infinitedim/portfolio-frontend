@@ -678,7 +678,7 @@ export const en_US_key: TranslationKeys = {
   terminalFeaturesCtaProceed: "Start Gate Challenge →",
   terminalFeaturesCtaCancel: "Cancel",
 
-  // Terminal Interactive Welcome
+                                 
   terminalWelcomeTitle: "Welcome to My Terminal Portfolio!",
   terminalWelcomeSubtitle:
     "Click on any command below to get started, or type directly in the terminal",
@@ -692,7 +692,7 @@ export const en_US_key: TranslationKeys = {
   terminalWelcomeDescProjects: "Explore my projects",
   terminalWelcomeDescContact: "Get in touch",
 
-  // Terminal Commands & Help
+                             
   termHelpAvailableCommands: "Available Commands:",
   termHelpFeaturedCommands: "Featured Commands:",
   termHelpArgsHeader: "Command-Line Arguments:",
@@ -703,7 +703,7 @@ export const en_US_key: TranslationKeys = {
   termHelpTipFlags: "Use flags for quick access to lists and previews",
   termHelpTipLigatures: "Font ligatures supported for enhanced readability",
 
-  // Terminal About
+                   
   termAboutGreeting: "Hello! I'm a Full-Stack Developer",
   termAboutPassionate: "Passionate about creating innovative web solutions",
   termAboutSpecialized: "Specialized in React, Next.js, and modern web technologies",
@@ -718,7 +718,7 @@ export const en_US_key: TranslationKeys = {
   termAboutRoadmapVisit: "Visit the homepage roadmap to see my current progress!",
   termAboutTypePrompt: "Type \"projects\" to see my work or \"contact\" to get in touch!",
 
-  // Terminal Language
+                      
   termLangDirection: "Direction",
   termLangCode: "Code",
   termLangSaved: "Language preference saved to localStorage",
@@ -726,7 +726,7 @@ export const en_US_key: TranslationKeys = {
   termLangExamples: "Examples: lang id_ID, lang es_ES, lang fr_FR",
   termLangRegionalNote: "Regional variants (e.g., en_GB, es_MX) will fall back to their primary language",
 
-  // Admin Navigation
+                     
   adminSidebarDashboard: "Dashboard Overview",
   adminSidebarBlog: "Articles & Drafts",
   adminSidebarProjects: "Projects Catalog",

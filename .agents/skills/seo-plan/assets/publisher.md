@@ -1,4 +1,4 @@
-<!-- Updated: 2026-02-07 -->
+
 
 # Publisher/Media SEO Strategy Template
 

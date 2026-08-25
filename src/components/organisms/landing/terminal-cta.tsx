@@ -30,7 +30,7 @@ export function TerminalCta(): JSX.Element {
           return null;
         })
         .catch(() => {
-          // Fail silently, default to locked state
+                                                   
         });
     }
   }, []);
@@ -49,10 +49,10 @@ export function TerminalCta(): JSX.Element {
         className="mx-auto max-w-6xl"
       >
         <div className="mx-auto max-w-2xl rounded-xl border border-(--terminal-border) bg-(--terminal-bg)/90 shadow-2xl backdrop-blur-md overflow-hidden relative font-mono transition-colors duration-300">
-          {/* Top Hairline Accent */}
+                                     
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-(--terminal-accent)/0 via-(--terminal-accent) to-(--terminal-accent)/0" />
 
-          {/* Window Header */}
+                               
           <div className="flex items-center justify-between border-b border-(--terminal-border)/80 bg-(--terminal-bg)/95 px-4 py-2.5 text-xs">
             <div className="flex items-center gap-1.5">
               <span className="h-3 w-3 rounded-full bg-red-500/80" />
@@ -67,7 +67,7 @@ export function TerminalCta(): JSX.Element {
             </span>
           </div>
 
-          {/* Window Body */}
+                             
           <div className="p-6 sm:p-8 text-center flex flex-col items-center gap-5">
             {isUnlocked ? (
               <>
@@ -113,7 +113,7 @@ export function TerminalCta(): JSX.Element {
                   </p>
                 </div>
 
-                {/* 3 NATAS Level Preview Grid */}
+                                                  
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-lg text-left my-1">
                   {NATAS_PUZZLES.map((puzzle) => (
                     <div

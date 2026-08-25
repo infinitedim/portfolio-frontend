@@ -10,10 +10,10 @@ export default function BlogSeriesLoading(): JSX.Element {
         aria-label="Loading blog series..."
       >
         <div className="mx-auto max-w-6xl px-4 py-8 space-y-8">
-          {/* Back button phantom */}
+                                     
           <div className="h-4 w-32 animate-pulse rounded bg-neutral-800/70" />
 
-          {/* Series Header Phantom */}
+                                       
           <header className="space-y-4 rounded-lg border border-neutral-800 bg-neutral-900/50 p-6">
             <div className="flex items-center gap-2 font-mono text-xs text-neutral-500">
               <div className="h-4 w-20 animate-pulse rounded bg-neutral-800/60" />
@@ -25,7 +25,7 @@ export default function BlogSeriesLoading(): JSX.Element {
             <div className="h-4 w-4/5 animate-pulse rounded bg-neutral-800/50" />
           </header>
 
-          {/* Posts in Series List Phantom */}
+                                              
           <div className="space-y-4">
             <div className="h-6 w-36 animate-pulse rounded bg-neutral-800/70" />
             <div className="space-y-3">

@@ -35,7 +35,7 @@ function parseMaxAge(setCookie: string): number | undefined {
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
-/** Re-home backend Set-Cookie headers onto the frontend origin (same-site). */
+                                                                               
 export function applyBackendGateCookies(
   backendResponse: Response,
   nextResponse: NextResponse,

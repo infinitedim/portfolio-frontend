@@ -1,4 +1,4 @@
-/** Slugify heading text for anchor IDs. */
+                                           
 export function slugifyHeading(text: string): string {
   return text
     .toLowerCase()
@@ -10,7 +10,7 @@ export function slugifyHeading(text: string): string {
     .replace(/^-|-$/g, "");
 }
 
-/** Ensure h2/h3 elements in HTML have stable id attributes for TOC anchors. */
+                                                                               
 export function addHeadingIdsToHtml(html: string): string {
   const used = new Set<string>();
 

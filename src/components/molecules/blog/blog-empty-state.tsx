@@ -24,10 +24,10 @@ export function BlogEmptyState({
 
   return (
     <div className="relative rounded-2xl border border-(--terminal-border) bg-(--terminal-bg)/60 p-8 sm:p-14 text-center backdrop-blur-md overflow-hidden my-8 shadow-2xl">
-      {/* Top accent line */}
+                             
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-(--terminal-accent)/0 via-(--terminal-accent) to-(--terminal-accent)/0" />
 
-      {/* Subtle grid background */}
+                                    
       <div className="absolute inset-0 bg-[radial-gradient(var(--terminal-accent)_1px,transparent_1px)] bg-size-[24px_24px] opacity-[0.03] pointer-events-none" />
       {isFiltered ? (
         <div className="max-w-xl mx-auto space-y-4">
@@ -76,7 +76,7 @@ export function BlogEmptyState({
             16 engineering notes are currently being prepared in draft stage.
           </p>
 
-          {/* Quick Action Navigation Buttons */}
+                                                 
           <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/projects"

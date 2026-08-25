@@ -1,6 +1,6 @@
-/**
- * Custom Cursor System (E-Commerce Port) - Type Definitions
- */
+   
+                                                            
+   
 
 export type CursorState = "default" | "hover" | "hide";
 

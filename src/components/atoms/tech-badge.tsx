@@ -24,7 +24,7 @@ export function TechBadge({
   const config = getTechConfig(name);
   const { Icon, label, color, hoverAnimation } = config;
 
-  // Size styling variants
+                          
   const sizeConfig = {
     sm: {
       badge: "px-2 py-1 text-xs gap-1.5",
@@ -43,7 +43,7 @@ export function TechBadge({
     },
   }[size];
 
-  // Visual variant styling
+                           
   const variantConfig = {
     default:
       "border border-(--terminal-border) bg-(--terminal-bg)/60 text-(--terminal-text) backdrop-blur-sm hover:border-(--terminal-accent)/60 hover:bg-(--terminal-bg)/80 hover:text-(--terminal-accent)",
@@ -57,11 +57,11 @@ export function TechBadge({
     <span
       className={`group/tech inline-flex items-center rounded-md font-mono transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--terminal-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--terminal-bg) motion-reduce:transform-none motion-reduce:transition-none ${sizeConfig.badge} ${variantConfig} ${className}`}
       style={{
-        // Dynamically expose --tech-color for CSS hover glow effect
+                                                                    
         "--tech-color": color,
       } as React.CSSProperties}
     >
-      {/* SVG Icon with per-category micro-animation */}
+                                                        
       <Icon
         className={`shrink-0 transition-transform ${sizeConfig.icon} ${hoverAnimation} motion-reduce:transform-none motion-reduce:transition-none`}
         style={{ color }}
@@ -69,10 +69,10 @@ export function TechBadge({
         focusable="false"
       />
 
-      {/* Technology Label */}
+                              
       <span className="truncate">{label}</span>
 
-      {/* Optional Removable Button for Admin Tag Editor */}
+                                                            
       {removable && (
         <button
           type="button"

@@ -41,11 +41,11 @@ export function DeployDetailDrawer({
   const [checkRunsData, setCheckRunsData] =
     useState<GitHubCheckRunsResponse | null>(null);
 
-  // Cooldown countdown timer for manual refresh (10 seconds)
+                                                             
   const [cooldown, setCooldown] = useState<number>(0);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  // Fetch check runs data
+                          
   const loadCheckRuns = useCallback(
     async (force: boolean = false) => {
       if (!refSha) return;
@@ -79,14 +79,14 @@ export function DeployDetailDrawer({
     }
   }, [refSha, loadCheckRuns]);
 
-  // Handle manual refresh with 10-second cooldown
+                                                  
   const handleManualRefresh = () => {
     if (cooldown > 0 || refreshing) return;
     loadCheckRuns(true);
     setCooldown(10);
   };
 
-  // Decrement cooldown timer every second
+                                          
   useEffect(() => {
     if (cooldown <= 0) return;
     const interval = setInterval(() => {
@@ -95,7 +95,7 @@ export function DeployDetailDrawer({
     return () => clearInterval(interval);
   }, [cooldown]);
 
-  // Close on Escape key
+                        
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -110,7 +110,7 @@ export function DeployDetailDrawer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  // Lock background body scrolling when modal is open
+                                                      
   useEffect(() => {
     if (refSha) {
       document.body.style.overflow = "hidden";
@@ -124,7 +124,7 @@ export function DeployDetailDrawer({
 
   if (!refSha) return null;
 
-  // Helper to render static status badge
+                                         
   const renderStatusBadge = (run: GitHubCheckRun) => {
     if (run.status === "in_progress" || run.status === "queued") {
       return (
@@ -206,14 +206,14 @@ export function DeployDetailDrawer({
       aria-modal="true"
       aria-labelledby="deploy-detail-heading"
     >
-      {/* Backdrop overlay (non-clickable: user must click explicit close button) */}
+                                                                                     
       <div
         className="absolute inset-0"
         aria-hidden="true"
       />
 
       <aside className="relative flex h-full max-h-[90vh] w-full max-w-xl flex-col rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl overflow-hidden z-10 font-mono">
-        {/* Modal Header */}
+                            
         <header className="flex items-center justify-between border-b border-neutral-800 px-5 py-4 bg-neutral-900/90">
           <div className="flex items-center gap-2.5">
             <Rocket
@@ -232,7 +232,7 @@ export function DeployDetailDrawer({
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Manual Refresh Button with 10s Cooldown */}
+                                                           
             <button
               type="button"
               onClick={handleManualRefresh}
@@ -266,12 +266,12 @@ export function DeployDetailDrawer({
           </div>
         </header>
 
-        {/* Content Body with Lenis Scroll */}
+                                              
         <LenisScroll
           className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--terminal-muted) hover:scrollbar-thumb-(--terminal-accent)"
           data-lenis-prevent
         >
-          {/* Target Repo Info Banner */}
+                                         
           <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4">
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-neutral-400">
               <span className="flex items-center gap-1.5">
@@ -293,10 +293,10 @@ export function DeployDetailDrawer({
             </div>
           </div>
 
-          {/* Loading Phantom Skeleton State */}
+                                                
           {loading && <DeployDetailPhantomSkeleton />}
 
-          {/* Error Banner */}
+                              
           {!loading && error && (
             <div className="rounded-lg border border-rose-800/60 bg-rose-950/30 p-4 text-xs text-rose-300 flex items-start gap-2.5">
               <AlertCircle
@@ -310,7 +310,7 @@ export function DeployDetailDrawer({
             </div>
           )}
 
-          {/* Authentic Unconfigured State (No CI Checks Configured) */}
+                                                                        
           {!loading &&
             !error &&
             checkRunsData &&
@@ -342,7 +342,7 @@ export function DeployDetailDrawer({
               </div>
             )}
 
-          {/* Live CI/CD Workflow Runs List */}
+                                               
           {!loading &&
             !error &&
             checkRunsData &&
@@ -422,7 +422,7 @@ function DeployDetailPhantomSkeleton() {
       aria-busy="true"
       aria-label="Loading deployment check runs"
     >
-      {/* CI/CD Workflow Checks Section Phantom (3 Items) */}
+                                                             
       <div className="space-y-3">
         <div className="h-4 w-48 rounded bg-neutral-800/70 animate-pulse" />
         {[1, 2, 3].map((i) => (

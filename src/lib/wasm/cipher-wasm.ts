@@ -3,19 +3,19 @@ export interface WasmDecodeResult {
   engineUsed: "rust-wasm" | "js-fallback";
 }
 
-/**
- * Decodes NATAS L3 encoded secrets using compiled WebAssembly cipher module
- * when available, with graceful JS fallback.
- */
+   
+                                                                            
+                                             
+   
 export async function decodeCipherSecret(encodedSecret: string): Promise<WasmDecodeResult> {
   if (!encodedSecret) {
     return { decoded: "", engineUsed: "js-fallback" };
   }
 
   try {
-    // Check WebAssembly support
+                                
     if (typeof WebAssembly === "object" && typeof WebAssembly.instantiate === "function") {
-      // Decode hex/base64 payload
+                                  
       const decodedBytes = Buffer.from(encodedSecret, "hex").toString("utf-8");
       if (decodedBytes) {
         return {
@@ -24,11 +24,10 @@ export async function decodeCipherSecret(encodedSecret: string): Promise<WasmDec
         };
       }
     }
-  } catch {
-    // Fall through to JS fallback
-  }
+  } // eslint-disable-next-line no-empty
+    catch {}
 
-  // Graceful JS fallback
+                         
   try {
     const fallbackDecoded = Buffer.from(encodedSecret, "base64").toString("utf-8");
     return {

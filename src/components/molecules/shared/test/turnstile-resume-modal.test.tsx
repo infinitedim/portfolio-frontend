@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+                            
 import { describe, it, expect, jest, mock } from "bun:test";
 import { render, screen } from "@testing-library/react";
 import { TurnstileResumeModal } from "../turnstile-resume-modal";

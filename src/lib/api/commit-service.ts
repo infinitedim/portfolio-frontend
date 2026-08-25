@@ -83,18 +83,18 @@ export interface ParsedRepoUrl {
   repo: string;
 }
 
-/**
- * Extracts owner and repo name from a GitHub URL or string.
- * Examples:
- * - "https://github.com/infinitedim/portfolio-frontend" -> { owner: "infinitedim", repo: "portfolio-frontend" }
- * - "github.com/infinitedim/medmind" -> { owner: "infinitedim", repo: "medmind" }
- * - "infinitedim/portfolio-backend" -> { owner: "infinitedim", repo: "portfolio-backend" }
- */
+   
+                                                            
+            
+                                                                                                                
+                                                                                  
+                                                                                           
+   
 export function parseGitHubUrl(urlInput: string): ParsedRepoUrl | null {
   if (!urlInput) return null;
   const cleaned = urlInput.trim().replace(/\/+$/, "");
 
-  // Match full URL or owner/repo pattern
+                                         
   const match = cleaned.match(
     /(?:https?:\/\/)?(?:www\.)?github\.com\/([^/]+)\/([^/#?]+)||^([^/]+)\/([^/]+)$/,
   );
@@ -108,9 +108,9 @@ export function parseGitHubUrl(urlInput: string): ParsedRepoUrl | null {
   return { owner, repo };
 }
 
-/**
- * Fetches commits for a given repository.
- */
+   
+                                          
+   
 export async function fetchRepoCommits(
   owner: string,
   repo: string,
@@ -145,9 +145,9 @@ export async function fetchRepoCommits(
   return res.json();
 }
 
-/**
- * Fetches single commit details including file diff patches.
- */
+   
+                                                             
+   
 export async function fetchCommitDetail(
   owner: string,
   repo: string,
@@ -167,9 +167,9 @@ export async function fetchCommitDetail(
   return res.json();
 }
 
-/**
- * Fetches branches for a repository.
- */
+   
+                                     
+   
 export async function fetchRepoBranches(
   owner: string,
   repo: string,
@@ -188,9 +188,9 @@ export async function fetchRepoBranches(
   return res.json();
 }
 
-/**
- * Fetches check runs and deployment status for a commit.
- */
+   
+                                                         
+   
 export async function fetchCommitCheckRuns(
   owner: string,
   repo: string,

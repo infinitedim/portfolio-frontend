@@ -11,12 +11,12 @@ export interface LoginResponse {
   user?: AuthUser;
   accessToken?: string;
   error?: string;
-  /**
-   * Set when the backend recognized the password but the account has TOTP
-   * 2FA enabled. The caller must collect a 6-digit TOTP (or backup code)
-   * and call `complete2FALogin()` to exchange the challenge for real
-   * tokens. `accessToken` will NOT be set in this case.
-   */
+     
+                                                                          
+                                                                         
+                                                                     
+                                                        
+     
   requires2FA?: boolean;
   challengeToken?: string;
 }
@@ -46,15 +46,15 @@ export interface ValidateResponse {
   error?: string;
 }
 
-/**
- * Client-side auth state. Refresh tokens are now delivered as an HttpOnly
- * cookie (see backend `auth.rs` -> `build_refresh_cookie`) which JS cannot
- * read. We only keep the access token in memory and a thin user record in
- * sessionStorage so the UI can render without flicker on reload.
- *
- * On reload we have no access token in memory, so `validate()` will call
- * `/api/auth/refresh`, which uses the cookie to issue a fresh access token.
- */
+   
+                                                                          
+                                                                           
+                                                                          
+                                                                 
+  
+                                                                         
+                                                                            
+   
 class AuthService {
   private accessToken: string | null = null;
 
@@ -96,11 +96,11 @@ class AuthService {
     });
   }
 
-  /**
-   * Older builds stored the refresh token under `__auth_rt` in sessionStorage.
-   * That value is now an HttpOnly cookie and the storage entry is a security
-   * liability — wipe it on every boot.
-   */
+     
+                                                                               
+                                                                             
+                                       
+     
   private purgeLegacyRefreshToken(): void {
     if (typeof sessionStorage === "undefined") return;
     if (sessionStorage.getItem(this.LEGACY_REFRESH_KEY)) {
@@ -126,9 +126,9 @@ class AuthService {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // 2FA challenge: password was correct but the account requires a
-        // second factor. Don't populate the access token yet — the caller
-        // must complete the challenge.
+                                                                         
+                                                                          
+                                       
         if (data.requires2fa || data.requires2FA) {
           const user: AuthUser | undefined = data.user
             ? {
@@ -178,11 +178,11 @@ class AuthService {
     }
   }
 
-  /**
-   * Exchange a 2FA challenge token + 6-digit TOTP (or backup code) for a
-   * real access/refresh-cookie pair. Mirrors `login()` in terms of state
-   * mutations on success.
-   */
+     
+                                                                         
+                                                                         
+                          
+     
   async complete2FALogin(
     challengeToken: string,
     code: string,
@@ -246,8 +246,8 @@ class AuthService {
     }
 
     try {
-      // The refresh token lives in an HttpOnly cookie. We don't (and can't)
-      // read it from JS — the browser attaches it because of `credentials`.
+                                                                            
+                                                                            
       const response = await encryptedFetchRaw("/api/auth/refresh", {
         method: "POST",
         credentials: "include",
@@ -328,8 +328,8 @@ class AuthService {
   async logout(): Promise<boolean> {
     try {
       if (typeof window !== "undefined") {
-        // Send the cookie so the server can revoke it server-side and the
-        // response can clear it client-side.
+                                                                          
+                                             
         await encryptedFetchRaw("/api/auth/logout", {
           method: "POST",
           headers: {
@@ -359,9 +359,9 @@ class AuthService {
       };
     }
 
-    // No access token in memory (e.g. after a hard reload). Try the cookie
-    // first — `/api/auth/refresh` reads the HttpOnly cookie and mints a new
-    // access token if the session is still valid.
+                                                                           
+                                                                            
+                                                  
     if (!this.accessToken) {
       const refreshResult = await this.refresh();
       if (!refreshResult.success) {
@@ -401,8 +401,8 @@ class AuthService {
           user,
         };
       } else {
-        // Access token rejected — try one refresh round-trip via the cookie
-        // before declaring the session dead.
+                                                                            
+                                             
         const refreshResult = await this.refresh();
         if (refreshResult.success) {
           return this.validate();
@@ -453,8 +453,8 @@ class AuthService {
   }
 
   async initialize(): Promise<boolean> {
-    // Always run validate() — even with no in-memory access token, the
-    // HttpOnly refresh cookie may still be present and valid.
+                                                                       
+                                                              
     const validation = await this.validate();
     return validation.success;
   }

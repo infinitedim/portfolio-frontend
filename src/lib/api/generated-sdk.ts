@@ -1,8 +1,8 @@
-/**
- * AUTO-GENERATED API SDK CONTRACT (Rust Axum utoipa -> Bun TypeScript)
- * Generated at: 2026-08-23T05:47:16.609Z
- * Source OpenAPI: Fetched live from backend
- */
+   
+                                                                       
+                                         
+                                            
+   
 
 export interface HealthCheckResponse {
   status: "ok" | "degraded" | "error";

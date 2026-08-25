@@ -95,14 +95,14 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  /* Custom Theme-Aware Scrollbar */
+  
   * {
-    /* Firefox */
+    
     scrollbar-width: thin;
     scrollbar-color: var(--terminal-accent) var(--terminal-bg);
   }
 
-  /* Chrome, Safari, Edge */
+  
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -123,12 +123,12 @@ body {
     background: var(--terminal-accent);
   }
 
-  /* Ensure the main scrollbar for the body is always themed */
+  
   html {
     scrollbar-color: var(--terminal-accent) var(--terminal-bg);
   }
 
-  /* Content-theme layer: Remaps terminal CSS variables to softened content versions for readability */
+  
   .content-theme {
     --terminal-bg: var(--content-bg);
     --terminal-text: var(--content-text);
@@ -955,7 +955,7 @@ textarea.terminal-input {
   pointer-events: none;
 }
 
-/* Blog content image optimization & CLS prevention */
+
 .prose img,
 .prose-invert img {
   max-width: 100%;
@@ -969,7 +969,7 @@ textarea.terminal-input {
   margin: 0;
 }
 
-/* Terminal Scanline Wipe Animation for Clear Command */
+
 @keyframes scanline-wipe {
   0% {
     clip-path: inset(0 0 0 0);

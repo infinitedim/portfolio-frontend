@@ -1,23 +1,23 @@
-/**
- * Test setup for Bun's native test runner (`bun test`).
- *
- * This is the Bun-compatible equivalent of `setup.ts` (Vitest).
- * During the Strangler Pattern migration, both setup files coexist:
- * - `setup.ts` → preloaded by Vitest for *.test.ts(x) files
- * - `setup-bun.ts` → preloaded by bun test for *.bun.test.ts(x) files
- *
- * After full migration, `setup.ts` and Vitest will be removed.
- */
+   
+                                                        
+  
+                                                                
+                                                                    
+                                                            
+                                                                      
+  
+                                                               
+   
 
 import { jest, afterEach, beforeAll, beforeEach, mock, expect } from "bun:test";
 import * as matchers from "@testing-library/jest-dom/matchers";
 
-// Extend bun:test expect with jest-dom matchers (toBeInTheDocument, etc.)
+                                                                          
 (expect.extend as (m: unknown) => void)(matchers);
 
-// ---------------------------------------------------------------------------
-// Module mocks (must be called before importing the modules under test)
-// ---------------------------------------------------------------------------
+                                                                              
+                                                                        
+                                                                              
 
 mock.module("next/server", () => ({
   NextRequest: class MockNextRequest {
@@ -187,9 +187,9 @@ mock.module("next/server", () => ({
   },
 }));
 
-// Preserve native crypto.subtle and getRandomValues so code that uses
-// Web Crypto API (e.g. clientEncrypt / performHandshake) still works.
-// Only override helpers that tests don't need to be real (randomUUID, randomBytes).
+                                                                      
+                                                                      
+                                                                                    
 const _nativeCrypto = globalThis.crypto;
 
 Object.defineProperty(global, "crypto", {
@@ -228,15 +228,15 @@ mock.module("next/navigation", () => ({
   redirect: jest.fn(),
 }));
 
-// Expose jest globally for jest.fn(), jest.clearAllMocks(), etc.
+                                                                 
 (globalThis as unknown as { jest: typeof jest }).jest = jest;
 
 process.env.ALLOWED_ORIGINS =
   process.env.ALLOWED_ORIGINS || "http://127.0.0.1:3000,https://example.com";
 
-// ---------------------------------------------------------------------------
-// DOM environment helpers
-// ---------------------------------------------------------------------------
+                                                                              
+                          
+                                                                              
 
 function ensureDOMReady() {
   if (typeof document === "undefined" || typeof document.createElement !== "function") {
@@ -286,9 +286,9 @@ beforeAll(() => {
   ensureDOMReady();
 });
 
-// ---------------------------------------------------------------------------
-// Browser API mocks
-// ---------------------------------------------------------------------------
+                                                                              
+                    
+                                                                              
 
 global.ResizeObserver = class MockResizeObserver {
   observe = jest.fn();
@@ -297,10 +297,10 @@ global.ResizeObserver = class MockResizeObserver {
   constructor(_callback: ResizeObserverCallback) {}
 } as unknown as typeof ResizeObserver;
 
-// Next.js's `<Link>` uses `new IntersectionObserver(...)` via
-// `next/src/client/use-intersection.tsx`. We need a real class with the standard
-// `observe`/`unobserve`/`disconnect`/`takeRecords` surface so the constructor
-// call doesn't blow up in tests that render Link components.
+                                                              
+                                                                                 
+                                                                              
+                                                             
 class MockIntersectionObserver {
   readonly root: Element | Document | null = null;
   readonly rootMargin: string = "";
@@ -403,9 +403,9 @@ if (typeof window !== "undefined") {
   window.scrollTo = jest.fn();
 }
 
-// Global mock for navigator.serviceWorker so any component that calls
-// navigator.serviceWorker.register(...).then/catch() works without crashing.
-// Individual test files can override this via Object.defineProperty with configurable:true.
+                                                                      
+                                                                             
+                                                                                            
 if (typeof window !== "undefined") {
   try {
     Object.defineProperty(navigator, "serviceWorker", {
@@ -434,9 +434,8 @@ if (typeof window !== "undefined") {
       writable: true,
       configurable: true,
     });
-  } catch {
-    // navigator.serviceWorker may not be configurable in all environments; ignore
-  }
+  } // eslint-disable-next-line no-empty
+    catch {}
 }
 
 beforeAll(() => {
@@ -447,7 +446,7 @@ beforeEach(() => {
   ensureDOMReady();
 });
 
-// Filter out React act() warnings that pollute test runner output during component async state updates
+                                                                                                       
 const originalConsoleError = console.error;
 console.error = (...args: unknown[]) => {
   const msg = typeof args[0] === "string" ? args[0] : "";

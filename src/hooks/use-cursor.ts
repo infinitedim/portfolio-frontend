@@ -10,10 +10,10 @@ export interface UseCursorReturn {
   setCursorState: (state: CursorState, text?: string | null) => void;
 }
 
-/**
- * Modernized Custom Cursor Hook with Daoism-style LERP Trailing Delay & E-Commerce Logic.
- * Updates --x and --y CSS variables via continuous RAF Lerp loop.
- */
+   
+                                                                                          
+                                                                  
+   
 export function useCursor(
   cursorRef: React.RefObject<HTMLDivElement | null>,
 ): UseCursorReturn {
@@ -31,11 +31,11 @@ export function useCursor(
     setCursorText(text);
   }, []);
 
-  // RAF Lerp Animation Loop for Daoism-style smooth trailing delay
+                                                                   
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const lerpFactor = 0.18; // Silky smooth trailing delay inertia
+    const lerpFactor = 0.18;                                       
 
     const animate = () => {
       if (!isInitializedRef.current && targetPosRef.current.x !== -100) {
@@ -44,7 +44,7 @@ export function useCursor(
         isInitializedRef.current = true;
       }
 
-      // Linear Interpolation: current = current + (target - current) * lerpFactor
+                                                                                  
       currentPosRef.current.x += (targetPosRef.current.x - currentPosRef.current.x) * lerpFactor;
       currentPosRef.current.y += (targetPosRef.current.y - currentPosRef.current.y) * lerpFactor;
 
@@ -72,7 +72,7 @@ export function useCursor(
     };
   }, [cursorRef]);
 
-  // Global Event Delegation for Interactive Elements
+                                                     
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -113,7 +113,7 @@ export function useCursor(
     };
   }, [setCursorState]);
 
-  // Determine theme client-side based on window.location.pathname
+                                                                  
   useEffect(() => {
     if (typeof window === "undefined") return;
 

@@ -19,9 +19,8 @@ async function fetchRecentPosts(): Promise<BlogPostItem[]> {
       const data = await response.json();
       return data.items ?? [];
     }
-  } catch {
-    // offline or backend unavailable
-  }
+  } // eslint-disable-next-line no-empty
+    catch {}
   return [];
 }
 

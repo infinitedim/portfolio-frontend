@@ -188,7 +188,7 @@ export function AdminSidebar({
         color: themeConfig.colors.text,
       }}
     >
-      {/* Header */}
+                    
       <div className="flex items-center justify-between p-4 border-b shrink-0" style={{ borderColor: themeConfig.colors.border }}>
         {!collapsed && (
           <div className="flex items-center gap-2">
@@ -211,7 +211,7 @@ export function AdminSidebar({
         </Button>
       </div>
 
-      {/* Nav List */}
+                      
       <div className="flex-1 overflow-y-auto px-2 py-3 space-y-4 font-mono text-xs">
         {navGroups.map((group, idx) => (
           <div key={idx} className="space-y-1">
@@ -276,7 +276,7 @@ export function AdminSidebar({
 
       <Separator />
 
-      {/* User Footer */}
+                         
       <div className="p-3 shrink-0 flex items-center justify-between gap-2">
         {!collapsed && (
           <div className="flex flex-col min-w-0 font-mono text-[11px]">

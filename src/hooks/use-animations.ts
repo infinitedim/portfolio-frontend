@@ -442,10 +442,10 @@ export function useTerminalAnimations() {
 
       setIsTyping(true);
 
-      // Cap maximum animation duration to 3000ms (3 seconds) for all commands
+                                                                              
       const MAX_DURATION_MS = 3000;
-      const frameDelay = 16; // ~60fps
-      const totalFrames = MAX_DURATION_MS / frameDelay; // ~187 frames
+      const frameDelay = 16;          
+      const totalFrames = MAX_DURATION_MS / frameDelay;               
       const charsPerFrame = Math.max(
         1,
         Math.ceil(content.length / totalFrames),

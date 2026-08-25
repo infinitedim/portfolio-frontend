@@ -255,7 +255,7 @@ export default function AdminExperiencePage(): JSX.Element {
     newExps[index] = newExps[targetIndex]!;
     newExps[targetIndex] = temp;
 
-    // Update display_order values
+                                  
     newExps.forEach((exp, idx) => {
       exp.display_order = idx;
     });
@@ -289,7 +289,7 @@ export default function AdminExperiencePage(): JSX.Element {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 font-mono text-sm">
-      {/* Header Bar */}
+                        
       <div
         className="p-4 rounded-lg border flex flex-wrap items-center justify-between gap-4"
         style={{
@@ -332,7 +332,7 @@ export default function AdminExperiencePage(): JSX.Element {
         </div>
       </div>
 
-      {/* Experience Editor Form */}
+                                    
       {showForm && (
         <form
           onSubmit={handleSubmit}
@@ -394,7 +394,7 @@ export default function AdminExperiencePage(): JSX.Element {
             </div>
           </div>
 
-          {/* Multilingual Tabs */}
+                                   
           <div className="space-y-3 pt-2">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 border-(--terminal-border)">
               <div className="flex items-center gap-2" role="tablist" aria-label="Locale Tabs">
@@ -441,7 +441,7 @@ export default function AdminExperiencePage(): JSX.Element {
               </Button>
             </div>
 
-            {/* Active Locale Fields */}
+                                        
             <div className="space-y-4 pt-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
@@ -518,7 +518,7 @@ export default function AdminExperiencePage(): JSX.Element {
         </form>
       )}
 
-      {/* Experience List */}
+                             
       <div className="space-y-3">
         {loading ? (
           <div className="p-8 text-center text-xs text-(--terminal-muted) animate-pulse">
@@ -570,7 +570,7 @@ export default function AdminExperiencePage(): JSX.Element {
                 )}
               </div>
 
-              {/* Action & Reorder Buttons */}
+                                              
               <div className="flex items-center gap-2 shrink-0">
                 <div className="flex flex-col gap-0.5">
                   <Button
